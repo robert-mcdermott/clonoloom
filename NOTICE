@@ -1,0 +1,13 @@
+ClonoLoom
+Copyright 2026 Robert McDermott
+
+This product is licensed under the Apache License, Version 2.0 (LICENSE).
+
+ClonoLoom's host, interface shell, installers and workflows are adapted from its sibling programs
+SituCraft, MaveScape, CytoWeave and Proteoscope (https://github.com/robert-mcdermott), by the same
+author under the same license.
+
+Public datasets, reference germline sets, recombination models and specificity databases are not
+part of this product. When a user asks, ClonoLoom downloads them from their publishers under their
+own licenses and terms, which it shows before each download and records with every result that
+uses them.
