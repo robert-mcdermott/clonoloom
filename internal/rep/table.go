@@ -58,6 +58,9 @@ type Sample struct {
 	RepertoireID string `json:"repertoireId,omitempty"`
 	// Source: the index of the source file in the dataset.
 	Source int `json:"source"`
+	// Metadata: what the source says of the sample beside its rows (immunoSEQ's sample columns),
+	// as given.
+	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
 // Table is a dataset's rearrangements, one row per rearrangement (bulk) or contig (single cell).

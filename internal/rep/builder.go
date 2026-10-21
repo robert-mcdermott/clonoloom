@@ -3,6 +3,8 @@ package rep
 import (
 	"fmt"
 	"math"
+
+	"clonoloom/internal/genes"
 )
 
 // Row is one rearrangement as a reader hands it to a Builder. Strings are as read (trimmed);
@@ -35,6 +37,8 @@ func NewRow() Row {
 type Builder struct {
 	t       *Table
 	samples map[string]uint32
+	// loci caches the locus of a gene call, for rows whose source names no locus.
+	loci map[string]string
 }
 
 func NewBuilder(unit Unit) *Builder {
@@ -44,7 +48,27 @@ func NewBuilder(unit Unit) *Builder {
 			Unit: unit,
 		},
 		samples: map[string]uint32{},
+		loci:    map[string]string{},
 	}
+}
+
+// callLocus is the locus a row's genes name when its source names none (AIRR files without a
+// locus column, Cell Ranger's AIRR file): the J call's, else the V call's, else the C call's.
+func (b *Builder) callLocus(r *Row) string {
+	for _, call := range []string{r.J, r.V, r.C} {
+		if call == "" {
+			continue
+		}
+		locus, ok := b.loci[call]
+		if !ok {
+			locus = genes.ParseCall(call).Locus()
+			b.loci[call] = locus
+		}
+		if locus != "" {
+			return locus
+		}
+	}
+	return ""
 }
 
 // AddSample declares a sample, so that samples keep the order a source gives them even before
@@ -86,8 +110,12 @@ func (b *Builder) Append(r *Row) error {
 		return err
 	}
 	n := len(t.Sample)
+	locus := r.Locus
+	if locus == "" {
+		locus = b.callLocus(r)
+	}
 	t.Sample = append(t.Sample, sample)
-	t.Locus = append(t.Locus, LocusCode(r.Locus))
+	t.Locus = append(t.Locus, LocusCode(locus))
 	t.V = append(t.V, codes[0])
 	t.D = append(t.D, codes[1])
 	t.J = append(t.J, codes[2])

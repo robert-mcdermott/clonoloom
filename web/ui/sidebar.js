@@ -29,7 +29,8 @@ const SECTIONS = [
     kind: 'dataset', title: 'Datasets', icon: 'database',
     items: (project) => project.datasets,
     label: (d) => d.name ?? 'Dataset',
-    meta: (d) => d.format ?? '',
+    meta: (d) => `${d.samples.length} sample${d.samples.length === 1 ? '' : 's'}`,
+    itemIcon: (d, app) => ({ missing: 'warning', changed: 'warning', failed: 'warning' }[app.datasetStates?.get(d.id)?.status] ?? (d.singleCell ? 'chip' : 'table')),
     empty: 'Repertoire files you open appear here, each checked before it is used.',
     action: { label: 'Open data', run: (app) => app.openPathDialog() },
   },
@@ -69,7 +70,7 @@ export function mountSidebar(app) {
           'aria-current': selected ? 'true' : null,
           title: section.label(item),
           onclick: () => app.focusItem({ kind: section.kind, id }),
-        }, icon(section.itemIcon?.(item) ?? section.icon), h('span.label', section.label(item)), h('span.meta', section.meta(item))));
+        }, icon(section.itemIcon?.(item, app) ?? section.icon), h('span.label', section.label(item)), h('span.meta', section.meta(item))));
       }
       if (!items.length) {
         list.append(h('p.tree-empty', section.empty));
@@ -85,7 +86,7 @@ export function mountSidebar(app) {
   return {
     render,
     update(topics) {
-      if (topics.has('project') || topics.has('focus') || topics.has('project-loaded') || topics.has('local')) render();
+      if (topics.has('project') || topics.has('focus') || topics.has('project-loaded') || topics.has('local') || topics.has('datasets')) render();
     },
   };
 }

@@ -25,7 +25,19 @@ import (
 // names are Adaptive's, mapped to IMGT's (genes.FromAdaptive); a gene not resolved beyond its
 // family is called by its ties (the genes it could be), as an AIRR call lists them.
 
+// immunoSEQSampleColumns are the sample-level columns a v3 export repeats on every row, kept with
+// the sample as given: what it says of the sample (tags with HLA types and diagnoses), and
+// Adaptive's own summaries, which QC compares with ClonoLoom's.
+var immunoSEQSampleColumns = []string{
+	"species", "locus", "product_subtype", "sample_tags", "hla_class_i", "hla_class_ii", "counting_method", "primer_set",
+	"total_templates", "productive_templates", "outofframe_templates", "stop_templates", "total_rearrangements",
+	"productive_rearrangements", "total_reads", "total_productive_reads", "productive_clonality", "productive_entropy",
+	"productive_simpson_clonality", "sample_clonality", "sample_entropy", "sample_simpson_clonality",
+	"max_productive_frequency", "fraction_productive", "sample_amount_ng", "sample_cells_mass_estimate",
+}
+
 type immunoSEQLayout struct {
+	metadata                         map[string]int
 	version                          int
 	sample, species, locus           int
 	rearrangement, cdr3Rearrangement int
@@ -49,7 +61,12 @@ func isImmunoSEQHeader(header []string) (version int) {
 
 func newImmunoSEQLayout(header []string, version int) *immunoSEQLayout {
 	c := newColumns(header)
-	l := &immunoSEQLayout{version: version, sample: c.index("sample_name"), species: c.index("species"), locus: c.index("locus")}
+	l := &immunoSEQLayout{version: version, sample: c.index("sample_name"), species: c.index("species"), locus: c.index("locus"), metadata: map[string]int{}}
+	for _, name := range immunoSEQSampleColumns {
+		if i := c.index(name); i >= 0 {
+			l.metadata[name] = i
+		}
+	}
 	if version == 3 {
 		l.rearrangement, l.cdr3Rearrangement = c.index("rearrangement"), c.index("cdr3_rearrangement")
 		l.aminoAcid, l.frameType = c.index("amino_acid"), c.index("frame_type")
@@ -135,6 +152,7 @@ var adaptiveLoci = map[string]string{"TCRB": "TRB", "TCRA": "TRA", "TCRG": "TRG"
 // did not (the caller counts the source in reads when any did not).
 func readImmunoSEQ(ls *lines, l *immunoSEQLayout, width int, b *rep.Builder, src int, sample string, names map[string]string, p *Problems) (withTemplates, withoutTemplates int, err error) {
 	var fields []string
+	declared := map[string]bool{}
 	for ls.next() {
 		if len(ls.line) == 0 {
 			continue
@@ -151,6 +169,16 @@ func readImmunoSEQ(ls *lines, l *immunoSEQLayout, width int, b *rep.Builder, src
 		if named := adaptiveValue(field(fields, l.sample)); named != "" {
 			r.Sample = named
 		}
+		if !declared[r.Sample] && len(l.metadata) > 0 {
+			meta := map[string]string{}
+			for name, i := range l.metadata {
+				if v := adaptiveValue(field(fields, i)); v != "" {
+					meta[name] = v
+				}
+			}
+			b.AddSample(rep.Sample{Name: r.Sample, Source: src, Metadata: meta})
+		}
+		declared[r.Sample] = true
 		species := strings.ToLower(adaptiveValue(field(fields, l.species)))
 		human := species == "" || species == "human" || species == "homo sapiens"
 		r.Locus = adaptiveLoci[strings.ToUpper(adaptiveValue(field(fields, l.locus)))]

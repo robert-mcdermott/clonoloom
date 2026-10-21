@@ -4,7 +4,8 @@
 import { h, icon, clear, debounce, isTyping, downloadBlob, modKey } from './ui/dom.js';
 import { showMenu, showDialog, promptDialog, confirmDialog, toast, closeMenu } from './ui/overlays.js';
 import { createStore } from './ui/store.js';
-import { createLibrary, detectBackend, openPaths, prefs } from './ui/storage.js';
+import { createLibrary, detectBackend, getDataset, locateFile, openDataset, prefs } from './ui/storage.js';
+import { pickPaths } from './ui/file-picker.js';
 import { mountSidebar } from './ui/sidebar.js';
 import { mountInspector } from './ui/inspector.js';
 import { mountDrawer } from './ui/drawer.js';
@@ -12,6 +13,7 @@ import { plannedMode } from './ui/mode-planned.js';
 import { openPalette } from './ui/palette.js';
 import { colorVisionFriendly, setColorVisionFriendly } from './lib/colormaps.js';
 import { createProject, isEmptyProject, parseProject, rename, serializeProject } from './lib/project.js';
+import { addDataset, datasetRecord, relocate } from './lib/datasets.js';
 
 const VERSION = '0.1.0';
 
@@ -22,15 +24,7 @@ const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathD
 // (mode-planned.js) until the slice that builds them (clonoloom-spec/roadmap.md).
 const MODES = [
   { id: 'welcome', label: 'Start', icon: 'grid', hidden: true, load: () => import('./ui/mode-welcome.js').then((m) => m.mountWelcome) },
-  {
-    id: 'data', label: 'Data', icon: 'database',
-    load: async () => plannedMode({
-      title: 'Data', icon: 'database',
-      purpose: 'What each file holds and whether to trust it: the format and its version, the samples in it, the abundance unit (reads, UMIs, templates or cells), and a validation report that keeps fatal errors, warnings and notes apart, each with its count, example rows and a remedy. Samples are annotated here: subject, timepoint, tissue, cell subset, condition.',
-      steps: ['Open AIRR rearrangement tables, Cell Ranger V(D)J outputs or immunoSEQ exports.', 'Read the report; ClonoLoom never changes your files.', 'Annotate the samples, then go on to QC.'],
-      actions: [toOpen],
-    }),
-  },
+  { id: 'data', label: 'Data', icon: 'database', load: () => import('./ui/mode-data.js').then((m) => m.mountData) },
   {
     id: 'qc', label: 'QC', icon: 'qc',
     load: async () => plannedMode({
@@ -246,38 +240,129 @@ async function start() {
     const before = new Set(app.localItems.map((f) => f.url));
     app.localItems = files ?? [];
     const added = app.localItems.filter((f) => !before.has(f.url));
-    for (const item of added) app.log(`Opened ${item.name} (${KIND_NAMES[item.kind] ?? item.kind}).`);
+    for (const item of added) app.log(`Handed ${item.name} (${KIND_NAMES[item.kind] ?? item.kind}).`);
     if (added.length) store.notify(['local']);
     return added;
   }
 
-  // A browser does not tell a page where a file or folder is, so data are named by their path (or
-  // on the clonoloom command line); the program reads them where they are.
-  app.openPathDialog = async () => {
-    const path = await promptDialog({
-      title: 'Open data',
-      label: 'Path on this computer',
-      placeholder: '/data/run42/outs',
-      hint: 'An AIRR rearrangement table, a Cell Ranger V(D)J output folder, immunoSEQ exports, or a folder of them. ClonoLoom reads them where they are and never changes them.',
-      confirm: 'Open',
-    });
-    if (!path) return;
-    try {
-      const answer = await openPaths([path]);
-      const added = setLocalItems(answer.files);
-      for (const problem of answer.problems ?? []) {
-        toast(problem, { kind: 'error' });
-        app.log(problem);
+  // Items named on the command line (or by a later launch) open as datasets: a Cell Ranger output
+  // each, and the tables of one folder (or the files named together) as one.
+  app.openLocalItems = async (items) => {
+    const groups = new Map();
+    for (const item of items) {
+      if (item.kind === 'cellranger') groups.set(item.path, [item]);
+      else if (item.kind === 'table' || item.kind === 'metadata') {
+        const key = item.folder ? `folder:${item.folder}` : 'named';
+        groups.set(key, [...(groups.get(key) ?? []), item]);
       }
-      if (added.length) {
-        toast(`Opened ${added.length === 1 ? added[0].name : `${added.length} items`}. Reading repertoires arrives in a coming release; the item is listed under On this computer.`, { timeout: 5000 });
-        app.focusItem({ kind: 'local', id: added[0].url });
-      } else if (!(answer.problems ?? []).length) {
-        toast('Already open.', { timeout: 1800 });
-      }
-    } catch (error) {
-      toast(error.message, { kind: 'error' });
     }
+    for (const group of groups.values()) await app.openData(group.map((item) => item.path));
+  };
+
+  // A browser does not tell a page where a file or folder is, so data are chosen in ClonoLoom's own
+  // dialog of this computer's folders (file-picker.js) or named on the clonoloom command line; the
+  // program reads them where they are.
+  app.openPathDialog = async () => {
+    const paths = await pickPaths({
+      title: 'Open data',
+      confirm: 'Open',
+      choose: 'open',
+      multiple: true,
+      hint: 'AIRR rearrangement tables, a Cell Ranger V(D)J output folder, immunoSEQ exports, or a folder of a cohort\'s files: what you choose together opens as one dataset. ClonoLoom reads it where it is and never changes it.',
+    });
+    if (paths?.length) await app.openData(paths);
+  };
+
+  // --- Datasets ----------------------------------------------------------------------------------
+
+  // What the program says of each dataset of the project this session (id → { status, summary,
+  // error }): open, opening, missing (a file is not where it was), changed (a file's contents
+  // differ from the project's record) or failed.
+  app.datasetStates = new Map();
+  const setState = (id, state) => {
+    app.datasetStates.set(id, state);
+    store.notify(['datasets']);
+  };
+
+  // Opens files as one dataset and records it in the project.
+  app.openData = async (paths, { name = '', library = null } = {}) => {
+    const sameProject = store.sameProject();
+    const busy = `open-${Date.now()}`;
+    store.setBusy(busy, `Reading ${library ? `${library.length} file${library.length === 1 ? '' : 's'}` : paths.length === 1 ? paths[0].split(/[\\/]/).pop() : `${paths.length} files`}…`);
+    try {
+      const summary = await openDataset(library ? { library, name } : { paths, name });
+      if (!sameProject()) return null;
+      app.datasetStates.set(summary.id, { status: 'open', summary });
+      store.commit(addDataset(store.project, datasetRecord(summary)), `Open ${summary.name}`, ['datasets']);
+      const r = summary.report;
+      app.log(`Opened ${summary.name}: ${summary.samples.length} sample${summary.samples.length === 1 ? '' : 's'}, ${summary.rows.toLocaleString('en-US')} rows; ${r.fatal} fatal, ${r.warnings} warning${r.warnings === 1 ? '' : 's'}, ${r.notes} note${r.notes === 1 ? '' : 's'}.`);
+      toast(r.fatal ? `${summary.name} has ${r.fatal} fatal finding${r.fatal === 1 ? '' : 's'}: see the Data view.` : `Opened ${summary.name}: ${summary.samples.length} sample${summary.samples.length === 1 ? '' : 's'}.`, { kind: r.fatal ? 'error' : 'ok', timeout: 3500 });
+      app.focusItem({ kind: 'dataset', id: summary.id });
+      if (store.ui.mode !== 'data') app.setMode('data');
+      return summary;
+    } catch (error) {
+      toast(error.message, { kind: 'error', timeout: 6000 });
+      app.log(error.message);
+      return null;
+    } finally {
+      store.setBusy(busy, null);
+    }
+  };
+
+  // Makes sure the program has a dataset of the project open, opening it again from its files
+  // when it does not (after a restart). Answers its state.
+  app.ensureDataset = async (record) => {
+    const known = app.datasetStates.get(record.id);
+    if (known && known.status !== 'failed') return known.promise ?? known;
+    const promise = (async () => {
+      try {
+        let summary = await getDataset(record.id);
+        if (!summary) summary = await openDataset({ paths: record.sources.map((s) => s.path), name: record.name });
+        if (summary.id !== record.id) {
+          const state = { status: 'changed', summary, error: 'The files are not those the project recorded: their contents changed.' };
+          setState(record.id, state);
+          return state;
+        }
+        const state = { status: 'open', summary };
+        setState(record.id, state);
+        return state;
+      } catch (error) {
+        const state = { status: error.code === 'missing' ? 'missing' : 'failed', error: error.message };
+        setState(record.id, state);
+        return state;
+      }
+    })();
+    app.datasetStates.set(record.id, { status: 'opening', promise });
+    store.notify(['datasets']);
+    return promise;
+  };
+
+  app.ensureDatasets = () => Promise.all(store.project.datasets.map((d) => app.ensureDataset(d)));
+
+  // A dataset whose files moved: looked for near where they were (and near the other datasets'
+  // files), each by its fingerprint; else chosen in the Open dialog and checked.
+  app.locateDataset = async (record) => {
+    const dirOf = (p) => p.replace(/[\\/][^\\/]*$/, '');
+    const near = [...new Set([...record.sources, ...store.project.datasets.flatMap((d) => d.sources)].flatMap((s) => {
+      const dir = dirOf(s.path);
+      return [dir, dirOf(dir), dirOf(dirOf(dir))];
+    }))].filter(Boolean);
+    const found = [];
+    for (const source of record.sources) {
+      let path = await locateFile({ name: source.name, size: source.size, sha256: source.sha256, near });
+      if (!path) {
+        const picked = await pickPaths({ title: `Where is ${source.name}?`, confirm: 'Use this file', choose: 'file', start: dirOf(source.path), hint: `The project recorded ${source.name} at ${source.path}. Choose where it is now; ClonoLoom checks it is the same file.` });
+        if (!picked?.length) return false;
+        path = picked[0];
+      }
+      found.push(path);
+    }
+    store.commit(relocate(store.project, record.id, found), `Locate ${record.name}`, ['datasets']);
+    app.datasetStates.delete(record.id);
+    const moved = store.project.datasets.find((d) => d.id === record.id);
+    const state = await app.ensureDataset(moved);
+    if (state.status !== 'open') toast(state.error ?? 'The files found are not the dataset\'s.', { kind: 'error' });
+    return state.status === 'open';
   };
 
   // --- Files opened in the browser ---------------------------------------------------------------
@@ -290,12 +375,28 @@ async function start() {
   };
   fileInput.addEventListener('change', () => app.importFiles([...fileInput.files]));
 
-  // Opens dropped or picked files by kind, with the importers the slices register.
+  // Opens dropped or picked files by kind: tables and metadata are added to the library (a page
+  // never learns a file's place) and opened together as one dataset; other kinds by the importers
+  // the slices register.
   app.importFiles = async (files) => {
     const unread = new Map();
     const unknown = [];
+    const tables = files.filter((f) => ['table', 'metadata'].includes(fileKind(f.name)));
+    if (tables.length) {
+      const library = [];
+      for (const file of tables) {
+        try {
+          const added = await app.library.addFile(new Uint8Array(await file.arrayBuffer()));
+          library.push({ sha256: added.sha256, name: file.name });
+        } catch (error) {
+          toast(`${file.name}: ${error.message}`, { kind: 'error' });
+        }
+      }
+      if (library.length) await app.openData([], { library, name: tables.length > 1 ? (tables[0].folder ?? '') : '' });
+    }
     for (const file of files) {
       const kind = fileKind(file.name);
+      if (kind === 'table' || kind === 'metadata') continue;
       const importer = app.importers.get(kind);
       if (!importer) {
         if (kind) unread.set(kind, (unread.get(kind) ?? 0) + 1);
@@ -326,6 +427,8 @@ async function start() {
     store.setUI({ focus: null, selection: null }, ['focus', 'selection']);
     app.setMode(isEmptyProject(doc) ? 'welcome' : 'data');
     updateTitle();
+    // The project's datasets, opened again from their files in the background.
+    app.ensureDatasets();
   }
   app.loadProject = loadProject;
 
@@ -707,7 +810,10 @@ async function start() {
   app.inspector.render();
   app.drawer.render();
   await app.setMode('welcome');
-  if (app.localItems.length) app.log(`${app.localItems.length} item${app.localItems.length === 1 ? '' : 's'} named on the command line.`);
+  if (app.localItems.length) {
+    app.log(`${app.localItems.length} item${app.localItems.length === 1 ? '' : 's'} named on the command line.`);
+    app.openLocalItems(app.localItems);
+  }
 
   // A second "clonoloom <paths>" launch hands its paths to the program and brings this window
   // forward, so checking on focus (and now and then) is enough.
@@ -717,7 +823,10 @@ async function start() {
     checking = true;
     try {
       const fresh = await detectBackend();
-      if (fresh) setLocalItems(fresh.files);
+      if (fresh) {
+        const added = setLocalItems(fresh.files);
+        if (added.length) app.openLocalItems(added);
+      }
     } finally {
       checking = false;
     }

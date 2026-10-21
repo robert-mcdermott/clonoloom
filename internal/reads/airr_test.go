@@ -5,6 +5,9 @@ import (
 	"compress/gzip"
 	"context"
 	"math"
+	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -212,5 +215,26 @@ func TestReadsImmunoSEQv3AndV2(t *testing.T) {
 	}
 	if tab.Junctions.Get(tab.Junction[0]) != "TGTGCCAGCAGCTTCGACAGCTACGAGCAGTACTTC" {
 		t.Fatal("v2 junction")
+	}
+}
+
+// Every code the readers report is listed in ProblemCodes.
+func TestProblemCodesAreListed(t *testing.T) {
+	listed := map[string]bool{}
+	for _, c := range ProblemCodes {
+		listed[c] = true
+	}
+	files, _ := filepath.Glob("*.go")
+	pattern := regexp.MustCompile(`addf\("([a-z-]+)"`)
+	for _, f := range files {
+		src, err := os.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, m := range pattern.FindAllStringSubmatch(string(src), -1) {
+			if !listed[m[1]] {
+				t.Errorf("%s reports %s, which ProblemCodes does not list", f, m[1])
+			}
+		}
 	}
 }

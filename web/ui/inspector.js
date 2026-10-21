@@ -71,7 +71,7 @@ export function mountInspector(app) {
       render();
     },
     update(topics) {
-      if (topics.has('project') || topics.has('focus') || topics.has('selection') || topics.has('project-loaded') || topics.has('local')) render();
+      if (topics.has('project') || topics.has('focus') || topics.has('selection') || topics.has('project-loaded') || topics.has('local') || topics.has('datasets')) render();
     },
   };
 }

@@ -121,3 +121,35 @@ export const prefs = {
     } catch { /* storage unavailable */ }
   },
 };
+
+// An error the program answered with, with its code (missing, format, not-open) when it gave one.
+async function programError(response, fallback) {
+  const body = await response.json().catch(() => ({}));
+  const error = new Error(body.error ?? fallback);
+  error.code = body.code ?? '';
+  error.status = response.status;
+  return error;
+}
+
+// Opens files as one dataset (api_datasets.go): { paths: [...] } on this computer, or { library:
+// [{ sha256, name }] } added to the library; answers the dataset's summary.
+export async function openDataset(body) {
+  const response = await fetch('api/datasets/open', { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } });
+  if (!response.ok) throw await programError(response, 'The files could not be opened.');
+  return response.json();
+}
+
+// The summary of a dataset the program has open, or null when it is not open.
+export async function getDataset(id) {
+  const response = await fetch(`api/datasets/${encodeURIComponent(id)}`, { cache: 'no-store' });
+  if (response.status === 404) return null;
+  if (!response.ok) throw await programError(response, 'The dataset could not be described.');
+  return response.json();
+}
+
+// Finds a file that moved by its fingerprint, in folders near where it was: its path, or null.
+export async function locateFile({ name, size, sha256, near }) {
+  const response = await fetch('api/datasets/locate', { method: 'POST', body: JSON.stringify({ name, size, sha256, near }), headers: { 'Content-Type': 'application/json' } });
+  if (!response.ok) return null;
+  return (await response.json()).path;
+}

@@ -103,3 +103,13 @@ func TestCellsWithTooManyChainsAndNonProductiveSamples(t *testing.T) {
 		t.Fatalf("%v", codes(unknown))
 	}
 }
+
+// Every problem a reader reports is a finding with a title and a remedy of its own.
+func TestEveryReaderProblemHasAKind(t *testing.T) {
+	for _, code := range reads.ProblemCodes {
+		k, ok := readerKinds[code]
+		if !ok || k.title == "" || k.remedy == "" {
+			t.Errorf("%s has no title or remedy", code)
+		}
+	}
+}

@@ -27,30 +27,30 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| P1 | One self-contained program for macOS, Linux and Windows (x64 and ARM64); one-line install with checksum and version checks, no administrator rights; installs as `$HOME/.local/bin/clonoloom` and `%LocalAppData%\Programs\ClonoLoom` | planned (wave 1) |
-| P2 | Opens as a desktop window (a Chromium-family browser in app mode with its own profile), else the default browser; a second launch hands its paths to the running ClonoLoom | planned (wave 1) |
-| P3 | Ports 8860–8879, clear of the siblings' (Proteoscope 8765–8814, CytoWeave 8770–8789, MaveScape 8820–8839, SituCraft 8840–8859), checked by a test | planned (wave 1) |
+| P1 | One self-contained program for macOS, Linux and Windows (x64 and ARM64); one-line install with checksum and version checks, no administrator rights; installs as `$HOME/.local/bin/clonoloom` and `%LocalAppData%\Programs\ClonoLoom` | partial (wave 1, slice 1: six binaries of about 7 MB built by the release workflow, installers checking SHA-256 and version; the first release is drafted at the end of wave 1) |
+| P2 | Opens as a desktop window (a Chromium-family browser in app mode with its own profile), else the default browser; a second launch hands its paths to the running ClonoLoom | done (wave 1, slice 1: from SituCraft 0.9.0; slice 3: what a launch names opens as datasets) |
+| P3 | Ports 8860–8879, clear of the siblings' (Proteoscope 8765–8814, CytoWeave 8770–8789, MaveScape 8820–8839, SituCraft 8840–8859), checked by a test | done (wave 1, slice 1) |
 | P4 | `--offline`, `--data-dir`, `--cache-dir`, `--cache-limit`, `--examples-dir`, `--remote-control`, `--host`, `--port`, `--window`, `--version` (prints `clonoloom X.Y.Z`) | planned (waves 1, 2) |
 | P5 | Light and dark themes, color-vision-friendly palettes, keyboard operation, WCAG AA contrast, plots described in text | planned (wave 1, every wave) |
 | P6 | A container build file for the headless commands (AIRR Software WG guidance) | planned (wave 8) |
-| P7 | Apache-2.0; no third-party runtime dependencies in Go or JavaScript; nothing under an incompatible license copied in or bundled | planned (wave 1) |
+| P7 | Apache-2.0; no third-party runtime dependencies in Go or JavaScript; nothing under an incompatible license copied in or bundled | done (wave 1, slice 1; every slice keeps it: the only data built in is HGNC's gene list, CC0) |
 | P8 | Data never leave the computer; loopback only; no telemetry; the only outbound requests are downloads and public-data queries the user starts, to an allow-list of hosts | planned (wave 1) |
 
 ## Data and import
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| D1 | Read AIRR-C Rearrangement TSV (schema 1.3 to 2.x), typed by the schema; unknown columns kept | planned (wave 1) |
-| D2 | Read AIRR-C Repertoire metadata (JSON and YAML, the AIRR Data File of schema 1.4+) with MiAIRR fields; Clone, Cell and Receptor objects | planned (wave 1: Repertoire JSON; wave 9: YAML, Clone, Cell, Receptor) |
-| D3 | Read 10x Cell Ranger `vdj` and `multi` outputs: `filtered_contig_annotations.csv`, `all_contig_annotations.csv` and `.json`, `airr_rearrangement.tsv`, `clonotypes.csv`, `consensus_annotations.csv`, `metrics_summary.csv`; recognize the `outs/` and `per_sample_outs/*/vdj_t|vdj_b|vdj_t_gd` layouts | planned (wave 1) |
-| D4 | Read Adaptive immunoSEQ Analyzer exports (v2 and v3 column sets), including immuneACCESS downloads, with templates and reads kept apart | planned (wave 1) |
+| D1 | Read AIRR-C Rearrangement TSV (schema 1.3 to 2.x), typed by the schema; unknown columns kept | done (wave 1, slice 2: every typed column checked on every row; required columns reported; the other columns left in the file for exports; every column read equals the `airr` library's on 11 development files) |
+| D2 | Read AIRR-C Repertoire metadata (JSON and YAML, the AIRR Data File of schema 1.4+) with MiAIRR fields; Clone, Cell and Receptor objects | partial (wave 1, slice 2: Repertoire JSON of schema 1.3 to 2.0, matched to samples by `repertoire_id`; YAML, Clone, Cell and Receptor in wave 9) |
+| D3 | Read 10x Cell Ranger `vdj` and `multi` outputs: `filtered_contig_annotations.csv`, `all_contig_annotations.csv` and `.json`, `airr_rearrangement.tsv`, `clonotypes.csv`, `consensus_annotations.csv`, `metrics_summary.csv`; recognize the `outs/` and `per_sample_outs/*/vdj_t|vdj_b|vdj_t_gd` layouts | partial (wave 1, slice 2: contig annotations of Cell Ranger 3 to 9 and the AIRR file, equal to pandas' and `airr`'s reading of 14 files; the layouts; clonotypes, consensus and metrics kept beside the contigs for QC; the JSON annotations not read) |
+| D4 | Read Adaptive immunoSEQ Analyzer exports (v2 and v3 column sets), including immuneACCESS downloads, with templates and reads kept apart | done (wave 1, slice 2: v2 and v3; templates, else reads for a whole file; Adaptive's gene names mapped to IMGT's and recorded; equal to pandas' reading of three Emerson 2017 samples) |
 | D5 | Read MiXCR clone tables (exported TSV), TRUST4 AIRR output and report, Change-O/IgBLAST AIRR output, IMGT/HighV-QUEST summaries, VDJtools tables, OAS/OTS data units, VDJdb release tables | planned (wave 1: Change-O; wave 4: MiXCR, OAS/OTS, VDJdb; wave 5: IMGT/HighV-QUEST; wave 9: TRUST4, VDJtools) |
 | D6 | Read AnnData `.h5ad` and MuData `.h5mu` (GEX and scirpy's `airr` structures) and 10x feature-barcode matrices (MEX, `.h5`) | planned (wave 6) |
 | D7 | Generic CSV/TSV import with a column mapping, checked column by column | planned (wave 2) |
-| D8 | Validator: findings (fatal, warning, note) with stable codes, counts, examples and remedies | planned (wave 1, grown in every wave) |
+| D8 | Validator: findings (fatal, warning, note) with stable codes, counts, examples and remedies | done (wave 1, slices 2 and 3: 28 codes, each planted fault found once; the report in the Data view; grows in every wave) |
 | D9 | Query and download public data from AIRR Data Commons repositories (ADC API v1, unauthenticated), recorded with repository, query, date and checksums | planned (wave 9) |
-| D10 | Sample annotation: subject, timepoint, tissue, cell subset, condition, batch, HLA typing; suggested from file names; MiAIRR metadata mapped when present | planned (wave 1) |
-| D11 | Sources read in place, never modified; fingerprints (size and SHA-256) recorded; a moved source found again and checked | planned (wave 1) |
+| D10 | Sample annotation: subject, timepoint, tissue, cell subset, condition, batch, HLA typing; suggested from file names; MiAIRR metadata mapped when present | done (wave 1, slice 3: typed, suggested from names (after CytoWeave), or filled from AIRR Repertoire metadata and immunoSEQ sample tags, each value's origin kept) |
+| D11 | Sources read in place, never modified; fingerprints (size and SHA-256) recorded; a moved source found again and checked | done (wave 1, slice 3: SHA-256 taken while reading, equal to the recorded checksums of every development file; a moved file found by its size and SHA-256 near where it was, or chosen and checked; a changed file said) |
 | D12 | A library of projects; project archives (`.clz`) bundling the project and, where licenses allow, its data | planned (wave 1: library; wave 8: archives) |
 | D13 | Public dataset catalog: license, size and citation shown before a download the user confirms; checksums verified; license status carried into exports and methods | planned (wave 1: catalog and manager; every wave adds datasets) |
 
@@ -192,7 +192,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | # | Requirement | Status |
 | --- | --- | --- |
 | N1 | Loopback only, Host-header check, same-origin API, strict CSP, only named paths read, safe archive extraction | planned (wave 1) |
-| N2 | Every reader fuzzed; hostile files refused with a message, never a crash; sizes checked before allocation | planned (wave 1, every reader) |
+| N2 | Every reader fuzzed; hostile files refused with a message, never a crash; sizes checked before allocation | partial (wave 1, slice 2: every reader of wave 1 fuzzed; later readers as they arrive) |
 | N3 | Performance budgets checked automatically (`design.md`, "Budgets") | planned (wave 1, every wave) |
 | N4 | Stable, versioned project and export formats; later versions open earlier projects and reproduce their artifacts | planned (every wave; promised at 1.0) |
 | N5 | Documentation and site: installing, a guide per view, formats, network, MCP, the methods with their validation | planned (wave 1, every wave) |

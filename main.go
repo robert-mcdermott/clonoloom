@@ -65,6 +65,8 @@ type app struct {
 	assets   fs.FS
 	files    *localFiles
 	store    *store
+	// datasets are the datasets open (api_datasets.go).
+	datasets *datasets
 }
 
 func init() {
@@ -297,10 +299,11 @@ func parseArgs(flags *flag.FlagSet, args []string) ([]string, error) {
 
 func newApp(cfg config) (*app, error) {
 	a := &app{
-		session: strconv.FormatInt(time.Now().UnixNano(), 36),
-		dev:     cfg.dev,
-		assets:  content,
-		files:   newLocalFiles(),
+		session:  strconv.FormatInt(time.Now().UnixNano(), 36),
+		dev:      cfg.dev,
+		assets:   content,
+		files:    newLocalFiles(),
+		datasets: newDatasets(),
 	}
 	if problems := a.files.add(cfg.files); len(problems) > 0 {
 		for _, problem := range problems {
@@ -373,7 +376,9 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	})
 	mux.HandleFunc("GET /api/local/{index}", a.files.serve)
 	mux.HandleFunc("POST /api/open", a.openPaths)
+	mux.HandleFunc("GET /api/browse", a.browse)
 	a.store.register(mux)
+	a.registerDatasets(mux)
 	mux.HandleFunc("POST /api/library/local/{index}", func(w http.ResponseWriter, r *http.Request) {
 		file, ok := a.files.get(r.PathValue("index"))
 		if !ok {
@@ -504,8 +509,18 @@ func writeJSON(w http.ResponseWriter, value any) {
 }
 
 func writeError(w http.ResponseWriter, status int, message string) {
+	writeErrorCode(w, status, "", message)
+}
+
+// writeErrorCode answers an error with a code the page acts on (offering to locate a file that
+// moved, say).
+func writeErrorCode(w http.ResponseWriter, status int, code, message string) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-store")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(map[string]string{"error": message})
+	body := map[string]string{"error": message}
+	if code != "" {
+		body["code"] = code
+	}
+	json.NewEncoder(w).Encode(body)
 }

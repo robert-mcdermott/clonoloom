@@ -90,6 +90,24 @@ with each.
   AIRR Data Commons repertoire is fetched by its ADC API query.
 - [docs/FORMATS.md](docs/FORMATS.md): what each reader reads and how.
 
+- **Datasets (wave 1, slice 3).** The Data view:
+  - files and folders chosen in ClonoLoom's own **Open data** dialog of this computer's folders
+    (adapted from SituCraft 0.9.0), named on the command line, or dropped on the window (added to
+    the library and read from there) open together as one dataset: a cohort's exports, a run's T
+    and B cells; a folder of tables opens as one;
+  - each dataset's files with their SHA-256, taken while they are read; the project records them,
+    opens the dataset again from them, says when a file changed, and finds one that moved by its
+    fingerprint near where it was (or lets the user choose it, and checks it);
+  - the abundance unit, confirmed by the user when the files leave it open;
+  - the validator's report: findings by severity with their counts, share of rows, examples
+    (file, line, sequence, sample, value), stable codes and what to do;
+  - the samples, their rows, productive share, abundance and loci, and their annotation (subject,
+    time point, tissue, cell subset, condition, batch, HLA), typed, suggested from file names
+    (after CytoWeave's suggestions) or filled from AIRR Repertoire metadata and immunoSEQ's sample
+    tags (HLA types, CMV status), with each value's origin kept;
+  - the dataset's files in the inspector.
+- A row's locus, when its file names none, is the one its J (else V, else C) gene names.
+
 ### Validation
 
 - **Readers against independent readers:** every column ClonoLoom reads from 25 development files
@@ -98,6 +116,12 @@ with each.
 - **A million rearrangements** of an immunoSEQ file read and validated in 1.5 s (budget 5 s), at
   58 bytes a row plus the junctions (budget 64).
 - **Fuzzing:** every reader and the metadata reader fuzzed (12 million inputs without a fault).
+- **Fingerprints:** the SHA-256 each reader takes while reading equals the checksum `sources.json`
+  records for every development file: every byte was read, and none was changed.
+- **Datasets' API:** files opened, opened again as the same dataset, refused with their reason, a
+  moved file found again by its fingerprint, another computer refused (Go tests).
+- **`node --test`:** dataset records, unit confirmation, annotation with origins, suggestions
+  from names and metadata.
 
 - **Go tests of the host:**
   - security headers; foreign Host headers and cross-origin requests refused;

@@ -113,24 +113,31 @@ func Check(res *reads.Result) Report {
 	return c.report()
 }
 
+type kind struct {
+	severity      Severity
+	title, remedy string
+}
+
+// readerKinds are the readers' problems as findings: severity, title and remedy.
+var readerKinds = map[string]kind{
+	"airr-missing-required": {Warning, "Required AIRR columns are missing", "The file is not fully AIRR-compliant. ClonoLoom reads what it needs; tools that require the full schema may refuse it. Export again with the annotation tool's AIRR option."},
+	"no-junction":           {Fatal, "No junction column", "Clonotypes are defined from junctions: export the rearrangements with junction or junction_aa (CDR3 with its conserved residues)."},
+	"field-count":           {Warning, "Rows with the wrong number of fields", "A row with fewer fields than the header is not read. Check the file was not truncated or edited by a spreadsheet program."},
+	"not-boolean":           {Warning, "Booleans that are not T or F", "The AIRR schema writes booleans as T or F. These values are read as missing."},
+	"not-integer":           {Warning, "Integers that are not integers", "These values are read as missing."},
+	"integer-as-decimal":    {Note, "Integers written as decimals", "Read as the integers they equal (12.0 as 12)."},
+	"not-number":            {Warning, "Numbers that are not numbers", "These values are read as missing."},
+	"bad-csv":               {Warning, "Rows with unbalanced quotes", "These rows are not read."},
+	"negative-templates":    {Warning, "Negative template counts", "immunoSEQ wrote −1 where it could not estimate templates. These rows have no template count; their file is counted in reads."},
+	"templates-missing":     {Warning, "A file counted in reads, for want of templates", "Some of the file's rows have no template count, so every row of it is counted in reads, which amplification distorts more than templates. Compare its samples with others counted in reads."},
+	"mixed-units":           {Warning, "Files that count different things", "The dataset's files are counted in one unit wherever they can be (immunoSEQ files in reads when some lack templates). Otherwise compare samples only within a unit."},
+	"gene-name-unmapped":    {Warning, "Vendor gene names not mapped to IMGT's", "These names are kept as given; clonotypes still tell them apart, but they match no IMGT name. Report them to ClonoLoom's developers."},
+}
+
 // readerProblems: what the readers could not read as the format says.
 func (c *checker) readerProblems(p *reads.Problems) {
-	type kind struct {
-		severity      Severity
-		title, remedy string
-	}
-	kinds := map[string]kind{
-		"airr-missing-required": {Warning, "Required AIRR columns are missing", "The file is not fully AIRR-compliant. ClonoLoom reads what it needs; tools that require the full schema may refuse it. Export again with the annotation tool's AIRR option."},
-		"no-junction":           {Fatal, "No junction column", "Clonotypes are defined from junctions: export the rearrangements with junction or junction_aa (CDR3 with its conserved residues)."},
-		"field-count":           {Warning, "Rows with the wrong number of fields", "A row with fewer fields than the header is not read. Check the file was not truncated or edited by a spreadsheet program."},
-		"not-boolean":           {Warning, "Booleans that are not T or F", "The AIRR schema writes booleans as T or F. These values are read as missing."},
-		"not-integer":           {Warning, "Integers that are not integers", "These values are read as missing."},
-		"integer-as-decimal":    {Note, "Integers written as decimals", "Read as the integers they equal (12.0 as 12)."},
-		"not-number":            {Warning, "Numbers that are not numbers", "These values are read as missing."},
-		"bad-csv":               {Warning, "Rows with unbalanced quotes", "These rows are not read."},
-	}
 	for _, s := range p.Summaries() {
-		k, ok := kinds[s.Code]
+		k, ok := readerKinds[s.Code]
 		if !ok {
 			k = kind{Warning, s.Code, ""}
 		}

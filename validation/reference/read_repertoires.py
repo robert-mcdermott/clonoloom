@@ -12,7 +12,8 @@
 # duplicate_count, else consensus_count; an immunoSEQ file is counted in templates when every row
 # has a positive template count, else in reads. Gene names of immunoSEQ files are kept as Adaptive
 # writes them (the resolved name, or the ties when the gene is not resolved): the test maps them
-# with the dataset's own record of names.
+# with the dataset's own record of names. A row's locus is the file's locus column, else the locus
+# its J call names (its first three letters), else its V call's, else its C call's.
 import hashlib, json, math, os, sys
 import airr
 import pandas as pd
@@ -53,6 +54,18 @@ def upper(v, nulls=('',)):
     s = text(v, nulls)
     return s.upper() if s is not None else None
 
+def locus_of(given, *calls):
+    if given in LOCI:
+        return given
+    for call in calls:
+        # An IMGT name: a locus, then its segment (V, D, J, C; the heavy chain's constant genes
+        # are named by isotype, IGHM, IGHG1…).
+        if call and call[:3].upper() in LOCI and len(call) > 3 and (call[3].upper() in 'VDJC' or (call[:3].upper() == 'IGH' and call[3].upper() in 'MGAE')):
+            loci = {c.strip()[:3].upper() for c in call.split(',') if c.strip()}
+            if len(loci) == 1:
+                return loci.pop()
+    return None
+
 def airr_file(path):
     reader = airr.read_rearrangement(path)
     fields = reader.fields
@@ -71,7 +84,7 @@ def airr_file(path):
         return None
     columns = {
         'sequence_id': [text(r.get('sequence_id')) for r in rows],
-        'locus': [upper(r.get('locus')) if upper(r.get('locus')) in LOCI else None for r in rows],
+        'locus': [locus_of(upper(r.get('locus')), text(r.get('j_call')), text(r.get('v_call')), text(r.get('c_call'))) for r in rows],
         'v_call': [text(r.get('v_call')) for r in rows],
         'd_call': [text(r.get('d_call')) for r in rows],
         'j_call': [text(r.get('j_call')) for r in rows],
@@ -93,7 +106,7 @@ def cellranger_file(path):
     columns = {
         'sequence_id': [text(v) for v in get('contig_id')],
         'cell': [text(v) for v in get('barcode')],
-        'locus': [upper(v, none) if upper(v, none) in LOCI else None for v in get('chain')],
+        'locus': [locus_of(upper(c, none), text(j, none), text(v, none), text(k, none)) for c, j, v, k in zip(get('chain'), get('j_gene'), get('v_gene'), get('c_gene'))],
         'v_call': [text(v, none) for v in get('v_gene')],
         'd_call': [text(v, none) for v in get('d_gene')],
         'j_call': [text(v, none) for v in get('j_gene')],

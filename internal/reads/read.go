@@ -3,12 +3,16 @@ package reads
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"hash"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"clonoloom/internal/airr"
 	"clonoloom/internal/rep"
@@ -38,12 +42,17 @@ const ReaderVersion = 1
 
 // Source is one file of a dataset as read.
 type Source struct {
-	Path    string   `json:"path"`
-	Name    string   `json:"name"`
-	Format  Format   `json:"format"`
-	Gzipped bool     `json:"gzipped,omitempty"`
-	Rows    int      `json:"rows"`
-	Header  []string `json:"header,omitempty"`
+	// Size, Modified and SHA256 fingerprint the file as read (the bytes on disk, compressed or
+	// not), so that a project knows when its data changed or moved.
+	Size     int64    `json:"size"`
+	Modified string   `json:"modified,omitempty"`
+	SHA256   string   `json:"sha256,omitempty"`
+	Path     string   `json:"path"`
+	Name     string   `json:"name"`
+	Format   Format   `json:"format"`
+	Gzipped  bool     `json:"gzipped,omitempty"`
+	Rows     int      `json:"rows"`
+	Header   []string `json:"header,omitempty"`
 	// GeneNames are a vendor\'s gene names and the IMGT names ClonoLoom read them as.
 	GeneNames map[string]string `json:"geneNames,omitempty"`
 }
@@ -64,39 +73,130 @@ type Result struct {
 // ErrUnknownFormat: the header is not one ClonoLoom reads.
 var ErrUnknownFormat = errors.New("not a format ClonoLoom reads")
 
+// Input is a file to read: its path, and the name to call it by when that is not the path's
+// (a file the page uploaded to the library is stored under its SHA-256).
+type Input struct {
+	Path string `json:"path"`
+	Name string `json:"name,omitempty"`
+}
+
 // ReadFiles reads files into one table, each a source of the dataset, in the order given.
 func ReadFiles(ctx context.Context, paths []string) (*Result, error) {
+	inputs := make([]Input, len(paths))
+	for i, p := range paths {
+		inputs[i] = Input{Path: p}
+	}
+	return ReadInputs(ctx, inputs)
+}
+
+// ReadInputs reads files into one table, each a source of the dataset, fingerprinting each file
+// as it is read.
+func ReadInputs(ctx context.Context, inputs []Input) (*Result, error) {
 	res := &Result{Problems: newProblems()}
 	var b *rep.Builder
-	units := map[rep.Unit]bool{}
-	for i, path := range paths {
+	units := make([]rep.Unit, len(inputs))
+	for i, in := range inputs {
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}
-		f, err := os.Open(path)
+		f, err := os.Open(in.Path)
 		if err != nil {
 			return nil, err
 		}
-		src, unit, err := readOne(ctx, f, path, i, &b, res.Problems)
+		info, err := f.Stat()
+		if err != nil {
+			f.Close()
+			return nil, err
+		}
+		name := in.Name
+		if name == "" {
+			name = in.Path
+		}
+		hashed := &hashingReader{r: f, h: sha256.New()}
+		src, unit, err := readOne(ctx, hashed, name, i, &b, res.Problems)
+		if err == nil {
+			// The rest of the file (a reader may stop before its end) completes the fingerprint.
+			_, err = io.Copy(io.Discard, hashed)
+		}
 		f.Close()
 		if err != nil {
-			return nil, fmt.Errorf("%s: %w", filepath.Base(path), err)
+			return nil, fmt.Errorf("%s: %w", filepath.Base(name), err)
 		}
-		units[unit] = true
+		src.Path, src.Name = in.Path, filepath.Base(name)
+		src.Size, src.Modified, src.SHA256 = hashed.n, info.ModTime().UTC().Format(time.RFC3339), hex.EncodeToString(hashed.h.Sum(nil))
+		units[i] = unit
 		res.Sources = append(res.Sources, src)
 	}
 	if b == nil {
 		b = rep.NewBuilder(rep.UnitUnknown)
 	}
-	res.Unit = rep.UnitUnknown
-	if len(units) == 1 {
-		for u := range units {
-			res.Unit = u
-		}
-	}
+	res.Unit = agreedUnit(units, b, res.Sources, res.Problems)
 	res.Table = b.Table()
 	res.Table.Unit = res.Unit
 	return res, nil
+}
+
+// agreedUnit is the dataset's unit: its sources' when they agree. Sources that disagree are
+// counted alike where they can be: immunoSEQ files some of which lack templates are all counted in
+// reads. Otherwise the unit is unknown, and the validator says why.
+func agreedUnit(units []rep.Unit, b *rep.Builder, sources []Source, p *Problems) rep.Unit {
+	if len(units) == 0 {
+		return rep.UnitUnknown
+	}
+	first, same := units[0], true
+	for _, u := range units[1:] {
+		same = same && u == first
+	}
+	if same {
+		return first
+	}
+	immunoSEQ := true
+	for _, s := range sources {
+		immunoSEQ = immunoSEQ && (s.Format == FormatImmunoSEQv3 || s.Format == FormatImmunoSEQv2)
+	}
+	if immunoSEQ {
+		templates := 0
+		for i, u := range units {
+			if u == rep.Templates {
+				templates++
+				b.CountReads(i)
+			}
+		}
+		p.addf("mixed-units", 0, 0, "templates", "", "%d of %d files have templates for every row and the others do not: every file is counted in reads, so that samples compare", templates, len(units))
+		return rep.Reads
+	}
+	p.addf("mixed-units", 0, 0, "", "", "the files count different things (%s): compare their samples only within a unit", unitList(units))
+	return rep.UnitUnknown
+}
+
+func unitList(units []rep.Unit) string {
+	seen := map[rep.Unit]bool{}
+	var out []string
+	for _, u := range units {
+		if !seen[u] {
+			seen[u] = true
+			name := string(u)
+			if name == "" {
+				name = "unknown"
+			}
+			out = append(out, name)
+		}
+	}
+	return strings.Join(out, ", ")
+}
+
+// hashingReader hashes what is read through it.
+type hashingReader struct {
+	r io.Reader
+	h hash.Hash
+	n int64
+}
+
+func (h *hashingReader) Read(p []byte) (int, error) {
+	n, err := h.r.Read(p)
+	h.h.Write(p[:n])
+	h.n += int64(n)
+	return n, err
 }
 
 // ReadReader reads one source from r (tests, and files inside archives).
@@ -122,6 +222,7 @@ func readOne(ctx context.Context, r io.Reader, path string, index int, b **rep.B
 	}
 	src.Gzipped = gzipped
 	ls := newLines(plain)
+	ls.ctx = ctx
 	if !ls.next() {
 		if ls.err != nil {
 			return src, "", ls.err

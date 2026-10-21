@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"bytes"
 	"compress/gzip"
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -46,6 +47,7 @@ type lines struct {
 	n    uint32
 	line []byte
 	err  error
+	ctx  context.Context
 }
 
 func newLines(r io.Reader) *lines {
@@ -56,8 +58,15 @@ func newLines(r io.Reader) *lines {
 	return &lines{r: br}
 }
 
-// next reads the next line (without its end); false at the end of the input or on an error.
+// next reads the next line (without its end); false at the end of the input or on an error, or
+// when the context (checked every 65,536 lines) is done.
 func (l *lines) next() bool {
+	if l.ctx != nil && l.n&0xffff == 0xffff {
+		if err := l.ctx.Err(); err != nil {
+			l.err = err
+			return false
+		}
+	}
 	l.line = l.line[:0]
 	for {
 		chunk, err := l.r.ReadSlice('\n')

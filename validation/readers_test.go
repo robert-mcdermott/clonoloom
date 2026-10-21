@@ -142,6 +142,42 @@ func columns(t *rep.Table) map[string][]string {
 	return col
 }
 
+// recorded are the sizes and SHA-256 sources.json records for each file, by data set and path.
+func recorded(t *testing.T) map[string]struct {
+	Size   int64
+	SHA256 string
+} {
+	raw, err := os.ReadFile("sources.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var manifest struct {
+		Datasets map[string]struct {
+			Files []struct {
+				Path   string `json:"path"`
+				Size   int64  `json:"size"`
+				SHA256 string `json:"sha256"`
+			} `json:"files"`
+		} `json:"datasets"`
+	}
+	if err := json.Unmarshal(raw, &manifest); err != nil {
+		t.Fatal(err)
+	}
+	out := map[string]struct {
+		Size   int64
+		SHA256 string
+	}{}
+	for name, set := range manifest.Datasets {
+		for _, f := range set.Files {
+			out[name+"/"+f.Path] = struct {
+				Size   int64
+				SHA256 string
+			}{f.Size, f.SHA256}
+		}
+	}
+	return out
+}
+
 func TestReadersAgreeWithIndependentReaders(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("reference", "readers.json"))
 	if err != nil {
@@ -151,6 +187,7 @@ func TestReadersAgreeWithIndependentReaders(t *testing.T) {
 	if err := json.Unmarshal(raw, &ref); err != nil {
 		t.Fatal(err)
 	}
+	fingerprints := recorded(t)
 	checked := map[string]int{}
 	for rel, want := range ref.Files {
 		dataset := strings.Split(filepath.ToSlash(rel), "/")[0]
@@ -165,6 +202,11 @@ func TestReadersAgreeWithIndependentReaders(t *testing.T) {
 			res, err := reads.ReadFiles(context.Background(), []string{path})
 			if err != nil {
 				t.Fatal(err)
+			}
+			// The fingerprint taken while reading is the file's, as sources.json records it: the
+			// reader read every byte, and the file is as it was fetched (nothing wrote to it).
+			if f, ok := fingerprints[filepath.ToSlash(rel)]; ok && (res.Sources[0].SHA256 != f.SHA256 || res.Sources[0].Size != f.Size) {
+				t.Errorf("fingerprint %s (%d bytes), sources.json records %s (%d bytes)", res.Sources[0].SHA256, res.Sources[0].Size, f.SHA256, f.Size)
 			}
 			if string(res.Sources[0].Format) != want.Format {
 				t.Fatalf("read as %s, the reference as %s", res.Sources[0].Format, want.Format)
