@@ -26,7 +26,8 @@ function wrap(width, height, label, description, body) {
 // label, className }]. With share, each row's parts are shares (0–1) and the axis is 0–100%.
 export function stackedBars(rows, keys, { label = 'Bars', share = false, width = 520, labelWidth = 120, barHeight = 16, gap = 6, format = defaultFormat } = {}) {
   const plotLeft = labelWidth + 8;
-  const plotWidth = width - plotLeft - 12;
+  // Room on the right for half the last tick's label ("100%").
+  const plotWidth = width - plotLeft - 20;
   const top = 6;
   const height = top + rows.length * (barHeight + gap) + 30;
   const totals = rows.map((r) => keys.reduce((s, k) => s + (r.parts[k.key] ?? 0), 0));
@@ -35,7 +36,7 @@ export function stackedBars(rows, keys, { label = 'Bars', share = false, width =
   let body = '';
   rows.forEach((row, i) => {
     const y = top + i * (barHeight + gap);
-    body += `<text class="plot-label" x="${labelWidth}" y="${y + barHeight / 2 + 4}" text-anchor="end">${esc(truncate(row.label, Math.max(8, Math.floor(labelWidth / 6.5))))}</text>`;
+    body += `<text class="plot-label" x="${labelWidth}" y="${y + barHeight / 2 + 4}" text-anchor="end">${esc(truncate(row.label, Math.max(8, Math.floor(labelWidth / 7.5))))}</text>`;
     let at = plotLeft;
     for (const k of keys) {
       const v = row.parts[k.key] ?? 0;
@@ -57,7 +58,7 @@ export function stackedBars(rows, keys, { label = 'Bars', share = false, width =
 
 // Columns: bins [{ x, y }] with x labels, y heights.
 export function columns(bins, { label = 'Columns', xLabel = '', yLabel = '', width = 520, height = 200, className = 'plot-accent', format = defaultFormat } = {}) {
-  const left = 48;
+  const left = 60;
   const bottom = 34;
   const plotWidth = width - left - 10;
   const plotHeight = height - bottom - 10;
@@ -67,7 +68,7 @@ export function columns(bins, { label = 'Columns', xLabel = '', yLabel = '', wid
   const step = bins.length ? plotWidth / bins.length : plotWidth;
   const y = (v) => 10 + plotHeight - (v / top) * plotHeight;
   let body = '';
-  for (const t of ys) body += `<line class="plot-grid" x1="${left}" x2="${left + plotWidth}" y1="${y(t)}" y2="${y(t)}"/><text class="plot-tick" x="${left - 6}" y="${y(t) + 4}" text-anchor="end">${format(t)}</text>`;
+  for (const t of ys) body += `<line class="plot-gridline" x1="${left}" x2="${left + plotWidth}" y1="${y(t)}" y2="${y(t)}"/><text class="plot-tick" x="${left - 6}" y="${y(t) + 4}" text-anchor="end">${format(t)}</text>`;
   const every = Math.ceil(bins.length / 16);
   bins.forEach((b, i) => {
     const bx = left + i * step + step * 0.12;
@@ -77,7 +78,7 @@ export function columns(bins, { label = 'Columns', xLabel = '', yLabel = '', wid
   });
   body += `<line class="plot-axis" x1="${left}" x2="${left + plotWidth}" y1="${10 + plotHeight}" y2="${10 + plotHeight}"/>`;
   if (xLabel) body += `<text class="plot-label" x="${left + plotWidth / 2}" y="${height - 4}" text-anchor="middle">${esc(xLabel)}</text>`;
-  if (yLabel) body += `<text class="plot-label" transform="translate(11 ${10 + plotHeight / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text>`;
+  if (yLabel) body += `<text class="plot-label" transform="translate(13 ${10 + plotHeight / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text>`;
   const peak = bins.reduce((a, b) => (b.y > (a?.y ?? -1) ? b : a), null);
   const description = `${label}: ${bins.length} ${xLabel || 'bins'}${peak ? `, highest at ${peak.x} (${format(peak.y)})` : ''}.`;
   return { svg: wrap(width, height, label, description, body), description };

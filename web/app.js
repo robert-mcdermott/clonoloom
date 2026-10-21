@@ -7,6 +7,7 @@ import { createStore } from './ui/store.js';
 import { createLibrary, detectBackend, getDataset, locateFile, openDataset, prefs } from './ui/storage.js';
 import { pickPaths } from './ui/file-picker.js';
 import { createExamples } from './ui/examples.js';
+import { showMethods } from './ui/methods.js';
 import { mountSidebar } from './ui/sidebar.js';
 import { mountInspector } from './ui/inspector.js';
 import { mountDrawer } from './ui/drawer.js';
@@ -403,7 +404,7 @@ async function start() {
     }
     const messages = [];
     if (unread.size) messages.push(`This build of ClonoLoom cannot read ${[...unread.keys()].map((k) => KIND_NAMES[k] ?? k).join(', ')} yet.`);
-    if (unknown.length) messages.push(`${unknown.length === 1 ? unknown[0] : `${unknown.length} files`}: ClonoLoom opens rearrangement tables (.tsv, .csv, gzipped or not), AIRR metadata (.json, .yaml), Cell Ranger output folders and projects (.clz).`);
+    if (unknown.length) messages.push(`${unknown.length === 1 ? unknown[0] : `${unknown.length} files`}: ClonoLoom opens rearrangement tables (.tsv, .csv, gzipped or not), AIRR Repertoire metadata (.json), Cell Ranger output folders and projects (.clz).`);
     for (const message of messages) {
       toast(message, { kind: 'error' });
       app.log(message);
@@ -511,7 +512,8 @@ async function start() {
   }
   app.openLibrary = openLibraryDialog;
 
-  // The project document as JSON (the .clz archive arrives with the record, wave 1, slice 7).
+  // The project document as JSON (the .clz archive, bundling its data where licenses allow, comes
+  // in wave 8: requirement D12).
   function exportProjectJSON() {
     downloadBlob(new Blob([serializeProject(store.project)], { type: 'application/json' }), `${store.project.name.replace(/[^\w.-]+/g, '_') || 'project'}.clonoloom.json`);
   }
@@ -545,6 +547,11 @@ async function start() {
     { label: 'Open data', icon: 'folder', hint: `${modKey}O`, run: () => app.openPathDialog(), keywords: 'airr cell ranger immunoseq folder path import tsv csv' },
     { label: 'Open files', icon: 'file', run: () => app.pickFiles() },
     { label: 'Example data', icon: 'flask', run: () => app.showExamples(), keywords: 'download public 10x pbmc immunoseq emerson airr try sample demo' },
+    { label: 'Methods paragraph of the dataset in focus', icon: 'file', run: () => {
+      const d = store.project.datasets.find((x) => store.ui.focus?.kind === 'dataset' && x.id === store.ui.focus.id) ?? store.project.datasets[0];
+      if (d) showMethods(app, d);
+      else toast('Open data first: the methods paragraph is written from a dataset\'s record.', { kind: 'error' });
+    }, keywords: 'methods text manuscript references cite citation' },
     { label: 'New project', icon: 'plus', run: () => app.newProject() },
     { label: 'Open a saved project', icon: 'library', hint: `${modKey}⇧O`, run: openLibraryDialog },
     { label: 'Save project now', icon: 'save', hint: `${modKey}S`, run: saveNow },

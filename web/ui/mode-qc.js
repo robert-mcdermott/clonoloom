@@ -147,7 +147,7 @@ export function mountQC(app, container) {
 
   function bulkTable(report, unit) {
     const rows = report.samples.map((s, i) => h(`tr${i === shownSample ? '.selected' : ''}`, { onclick: () => { shownSample = i; draw(); } },
-      h('td.mono', s.name),
+      h('td.mono.sample-name', { title: s.name }, s.name),
       h('td.r', `${count(s.abundance)}`),
       h('td.r', s.kept === s.rows ? count(s.rows) : `${count(s.kept)} of ${count(s.rows)}`),
       h(`td.r${s.productive < 0.6 ? '.attention' : ''}`, pct(s.productive)),
@@ -173,7 +173,7 @@ export function mountQC(app, container) {
       const c = s.chains ?? { cells: 0 };
       const q = c.umis;
       return h(`tr${i === shownSample ? '.selected' : ''}`, { onclick: () => { shownSample = i; draw(); } },
-        h('td.mono', s.name),
+        h('td.mono.sample-name', { title: s.name }, s.name),
         h('td.r', count(c.cells)),
         h('td.r', `${count(c.paired)} (${pct(c.paired / c.cells)})`),
         h('td.r', count(c.single)),

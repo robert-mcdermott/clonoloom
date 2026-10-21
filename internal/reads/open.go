@@ -84,6 +84,9 @@ func Open(ctx context.Context, paths []string) (*Result, error) {
 			metadata = append(metadata, path)
 			continue
 		}
+		if strings.HasSuffix(lower, ".yaml") || strings.HasSuffix(lower, ".yml") {
+			return nil, fmt.Errorf("%s: AIRR metadata in YAML are not read yet (wave 9): save them as JSON to open them with the tables", filepath.Base(path))
+		}
 		if kind, err := sniffCompanion(path); err == nil && kind != "" {
 			companions = append(companions, Companion{Path: path, Kind: kind, Sample: sampleName(path)})
 			continue

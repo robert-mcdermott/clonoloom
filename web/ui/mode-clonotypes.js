@@ -326,7 +326,7 @@ export function mountClonotypes(app, container) {
       c.vendor ? h('dl.kv', h('dt', 'Source\'s clonotype'), h('dd', c.vendor)) : null,
       h('div.section-title', { style: { marginTop: '10px' } }, `In ${detail.in.length} sample${detail.in.length === 1 ? '' : 's'}`),
       h('table.data', h('thead', h('tr', h('th', 'Sample'), h('th.r', unit), h('th.r', 'Frequency'))),
-        h('tbody', ...detail.in.map((s) => h('tr', h('td', s.sample), h('td.r', count(s.abundance)), h('td.r', pct(s.frequency)))))),
+        h('tbody', ...detail.in.map((s) => h('tr', h('td.sample-name', { title: s.sample }, s.sample), h('td.r', count(s.abundance)), h('td.r', pct(s.frequency)))))),
       h('div.section-title', { style: { marginTop: '10px' } }, `${count(detail.memberCount)} ${detail.unit === 'cells' ? 'contigs' : 'rearrangements'}`),
       h('div', { style: { maxHeight: '280px', overflow: 'auto' } }, h('table.data.members',
         h('thead', h('tr', h('th', detail.unit === 'cells' ? 'Cell' : 'Sequence'), h('th', 'V / J as given'), h('th.r', 'Count'))),

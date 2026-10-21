@@ -51,7 +51,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | D9 | Query and download public data from AIRR Data Commons repositories (ADC API v1, unauthenticated), recorded with repository, query, date and checksums | planned (wave 9) |
 | D10 | Sample annotation: subject, timepoint, tissue, cell subset, condition, batch, HLA typing; suggested from file names; MiAIRR metadata mapped when present | done (wave 1, slice 3: typed, suggested from names (after CytoWeave), or filled from AIRR Repertoire metadata and immunoSEQ sample tags, each value's origin kept) |
 | D11 | Sources read in place, never modified; fingerprints (size and SHA-256) recorded; a moved source found again and checked | done (wave 1, slice 3: SHA-256 taken while reading, equal to the recorded checksums of every development file; a moved file found by its size and SHA-256 near where it was, or chosen and checked; a changed file said) |
-| D12 | A library of projects; project archives (`.clz`) bundling the project and, where licenses allow, its data | planned (wave 1: library; wave 8: archives) |
+| D12 | A library of projects; project archives (`.clz`) bundling the project and, where licenses allow, its data | partial (wave 1: the library, saved automatically; wave 8: archives) |
 | D13 | Public dataset catalog: license, size and citation shown before a download the user confirms; checksums verified; license status carried into exports and methods | partial (wave 1, slice 6: the catalog of six datasets, downloads confirmed, checked by SHA-256 and put in place whole, terms of use accepted first, `--offline`; a dataset whose files are an example's carries its license and citation; methods in slice 7, exports in wave 2; every wave adds datasets) |
 
 ## Quality control
@@ -146,7 +146,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | # | Requirement | Status |
 | --- | --- | --- |
 | O1 | Figures (SVG, PNG, PDF) with the clonotype definition, abundance unit and n in the legend | planned (wave 2, every wave) |
-| O2 | Methods paragraph with numbered references, written from the record (versions, references and their versions, public datasets with accession and download date, parameters) | planned (wave 1: datasets; wave 2: analyses; grown in every wave) |
+| O2 | Methods paragraph with numbered references, written from the record (versions, references and their versions, public datasets with accession and download date, parameters) | partial (wave 1, slice 7: a paragraph per dataset, from the record: the data's source, license and date, the format and reader, the unit, the validator's findings, the filter with what it kept, the clonotype definition and its ID, ClonoLoom's version and commit, with numbered references; wave 2: analyses; grown in every wave) |
 | O3 | Exports: AIRR-C Rearrangement, Clone, Cell and Repertoire; AnnData; Parquet; CSV; FASTA; Newick | planned (wave 2: AIRR, CSV; wave 5: FASTA, Newick; wave 6: AnnData; wave 8: Parquet) |
 | O4 | Excel workbooks with provenance sheets; GraphPad Prism export | planned (wave 9) |
 | O5 | Certificates: inputs' fingerprints, the recipe, every reported number; `clonoloom verify` recomputes and compares bit for bit | planned (wave 8) |
@@ -195,5 +195,5 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | N2 | Every reader fuzzed; hostile files refused with a message, never a crash; sizes checked before allocation | partial (wave 1, slice 2: every reader of wave 1 fuzzed; later readers as they arrive) |
 | N3 | Performance budgets checked automatically (`design.md`, "Budgets") | planned (wave 1, every wave) |
 | N4 | Stable, versioned project and export formats; later versions open earlier projects and reproduce their artifacts | planned (every wave; promised at 1.0) |
-| N5 | Documentation and site: installing, a guide per view, formats, network, MCP, the methods with their validation | planned (wave 1, every wave) |
-| N6 | Research use only: not a medical device, no diagnostic claims; wording fixed in `conventions.md` | planned (wave 1) |
+| N5 | Documentation and site: installing, a guide per view, formats, network, MCP, the methods with their validation | partial (wave 1: `docs/INSTALLING.md`, `docs/FORMATS.md`, `docs/GETTING-STARTED.md` with pictures made by `docs/capture/capture.mjs`, the validation in the changelog; the site later) |
+| N6 | Research use only: not a medical device, no diagnostic claims; wording fixed in `conventions.md` | done (wave 1: on the start page, in the status bar and the inspector, the README and the guide) |

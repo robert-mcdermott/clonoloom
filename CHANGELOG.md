@@ -165,6 +165,27 @@ with each.
     example's**, however they were downloaded, carries its source, license and citation, shown on
     its card and in the inspector and kept in the project for the methods.
 
+- **The record (wave 1, slice 7).**
+  - **A methods paragraph per dataset** (`web/lib/methods.js`, adapted from SituCraft 0.9.0),
+    from a dataset's menu, the inspector or the command palette: written from the project's record
+    and what the program computes of the dataset (the data's source, license and date; the format
+    and reader; the unit; the validator's findings; the filter with the rows it kept; the
+    clonotype definition with its ID and the clonotypes it gives; ClonoLoom's version and commit),
+    with numbered references (the AIRR Community's standards, IMGT's nomenclature and junction,
+    HGNC's gene list, the data's own citation). Only what was done is said. **Copy** takes the
+    paragraph with its references.
+  - [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md): a first study, view by view.
+  - The README's pictures, made by `docs/capture/capture.mjs` (adapted from SituCraft 0.9.0, with
+    its Chrome DevTools driver `validation/cdp.mjs`) on the open example data, in the light and
+    dark themes.
+- **Fixed.**
+  - The plots' labels inherited a stroke from the layout around them (two classes shared a name)
+    and looked faint and outlined; their text is now larger, and the last tick ("100%") fits.
+  - Long sample names no longer push the QC tables' columns, or the clonotype inspector, out of
+    view.
+  - AIRR metadata in YAML, which are read from wave 9, are refused with that reason rather than
+    read as a table.
+
 ### Validation
 
 - **Readers against independent readers:** every column ClonoLoom reads from 25 development files
@@ -201,6 +222,8 @@ with each.
   them, every file equal to its record, and each of their eleven datasets read
   (`validation/examples_test.go`, with `CLONOLOOM_FETCH_EXAMPLES=1`); the three immuneACCESS
   samples taken from the 19.9 GB archive in under 3 s.
+- **Methods text** (`node --test`): each sentence present only when its step was taken, the
+  references numbered in the order cited, the same inputs giving the same text.
 - **The downloader** (Go tests against a local server): a changed, longer or missing file refused
   with nothing left behind; an archive of another size refused; members taken by range without
   reading the rest; a redirect to another host refused; nothing offline, nothing under terms not

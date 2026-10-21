@@ -5,6 +5,7 @@
 
 import { h, icon, clear, formatBytes } from './dom.js';
 import { showDialog, showMenu, promptDialog, confirmDialog, toast } from './overlays.js';
+import { methodsButton, showMethods } from './methods.js';
 import { SAMPLE_FIELDS, UNITS, annotate, annotation, confirmUnit, datasetUnit, fieldsFromMetadata, removeDataset, renameDataset, suggestFromNames } from '../lib/datasets.js';
 
 const SEVERITY = {
@@ -127,6 +128,7 @@ export function mountData(app, container) {
         const name = await promptDialog({ title: 'Rename dataset', label: 'Name', value: d.name });
         if (name) store.commit(renameDataset(store.project, d.id, name), `Rename ${d.name}`);
       } },
+      { label: 'Methods paragraph…', icon: 'file', disabled: state.status !== 'open', onSelect: () => showMethods(app, d) },
       { label: 'Locate its files…', icon: 'search', onSelect: () => app.locateDataset(d) },
       { label: 'Read its files again', icon: 'history', disabled: state.status === 'opening', onSelect: async () => {
         app.datasetStates.delete(d.id);
@@ -333,7 +335,8 @@ export function mountData(app, container) {
       summary?.companions?.length
         ? [h('div.section-title', { style: { marginTop: '10px' } }, 'Beside them'), ...summary.companions.map((c) => h('div.source-row', h('span', c.path.split(/[\\/]/).pop()), h('span.muted.small', c.kind.replace('cellranger-', 'Cell Ranger '))))]
         : null,
-      h('p.muted.small', { style: { marginTop: '8px' } }, 'Read where they are: ClonoLoom never changes, copies or moves them. The fingerprints tell the project when a file changed or moved.'));
+      h('p.muted.small', { style: { marginTop: '8px' } }, 'Read where they are: ClonoLoom never changes, copies or moves them. The fingerprints tell the project when a file changed or moved.'),
+      summary ? h('div.btn-row', { style: { marginTop: '8px' } }, methodsButton(app, d)) : null);
   });
 
   render();

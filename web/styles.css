@@ -758,10 +758,11 @@ table.data tr.selected td { background: var(--active); }
 
 /* Plots (lib/plot.js): marks colored by class, so they follow the theme and color-vision setting. */
 .plot { display: block; max-width: 100%; height: auto; font-family: var(--font); }
-.plot-label { font-size: 11px; fill: var(--text-2); }
-.plot-tick { font-size: 10px; fill: var(--text-3); }
+.plot text { stroke: none; }
+.plot-label { font-size: 12px; fill: var(--text-2); }
+.plot-tick { font-size: 11px; fill: var(--text-3); }
 .plot-axis { stroke: var(--line-strong); stroke-width: 1; }
-.plot-grid { stroke: var(--line); stroke-width: 1; }
+.plot-gridline { stroke: var(--line); stroke-width: 1; }
 .plot-ok { fill: var(--ok); }
 .plot-warn { fill: var(--warn); }
 .plot-danger { fill: var(--danger); }
@@ -786,6 +787,8 @@ table.data tr.selected td { background: var(--active); }
 .qc-view .callout { margin-bottom: 10px; }
 .qc-view .callout p { margin: 0; }
 .qc-table tr { cursor: pointer; }
+.qc-table td.sample-name, .inspector td.sample-name { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inspector td.sample-name { max-width: 150px; }
 .qc-table td.attention { color: var(--warn-text); font-weight: 650; }
 .qc-explain { margin-top: 8px; font-size: 12px; color: var(--text-2); }
 .qc-explain summary { cursor: pointer; color: var(--accent-text); }
@@ -839,3 +842,8 @@ button.ctable-th:hover { color: var(--text); }
 .example-progress { display: flex; flex-direction: column; gap: 4px; }
 .check-row { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; }
 .check-row input { margin-top: 3px; }
+
+/* A dataset's methods paragraph (ui/methods.js). */
+.methods-text { font-size: 13.5px; line-height: 1.6; margin: 0 0 12px; user-select: text; }
+.methods-references { margin: 4px 0 10px; padding-left: 26px; font-size: 12px; line-height: 1.5; color: var(--text-2); user-select: text; }
+.methods-references li { margin-bottom: 3px; }
