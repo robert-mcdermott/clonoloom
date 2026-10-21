@@ -379,6 +379,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/browse", a.browse)
 	a.store.register(mux)
 	a.registerDatasets(mux)
+	a.registerQC(mux)
 	mux.HandleFunc("POST /api/library/local/{index}", func(w http.ResponseWriter, r *http.Request) {
 		file, ok := a.files.get(r.PathValue("index"))
 		if !ok {

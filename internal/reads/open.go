@@ -89,6 +89,7 @@ func Open(ctx context.Context, paths []string) (*Result, error) {
 			continue
 		}
 		tables = append(tables, path)
+		companions = append(companions, besideContigs(path)...)
 	}
 	if len(tables) == 0 {
 		if len(companions) > 0 {
@@ -113,6 +114,30 @@ func Open(ctx context.Context, paths []string) (*Result, error) {
 		res.Repertoires = append(res.Repertoires, reps...)
 	}
 	return res, nil
+}
+
+// besideContigs finds the companions of a Cell Ranger contig file named on its own: in its folder,
+// under its own prefix ("<run>_clonotypes.csv" beside "<run>_filtered_contig_annotations.csv", as
+// 10x's downloads name them) or under Cell Ranger's own names.
+func besideContigs(path string) []Companion {
+	base := filepath.Base(path)
+	prefix := ""
+	switch {
+	case strings.HasSuffix(base, "filtered_contig_annotations.csv"):
+		prefix = strings.TrimSuffix(base, "filtered_contig_annotations.csv")
+	case strings.HasSuffix(base, "all_contig_annotations.csv"):
+		prefix = strings.TrimSuffix(base, "all_contig_annotations.csv")
+	default:
+		return nil
+	}
+	dir, sample := filepath.Dir(path), sampleName(path)
+	var out []Companion
+	for _, c := range []struct{ name, kind string }{{"clonotypes.csv", CompanionClonotypes}, {"consensus_annotations.csv", CompanionConsensus}, {"metrics_summary.csv", CompanionMetrics}} {
+		if p := filepath.Join(dir, prefix+c.name); isFile(p) {
+			out = append(out, Companion{Path: p, Kind: c.kind, Sample: sample})
+		}
+	}
+	return out
 }
 
 // sniffCompanion reads a table's header to tell a companion file from rearrangements.

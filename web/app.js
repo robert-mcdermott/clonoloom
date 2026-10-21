@@ -25,15 +25,7 @@ const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathD
 const MODES = [
   { id: 'welcome', label: 'Start', icon: 'grid', hidden: true, load: () => import('./ui/mode-welcome.js').then((m) => m.mountWelcome) },
   { id: 'data', label: 'Data', icon: 'database', load: () => import('./ui/mode-data.js').then((m) => m.mountData) },
-  {
-    id: 'qc', label: 'QC', icon: 'qc',
-    load: async () => plannedMode({
-      title: 'Quality control', icon: 'qc',
-      purpose: 'Whether each sample supports analysis: depth in its unit, productive and out-of-frame shares, junction lengths, gene resolution, singletons and coverage; for single cells, chains per cell and pairing. Filters are kept as named versions with their reasons and never delete data.',
-      steps: ['Open data.', 'Compare the samples\' metrics and distributions.', 'Save a filter, and see what it keeps.'],
-      actions: [toOpen],
-    }),
-  },
+  { id: 'qc', label: 'QC', icon: 'qc', load: () => import('./ui/mode-qc.js').then((m) => m.mountQC) },
   {
     id: 'clonotypes', label: 'Clonotypes', icon: 'clonotypes',
     load: async () => plannedMode({

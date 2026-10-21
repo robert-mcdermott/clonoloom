@@ -58,12 +58,12 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| Q1 | Per-sample QC: total abundance in its unit, unique rearrangements, productive fraction, out-of-frame and stop-codon fractions, CDR3 length distribution, gene-resolution rates, singleton fraction | planned (wave 1) |
-| Q2 | Single-cell QC: cells with 0, 1, 2 or more chains of each locus, pairing rate, multi-chain cells, UMI support per contig, `is_cell` and `high_confidence` handling | planned (wave 1) |
-| Q3 | Depth and saturation: richness against depth, sample coverage (Good–Turing, Chao and Jost), a suggested common depth or coverage for a cohort | planned (wave 1: coverage; wave 2: curves and suggestions) |
+| Q1 | Per-sample QC: total abundance in its unit, unique rearrangements, productive fraction, out-of-frame and stop-codon fractions, CDR3 length distribution, gene-resolution rates, singleton fraction | done (wave 1, slice 4: abundance, rows, productive, out-of-frame, stop-codon and unexplained non-productive shares, clonotypes, singletons, doubletons, the largest clonotype's share, V and J resolution, reads per template or UMI, junction lengths; equal to an independent R implementation on six bulk samples; immunoSEQ's own row counts reproduced) |
+| Q2 | Single-cell QC: cells with 0, 1, 2 or more chains of each locus, pairing rate, multi-chain cells, UMI support per contig, `is_cell` and `high_confidence` handling | done (wave 1, slice 4: cells by their productive chains, paired, one arm, none, more than two of a locus, UMIs per contig; Cell Ranger's own counts of cells, pairs and loci reproduced exactly on six runs of Cell Ranger 4, 6 and 9) |
+| Q3 | Depth and saturation: richness against depth, sample coverage (Good–Turing, Chao and Jost), a suggested common depth or coverage for a cohort | partial (wave 1, slice 4: sample coverage by Chao and Jost, equal to iNEXT's to 10⁻¹²; curves and suggestions in wave 2) |
 | Q4 | Cross-sample contamination check: identical nucleotide rearrangements at high abundance in unrelated subjects flagged, with public clonotypes (high generation probability) set apart | planned (wave 7) |
 | Q5 | Batch QC: metrics by batch or run, outliers flagged by robust z-scores | planned (wave 7) |
-| Q6 | QC never deletes data: filters are named versions with recorded reasons | planned (wave 1) |
+| Q6 | QC never deletes data: filters are named versions with recorded reasons | done (wave 1, slice 4: productive only, minimum count, loci, cells only, high confidence only, most chains of a locus, samples left out; each version kept with its reason; what each rule left out counted) |
 
 ## Clonotype definition
 

@@ -107,6 +107,23 @@ with each.
     tags (HLA types, CMV status), with each value's origin kept;
   - the dataset's files in the inspector.
 - A row's locus, when its file names none, is the one its J (else V, else C) gene names.
+- **QC (wave 1, slice 4).** The QC view, every number computed by the program (`internal/qc`):
+  - for bulk samples: abundance in the dataset's unit, rows, the shares of productive, out-of-frame,
+    stop-codon and otherwise non-productive abundance, clonotypes (productive rearrangements by
+    locus, amino-acid junction, V gene and J gene), singletons, doubletons, **sample coverage**
+    (Chao and Jost 2012, as iNEXT computes it), the largest clonotype's share, how often V and J
+    calls name one gene, reads per template or UMI, and junction lengths;
+  - for single cells: cells by their productive chains (paired, one arm, none, more than two of a
+    locus), cells with each locus, UMIs per contig;
+  - plots of the status shares, junction lengths and chain configurations, each described in words;
+  - **the vendor's numbers, recomputed**: Cell Ranger's metrics summary (found in a run's folder or
+    beside a contig file) and immunoSEQ's sample columns, each beside ClonoLoom's count from the
+    rows;
+  - **filters as versions**: productive only, a minimum count, loci, cells only, high-confidence
+    contigs only, the most productive chains of a locus in a cell, samples left out; saved with a
+    reason, never deleted, each rule's rows left out counted; the dataset's analyses use the version
+    chosen;
+  - what each number measures, in plain words.
 
 ### Validation
 
@@ -121,7 +138,16 @@ with each.
 - **Datasets' API:** files opened, opened again as the same dataset, refused with their reason, a
   moved file found again by its fingerprint, another computer refused (Go tests).
 - **`node --test`:** dataset records, unit confirmation, annotation with origins, suggestions
-  from names and metadata.
+  from names and metadata; filter versions; the plots.
+- **QC against independent computations:** on six bulk samples (immunoSEQ, AIRR Data Commons and
+  the AIRR Community's files), rows, abundance, productive share, clonotypes, singletons,
+  doubletons and the largest share equal an R implementation's (data.table), and sample coverage
+  equals iNEXT 3.0.2's, to 10⁻¹² (`validation/qc_test.go`, `validation/reference/qc.R`).
+- **Cell Ranger's metrics reproduced:** cells, cells with a productive pair and with a productive
+  chain of each locus, as counts and shares, exactly as Cell Ranger 4.0, 6.1 and 9.0 reported them
+  for six T- and B-cell runs.
+- immunoSEQ's own row counts reproduced; its template totals by frame type do not always sum from
+  its rows (pandas sums them as ClonoLoom does), which the QC view says.
 
 - **Go tests of the host:**
   - security headers; foreign Host headers and cross-origin requests refused;

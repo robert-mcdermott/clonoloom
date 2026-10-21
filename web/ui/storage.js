@@ -153,3 +153,10 @@ export async function locateFile({ name, size, sha256, near }) {
   if (!response.ok) return null;
   return (await response.json()).path;
 }
+
+// A dataset's QC under a filter's rules (api_qc.go).
+export async function datasetQC(dataset, filter) {
+  const response = await fetch('api/qc', { method: 'POST', body: JSON.stringify({ dataset, filter: filter ?? {} }), headers: { 'Content-Type': 'application/json' } });
+  if (!response.ok) throw await programError(response, 'QC could not be computed.');
+  return response.json();
+}

@@ -112,3 +112,27 @@ func TestOpenRefusalsSayWhy(t *testing.T) {
 		t.Fatalf("another computer: %d", w.Code)
 	}
 }
+
+func TestQCOfADatasetUnderAFilter(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "study.tsv")
+	os.WriteFile(path, []byte(datasetTSV), 0o644)
+	_, handler := testApp(t)
+	var s datasetSummary
+	json.Unmarshal(postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`).Body.Bytes(), &s)
+	rec := postJSON(t, handler, "/api/qc", `{"dataset": "`+s.ID+`", "filter": {"productiveOnly": true}}`)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	var answer qcAnswer
+	if err := json.Unmarshal(rec.Body.Bytes(), &answer); err != nil {
+		t.Fatal(err)
+	}
+	r1 := answer.Report.Samples[0]
+	if r1.Name != "R1" || r1.Kept != 1 || r1.Removed["not productive"] != 1 || r1.Productive != 0.6 || !answer.Report.Filter.ProductiveOnly {
+		t.Fatalf("%+v", r1)
+	}
+	if rec := postJSON(t, handler, "/api/qc", `{"dataset": "d-nothing"}`); rec.Code != http.StatusNotFound || !strings.Contains(rec.Body.String(), "not-open") {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+}
