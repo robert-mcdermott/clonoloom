@@ -32,14 +32,7 @@ const MODES = [
   { id: 'data', label: 'Data', icon: 'database', load: () => import('./ui/mode-data.js').then((m) => m.mountData) },
   { id: 'qc', label: 'QC', icon: 'qc', load: () => import('./ui/mode-qc.js').then((m) => m.mountQC) },
   { id: 'clonotypes', label: 'Clonotypes', icon: 'clonotypes', load: () => import('./ui/mode-clonotypes.js').then((m) => m.mountClonotypes) },
-  {
-    id: 'repertoire', label: 'Repertoire', icon: 'repertoire',
-    load: async () => plannedMode({
-      title: 'Repertoire', icon: 'repertoire',
-      purpose: 'How diverse each repertoire is and how repertoires overlap: Hill numbers and their profile, richness estimators, clonality and evenness with intervals; rarefaction and extrapolation to compare samples at equal depth or coverage; gene usage, junction lengths and shared clonotypes.',
-      steps: ['Define clonotypes.', 'Choose the samples and the depth or coverage to compare at.', 'Read each statistic with its interval and its plain-language explanation.'],
-    }),
-  },
+  { id: 'repertoire', label: 'Repertoire', icon: 'repertoire', load: () => import('./ui/mode-repertoire.js').then((m) => m.mountRepertoire) },
   {
     id: 'tracking', label: 'Tracking', icon: 'threads',
     load: async () => plannedMode({
@@ -208,7 +201,12 @@ async function start() {
     current.update?.(new Set(['project', 'focus', 'selection', 'mode']));
   };
 
-  app.focusItem = (focus) => store.setUI({ focus }, ['focus']);
+  app.focusItem = (focus) => {
+    store.setUI({ focus }, ['focus']);
+    // A result opens in its view.
+    const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
+    if (result?.kind === 'diversity' && store.ui.mode !== 'repertoire') app.setMode('repertoire');
+  };
 
   app.toggleDrawer = (open = !store.ui.drawer.open, tab = store.ui.drawer.tab) => {
     store.setUI({ drawer: { open, tab } }, ['drawer']);

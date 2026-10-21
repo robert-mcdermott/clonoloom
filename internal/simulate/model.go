@@ -17,6 +17,8 @@ package simulate
 import (
 	"math"
 	"strings"
+
+	"clonoloom/internal/random"
 )
 
 // Segment is a germline gene segment.
@@ -132,7 +134,7 @@ func NewGenerator(locus *Locus, model Recombination) *Generator {
 	for i, s := range locus.J {
 		jw[i] = s.Usage
 	}
-	g.v, g.j = cumulate(vw), cumulate(jw)
+	g.v, g.j = random.Cumulate(vw), random.Cumulate(jw)
 	for i := range locus.D {
 		switch locus.D[i].Name {
 		case "TRBD1":
@@ -164,7 +166,7 @@ func (g *Generator) selection() []float64 {
 		target[l] = float64(g.locus.JunctionLengths[l]) + 0.25
 	}
 	generated := make([]float64, hi+1)
-	r := NewRandom(20141014, 0)
+	r := random.New(20141014, 0)
 	for range 200000 {
 		x := g.Rearrange(r)
 		if x.Productive && len(x.JunctionAA) <= hi {
@@ -188,7 +190,7 @@ func (g *Generator) selection() []float64 {
 // Draw draws a rearrangement as a repertoire holds it: a productive one selected on its
 // junction's length (when the model selects), a nonproductive one, which is not expressed, as
 // recombined.
-func (g *Generator) Draw(r *Random) Rearrangement {
+func (g *Generator) Draw(r *random.Random) Rearrangement {
 	for {
 		x := g.Rearrange(r)
 		if !x.Productive || g.keep == nil {
@@ -200,7 +202,7 @@ func (g *Generator) Draw(r *Random) Rearrangement {
 	}
 }
 
-func (r *Random) deletion(d Deletions, limit int) int {
+func deletion(r *random.Random, d Deletions, limit int) int {
 	u := r.Float64()
 	for k, p := range d.Palindromic {
 		if u < p {
@@ -212,9 +214,9 @@ func (r *Random) deletion(d Deletions, limit int) int {
 	return min(n, d.Max, limit)
 }
 
-func (r *Random) insertion(in Insertions) string {
+func insertion(r *random.Random, in Insertions) string {
 	n := min(r.NegBinomial(in.Mean, in.Size), in.Max)
-	weights := cumulate(in.Composition[:])
+	weights := random.Cumulate(in.Composition[:])
 	var b strings.Builder
 	for range n {
 		b.WriteByte("ACGT"[r.Discrete(weights)])
@@ -242,7 +244,7 @@ func trim5(s string, del int) string {
 
 // Rearrange draws one rearrangement. Deletions never reach the conserved cysteine or
 // phenylalanine (whose loss would make a chain no junction defines).
-func (g *Generator) Rearrange(r *Random) Rearrangement {
+func (g *Generator) Rearrange(r *random.Random) Rearrangement {
 	m := g.model
 	v := &g.locus.V[r.Discrete(g.v)]
 	j := &g.locus.J[r.Discrete(g.j)]
@@ -251,12 +253,12 @@ func (g *Generator) Rearrange(r *Random) Rearrangement {
 		d = g.d2
 	}
 	out := Rearrangement{V: v, D: d, J: j}
-	out.DelV = r.deletion(m.VDeletions, len(v.Seq)-v.Anchor-3)
-	out.DelJ = r.deletion(m.JDeletions, j.Anchor)
-	out.DelD5 = r.deletion(m.D5Deletions, len(d.Seq))
-	out.DelD3 = r.deletion(m.D3Deletions, len(d.Seq)-max(out.DelD5, 0))
-	out.N1 = r.insertion(m.VDInsertion)
-	out.N2 = r.insertion(m.DJInsertion)
+	out.DelV = deletion(r, m.VDeletions, len(v.Seq)-v.Anchor-3)
+	out.DelJ = deletion(r, m.JDeletions, j.Anchor)
+	out.DelD5 = deletion(r, m.D5Deletions, len(d.Seq))
+	out.DelD3 = deletion(r, m.D3Deletions, len(d.Seq)-max(out.DelD5, 0))
+	out.N1 = insertion(r, m.VDInsertion)
+	out.N2 = insertion(r, m.DJInsertion)
 	vPart := trim3(v.Seq, out.DelV)
 	dPart := trim3(trim5(d.Seq, out.DelD5), out.DelD3)
 	jPart := trim5(j.Seq, out.DelJ)
@@ -315,7 +317,7 @@ func Translate(s string) string {
 
 // powerLaw draws a clone size from a discrete power law: P(size ≥ s) = s^-alpha, s ≥ 1, at most
 // limit.
-func (r *Random) powerLaw(alpha float64, limit int) int {
+func powerLaw(r *random.Random, alpha float64, limit int) int {
 	s := math.Floor(math.Pow(1-r.Float64(), -1/alpha))
 	if s > float64(limit) {
 		return limit

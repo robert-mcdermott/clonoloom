@@ -54,9 +54,10 @@ print(act("show_methods")["data"]["text"])
 | `new_project` | Starts a new project (`name`). |
 | `open_data` | Opens files or folders as one dataset (`paths`, `name`). Needs the token. |
 | `open_example` | Opens an example dataset (`example`, `opening`); `download: true` downloads openly licensed data first. |
-| `show` | Shows a view: `start`, `data`, `qc`, `clonotypes` or `jobs` (`view`, `dataset`). |
+| `show` | Shows a view: `start`, `data`, `qc`, `clonotypes`, `repertoire` or `jobs` (`view`, `dataset`). |
 | `set_definition` | Chooses a dataset's clonotype definition: a `preset` by name, or a `definition` in full. |
 | `select_clonotype` | Chooses a clonotype by its `rank` in the table or its `id`. |
+| `measure_diversity` | Measures each sample's diversity (a job; the result kept) and answers the main measures with their 95% intervals (`dataset`). |
 | `show_examples` | Opens the Example data dialog. |
 | `show_methods` | Shows a dataset's methods paragraph and answers it with its references. |
 | `set_theme` | `light`, `dark` or `system`. |

@@ -80,11 +80,11 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| R1 | Diversity: Hill numbers of order 0, 1, 2 and the profile; Chao1 and ACE; Shannon and Simpson with their effective numbers; Pielou evenness and clonality; Gini; top-N share; each with a bootstrap interval | planned (wave 2) |
+| R1 | Diversity: Hill numbers of order 0, 1, 2 and the profile; Chao1 and ACE; Shannon and Simpson with their effective numbers; Pielou evenness and clonality; Gini; top-N share; each with a bootstrap interval | done (wave 2, slice 4: with Simpson clonality, the asymptotic Shannon and Simpson diversities and coverage; agreeing with iNEXT, immunarch and vegan on 18 samples; interval coverage measured on simulations) |
 | R2 | Rarefaction and extrapolation by sample size and by coverage (Chao et al. 2014), to compare samples at equal depth or equal coverage | planned (wave 2) |
 | R3 | Gene usage (V, D, J, C and V–J pairs) by sample and group; CDR3 length spectratypes; amino-acid composition | planned (wave 2) |
 | R4 | Overlap: shared clonotypes, Jaccard, overlap coefficient, Morisita–Horn, rarefied versions; public clonotypes across subjects, including against public cohorts | planned (wave 2: within a project; wave 4: against public cohorts) |
-| R5 | Clonal space homeostasis: the shares of rare, small, medium, large and hyperexpanded clonotypes | planned (wave 2) |
+| R5 | Clonal space homeostasis: the shares of rare, small, medium, large and hyperexpanded clonotypes | done (wave 2, slice 4: immunarch's bins, with bootstrap intervals) |
 | R6 | Generation probability of CDR3s under published V(D)J recombination models (OLGA's algorithm, IGoR models downloaded on request) | planned (wave 4) |
 | R7 | k-mer and motif summaries | planned (wave 7) |
 

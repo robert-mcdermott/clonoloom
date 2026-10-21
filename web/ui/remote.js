@@ -17,7 +17,7 @@ export class ActionError extends Error {}
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', jobs: 'jobs' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.
@@ -176,6 +176,25 @@ export function installRemote(app) {
       }
       view.select(target);
       return { message: `Chose clonotype ${target} of ${d.name}.`, data: { id: target } };
+    },
+
+    async measure_diversity({ dataset }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('repertoire');
+      const view = await waitFor(() => app.repertoireView, 5000, 'the Repertoire view');
+      await waitFor(() => !['looking', 'idle'].includes(view.state().status), 60000, 'the view to look for a result');
+      if (view.state().status === 'absent') await view.measure();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'the measurement');
+      if (done.status === 'failed') throw new ActionError(done.error);
+      const keys = ['richness', 'chao1', 'hill1', 'hill1Estimated', 'hill2', 'hill2Estimated', 'clonality', 'simpsonClonality', 'gini', 'coverage'];
+      return {
+        message: `The diversity of ${d.name}: ${done.result.samples.length} samples (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: done.result.unit, definition: done.result.describe,
+          samples: done.result.samples.map((s) => ({ name: s.name, abundance: s.result.abundance, measures: Object.fromEntries(keys.map((k) => [k, s.result.measures[k] ?? null])) })),
+        },
+      };
     },
 
     async show_examples() {

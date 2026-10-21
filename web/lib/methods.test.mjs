@@ -76,3 +76,15 @@ test('simulated data say how they were made, citing the sources of the model', (
   assert.match(references[1], /Ensembl 2025/);
   assert.match(references[2], /Quantifying selection/);
 });
+
+test('a diversity result kept says how each measure was made, citing each method once', () => {
+  const results = [{ kind: 'diversity', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { replicates: 200, seed: 20140101 } }];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /Each sample's diversity was measured over its clonotypes' abundances in templates \("Amino-acid junction, V and J genes"\) by ClonoLoom \[2\]/);
+  assert.match(text, /200 bootstrap replicates of each sample drawn from its estimated repertoire \[\d+\] \(seed 20140101\)/);
+  const cited = references.map((r) => r.replace(/^\[\d+\] /, ''));
+  assert.equal(new Set(cited).size, cited.length);
+  for (const work of ['Hill MO', 'Chao A. Nonparametric', 'Chao A, Lee SM', 'Chao A, Wang YT', 'Chao A, Gotelli NJ', 'Chao A, Jost L']) {
+    assert.ok(cited.some((r) => r.startsWith(work)), work);
+  }
+});

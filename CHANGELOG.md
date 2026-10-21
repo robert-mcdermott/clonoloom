@@ -53,6 +53,27 @@ section grows with each.
     written whole and checked by a CRC-32; least recently used removed first beyond
     `--cache-limit` (10 GB); `--cache-dir` chooses the folder. The Jobs view shows the cache and
     clears it.
+- **Diversity (wave 2, slice 4).** The **Repertoire** view (`internal/diversity`, `api_diversity.go`):
+  - each sample measured under its dataset's clonotype definition and filter, as a job, the result
+    kept as an artifact named for what it measured (asked again, the kept result answers), listed
+    with the project's results;
+  - observed: the Hill numbers of order 0 to 4, Shannon's entropy, Simpson's index, evenness,
+    clonality (Adaptive's 1 − evenness) and Simpson clonality (√Σp²), Gini's coefficient, the 10,
+    100 and 1,000 largest clonotypes' shares, the largest frequency, clonal space homeostasis;
+  - estimated: Chao1 (bias-corrected) with its log-transformed interval, ACE, the Shannon diversity
+    (Chao, Wang and Jost 2013) and the Simpson diversity (Chao et al. 2014) of the repertoire each
+    sample was drawn from, and sample coverage;
+  - every measure with a 95% interval from 200 bootstrap replicates of each sample drawn from its
+    estimated repertoire (Chao et al. 2014, Appendix G), the same on every computer (each
+    replicate its own random stream);
+  - a measure across the samples with its intervals, the Hill profile and homeostasis plotted,
+    colored by condition (the annotation's, else the metadata's), the measures explained, and a
+    warning where a sample's coverage makes Chao1 and the estimated Shannon diversity lower bounds;
+  - the methods paragraph says how diversity was measured, with its references; remote control's
+    `measure_diversity` measures it and answers the main measures.
+- **immunoSEQ's own clonality, Simpson clonality, entropy and largest frequency** are recomputed in
+  QC's vendor checks: from each productive rearrangement's reads, as Adaptive computes them.
+- `internal/random` (from the simulator) draws binomial and multinomial variates too.
 - AIRR files written by R, every field in double quotes (the AIRR R package's example file among
   them), are read as the `airr` library and pandas read them.
 - `NOTICE` names the data the program includes: HGNC's gene names (CC0), GRCh38's TRB segments
@@ -79,6 +100,25 @@ section grows with each.
   samples, 109,002 rows, no validator finding, every sample matched to its metadata; each sample's
   clonotypes the truth's count, and its sample coverage (Chao and Jost 2012) within 0.005 of the
   coverage a sample of its depth has on average (the largest difference 0.0047).
+- **Diversity against iNEXT, immunarch and vegan** (`validation/diversity_test.go`,
+  `validation/reference/diversity.R`): on 18 samples (Emerson et al. 2017's three immunoSEQ
+  subjects and its AIRR Data Commons copy, the AIRR Community's test files, and the simulated
+  standard study's twelve), every observed measure equals R's; the Hill numbers, Gini,
+  Gini–Simpson, inverse Simpson and Chao1 with its interval equal immunarch's own functions';
+  Chao1 with its interval, the asymptotic Shannon and Simpson diversities and the coverage equal
+  iNEXT 3.0.2's to its three printed decimals; ACE equals vegan 2.7.6's. The bootstrap standard
+  errors are 0.86 to 1.13 times iNEXT's (median 0.98). iNEXT's spider example reproduced (Girdled
+  43.893, 13.826, 8.175; Logged 61.403, 16.337, 6.920).
+- **Interval coverage on simulations** (`validation/coverage_test.go`): over 200 samples of a
+  well-sampled repertoire (coverage 0.99), the 95% intervals held the truth in 96.0% (Chao1), 93.5%
+  and 91.5% (the estimated Shannon and Simpson diversity) and 92.5–99.5% (those seen); of an
+  undersampled one (coverage 0.62), in 92.0% for the estimated Simpson diversity and 91.5–92.5% for
+  those seen, and never for Chao1 and the estimated Shannon diversity, which are lower bounds
+  there. iNEXT's floor on the estimated Simpson diversity's interval (at the value seen) made it
+  hold the truth in under half the samples: ClonoLoom does not apply it (research.md §5.3).
+- **immunoSEQ's clonality reproduced**: Adaptive's productive clonality, Simpson clonality, entropy
+  and largest frequency, from the rows' reads, on Emerson et al. 2017's three exports (to seven
+  significant digits; templates give other values).
 - **A cohort of 100 samples (a million rearrangements) reopened from the cache in 118 ms**, its
   files hashed again, against 1.24 s to read them (budget 2 s; `validation/budget_test.go`).
 - **The cache's tables are the tables read** (Go tests): every column, every string, the

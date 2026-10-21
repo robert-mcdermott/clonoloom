@@ -8,6 +8,7 @@ import { clonotypePage, datasetQC } from './storage.js';
 import { methodsParagraph } from '../lib/methods.js';
 import { datasetFilter } from '../lib/filters.js';
 import { datasetDefinition } from '../lib/definitions.js';
+import { resultsOf } from '../lib/results.js';
 
 // The paragraph's inputs the program computes: the filter's counts and the clonotypes, each left
 // out when it cannot be computed (a paired definition on bulk data, say).
@@ -41,7 +42,8 @@ export async function showMethods(app, dataset) {
   const { filterResult, clonotypes } = await computed(dataset, summary, filter, definition);
   // A dataset recorded before its files were known as public data takes their credits now.
   const credited = dataset.credits?.length ? dataset : { ...dataset, credits: summary.credits ?? [] };
-  const { text, references } = methodsParagraph({ dataset: credited, summary, filter, filterResult, definition, clonotypes, program: { version: app.version, commit: app.commit } });
+  const results = resultsOf(store.project, dataset.id, 'diversity');
+  const { text, references } = methodsParagraph({ dataset: credited, summary, filter, filterResult, definition, clonotypes, results, program: { version: app.version, commit: app.commit } });
   const all = `${text}\n\nReferences\n${references.join('\n')}`;
   showDialog({
     title: `Methods · ${dataset.name}`,

@@ -56,8 +56,8 @@ var remoteActions = []remoteAction{
 		"opening":  textArg("What of it to open, such as \"T cells\" (its first if not given)."),
 		"download": flagArg("Download it first if it is not downloaded (openly licensed data only)."),
 	}, "example")},
-	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
-		"view":    textArg("start, data, qc, clonotypes or jobs."),
+	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
+		"view":    textArg("start, data, qc, clonotypes, repertoire or jobs."),
 		"dataset": datasetArg,
 	}, "view")},
 	{Name: "set_definition", Title: "Define clonotypes", Description: "Chooses a dataset's clonotype definition: a preset by name, or one stated in full.", InputSchema: schema(map[string]any{
@@ -69,6 +69,9 @@ var remoteActions = []remoteAction{
 		"dataset": datasetArg,
 		"rank":    numberArg("Its rank in the table as sorted, from 1."),
 		"id":      textArg("Its ID (c-…)."),
+	})},
+	{Name: "measure_diversity", Title: "Measure diversity", Description: "Shows the Repertoire view and measures each sample's diversity under the dataset's clonotype definition and filter (a job; the result kept with the project), answering each sample's main measures with their 95% intervals: clonotypes seen, Chao1, the Shannon and Simpson diversity seen and estimated, clonality, Simpson clonality, Gini and coverage.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
 	})},
 	{Name: "show_examples", Title: "Show the example data", Description: "Opens the Example data dialog.", InputSchema: schema(map[string]any{})},
 	{Name: "show_methods", Title: "Write the methods paragraph", Description: "Shows a dataset's methods paragraph and answers it with its references.", InputSchema: schema(map[string]any{

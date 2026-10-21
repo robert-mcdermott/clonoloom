@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"clonoloom/internal/random"
 )
 
 // Population is how a subject's repertoire is made: Clonotypes productive rearrangements (and
@@ -145,7 +147,7 @@ type Summary struct {
 // population makes a subject's population: productive and nonproductive rearrangements as the
 // generator draws them until each pool is full, the same nucleotide rearrangement drawn twice
 // being one clone; each a clone of a power-law size, the first productive ones expanded.
-func population(g *Generator, group Group, id string, r *Random) Subject {
+func population(g *Generator, group Group, id string, r *random.Random) Subject {
 	p := group.Population
 	wantP := p.Clonotypes
 	wantN := int(math.Round(float64(p.Clonotypes) * p.Nonproductive / (1 - p.Nonproductive)))
@@ -163,7 +165,7 @@ func population(g *Generator, group Group, id string, r *Random) Subject {
 			continue
 		}
 		k := key{x.V.Name, x.J.Name, x.Junction}
-		size := r.powerLaw(p.Alpha, p.MaxSize)
+		size := powerLaw(r, p.Alpha, p.MaxSize)
 		if at, ok := seen[k]; ok {
 			// Convergent: the same rearrangement again is more cells of the same clone.
 			if at >= 0 {
@@ -226,12 +228,12 @@ type SampleTruth struct {
 
 // sampled draws a sample's templates from the population (each in proportion to its clone's
 // cells) and each template's reads: the clones seen, with their templates and reads.
-func sampled(subject Subject, s Study, templates int, r *Random) (seen map[int][2]int, truth SampleTruth) {
+func sampled(subject Subject, s Study, templates int, r *random.Random) (seen map[int][2]int, truth SampleTruth) {
 	weights := make([]float64, len(subject.Clones))
 	for i, c := range subject.Clones {
 		weights[i] = float64(c.Size)
 	}
-	cumulative := cumulate(weights)
+	cumulative := random.Cumulate(weights)
 	seen = map[int][2]int{}
 	truth.Templates = templates
 	for range templates {
@@ -286,7 +288,7 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 			}
 			id := fmt.Sprintf("S%02d", len(subjects)+1)
 			progress(float64(len(subjects))/steps, "Recombining "+id+"'s repertoire")
-			subjects = append(subjects, population(g, group, id, NewRandom(s.Seed, uint64(1000+len(subjects)))))
+			subjects = append(subjects, population(g, group, id, random.New(s.Seed, uint64(1000+len(subjects)))))
 		}
 	}
 	summary := Summary{Dir: dir, Subjects: len(subjects)}
@@ -307,7 +309,7 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 		for replicate := 1; replicate <= s.SamplesPerSubject; replicate++ {
 			id := fmt.Sprintf("%s-%d", subject.ID, replicate)
 			templates := s.Templates[k%len(s.Templates)]
-			seen, st := sampled(subject, s, templates, NewRandom(s.Seed, uint64(2000+k)))
+			seen, st := sampled(subject, s, templates, random.New(s.Seed, uint64(2000+k)))
 			k++
 			st.ID, st.Subject = id, subject.ID
 			clonotypes := map[string]bool{}

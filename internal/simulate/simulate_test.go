@@ -15,6 +15,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"clonoloom/internal/random"
 )
 
 // The germline segments are what the model needs: every V's anchor a cysteine codon, every J's a
@@ -62,7 +64,7 @@ func TestPalindromesAndDeletions(t *testing.T) {
 // its J's phenylalanine (or tryptophan), and a productive one is in frame, without a stop codon.
 func TestRearrangementsAreWellFormed(t *testing.T) {
 	g := NewGenerator(&humanTRB, DefaultRecombination())
-	r := NewRandom(3, 1)
+	r := random.New(3, 1)
 	productive := 0
 	for range 20000 {
 		x := g.Draw(r)
@@ -97,7 +99,7 @@ func TestRearrangementsAreWellFormed(t *testing.T) {
 // are used as the model says.
 func TestJunctionLengthsAndUsageMatchTheirTargets(t *testing.T) {
 	g := NewGenerator(&humanTRB, DefaultRecombination())
-	r := NewRandom(11, 2)
+	r := random.New(11, 2)
 	var n, sum, sum2 float64
 	vCount := map[string]float64{}
 	all := 0.0
@@ -134,11 +136,11 @@ func TestJunctionLengthsAndUsageMatchTheirTargets(t *testing.T) {
 func TestSamplingMatchesItsExpectation(t *testing.T) {
 	g := NewGenerator(&humanTRB, DefaultRecombination())
 	study := Presets["small"]
-	subject := population(g, study.Groups[0], "S01", NewRandom(5, 5))
+	subject := population(g, study.Groups[0], "S01", random.New(5, 5))
 	pop := populationTruth(subject)
 	var observed, expected []float64
 	for rep := range 60 {
-		seen, st := sampled(subject, study, 1500, NewRandom(9, uint64(rep)))
+		seen, st := sampled(subject, study, 1500, random.New(9, uint64(rep)))
 		clonotypes := map[string]bool{}
 		for i := range seen {
 			if c := &subject.Clones[i]; c.Productive {
@@ -253,39 +255,6 @@ func TestStudiesAreChecked(t *testing.T) {
 	bad.Groups[1].Population.Expanded = []float64{0.6, 0.5}
 	if bad.Check() == nil {
 		t.Error("expanded shares of more than 1 accepted")
-	}
-}
-
-// The generator's draws are fixed by its seed (a change of Go's helpers cannot change a study).
-func TestRandomDraws(t *testing.T) {
-	r := NewRandom(42, 0)
-	first := []float64{r.Float64(), r.Float64()}
-	r2 := NewRandom(42, 0)
-	if r2.Float64() != first[0] || r2.Float64() != first[1] {
-		t.Fatal("not reproducible")
-	}
-	for _, c := range []struct {
-		name       string
-		draw       func() float64
-		mean, vari float64
-	}{
-		{"Poisson(3)", func() float64 { return float64(r.Poisson(3)) }, 3, 3},
-		{"Poisson(40)", func() float64 { return float64(r.Poisson(40)) }, 40, 40},
-		{"NegBinomial(8, 2)", func() float64 { return float64(r.NegBinomial(8, 2)) }, 8, 8 + 64.0/2},
-		{"Gamma(0.5)", func() float64 { return r.Gamma(0.5) }, 0.5, 0.5},
-		{"IntN(10)", func() float64 { return float64(r.IntN(10)) }, 4.5, 8.25},
-	} {
-		var s, s2 float64
-		const n = 200000
-		for range n {
-			x := c.draw()
-			s, s2 = s+x, s2+x*x
-		}
-		mean := s / n
-		vari := s2/n - mean*mean
-		if math.Abs(mean-c.mean) > 4*math.Sqrt(c.vari/n) || math.Abs(vari-c.vari)/c.vari > 0.05 {
-			t.Errorf("%s: mean %.3f variance %.3f", c.name, mean, vari)
-		}
 	}
 }
 

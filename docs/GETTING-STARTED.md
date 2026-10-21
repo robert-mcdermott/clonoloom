@@ -116,6 +116,24 @@ Each clonotype has an ID made from the definition and its chains, the same in ev
 any column, search by junction, gene or ID, and choose a clonotype to see its chains, its
 abundance in each sample and the contigs or rearrangements it is made of.
 
+## Measure diversity
+
+**Repertoire** measures each sample's diversity under the dataset's clonotype definition and
+filter: **Measure diversity** runs it in the program (a job you can follow in **Jobs**) and keeps the
+result with the project. Each measure has a 95% interval:
+
+- the **Hill numbers**: clonotypes seen (order 0), the Shannon diversity (order 1) and the Simpson
+  diversity (order 2), and their profile up to order 4;
+- **clonality** (Adaptive's, 1 − Pielou's evenness) and **Simpson clonality** (√Σp²), evenness,
+  Gini's coefficient, the largest clonotypes' shares, and **clonal space homeostasis**;
+- estimates of the whole repertoire each sample was drawn from: its richness (**Chao1**, ACE) and
+  its Shannon and Simpson diversity.
+
+Choose a measure to see it across the samples, colored by condition. Read the coverage first:
+where a sample's coverage is below about 0.9, its Chao1 and estimated Shannon diversity are lower
+bounds, and the view says so. Samples of different depths are best compared at equal coverage,
+which the next release adds.
+
 ## Write down what was done
 
 <picture>
@@ -129,8 +147,8 @@ abundance in each sample and the contigs or rearrangements it is made of.
   session's messages.
 - **Methods paragraph** (a dataset's menu or the inspector) writes a paragraph for a manuscript
   from the project's record: the data's source and license, how ClonoLoom read and checked them,
-  the unit, the filter with what it kept, the clonotype definition, and ClonoLoom's version, with
-  numbered references. Only what was done is said. **Copy** takes it with its references.
+  the unit, the filter with what it kept, the clonotype definition, the diversity measured, and
+  ClonoLoom's version, with numbered references. Only what was done is said. **Copy** takes it with its references.
 
 ## Next
 

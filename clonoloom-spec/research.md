@@ -246,6 +246,73 @@ implementations.
   sample of its depth shows on average (Σ 1−(1−p)^m and 1 − Σ p(1−p)^m); for each pair of
   subjects, the clonotypes their populations share.
 
+### 5.3 Diversity (wave 2)
+
+`internal/diversity` measures each sample from its frequency counts (how many clonotypes were seen
+once, twice, …), over its clonotypes' abundances in the dataset's unit; clonotypes without a count
+are left out. The estimators and the bootstrap need whole counts; without them only the observed
+measures are given.
+
+- **Observed**: the Hill numbers of order q (Hill 1973, *Ecology* 54:427, doi:10.2307/1934352),
+  a profile from 0 to 4; Shannon's entropy (natural log, so that exp(H) is the Hill number of
+  order 1; immunarch's `entropy` defaults to log2); Simpson's index Σp² with replacement, its
+  inverse and Gini–Simpson; Pielou's evenness H/ln S and **clonality** 1 − evenness (Adaptive's
+  "clonality", MRK-00355); **Simpson clonality** √Σp² (Adaptive's, which it recommends as less
+  sensitive to depth); Gini's coefficient over the clonotypes' abundances sorted ascending
+  (immunarch's and immApex's, without the S/(S−1) correction); the 10, 100 and 1,000 largest
+  clonotypes' shares; the largest frequency; clonal space homeostasis in immunarch's bins (rare
+  ≤ 10⁻⁵ < small ≤ 10⁻⁴ < medium ≤ 10⁻³ < large ≤ 10⁻² < hyperexpanded).
+- **Estimated** (the repertoire the sample was drawn from): **Chao1**, bias-corrected with
+  (n−1)/n and its f2 = 0 form (Chao 1984; Chao et al. 2014 Eq. B.5), its 95% interval
+  log-transformed on the clonotypes not seen; where none is estimated unseen (no singleton; or one
+  and no doubleton), iNEXT's interval: the variance Σ f_k(e^−k − e^−2k) − (Σ k e^−k f_k)²/n and
+  S/(1−P) ± 1.96·SE/(1−P) with P = Σ f_k e^−k/S (the form immunarch writes for f1 = f2 = 0 alone),
+  which may lie above the estimate (immunarch gives none there, or another);
+  **ACE** with the rare clonotypes those seen at most 10 times (Chao & Lee 1992, *JASA* 87:210,
+  doi:10.1080/01621459.1992.10475194), not estimable where every rare clonotype is a singleton (as
+  vegan says; immApex answers the clonotypes seen); the **Shannon diversity** by Chao, Wang and
+  Jost's estimator (2013, *Methods Ecol Evol* 4:1091, doi:10.1111/2041-210X.12108), its tail
+  Σ_{r≥n}(1−A)^r/r computed by the Euler–Maclaurin formula where direct summation would take
+  millions of terms; the **Simpson diversity** n(n−1)/ΣX(X−1) (Chao et al. 2014); sample coverage
+  (Chao & Jost 2012).
+- **Intervals**: 95%, Chao1's from its variance; the others' from **200 bootstrap replicates** of
+  each sample (Chao et al. 2014, Appendix G; iNEXT's `ChaoShannon` and `ChaoSimpson` default; its
+  `iNEXT()` defaults to 50): the detected clonotypes' frequencies tuned down
+  (p̂ = (X/n)(1 − λ(1 − X/n)^n)), ⌈f̂0⌉ undetected ones sharing 1 − Ĉ, each replicate an exact
+  multinomial sample of the same size (conditional binomials, Hörmann's BTRS), every measure
+  computed again; the interval is the estimate ± 1.96 SE, clamped to the measure's range. Each
+  replicate draws from its own stream of a recorded seed, so the result is the same on every
+  computer and with any number of processors. **ClonoLoom's choice**: the asymptotic Shannon
+  diversity's lower bound is floored at the Shannon diversity seen (biased low), as iNEXT does; the
+  Simpson diversity's is not, though iNEXT floors it too: the Simpson diversity seen is biased high,
+  and deep samples see it just below the estimate, so the floor cut away the interval's lower half
+  (in simulations, its intervals held the truth in 47.5% of samples with it, 91.5% without).
+- **Agreement** (`validation/diversity_test.go`, `validation/reference/diversity.R`): on 18 samples
+  (three immunoSEQ subjects of Emerson et al. 2017, its AIRR Data Commons copy, the AIRR Community's
+  two test files and the simulated standard study's twelve), every observed measure equals R's,
+  immunarch's own functions' (Hill numbers, Gini, Gini–Simpson, inverse Simpson, Chao1 and its
+  interval) and iNEXT 3.0.2's (Chao1 and its interval, the asymptotic Shannon and Simpson
+  diversities, coverage; to its three printed decimals), and ACE equals vegan 2.7.6's; the bootstrap
+  standard errors are 0.86 to 1.13 times iNEXT's (median 0.98; each is its own random draw).
+- **Interval coverage on simulations** (`validation/coverage_test.go`, 200 samples of each
+  repertoire, 200 replicates each; clonotype sizes from a power law, α = 1.3):
+
+  | Repertoire | Coverage | Chao1 | Shannon, est. | Simpson, est. | Seen: clonotypes | Shannon | Simpson |
+  | --- | --- | --- | --- | --- | --- | --- | --- |
+  | 5,000 clonotypes, 50,000 templates | 0.99 | 96.0% | 93.5% | 91.5% | 99.5% | 94.5% | 92.5% |
+  | 50,000 clonotypes, 20,000 templates | 0.62 | 0% | 0% | 92.0% | 92.0% | 91.5% | 92.5% |
+
+  The share of 95% intervals holding the truth (the repertoire's own value for the estimates; the
+  expected value at the sample's depth for those seen). Where the coverage is low, Chao1 and the
+  estimated Shannon diversity are lower bounds, as their authors say: the Repertoire view says so
+  beside them, and comparisons at equal coverage (rarefaction, the next slice) are the remedy.
+- **immunoSEQ's own clonality** (QC's vendor checks): Adaptive computes `productive_clonality`,
+  `productive_simpson_clonality`, `productive_entropy` (log2) and `max_productive_frequency` over
+  the productive rearrangements (rows) **from their reads, not their templates**: on the three
+  Emerson et al. 2017 exports they are reproduced from reads to seven significant digits (the
+  entropy carries about 2·10⁻⁸ of rounding), and templates give other values (P00207's clonality
+  0.245 from reads, 0.202 from templates).
+
 ## 6. Datasets
 
 All are listed in `validation/sources.json` with their URL, sizes and SHA-256, and fetched by
