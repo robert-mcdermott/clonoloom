@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -53,8 +55,18 @@ func TestOpenADatasetAndFindItAgain(t *testing.T) {
 	if len(s.Sources) != 1 || len(s.Sources[0].SHA256) != 64 || s.Sources[0].Size != int64(len(datasetTSV)) || !strings.HasPrefix(s.ID, "d-") {
 		t.Fatalf("%+v", s.Sources)
 	}
+	// The metadata are part of the dataset, by their fingerprint: the tables alone are another.
+	if len(s.Metadata) != 1 || s.Metadata[0].Repertoires != 1 || len(s.Metadata[0].SHA256) != 64 {
+		t.Fatalf("metadata %+v", s.Metadata)
+	}
+	alone := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`)
+	var s0 datasetSummary
+	json.Unmarshal(alone.Body.Bytes(), &s0)
+	if s0.ID == s.ID || len(s0.Metadata) != 0 || s0.Samples[0].Repertoire != nil {
+		t.Fatalf("the tables alone: %s %+v", s0.ID, s0.Metadata)
+	}
 	// The same files open as the same dataset; the dataset is described by its ID.
-	again := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`], "name": "Renamed"}`)
+	again := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`, `+jsonString(meta)+`], "name": "Renamed"}`)
 	var s2 datasetSummary
 	json.Unmarshal(again.Body.Bytes(), &s2)
 	if s2.ID != s.ID || s2.Name != "Renamed" {
@@ -172,5 +184,27 @@ func TestClonotypePagesAndOneClonotype(t *testing.T) {
 	}
 	if bad := postJSON(t, handler, "/api/clonotypes", `{"dataset": "`+s.ID+`", "definition": {}, "sort": "colour"}`); bad.Code != http.StatusBadRequest {
 		t.Fatalf("%d", bad.Code)
+	}
+}
+
+// Files the page added to the library (dropped on the window) are known by their names: the
+// metadata among them are read as metadata, not as a table.
+func TestLibraryFilesOpenByTheirNames(t *testing.T) {
+	_, handler := testApp(t)
+	put := func(content string) string {
+		sum := sha256.Sum256([]byte(content))
+		sha := hex.EncodeToString(sum[:])
+		if rec := request(t, handler, http.MethodPut, "/api/library/files/"+sha, strings.NewReader(content), nil); rec.Code != http.StatusOK {
+			t.Fatalf("%d %s", rec.Code, rec.Body)
+		}
+		return sha
+	}
+	table := put(datasetTSV)
+	meta := put(`[{"repertoire_id": "R2", "subject": {"subject_id": "S02"}}]`)
+	rec := postJSON(t, handler, "/api/datasets/open", `{"library": [{"sha256": "`+table+`", "name": "study.tsv"}, {"sha256": "`+meta+`", "name": "study.airr.json"}]}`)
+	var s datasetSummary
+	json.Unmarshal(rec.Body.Bytes(), &s)
+	if rec.Code != http.StatusOK || len(s.Metadata) != 1 || s.Metadata[0].Name != "study.airr.json" || s.Samples[1].Repertoire == nil || s.Samples[1].Repertoire.SubjectID != "S02" {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
 	}
 }

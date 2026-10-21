@@ -76,11 +76,16 @@ func (d *datasets) remove(id string) bool {
 }
 
 // datasetID is made from the readers' version and each source's SHA-256, in order.
-func datasetID(sources []reads.Source) string {
+func datasetID(sources []reads.Source, metadata []reads.MetadataFile) string {
 	h := sha256.New()
 	fmt.Fprintf(h, "clonoloom-dataset/1 readers %d\n", reads.ReaderVersion)
 	for _, s := range sources {
 		fmt.Fprintf(h, "%s %d\n", s.SHA256, s.Size)
+	}
+	// Metadata read with the tables make another dataset of them (one whose samples are
+	// described); the tables alone keep the ID they always had.
+	for _, m := range metadata {
+		fmt.Fprintf(h, "metadata %s %d\n", m.SHA256, m.Size)
 	}
 	return "d-" + hex.EncodeToString(h.Sum(nil))[:16]
 }
@@ -92,18 +97,21 @@ func (a *app) openDataset(ctx context.Context, paths []string, inputs []reads.In
 	var res *reads.Result
 	var err error
 	if len(inputs) > 0 {
-		res, err = reads.ReadInputs(ctx, inputs)
+		res, err = reads.OpenInputs(ctx, inputs)
 	} else {
 		res, err = reads.Open(ctx, paths)
 	}
 	if err != nil {
 		return nil, err
 	}
-	ds := &dataset{ID: datasetID(res.Sources), Result: res, Report: validate.Check(res), Opened: time.Now().UTC()}
+	ds := &dataset{ID: datasetID(res.Sources, res.Metadata), Result: res, Report: validate.Check(res), Opened: time.Now().UTC()}
 	var sums []string
 	for _, s := range res.Sources {
 		ds.Inputs = append(ds.Inputs, reads.Input{Path: s.Path, Name: s.Name})
 		sums = append(sums, s.SHA256)
+	}
+	for _, m := range res.Metadata {
+		ds.Inputs = append(ds.Inputs, reads.Input{Path: m.Path, Name: m.Name})
 	}
 	ds.Credits = a.credits(sums)
 	ds.Name = name
@@ -173,20 +181,22 @@ type sourceSummary struct {
 }
 
 type datasetSummary struct {
-	ID            string            `json:"id"`
-	Name          string            `json:"name"`
-	Unit          rep.Unit          `json:"unit"`
-	Formats       []string          `json:"formats"`
-	Rows          int               `json:"rows"`
-	SingleCell    bool              `json:"singleCell"`
-	Sources       []sourceSummary   `json:"sources"`
-	Samples       []sampleSummary   `json:"samples"`
-	Companions    []reads.Companion `json:"companions"`
-	Report        validate.Report   `json:"report"`
-	ReaderVersion int               `json:"readerVersion"`
-	Bytes         int64             `json:"bytes"`
-	Opened        string            `json:"opened"`
-	Credits       []credit          `json:"credits,omitempty"`
+	ID         string            `json:"id"`
+	Name       string            `json:"name"`
+	Unit       rep.Unit          `json:"unit"`
+	Formats    []string          `json:"formats"`
+	Rows       int               `json:"rows"`
+	SingleCell bool              `json:"singleCell"`
+	Sources    []sourceSummary   `json:"sources"`
+	Samples    []sampleSummary   `json:"samples"`
+	Companions []reads.Companion `json:"companions"`
+	// Metadata: the AIRR Repertoire metadata files read with the tables.
+	Metadata      []reads.MetadataFile `json:"metadata"`
+	Report        validate.Report      `json:"report"`
+	ReaderVersion int                  `json:"readerVersion"`
+	Bytes         int64                `json:"bytes"`
+	Opened        string               `json:"opened"`
+	Credits       []credit             `json:"credits,omitempty"`
 }
 
 func (ds *dataset) summary() datasetSummary {
@@ -195,6 +205,10 @@ func (ds *dataset) summary() datasetSummary {
 		ReaderVersion: reads.ReaderVersion, Bytes: t.Size(), Opened: ds.Opened.Format(time.RFC3339), Companions: res.Companions, Credits: ds.Credits}
 	if s.Companions == nil {
 		s.Companions = []reads.Companion{}
+	}
+	s.Metadata = res.Metadata
+	if s.Metadata == nil {
+		s.Metadata = []reads.MetadataFile{}
 	}
 	formats := map[string]bool{}
 	for _, src := range res.Sources {

@@ -26,7 +26,8 @@ func newExamples(dir string, offline bool) *examples.Library {
 	if err != nil {
 		log.Printf("the example list cannot be read: %v", err)
 	}
-	return &examples.Library{Dir: dir, Sources: sources, Offline: offline,
+	recorded, _ := examples.ParseAll(exampleSources)
+	return &examples.Library{Dir: dir, Sources: sources, Recorded: recorded, Offline: offline,
 		UserAgent: "ClonoLoom/" + version + " (+https://github.com/robert-mcdermott/clonoloom)"}
 }
 
@@ -177,8 +178,8 @@ type credit struct {
 	Citation     string `json:"citation"`
 }
 
-// credits answers the examples a dataset's files are, by their SHA-256: wherever and however
-// they were downloaded, the dataset carries their source, license and citation.
+// credits answers the recorded public data sets a dataset's files are, by their SHA-256: wherever
+// and however they were downloaded, the dataset carries their source, license and citation.
 func (a *app) credits(sha256s []string) []credit {
 	var out []credit
 	for _, s := range a.examples.Identify(sha256s) {

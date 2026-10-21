@@ -36,6 +36,8 @@ export function datasetRecord(summary, now = new Date().toISOString()) {
     // The files, as the program read them: opening the dataset again reads these paths and checks
     // their fingerprints.
     sources: summary.sources.map((s) => ({ path: s.path, name: s.name, size: s.size, sha256: s.sha256, modified: s.modified ?? '', format: s.format })),
+    // The AIRR Repertoire metadata read with them, part of the dataset in the same way.
+    metadata: (summary.metadata ?? []).map((m) => ({ path: m.path, name: m.name, size: m.size, sha256: m.sha256, modified: m.modified ?? '' })),
     formats: summary.formats,
     // The unit the formats give ('' when they leave it open); unitConfirmed is the user's choice.
     unit: summary.unit,
@@ -96,12 +98,22 @@ export function confirmUnit(project, id, unit, now = new Date().toISOString()) {
     'Confirmed a unit', `${dataset.name}: ${unit ? UNITS[unit] ?? unit : 'as the format gives it'}`, now);
 }
 
-// A dataset's files moved: the paths the program found them at (same fingerprints).
+// A dataset's files moved: the paths the program found them at (same fingerprints), in the order
+// of datasetFiles (its tables, then its metadata).
 export function relocate(project, id, paths, now = new Date().toISOString()) {
   return touch({
     ...project,
-    datasets: project.datasets.map((d) => (d.id === id ? { ...d, sources: d.sources.map((s, i) => ({ ...s, path: paths[i] ?? s.path })) } : d)),
+    datasets: project.datasets.map((d) => {
+      if (d.id !== id) return d;
+      const n = d.sources.length;
+      return { ...d, sources: d.sources.map((s, i) => ({ ...s, path: paths[i] ?? s.path })), metadata: (d.metadata ?? []).map((m, i) => ({ ...m, path: paths[n + i] ?? m.path })) };
+    }),
   }, now);
+}
+
+// The files a dataset is read from: its tables, then its metadata.
+export function datasetFiles(dataset) {
+  return [...dataset.sources, ...(dataset.metadata ?? [])];
 }
 
 // A sample's annotation: { dataset, sample, fields: { subject: …, … }, origin: { field: 'manual' |

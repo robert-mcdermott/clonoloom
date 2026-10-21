@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -11,6 +13,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	"clonoloom/internal/airr"
 )
@@ -63,36 +66,52 @@ func companionKind(header []string) string {
 // (each expanded to its contig annotations), AIRR Repertoire metadata (matched to the samples by
 // repertoire_id) and companion files, in the order given.
 func Open(ctx context.Context, paths []string) (*Result, error) {
-	var tables, metadata []string
+	inputs := make([]Input, len(paths))
+	for i, p := range paths {
+		inputs[i] = Input{Path: p}
+	}
+	return OpenInputs(ctx, inputs)
+}
+
+// OpenInputs is Open for inputs whose names may not be their paths' (files the page added to the
+// library are stored under their SHA-256): a file is known by its name's extension.
+func OpenInputs(ctx context.Context, inputs []Input) (*Result, error) {
+	var tables, metadata []Input
 	var companions []Companion
-	for _, path := range paths {
-		info, err := os.Stat(path)
+	for _, in := range inputs {
+		name := in.Name
+		if name == "" {
+			name = in.Path
+		}
+		info, err := os.Stat(in.Path)
 		if err != nil {
 			return nil, err
 		}
 		if info.IsDir() {
-			contigs, more, err := CellRangerFiles(path)
+			contigs, more, err := CellRangerFiles(in.Path)
 			if err != nil {
 				return nil, err
 			}
-			tables = append(tables, contigs...)
+			for _, c := range contigs {
+				tables = append(tables, Input{Path: c})
+			}
 			companions = append(companions, more...)
 			continue
 		}
-		lower := strings.ToLower(path)
+		lower := strings.ToLower(name)
 		if strings.HasSuffix(lower, ".json") || strings.HasSuffix(lower, ".json.gz") {
-			metadata = append(metadata, path)
+			metadata = append(metadata, in)
 			continue
 		}
 		if strings.HasSuffix(lower, ".yaml") || strings.HasSuffix(lower, ".yml") {
-			return nil, fmt.Errorf("%s: AIRR metadata in YAML are not read yet (wave 9): save them as JSON to open them with the tables", filepath.Base(path))
+			return nil, fmt.Errorf("%s: AIRR metadata in YAML are not read yet (wave 9): save them as JSON to open them with the tables", filepath.Base(name))
 		}
-		if kind, err := sniffCompanion(path); err == nil && kind != "" {
-			companions = append(companions, Companion{Path: path, Kind: kind, Sample: sampleName(path)})
+		if kind, err := sniffCompanion(in.Path); err == nil && kind != "" {
+			companions = append(companions, Companion{Path: in.Path, Kind: kind, Sample: sampleName(name)})
 			continue
 		}
-		tables = append(tables, path)
-		companions = append(companions, besideContigs(path)...)
+		tables = append(tables, in)
+		companions = append(companions, besideContigs(in.Path)...)
 	}
 	if len(tables) == 0 {
 		if len(companions) > 0 {
@@ -100,23 +119,63 @@ func Open(ctx context.Context, paths []string) (*Result, error) {
 		}
 		return nil, errors.New("no rearrangement tables among the files named")
 	}
-	res, err := ReadFiles(ctx, tables)
+	res, err := ReadInputs(ctx, tables)
 	if err != nil {
 		return nil, err
 	}
 	res.Companions = companions
-	for _, path := range metadata {
-		data, err := readMaybeGzip(path)
+	for _, in := range metadata {
+		name := in.Name
+		if name == "" {
+			name = in.Path
+		}
+		data, err := readMaybeGzip(in.Path)
 		if err != nil {
 			return nil, err
 		}
 		reps, err := airr.ReadRepertoires(data)
 		if err != nil {
-			return nil, fmt.Errorf("%s: %w", filepath.Base(path), err)
+			return nil, fmt.Errorf("%s: %w", filepath.Base(name), err)
 		}
+		file, err := fingerprint(in.Path)
+		if err != nil {
+			return nil, err
+		}
+		file.Name, file.Repertoires = filepath.Base(name), len(reps)
 		res.Repertoires = append(res.Repertoires, reps...)
+		res.Metadata = append(res.Metadata, file)
 	}
 	return res, nil
+}
+
+// MetadataFile is a file of AIRR Repertoire metadata read with a dataset: part of the dataset, as
+// its tables are, by its fingerprint.
+type MetadataFile struct {
+	Path        string `json:"path"`
+	Name        string `json:"name"`
+	Size        int64  `json:"size"`
+	SHA256      string `json:"sha256"`
+	Modified    string `json:"modified,omitempty"`
+	Repertoires int    `json:"repertoires"`
+}
+
+// fingerprint answers a file's size, SHA-256 and time of change.
+func fingerprint(path string) (MetadataFile, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return MetadataFile{}, err
+	}
+	defer f.Close()
+	info, err := f.Stat()
+	if err != nil {
+		return MetadataFile{}, err
+	}
+	h := sha256.New()
+	n, err := io.Copy(h, f)
+	if err != nil {
+		return MetadataFile{}, err
+	}
+	return MetadataFile{Path: path, Size: n, SHA256: hex.EncodeToString(h.Sum(nil)), Modified: info.ModTime().UTC().Format(time.RFC3339)}, nil
 }
 
 // besideContigs finds the companions of a Cell Ranger contig file named on its own: in its folder,

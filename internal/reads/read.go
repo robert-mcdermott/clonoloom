@@ -66,8 +66,9 @@ type Result struct {
 	Unit rep.Unit
 	// Companions: files read beside the rearrangements (Cell Ranger's clonotypes and metrics).
 	Companions []Companion
-	// Repertoires: AIRR Repertoire metadata named with the tables.
+	// Repertoires: AIRR Repertoire metadata named with the tables, and the files they came from.
 	Repertoires []airr.Repertoire
+	Metadata    []MetadataFile
 }
 
 // ErrUnknownFormat: the header is not one ClonoLoom reads.

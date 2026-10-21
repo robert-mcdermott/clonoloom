@@ -104,7 +104,7 @@ export function mountData(app, container) {
       h('span.spacer'),
       h('button.icon-button.small', { type: 'button', title: 'More', 'aria-label': `More for ${d.name}`, onclick: (e) => { e.stopPropagation(); datasetMenu(e.currentTarget, d, state); } }, icon('more'))),
     h('p', d.formats.join(', ')),
-    d.credits?.length ? h('p.muted.small', icon('flask'), ` Example data: ${d.credits.map((c) => c.license).join('; ')}`) : null,
+    d.credits?.length ? h('p.muted.small', icon('flask'), ` Public data: ${d.credits.map((c) => c.license).join('; ')}`) : null,
     h('div.dataset-stats',
       h('span', plural(d.samples.length, 'sample')),
       h('span', plural(d.rows, d.singleCell ? 'contig' : 'rearrangement')),
@@ -325,6 +325,13 @@ export function mountData(app, container) {
         h('span.muted.small', `${formatBytes(s.size)} · ${s.format}`),
         h('span.mono.small', { title: `SHA-256 ${s.sha256}` }, `SHA-256 ${s.sha256.slice(0, 16)}…`),
         h('span.muted.small.path', { title: s.path }, s.path))),
+      d.metadata?.length
+        ? [h('div.section-title', { style: { marginTop: '10px' } }, 'Repertoire metadata'), ...d.metadata.map((m) => h('div.source-row',
+          h('b', m.name),
+          h('span.muted.small', formatBytes(m.size)),
+          h('span.mono.small', { title: `SHA-256 ${m.sha256}` }, `SHA-256 ${m.sha256.slice(0, 16)}…`),
+          h('span.muted.small.path', { title: m.path }, m.path)))]
+        : null,
       d.credits?.length
         ? [h('div.section-title', { style: { marginTop: '10px' } }, 'Source and license'), ...d.credits.map((c) => h('div.source-row',
           h('b', c.title),

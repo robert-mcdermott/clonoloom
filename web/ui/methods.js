@@ -39,7 +39,9 @@ export async function showMethods(app, dataset) {
   const definition = datasetDefinition(dataset, loci);
   const filter = datasetFilter(store.project, dataset);
   const { filterResult, clonotypes } = await computed(dataset, summary, filter, definition);
-  const { text, references } = methodsParagraph({ dataset, summary, filter, filterResult, definition, clonotypes, program: { version: app.version, commit: app.commit } });
+  // A dataset recorded before its files were known as public data takes their credits now.
+  const credited = dataset.credits?.length ? dataset : { ...dataset, credits: summary.credits ?? [] };
+  const { text, references } = methodsParagraph({ dataset: credited, summary, filter, filterResult, definition, clonotypes, program: { version: app.version, commit: app.commit } });
   const all = `${text}\n\nReferences\n${references.join('\n')}`;
   showDialog({
     title: `Methods · ${dataset.name}`,

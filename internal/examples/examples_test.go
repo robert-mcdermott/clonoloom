@@ -54,6 +54,23 @@ func TestTheRecordedExamples(t *testing.T) {
 	if sources[0].Name != "10x-pbmc-1k" || sources[len(sources)-1].LicenseClass != "terms" {
 		t.Errorf("listed first %s, last %s", sources[0].Name, sources[len(sources)-1].Name)
 	}
+	// Every recorded data set identifies its files, offered or not.
+	all, err := ParseAll(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(all) != len(sources)+2 {
+		t.Errorf("%d recorded, %d offered", len(all), len(sources))
+	}
+	adc := all[0]
+	for _, s := range all {
+		if s.Name == "emerson-2017-adc" {
+			adc = s
+		}
+	}
+	if ids := (&Library{Sources: sources, Recorded: all}).Identify([]string{adc.Files[1].SHA256}); len(ids) != 1 || ids[0].Name != "emerson-2017-adc" || ids[0].LicenseClass != "terms" {
+		t.Errorf("identified %v", ids)
+	}
 	lib := &Library{Sources: sources}
 	if hosts := strings.Join(lib.Hosts(), " "); hosts != "adaptivepublic.blob.core.windows.net cf.10xgenomics.com raw.githubusercontent.com" {
 		t.Errorf("hosts %s", hosts)

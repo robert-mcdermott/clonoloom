@@ -38,7 +38,7 @@ with a project that records where every number came from:
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/data-dark.webp">
-  <img alt="The Data view of 10x Genomics' PBMC 1k T cells: the dataset with its format, unit and example-data license, the validator's note on junctions without their anchors, the sample, and the file's SHA-256, source and license in the inspector" src="docs/images/data-light.webp">
+  <img alt="The Data view of 10x Genomics' PBMC 1k T cells: the dataset with its format, unit and the public data's license, the validator's note on junctions without their anchors, the sample, and the file's SHA-256, source and license in the inspector" src="docs/images/data-light.webp">
 </picture>
 
 <picture>

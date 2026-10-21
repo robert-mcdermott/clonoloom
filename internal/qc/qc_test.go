@@ -70,6 +70,14 @@ func TestFiltersSayWhatTheyLeftOut(t *testing.T) {
 	if s.Productive != 10.0/19 || s.Abundance != 10 {
 		t.Fatalf("productive %v abundance %v", s.Productive, s.Abundance)
 	}
+	// A minimum count above one leaves out the singletons coverage is estimated from: it is not
+	// estimated, and the report says why.
+	if !math.IsNaN(float64(s.Coverage)) || !strings.Contains(r.NoCoverage, "fewer than 2 times") {
+		t.Fatalf("coverage %v under a minimum count: %q", s.Coverage, r.NoCoverage)
+	}
+	if plain := Compute(tab, Filter{}); plain.NoCoverage != "" || math.IsNaN(float64(plain.Samples[0].Coverage)) {
+		t.Fatalf("coverage without a filter: %q", plain.NoCoverage)
+	}
 	if other := Compute(tab, Filter{Loci: []string{"TRA"}}); other.Samples[0].Kept != 0 || other.Samples[0].Removed[ReasonLocus] != 6 {
 		t.Fatalf("%+v", other.Samples[0])
 	}

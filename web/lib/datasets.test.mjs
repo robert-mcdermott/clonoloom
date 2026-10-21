@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createProject } from './project.js';
-import { addDataset, annotate, annotation, confirmUnit, datasetRecord, datasetUnit, fieldsFromMetadata, relocate, removeDataset, suggestFromNames } from './datasets.js';
+import { addDataset, annotate, annotation, confirmUnit, datasetFiles, datasetRecord, datasetUnit, fieldsFromMetadata, relocate, removeDataset, suggestFromNames } from './datasets.js';
 
 const NOW = '2026-10-21T12:00:00.000Z';
 const summary = {
@@ -29,6 +29,18 @@ test('a dataset is recorded by its files\' fingerprints and its unit confirmed a
   const moved = relocate(project, record.id, ['/elsewhere/P1_day0.tsv'], NOW);
   assert.equal(moved.datasets[0].sources[0].path, '/elsewhere/P1_day0.tsv');
   assert.equal(project.datasets[0].sources[0].path, '/data/P1_day0.tsv');
+});
+
+test('Repertoire metadata are recorded with the tables, opened again and moved with them', () => {
+  const withMetadata = { ...summary, metadata: [{ path: '/data/study.airr.json', name: 'study.airr.json', size: 40, sha256: 'b'.repeat(64), repertoires: 2 }] };
+  const record = datasetRecord(withMetadata, NOW);
+  assert.deepEqual(datasetFiles(record).map((f) => f.path), ['/data/P1_day0.tsv', '/data/study.airr.json']);
+  assert.equal(record.metadata[0].sha256, 'b'.repeat(64));
+  const project = addDataset(createProject('Study', { now: NOW }), record, NOW);
+  const moved = relocate(project, record.id, ['/elsewhere/P1_day0.tsv', '/elsewhere/study.airr.json'], NOW);
+  assert.deepEqual(datasetFiles(moved.datasets[0]).map((f) => f.path), ['/elsewhere/P1_day0.tsv', '/elsewhere/study.airr.json']);
+  // A dataset recorded before metadata were recorded has none.
+  assert.deepEqual(datasetFiles({ sources: record.sources }).length, 1);
 });
 
 test('annotation keeps who gave each value, and an empty value is missing', () => {

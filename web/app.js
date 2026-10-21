@@ -15,7 +15,7 @@ import { plannedMode } from './ui/mode-planned.js';
 import { openPalette } from './ui/palette.js';
 import { colorVisionFriendly, setColorVisionFriendly } from './lib/colormaps.js';
 import { createProject, isEmptyProject, parseProject, rename, serializeProject } from './lib/project.js';
-import { UNITS, addDataset, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
+import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
 const VERSION = '0.1.0';
@@ -309,7 +309,7 @@ async function start() {
     const promise = (async () => {
       try {
         let summary = await getDataset(record.id);
-        if (!summary) summary = await openDataset({ paths: record.sources.map((s) => s.path), name: record.name });
+        if (!summary) summary = await openDataset({ paths: datasetFiles(record).map((s) => s.path), name: record.name });
         if (summary.id !== record.id) {
           const state = { status: 'changed', summary, error: 'The files are not those the project recorded: their contents changed.' };
           setState(record.id, state);
@@ -335,12 +335,12 @@ async function start() {
   // files), each by its fingerprint; else chosen in the Open dialog and checked.
   app.locateDataset = async (record) => {
     const dirOf = (p) => p.replace(/[\\/][^\\/]*$/, '');
-    const near = [...new Set([...record.sources, ...store.project.datasets.flatMap((d) => d.sources)].flatMap((s) => {
+    const near = [...new Set([...datasetFiles(record), ...store.project.datasets.flatMap((d) => datasetFiles(d))].flatMap((s) => {
       const dir = dirOf(s.path);
       return [dir, dirOf(dir), dirOf(dirOf(dir))];
     }))].filter(Boolean);
     const found = [];
-    for (const source of record.sources) {
+    for (const source of datasetFiles(record)) {
       let path = await locateFile({ name: source.name, size: source.size, sha256: source.sha256, near });
       if (!path) {
         const picked = await pickPaths({ title: `Where is ${source.name}?`, confirm: 'Use this file', choose: 'file', start: dirOf(source.path), hint: `The project recorded ${source.name} at ${source.path}. Choose where it is now; ClonoLoom checks it is the same file.` });

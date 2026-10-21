@@ -77,6 +77,23 @@ type Members struct {
 // Parse reads sources.json, keeping the data sets offered as examples (those that say what they
 // open) whose files are recorded, in the file's order.
 func Parse(raw []byte) ([]Source, error) {
+	all, err := ParseAll(raw)
+	if err != nil {
+		return nil, err
+	}
+	var out []Source
+	for _, s := range all {
+		if len(s.Opens) > 0 {
+			out = append(out, s)
+		}
+	}
+	return out, nil
+}
+
+// ParseAll reads every data set of sources.json whose files are recorded, offered or not (those
+// queried from an ADC API, or for maintainers only), in the file's order: what a dataset's files
+// are identified by.
+func ParseAll(raw []byte) ([]Source, error) {
 	var doc struct {
 		Datasets map[string]Source `json:"datasets"`
 	}
@@ -91,11 +108,11 @@ func Parse(raw []byte) ([]Source, error) {
 	for _, name := range order {
 		s := doc.Datasets[name]
 		s.Name = name
-		if len(s.Opens) == 0 {
+		if len(s.Files) == 0 {
 			continue
 		}
-		if len(s.Files) == 0 || (s.Base == "" && s.Members == nil) {
-			return nil, fmt.Errorf("%s: no files to download", name)
+		if len(s.Opens) > 0 && s.Base == "" && s.Members == nil {
+			return nil, fmt.Errorf("%s: offered, but with no files to download", name)
 		}
 		for _, o := range s.Opens {
 			if o.Name == "" || o.Title == "" {
@@ -179,9 +196,12 @@ func (s Source) size() int64 {
 
 // Library is the examples folder.
 type Library struct {
-	Dir     string
-	Sources []Source
-	Client  *http.Client
+	Dir string
+	// Sources are the examples offered; Recorded, every data set sources.json records (what
+	// Identify knows), or the offered alone when it is nil.
+	Sources  []Source
+	Recorded []Source
+	Client   *http.Client
 	// UserAgent names ClonoLoom to the publisher's server.
 	UserAgent string
 	// Offline: no download at all (--offline).
@@ -249,11 +269,16 @@ func (l *Library) Remove(name string) error {
 	return os.RemoveAll(filepath.Join(l.Dir, name))
 }
 
-// Identify answers the examples files of these SHA-256s belong to, wherever the files were
-// downloaded: so that a dataset made of them carries their source, license and citation.
+// Identify answers the recorded data sets files of these SHA-256s belong to, wherever and however
+// the files were downloaded: so that a dataset made of them carries their source, license and
+// citation.
 func (l *Library) Identify(sha256s []string) []Source {
+	known := l.Recorded
+	if known == nil {
+		known = l.Sources
+	}
 	var out []Source
-	for _, s := range l.Sources {
+	for _, s := range known {
 		for _, f := range s.Files {
 			if contains(sha256s, f.SHA256) {
 				out = append(out, s)

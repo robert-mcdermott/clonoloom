@@ -185,6 +185,16 @@ with each.
     view.
   - AIRR metadata in YAML, which are read from wave 9, are refused with that reason rather than
     read as a table.
+  - **AIRR Repertoire metadata are part of their dataset**: fingerprinted like its tables, recorded
+    in the project, read again when the project reopens (they were lost after a restart), found
+    with the tables when they move, listed in the inspector, and part of the dataset's ID. Metadata
+    dropped on the window are read as metadata, not as a table.
+  - **Sample coverage is not estimated under a minimum count**: coverage is estimated from the
+    clonotypes seen once and twice, which a minimum count above one leaves out, so it always came
+    out as 1. The QC view says why it is not given.
+  - A dataset whose files are any public data set `sources.json` records (offered as an example
+    or not, such as the AIRR Data Commons' copy of Emerson et al.) carries its source, license and
+    citation.
 
 ### Validation
 

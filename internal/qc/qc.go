@@ -7,6 +7,7 @@ package qc
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"sort"
 
@@ -185,8 +186,10 @@ type Report struct {
 	SingleCell bool     `json:"singleCell"`
 	Filter     Filter   `json:"filter"`
 	// IntegerCounts: whether every count is a whole number (coverage needs it).
-	IntegerCounts bool     `json:"integerCounts"`
-	Samples       []Sample `json:"samples"`
+	IntegerCounts bool `json:"integerCounts"`
+	// NoCoverage says why sample coverage is not estimated, when it is not (bulk data).
+	NoCoverage string   `json:"noCoverage,omitempty"`
+	Samples    []Sample `json:"samples"`
 	// Definition is how QC counts clonotypes.
 	Definition string `json:"definition"`
 }
@@ -353,7 +356,9 @@ func Compute(t *rep.Table, f Filter) Report {
 		if sum > 0 {
 			ss.TopShare = top / sum
 		}
-		if !single && r.IntegerCounts && sum > 0 {
+		// Coverage is estimated from the singletons and doubletons, which a minimum count above
+		// one leaves out: it would always be 1.
+		if !single && r.IntegerCounts && f.MinCount <= 1 && sum > 0 {
 			ss.Coverage = Number(Coverage(sum, float64(ss.Singletons), float64(ss.Doubletons)))
 		}
 		for _, l := range tl.lengths {
@@ -366,6 +371,13 @@ func Compute(t *rep.Table, f Filter) Report {
 	}
 	if single {
 		cellChains(t, keep, samples)
+	}
+	switch {
+	case single:
+	case f.MinCount > 1:
+		r.NoCoverage = fmt.Sprintf("Sample coverage is not estimated: it is estimated from the clonotypes seen once and twice, and the filter leaves out rearrangements counted fewer than %g times.", f.MinCount)
+	case !r.IntegerCounts:
+		r.NoCoverage = "Some counts are not whole numbers, so sample coverage is not estimated."
 	}
 	r.Samples = samples
 	return r

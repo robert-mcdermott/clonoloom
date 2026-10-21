@@ -20,7 +20,7 @@ test('a single-cell example: its source, reading, unit, validation and clonotype
     program,
   });
   assert.match(text, /^The data are Human PBMC from a healthy donor, 1k cells, published under CC BY 4\.0 \(10x Genomics\) \[1\], downloaded and first read on 2026-10-21\./);
-  assert.match(text, /The file \(10x Genomics Cell Ranger contig annotations\) was read with ClonoLoom 0\.1\.0 \(commit 96a92f4\) \[2\] by its own readers \(reader version 1\), which recorded/);
+  assert.match(text, /The file \(10x Genomics Cell Ranger contig annotations\) was read with ClonoLoom 0\.1\.0 \(commit 96a92f4\) \[2\] by its own readers \(reader version 1\), which recorded its SHA-256 checksum as it was read\./);
   assert.match(text, /1 sample and 968 contigs of single cells, counted in cells\./);
   assert.match(text, /IMGT nomenclature \[3\], ambiguous calls kept as sets\./);
   assert.match(text, /found 0 fatal problems, 0 warnings and 1 note\./);
@@ -43,7 +43,7 @@ test('bulk AIRR data: the schema and Repertoire metadata cited, a filter with it
   };
   const filter = { name: 'Productive', version: 2, rules: { productiveOnly: true, minCount: 2 }, reason: 'Non-productive rearrangements are not expressed.' };
   const { text, references } = methodsParagraph({ dataset, summary, filter, filterResult: { rows: 120, kept: 90 }, program: { version: '0.1.0', commit: '' } });
-  assert.match(text, /^The 2 files \(AIRR Rearrangement TSV\) were read with ClonoLoom 0\.1\.0 \[1\] by its own readers \(reader version 1\), following the AIRR Community's Rearrangement schema \[2\]/);
+  assert.match(text, /^The 2 files \(AIRR Rearrangement TSV\) were read with ClonoLoom 0\.1\.0 \[1\] by its own readers \(reader version 1\), which recorded each file's SHA-256 checksum as each was read\. AIRR files were read as the AIRR Community's Rearrangement schema defines them \[2\]\./);
   assert.match(text, /AIRR Repertoire metadata \[3\] were matched to 1 sample of 2 by repertoire_id\./);
   assert.match(text, /2 samples and 120 rearrangements, whose counts the files do not say are of reads or of molecules\./);
   assert.match(text, /1 warning and 0 notes: junctions out of frame while productive \(3 rows\)\./);

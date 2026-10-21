@@ -165,7 +165,7 @@ export function mountQC(app, container) {
       h('thead', h('tr', h('th', 'Sample'), h('th.r', `Abundance (${UNITS[unit] ?? 'counts'})`), h('th.r', 'Rows'), h('th.r', 'Productive'), h('th.r', 'Out of frame'), h('th.r', 'Stop'),
         h('th.r', 'Clonotypes'), h('th.r', 'Singletons'), h('th.r', 'Coverage'), h('th.r', 'Largest'), h('th.r', 'V gene'), h('th.r', 'J gene'), h('th.r', 'Reads per unit'))),
       h('tbody', ...rows)),
-    !report.integerCounts ? h('p.muted.small', 'Some counts are not whole numbers, so sample coverage is not estimated.') : null);
+    report.noCoverage ? h('p.muted.small', report.noCoverage) : null);
   }
 
   function singleCellTable(report) {

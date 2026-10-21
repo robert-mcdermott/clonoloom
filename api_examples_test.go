@@ -63,6 +63,7 @@ func TestExamplesDownloadAndOpenWithTheirCredits(t *testing.T) {
 		Citation: "Someone. A tiny study. 2026.", Base: server.URL + "/",
 		Files: []examples.File{{Path: "study.tsv", Size: int64(len(data)), SHA256: hex.EncodeToString(sum[:])}},
 		Opens: []examples.Opening{{Title: "All", Name: "Tiny", Files: []string{"study.tsv"}}}}}
+	a.examples.Recorded = a.examples.Sources
 	if rec := postJSON(t, handler, "/api/examples/tiny", ``); rec.Code != http.StatusOK {
 		t.Fatalf("%d %s", rec.Code, rec.Body)
 	}
