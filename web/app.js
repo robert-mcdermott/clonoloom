@@ -13,7 +13,8 @@ import { plannedMode } from './ui/mode-planned.js';
 import { openPalette } from './ui/palette.js';
 import { colorVisionFriendly, setColorVisionFriendly } from './lib/colormaps.js';
 import { createProject, isEmptyProject, parseProject, rename, serializeProject } from './lib/project.js';
-import { addDataset, datasetRecord, relocate } from './lib/datasets.js';
+import { UNITS, addDataset, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
+import { datasetDefinition } from './lib/definitions.js';
 
 const VERSION = '0.1.0';
 
@@ -26,14 +27,7 @@ const MODES = [
   { id: 'welcome', label: 'Start', icon: 'grid', hidden: true, load: () => import('./ui/mode-welcome.js').then((m) => m.mountWelcome) },
   { id: 'data', label: 'Data', icon: 'database', load: () => import('./ui/mode-data.js').then((m) => m.mountData) },
   { id: 'qc', label: 'QC', icon: 'qc', load: () => import('./ui/mode-qc.js').then((m) => m.mountQC) },
-  {
-    id: 'clonotypes', label: 'Clonotypes', icon: 'clonotypes',
-    load: async () => plannedMode({
-      title: 'Clonotypes', icon: 'clonotypes',
-      purpose: 'Clonotypes under a definition you choose and can see: nucleotide or amino-acid junction, V and J genes or not, one chain or paired chains, and rules for cells with extra chains. The table lists each clonotype\'s abundance in every sample; the inspector shows its sequences, genes, cells and samples.',
-      steps: ['Open and check data.', 'Choose or edit a clonotype definition.', 'Sort, filter and inspect the clonotypes.'],
-    }),
-  },
+  { id: 'clonotypes', label: 'Clonotypes', icon: 'clonotypes', load: () => import('./ui/mode-clonotypes.js').then((m) => m.mountClonotypes) },
   {
     id: 'repertoire', label: 'Repertoire', icon: 'repertoire',
     load: async () => plannedMode({
@@ -638,10 +632,24 @@ async function start() {
       h('span.item', h(`span.dot${busy.length ? '.busy' : ''}`), busy.length ? busy[0] : 'Ready'),
       h('span.item', icon('library'), `Library: ${library.location}`),
       h('span.item', `${project.datasets.length} dataset${project.datasets.length === 1 ? '' : 's'}`),
+      definitionStatus(),
       h('button.item.statusbar-link', { type: 'button', title: `History and log (${modKey}J)`, onclick: () => app.toggleDrawer() }, icon('drawer'), store.ui.drawer.open ? 'Hide the drawer' : 'History and log'),
       h('span.spacer'),
       h('span.item', version),
       h('span.item.muted', 'Research use only'));
+  }
+
+  // The clonotype definition and abundance unit of the dataset in focus (or the first): stated
+  // wherever clonotypes are counted (requirement C2).
+  function definitionStatus() {
+    const { project, ui } = store;
+    const d = project.datasets.find((x) => ui.focus?.kind === 'dataset' && x.id === ui.focus.id)
+      ?? project.datasets.find((x) => x.id === app.clonotypeContext?.dataset) ?? project.datasets[0];
+    if (!d) return null;
+    const loci = Object.keys(app.datasetStates.get(d.id)?.summary?.samples?.reduce((acc, s) => Object.assign(acc, s.loci), {}) ?? {});
+    const def = datasetDefinition(d, loci);
+    const unit = d.singleCell ? 'cells' : datasetUnit(d);
+    return h('span.item', { title: `${d.name}: clonotypes by ${def.name}; abundance in ${UNITS[unit] ?? 'counts'}` }, icon('clonotypes'), `${def.name} · ${UNITS[unit] ?? 'counts'}`);
   }
 
   function showHelp() {
@@ -775,6 +783,7 @@ async function start() {
 
   store.subscribe((topics) => {
     if (topics.has('project') || topics.has('history') || topics.has('saved')) updateTitle();
+    // (The status bar is drawn again on every change, the definition's included.)
     if (topics.has('project')) autosave();
     app.sidebar.update(topics);
     app.inspector.update(topics);

@@ -38,6 +38,8 @@ export function createProject(name = 'Untitled project', options = {}) {
     views: [],
     // (samples: the samples' annotations, added with the first; lib/datasets.js.)
     // (filters: QC filter versions, added with the first; lib/filters.js.)
+    // (definitions: clonotype definitions saved for reuse, added with the first;
+    // lib/definitions.js.)
     // The log of material changes: [{ time, action, detail }].
     history: [],
   };
@@ -61,7 +63,7 @@ export function parseProject(text) {
     throw new Error(`The project was saved by a newer ClonoLoom (project version ${doc.version}; this program reads up to ${PROJECT_VERSION}). Update ClonoLoom to open it.`);
   }
   if (typeof doc.id !== 'string' || !ID_PATTERN.test(doc.id)) throw new Error('The project has no valid id.');
-  for (const field of ['datasets', 'artifacts', 'decisions', 'views', 'samples', 'filters', 'history']) {
+  for (const field of ['datasets', 'artifacts', 'decisions', 'views', 'samples', 'filters', 'definitions', 'history']) {
     if (field in doc && !Array.isArray(doc[field])) throw new Error(`The project's ${field} is not a list.`);
   }
   const base = createProject(typeof doc.name === 'string' ? doc.name : 'Untitled project', { id: doc.id, now: doc.created ?? doc.modified });

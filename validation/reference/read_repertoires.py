@@ -70,15 +70,21 @@ def airr_file(path):
     reader = airr.read_rearrangement(path)
     fields = reader.fields
     rows = list(reader)
-    count_col = next((c for c in ('umi_count', 'duplicate_count', 'consensus_count') if c in fields), None)
-    if 'umi_count' in fields:
-        reads_cols = ['consensus_count', 'duplicate_count']
-    elif 'duplicate_count' in fields:
-        reads_cols = ['consensus_count']
-    else:
-        reads_cols = ['consensus_count']
+    # A row's count: its UMIs, else its duplicates, else its consensus reads, whichever it has.
+    has_counts = any(c in fields for c in ('umi_count', 'duplicate_count', 'consensus_count'))
+    def count_of(r):
+        for c in ('umi_count', 'duplicate_count', 'consensus_count'):
+            if c in fields and number(r.get(c)) is not None:
+                return number(r.get(c))
+        return None if has_counts else '1'
     def reads(r):
-        for c in reads_cols:
+        if 'umi_count' in fields and number(r.get('umi_count')) is not None:
+            order = ('consensus_count', 'duplicate_count')
+        elif 'duplicate_count' in fields and number(r.get('duplicate_count')) is not None:
+            order = ('consensus_count',)
+        else:
+            order = ('consensus_count',)
+        for c in order:
             if c in fields and number(r.get(c)) is not None:
                 return number(r.get(c))
         return None
@@ -94,7 +100,7 @@ def airr_file(path):
         'productive': [flag(r.get('productive')) for r in rows],
         'cell': [text(r.get('cell_id')) for r in rows],
         'clone': [text(r.get('clone_id')) for r in rows],
-        'count': [number(r.get(count_col)) if count_col else '1' for r in rows],
+        'count': [count_of(r) for r in rows],
         'reads': [reads(r) for r in rows],
     }
     return {'format': 'airr', 'reader': f'airr {airr.__version__}', 'rows': len(rows), 'columns': {k: digest(v) for k, v in columns.items()}}

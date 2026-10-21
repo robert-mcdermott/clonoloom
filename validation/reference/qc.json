@@ -10,7 +10,11 @@
         "singletons": 1,
         "doubletons": 0,
         "coverage": 1,
-        "top_share": 0.98747461069736
+        "top_share": 0.98747461069736,
+        "clonotypes_nt": 3,
+        "clonotypes_aa_only": 1,
+        "largest_nt": 2917,
+        "largest_aa_only": 2954
       }
     },
     "airr-standards-tests/lang/python/tests/data/good_rearrangement.tsv": {
@@ -22,19 +26,27 @@
         "singletons": 1,
         "doubletons": 0,
         "coverage": 1,
-        "top_share": 0.996887718458224
+        "top_share": 0.996887718458224,
+        "clonotypes_nt": 3,
+        "clonotypes_aa_only": 1,
+        "largest_nt": 4164,
+        "largest_aa_only": 4177
       }
     },
     "emerson-2017-adc/2667862095380484586-242ac113-0001-012.tsv": {
       "2667862095380484586-242ac113-0001-012": {
         "rows": 89704,
-        "abundance": 0,
-        "productive": null,
-        "clonotypes": 0,
-        "singletons": 0,
-        "doubletons": 0,
-        "coverage": null,
-        "top_share": 0
+        "abundance": 248831,
+        "productive": 0.787968540897235,
+        "clonotypes": 69535,
+        "singletons": 34119,
+        "doubletons": 25271,
+        "coverage": 0.825978944239213,
+        "top_share": 0.0475158241567675,
+        "clonotypes_nt": 70291,
+        "clonotypes_aa_only": 65728,
+        "largest_nt": 9340,
+        "largest_aa_only": 9390
       }
     },
     "emerson-2017-immunoseq/P00207.tsv": {
@@ -46,7 +58,11 @@
         "singletons": 565,
         "doubletons": 215,
         "coverage": 0.870761469008392,
-        "top_share": 0.0869366277739648
+        "top_share": 0.0869366277739648,
+        "clonotypes_nt": 1086,
+        "clonotypes_aa_only": 1055,
+        "largest_nt": 380,
+        "largest_aa_only": 380
       }
     },
     "emerson-2017-immunoseq/P00441.tsv": {
@@ -58,7 +74,11 @@
         "singletons": 5282,
         "doubletons": 785,
         "coverage": 0.526587857640537,
-        "top_share": 0.0784261002061486
+        "top_share": 0.0784261002061486,
+        "clonotypes_nt": 6610,
+        "clonotypes_aa_only": 6556,
+        "largest_nt": 875,
+        "largest_aa_only": 875
       }
     },
     "emerson-2017-immunoseq/P00572.tsv": {
@@ -70,7 +90,11 @@
         "singletons": 0,
         "doubletons": 4103,
         "coverage": 1,
-        "top_share": 0.0454872008167278
+        "top_share": 0.0454872008167278,
+        "clonotypes_nt": 10755,
+        "clonotypes_aa_only": 10578,
+        "largest_nt": 3609,
+        "largest_aa_only": 3609
       }
     }
   }

@@ -796,3 +796,29 @@ table.data tr.selected td { background: var(--active); }
 .vendor-checks .badge { display: inline-flex; gap: 3px; align-items: center; }
 .vendor-checks .badge svg { width: 11px; height: 11px; }
 .filter-samples { display: flex; flex-wrap: wrap; gap: 4px 12px; max-height: 120px; overflow: auto; }
+
+/* The Clonotypes view (ui/mode-clonotypes.js): a table whose rows are drawn as they scroll into
+   view. */
+.clonotypes-view { display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+.clonotype-info p { margin: 0 0 2px; }
+.clonotype-definition { font-size: 12.5px; }
+.ctable { display: flex; flex-direction: column; flex: 1; min-height: 0; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--panel); }
+.ctable-head { display: grid; height: 29px; border-bottom: 1px solid var(--line); background: var(--panel-2); position: sticky; top: 0; z-index: 2; }
+.ctable-th { display: inline-flex; align-items: center; gap: 3px; border: 0; background: none; padding: 6px 8px; font-weight: 650; font-size: 11px; color: var(--text-3); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ctable-th.r { justify-content: flex-end; }
+button.ctable-th:hover { color: var(--text); }
+.ctable-th.sorted { color: var(--accent-text); }
+.ctable-th svg { width: 12px; height: 12px; }
+.ctable-scroll { position: relative; flex: 1; min-height: 240px; overflow: auto; }
+.ctable-spacer { width: 1px; }
+.ctable-window { position: absolute; top: 0; left: 0; right: 0; }
+.ctable-row { display: grid; height: 30px; align-items: center; border-bottom: 1px solid var(--line); font-size: 12px; cursor: pointer; }
+.ctable-row > span { padding: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ctable-row > span.r { text-align: right; }
+.ctable-row:hover { background: var(--hover); }
+.ctable-row.selected { background: var(--active); }
+.ctable-row .junctions { display: flex; gap: 10px; }
+.ctable-row .chain { display: inline-flex; gap: 5px; align-items: center; min-width: 0; }
+.ctable-row .locus { font-size: 10px; font-weight: 700; color: var(--text-3); border: 1px solid var(--line); border-radius: 4px; padding: 0 3px; }
+.ctable-row .genes { color: var(--text-2); }
+.members td { font-size: 11.5px; }

@@ -192,6 +192,21 @@ planned in detail.
 | 6 | Single cell | Clonotype modularity; graph-versus-graph | Sturm et al. 2020, *Bioinformatics* 36:4817; Schattgen et al. 2022, *Nat Biotechnol* 40:54 | scirpy, conga |
 | 7 | Specificity | Specificity groups | Huang et al. 2020, *Nat Biotechnol* 38:1194, doi:10.1038/s41587-020-0505-4 | GLIPH2 (outputs only) |
 
+### 5.1 Clonotypes (wave 1)
+
+- A clonotype definition names its chains (each locus separately, one locus, or a pair), its
+  junction (amino acids, productive rearrangements only; or nucleotides), and how V and J genes
+  are compared (allele, gene, family or not at all). Gene-level keys drop alleles and keep ties as
+  sets, so two calls between the same genes match and a tie never matches a resolved gene.
+- Single cells: the primary chain of each locus is the one with most UMIs; **ClonoLoom's choice**
+  for ties is most reads, then the contig ID first in order, so the choice is the same everywhere
+  (scirpy breaks ties by its junction strings). Cells with one arm of a pair are grouped with cells
+  of that arm alone, as scirpy's `receptor_arms="all"` does, unless the definition requires both.
+- scirpy's `define_clonotypes` always compares nucleotide junctions; amino-acid grouping is its
+  `define_clonotype_clusters(sequence="aa", metric="identity")`. ClonoLoom's paired definitions
+  give the same partitions as these on every development run (`validation/clonotypes_test.go`).
+- A clonotype's ID is a hash of the definition's meaning (not its name) and the clonotype's key.
+
 ## 6. Datasets
 
 All are listed in `validation/sources.json` with their URL, sizes and SHA-256, and fetched by

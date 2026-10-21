@@ -160,3 +160,25 @@ export async function datasetQC(dataset, filter) {
   if (!response.ok) throw await programError(response, 'QC could not be computed.');
   return response.json();
 }
+
+// A page of a dataset's clonotypes (api_clonotypes.go): { dataset, definition, filter, sort, desc,
+// query, offset, limit }.
+export async function clonotypePage(request) {
+  const response = await fetch('api/clonotypes', { method: 'POST', body: JSON.stringify(request), headers: { 'Content-Type': 'application/json' } });
+  if (!response.ok) throw await programError(response, 'The clonotypes could not be listed.');
+  return response.json();
+}
+
+// One clonotype in full: the table's request with its id.
+export async function clonotypeDetail(request) {
+  const response = await fetch('api/clonotypes/one', { method: 'POST', body: JSON.stringify(request), headers: { 'Content-Type': 'application/json' } });
+  if (!response.ok) throw await programError(response, 'The clonotype could not be described.');
+  return response.json();
+}
+
+// The clonotype definitions most studies use.
+export async function clonotypePresets() {
+  const response = await fetch('api/clonotypes/presets', { cache: 'no-store' });
+  if (!response.ok) throw await programError(response, 'The definitions could not be listed.');
+  return (await response.json()).presets;
+}

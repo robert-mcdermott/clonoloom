@@ -58,28 +58,45 @@ func isAIRRHeader(header []string) bool {
 	return id && (junction || junctionAA || v)
 }
 
-// unit is what an AIRR file's counts are, from the columns present: cells when it has cell IDs
-// (single-cell contigs), UMIs when it has umi_count, reads for consensus_count alone; for
-// duplicate_count alone the schema's "copy number or number of duplicate observations" does not
-// say whether reads or molecules were counted, and the unit is left unknown for the user to
-// confirm; sequences when no count is given.
-func (l *airrLayout) unit(hasCells bool) rep.Unit {
-	switch {
-	case hasCells:
+// counted says which column gave each row its count: UMIs (umi_count), duplicates
+// (duplicate_count) or consensus reads (consensus_count).
+type counted struct{ umis, duplicates, consensus, none int }
+
+// unit is what an AIRR file's counts are: cells when it has cell IDs (single-cell contigs);
+// otherwise by the column that gave the rows their counts, read row by row (a column present but
+// empty gives none): UMIs for umi_count; reads for consensus_count; for duplicate_count the
+// schema's "copy number or number of duplicate observations" (reads from schema 1.4, but reads or
+// UMIs before, and UMIs in Cell Ranger's files) does not say, and the unit is left unknown for the
+// user to confirm; sequences when the file has no count column. Rows counted by different columns
+// leave the unit unknown, with a problem.
+func (l *airrLayout) unit(hasCells bool, c counted, src int, p *Problems) rep.Unit {
+	if hasCells {
 		return rep.Cells
-	case l.umi >= 0:
-		return rep.UMIs
-	case l.duplicateCount >= 0:
+	}
+	if l.umi < 0 && l.duplicateCount < 0 && l.consensusCount < 0 {
+		return rep.Sequences
+	}
+	used := 0
+	for _, n := range []int{c.umis, c.duplicates, c.consensus} {
+		if n > 0 {
+			used++
+		}
+	}
+	switch {
+	case used > 1:
+		p.addf("mixed-units", src, 0, "", "", "rows are counted by different columns (%d by umi_count, %d by duplicate_count, %d by consensus_count)", c.umis, c.duplicates, c.consensus)
 		return rep.UnitUnknown
-	case l.consensusCount >= 0:
+	case c.umis > 0:
+		return rep.UMIs
+	case c.consensus > 0:
 		return rep.Reads
 	}
-	return rep.Sequences
+	return rep.UnitUnknown
 }
 
 // readAIRR reads an AIRR TSV's rows (after its header) into b, as source number src, with name the
 // sample name used when the file names no repertoire. It answers how many rows named a cell.
-func readAIRR(ls *lines, l *airrLayout, b *rep.Builder, src int, name string, p *Problems) (cells int, err error) {
+func readAIRR(ls *lines, l *airrLayout, b *rep.Builder, src int, name string, p *Problems) (cells int, c counted, err error) {
 	if len(l.missingRequired) > 0 {
 		p.addf("airr-missing-required", src, 1, strings.Join(l.missingRequired, ", "), "", "the AIRR schema requires these columns, which the file lacks: %s", strings.Join(l.missingRequired, ", "))
 	}
@@ -153,26 +170,33 @@ func readAIRR(ls *lines, l *airrLayout, b *rep.Builder, src int, name string, p 
 		if r.Sample == "" {
 			r.Sample = name
 		}
+		// The row's count: its UMIs, else its duplicates, else its consensus reads, whichever it
+		// has (ClonoLoom's choice, by value: a column present but empty does not count).
 		umi := count(field(fields, l.umi))
 		duplicate := count(field(fields, l.duplicateCount))
 		consensus := count(field(fields, l.consensusCount))
 		switch {
-		case l.umi >= 0:
+		case !math.IsNaN(umi):
 			r.Count, r.UMIs = umi, umi
 			r.Reads = firstNumber(consensus, duplicate)
-		case l.duplicateCount >= 0:
+			c.umis++
+		case !math.IsNaN(duplicate):
 			r.Count = duplicate
 			r.Reads = consensus
-		case l.consensusCount >= 0:
+			c.duplicates++
+		case !math.IsNaN(consensus):
 			r.Count, r.Reads = consensus, consensus
-		default:
+			c.consensus++
+		case l.umi < 0 && l.duplicateCount < 0 && l.consensusCount < 0:
 			r.Count = 1
+		default:
+			c.none++
 		}
 		if err := b.Append(&r); err != nil {
-			return cells, err
+			return cells, c, err
 		}
 	}
-	return cells, ls.err
+	return cells, c, ls.err
 }
 
 func flag(s string) rep.Flag {

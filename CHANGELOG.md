@@ -125,6 +125,26 @@ with each.
     chosen;
   - what each number measures, in plain words.
 
+- **Clonotypes (wave 1, slice 5).** The Clonotypes view (`internal/clonotype`):
+  - **definitions** named and stated in words: nucleotide or amino-acid junction; V and J by allele,
+    gene, family or not at all; each locus separately, one locus, or paired αβ, γδ or heavy and
+    light chains; the source's own clonotypes (Cell Ranger's `raw_clonotype_id`, an AIRR
+    `clone_id`) as given; presets, an editor, and definitions saved for the project's other
+    datasets;
+  - **single-cell rules**: the primary chain of each locus by UMIs (then reads, then contig ID), or
+    every chain; cells with one arm grouped with cells of that arm alone, or left out;
+  - each clonotype's **ID** made from the definition's meaning and its chains, the same in every
+    run;
+  - the table sorted by total, samples, junction, genes or any sample's abundance, searched by
+    junction, gene or ID, a million rows scrolling as they come into view, each sample's abundance
+    in columns for up to eight samples;
+  - a clonotype in the inspector: its chains, its abundance and frequency in each sample, and the
+    rearrangements or contigs it is made of, with their genes as given;
+  - the definition and the abundance unit of the dataset in focus in the status bar.
+- AIRR rows are counted by the first count they have (UMIs, duplicates, consensus reads): a count
+  column present but empty no longer leaves every row without a count; rows counted by different
+  columns leave the unit unknown, with a finding.
+
 ### Validation
 
 - **Readers against independent readers:** every column ClonoLoom reads from 25 development files
@@ -146,6 +166,15 @@ with each.
 - **Cell Ranger's metrics reproduced:** cells, cells with a productive pair and with a productive
   chain of each locus, as counts and shares, exactly as Cell Ranger 4.0, 6.1 and 9.0 reported them
   for six T- and B-cell runs.
+- **Clonotypes against scirpy 0.25.1:** on eight Cell Ranger runs (T and B cells, Cell Ranger 4.0,
+  6.1 and 9.0), ClonoLoom's paired definitions give exactly scirpy's partitions of cells, by
+  nucleotide and amino-acid junction, with and without the V gene (`validation/clonotypes_test.go`,
+  `validation/reference/scirpy_clonotypes.py`); Cell Ranger's own clonotypes have the sizes its
+  `clonotypes.csv` gives.
+- **Bulk clonotypes** equal the R implementation's in number and largest abundance on six
+  samples, under three definitions (amino-acid junction with V and J genes, nucleotide junction
+  with V and J genes, amino-acid junction alone).
+- **A page of a million clonotypes**, sorted and searched, in 37 ms (budget 100 ms).
 - immunoSEQ's own row counts reproduced; its template totals by frame type do not always sum from
   its rows (pandas sums them as ClonoLoom does), which the QC view says.
 

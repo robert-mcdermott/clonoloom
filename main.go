@@ -67,6 +67,8 @@ type app struct {
 	store    *store
 	// datasets are the datasets open (api_datasets.go).
 	datasets *datasets
+	// clonotypes are the clonotype tables lately computed (api_clonotypes.go).
+	clonotypes *clonotypeTables
 }
 
 func init() {
@@ -299,11 +301,12 @@ func parseArgs(flags *flag.FlagSet, args []string) ([]string, error) {
 
 func newApp(cfg config) (*app, error) {
 	a := &app{
-		session:  strconv.FormatInt(time.Now().UnixNano(), 36),
-		dev:      cfg.dev,
-		assets:   content,
-		files:    newLocalFiles(),
-		datasets: newDatasets(),
+		session:    strconv.FormatInt(time.Now().UnixNano(), 36),
+		dev:        cfg.dev,
+		assets:     content,
+		files:      newLocalFiles(),
+		datasets:   newDatasets(),
+		clonotypes: &clonotypeTables{},
 	}
 	if problems := a.files.add(cfg.files); len(problems) > 0 {
 		for _, problem := range problems {
@@ -380,6 +383,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.store.register(mux)
 	a.registerDatasets(mux)
 	a.registerQC(mux)
+	a.registerClonotypes(mux)
 	mux.HandleFunc("POST /api/library/local/{index}", func(w http.ResponseWriter, r *http.Request) {
 		file, ok := a.files.get(r.PathValue("index"))
 		if !ok {

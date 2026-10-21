@@ -8,8 +8,8 @@
 #
 # The choices the formats leave open are made as clonoloom-spec/research.md documents them: an
 # immunoSEQ file is counted in templates when every row has a positive template count, else in
-# reads; an AIRR file by umi_count, else duplicate_count, else consensus_count; a row without a
-# count adds nothing to abundance. Gene names of immunoSEQ files are compared as Adaptive writes
+# reads; an AIRR row by its umi_count, else its duplicate_count, else its consensus_count, whichever
+# it has; a row without a count adds nothing to abundance. Gene names of immunoSEQ files are compared as Adaptive writes
 # them (the resolved name, or the ties when the gene is not resolved).
 suppressMessages({ library(data.table); library(jsonlite); library(iNEXT) })
 args <- commandArgs(trailingOnly = FALSE)
@@ -38,7 +38,7 @@ locus_of <- function(given, j, v) {
 nulls <- c("", "null", "NULL", "na", "NA", "unresolved", "unknown")
 clean <- function(x) { x <- as.character(x); x[is.na(x) | x %in% nulls] <- ""; x }
 
-tally <- function(sample, locus, junction_aa, v, j, productive, count) {
+tally <- function(sample, locus, junction_aa, v, j, productive, count, junction_nt) {
   out <- list()
   for (s in unique(sample)) {
     at <- sample == s
@@ -49,9 +49,17 @@ tally <- function(sample, locus, junction_aa, v, j, productive, count) {
     abund <- tapply(w[p], keys, sum)
     x <- as.numeric(abund)
     coverage <- if (length(x) && all(x == round(x))) iNEXT:::Chat.Ind(x, sum(x)) else NA
+    # Two more definitions: the nucleotide junction with V and J genes (productive rearrangements),
+    # and the amino-acid junction alone.
+    pn <- productive[at] & junction_nt[at] != "" & w > 0
+    nt_keys <- paste(locus[at], junction_nt[at], gene_key(v[at]), gene_key(j[at]), sep = "\r")[pn]
+    aa_keys <- paste(locus[at], junction_aa[at], sep = "\r")[p]
     out[[s]] <- list(rows = sum(at), abundance = sum(w), productive = sum(w[productive[at]]) / sum(w),
       clonotypes = length(x), singletons = sum(x == 1), doubletons = sum(x == 2), coverage = coverage,
-      top_share = if (length(x)) max(x) / sum(x) else 0)
+      top_share = if (length(x)) max(x) / sum(x) else 0,
+      clonotypes_nt = length(unique(nt_keys)), clonotypes_aa_only = length(unique(aa_keys)),
+      largest_nt = if (length(nt_keys)) max(tapply(w[pn], nt_keys, sum)) else 0,
+      largest_aa_only = if (length(aa_keys)) max(tapply(w[p], aa_keys, sum)) else 0)
   }
   out
 }
@@ -76,14 +84,21 @@ immunoseq <- function(path) {
   locus[is.na(locus)] <- "TRB"
   aa <- toupper(clean(d[[col("amino_acid", "aminoAcid")]]))
   productive <- tolower(clean(d[[col("frame_type", "sequenceStatus")]])) == "in"
-  tally(sample, unname(locus), aa, call("v"), call("j"), productive, count)
+  read <- clean(d[[col("rearrangement", "nucleotide")]])
+  start <- suppressWarnings(as.integer(clean(d[[col("v_index", "vIndex")]])))
+  len <- suppressWarnings(as.integer(clean(d[[col("cdr3_length", "cdr3Length")]])))
+  nt <- ifelse(!is.na(start) & !is.na(len) & start >= 0 & len > 0 & start + len <= nchar(read), toupper(substr(read, start + 1, start + len)), "")
+  if ("cdr3_rearrangement" %in% names(d)) { given <- toupper(clean(d$cdr3_rearrangement)); nt[given != ""] <- given[given != ""] }
+  tally(sample, unname(locus), aa, call("v"), call("j"), productive, count, nt)
 }
 
 airr <- function(path) {
   d <- fread(path, sep = "\t", colClasses = "character", na.strings = NULL, quote = "")
   if ("cell_id" %in% names(d) && any(clean(d$cell_id) != "")) return(NULL)
-  count_col <- intersect(c("umi_count", "duplicate_count", "consensus_count"), names(d))[1]
-  count <- if (is.na(count_col)) rep(1, nrow(d)) else suppressWarnings(as.numeric(clean(d[[count_col]])))
+  # A row's count: its UMIs, else its duplicates, else its consensus reads, whichever it has.
+  cols <- intersect(c("umi_count", "duplicate_count", "consensus_count"), names(d))
+  count <- if (!length(cols)) rep(1, nrow(d)) else rep(NA_real_, nrow(d))
+  for (c in cols) { v <- suppressWarnings(as.numeric(clean(d[[c]]))); count[is.na(count)] <- v[is.na(count)] }
   count[!is.na(count) & count < 0] <- NA
   sample <- if ("repertoire_id" %in% names(d)) clean(d$repertoire_id) else rep("", nrow(d))
   if ("sample_processing_id" %in% names(d)) sample[sample == ""] <- clean(d$sample_processing_id)[sample == ""]
@@ -91,7 +106,7 @@ airr <- function(path) {
   get <- function(c) if (c %in% names(d)) clean(d[[c]]) else rep("", nrow(d))
   locus <- locus_of(get("locus"), get("j_call"), get("v_call"))
   productive <- get("productive") %in% c("T", "TRUE", "True", "true", "t", "1")
-  tally(sample, locus, toupper(get("junction_aa")), get("v_call"), get("j_call"), productive, count)
+  tally(sample, locus, toupper(get("junction_aa")), get("v_call"), get("j_call"), productive, count, toupper(get("junction")))
 }
 
 out <- list()

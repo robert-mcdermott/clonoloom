@@ -69,12 +69,12 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| C1 | Explicit, named clonotype definitions: nucleotide or amino-acid junction; V and J by gene, family or not at all; one chain or paired chains; for BCR, a distance-thresholded definition (C4) | planned (wave 1; C4 in wave 5) |
-| C2 | The definition is part of every result's lineage and is shown with every table and figure | planned (wave 1, every wave) |
-| C3 | Single-cell rules for cells with extra or missing chains: primary pair by UMIs, all chains, or excluded; orphan chains kept or dropped | planned (wave 1) |
+| C1 | Explicit, named clonotype definitions: nucleotide or amino-acid junction; V and J by gene, family or not at all; one chain or paired chains; for BCR, a distance-thresholded definition (C4) | partial (wave 1, slice 5: nucleotide or amino-acid junction; V and J by allele, gene, family or not at all; each locus, one locus, or paired αβ, γδ and heavy–light chains; the source's own clonotypes; presets, an editor and definitions saved for reuse; IDs made from the definition and the key; equal to scirpy's partitions of eight Cell Ranger runs under four definitions, and to Cell Ranger's own clonotype sizes; C4 in wave 5) |
+| C2 | The definition is part of every result's lineage and is shown with every table and figure | partial (wave 1, slice 5: said in words above the clonotype table, in the inspector and in the status bar with the unit; results' lineage from wave 2) |
+| C3 | Single-cell rules for cells with extra or missing chains: primary pair by UMIs, all chains, or excluded; orphan chains kept or dropped | done (wave 1, slice 5: the primary chain of each locus by UMIs, then reads, then contig ID; or every chain; cells without both chains grouped with cells of the same chain alone, or left out; QC's filter leaves out cells with too many chains) |
 | C4 | BCR clonal families: same V, J and junction length, junction distance under a threshold chosen from the distance-to-nearest distribution; light chains used when paired | planned (wave 5) |
 | C5 | Sensitivity: key results recomputed under alternative definitions, with a plain verdict on whether the conclusion holds | planned (wave 7) |
-| C6 | The abundance unit is explicit: reads, UMIs, templates or cells, never inferred silently | planned (wave 1) |
+| C6 | The abundance unit is explicit: reads, UMIs, templates or cells, never inferred silently | done (wave 1, slices 2–5: every dataset's unit from its format, confirmed by the user when the format leaves it open, said with QC and every clonotype table) |
 
 ## Repertoire statistics
 

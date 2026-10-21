@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
-	"math"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -36,8 +35,15 @@ func TestReadsAnAIRRFileIntoSamples(t *testing.T) {
 	if len(tab.Samples) != 2 || tab.Samples[0].Name != "R1" || tab.Samples[1].Name != "R2" || tab.Sample[2] != 0 {
 		t.Fatalf("samples %+v %v", tab.Samples, tab.Sample)
 	}
-	if res.Unit != rep.UMIs || tab.Count[0] != 3 || !math.IsNaN(tab.Count[1]) || tab.Reads[0] != 10 {
+	// Row s2 has no umi_count but a duplicate_count: counted by it, so the file counts by two
+	// columns and its unit is left unknown.
+	if res.Unit != rep.UnitUnknown || tab.Count[0] != 3 || tab.Count[1] != 2 || tab.Reads[0] != 10 || res.Problems.Count("mixed-units") != 1 {
 		t.Fatalf("unit %q counts %v reads %v", res.Unit, tab.Count, tab.Reads)
+	}
+	// Every row with a UMI count: the file counts UMIs.
+	uniform := strings.Replace(text, "\t2\t\tR2", "\t2\t4\tR2", 1)
+	if res, _ := ReadReader(context.Background(), strings.NewReader(uniform), "x.tsv"); res.Unit != rep.UMIs || res.Table.Count[1] != 4 {
+		t.Fatalf("uniform: unit %q counts %v", res.Unit, res.Table.Count)
 	}
 	if tab.Productive[0] != rep.True || tab.Productive[1] != rep.False || tab.Productive[2] != rep.True {
 		t.Fatalf("productive %v", tab.Productive)

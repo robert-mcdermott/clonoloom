@@ -6,9 +6,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 	"testing"
 	"time"
 
+	"clonoloom/internal/clonotype"
 	"clonoloom/internal/reads"
 	"clonoloom/internal/validate"
 )
@@ -21,6 +24,33 @@ func TestOpenAMillionRearrangementsWithinBudget(t *testing.T) {
 		t.Skip("budgets are measured without -short and without the race detector")
 	}
 	const rows = 1_000_000
+	path := writeMillion(t, rows)
+	start := time.Now()
+	res, err := reads.ReadFiles(context.Background(), []string{path})
+	if err != nil {
+		t.Fatal(err)
+	}
+	report := validate.Check(res)
+	elapsed := time.Since(start)
+	tab := res.Table
+	if tab.Len() != rows || !report.Usable() {
+		t.Fatalf("%d rows, %d fatal findings", tab.Len(), report.Fatal)
+	}
+	junctions := tab.Junctions.Size() + tab.JunctionsAA.Size()
+	perRow := float64(tab.Size()-junctions) / rows
+	t.Logf("read and validated %d rows in %v; %.1f bytes a row plus %.1f MB of junctions", rows, elapsed.Round(time.Millisecond), perRow, float64(junctions)/1e6)
+	if elapsed > 5*time.Second {
+		t.Errorf("took %v, budget 5 s", elapsed)
+	}
+	if perRow > 64 {
+		t.Errorf("%.1f bytes a row, budget 64", perRow)
+	}
+}
+
+// writeMillion writes an immunoSEQ v3 file of n rearrangements: a seeded mix of junctions, genes
+// and counts, about 150 bytes a row, in the test's temporary folder.
+func writeMillion(t *testing.T, rows int) string {
+	t.Helper()
 	path := filepath.Join(t.TempDir(), "million.tsv")
 	f, err := os.Create(path)
 	if err != nil {
@@ -61,24 +91,55 @@ func TestOpenAMillionRearrangementsWithinBudget(t *testing.T) {
 		t.Fatal(err)
 	}
 	f.Close()
-	start := time.Now()
-	res, err := reads.ReadFiles(context.Background(), []string{path})
+	return path
+}
+
+// Budget: a sorted, searched page of a clonotype table of about a million clonotypes within
+// 100 ms once the table is made (sorting a new order is made once, and kept).
+func TestAPageOfAMillionClonotypesWithinBudget(t *testing.T) {
+	if testing.Short() || raceDetector {
+		t.Skip("budgets are measured without -short and without the race detector")
+	}
+	res, err := reads.ReadFiles(context.Background(), []string{writeMillion(t, 1_000_000)})
 	if err != nil {
 		t.Fatal(err)
 	}
-	report := validate.Check(res)
-	elapsed := time.Since(start)
-	tab := res.Table
-	if tab.Len() != rows || !report.Usable() {
-		t.Fatalf("%d rows, %d fatal findings", tab.Len(), report.Fatal)
+	start := time.Now()
+	table, err := clonotype.Compute(res.Table, nil, clonotype.Definition{Junction: "aa", V: "gene", J: "gene"})
+	if err != nil {
+		t.Fatal(err)
 	}
-	junctions := tab.Junctions.Size() + tab.JunctionsAA.Size()
-	perRow := float64(tab.Size()-junctions) / rows
-	t.Logf("read and validated %d rows in %v; %.1f bytes a row plus %.1f MB of junctions", rows, elapsed.Round(time.Millisecond), perRow, float64(junctions)/1e6)
-	if elapsed > 5*time.Second {
-		t.Errorf("took %v, budget 5 s", elapsed)
+	made := time.Since(start)
+	n := len(table.Clonotypes)
+	// The page: sorted by total (descending), searched for a junction motif, 200 rows.
+	order := make([]int32, n)
+	for i := range order {
+		order[i] = int32(i)
 	}
-	if perRow > 64 {
-		t.Errorf("%.1f bytes a row, budget 64", perRow)
+	sortStart := time.Now()
+	sort.SliceStable(order, func(a, b int) bool { return table.Clonotypes[order[a]].Total > table.Clonotypes[order[b]].Total })
+	sorted := time.Since(sortStart)
+	pageStart := time.Now()
+	var page []int32
+	for _, i := range order {
+		c := table.Clonotypes[i]
+		hit := false
+		for _, ch := range c.Chains {
+			hit = hit || strings.Contains(ch.Junction, "GPEY") || strings.Contains(ch.V, "GPEY")
+		}
+		if hit {
+			page = append(page, i)
+			if len(page) == 200 {
+				break
+			}
+		}
+	}
+	paged := time.Since(pageStart)
+	t.Logf("%d clonotypes made in %v; sorted once in %v; a searched page of %d in %v", n, made.Round(time.Millisecond), sorted.Round(time.Millisecond), len(page), paged.Round(time.Microsecond))
+	if n < 500_000 {
+		t.Fatalf("only %d clonotypes", n)
+	}
+	if paged > 100*time.Millisecond {
+		t.Errorf("a page took %v, budget 100 ms", paged)
 	}
 }

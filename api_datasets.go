@@ -360,6 +360,7 @@ func (a *app) handleCloseDataset(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "The dataset is not open.")
 		return
 	}
+	a.clonotypes.forget(r.PathValue("id"))
 	writeJSON(w, map[string]any{"ok": true})
 }
 

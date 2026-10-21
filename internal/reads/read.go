@@ -276,12 +276,12 @@ func readOne(ctx context.Context, r io.Reader, path string, index int, b **rep.B
 				*b = rep.NewBuilder(rep.UnitUnknown)
 			}
 			before := (*b).Len()
-			cells, err := readAIRR(ls, layout, *b, index, sample, p)
+			cells, counted, err := readAIRR(ls, layout, *b, index, sample, p)
 			if err != nil {
 				return src, "", err
 			}
 			src.Rows = (*b).Len() - before
-			return src, layout.unit(cells > 0), nil
+			return src, layout.unit(cells > 0, counted, index, p), nil
 		}
 	}
 	header, ok := splitCSV(ls.line, nil)

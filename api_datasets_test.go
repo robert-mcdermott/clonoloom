@@ -136,3 +136,41 @@ func TestQCOfADatasetUnderAFilter(t *testing.T) {
 		t.Fatalf("%d %s", rec.Code, rec.Body)
 	}
 }
+
+func TestClonotypePagesAndOneClonotype(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "study.tsv")
+	os.WriteFile(path, []byte(datasetTSV), 0o644)
+	_, handler := testApp(t)
+	var s datasetSummary
+	json.Unmarshal(postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`).Body.Bytes(), &s)
+	rec := postJSON(t, handler, "/api/clonotypes", `{"dataset": "`+s.ID+`", "definition": {"junction": "aa", "v": "gene", "j": "gene"}, "sort": "total"}`)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	var page clonotypePage
+	json.Unmarshal(rec.Body.Bytes(), &page)
+	// CASSLAGGPEAFF in R1 (3) and R2 (5); CASSPGQGAYEQYF is not productive.
+	if page.Count != 1 || page.Matched != 1 || page.Rows[0].Total != 8 || page.Rows[0].In["0"] != 3 || page.Rows[0].In["1"] != 5 || page.Excluded["not productive"] != 1 || page.Unit != "umis" {
+		t.Fatalf("%+v", page)
+	}
+	if page.Rows[0].Frequency != 1 || !strings.Contains(page.Describe, "amino-acid junction") || len(page.Samples) != 2 {
+		t.Fatalf("%+v", page)
+	}
+	none := postJSON(t, handler, "/api/clonotypes", `{"dataset": "`+s.ID+`", "definition": {}, "query": {"text": "CASSQ"}}`)
+	var empty clonotypePage
+	json.Unmarshal(none.Body.Bytes(), &empty)
+	if empty.Matched != 0 || empty.Count != 1 {
+		t.Fatalf("%+v", empty)
+	}
+	one := postJSON(t, handler, "/api/clonotypes/one", `{"dataset": "`+s.ID+`", "definition": {}, "id": "`+page.Rows[0].ID+`"}`)
+	if one.Code != http.StatusOK || !strings.Contains(one.Body.String(), `"memberCount":2`) || !strings.Contains(one.Body.String(), `"sequenceId":"a"`) {
+		t.Fatalf("%d %s", one.Code, one.Body)
+	}
+	if bad := postJSON(t, handler, "/api/clonotypes", `{"dataset": "`+s.ID+`", "definition": {"chains": ["TRA", "TRB"]}}`); bad.Code != http.StatusUnprocessableEntity || !strings.Contains(bad.Body.String(), "single-cell") {
+		t.Fatalf("%d %s", bad.Code, bad.Body)
+	}
+	if bad := postJSON(t, handler, "/api/clonotypes", `{"dataset": "`+s.ID+`", "definition": {}, "sort": "colour"}`); bad.Code != http.StatusBadRequest {
+		t.Fatalf("%d", bad.Code)
+	}
+}

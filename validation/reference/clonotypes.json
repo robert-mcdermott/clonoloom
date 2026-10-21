@@ -1,0 +1,181 @@
+{
+ "files": {
+  "10x-mouse-splenocytes-1k/sc5p_v1p1_mm_c57bl6_splenocyte_1k_b_filtered_contig_annotations.csv": {
+   "junction_aa": {
+    "cells": 626,
+    "clonotypes": 623,
+    "sha256": "9586e41cbfc65dc3ef1503750ce6b63d57cedb6a4d1348ac31c8a7ab8c955c03"
+   },
+   "junction_aa_v_gene": {
+    "cells": 626,
+    "clonotypes": 623,
+    "sha256": "9586e41cbfc65dc3ef1503750ce6b63d57cedb6a4d1348ac31c8a7ab8c955c03"
+   },
+   "junction_nt": {
+    "cells": 626,
+    "clonotypes": 623,
+    "sha256": "9586e41cbfc65dc3ef1503750ce6b63d57cedb6a4d1348ac31c8a7ab8c955c03"
+   },
+   "junction_nt_v_gene": {
+    "cells": 626,
+    "clonotypes": 623,
+    "sha256": "9586e41cbfc65dc3ef1503750ce6b63d57cedb6a4d1348ac31c8a7ab8c955c03"
+   }
+  },
+  "10x-mouse-splenocytes-1k/sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_filtered_contig_annotations.csv": {
+   "junction_aa": {
+    "cells": 148,
+    "clonotypes": 146,
+    "sha256": "e7c4a221af8c7a92157cd7140a458244ee6acf141452d2daaa4298798d72d84d"
+   },
+   "junction_aa_v_gene": {
+    "cells": 148,
+    "clonotypes": 146,
+    "sha256": "e7c4a221af8c7a92157cd7140a458244ee6acf141452d2daaa4298798d72d84d"
+   },
+   "junction_nt": {
+    "cells": 148,
+    "clonotypes": 146,
+    "sha256": "e7c4a221af8c7a92157cd7140a458244ee6acf141452d2daaa4298798d72d84d"
+   },
+   "junction_nt_v_gene": {
+    "cells": 148,
+    "clonotypes": 146,
+    "sha256": "e7c4a221af8c7a92157cd7140a458244ee6acf141452d2daaa4298798d72d84d"
+   }
+  },
+  "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_b_filtered_contig_annotations.csv": {
+   "junction_aa": {
+    "cells": 2643,
+    "clonotypes": 2527,
+    "sha256": "fbfbde4761d8af23cec83dbc11e7851a0b78d96237d050105c642c810702020e"
+   },
+   "junction_aa_v_gene": {
+    "cells": 2643,
+    "clonotypes": 2532,
+    "sha256": "1e7a52c5e3d2be4591f8e2cc4434ae9e6c6642021fde233468dd7e3a8e7d480f"
+   },
+   "junction_nt": {
+    "cells": 2643,
+    "clonotypes": 2536,
+    "sha256": "ada4389056cc78d7a9c1172ec7c0c6780b309d466f0eb8629dfebf4bf8492012"
+   },
+   "junction_nt_v_gene": {
+    "cells": 2643,
+    "clonotypes": 2541,
+    "sha256": "1866d533a4ed489b2c4ee07578c680ea8c46b2ff87bef3228658168395d6732e"
+   }
+  },
+  "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_filtered_contig_annotations.csv": {
+   "junction_aa": {
+    "cells": 1117,
+    "clonotypes": 1101,
+    "sha256": "d2a4fbf6a670184833cb144daf8c9abc0b802c34d21f638c58cdf88aa6f32f9c"
+   },
+   "junction_aa_v_gene": {
+    "cells": 1117,
+    "clonotypes": 1101,
+    "sha256": "d2a4fbf6a670184833cb144daf8c9abc0b802c34d21f638c58cdf88aa6f32f9c"
+   },
+   "junction_nt": {
+    "cells": 1117,
+    "clonotypes": 1101,
+    "sha256": "d2a4fbf6a670184833cb144daf8c9abc0b802c34d21f638c58cdf88aa6f32f9c"
+   },
+   "junction_nt_v_gene": {
+    "cells": 1117,
+    "clonotypes": 1101,
+    "sha256": "d2a4fbf6a670184833cb144daf8c9abc0b802c34d21f638c58cdf88aa6f32f9c"
+   }
+  },
+  "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_b_filtered_contig_annotations.csv": {
+   "junction_aa": {
+    "cells": 465,
+    "clonotypes": 461,
+    "sha256": "490a98bc4e7638ed211ea2e9679405ce3f4b0dbd8f9d94be904bb6d86f8092f4"
+   },
+   "junction_aa_v_gene": {
+    "cells": 465,
+    "clonotypes": 461,
+    "sha256": "490a98bc4e7638ed211ea2e9679405ce3f4b0dbd8f9d94be904bb6d86f8092f4"
+   },
+   "junction_nt": {
+    "cells": 465,
+    "clonotypes": 461,
+    "sha256": "490a98bc4e7638ed211ea2e9679405ce3f4b0dbd8f9d94be904bb6d86f8092f4"
+   },
+   "junction_nt_v_gene": {
+    "cells": 465,
+    "clonotypes": 461,
+    "sha256": "490a98bc4e7638ed211ea2e9679405ce3f4b0dbd8f9d94be904bb6d86f8092f4"
+   }
+  },
+  "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_filtered_contig_annotations.csv": {
+   "junction_aa": {
+    "cells": 4562,
+    "clonotypes": 4310,
+    "sha256": "0ae008eefd3edacaff3ac76fe821c233e0653adc90e5e7fd589f2f3003de8234"
+   },
+   "junction_aa_v_gene": {
+    "cells": 4562,
+    "clonotypes": 4310,
+    "sha256": "0ae008eefd3edacaff3ac76fe821c233e0653adc90e5e7fd589f2f3003de8234"
+   },
+   "junction_nt": {
+    "cells": 4562,
+    "clonotypes": 4311,
+    "sha256": "981a9a448c4ff85aad8c594e8abce4633dc7f944eb848331ae8e641c935609c5"
+   },
+   "junction_nt_v_gene": {
+    "cells": 4562,
+    "clonotypes": 4311,
+    "sha256": "981a9a448c4ff85aad8c594e8abce4633dc7f944eb848331ae8e641c935609c5"
+   }
+  },
+  "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_b_filtered_contig_annotations.csv": {
+   "junction_aa": {
+    "cells": 61,
+    "clonotypes": 61,
+    "sha256": "1b36408af58b47eb0cb6c47c83e35e0e7da3422de57150307e1a91d695491cd7"
+   },
+   "junction_aa_v_gene": {
+    "cells": 61,
+    "clonotypes": 61,
+    "sha256": "1b36408af58b47eb0cb6c47c83e35e0e7da3422de57150307e1a91d695491cd7"
+   },
+   "junction_nt": {
+    "cells": 61,
+    "clonotypes": 61,
+    "sha256": "1b36408af58b47eb0cb6c47c83e35e0e7da3422de57150307e1a91d695491cd7"
+   },
+   "junction_nt_v_gene": {
+    "cells": 61,
+    "clonotypes": 61,
+    "sha256": "1b36408af58b47eb0cb6c47c83e35e0e7da3422de57150307e1a91d695491cd7"
+   }
+  },
+  "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv": {
+   "junction_aa": {
+    "cells": 406,
+    "clonotypes": 403,
+    "sha256": "73b619486b4e661723f77b1f553f3943941dd309e9e375591a7ddb48966f96b2"
+   },
+   "junction_aa_v_gene": {
+    "cells": 406,
+    "clonotypes": 403,
+    "sha256": "73b619486b4e661723f77b1f553f3943941dd309e9e375591a7ddb48966f96b2"
+   },
+   "junction_nt": {
+    "cells": 406,
+    "clonotypes": 403,
+    "sha256": "73b619486b4e661723f77b1f553f3943941dd309e9e375591a7ddb48966f96b2"
+   },
+   "junction_nt_v_gene": {
+    "cells": 406,
+    "clonotypes": 403,
+    "sha256": "73b619486b4e661723f77b1f553f3943941dd309e9e375591a7ddb48966f96b2"
+   }
+  }
+ },
+ "generated_by": "scirpy 0.25.1"
+}
