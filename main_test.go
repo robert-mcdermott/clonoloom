@@ -22,7 +22,7 @@ import (
 func testApp(t *testing.T, files ...string) (*app, http.Handler) {
 	t.Helper()
 	dir := t.TempDir()
-	a, err := newApp(config{dataDir: dir, files: files})
+	a, err := newApp(config{dataDir: dir, cacheDir: filepath.Join(dir, "cache"), files: files})
 	if err != nil {
 		t.Fatal(err)
 	}

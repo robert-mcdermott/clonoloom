@@ -231,7 +231,14 @@ if you no longer need those projects; deleted projects are first moved to its
 `trash` folder. Your repertoire files are never copied into the library, moved
 or changed: projects refer to them where they are. Example data you download are
 kept in its `examples` folder (`--examples-dir` puts them elsewhere); remove one
-from the **Example data** dialog.
+from the **Example data** dialog. Its `jobs` and `artifacts` folders hold the
+background jobs and the results you keep.
+
+Tables ClonoLoom has read are kept in its cache, so that datasets reopen
+quickly: `~/Library/Caches/clonoloom` on macOS, `~/.cache/clonoloom` on Linux
+(or `$XDG_CACHE_HOME/clonoloom`), `%LocalAppData%\clonoloom` on Windows, or
+`--cache-dir`. It stays within 10 GB (`--cache-limit`), removing what was used
+least recently, and can be deleted at any time, or cleared in the **Jobs** view.
 
 ## Building from source
 

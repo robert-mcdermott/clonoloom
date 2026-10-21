@@ -208,3 +208,56 @@ func TestLibraryFilesOpenByTheirNames(t *testing.T) {
 		t.Fatalf("%d %s", rec.Code, rec.Body)
 	}
 }
+
+// A dataset opened again is read from the table cache; the cache is listed and cleared.
+func TestDatasetsReopenFromTheCache(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "study.tsv")
+	os.WriteFile(path, []byte(datasetTSV), 0o644)
+	a, handler := testApp(t)
+	first := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`)
+	var s1 datasetSummary
+	json.Unmarshal(first.Body.Bytes(), &s1)
+	usage := func() map[string]any {
+		var u map[string]any
+		json.Unmarshal(request(t, handler, http.MethodGet, "/api/cache", nil, nil).Body.Bytes(), &u)
+		return u
+	}
+	if u := usage(); u["enabled"] != true || u["tables"] != 1.0 {
+		t.Fatalf("after opening: %v", u)
+	}
+	// Closed and opened again (as after a restart): the same dataset, from the cache.
+	a.datasets.remove(s1.ID)
+	second := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`)
+	var s2 datasetSummary
+	json.Unmarshal(second.Body.Bytes(), &s2)
+	if s2.ID != s1.ID || s2.Rows != s1.Rows || s2.Sources[0].Path != path || usage()["tables"] != 1.0 {
+		t.Fatalf("reopened: %s %d %v", s2.ID, s2.Rows, usage())
+	}
+	del := httptest.NewRequest(http.MethodDelete, "/api/cache", nil)
+	del.Host, del.RemoteAddr = "127.0.0.1:8860", "127.0.0.1:5555"
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, del)
+	if rec.Code != http.StatusOK || usage()["tables"] != 0.0 {
+		t.Fatalf("clear: %d %v", rec.Code, usage())
+	}
+}
+
+// Jobs over HTTP: listed, read, and refused when there is no such job.
+func TestTheJobsAPI(t *testing.T) {
+	_, handler := testApp(t)
+	if rec := request(t, handler, http.MethodGet, "/api/jobs", nil, nil); rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `"jobs":[]`) {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	for _, path := range []string{"/api/jobs/nothing"} {
+		if rec := request(t, handler, http.MethodGet, path, nil, nil); rec.Code != http.StatusNotFound {
+			t.Errorf("%s: %d", path, rec.Code)
+		}
+	}
+	if rec := postJSON(t, handler, "/api/jobs/nothing/cancel", `{}`); rec.Code != http.StatusNotFound {
+		t.Errorf("cancel: %d", rec.Code)
+	}
+	if rec := request(t, handler, http.MethodGet, "/api/artifacts", nil, nil); rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `"artifacts":[]`) {
+		t.Errorf("artifacts: %d %s", rec.Code, rec.Body)
+	}
+}

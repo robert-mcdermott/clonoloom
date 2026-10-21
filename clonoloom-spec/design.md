@@ -139,9 +139,12 @@ reload. Their outputs are checked before they become artifacts.
 ### The derived-data cache
 
 Sources are read in place and never modified. From wave 2, a parsed rearrangement table is kept in
-the cache (`<UserCacheDir>/clonoloom`, size-capped, least recently used removed first), keyed by
-the source's fingerprint and the reader's version, so that a cohort reopens in seconds. Entries
-are written to a temporary name and renamed into place.
+the cache (`<UserCacheDir>/clonoloom/tables`, size-capped at 10 GB by default, least recently used
+removed first), keyed by the readers' version and each source's SHA-256, size and name, so that a
+cohort reopens in a fraction of a second. Each source is hashed again before the cache is asked, so
+a changed file is never answered from it. Entries are written to a temporary name and renamed into
+place, and carry a CRC-32 of their contents; one that fails it is removed and the files read
+again.
 
 ### The host, from the siblings
 

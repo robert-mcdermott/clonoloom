@@ -94,13 +94,17 @@ func datasetID(sources []reads.Source, metadata []reads.MetadataFile) string {
 func (a *app) openDataset(ctx context.Context, paths []string, inputs []reads.Input, name string) (*dataset, error) {
 	a.datasets.opening.Lock()
 	defer a.datasets.opening.Unlock()
-	var res *reads.Result
-	var err error
-	if len(inputs) > 0 {
-		res, err = reads.OpenInputs(ctx, inputs)
-	} else {
-		res, err = reads.Open(ctx, paths)
+	if len(inputs) == 0 {
+		for _, p := range paths {
+			inputs = append(inputs, reads.Input{Path: p})
+		}
 	}
+	// The tables from the cache when it holds them (internal/cache), else read.
+	readTables := reads.ReadInputs
+	if a.cache != nil {
+		readTables = a.cache.Tables
+	}
+	res, err := reads.OpenInputsWith(ctx, inputs, readTables)
 	if err != nil {
 		return nil, err
 	}

@@ -37,6 +37,24 @@ section grows with each.
   - two of them in the **Example data** dialog, made on this computer in a few seconds (offline
     too); a simulated dataset's methods paragraph says how it was made, citing the model's sources;
   - a folder opened as one dataset leaves out a simulated study's `truth/` folder.
+- **Jobs, artifacts and the table cache (wave 2, slice 3).**
+  - **Jobs** (`internal/jobs`, adapted from SituCraft 0.9.0): long work runs in the program, one
+    job at a time, with an immutable spec, progress, a log and cancellation; jobs are kept in the
+    library, survive a reload of the window, and one ClonoLoom's stopping interrupted can be
+    resumed or discarded. Example downloads and simulated studies run as jobs. The **Jobs** view
+    lists them (running, interrupted, finished) with their logs and specs; the page follows them
+    over server-sent events (`/api/jobs/events`).
+  - **Artifacts** (`internal/artifacts`, adapted from SituCraft 0.9.0): the store of results kept
+    with their lineage (parents, job and spec, method and version, parameters, software), every
+    file's SHA-256 and their check's findings, which the analyses of the next slices fill.
+  - **The table cache** (`internal/cache`): a dataset's tables, once read, are kept and answered
+    again without being read, keyed by the readers' version and each file's SHA-256, size and
+    name (each file hashed again first, so a changed file is never answered from it); entries are
+    written whole and checked by a CRC-32; least recently used removed first beyond
+    `--cache-limit` (10 GB); `--cache-dir` chooses the folder. The Jobs view shows the cache and
+    clears it.
+- AIRR files written by R, every field in double quotes (the AIRR R package's example file among
+  them), are read as the `airr` library and pandas read them.
 - `NOTICE` names the data the program includes: HGNC's gene names (CC0), GRCh38's TRB segments
   (Ensembl, no restrictions), and usage and junction lengths computed from 10x Genomics' data
   (CC BY 4.0).
@@ -61,6 +79,15 @@ section grows with each.
   samples, 109,002 rows, no validator finding, every sample matched to its metadata; each sample's
   clonotypes the truth's count, and its sample coverage (Chao and Jost 2012) within 0.005 of the
   coverage a sample of its depth has on average (the largest difference 0.0047).
+- **A cohort of 100 samples (a million rearrangements) reopened from the cache in 118 ms**, its
+  files hashed again, against 1.24 s to read them (budget 2 s; `validation/budget_test.go`).
+- **The cache's tables are the tables read** (Go tests): every column, every string, the
+  sources, problems and unit, on synthetic files and on the development files of every format;
+  a moved file answered from the cache at its new place, a renamed or changed one read again; a
+  damaged entry removed and written again; the cache kept within its limit; reopening a dataset
+  through the API uses it.
+- The jobs and artifacts packages' own tests, ported with them (state, persistence, resumption,
+  cancellation; staging, promotion, checks, verification).
 - Go tests: the page performs exactly the actions the program lists; actions reach the page and
   its answers the caller; no page, an unknown action, a page of another run, a missing or wrong
   token and another computer are refused; remote control is off unless asked for; `remote.json` is

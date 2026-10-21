@@ -56,8 +56,8 @@ var remoteActions = []remoteAction{
 		"opening":  textArg("What of it to open, such as \"T cells\" (its first if not given)."),
 		"download": flagArg("Download it first if it is not downloaded (openly licensed data only)."),
 	}, "example")},
-	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes), with a dataset in focus.", InputSchema: schema(map[string]any{
-		"view":    textArg("start, data, qc or clonotypes."),
+	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
+		"view":    textArg("start, data, qc, clonotypes or jobs."),
 		"dataset": datasetArg,
 	}, "view")},
 	{Name: "set_definition", Title: "Define clonotypes", Description: "Chooses a dataset's clonotype definition: a preset by name, or one stated in full.", InputSchema: schema(map[string]any{

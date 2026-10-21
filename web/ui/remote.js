@@ -17,7 +17,7 @@ export class ActionError extends Error {}
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.

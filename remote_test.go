@@ -146,7 +146,8 @@ func TestRemoteControlIsLocalAndOptIn(t *testing.T) {
 	if rec := request(t, handler, http.MethodGet, "/api/remote/tools", nil, nil); rec.Code != http.StatusNotFound {
 		t.Errorf("without --remote-control: %d", rec.Code)
 	}
-	a, err := newApp(config{dataDir: t.TempDir(), remote: true})
+	dir := t.TempDir()
+	a, err := newApp(config{dataDir: dir, cacheDir: filepath.Join(dir, "cache"), remote: true})
 	if err != nil {
 		t.Fatal(err)
 	}

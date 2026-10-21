@@ -7,6 +7,7 @@ import { createStore } from './ui/store.js';
 import { createLibrary, detectBackend, getDataset, locateFile, openDataset, prefs } from './ui/storage.js';
 import { pickPaths } from './ui/file-picker.js';
 import { createExamples } from './ui/examples.js';
+import { createJobs } from './ui/jobs.js';
 import { showMethods } from './ui/methods.js';
 import { installRemote } from './ui/remote.js';
 import { mountSidebar } from './ui/sidebar.js';
@@ -88,14 +89,7 @@ const MODES = [
       steps: ['Analyze.', 'Choose the figures and results to report.', 'Export.'],
     }),
   },
-  {
-    id: 'jobs', label: 'Jobs', icon: 'jobs',
-    load: async () => plannedMode({
-      title: 'Jobs', icon: 'jobs',
-      purpose: 'Work that runs in the background (distances, generation probabilities, lineage trees, downloads): progress, logs and cancellation. Jobs keep running when the window reloads, and their results are checked before they can be used.',
-      steps: ['Start work that takes a while, in any view.', 'Follow it here, or keep working elsewhere.'],
-    }),
-  },
+  { id: 'jobs', label: 'Jobs', icon: 'jobs', load: () => import('./ui/mode-jobs.js').then((m) => m.mountJobs) },
 ];
 
 // --- Theme ---------------------------------------------------------------------------------------
@@ -262,7 +256,9 @@ async function start() {
     if (paths?.length) await app.openData(paths);
   };
 
-  // Public example data, downloaded when asked (ui/examples.js).
+  // The program's background jobs (ui/jobs.js), and public example data, downloaded when asked
+  // (ui/examples.js).
+  app.jobs = createJobs(app);
   app.examples = createExamples(app);
   app.showExamples = () => app.examples.dialog();
 

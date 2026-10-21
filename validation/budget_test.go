@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"clonoloom/internal/cache"
 	"clonoloom/internal/clonotype"
 	"clonoloom/internal/reads"
 	"clonoloom/internal/validate"
@@ -52,6 +53,13 @@ func TestOpenAMillionRearrangementsWithinBudget(t *testing.T) {
 func writeMillion(t *testing.T, rows int) string {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "million.tsv")
+	writeImmunoSEQ(t, path, "S1", rows, 88172645463325252)
+	return path
+}
+
+// writeImmunoSEQ writes an immunoSEQ v3 file of a sample's n rearrangements from a seed.
+func writeImmunoSEQ(t *testing.T, path, sample string, rows int, seed uint64) {
+	t.Helper()
 	f, err := os.Create(path)
 	if err != nil {
 		t.Fatal(err)
@@ -62,7 +70,7 @@ func writeMillion(t *testing.T, rows int) string {
 	amino := "ASLGPEYQTD"
 	vs := []string{"TCRBV05-01*01", "TCRBV06-05*01", "TCRBV07-09*01", "TCRBV20", "TCRBV28-01*01", "TCRBV09-01*01"}
 	js := []string{"TCRBJ02-07*01", "TCRBJ01-01*01", "TCRBJ02-01*01", "TCRBJ01-02*01"}
-	x := uint64(88172645463325252)
+	x := seed
 	next := func() uint64 {
 		x ^= x << 13
 		x ^= x >> 7
@@ -84,14 +92,52 @@ func writeMillion(t *testing.T, rows int) string {
 		if v == "TCRBV20" {
 			gene, ties = "", "TCRBV20-01,TCRBV20-or09_02"
 		}
-		fmt.Fprintf(w, "S1\tHuman\tTCRB\t%s\t%s\tIn\t%d\t%d\t%d\t27\t%s\t%s\t%s\tTCRBD01-01*01\tTCRBD01-01\t\t%s\t%s\t\n",
-			read, aa, 1+next()%50, 100+next()%5000, len(nt), v, gene, ties, js[next()%uint64(len(js))], js[0][:10])
+		fmt.Fprintf(w, "%s\tHuman\tTCRB\t%s\t%s\tIn\t%d\t%d\t%d\t27\t%s\t%s\t%s\tTCRBD01-01*01\tTCRBD01-01\t\t%s\t%s\t\n",
+			sample, read, aa, 1+next()%50, 100+next()%5000, len(nt), v, gene, ties, js[next()%uint64(len(js))], js[0][:10])
 	}
 	if err := w.Flush(); err != nil {
 		t.Fatal(err)
 	}
 	f.Close()
-	return path
+}
+
+// Budget: a cohort of 100 immunoSEQ samples (a million rearrangements) reopened from the table
+// cache within 2 s, its files fingerprinted again to find it; the same table as reading them.
+func TestReopenACohortFromTheCacheWithinBudget(t *testing.T) {
+	if testing.Short() || raceDetector {
+		t.Skip("budgets are measured without -short and without the race detector")
+	}
+	dir := t.TempDir()
+	var inputs []reads.Input
+	for i := range 100 {
+		name := fmt.Sprintf("Subject%03d", i+1)
+		path := filepath.Join(dir, name+".tsv")
+		writeImmunoSEQ(t, path, name, 10_000, uint64(1000+i))
+		inputs = append(inputs, reads.Input{Path: path})
+	}
+	c, err := cache.Open(filepath.Join(dir, "cache"), 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	start := time.Now()
+	first, err := c.Tables(context.Background(), inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	read := time.Since(start)
+	start = time.Now()
+	again, err := c.Tables(context.Background(), inputs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	reopened := time.Since(start)
+	if again.Table.Len() != 1_000_000 || len(again.Table.Samples) != 100 || again.Table.Len() != first.Table.Len() {
+		t.Fatalf("%d rows, %d samples", again.Table.Len(), len(again.Table.Samples))
+	}
+	t.Logf("100 samples, 1,000,000 rows: read and cached in %v, reopened from the cache in %v", read.Round(time.Millisecond), reopened.Round(time.Millisecond))
+	if reopened > 2*time.Second {
+		t.Errorf("reopened in %v, budget 2 s", reopened)
+	}
 }
 
 // Budget: a sorted, searched page of a clonotype table of about a million clonotypes within

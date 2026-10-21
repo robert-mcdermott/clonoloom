@@ -54,7 +54,7 @@ let places = {};
 async function startClonoLoom({ examples = DATA } = {}) {
   const library = mkdtempSync(join(temp, 'library-'));
   places = { library, examples };
-  const server = spawn(binary, ['--remote-control', '--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
+  const server = spawn(binary, ['--remote-control', '--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples, '--cache-dir', join(temp, 'cache')], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
   let output = '';
   server.stdout.on('data', (chunk) => { output += chunk; });
   const stop = async () => {

@@ -106,11 +106,26 @@ func splitTab(line []byte, fields []string) []string {
 	for {
 		i := bytes.IndexByte(line, '\t')
 		if i < 0 {
-			return append(fields, string(line))
+			return append(fields, unquote(line))
 		}
-		fields = append(fields, string(line[:i]))
+		fields = append(fields, unquote(line[:i]))
 		line = line[i+1:]
 	}
+}
+
+// unquote reads a tab-separated field as Python's csv module does: one in double quotes (as R's
+// write.table writes every field, the AIRR R package's example file among them) loses them, a
+// doubled quote inside standing for one. The AIRR standard does not quote, but files written by R
+// do.
+func unquote(b []byte) string {
+	if len(b) < 2 || b[0] != '"' || b[len(b)-1] != '"' {
+		return string(b)
+	}
+	inner := b[1 : len(b)-1]
+	if bytes.IndexByte(inner, '"') < 0 {
+		return string(inner)
+	}
+	return strings.ReplaceAll(string(inner), `""`, `"`)
 }
 
 // splitCSV splits a comma-separated line (RFC 4180 quoting, as Cell Ranger writes it) into fields.

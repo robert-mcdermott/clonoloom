@@ -101,6 +101,43 @@ func TestGzippedAIRR(t *testing.T) {
 	}
 }
 
+// A file R wrote (every field in double quotes, a quote inside doubled) reads as the same file
+// unquoted, as the airr library and pandas read it.
+func TestQuotedAIRRReadsAsUnquoted(t *testing.T) {
+	rows := []string{airrHeader,
+		airrRow("s1", "T", "TRBV5-1*01", "TRBJ2-7*01", "TGTGCCAGCAGCTTAGCGGGAGGGCCTGAAGCTTTCTTT", "CASSLAGGPEAFF", "10", "3", "R1"),
+		airrRow("s2", "F", "TRBV6-2*01,TRBV6-3*01", "TRBJ1-1*01", "", "", "2", "", "R2")}
+	quote := func(line string) string {
+		fields := strings.Split(line, "\t")
+		for i, f := range fields {
+			fields[i] = `"` + strings.ReplaceAll(f, `"`, `""`) + `"`
+		}
+		return strings.Join(fields, "\t")
+	}
+	var plain, quoted []string
+	for _, r := range rows {
+		plain = append(plain, r)
+		quoted = append(quoted, quote(r))
+	}
+	a, err := ReadReader(context.Background(), strings.NewReader(strings.Join(plain, "\n")+"\n"), "study.tsv")
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err := ReadReader(context.Background(), strings.NewReader(strings.Join(quoted, "\n")+"\n"), "study.tsv")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if a.Table.Len() != b.Table.Len() || b.Table.Dict.Get(b.Table.V[1]) != "TRBV6-2*01,TRBV6-3*01" || b.Table.JunctionsAA.Get(b.Table.JunctionAA[0]) != "CASSLAGGPEAFF" || b.Table.Count[0] != 3 {
+		t.Fatalf("quoted: %d rows, %q", b.Table.Len(), b.Table.Dict.Get(b.Table.V[1]))
+	}
+	if got := unquote([]byte(`"say ""hi"""`)); got != `say "hi"` {
+		t.Errorf("unquote: %q", got)
+	}
+	if got := unquote([]byte(`"`)); got != `"` {
+		t.Errorf("a lone quote: %q", got)
+	}
+}
+
 func TestUnknownAndEmptyFilesAreRefused(t *testing.T) {
 	if _, err := ReadReader(context.Background(), strings.NewReader("a\tb\n1\t2\n"), "x.tsv"); err != ErrUnknownFormat {
 		t.Fatalf("got %v", err)

@@ -116,6 +116,8 @@ computer. `clonoloom simulate` writes those from the command line
 | `--keep-running` | off | Keep serving after the window is closed |
 | `--data-dir` | `<user config dir>/ClonoLoom` | Where the project library is kept |
 | `--examples-dir` | `<data dir>/examples` | Where example data are downloaded, when asked |
+| `--cache-dir` | `<user cache dir>/clonoloom` | Where tables read once are kept, to reopen datasets quickly |
+| `--cache-limit` | `10GB` | The size the cache is kept within (`0`: none) |
 | `--offline` | off | Download nothing: ClonoLoom then reaches no other computer |
 | `--remote-control` | off | Let programs on this computer drive the window ([docs/REMOTE-CONTROL.md](docs/REMOTE-CONTROL.md)) |
 | `--host` | 127.0.0.1 | Interface to bind |
