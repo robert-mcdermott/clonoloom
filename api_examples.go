@@ -10,12 +10,16 @@ import (
 	_ "embed"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 	"sync"
 
 	"clonoloom/internal/examples"
+	"clonoloom/internal/simulate"
 )
 
 //go:embed validation/sources.json
@@ -27,8 +31,51 @@ func newExamples(dir string, offline bool) *examples.Library {
 		log.Printf("the example list cannot be read: %v", err)
 	}
 	recorded, _ := examples.ParseAll(exampleSources)
-	return &examples.Library{Dir: dir, Sources: sources, Recorded: recorded, Offline: offline,
+	return &examples.Library{Dir: dir, Sources: sources, Recorded: recorded, Offline: offline, Generated: simulatedExamples(),
 		UserAgent: "ClonoLoom/" + version + " (+https://github.com/robert-mcdermott/clonoloom)"}
+}
+
+// simulatedExamples are the simulated studies (internal/simulate) offered as examples, made on
+// this computer in seconds.
+func simulatedExamples() []examples.Generated {
+	return []examples.Generated{
+		simulatedExample("standard", "A simulated TRB study with known truth",
+			"Bulk T-cell receptor β repertoires simulated by ClonoLoom: three control subjects and three whose repertoires hold a few expanded clones, two blood samples of each at different depths. Every clonotype of every subject is known (truth/), so diversity, rarefaction and overlap can be checked against the truth. Made on this computer in a few seconds.",
+			"The twelve samples, with their subjects and conditions, in templates.", 33<<20),
+		simulatedExample("null", "A simulated TRB study with no difference between its groups",
+			"Six subjects of one kind in two groups (control and treated), two samples each: whatever a comparison of the groups finds is chance. Made on this computer in a few seconds, its truth beside it.",
+			"The twelve samples, with their subjects and groups, in templates.", 38<<20),
+	}
+}
+
+// simulatedExample is a preset's study as an example.
+func simulatedExample(preset, title, description, opening string, size int64) examples.Generated {
+	study := simulate.Presets[preset]
+	return examples.Generated{
+		Source: examples.Source{
+			Name: "simulated-" + preset, Title: title, Description: description,
+			Source: fmt.Sprintf("Made on this computer: clonoloom simulate --preset %s (seed %d)", preset, study.Seed), Publisher: "ClonoLoom",
+			License: "Simulated data: no restrictions", LicenseClass: "open",
+			Citation: "McDermott R. ClonoLoom, version " + version + ". https://github.com/robert-mcdermott/clonoloom",
+			Opens:    []examples.Opening{{Title: "the study", Name: "Simulated study (" + preset + ")", Summary: opening}},
+		},
+		Size: size, Marker: "truth/truth.json",
+		Make: func(ctx context.Context, dir string, progress examples.Progress) error {
+			_, err := simulate.Run(ctx, study, dir, version, func(f float64, message string) { progress(f, message) })
+			return err
+		},
+		// Every sample's table, with their Repertoire metadata, as one dataset.
+		Files: func(dir string) [][]string {
+			var files []string
+			entries, _ := os.ReadDir(dir)
+			for _, e := range entries {
+				if strings.HasSuffix(e.Name(), ".tsv") {
+					files = append(files, e.Name())
+				}
+			}
+			return [][]string{append(files, "repertoires.airr.json")}
+		},
+	}
 }
 
 // download is an example being downloaded, or the last that failed.
@@ -123,11 +170,16 @@ func (a *app) downloadExample(w http.ResponseWriter, r *http.Request) {
 			source = &a.examples.Sources[i]
 		}
 	}
+	for i := range a.examples.Generated {
+		if a.examples.Generated[i].Name == name {
+			source = &a.examples.Generated[i].Source
+		}
+	}
 	switch {
 	case source == nil:
 		writeError(w, http.StatusNotFound, "No such example.")
 		return
-	case a.examples.Offline:
+	case a.examples.Offline && !isGenerated(a.examples, name):
 		writeErrorCode(w, http.StatusForbidden, "offline", examples.ErrOffline.Error()+".")
 		return
 	case source.LicenseClass != "open" && !body.Accept:
@@ -164,6 +216,15 @@ func (a *app) downloadExample(w http.ResponseWriter, r *http.Request) {
 		a.downloads.mu.Unlock()
 	}()
 	writeJSON(w, map[string]bool{"started": true})
+}
+
+func isGenerated(l *examples.Library, name string) bool {
+	for _, g := range l.Generated {
+		if g.Name == name {
+			return true
+		}
+	}
+	return false
 }
 
 // credit is the source, license and citation of an example a dataset was opened from (O9).

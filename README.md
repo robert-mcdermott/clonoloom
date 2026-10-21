@@ -102,7 +102,9 @@ hands them to the ClonoLoom already running.
 
 To try it without your own data, choose **Example data**: public 10x Genomics, AIRR Community and
 immuneACCESS datasets, each shown with its source, size, license and citation and downloaded from
-its publisher only when you ask.
+its publisher only when you ask, and simulated studies whose truth is known, made on your
+computer. `clonoloom simulate` writes those from the command line
+([docs/SIMULATION.md](docs/SIMULATION.md)).
 
 <details>
 <summary>Options</summary>
@@ -128,6 +130,7 @@ its publisher only when you ask.
 - [Installing](docs/INSTALLING.md): release files, installers, upgrading, uninstalling.
 - [Formats](docs/FORMATS.md): what each reader reads and how.
 - [Remote control](docs/REMOTE-CONTROL.md): driving ClonoLoom from scripts.
+- [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.
 - [Design](clonoloom-spec/design.md): how it is built and why.
 - [Roadmap](clonoloom-spec/roadmap.md): the order of the work, wave by wave (wave *N* is release

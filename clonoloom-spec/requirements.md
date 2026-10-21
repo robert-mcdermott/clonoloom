@@ -172,7 +172,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| E1 | Simulated studies with their truth (`clonoloom simulate`) | planned (wave 2: bulk TCR; wave 3: longitudinal; wave 4: specificity; wave 5: BCR lineages; wave 6: single cell with expression) |
+| E1 | Simulated studies with their truth (`clonoloom simulate`) | partial (wave 2, slice 2: bulk TRB studies from ClonoLoom's own recombination model, with each population's truth; presets standard, null and small; offered as examples; wave 3: longitudinal; wave 4: specificity; wave 5: BCR lineages; wave 6: single cell with expression) |
 | E2 | Public example datasets downloaded on request with license and citation shown | done (wave 1, slice 6: six datasets of 10x Genomics, the AIRR Community and immuneACCESS; every wave adds its own) |
 | E3 | Guided tours and worked examples per view | planned (wave 2, every wave) |
 | E4 | Exercises graded against simulated truth, with class codes | parked |

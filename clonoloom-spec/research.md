@@ -207,6 +207,45 @@ planned in detail.
   give the same partitions as these on every development run (`validation/clonotypes_test.go`).
 - A clonotype's ID is a hash of the definition's meaning (not its name) and the clonotype's key.
 
+### 5.2 Simulated studies (wave 2)
+
+`clonoloom simulate` (`internal/simulate`) makes bulk TRB studies whose truth is known, so that
+diversity, rarefaction and overlap can be checked against it as well as against reference
+implementations.
+
+- **Germline.** GRCh38's sequence of each functional TRB V, D and J gene at Ensembl's annotation
+  (release 116), generated into `internal/simulate/germline.go` by its script from Ensembl's REST
+  API. Ensembl "imposes no restrictions on access to, or use of, the data provided"; the sequence
+  is the Genome Reference Consortium's. The conserved cysteine is the C of a Y-X-C motif ending a
+  V; the conserved phenylalanine, the F of a J's F-G-X-G. Forty-six V genes have one (TRBV7-3
+  and TRBV17, ORFs whose cysteine is mutated, do not); thirteen J genes and both D genes. Calls
+  are at gene level: the reference genome's sequence is not necessarily IMGT's allele *01. IMGT's
+  data (CC BY 4.0 since 2026-07-01) are not used, pending the confirmation §7 describes.
+- **Recombination** as Murugan et al. 2012 (*PNAS* 109:16161, doi:10.1073/pnas.1212755109)
+  describe it: a V, a J, and a D given the J (TRBJ1 genes only with TRBD1; TRBJ2 genes with either,
+  an even chance assumed, since the 10x data's D calls cannot tell); deletions at each end
+  (negative binomial, means 4, 3, 3 and 4 nucleotides for V, D5′, D3′ and J), or palindromic
+  nucleotides (one with chance 0.04, two with 0.02); non-templated insertions between V and D and
+  between D and J (means 4.5 and 4, A/C/G/T 0.22/0.28/0.28/0.22). None of OLGA's or IGoR's model
+  files is used (GPL-3.0); the parameters are **ClonoLoom's own choices**.
+- **Usage and selection.** V and J usage are those of the 4,640 productive TRB chains of the cells
+  of 10x Genomics' 10k PBMC dataset (CC BY 4.0). Productive rearrangements are selected on their
+  junction's length, kept with a chance proportional to the data's share of that length over the
+  model's, as Elhanati et al. 2014 (*PNAS* 111:9875, doi:10.1073/pnas.1409572111) estimate
+  selection factors: their junctions then average 14.5 amino acids with a standard deviation of
+  1.7, as the data's do (without selection, 15.3 and 2.7). Nonproductive rearrangements are not
+  selected.
+- **Populations and samples.** Each subject's productive clones have sizes from a discrete power
+  law, P(size ≥ s) = s^−α; nonproductive ones (15% of clones) too; a few expanded clones may hold
+  given shares of the cells. The same nucleotide rearrangement drawn twice in a subject is one
+  clone. A sample draws templates in proportion to the clones' cells; each template's reads are
+  negative binomial (mean 8, size 2), and a template with none is not seen.
+- **Truth.** For each subject, the population's productive clonotypes (amino-acid junction, V gene,
+  J gene) and their Hill numbers, Shannon and Simpson indices, evenness, clonality, Gini
+  coefficient, top-ten share and homeostasis bins; for each sample, the clonotypes and coverage a
+  sample of its depth shows on average (Σ 1−(1−p)^m and 1 − Σ p(1−p)^m); for each pair of
+  subjects, the clonotypes their populations share.
+
 ## 6. Datasets
 
 All are listed in `validation/sources.json` with their URL, sizes and SHA-256, and fetched by
@@ -236,6 +275,7 @@ example datasets (Wu et al. 2020, Maynard et al. 2020), and VDJdb (on request on
 | AIRR-C germline sets (OGRDB) | CC0; immunoglobulin sets only (human, mouse strains, rhesus, *Peromyscus*, trout), as AIRR GermlineSet JSON with IMGT-gapped sequences and CDR delineations, and FASTA | may be bundled, with set id and release recorded |
 | IMGT data (GENE-DB, V-QUEST reference directory) | CC BY 4.0 since 1 July 2026 (CC BY-NC-ND 4.0 before); IMGT's tools are under separate terms | downloaded on request (TR germlines come from here); retrieval date recorded |
 | OLGA and IGoR recombination models | inside GPL-3.0 repositories, no separate license | downloaded on request only; Pgen implemented independently |
+| Ensembl (GRCh38 at Ensembl's annotation) | no restrictions ("Ensembl imposes no restrictions on access to, or use of, the data provided") | the simulator's TRB gene segments are bundled (`internal/simulate/germline.go`), the release recorded |
 | VDJdb | CC BY-NC-ND 4.0 since September 2026 (AGPL-3.0 and CC BY-ND 4.0 earlier in 2026) | downloaded on request only; never bundled or used for derived fixtures; non-commercial terms shown |
 | McPAS-TCR | no license published | downloaded on request only |
 | IEDB receptor data | CC BY 4.0 | downloaded on request |

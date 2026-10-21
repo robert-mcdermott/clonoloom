@@ -194,9 +194,22 @@ func (s Source) size() int64 {
 	return n
 }
 
+// Generated is an example made on this computer rather than downloaded (a simulated study): its
+// description as the page shows it, what it takes on disk, the file that says it is made, how to
+// make it, and, once made, the files each of its openings opens (relative to its folder).
+type Generated struct {
+	Source
+	Size   int64
+	Marker string
+	Make   func(ctx context.Context, dir string, progress Progress) error
+	Files  func(dir string) [][]string
+}
+
 // Library is the examples folder.
 type Library struct {
 	Dir string
+	// Generated: the examples made on this computer.
+	Generated []Generated
 	// Sources are the examples offered; Recorded, every data set sources.json records (what
 	// Identify knows), or the offered alone when it is nil.
 	Sources  []Source
@@ -217,6 +230,8 @@ type State struct {
 	Path  string `json:"path,omitempty"`
 	// Paths are each opening's files on this computer, when ready.
 	Paths [][]string `json:"paths,omitempty"`
+	// Generated: made on this computer, nothing downloaded.
+	Generated bool `json:"generated,omitempty"`
 }
 
 // List describes every example.
@@ -249,6 +264,22 @@ func (l *Library) List() []State {
 		}
 		out = append(out, st)
 	}
+	// A generated example is ready once its marker is there.
+	for _, g := range l.Generated {
+		st := State{Source: g.Source, Size: g.Size, State: "absent", Generated: true}
+		dir := filepath.Join(l.Dir, g.Name)
+		if info, err := os.Stat(filepath.Join(dir, filepath.FromSlash(g.Marker))); err == nil && !info.IsDir() {
+			st.State, st.Path = "ready", dir
+			for _, files := range g.Files(dir) {
+				var paths []string
+				for _, f := range files {
+					paths = append(paths, filepath.Join(dir, filepath.FromSlash(f)))
+				}
+				st.Paths = append(st.Paths, paths)
+			}
+		}
+		out = append(out, st)
+	}
 	return out
 }
 
@@ -258,10 +289,22 @@ func (l *Library) source(name string) (Source, bool) {
 			return s, true
 		}
 	}
+	if g, ok := l.generated(name); ok {
+		return g.Source, true
+	}
 	return Source{}, false
 }
 
-// Remove deletes a downloaded example.
+func (l *Library) generated(name string) (Generated, bool) {
+	for _, g := range l.Generated {
+		if g.Name == name {
+			return g, true
+		}
+	}
+	return Generated{}, false
+}
+
+// Remove deletes a downloaded (or made) example.
 func (l *Library) Remove(name string) error {
 	if _, ok := l.source(name); !ok {
 		return fmt.Errorf("no example %q", name)
@@ -313,6 +356,9 @@ func (l *Library) Download(ctx context.Context, name string, accepted bool, prog
 	if progress == nil {
 		progress = func(float64, string) {}
 	}
+	if g, ok := l.generated(name); ok {
+		return l.make(ctx, g, progress)
+	}
 	s, ok := l.source(name)
 	if !ok {
 		return "", fmt.Errorf("no example %q", name)
@@ -360,6 +406,31 @@ func (l *Library) Download(ctx context.Context, name string, accepted bool, prog
 		return "", err
 	}
 	target := filepath.Join(l.Dir, name)
+	if err := os.RemoveAll(target); err != nil {
+		return "", err
+	}
+	if err := os.Rename(staging, target); err != nil {
+		return "", err
+	}
+	progress(1, "Ready")
+	return target, nil
+}
+
+// make makes a generated example beside its folder and moves it into place once made: nothing is
+// downloaded, so --offline does not stop it.
+func (l *Library) make(ctx context.Context, g Generated, progress Progress) (string, error) {
+	if err := os.MkdirAll(l.Dir, 0o755); err != nil {
+		return "", err
+	}
+	staging := filepath.Join(l.Dir, "."+g.Name+".part")
+	defer os.RemoveAll(staging)
+	if err := os.RemoveAll(staging); err != nil {
+		return "", err
+	}
+	if err := g.Make(ctx, staging, progress); err != nil {
+		return "", err
+	}
+	target := filepath.Join(l.Dir, g.Name)
 	if err := os.RemoveAll(target); err != nil {
 		return "", err
 	}

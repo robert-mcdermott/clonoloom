@@ -17,6 +17,29 @@ section grows with each.
   under terms of use are never downloaded by a program. `GET /api/remote/tools` lists the actions
   with JSON Schemas. [docs/REMOTE-CONTROL.md](docs/REMOTE-CONTROL.md).
 - The documentation's pictures are captured through remote control.
+- **Simulated studies (wave 2, slice 2).** `clonoloom simulate` (`internal/simulate`,
+  [docs/SIMULATION.md](docs/SIMULATION.md)) writes bulk TRB studies whose truth is known:
+  - rearrangements from a V(D)J recombination model of ClonoLoom's own: GRCh38's TRB gene segments
+    at Ensembl's annotation; V and J usage from 10x Genomics' 10k PBMC data (CC BY 4.0); deletions,
+    palindromic nucleotides and non-templated insertions; productive rearrangements selected on
+    junction length so their lengths are the data's (mean 14.5 amino acids, SD 1.7); no OLGA or
+    IGoR model file used;
+  - each subject's repertoire a population of power-law clone sizes (with expanded clones where
+    asked); each sample templates drawn from it, sequenced into reads;
+  - written as AIRR rearrangement tables (templates as `umi_count`, reads as `duplicate_count`)
+    with AIRR Repertoire metadata (subject, condition), and the truth beside them: every clone of
+    every population, and each population's clonotypes, Hill numbers, Shannon, Simpson, evenness,
+    clonality, Gini, top-ten share and homeostasis; each sample's expected clonotypes and coverage
+    at its depth; the clonotypes subjects share;
+  - presets `standard` (control subjects and subjects with expanded clones), `null` (no difference
+    between groups) and `small`; parameters as JSON; the same seed gives the same files, byte for
+    byte;
+  - two of them in the **Example data** dialog, made on this computer in a few seconds (offline
+    too); a simulated dataset's methods paragraph says how it was made, citing the model's sources;
+  - a folder opened as one dataset leaves out a simulated study's `truth/` folder.
+- `NOTICE` names the data the program includes: HGNC's gene names (CC0), GRCh38's TRB segments
+  (Ensembl, no restrictions), and usage and junction lengths computed from 10x Genomics' data
+  (CC BY 4.0).
 
 ### Fixed
 
@@ -25,6 +48,19 @@ section grows with each.
 
 ### Validation
 
+- **The simulator against its targets and truth** (Go tests): every rearrangement well formed (its
+  junction from its V's cysteine to its J's phenylalanine, a productive one in frame without a
+  stop); productive junction lengths within 0.1 amino acids of the 10x data's mean and 0.15 of its
+  standard deviation, and V usage within 0.03 of the model's in total variation, over 150,000
+  rearrangements; the clonotypes samples show equal on average the truth's expectation at their
+  depth (60 replicate samples); every row of every sample is its population clone, each sample's
+  rows, templates and clonotypes are the truth's, and the truth's Simpson index and Hill numbers
+  are those of its population tables; the same seed gives the same bytes, another seed other
+  files; the random draws' means and variances (Poisson, negative binomial, gamma, uniform).
+- **QC on the simulated standard study against its truth** (`validation/simulated_test.go`): twelve
+  samples, 109,002 rows, no validator finding, every sample matched to its metadata; each sample's
+  clonotypes the truth's count, and its sample coverage (Chao and Jost 2012) within 0.005 of the
+  coverage a sample of its depth has on average (the largest difference 0.0047).
 - Go tests: the page performs exactly the actions the program lists; actions reach the page and
   its answers the caller; no page, an unknown action, a page of another run, a missing or wrong
   token and another computer are refused; remote control is off unless asked for; `remote.json` is

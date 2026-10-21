@@ -66,3 +66,13 @@ test('the same inputs give the same text', () => {
   assert.deepEqual(methodsParagraph(inputs), methodsParagraph(inputs));
   assert.equal(joinList(['a', 'b', 'c']), 'a, b and c');
 });
+
+test('simulated data say how they were made, citing the sources of the model', () => {
+  const dataset = { ...pbmc, credits: [], formats: ['AIRR Rearrangement TSV'], sources: [{ ...pbmc.sources[0], format: 'airr' }], singleCell: false, unit: 'umis' };
+  const summary = { samples: [{ name: 'S01-1', repertoire: { repertoireId: 'S01-1', studyId: 'clonoloom-simulated-standard', studyTitle: 'A simulated TRB study' } }], sources: [{}] };
+  const { text, references } = methodsParagraph({ dataset, summary, program });
+  assert.match(text, /^The data are simulated \(A simulated TRB study\): T-cell receptor β rearrangements made by ClonoLoom's simulator \[1\] from GRCh38's gene segments at Ensembl's annotation \[2\]/);
+  assert.match(text, /selection on junction length to that data's \[3\]/);
+  assert.match(references[1], /Ensembl 2025/);
+  assert.match(references[2], /Quantifying selection/);
+});

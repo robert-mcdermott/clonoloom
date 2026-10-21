@@ -7,7 +7,17 @@ ClonoLoom's host, interface shell, installers and workflows are adapted from its
 SituCraft, MaveScape, CytoWeave and Proteoscope (https://github.com/robert-mcdermott), by the same
 author under the same license.
 
-Public datasets, reference germline sets, recombination models and specificity databases are not
-part of this product. When a user asks, ClonoLoom downloads them from their publishers under their
-own licenses and terms, which it shows before each download and records with every result that
-uses them.
+This product includes data derived from:
+- the HUGO Gene Nomenclature Committee's gene names (https://www.genenames.org; CC0): the names of
+  the human T-cell receptor and immunoglobulin genes (internal/genes/human.go);
+- the GRCh38 human genome at Ensembl's annotation (https://www.ensembl.org; Ensembl imposes no
+  restrictions on the use of its data): the sequences of the human TRB gene segments the simulator
+  recombines (internal/simulate/germline.go);
+- 10x Genomics' "10k Human PBMCs, 5' v2.0, Chromium Controller" dataset
+  (https://www.10xgenomics.com/datasets; CC BY 4.0): the TRB V and J gene usage and junction
+  lengths the simulator follows (internal/simulate/germline.go).
+
+Public datasets, other reference germline sets, recombination models and specificity databases are
+not part of this product. When a user asks, ClonoLoom downloads them from their publishers under
+their own licenses and terms, which it shows before each download and records with every result
+that uses them.
