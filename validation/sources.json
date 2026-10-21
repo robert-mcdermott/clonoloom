@@ -3,7 +3,7 @@
   "datasets": {
     "10x-pbmc-1k": {
       "title": "Human PBMC from a healthy donor, 1k cells, 5′ V(D)J (Cell Ranger 4.0.0)",
-      "description": "10x Genomics' single-cell immune profiling of about 1,000 peripheral blood mononuclear cells: T- and B-cell contig annotations, clonotypes, consensus and metrics, and Cell Ranger's AIRR rearrangement tables. The smallest human paired-chain dataset; per-commit CI uses it.",
+      "description": "10x Genomics' single-cell immune profiling of about 1,000 peripheral blood mononuclear cells: T- and B-cell contig annotations, clonotypes, consensus and metrics, and Cell Ranger's AIRR rearrangement tables. The smallest human paired-chain dataset: a quick start.",
       "source": "10x Genomics, Human PBMC from a Healthy Donor, 1k cells (v1.1)",
       "page": "https://www.10xgenomics.com/datasets/human-pbmc-from-a-healthy-donor-1-k-cells-v-1-1-2-standard-4-0-0",
       "publisher": "10x Genomics",
@@ -74,11 +74,29 @@
           "size": 1174,
           "sha256": "67a7a6d3938a317f5b92cd131758606beb502cc93ec69a1715ee6f7ba06b4fd5"
         }
+      ],
+      "opens": [
+        {
+          "title": "T cells",
+          "name": "PBMC 1k T cells",
+          "summary": "The T cells' receptors, α and β chains paired by cell, with Cell Ranger's clonotypes and metrics beside them.",
+          "files": [
+            "sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv"
+          ]
+        },
+        {
+          "title": "B cells",
+          "name": "PBMC 1k B cells",
+          "summary": "The B cells' receptors, heavy and light chains paired by cell, with Cell Ranger's clonotypes and metrics beside them.",
+          "files": [
+            "sc5p_v1p1_hs_PBMC_1k_b_filtered_contig_annotations.csv"
+          ]
+        }
       ]
     },
     "10x-mouse-splenocytes-1k": {
       "title": "Splenocytes from a C57BL/6 mouse, 1k cells, 5′ V(D)J (Cell Ranger 4.0.0)",
-      "description": "10x Genomics' single-cell immune profiling of about 1,000 mouse splenocytes: T- and B-cell contig annotations, clonotypes and Cell Ranger's AIRR rearrangement tables. Mouse gene names and loci; per-commit CI uses it.",
+      "description": "10x Genomics' single-cell immune profiling of about 1,000 mouse splenocytes: T- and B-cell contig annotations, clonotypes and Cell Ranger's AIRR rearrangement tables, with mouse gene names.",
       "source": "10x Genomics, Splenocytes from C57BL/6 mice, 1k cells (v1.1)",
       "page": "https://www.10xgenomics.com/datasets/splenocytes-from-c-57-bl-6-mice-1-k-cells-v-1-1-2-standard-4-0-0",
       "publisher": "10x Genomics",
@@ -118,6 +136,24 @@
           "path": "sc5p_v1p1_mm_c57bl6_splenocyte_1k_b_clonotypes.csv",
           "size": 97648,
           "sha256": "ef729013f7a478ae8b49981b4e336aa26998834db8b413ad7c8a9dd499781bc0"
+        }
+      ],
+      "opens": [
+        {
+          "title": "T cells",
+          "name": "Mouse spleen 1k T cells",
+          "summary": "The T cells' receptors, α and β chains paired by cell, with Cell Ranger's clonotypes and metrics beside them.",
+          "files": [
+            "sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_filtered_contig_annotations.csv"
+          ]
+        },
+        {
+          "title": "B cells",
+          "name": "Mouse spleen 1k B cells",
+          "summary": "The B cells' receptors, heavy and light chains paired by cell, with Cell Ranger's clonotypes and metrics beside them.",
+          "files": [
+            "sc5p_v1p1_mm_c57bl6_splenocyte_1k_b_filtered_contig_annotations.csv"
+          ]
         }
       ]
     },
@@ -169,6 +205,24 @@
           "size": 7078,
           "sha256": "37076a94f8f34caf1afdcf9359a4f1e2da56465cee6f14358328c423ac07d980"
         }
+      ],
+      "opens": [
+        {
+          "title": "T cells",
+          "name": "PBMC 10k T cells",
+          "summary": "The T cells' receptors, α and β chains paired by cell, with Cell Ranger's clonotypes and metrics beside them.",
+          "files": [
+            "10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_filtered_contig_annotations.csv"
+          ]
+        },
+        {
+          "title": "B cells",
+          "name": "PBMC 10k B cells",
+          "summary": "The B cells' receptors, heavy and light chains paired by cell, with Cell Ranger's clonotypes and metrics beside them.",
+          "files": [
+            "10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_b_filtered_contig_annotations.csv"
+          ]
+        }
       ]
     },
     "10x-mouse-splenocytes-5k-gemx": {
@@ -219,11 +273,29 @@
           "size": 6266,
           "sha256": "af5fc16613b2856952d0d765dc8f8e72fb0122129ca95bb134bded1745a68e00"
         }
+      ],
+      "opens": [
+        {
+          "title": "T cells",
+          "name": "Mouse spleen 5k T cells",
+          "summary": "The T cells' receptors, α and β chains paired by cell, with Cell Ranger's clonotypes and metrics beside them.",
+          "files": [
+            "5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_filtered_contig_annotations.csv"
+          ]
+        },
+        {
+          "title": "B cells",
+          "name": "Mouse spleen 5k B cells",
+          "summary": "The B cells' receptors, heavy and light chains paired by cell, with Cell Ranger's clonotypes and metrics beside them.",
+          "files": [
+            "5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_b_filtered_contig_annotations.csv"
+          ]
+        }
       ]
     },
     "airr-standards-tests": {
       "title": "AIRR Community standards' test and example files (v2.0.0)",
-      "description": "The airr-standards repository's test files: a valid and an invalid Rearrangement TSV, Repertoire metadata, and the R package's larger example rearrangements.",
+      "description": "The airr-standards repository's test files: a valid and an invalid Rearrangement TSV, Repertoire metadata, and the R package's example rearrangements. Small files that show what ClonoLoom's checks find.",
       "source": "AIRR Community, airr-standards v2.0.0 (https://github.com/airr-community/airr-standards)",
       "page": "https://github.com/airr-community/airr-standards",
       "publisher": "AIRR Community",
@@ -258,6 +330,24 @@
           "path": "lang/R/inst/extdata/repertoire-example.yaml",
           "size": 17374,
           "sha256": "d0910decf324510485f86ef639ad6b2924bf7ad2d7955565d3c3544598f29a23"
+        }
+      ],
+      "opens": [
+        {
+          "title": "A valid AIRR file",
+          "name": "AIRR valid test file",
+          "summary": "The AIRR Community's valid test Rearrangement file: a few IGH rearrangements with every required field.",
+          "files": [
+            "lang/python/tests/data/good_rearrangement.tsv"
+          ]
+        },
+        {
+          "title": "An invalid AIRR file",
+          "name": "AIRR invalid test file",
+          "summary": "The AIRR Community's test file of invalid rearrangements: what ClonoLoom's checks say of a file with problems.",
+          "files": [
+            "lang/python/tests/data/bad_rearrangement.tsv"
+          ]
         }
       ]
     },
@@ -323,7 +413,7 @@
     },
     "emerson-2017-immunoseq": {
       "title": "Emerson et al. 2017, three small samples (immunoSEQ export, immuneACCESS)",
-      "description": "Three bulk TRB repertoires of the CMV cohort of Emerson et al. 2017 in Adaptive's own immunoSEQ export format, taken by HTTP range from the published project's archive (19.9 GB) without downloading it whole: the native format the immunoSEQ reader is checked on.",
+      "description": "Three bulk TRB repertoires of the CMV cohort of Emerson et al. 2017 in Adaptive's own immunoSEQ export format, with templates and reads. Taken from the published project's archive (19.9 GB) by HTTP range, without downloading it whole.",
       "source": "Adaptive Biotechnologies immuneACCESS, project emerson-2017-natgen",
       "page": "https://clients.adaptivebiotech.com/pub/emerson-2017-natgen",
       "publisher": "Adaptive Biotechnologies",
@@ -356,6 +446,18 @@
           "path": "P00572.tsv",
           "size": 28491901,
           "sha256": "353e381e8710119bcd5c8c3812d326a71da535e0f49eaaabddf99436d53ca758"
+        }
+      ],
+      "opens": [
+        {
+          "title": "Three subjects",
+          "name": "Emerson 2017, three subjects",
+          "summary": "Three bulk TRB repertoires (P00207, P00441, P00572) as one dataset of three samples, in templates.",
+          "files": [
+            "P00207.tsv",
+            "P00441.tsv",
+            "P00572.tsv"
+          ]
         }
       ]
     }

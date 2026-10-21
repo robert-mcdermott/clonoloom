@@ -58,6 +58,10 @@ folders or folders of them on the command line, or use **Open data** in the wind
 where they are: ClonoLoom never copies, changes or moves them. Running `clonoloom <paths>` again
 hands them to the ClonoLoom already running.
 
+To try it without your own data, choose **Example data**: public 10x Genomics, AIRR Community and
+immuneACCESS datasets, each shown with its source, size, license and citation and downloaded from
+its publisher only when you ask.
+
 <details>
 <summary>Options</summary>
 
@@ -67,6 +71,8 @@ hands them to the ClonoLoom already running.
 | `--window` | `app` | `app` (a desktop window), `browser` (the default browser) or `none` |
 | `--keep-running` | off | Keep serving after the window is closed |
 | `--data-dir` | `<user config dir>/ClonoLoom` | Where the project library is kept |
+| `--examples-dir` | `<data dir>/examples` | Where example data are downloaded, when asked |
+| `--offline` | off | Download nothing: ClonoLoom then reaches no other computer |
 | `--host` | 127.0.0.1 | Interface to bind |
 | `--dev` | off | Serve `web/` from the working directory (development) |
 | `--version` | | Print `clonoloom X.Y.Z` and exit |

@@ -171,8 +171,8 @@ As in the siblings:
 Outbound requests are only those the user starts, to an allow-list of hosts (public dataset and
 reference sources: 10x Genomics, GitHub releases, OPIG, AIRR Data Commons repositories, VDJServer,
 OGRDB, Adaptive's immuneACCESS). Each download shows its source, size, license and citation first,
-and is checked against a recorded checksum. ADC queries send only the query, never local data.
-`--offline` turns all of it off.
+and is checked against a recorded checksum. Redirects are followed only to the same hosts, over
+HTTPS. ADC queries send only the query, never local data. `--offline` turns all of it off.
 
 Default port 8860 (8860–8879). The siblings use 8765–8859.
 

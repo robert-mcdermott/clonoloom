@@ -145,6 +145,26 @@ with each.
   column present but empty no longer leaves every row without a count; rows counted by different
   columns leave the unit unknown, with a finding.
 
+- **Example data (wave 1, slice 6).** The **Example data** dialog, from the start page, the Data
+  view, the project menu and the command palette (`internal/examples`, adapted from SituCraft
+  0.9.0):
+  - six public datasets: four 10x Genomics V(D)J runs (human PBMC 1k and 10k, mouse splenocytes 1k
+    and 5k; T and B cells each), the AIRR Community's valid and invalid test files (CC BY 4.0), and
+    three Emerson et al. 2017 subjects in immunoSEQ's own format (immuneACCESS terms of use);
+  - each listed with its source, size, license and citation, and downloaded only when asked, from
+    its publisher; data under a provider's terms of use only once the user has read and accepted
+    them;
+  - every file checked against the size and SHA-256 that `validation/sources.json` records, and a
+    download put in place only when all are: a changed or interrupted one leaves nothing behind;
+  - members of a large remote zip (the 19.9 GB immuneACCESS archive, ZIP64) taken by HTTP range,
+    each checked by its CRC-32 too;
+  - only the publishers' hosts reached, and redirects followed only to them over HTTPS;
+  - `--offline` downloads nothing; `--examples-dir` chooses the folder (default
+    `<data dir>/examples`);
+  - an example opens as a dataset with a short name, and **any dataset whose files are an
+    example's**, however they were downloaded, carries its source, license and citation, shown on
+    its card and in the inspector and kept in the project for the methods.
+
 ### Validation
 
 - **Readers against independent readers:** every column ClonoLoom reads from 25 development files
@@ -177,6 +197,14 @@ with each.
 - **A page of a million clonotypes**, sorted and searched, in 37 ms (budget 100 ms).
 - immunoSEQ's own row counts reproduced; its template totals by frame type do not always sum from
   its rows (pandas sums them as ClonoLoom does), which the QC view says.
+- **Example data from their publishers:** the six examples downloaded as the program downloads
+  them, every file equal to its record, and each of their eleven datasets read
+  (`validation/examples_test.go`, with `CLONOLOOM_FETCH_EXAMPLES=1`); the three immuneACCESS
+  samples taken from the 19.9 GB archive in under 3 s.
+- **The downloader** (Go tests against a local server): a changed, longer or missing file refused
+  with nothing left behind; an archive of another size refused; members taken by range without
+  reading the rest; a redirect to another host refused; nothing offline, nothing under terms not
+  accepted, nothing from another computer.
 
 - **Go tests of the host:**
   - security headers; foreign Host headers and cross-origin requests refused;

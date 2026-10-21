@@ -27,6 +27,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"clonoloom/internal/examples"
 )
 
 //go:embed web/index.html web/styles.css web/app.js web/favicon.svg web/lib/*.js web/ui/*.js
@@ -53,6 +55,8 @@ type config struct {
 	window      string
 	keepRunning bool
 	dataDir     string
+	examplesDir string
+	offline     bool
 	dev         bool
 	showVersion bool
 	files       []string
@@ -69,6 +73,9 @@ type app struct {
 	datasets *datasets
 	// clonotypes are the clonotype tables lately computed (api_clonotypes.go).
 	clonotypes *clonotypeTables
+	// examples are the example datasets, downloaded when asked (api_examples.go).
+	examples  *examples.Library
+	downloads *downloads
 }
 
 func init() {
@@ -254,6 +261,8 @@ func parseConfig(args []string) (config, error) {
 	flags.StringVar(&cfg.window, "window", "app", "how to show ClonoLoom: app (a desktop window from Chrome, Edge, Brave or Chromium, else the default browser), browser (the default browser) or none")
 	flags.BoolVar(&cfg.keepRunning, "keep-running", false, "keep serving after the app window is closed")
 	flags.StringVar(&cfg.dataDir, "data-dir", "", "folder for the project library (default: <user config dir>/ClonoLoom)")
+	flags.StringVar(&cfg.examplesDir, "examples-dir", "", "folder the example datasets are downloaded into, when asked (default: <data dir>/examples)")
+	flags.BoolVar(&cfg.offline, "offline", false, "download nothing: ClonoLoom then reaches no other computer")
 	flags.BoolVar(&cfg.dev, "dev", false, "serve web/ from the working directory instead of the embedded copy")
 	flags.BoolVar(&cfg.showVersion, "version", false, "print the version and exit")
 	noOpen := flags.Bool("no-open", false, "same as --window none")
@@ -300,6 +309,9 @@ func parseArgs(flags *flag.FlagSet, args []string) ([]string, error) {
 }
 
 func newApp(cfg config) (*app, error) {
+	if cfg.examplesDir == "" {
+		cfg.examplesDir = filepath.Join(cfg.dataDir, "examples")
+	}
 	a := &app{
 		session:    strconv.FormatInt(time.Now().UnixNano(), 36),
 		dev:        cfg.dev,
@@ -307,6 +319,8 @@ func newApp(cfg config) (*app, error) {
 		files:      newLocalFiles(),
 		datasets:   newDatasets(),
 		clonotypes: &clonotypeTables{},
+		examples:   newExamples(cfg.examplesDir, cfg.offline),
+		downloads:  &downloads{running: map[string]*download{}, failed: map[string]*download{}},
 	}
 	if problems := a.files.add(cfg.files); len(problems) > 0 {
 		for _, problem := range problems {
@@ -341,6 +355,9 @@ func (a *app) printBanner(out io.Writer, url string) {
 		fmt.Fprintf(out, "Dev mode: serving web/ from disk in %s (no-store)\n", a.assetDir)
 	}
 	fmt.Fprintf(out, "Project library: %s\n", a.store.dir)
+	if a.examples.Offline {
+		fmt.Fprintln(out, "Offline: no example data are downloaded")
+	}
 	if n := len(a.files.list()); n > 0 {
 		fmt.Fprintf(out, "Opening %d item(s) named on the command line\n", n)
 	}
@@ -384,6 +401,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerDatasets(mux)
 	a.registerQC(mux)
 	a.registerClonotypes(mux)
+	a.registerExamples(mux)
 	mux.HandleFunc("POST /api/library/local/{index}", func(w http.ResponseWriter, r *http.Request) {
 		file, ok := a.files.get(r.PathValue("index"))
 		if !ok {

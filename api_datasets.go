@@ -39,6 +39,8 @@ type dataset struct {
 	Result *reads.Result
 	Report validate.Report
 	Opened time.Time
+	// Credits are the examples its files are, with their sources, licenses and citations.
+	Credits []credit
 }
 
 type datasets struct {
@@ -98,9 +100,12 @@ func (a *app) openDataset(ctx context.Context, paths []string, inputs []reads.In
 		return nil, err
 	}
 	ds := &dataset{ID: datasetID(res.Sources), Result: res, Report: validate.Check(res), Opened: time.Now().UTC()}
+	var sums []string
 	for _, s := range res.Sources {
 		ds.Inputs = append(ds.Inputs, reads.Input{Path: s.Path, Name: s.Name})
+		sums = append(sums, s.SHA256)
 	}
+	ds.Credits = a.credits(sums)
 	ds.Name = name
 	if ds.Name == "" {
 		ds.Name = defaultDatasetName(paths, res)
@@ -181,12 +186,13 @@ type datasetSummary struct {
 	ReaderVersion int               `json:"readerVersion"`
 	Bytes         int64             `json:"bytes"`
 	Opened        string            `json:"opened"`
+	Credits       []credit          `json:"credits,omitempty"`
 }
 
 func (ds *dataset) summary() datasetSummary {
 	res, t := ds.Result, ds.Result.Table
 	s := datasetSummary{ID: ds.ID, Name: ds.Name, Unit: res.Unit, Rows: t.Len(), SingleCell: t.Cell != nil, Report: ds.Report,
-		ReaderVersion: reads.ReaderVersion, Bytes: t.Size(), Opened: ds.Opened.Format(time.RFC3339), Companions: res.Companions}
+		ReaderVersion: reads.ReaderVersion, Bytes: t.Size(), Opened: ds.Opened.Format(time.RFC3339), Companions: res.Companions, Credits: ds.Credits}
 	if s.Companions == nil {
 		s.Companions = []reads.Companion{}
 	}

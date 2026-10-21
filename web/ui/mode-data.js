@@ -28,7 +28,8 @@ export function mountData(app, container) {
   const { store } = app;
   const root = h('div.view');
   const openButton = h('button.btn.primary.small', { type: 'button', onclick: () => app.openPathDialog() }, icon('folder'), 'Open data');
-  const head = h('div.workbench-head', h('h1', icon('database'), 'Data'), h('span.spacer'), openButton);
+  const examplesButton = h('button.btn.small', { type: 'button', onclick: () => app.showExamples() }, icon('flask'), 'Example data');
+  const head = h('div.workbench-head', h('h1', icon('database'), 'Data'), h('span.spacer'), examplesButton, openButton);
   const body = h('div.view-body.data-view');
   root.append(head, body);
   container.append(root);
@@ -51,7 +52,8 @@ export function mountData(app, container) {
         h('h3', 'No data yet'),
         h('p', 'Open AIRR rearrangement tables, a Cell Ranger V(D)J output folder or immunoSEQ exports. What you open together becomes one dataset: a cohort\'s exports, say, or a run\'s T and B cells. ClonoLoom reads each file where it is, checks it, and records its fingerprint in the project.'),
         h('div.btn-row', { style: { marginTop: '10px', justifyContent: 'center' } },
-          h('button.btn.primary', { type: 'button', onclick: () => app.openPathDialog() }, icon('folder'), 'Open data'))));
+          h('button.btn.primary', { type: 'button', onclick: () => app.openPathDialog() }, icon('folder'), 'Open data'),
+          h('button.btn', { type: 'button', onclick: () => app.showExamples() }, icon('flask'), 'Example data'))));
       return;
     }
     body.append(h('div.section-title', `Datasets · ${datasets.length}`), h('div.dataset-cards', ...datasets.map(datasetCard)));
@@ -101,6 +103,7 @@ export function mountData(app, container) {
       h('span.spacer'),
       h('button.icon-button.small', { type: 'button', title: 'More', 'aria-label': `More for ${d.name}`, onclick: (e) => { e.stopPropagation(); datasetMenu(e.currentTarget, d, state); } }, icon('more'))),
     h('p', d.formats.join(', ')),
+    d.credits?.length ? h('p.muted.small', icon('flask'), ` Example data: ${d.credits.map((c) => c.license).join('; ')}`) : null,
     h('div.dataset-stats',
       h('span', plural(d.samples.length, 'sample')),
       h('span', plural(d.rows, d.singleCell ? 'contig' : 'rearrangement')),
@@ -223,7 +226,7 @@ export function mountData(app, container) {
     const loci = summary ? Object.entries(summary.loci).sort((x, y) => y[1] - x[1]).map(([l]) => l).join(' ') : '';
     return h('tr',
       h('td.mono', { title: summary?.repertoireId ? `repertoire_id ${summary.repertoireId}` : null }, name),
-      h('td', dataset.name),
+      h('td.dataset-name', { title: dataset.name }, dataset.name),
       h('td.r', summary ? count(summary.rows) : ''),
       h('td.r', summary ? percent(summary.productive, summary.rows) : ''),
       h('td.r', summary ? abundance(summary.abundance, unit) : ''),
@@ -320,6 +323,13 @@ export function mountData(app, container) {
         h('span.muted.small', `${formatBytes(s.size)} · ${s.format}`),
         h('span.mono.small', { title: `SHA-256 ${s.sha256}` }, `SHA-256 ${s.sha256.slice(0, 16)}…`),
         h('span.muted.small.path', { title: s.path }, s.path))),
+      d.credits?.length
+        ? [h('div.section-title', { style: { marginTop: '10px' } }, 'Source and license'), ...d.credits.map((c) => h('div.source-row',
+          h('b', c.title),
+          h('span.small', h('a', { href: c.page, target: '_blank', rel: 'noopener noreferrer' }, c.source)),
+          h('span.small', c.licenseUrl ? h('a', { href: c.licenseUrl, target: '_blank', rel: 'noopener noreferrer' }, c.license) : c.license),
+          h('span.muted.small', `Cite: ${c.citation}`)))]
+        : null,
       summary?.companions?.length
         ? [h('div.section-title', { style: { marginTop: '10px' } }, 'Beside them'), ...summary.companions.map((c) => h('div.source-row', h('span', c.path.split(/[\\/]/).pop()), h('span.muted.small', c.kind.replace('cellranger-', 'Cell Ranger '))))]
         : null,

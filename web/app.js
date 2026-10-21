@@ -6,6 +6,7 @@ import { showMenu, showDialog, promptDialog, confirmDialog, toast, closeMenu } f
 import { createStore } from './ui/store.js';
 import { createLibrary, detectBackend, getDataset, locateFile, openDataset, prefs } from './ui/storage.js';
 import { pickPaths } from './ui/file-picker.js';
+import { createExamples } from './ui/examples.js';
 import { mountSidebar } from './ui/sidebar.js';
 import { mountInspector } from './ui/inspector.js';
 import { mountDrawer } from './ui/drawer.js';
@@ -258,6 +259,10 @@ async function start() {
     });
     if (paths?.length) await app.openData(paths);
   };
+
+  // Public example data, downloaded when asked (ui/examples.js).
+  app.examples = createExamples(app);
+  app.showExamples = () => app.examples.dialog();
 
   // --- Datasets ----------------------------------------------------------------------------------
 
@@ -524,6 +529,7 @@ async function start() {
       { section: 'Open' },
       { label: 'Data…', icon: 'folder', hint: `${modKey}O`, onSelect: () => app.openPathDialog() },
       { label: 'Files…', icon: 'file', onSelect: () => app.pickFiles() },
+      { label: 'Example data…', icon: 'flask', onSelect: () => app.showExamples() },
       '-',
       { section: 'Export' },
       { label: 'Project document (JSON)', icon: 'download', onSelect: exportProjectJSON },
@@ -538,6 +544,7 @@ async function start() {
     ...MODES.filter((m) => m !== 'sep').map((m) => ({ label: `Go to ${m.label}`, icon: m.icon, run: () => app.setMode(m.id), keywords: m.id })),
     { label: 'Open data', icon: 'folder', hint: `${modKey}O`, run: () => app.openPathDialog(), keywords: 'airr cell ranger immunoseq folder path import tsv csv' },
     { label: 'Open files', icon: 'file', run: () => app.pickFiles() },
+    { label: 'Example data', icon: 'flask', run: () => app.showExamples(), keywords: 'download public 10x pbmc immunoseq emerson airr try sample demo' },
     { label: 'New project', icon: 'plus', run: () => app.newProject() },
     { label: 'Open a saved project', icon: 'library', hint: `${modKey}⇧O`, run: openLibraryDialog },
     { label: 'Save project now', icon: 'save', hint: `${modKey}S`, run: saveNow },

@@ -30,7 +30,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | P1 | One self-contained program for macOS, Linux and Windows (x64 and ARM64); one-line install with checksum and version checks, no administrator rights; installs as `$HOME/.local/bin/clonoloom` and `%LocalAppData%\Programs\ClonoLoom` | partial (wave 1, slice 1: six binaries of about 7 MB built by the release workflow, installers checking SHA-256 and version; the first release is drafted at the end of wave 1) |
 | P2 | Opens as a desktop window (a Chromium-family browser in app mode with its own profile), else the default browser; a second launch hands its paths to the running ClonoLoom | done (wave 1, slice 1: from SituCraft 0.9.0; slice 3: what a launch names opens as datasets) |
 | P3 | Ports 8860–8879, clear of the siblings' (Proteoscope 8765–8814, CytoWeave 8770–8789, MaveScape 8820–8839, SituCraft 8840–8859), checked by a test | done (wave 1, slice 1) |
-| P4 | `--offline`, `--data-dir`, `--cache-dir`, `--cache-limit`, `--examples-dir`, `--remote-control`, `--host`, `--port`, `--window`, `--version` (prints `clonoloom X.Y.Z`) | planned (waves 1, 2) |
+| P4 | `--offline`, `--data-dir`, `--cache-dir`, `--cache-limit`, `--examples-dir`, `--remote-control`, `--host`, `--port`, `--window`, `--version` (prints `clonoloom X.Y.Z`) | partial (wave 1: `--offline`, `--data-dir`, `--examples-dir`, `--host`, `--port`, `--window`, `--version`; wave 2: the cache's flags and `--remote-control`) |
 | P5 | Light and dark themes, color-vision-friendly palettes, keyboard operation, WCAG AA contrast, plots described in text | planned (wave 1, every wave) |
 | P6 | A container build file for the headless commands (AIRR Software WG guidance) | planned (wave 8) |
 | P7 | Apache-2.0; no third-party runtime dependencies in Go or JavaScript; nothing under an incompatible license copied in or bundled | done (wave 1, slice 1; every slice keeps it: the only data built in is HGNC's gene list, CC0) |
@@ -52,7 +52,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | D10 | Sample annotation: subject, timepoint, tissue, cell subset, condition, batch, HLA typing; suggested from file names; MiAIRR metadata mapped when present | done (wave 1, slice 3: typed, suggested from names (after CytoWeave), or filled from AIRR Repertoire metadata and immunoSEQ sample tags, each value's origin kept) |
 | D11 | Sources read in place, never modified; fingerprints (size and SHA-256) recorded; a moved source found again and checked | done (wave 1, slice 3: SHA-256 taken while reading, equal to the recorded checksums of every development file; a moved file found by its size and SHA-256 near where it was, or chosen and checked; a changed file said) |
 | D12 | A library of projects; project archives (`.clz`) bundling the project and, where licenses allow, its data | planned (wave 1: library; wave 8: archives) |
-| D13 | Public dataset catalog: license, size and citation shown before a download the user confirms; checksums verified; license status carried into exports and methods | planned (wave 1: catalog and manager; every wave adds datasets) |
+| D13 | Public dataset catalog: license, size and citation shown before a download the user confirms; checksums verified; license status carried into exports and methods | partial (wave 1, slice 6: the catalog of six datasets, downloads confirmed, checked by SHA-256 and put in place whole, terms of use accepted first, `--offline`; a dataset whose files are an example's carries its license and citation; methods in slice 7, exports in wave 2; every wave adds datasets) |
 
 ## Quality control
 
@@ -173,7 +173,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | # | Requirement | Status |
 | --- | --- | --- |
 | E1 | Simulated studies with their truth (`clonoloom simulate`) | planned (wave 2: bulk TCR; wave 3: longitudinal; wave 4: specificity; wave 5: BCR lineages; wave 6: single cell with expression) |
-| E2 | Public example datasets downloaded on request with license and citation shown | planned (wave 1, every wave) |
+| E2 | Public example datasets downloaded on request with license and citation shown | done (wave 1, slice 6: six datasets of 10x Genomics, the AIRR Community and immuneACCESS; every wave adds its own) |
 | E3 | Guided tours and worked examples per view | planned (wave 2, every wave) |
 | E4 | Exercises graded against simulated truth, with class codes | parked |
 

@@ -229,7 +229,9 @@ stored by checksum) in `~/Library/Application Support/ClonoLoom` on macOS,
 `%AppData%\ClonoLoom` on Windows. `--data-dir` puts it elsewhere. Delete it only
 if you no longer need those projects; deleted projects are first moved to its
 `trash` folder. Your repertoire files are never copied into the library, moved
-or changed: projects refer to them where they are.
+or changed: projects refer to them where they are. Example data you download are
+kept in its `examples` folder (`--examples-dir` puts them elsewhere); remove one
+from the **Example data** dialog.
 
 ## Building from source
 

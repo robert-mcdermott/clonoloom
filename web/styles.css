@@ -750,6 +750,7 @@ table.data tr.selected td { background: var(--active); }
 .finding-examples td.value { max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .table-scroll { overflow: auto; max-height: 60vh; border: 1px solid var(--line); border-radius: var(--radius-sm); }
 .samples-table td.annotation { padding: 2px 4px; min-width: 96px; }
+.samples-table td.dataset-name { max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .samples-table td.annotation input { width: 100%; min-width: 80px; }
 .samples-table input.suggested { border-style: dashed; }
 .source-row { display: flex; flex-direction: column; gap: 1px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 12px; min-width: 0; }
@@ -822,3 +823,19 @@ button.ctable-th:hover { color: var(--text); }
 .ctable-row .locus { font-size: 10px; font-weight: 700; color: var(--text-3); border: 1px solid var(--line); border-radius: 4px; padding: 0 3px; }
 .ctable-row .genes { color: var(--text-2); }
 .members td { font-size: 11.5px; }
+
+/* Example data (ui/examples.js): a card for each public dataset, with its source, license and
+   citation. */
+.examples { display: flex; flex-direction: column; gap: 10px; max-height: 68vh; overflow: auto; }
+.examples > p { margin: 0; }
+.example-card { gap: 6px; }
+.example-card p { margin: 0; }
+.example-head { display: flex; align-items: baseline; gap: 8px; }
+.example-head h4 { flex: 1; margin: 0; }
+.example-opens { margin: 0; padding-left: 18px; font-size: 12.5px; color: var(--text-2); }
+.example-card .kv { grid-template-columns: 70px 1fr; }
+.example-card .kv dd { text-align: left; white-space: normal; }
+.example-card .btn-row .spacer { flex: 1; }
+.example-progress { display: flex; flex-direction: column; gap: 4px; }
+.check-row { display: flex; gap: 8px; align-items: flex-start; font-weight: 600; }
+.check-row input { margin-top: 3px; }

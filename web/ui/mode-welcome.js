@@ -22,6 +22,7 @@ export function mountWelcome(app, container) {
         h('p', 'ClonoLoom opens T- and B-cell receptor data from bulk and single-cell sequencing, checks them, and defines clonotypes the way you choose and can see. Measure diversity and overlap, follow clonotypes over time, group receptors by likely specificity and trace B-cell families, on your own computer, with every step recorded.'),
         h('div.btn-row',
           h('button.btn.primary', { type: 'button', onclick: () => app.openPathDialog() }, icon('folder'), 'Open data'),
+          h('button.btn', { type: 'button', onclick: () => app.showExamples() }, icon('flask'), 'Example data'),
           h('button.btn', { type: 'button', onclick: () => app.openLibrary() }, icon('library'), 'Open a saved project'))),
       h('img', { src: 'favicon.svg', width: 132, height: 132, alt: '', style: { filter: 'drop-shadow(0 18px 40px rgba(200, 64, 111, 0.35))', borderRadius: '28px' } })),
     h('div.section-title', 'Recent projects'),

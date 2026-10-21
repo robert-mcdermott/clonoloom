@@ -45,6 +45,8 @@ export function datasetRecord(summary, now = new Date().toISOString()) {
     samples: summary.samples.map((s) => s.name),
     findings: { fatal: summary.report.fatal, warnings: summary.report.warnings, notes: summary.report.notes },
     readerVersion: summary.readerVersion,
+    // The example data its files are: their source, license and citation (for the methods).
+    credits: (summary.credits ?? []).map((c) => ({ example: c.example, title: c.title, source: c.source, page: c.page, license: c.license, licenseUrl: c.licenseUrl ?? '', licenseClass: c.licenseClass, citation: c.citation })),
     opened: now,
   };
 }
