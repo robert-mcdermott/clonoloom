@@ -55,7 +55,49 @@ with each.
   - A release workflow builds the six binaries with their checksums once CI has passed on exactly
     the tagged files.
 
+- **Reading repertoires (wave 1, slice 2).** ClonoLoom's own readers, every one producing the same
+  columnar table of rearrangements (about 58 bytes a row, with junctions and gene calls stored
+  once each):
+  - **AIRR Rearrangement TSV** (schema 1.3 to 2.0): every typed column checked on every row, the
+    schema's required columns reported when missing, samples by `repertoire_id`, counts by
+    `umi_count`, `duplicate_count` or `consensus_count`;
+  - **Cell Ranger V(D)J** contig annotations (Cell Ranger 3 to 9, both spellings of booleans,
+    Cell Ranger 9's `sample` column), and output folders of `vdj` and `multi` runs, their
+    clonotypes, consensus and metrics kept beside them;
+  - **immunoSEQ** exports v2 and v3: the junction cut from the read by its index, `In`/`Out`/`Stop`,
+    templates with a fallback to reads for a file whose templates are missing or −1, and gene
+    names mapped from Adaptive's to IMGT's (ties for genes resolved only to their family);
+  - **AIRR Repertoire metadata** in JSON (schema 1.3 and 2.0), matched to samples by
+    `repertoire_id`;
+  - gzip recognized by its first bytes; CRLF and byte-order marks; lines over 16 MB refused.
+- **Gene names in IMGT nomenclature** (`internal/genes`): locus, segment, family, gene and allele;
+  shared, orphon, duplicated and constant genes; ambiguous calls kept as sets; the list of 676
+  human TR and IG genes generated from HGNC (CC0).
+- **The validator** (`internal/validate`): findings with stable codes (fatal, warning, note), counts,
+  example rows with their line and a remedy: the readers' problems; junctions that are not
+  sequences, do not translate, are out of frame or have a stop while productive, or lack their
+  anchors; gene calls that are not IMGT names or of different loci (TRA and TRD counted as one);
+  missing and zero counts; duplicate sequence IDs; cells with more than two productive chains of a
+  locus; samples with over 40% non-productive abundance; an unknown unit. Shown in the Data view
+  in the next slice.
+- **The abundance unit** of every dataset: cells, templates, reads, UMIs, sequences, or unknown
+  when the format does not say (AIRR `duplicate_count` alone), never guessed.
+- **Development data** (`validation/sources.json`, `validation/fetch.mjs`, adapted from SituCraft
+  0.9.0): four 10x Genomics V(D)J datasets (Cell Ranger 4.0, 6.1 and 9.0) and the AIRR Community's
+  test files, all CC BY 4.0, for CI; three Emerson et al. 2017 samples in immunoSEQ's format (taken
+  by HTTP range from the 19.9 GB archive) and two AIRR Data Commons repertoires, for the
+  maintainer's validation only, under their providers' terms. `--ci` fetches the open ones; an
+  AIRR Data Commons repertoire is fetched by its ADC API query.
+- [docs/FORMATS.md](docs/FORMATS.md): what each reader reads and how.
+
 ### Validation
+
+- **Readers against independent readers:** every column ClonoLoom reads from 25 development files
+  (AIRR, Cell Ranger and immunoSEQ) equals what the `airr` library 2.0.0 and pandas 3.0.6 read
+  (`validation/readers_test.go`, `validation/reference/read_repertoires.py`).
+- **A million rearrangements** of an immunoSEQ file read and validated in 1.5 s (budget 5 s), at
+  58 bytes a row plus the junctions (budget 64).
+- **Fuzzing:** every reader and the metadata reader fuzzed (12 million inputs without a fault).
 
 - **Go tests of the host:**
   - security headers; foreign Host headers and cross-origin requests refused;

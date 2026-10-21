@@ -1,0 +1,363 @@
+{
+  "about": "Public data the validation suites use, and ClonoLoom's example datasets: downloaded and checked by node validation/fetch.mjs into validation/cache/<name>/ (or $CLONOLOOM_DATA/<name>/). Nothing here is stored in the repository or the ClonoLoom program. licenseClass is open (CC0, CC BY: may be used in per-commit CI), terms (a provider's terms of use: maintainer validation only, never redistributed) or unknown (no license stated: maintainer validation only). ci marks the data sets per-commit CI fetches (node validation/fetch.mjs --ci).",
+  "datasets": {
+    "10x-pbmc-1k": {
+      "title": "Human PBMC from a healthy donor, 1k cells, 5′ V(D)J (Cell Ranger 4.0.0)",
+      "description": "10x Genomics' single-cell immune profiling of about 1,000 peripheral blood mononuclear cells: T- and B-cell contig annotations, clonotypes, consensus and metrics, and Cell Ranger's AIRR rearrangement tables. The smallest human paired-chain dataset; per-commit CI uses it.",
+      "source": "10x Genomics, Human PBMC from a Healthy Donor, 1k cells (v1.1)",
+      "page": "https://www.10xgenomics.com/datasets/human-pbmc-from-a-healthy-donor-1-k-cells-v-1-1-2-standard-4-0-0",
+      "publisher": "10x Genomics",
+      "license": "CC BY 4.0 (10x Genomics)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "licenseClass": "open",
+      "citation": "10x Genomics. Single Cell Immune Profiling datasets (https://www.10xgenomics.com/datasets).",
+      "ci": true,
+      "base": "https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v1p1_hs_PBMC_1k/",
+      "files": [
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv",
+          "size": 188126,
+          "sha256": "96229e66d56986e93f62e98c30bac9bca5c5525824501f3513ea4444d3251da6"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_t_all_contig_annotations.csv",
+          "size": 335194,
+          "sha256": "50a8fad881653a7bd8fff2ff7b240e1854dab7cf146055fa20607c8d389a3b3d"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_t_airr_rearrangement.tsv",
+          "size": 1508706,
+          "sha256": "739858c8e9c191ac648befb68662ccc7b4585ebf36550e31f54453ff1efcce82"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_t_clonotypes.csv",
+          "size": 64552,
+          "sha256": "897f9ad8dd69954a4b7cd53006218560385d1bc308dba53cd18503b3056276ed"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_t_consensus_annotations.csv",
+          "size": 115555,
+          "sha256": "8605ae56548b83f4de9b59fdef5bb61eedb03a7cec1818371c4ac793bc5d7bd5"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_t_metrics_summary.csv",
+          "size": 910,
+          "sha256": "8bfb4abb5dbcdd5052b3acb0d5c74951fda0dfe650d0b061bb505a2b2a87d530"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_b_filtered_contig_annotations.csv",
+          "size": 30541,
+          "sha256": "93f5112b06cfa52306577bcff7fbb21c1b65ed49eb71cddbb8e35236f74b1ff4"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_b_all_contig_annotations.csv",
+          "size": 214754,
+          "sha256": "763ec1c37cc554e57c375dd97ac542c55ee879ff79461691619a8b861aceb02c"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_b_airr_rearrangement.tsv",
+          "size": 272914,
+          "sha256": "6e32ab1ad973a4e8daec9c4ea77e9044d80c7d03baf9122277d95f8cf6c255a4"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_b_clonotypes.csv",
+          "size": 10162,
+          "sha256": "63c192cd12beb39358b88812fe8eb4fc4ca856867529ca30d9688c8515df3017"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_b_consensus_annotations.csv",
+          "size": 18236,
+          "sha256": "2ee362f4e96a64c1edf7da101eee1bb58cb528f0e4c7c575a336da3c90df05c4"
+        },
+        {
+          "path": "sc5p_v1p1_hs_PBMC_1k_b_metrics_summary.csv",
+          "size": 1174,
+          "sha256": "67a7a6d3938a317f5b92cd131758606beb502cc93ec69a1715ee6f7ba06b4fd5"
+        }
+      ]
+    },
+    "10x-mouse-splenocytes-1k": {
+      "title": "Splenocytes from a C57BL/6 mouse, 1k cells, 5′ V(D)J (Cell Ranger 4.0.0)",
+      "description": "10x Genomics' single-cell immune profiling of about 1,000 mouse splenocytes: T- and B-cell contig annotations, clonotypes and Cell Ranger's AIRR rearrangement tables. Mouse gene names and loci; per-commit CI uses it.",
+      "source": "10x Genomics, Splenocytes from C57BL/6 mice, 1k cells (v1.1)",
+      "page": "https://www.10xgenomics.com/datasets/splenocytes-from-c-57-bl-6-mice-1-k-cells-v-1-1-2-standard-4-0-0",
+      "publisher": "10x Genomics",
+      "license": "CC BY 4.0 (10x Genomics)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "licenseClass": "open",
+      "citation": "10x Genomics. Single Cell Immune Profiling datasets (https://www.10xgenomics.com/datasets).",
+      "ci": true,
+      "base": "https://cf.10xgenomics.com/samples/cell-vdj/4.0.0/sc5p_v1p1_mm_c57bl6_splenocyte_1k/",
+      "files": [
+        {
+          "path": "sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_filtered_contig_annotations.csv",
+          "size": 79707,
+          "sha256": "18f51c2910660cba3b08ea60d47a82071976ac087933e0ab611ca997f6dc0988"
+        },
+        {
+          "path": "sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_airr_rearrangement.tsv",
+          "size": 591567,
+          "sha256": "b9d6c2b59fded58bb5733f4de37aa80d2557fe7aa184964aa6eae1c2cfda9422"
+        },
+        {
+          "path": "sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_clonotypes.csv",
+          "size": 23160,
+          "sha256": "ff208610721e7110e8f8a26e341c45429e2d394222878cbb72523fb147ab193b"
+        },
+        {
+          "path": "sc5p_v1p1_mm_c57bl6_splenocyte_1k_b_filtered_contig_annotations.csv",
+          "size": 333078,
+          "sha256": "60b04d77aac794ae9f632b28522e0b5b12427f8c1a38e6e7233e0cbd81104c88"
+        },
+        {
+          "path": "sc5p_v1p1_mm_c57bl6_splenocyte_1k_b_airr_rearrangement.tsv",
+          "size": 2764819,
+          "sha256": "e7210bcfc75e6acdf8caddd301a99bd259fe0a6a5462a06ed8647788287ecf29"
+        },
+        {
+          "path": "sc5p_v1p1_mm_c57bl6_splenocyte_1k_b_clonotypes.csv",
+          "size": 97648,
+          "sha256": "ef729013f7a478ae8b49981b4e336aa26998834db8b413ad7c8a9dd499781bc0"
+        }
+      ]
+    },
+    "10x-pbmc-10k-v2": {
+      "title": "10k human PBMCs, 5′ v2.0, Chromium Controller (Cell Ranger 6.1.0, multi)",
+      "description": "10x Genomics' single-cell immune profiling of about 10,000 human PBMCs from a Cell Ranger multi run: T- and B-cell contig annotations with framework and CDR columns, AIRR rearrangement tables and clonotypes.",
+      "source": "10x Genomics, 10k Human PBMCs, 5′ v2.0, Chromium Controller",
+      "page": "https://www.10xgenomics.com/datasets/10-k-human-pbm-cs-5-v-2-0-chromium-controller-2-standard-6-1-0",
+      "publisher": "10x Genomics",
+      "license": "CC BY 4.0 (10x Genomics)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "licenseClass": "open",
+      "citation": "10x Genomics. Single Cell Immune Profiling datasets (https://www.10xgenomics.com/datasets).",
+      "ci": true,
+      "base": "https://cf.10xgenomics.com/samples/cell-vdj/6.1.0/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller/",
+      "files": [
+        {
+          "path": "10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_filtered_contig_annotations.csv",
+          "size": 5604617,
+          "sha256": "d6e2fd6cebd9177221f2b73d25d9ec70d46a2a51dc115e9a0e723d473391e536"
+        },
+        {
+          "path": "10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_airr_rearrangement.tsv",
+          "size": 21657209,
+          "sha256": "1806a603de1139c08a63bac7eedaf5a86770f29ba8c31ba795ad081b4f777ffd"
+        },
+        {
+          "path": "10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_clonotypes.csv",
+          "size": 754463,
+          "sha256": "c0cd2674ce9f2e97bcc7ab59d97099c3c3a0b89a97ed1d8d404ab5867ca62c1f"
+        },
+        {
+          "path": "10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_b_filtered_contig_annotations.csv",
+          "size": 567187,
+          "sha256": "0d64ad204f80539eff3c4913885bd3064b83724f4da9d670156a9c8476779a5d"
+        },
+        {
+          "path": "10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_b_airr_rearrangement.tsv",
+          "size": 2589088,
+          "sha256": "77b65e39a4dc65af7e59d6c1c55f260a216671557b6c7c848fde6abbdc0b0b79"
+        },
+        {
+          "path": "10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_b_clonotypes.csv",
+          "size": 77128,
+          "sha256": "38247020fcda598595b14d225c710323d2dc7872063bf8fd81a683affc47b1b3"
+        },
+        {
+          "path": "10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_metrics_summary.csv",
+          "size": 7078,
+          "sha256": "37076a94f8f34caf1afdcf9359a4f1e2da56465cee6f14358328c423ac07d980"
+        }
+      ]
+    },
+    "10x-mouse-splenocytes-5k-gemx": {
+      "title": "5k mouse splenocytes, GEM-X 5′ v3 (Cell Ranger 9.0.0, multi)",
+      "description": "10x Genomics' single-cell immune profiling of about 5,000 mouse splenocytes, written by a recent Cell Ranger: T- and B-cell contig annotations, AIRR rearrangement tables and clonotypes.",
+      "source": "10x Genomics, 5k Mouse Splenocytes, GEM-X 5′ v3",
+      "page": "https://www.10xgenomics.com/datasets/5k_Mouse_Splenocytes_5p_gem-x",
+      "publisher": "10x Genomics",
+      "license": "CC BY 4.0 (10x Genomics)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "licenseClass": "open",
+      "citation": "10x Genomics. Single Cell Immune Profiling datasets (https://www.10xgenomics.com/datasets).",
+      "ci": true,
+      "base": "https://cf.10xgenomics.com/samples/cell-vdj/9.0.0/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x/",
+      "files": [
+        {
+          "path": "5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_filtered_contig_annotations.csv",
+          "size": 1622886,
+          "sha256": "95a812dc442028f1a69ca81ee8b3bc4e544547525e7cee0183c29091e329a420"
+        },
+        {
+          "path": "5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_airr_rearrangement.tsv",
+          "size": 5692304,
+          "sha256": "815be34126037d81719a2f4ba7cf4cddd47da774ee71c7d82949add1a357e66b"
+        },
+        {
+          "path": "5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_clonotypes.csv",
+          "size": 227557,
+          "sha256": "04164ef1abae31cb73775a49641cac9f593ec08b225b9a7a27e9a724799ba05d"
+        },
+        {
+          "path": "5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_b_filtered_contig_annotations.csv",
+          "size": 3796827,
+          "sha256": "fa9111e62da1951fba4336ac5aa5da13d36dffab542e38146f821071a9878e6d"
+        },
+        {
+          "path": "5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_b_airr_rearrangement.tsv",
+          "size": 15050638,
+          "sha256": "492bd8abec310f64ec59a645f413f2c0f723e86c574bcc2c0deae72c1d25a59d"
+        },
+        {
+          "path": "5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_b_clonotypes.csv",
+          "size": 483276,
+          "sha256": "13a607c76a32b18472af99f528c0eb153fd67022c9c7a13b1954df5e3664d83c"
+        },
+        {
+          "path": "5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_metrics_summary.csv",
+          "size": 6266,
+          "sha256": "af5fc16613b2856952d0d765dc8f8e72fb0122129ca95bb134bded1745a68e00"
+        }
+      ]
+    },
+    "airr-standards-tests": {
+      "title": "AIRR Community standards' test and example files (v2.0.0)",
+      "description": "The airr-standards repository's test files: a valid and an invalid Rearrangement TSV, Repertoire metadata, and the R package's larger example rearrangements.",
+      "source": "AIRR Community, airr-standards v2.0.0 (https://github.com/airr-community/airr-standards)",
+      "page": "https://github.com/airr-community/airr-standards",
+      "publisher": "AIRR Community",
+      "license": "CC BY 4.0 (AIRR Community)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "licenseClass": "open",
+      "citation": "Vander Heiden JA, et al. AIRR Community standardized representations for annotated immune repertoires. Front Immunol 2018;9:2206. doi:10.3389/fimmu.2018.02206",
+      "ci": true,
+      "base": "https://raw.githubusercontent.com/airr-community/airr-standards/v2.0.0/",
+      "files": [
+        {
+          "path": "lang/python/tests/data/good_rearrangement.tsv",
+          "size": 5934,
+          "sha256": "b89ec785c1e5e41f774292bb303d59d4cd96d0818fc6d575f0323fb5e15f3877"
+        },
+        {
+          "path": "lang/python/tests/data/bad_rearrangement.tsv",
+          "size": 7187,
+          "sha256": "850b2031a0a1bfee7f0d44e02dd6861224093efb9e6232a303879cc6c6cc9ce5"
+        },
+        {
+          "path": "lang/python/tests/data/good_repertoire.yaml",
+          "size": 17458,
+          "sha256": "0d6a9662293d3b3fa6ae6025a7014db021f4e44d3d3623f77dfab10f4443bad3"
+        },
+        {
+          "path": "lang/R/inst/extdata/rearrangement-example.tsv.gz",
+          "size": 22564,
+          "sha256": "0fcf459d8ccb301f9e01fd12d79dd59890a00e36fbf8f63aa80867d9e34a7b4f"
+        },
+        {
+          "path": "lang/R/inst/extdata/repertoire-example.yaml",
+          "size": 17374,
+          "sha256": "d0910decf324510485f86ef639ad6b2924bf7ad2d7955565d3c3544598f29a23"
+        }
+      ]
+    },
+    "vdjserver-ramos-libra": {
+      "title": "Ramos B-cell line, LIBRA-seq (VDJServer, AIRR Data Commons)",
+      "description": "One repertoire of the LIBRA-seq study (Setliff et al. 2019, PRJNA578389): 1,857 single-cell IGH, IGK and IGL rearrangements of the Ramos cell line, queried from VDJServer's ADC API as AIRR TSV with its Repertoire metadata.",
+      "source": "VDJServer Community Data Portal, study PRJNA578389",
+      "page": "https://vdjserver.org/community",
+      "publisher": "VDJServer",
+      "license": "Not stated by the repository or the study",
+      "licenseUrl": "",
+      "licenseClass": "unknown",
+      "citation": "Setliff I, et al. High-throughput mapping of B cell receptor sequences to antigen specificity. Cell 2019;179:1636–1646. doi:10.1016/j.cell.2019.11.003",
+      "ci": false,
+      "adc": {
+        "repository": "https://vdjserver.org/airr/v1",
+        "repertoires": [
+          "1159043095574277653-242ac114-0001-012"
+        ]
+      },
+      "files": [
+        {
+          "path": "1159043095574277653-242ac114-0001-012.airr.json",
+          "size": 9353,
+          "sha256": "278d8dbae26fdd9af8280f2be8565834d331ea1ea32fbd2d732d40decd687462"
+        },
+        {
+          "path": "1159043095574277653-242ac114-0001-012.tsv",
+          "size": 6630015,
+          "sha256": "b7d3e599060dabf61f0650aa12f4aa3d3f6953c3d9443fb5808551d16961e4b8"
+        }
+      ]
+    },
+    "emerson-2017-adc": {
+      "title": "Emerson et al. 2017, one subject (VDJServer, AIRR Data Commons)",
+      "description": "One bulk TRB repertoire (subject HIP15860) of the CMV cohort of Emerson et al. 2017, queried from VDJServer's ADC API as AIRR TSV with its Repertoire metadata: immunoSEQ data as the AIRR Data Commons converts them.",
+      "source": "VDJServer Community Data Portal, study emerson-2017-natgen; Adaptive Biotechnologies immuneACCESS",
+      "page": "https://clients.adaptivebiotech.com/pub/emerson-2017-natgen",
+      "publisher": "Adaptive Biotechnologies; VDJServer",
+      "license": "immuneACCESS Terms of Use: research-only use, no redistribution",
+      "licenseUrl": "https://clients.adaptivebiotech.com/terms-of-use",
+      "licenseClass": "terms",
+      "citation": "Emerson RO, et al. Immunosequencing identifies signatures of cytomegalovirus exposure history and HLA-mediated effects on the T cell repertoire. Nat Genet 2017;49:659–665. doi:10.1038/ng.3822",
+      "ci": false,
+      "adc": {
+        "repository": "https://vdjserver.org/airr/v1",
+        "repertoires": [
+          "2667862095380484586-242ac113-0001-012"
+        ]
+      },
+      "files": [
+        {
+          "path": "2667862095380484586-242ac113-0001-012.airr.json",
+          "size": 8483,
+          "sha256": "2f709a3ce66e411476dc3d62b4b58cac81ce20d96dddc663007eed0eb3eafc18"
+        },
+        {
+          "path": "2667862095380484586-242ac113-0001-012.tsv",
+          "size": 101271876,
+          "sha256": "4b84cb250f1743951198b2b63901ada617e1a1d801b867877d9aa1e023a20ab9"
+        }
+      ]
+    },
+    "emerson-2017-immunoseq": {
+      "title": "Emerson et al. 2017, three small samples (immunoSEQ export, immuneACCESS)",
+      "description": "Three bulk TRB repertoires of the CMV cohort of Emerson et al. 2017 in Adaptive's own immunoSEQ export format, taken by HTTP range from the published project's archive (19.9 GB) without downloading it whole: the native format the immunoSEQ reader is checked on.",
+      "source": "Adaptive Biotechnologies immuneACCESS, project emerson-2017-natgen",
+      "page": "https://clients.adaptivebiotech.com/pub/emerson-2017-natgen",
+      "publisher": "Adaptive Biotechnologies",
+      "license": "immuneACCESS Terms of Use: research-only use, no redistribution",
+      "licenseUrl": "https://clients.adaptivebiotech.com/terms-of-use",
+      "licenseClass": "terms",
+      "citation": "Emerson RO, et al. Immunosequencing identifies signatures of cytomegalovirus exposure history and HLA-mediated effects on the T cell repertoire. Nat Genet 2017;49:659–665. doi:10.1038/ng.3822",
+      "ci": false,
+      "members": {
+        "url": "https://adaptivepublic.blob.core.windows.net/publishedproject-supplements/emerson-2017-natgen/emerson-2017-natgen.zip",
+        "size": 19891427443,
+        "names": [
+          "P00207.tsv",
+          "P00441.tsv",
+          "P00572.tsv"
+        ]
+      },
+      "files": [
+        {
+          "path": "P00207.tsv",
+          "size": 2987256,
+          "sha256": "9479c60cf5072709956557c3f1a157914e867fd5f3b9a8d595275055f51133c6"
+        },
+        {
+          "path": "P00441.tsv",
+          "size": 14237398,
+          "sha256": "2b1f38ddb90a56821496eb8234f38defbbd7945fa9d2bc3e4ef81ce8b0b3153f"
+        },
+        {
+          "path": "P00572.tsv",
+          "size": 28491901,
+          "sha256": "353e381e8710119bcd5c8c3812d326a71da535e0f49eaaabddf99436d53ca758"
+        }
+      ]
+    }
+  }
+}

@@ -8,9 +8,18 @@ the tolerance required.
 | --- | --- | --- |
 | `accessibility` | WCAG AA contrast of every text-on-surface pair in both themes, with color-vision-friendly colors off and on; palettes, status colors and diverging maps apart in protanopia, deuteranopia and tritanopia (Machado et al. 2009, CIEDE2000) | `web/styles.css` |
 
-Later slices add the checks against independent references:
-- the readers against independent readers (the `airr` library, pandas, scirpy) on every
-  development file (wave 1, slice 2);
+Go tests in this folder check whole results against independent references (`go test
+./validation/`):
+
+| Test | What it checks | Data |
+| --- | --- | --- |
+| `TestReadersAgreeWithIndependentReaders` | Every column ClonoLoom reads from every development file equals what an independent reader reads: the AIRR Community's `airr` library for AIRR files, pandas for Cell Ranger and immunoSEQ files; immunoSEQ gene names mapped as the dataset records them | `reference/readers.json` (made by `reference/read_repertoires.py`), the files of `sources.json` |
+| `TestOpenAMillionRearrangementsWithinBudget` | A 1M-row immunoSEQ file read and validated within 5 s, its table within 64 bytes a row plus its junctions (not under the race detector) | generated |
+
+Data sets are required by naming them in `CLONOLOOM_REQUIRE_DATA` (a comma-separated list, or 1
+for all); otherwise a missing one is skipped. CI requires the openly licensed ones.
+
+Later slices add:
 - QC and clonotypes against pandas and scirpy (wave 1, slices 4 and 5);
 - each statistic against its reference implementation and simulated truth (wave 2 onward).
 
