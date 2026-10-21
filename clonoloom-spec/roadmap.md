@@ -12,6 +12,11 @@ Slices are done in order within a wave unless noted. Each slice names the requir
 confirmed or re-cut, and the decisions taken are recorded here. Waves 1–3 are planned to the slice
 now; later waves are outlined and refined as they come.
 
+**Progress** is marked here as each slice is committed: done, with what it settled or changed from
+the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
+release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is done and merged, 0.1.0 not yet
+tagged; wave 2 has slices 1–4 done, slice 5 next.
+
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
    that says when not to trust the data.
@@ -56,6 +61,11 @@ A researcher opens the output of their annotation pipeline and gets:
 
 ### Wave 1
 
+**Done**: every slice committed, then a walk through the whole wave fixed what it found (AIRR
+Repertoire metadata kept with their dataset across a restart; coverage not estimated under a
+minimum count above one). Merged as robert-mcdermott/clonoloom#1. **Still to do:** tag v0.1.0,
+which drafts the release.
+
 1. **The program and its window (P1, P2, P3, P4, P5, P7, P8, N1).** Ported from SituCraft 0.9.0
    with renames:
    - **Go host:** `main.go`, `security.go`, `local.go`, `store.go`, `records.go`, `window.go`
@@ -76,6 +86,7 @@ A researcher opens the output of their annotation pipeline and gets:
      library round trips, every web module embedded, the commit reported, ports clear of the
      siblings'); the accessibility suite (contrast of both themes, palettes apart in each color
      vision); a release dry run builds six binaries with `SHA256SUMS`.
+   - *Done:* six binaries of about 7 MB each.
 2. **Reading repertoires (D1, D2, D3, D4, D5, D11, N2).** ClonoLoom's own readers:
    - `internal/seq` (codons, translation, reverse complement), `internal/genes` (IMGT names
      parsed into locus, segment, family, gene and allele; Adaptive's names mapped; ambiguous
@@ -95,6 +106,8 @@ A researcher opens the output of their annotation pipeline and gets:
      `validation/reference/` with their outputs reduced to checksums.
    - **Budget:** a 1M-row immunoSEQ file read within 5 s.
    - **Fuzzing:** every reader fuzzed, with a corpus of small hostile cases.
+   - *Done:* 1.5 s for the million rows. Repertoire YAML and Cell Ranger's JSON annotations are
+     not read (`requirements.md`, D2 and D3).
 3. **Datasets and their validation (D8, D10, D11, Q6).** The Data view:
    - files named on the command line, by **Open**, or dropped become datasets with their
      fingerprints, format and samples;
@@ -111,6 +124,7 @@ A researcher opens the output of their annotation pipeline and gets:
    - Validation: a broken-data set made by a script from the synthetic fixtures (each fault
      planted once) raises exactly the expected findings; the development datasets validate with
      no fatal finding; no source file changes (checksums before and after every test).
+   - *Done:* 28 finding codes, each planted fault found once.
 4. **QC (Q1, Q2, Q3, Q6).** The QC view:
    - per-sample metrics: abundance in its unit, rearrangements, productive, out-of-frame and
      stop-codon shares, junction length distribution, V and J resolution, singletons, sample
@@ -121,6 +135,8 @@ A researcher opens the output of their annotation pipeline and gets:
    - Validation: metrics equal pandas' on the development files and hand-computed values on the
      synthetic fixtures; Cell Ranger's own `metrics_summary.csv` numbers recomputed where the
      contigs allow, differences explained.
+   - *Done:* equal to an independent R implementation on six bulk samples; Cell Ranger's counts of
+     cells, pairs and loci reproduced exactly on six runs.
 5. **Clonotypes (C1, C2, C3, C6).** The Clonotypes view:
    - named definitions with presets (bulk TRB: amino-acid junction + V gene + J gene; paired
      αβ; 10x's own clonotypes as given) and an editor;
@@ -131,28 +147,65 @@ A researcher opens the output of their annotation pipeline and gets:
      `define_clonotypes` on the development data; Cell Ranger's own clonotypes reproduced by the
      definition that matches theirs, differences explained; the budget of 100 ms per page on a
      1M-row table.
+   - *Done:* 37 ms a page; equal to scirpy's partitions of eight Cell Ranger runs under four
+     definitions.
 6. **Public data (D13, E2, P4).** The Example data dialog:
    - the catalog of the wave's public datasets with source, size, license class and citation;
      downloads only after the user confirms, checked against their checksums, into
      `--examples-dir`; `--offline` turns them off;
    - an opened example becomes a dataset like any other, with its license and citation in its
      record.
+   - *Done:* six datasets, of 10x Genomics, the AIRR Community and immuneACCESS.
 7. **The record and the release (O2, N5, N6).** The project's history in the drawer; a methods
    paragraph per dataset (format, reader, validation, filters, definition, the data's source and
    license, ClonoLoom's version); `docs/FORMATS.md` and `docs/GETTING-STARTED.md`; README with
    screenshots; release 0.1.0 drafted.
+   - *Done*, but for the release: 0.1.0 is drafted when v0.1.0 is tagged.
 
 ## 0.2.0: repertoire basics (wave 2)
 
+Built on the branch `wave2`, one commit per slice.
+
+| Slice | Status |
+| --- | --- |
+| 1. Remote control and screenshots | Done |
+| 2. Simulated repertoires | Done |
+| 3. Artifacts, jobs and the cache | Done |
+| 4. Diversity | Done |
+| 5. Rarefaction and extrapolation | Next |
+| 6. Gene usage and spectratypes | To come |
+| 7. Overlap | To come |
+| 8. Figures, exports and methods; release 0.2.0 | To come |
+
 1. **Remote control and screenshots (A7).** SituCraft's hub and capture scenes.
+   - *Done:* eleven actions (a twelfth, `measure_diversity`, came with slice 4). Reading files by
+     path needs the token in `remote.json`; data under terms of use are never downloaded by a
+     program. Wave 1's pictures are captured through it.
 2. **Simulated repertoires (E1).** `clonoloom simulate`: bulk TRB studies from a V(D)J
    recombination model of ClonoLoom's own (gene usage, deletions, N insertions), power-law clone
    sizes, sampling of templates and reads; the truth written beside the data.
+   - *Done:* GRCh38 TRB segments from Ensembl; V and J usage and junction lengths from 10x
+     Genomics' 10k PBMC data (CC BY 4.0); palindromic nucleotides and selection on junction length
+     added to the model. Presets standard, null and small, the same bytes for the same seed,
+     offered in Example data.
 3. **Artifacts, jobs and the cache.** SituCraft's `internal/jobs` and `internal/artifacts`; the
    rearrangement-table cache.
+   - *Done:* example downloads and simulations run as jobs, shown in the Jobs view and resumable
+     after a restart. The cache is keyed by each file's SHA-256, size and name and the readers'
+     version, checked by CRC, and trimmed least-recently-used beyond `--cache-limit` (10 GB). A
+     100-sample cohort reopens in 118 ms (budget 2 s).
 4. **Diversity (R1, R5).** Hill numbers, Chao1, ACE, Shannon, Simpson, evenness, clonality, Gini,
    top-N share, homeostasis, each with a bootstrap interval; validated against immunarch, iNEXT
    and closed forms; interval coverage on simulations.
+   - *Done:* with the asymptotic Shannon and Simpson diversities (Chao et al. 2013, 2014), Simpson
+     clonality and sample coverage, in the Repertoire view. Validated against vegan (ACE) and R as
+     well, on 18 samples.
+   - *Decided:* the estimated Simpson diversity's interval is not floored at the value seen, as
+     iNEXT's is: with the floor it held the truth in under half the simulated samples
+     (`research.md` §5.3).
+   - *Found:* immunoSEQ's clonality columns are computed from reads, not templates; QC now
+     reproduces them.
+   - *Moved to slice 8:* the Repertoire view's capture scene and picture.
 5. **Rarefaction and extrapolation (R2, Q3).** Chao et al. 2014 by size and coverage; curves and a
    suggested common depth; validated against iNEXT.
 6. **Gene usage and spectratypes (R3).** V, D, J, C and V–J usage; junction lengths; amino-acid
@@ -162,6 +215,8 @@ A researcher opens the output of their annotation pipeline and gets:
 8. **Figures, exports and methods (O1, O2, O3, O9, D7).** SVG/PNG/PDF figures with the
    definition and unit in their legends; AIRR and CSV exports with license notes; generic CSV
    import; the methods paragraph for each analysis; release 0.2.0.
+   - Also: the capture scenes of the views wave 2 built, the README's pictures re-captured, and
+     the first project fixture under `validation/projects/` (see "In every wave").
 
 ## 0.3.0: tracking (wave 3)
 

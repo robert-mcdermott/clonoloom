@@ -152,6 +152,6 @@ which the next release adds.
 
 ## Next
 
-ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): diversity with its
-uncertainty, rarefaction and overlap, figures and AIRR exports come in 0.2.0; following
+ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): rarefaction, gene
+usage, overlap, figures and AIRR exports complete 0.2.0; following
 clonotypes over time in 0.3.0; specificity, B-cell lineages, cells and cohorts after that.
