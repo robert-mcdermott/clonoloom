@@ -1,1 +1,11 @@
-product_research/
+.DS_Store
+/product_research/
+/.claude/
+/dist/
+/clonoloom
+*.exe
+*.test
+/validation/cache/
+__pycache__/
+/*.zip
+/*.clz

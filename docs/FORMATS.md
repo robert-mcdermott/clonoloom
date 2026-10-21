@@ -1,0 +1,125 @@
+# Formats
+
+What ClonoLoom reads and writes, and how it reads each format. The research behind these choices,
+with sources, is in [clonoloom-spec/research.md](../clonoloom-spec/research.md).
+
+Every table can be gzipped (`.gz`); ClonoLoom recognizes gzip by its first bytes, not by the
+name. Lines may end in LF or CRLF, and a UTF-8 byte-order mark is ignored. A file's format is
+decided from its header, whatever its name.
+
+## What every reader produces
+
+Whatever the format, ClonoLoom reads rearrangements into one table with these fields (named as
+the AIRR Rearrangement schema names them):
+
+| Field | Meaning |
+| --- | --- |
+| sample | The repertoire the row belongs to (below, per format) |
+| `sequence_id` | The row's identifier as given (a contig ID for Cell Ranger; none for immunoSEQ) |
+| `locus` | IGH, IGK, IGL, TRA, TRB, TRD or TRG |
+| `v_call`, `d_call`, `j_call`, `c_call` | Gene calls in IMGT nomenclature, ties separated by commas |
+| `junction`, `junction_aa` | The IMGT junction: the CDR3 with its conserved cysteine and phenylalanine or tryptophan |
+| `productive`, `vj_in_frame`, `stop_codon` | As given; missing when not given |
+| count | The abundance in the dataset's unit |
+| reads, UMIs | Reads and UMIs where the format gives them beside the count |
+| cell, clone | Single cell: the barcode, and the source's own clonotype or clone ID |
+
+A missing value stays missing: a count that was not given is not a count of one. The other
+columns of a file stay in the file; exports read them again from it.
+
+### Abundance units
+
+Each dataset has one unit, said with every result:
+
+| Unit | When |
+| --- | --- |
+| cells | Single-cell data: a clonotype's abundance is its number of cells |
+| templates | immunoSEQ files with a positive template count on every row |
+| reads | immunoSEQ files without templates on every row (each such file is counted in reads throughout, with a finding); AIRR files with `consensus_count` alone |
+| UMIs | AIRR files with `umi_count` |
+| unknown | AIRR files with `duplicate_count` alone, and immunoSEQ v2's `count (templates/reads)` without `estimatedNumberGenomes`: the format does not say what was counted, so the user confirms it in the Data view |
+| sequences | No count at all: each row counts once |
+
+## AIRR Rearrangement TSV
+
+The AIRR Community's standard (schema 1.3 to 2.0), written by IgBLAST, Change-O, MiXCR's AIRR
+export, TRUST4, Cell Ranger (`airr_rearrangement.tsv`) and AIRR Data Commons downloads.
+
+- Recognized by a tab-separated header with `sequence_id` and `junction`, `junction_aa` or
+  `v_call`.
+- Every column the schema types is checked on every row: booleans (`T`, `F`, and the spellings
+  the AIRR libraries accept), integers and numbers. Values that are not of their type are read as
+  missing and counted by the validator, with the line, column and value of the first few.
+- Columns the schema requires but the file lacks are reported; the file is still read when it
+  has a junction.
+- The sample is the row's `repertoire_id`, else its `sample_processing_id`, else the file's name.
+- Counts: `umi_count`, else `duplicate_count`, else `consensus_count`; with `umi_count`, reads
+  are `consensus_count` (or `duplicate_count`). Rows that name a cell (`cell_id`) make the
+  dataset single-cell.
+
+**Repertoire metadata** (`.json`, the AIRR Data File or a list of Repertoire objects, as the ADC
+API answers) named with the tables annotates their samples by `repertoire_id`: study, subject,
+species, sex, age, diagnosis, tissue, cell subset, time point, template and HLA. Schema 1.3's
+text fields and 2.0's objects are both read. YAML metadata arrives in a later release.
+
+## Cell Ranger V(D)J (10x Genomics)
+
+- **Folders.** A `vdj` run's folder or its `outs/`, and a `multi` run's folder (its
+  `outs/per_sample_outs/<sample>/vdj_t`, `vdj_b` and `vdj_t_gd`), are each opened as one
+  dataset. `filtered_contig_annotations.csv` is read; `all_contig_annotations.csv` when there is
+  no filtered file. `clonotypes.csv`, `consensus_annotations.csv` and `metrics_summary.csv` are
+  kept beside it for QC to compare with.
+- **Contig annotations** (Cell Ranger 3 to 9): `barcode`, `contig_id`, `chain`, `v_gene` …
+  `c_gene`, `productive`, `cdr3` and `cdr3_nt` (the junction), `reads`, `umis`,
+  `raw_clonotype_id`, and the flags `is_cell`, `high_confidence` and `full_length`. Booleans
+  written `True`/`False` (Cell Ranger 3 to 5) or `true`/`false` (6 and later); `None` and empty
+  values are missing. Cell Ranger 9's `sample` column names each contig's sample.
+- The sample is named by the `sample` column, else the prefix 10x's downloads give the file
+  (`sc5p_v2_hs_PBMC_10k_t_filtered_contig_annotations.csv`), else the run's folder.
+- A contig's count is its UMIs; its reads are kept beside them. The dataset's unit is cells.
+- A clonotype summary or metrics file opened on its own is refused with a message saying to open
+  its run's folder or its contig annotations.
+
+## immunoSEQ (Adaptive Biotechnologies)
+
+Exports of the immunoSEQ Analyzer and immuneACCESS downloads:
+
+- **v3** (`rearrangement`, `amino_acid`, `frame_type`, `templates`, `seq_reads` or `reads`,
+  `v_resolved`, `v_gene`, `v_gene_ties` …), with the sample's metadata repeated on each row.
+- **v2** (`nucleotide`, `aminoAcid`, `count (templates/reads)`, `estimatedNumberGenomes`,
+  `sequenceStatus`, `vMaxResolved`, `vGeneName`, `vGeneNameTies` …).
+
+How they are read:
+
+- `amino_acid` (`aminoAcid`) is the junction. The nucleotide junction is `cdr3_rearrangement`
+  where the export gives it, else the `cdr3_length` bases of `rearrangement` (`nucleotide`) from
+  `v_index` (`vIndex`).
+- `frame_type` (`sequenceStatus`): `In` is productive; `Stop` is in frame with a stop codon;
+  `Out` is out of frame.
+- Counts are templates when every row of the file has a positive template count; otherwise every
+  row is counted in reads, and the validator says how many rows lacked templates (some published
+  samples have −1).
+- `null`, `na`, `unresolved` and `unknown` are missing values.
+- The sample is `sample_name`, else the file's name.
+
+**Gene names** are mapped from Adaptive's to IMGT's: `TCRBV05-01*01` is `TRBV5-1*01`;
+`TCRBV09-01` is `TRBV9` (IMGT writes no number for a subgroup with one gene, decided from the list
+of human genes); `TCRBV20-or09_02` is `TRBV20/OR9-2`; `TCRBD01-01` is `TRBD1`. A gene resolved only
+to its family is called by its ties: `TCRBV20` with ties `TCRBV20-01,TCRBV20-or09_02` is
+`TRBV20-1,TRBV20/OR9-2`; `TCRBV12-03/12-04` is `TRBV12-3,TRBV12-4`. Every name a file uses is
+recorded with the IMGT name it was read as. Mouse names keep their gene numbers.
+
+## Gene calls
+
+Calls are read as IMGT names: locus, segment, family (IMGT's subgroup), gene and allele
+(`TRBV5-1*01`). Shared TRA/TRD genes (`TRAV29/DV5`), orphons (`TRBV20/OR9-2`), duplicated genes
+(`IGKV1D-39`, `IGHV1-69D`) and heavy-chain constant genes (`IGHM`, `IGHG1`; `IGHD` alone is the δ
+constant gene) are recognized. MiXCR's scores (`TRBV5-1*00(1250)`) are dropped. A call naming
+several genes keeps them all: a clonotype definition at gene level keys it by its distinct genes
+(`TRBV6-2|TRBV6-3`), so ties never merge clonotypes silently.
+
+## Development data
+
+The public files the readers are checked on, their licenses and how to fetch them are listed in
+[validation/sources.json](../validation/sources.json); `node validation/fetch.mjs --list` prints
+them. `node validation/fetch.mjs --ci` fetches the openly licensed ones.
