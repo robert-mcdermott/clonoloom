@@ -8,6 +8,7 @@ import { createLibrary, detectBackend, getDataset, locateFile, openDataset, pref
 import { pickPaths } from './ui/file-picker.js';
 import { createExamples } from './ui/examples.js';
 import { showMethods } from './ui/methods.js';
+import { installRemote } from './ui/remote.js';
 import { mountSidebar } from './ui/sidebar.js';
 import { mountInspector } from './ui/inspector.js';
 import { mountDrawer } from './ui/drawer.js';
@@ -277,7 +278,8 @@ async function start() {
   };
 
   // Opens files as one dataset and records it in the project.
-  app.openData = async (paths, { name = '', library = null } = {}) => {
+  // rethrow: an error is thrown to the caller (remote control) as well as shown.
+  app.openData = async (paths, { name = '', library = null, rethrow = false } = {}) => {
     const sameProject = store.sameProject();
     const busy = `open-${Date.now()}`;
     store.setBusy(busy, `Reading ${library ? `${library.length} file${library.length === 1 ? '' : 's'}` : paths.length === 1 ? paths[0].split(/[\\/]/).pop() : `${paths.length} files`}…`);
@@ -295,6 +297,7 @@ async function start() {
     } catch (error) {
       toast(error.message, { kind: 'error', timeout: 6000 });
       app.log(error.message);
+      if (rethrow) throw error;
       return null;
     } finally {
       store.setBusy(busy, null);
@@ -600,6 +603,7 @@ async function start() {
     store.notify(['theme', 'colors']);
     toast(next ? 'Color-vision-friendly colors: palettes and status colors stay distinguishable with red–green and blue–yellow color blindness.' : 'Default colors.', { timeout: 3500 });
   }
+  app.setTheme = (next) => setTheme(next);
   function setTheme(next) {
     prefs.set('theme', next);
     store.state.ui.theme = next;
@@ -849,6 +853,8 @@ async function start() {
   window.addEventListener('focus', check);
   setInterval(check, 30000);
   window.clonoloom = app;
+  // Programs on this computer may drive the window (clonoloom --remote-control).
+  if (info.remoteControl) app.remote = installRemote(app);
 }
 
 start().catch((error) => {

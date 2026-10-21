@@ -115,6 +115,7 @@ its publisher only when you ask.
 | `--data-dir` | `<user config dir>/ClonoLoom` | Where the project library is kept |
 | `--examples-dir` | `<data dir>/examples` | Where example data are downloaded, when asked |
 | `--offline` | off | Download nothing: ClonoLoom then reaches no other computer |
+| `--remote-control` | off | Let programs on this computer drive the window ([docs/REMOTE-CONTROL.md](docs/REMOTE-CONTROL.md)) |
 | `--host` | 127.0.0.1 | Interface to bind |
 | `--dev` | off | Serve `web/` from the working directory (development) |
 | `--version` | | Print `clonoloom X.Y.Z` and exit |
@@ -126,6 +127,7 @@ its publisher only when you ask.
 - [Getting started](docs/GETTING-STARTED.md): a first study, view by view.
 - [Installing](docs/INSTALLING.md): release files, installers, upgrading, uninstalling.
 - [Formats](docs/FORMATS.md): what each reader reads and how.
+- [Remote control](docs/REMOTE-CONTROL.md): driving ClonoLoom from scripts.
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.
 - [Design](clonoloom-spec/design.md): how it is built and why.
 - [Roadmap](clonoloom-spec/roadmap.md): the order of the work, wave by wave (wave *N* is release

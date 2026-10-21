@@ -126,6 +126,8 @@ export function mountClonotypes(app, container) {
       meta = first;
       pages.set(0, first.rows);
       app.clonotypeContext = { dataset: d.id, request: request(0), describe: first.describe, unit: first.unit, name: definition().name };
+      // A clonotype chosen before the table's first page (by a script) is described now.
+      if (store.ui.focus?.kind === 'clonotype') app.inspector.render();
       store.notify(['clonotype-context']);
       drawInfo();
       drawHeader();
@@ -242,6 +244,20 @@ export function mountClonotypes(app, container) {
     app.focusItem({ kind: 'clonotype', id });
     paint();
   }
+
+  // For remote control (ui/remote.js): the dataset shown, a page of its clonotypes as the table
+  // sorts them, and choosing one.
+  const view = {
+    dataset: () => dataset()?.id ?? null,
+    show(id) {
+      if (dataset()?.id === id) return;
+      chosen = id;
+      reset();
+    },
+    page: (offset, limit = 1) => clonotypePage({ ...request(offset), limit }),
+    select,
+  };
+  app.clonotypesView = view;
 
   // The definition editor: a definition of the user's own, from the one in use.
   function editDefinition() {
@@ -360,6 +376,7 @@ export function mountClonotypes(app, container) {
       }
     },
     destroy() {
+      if (app.clonotypesView === view) app.clonotypesView = null;
       window.removeEventListener('resize', onResize);
       app.inspector.setSection('clonotype', null);
       root.remove();

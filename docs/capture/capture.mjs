@@ -1,17 +1,17 @@
 // Captures the documentation's screenshots, in the light and dark themes, as
 // docs/images/<scene>-<theme>.webp: the README shows the one matching the reader's theme. Each
 // scene starts a ClonoLoom built from source on a fresh, empty library, with the development data
-// as its examples (node validation/fetch.mjs --ci downloads them), and drives the page as a user
-// does, so every run gives the same pictures. Only openly licensed data are shown. Follows
-// SituCraft 0.9.0's docs/capture/capture.mjs (whose scenes use remote control, which ClonoLoom
-// gains in wave 2).
+// as its examples (node validation/fetch.mjs --ci downloads them), and drives it through its
+// remote control (remote.go, web/ui/remote.js), as any script can, so every run gives the same
+// pictures. Only openly licensed data are shown. Follows SituCraft 0.9.0's
+// docs/capture/capture.mjs.
 //
 //   node docs/capture/capture.mjs [scene …] [--theme light|dark|both]
 //
 // Needs Go (to build ClonoLoom) and Chrome, Chromium, Edge or Brave (CHROME=path).
 
 import { spawn } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -46,6 +46,7 @@ for (const set of ['10x-pbmc-1k', '10x-pbmc-10k-v2']) {
 const temp = mkdtempSync(join(tmpdir(), 'clonoloom-capture-'));
 const binary = join(temp, process.platform === 'win32' ? 'clonoloom.exe' : 'clonoloom');
 let URL = '';
+let token = '';
 let places = {};
 
 // Started per scene on an empty library, so that no scene sees another's projects. examples: the
@@ -53,7 +54,7 @@ let places = {};
 async function startClonoLoom({ examples = DATA } = {}) {
   const library = mkdtempSync(join(temp, 'library-'));
   places = { library, examples };
-  const server = spawn(binary, ['--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
+  const server = spawn(binary, ['--remote-control', '--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
   let output = '';
   server.stdout.on('data', (chunk) => { output += chunk; });
   const stop = async () => {
@@ -63,14 +64,23 @@ async function startClonoLoom({ examples = DATA } = {}) {
   };
   for (let i = 0; i < 150; i += 1) {
     const address = /running at (http:\/\/[\d.]+:\d+)/.exec(output)?.[1];
-    if (address) {
+    if (address && existsSync(join(library, 'remote.json'))) {
       URL = `${address}/`;
+      token = JSON.parse(readFileSync(join(library, 'remote.json'), 'utf8')).token;
       return { stop };
     }
     await sleep(100);
   }
   await stop();
   throw new Error(`ClonoLoom did not start:\n${output}`);
+}
+
+// An action through remote control, as any script sends it.
+async function act(action, actionArgs = {}) {
+  const response = await fetch(`${URL}api/remote/action`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-ClonoLoom-Token': token }, body: JSON.stringify({ action, args: actionArgs, client: 'docs/capture' }) });
+  const result = await response.json();
+  if (!result.ok) throw new Error(`${action}: ${result.message ?? result.error}`);
+  return result;
 }
 
 // --- Page helpers --------------------------------------------------------------------------------
@@ -88,18 +98,6 @@ async function waitFor(expression, timeout = 60000) {
 }
 
 const clearToasts = () => js(`document.querySelectorAll('.toast').forEach((t) => t.remove())`);
-
-// An example's dataset opened as the Example data dialog opens it: its k-th opening.
-async function openExample(name, k = 0) {
-  await js(`(async () => {
-    const app = window.clonoloom;
-    const list = await app.examples.refresh();
-    const e = list.find((x) => x.name === ${JSON.stringify(name)});
-    if (e?.state !== 'ready') throw new Error(${JSON.stringify(name)} + ' is not in the examples folder');
-    await app.openData(e.paths[${k}], { name: e.opens[${k}].name });
-    return true;
-  })()`);
-}
 
 // The places shown in the window, as SHOWN names them: every text node and title that holds this
 // run's temporary folders.
@@ -124,34 +122,32 @@ const scenes = {
   },
   // The Example data dialog of a first run: nothing downloaded yet.
   async examples() {
-    await js(`window.clonoloom.showExamples(), true`);
+    await act('show_examples');
     await waitFor(`document.querySelectorAll('.example-card').length >= 6`);
   },
   // The Data view of the PBMC 1k T cells: the dataset, its validation and samples; its files and
   // license in the inspector.
   async data() {
-    await openExample('10x-pbmc-1k', 0);
+    await act('open_example', { example: '10x-pbmc-1k', opening: 'T cells' });
     await waitFor(`Boolean(document.querySelector('.dataset-card.focused'))`);
   },
   // QC of the PBMC 10k T cells: Cell Ranger's metrics recomputed, the chains of each cell.
   async qc() {
-    await openExample('10x-pbmc-10k-v2', 0);
-    await js(`window.clonoloom.setMode('qc'), true`);
+    await act('open_example', { example: '10x-pbmc-10k-v2', opening: 'T cells' });
+    await act('show', { view: 'qc' });
     await waitFor(`document.querySelectorAll('.plot-card svg').length > 0`);
   },
   // The clonotypes of the PBMC 10k T cells under the paired αβ definition, the largest in the
   // inspector.
   async clonotypes() {
-    await openExample('10x-pbmc-10k-v2', 0);
-    await js(`window.clonoloom.setMode('clonotypes'), true`);
-    await waitFor(`document.querySelectorAll('.ctable-row:not(.loading)').length > 5`);
-    await js(`document.querySelector('.ctable-row:not(.loading)').click(), true`);
-    await waitFor(`Boolean(document.querySelector('.members'))`);
+    await act('open_example', { example: '10x-pbmc-10k-v2', opening: 'T cells' });
+    await act('select_clonotype', { rank: 1 });
+    await waitFor(`document.querySelectorAll('.ctable-row:not(.loading)').length > 5 && Boolean(document.querySelector('.members'))`);
   },
   // The methods paragraph of the PBMC 1k T cells, with its references.
   async methods() {
-    await openExample('10x-pbmc-1k', 0);
-    await js(`window.clonoloom.commands().find((c) => c.label.startsWith('Methods paragraph')).run(), true`);
+    await act('open_example', { example: '10x-pbmc-1k', opening: 'T cells' });
+    await act('show_methods');
     await waitFor(`Boolean(document.querySelector('.methods-text'))`);
   },
 };
@@ -175,7 +171,7 @@ try {
         });
         await b.theme(theme === 'dark');
         await b.goto(URL, 800);
-        await waitFor('Boolean(window.clonoloom?.examples)', 30000);
+        await waitFor('Boolean(window.clonoloom?.remote)', 30000);
         // No commit in the status bar: the pictures are of the release, not of a build.
         await js(`(() => { const app = window.clonoloom; app.commit = ''; app.store.notify(['library']); return true; })()`);
         await scenes[name]();

@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.2.0 (unreleased)
+
+Wave 2 of the [roadmap](clonoloom-spec/roadmap.md): repertoire basics. Built slice by slice; this
+section grows with each.
+
+### Added
+
+- **Remote control (wave 2, slice 1).** With `--remote-control`, programs on this computer drive the
+  open window through `/api/remote/action` (`remote.go`, `actions.go`, `web/ui/remote.js`, adapted
+  from SituCraft 0.9.0): eleven actions to describe the project, open data or an example, show a
+  view, define clonotypes, choose a clonotype, write the methods paragraph, and set the theme.
+  Actions are performed in the window, one at a time, and recorded in the project's history like
+  any edit. Only programs on this computer are accepted; reading files by path needs the token in
+  `remote.json`, written to the data folder (readable by the user only) and removed on exit; data
+  under terms of use are never downloaded by a program. `GET /api/remote/tools` lists the actions
+  with JSON Schemas. [docs/REMOTE-CONTROL.md](docs/REMOTE-CONTROL.md).
+- The documentation's pictures are captured through remote control.
+
+### Fixed
+
+- A clonotype chosen before the Clonotypes table's first page arrived was not described in the
+  inspector.
+
+### Validation
+
+- Go tests: the page performs exactly the actions the program lists; actions reach the page and
+  its answers the caller; no page, an unknown action, a page of another run, a missing or wrong
+  token and another computer are refused; remote control is off unless asked for; `remote.json` is
+  private and removed only by the run that wrote it.
+
 ## 0.1.0 (unreleased)
 
 ClonoLoom's first release, wave 1 of the [roadmap](clonoloom-spec/roadmap.md): open the output of

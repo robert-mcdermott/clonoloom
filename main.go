@@ -57,6 +57,7 @@ type config struct {
 	dataDir     string
 	examplesDir string
 	offline     bool
+	remote      bool
 	dev         bool
 	showVersion bool
 	files       []string
@@ -76,6 +77,8 @@ type app struct {
 	// examples are the example datasets, downloaded when asked (api_examples.go).
 	examples  *examples.Library
 	downloads *downloads
+	// remote is the remote-control hub (remote.go), with --remote-control.
+	remote *remoteHub
 }
 
 func init() {
@@ -182,9 +185,14 @@ type runningServer struct {
 	url          string
 	cancel       context.CancelFunc
 	windowClosed <-chan struct{}
+	// connection is remote.json, with --remote-control.
+	connection string
 }
 
 func (s *runningServer) stop(timeout time.Duration) {
+	if s.connection != "" {
+		removeConnectionFile(s.connection, s.app.remote.token)
+	}
 	s.cancel()
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
@@ -214,13 +222,23 @@ func start(cfg config, out io.Writer) (*runningServer, error) {
 	}
 	url := "http://" + net.JoinHostPort(cfg.host, strconv.Itoa(actualPort))
 	a.printBanner(out, url)
+	connection := ""
+	if a.remote != nil {
+		path, err := writeConnectionFile(cfg.dataDir, url, a.remote.token)
+		if err != nil {
+			listener.Close()
+			return nil, fmt.Errorf("remote control: %w", err)
+		}
+		connection = path
+		fmt.Fprintf(out, "Remote control is on: scripts find this ClonoLoom (its address and token) in %s\n", path)
+	}
 	base, cancel := context.WithCancel(context.Background())
 	server := &http.Server{
 		Handler:           protect(handler, cfg.host, actualPort),
 		ReadHeaderTimeout: 10 * time.Second,
 		BaseContext:       func(net.Listener) context.Context { return base },
 	}
-	running := &runningServer{app: a, server: server, listener: listener, url: url, cancel: cancel}
+	running := &runningServer{app: a, server: server, listener: listener, url: url, cancel: cancel, connection: connection}
 	if cfg.window != "none" {
 		closed := make(chan struct{})
 		running.windowClosed = closed
@@ -263,6 +281,7 @@ func parseConfig(args []string) (config, error) {
 	flags.StringVar(&cfg.dataDir, "data-dir", "", "folder for the project library (default: <user config dir>/ClonoLoom)")
 	flags.StringVar(&cfg.examplesDir, "examples-dir", "", "folder the example datasets are downloaded into, when asked (default: <data dir>/examples)")
 	flags.BoolVar(&cfg.offline, "offline", false, "download nothing: ClonoLoom then reaches no other computer")
+	flags.BoolVar(&cfg.remote, "remote-control", false, "accept actions from programs on this computer at /api/remote/action (scripts, the documentation's screenshots)")
 	flags.BoolVar(&cfg.dev, "dev", false, "serve web/ from the working directory instead of the embedded copy")
 	flags.BoolVar(&cfg.showVersion, "version", false, "print the version and exit")
 	noOpen := flags.Bool("no-open", false, "same as --window none")
@@ -321,6 +340,9 @@ func newApp(cfg config) (*app, error) {
 		clonotypes: &clonotypeTables{},
 		examples:   newExamples(cfg.examplesDir, cfg.offline),
 		downloads:  &downloads{running: map[string]*download{}, failed: map[string]*download{}},
+	}
+	if cfg.remote {
+		a.remote = newRemoteHub(a.session)
 	}
 	if problems := a.files.add(cfg.files); len(problems) > 0 {
 		for _, problem := range problems {
@@ -388,11 +410,15 @@ type info struct {
 	DataDir  string      `json:"dataDir"`
 	Files    []localFile `json:"files"`
 	Platform string      `json:"platform"`
+	// RemoteControl: the page takes actions from programs on this computer (remote.go), whose
+	// version API is.
+	RemoteControl bool `json:"remoteControl"`
+	API           int  `json:"api"`
 }
 
 func (a *app) registerAPI(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/info", func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, info{Name: "ClonoLoom", Session: a.session, Version: version, Commit: buildCommit(), Mode: "desktop", DataDir: a.store.dir, Files: a.files.list(), Platform: platformName()})
+		writeJSON(w, info{Name: "ClonoLoom", Session: a.session, Version: version, Commit: buildCommit(), Mode: "desktop", DataDir: a.store.dir, Files: a.files.list(), Platform: platformName(), RemoteControl: a.remote != nil, API: apiVersion})
 	})
 	mux.HandleFunc("GET /api/local/{index}", a.files.serve)
 	mux.HandleFunc("POST /api/open", a.openPaths)
@@ -402,6 +428,9 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerQC(mux)
 	a.registerClonotypes(mux)
 	a.registerExamples(mux)
+	if a.remote != nil {
+		a.remote.register(mux)
+	}
 	mux.HandleFunc("POST /api/library/local/{index}", func(w http.ResponseWriter, r *http.Request) {
 		file, ok := a.files.get(r.PathValue("index"))
 		if !ok {

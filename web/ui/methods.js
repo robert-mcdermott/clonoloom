@@ -31,7 +31,7 @@ export async function showMethods(app, dataset) {
   const state = await app.ensureDataset(dataset);
   if (state.status !== 'open') {
     toast(state.error ?? `${dataset.name} is not open.`, { kind: 'error' });
-    return;
+    return null;
   }
   const { store } = app;
   const summary = state.summary;
@@ -66,6 +66,7 @@ export async function showMethods(app, dataset) {
     ],
   });
   app.log(`Wrote the methods paragraph of ${dataset.name}.`);
+  return { text, references };
 }
 
 // A button that shows it, for the inspector and the Data view.
