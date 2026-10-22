@@ -1,0 +1,41 @@
+---
+title: Opening data
+description: Open AIRR rearrangement tables, Cell Ranger V(D)J outputs, immunoSEQ exports or another tool's table in ClonoLoom, and read how it checks them before analysis.
+lede: ClonoLoom reads the output of your annotation pipeline where it lies, fingerprints every file, and checks it before anything is computed from it. A table it does not recognize is read through a mapping of its columns that you confirm.
+---
+      <h2 id="formats">What it reads</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Format</th><th>What to open</th></tr></thead>
+          <tbody>
+            <tr><td>AIRR Rearrangement TSV (schema 1.3 to 2.0)</td><td>The tables, with their AIRR Repertoire metadata (<code>.json</code>) beside them: written by IgBLAST and Change-O, MiXCR, TRUST4, Cell Ranger, the AIRR Data Commons and ClonoLoom's simulator</td></tr>
+            <tr><td>Cell Ranger V(D)J</td><td>A <code>vdj</code> run's folder or its <code>outs/</code>, a <code>multi</code> run's per-sample folders, or the contig annotations alone</td></tr>
+            <tr><td>immunoSEQ exports (v2 and v3 columns)</td><td>Bulk TCR or BCR exports from the immunoSEQ Analyzer and immuneACCESS, templates and reads kept apart</td></tr>
+            <tr><td>Another tool's CSV or TSV</td><td>VDJtools' or MiXCR's clone tables, a spreadsheet: read through a <a href="#mapping">mapping of its columns</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Every table may be gzipped. A file's format is decided from its header, whatever its name. <a href="{{github}}/blob/main/docs/FORMATS.md">FORMATS.md</a> says how each is read, field by field.</p>
+
+      <h2 id="open">Open your data</h2>
+      <p><strong>Open data</strong> shows the folders of this computer: choose the files, a Cell Ranger output folder, or a folder holding a cohort's files. What you choose together opens as <strong>one dataset</strong>: a cohort's exports, say, or a run's T cells. You can also name them on the command line. ClonoLoom reads each file where it is and never changes, copies or moves it; files dropped on the window are copied into the library instead, since a browser does not say where a dropped file lies.</p>
+      <p>Each file is fingerprinted by its SHA-256 as it is read. If a file later moves, <strong>Locate the files</strong> finds it again by its fingerprint near where it was, or lets you choose it and checks it. If a file's contents change, the project says so instead of reading other data under the same name. Tables read once are kept in a cache, so that a cohort of a hundred samples reopens in about a tenth of a second.</p>
+
+      <h2 id="mapping">Another tool's table</h2>
+      <p>A CSV or TSV that no reader recognizes opens a dialog showing its first rows, with a column chosen for each field ClonoLoom uses: the junction (amino acids or nucleotides; one is needed), the V, D, J and C genes, the count, the sample, the locus, whether a rearrangement is productive, the cell, the clone and the sequence ID. ClonoLoom guesses them from the columns' names (VDJtools', MiXCR's, AIRR's and others'); change any that it guessed wrong.</p>
+      <ul>
+        <li><strong>The count's unit</strong> is yours to say: reads, UMIs, templates or cells. A column called <code>count</code> does not say what it counted, so ClonoLoom never guesses it.</li>
+        <li><strong>Check</strong> reads the whole file through the mapping and reports, for each field, how many values are valid, examples of those that are not, and notes: how many junctions begin with a cysteine and end with a phenylalanine or tryptophan, how many counts are not whole numbers.</li>
+        <li><strong>Open</strong> checks, then opens the table through the mapping. Where no column says whether a rearrangement is productive, one whose junction is whole codons without a stop codon is.</li>
+      </ul>
+      <p>The mapping is part of the dataset: the project keeps it, the dataset reopens through it, one file under two mappings is two datasets, and the methods paragraph states which column gave what. Scripts give it to <code>open_data</code> (<a href="remote-control.html">remote control</a>).</p>
+
+      <h2 id="check">Check the data</h2>
+      <shot name="data" alt="The Data view of 10x Genomics' PBMC 1k T cells: the dataset with its format, unit and the public data's license, the validator's note on junctions without their anchors, the sample, and the file's SHA-256, source and license in the inspector">The Data view: the dataset card, the validator's note, the samples, and the file in the inspector.</shot>
+      <p>The <strong>Data</strong> view shows each dataset of the project:</p>
+      <ul>
+        <li><strong>The card</strong>: its format, rows, samples, whether it is single-cell or bulk, and its <strong>unit</strong>: cells, templates, reads or UMIs. When the files do not say whether reads or molecules were counted (an AIRR file with <code>duplicate_count</code> alone), ClonoLoom does not guess: choose the unit, and until you do, results say "counts".</li>
+        <li><strong>Validation</strong>: each finding with its severity, how many rows it concerns, examples (file, line, value) and what to do. A <strong>fatal</strong> finding stops analysis; a <strong>warning</strong> is shown with every result that uses the dataset; a <strong>note</strong> informs. Each has a stable code (<code>junction-anchors</code>, <code>locus-mismatch</code>, …) you can cite.</li>
+        <li><strong>Samples</strong>: rows, productive share, abundance and loci, and their annotation: subject, time point, tissue, cell subset, condition, batch and HLA. <strong>Suggest from file names</strong> and <strong>Fill from metadata</strong> (AIRR Repertoire metadata, immunoSEQ's sample tags) propose values, and each keeps where it came from. The Repertoire view colors samples by condition and pairs them by subject.</li>
+        <li><strong>The inspector</strong> (right): the files with their SHA-256 fingerprints, what was read beside them (Cell Ranger's clonotypes and metrics), and the data's source and license.</li>
+      </ul>

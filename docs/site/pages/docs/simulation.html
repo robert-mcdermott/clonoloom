@@ -1,0 +1,30 @@
+---
+title: Simulated studies
+description: Make simulated TRB studies whose truth is known with ClonoLoom, from the Example data dialog or clonoloom simulate, to check methods against the truth and learn ClonoLoom without data of your own.
+lede: ClonoLoom makes bulk T-cell receptor β studies whose truth is known: every clonotype of every subject, and the numbers an analysis estimates. They are for checking methods, ClonoLoom's or anyone's, against the truth, and for learning ClonoLoom without data of your own.
+---
+      <h2 id="make">Make one</h2>
+      <p>The <strong>Example data</strong> dialog offers two studies, made on your computer in a few seconds (offline too), each labeled simulated wherever it is shown. From the terminal:</p>
+      <div class="code"><pre><code><span class="prompt">$ </span>clonoloom simulate                                <span class="comment"># the standard study, into clonoloom-simulated-standard</span>
+<span class="prompt">$ </span>clonoloom simulate --preset null --seed 7         <span class="comment"># another study, another seed</span>
+<span class="prompt">$ </span>clonoloom simulate --print-params &gt; study.json   <span class="comment"># the parameters, to edit</span>
+<span class="prompt">$ </span>clonoloom simulate --params study.json --out my-study</code></pre></div>
+      <p>The same parameters and seed give the same study, byte for byte, on every computer. Open its folder in ClonoLoom as one dataset: its <code>truth</code> folder is left out.</p>
+
+      <h2 id="presets">Presets</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Preset</th><th>Subjects</th><th>Samples</th><th>What it is for</th></tr></thead>
+          <tbody>
+            <tr><td><code>standard</code></td><td>3 control, 3 with expanded clones (fewer clonotypes, a heavier tail, five clones holding 22% of the cells)</td><td>2 of each subject, 12,000 to 45,000 templates</td><td>Diversity, rarefaction and overlap, with a real difference between the groups</td></tr>
+            <tr><td><code>null</code></td><td>6 of one kind, in two groups</td><td>2 of each</td><td>A comparison of the groups should find nothing</td></tr>
+            <tr><td><code>small</code></td><td>2</td><td>1 of each</td><td>Tests</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="truth">The truth</h2>
+      <p>Beside the samples (AIRR rearrangement tables, templates as <code>umi_count</code> and reads as <code>duplicate_count</code>, with their Repertoire metadata), the <code>truth</code> folder holds every clone of every subject's population, and for each population its clonotypes, Hill numbers, Shannon and Simpson indices, evenness, clonality, Gini, largest clones' share and homeostasis; for each sample, the clonotypes and coverage a sample of its depth shows on average; and for each pair of subjects, the clonotypes they share. ClonoLoom's own interval coverage is measured against it (<a href="../science.html">Science</a>).</p>
+
+      <h2 id="model">The model</h2>
+      <p>Rearrangements are made from GRCh38's TRB gene segments at Ensembl's annotation, with the V and J usage of 10x Genomics' 10k PBMC data, deletions, palindromic and non-templated insertions, and productive junctions selected on their length so that their lengths are the data's. Each subject's clones have power-law sizes; each sample draws templates from them and sequences them into reads. It is a simple, documented model for testing methods against a known truth, not a model inferred from data: its junctions look like real ones, but they are not a substitute for real repertoires. <a href="{{github}}/blob/main/docs/SIMULATION.md">SIMULATION.md</a> gives every file, field and parameter. Simulated data describe no person, and may be used and shared without restriction.</p>

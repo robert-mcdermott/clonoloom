@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.3.0 (unreleased)
+
+Wave 3 of the [roadmap](clonoloom-spec/roadmap.md): tracking. Built slice by slice; this section
+grows with each.
+
+### Added
+
+- **The website (wave 3, slice 1).** <https://robert-mcdermott.github.io/clonoloom/>, built from
+  `docs/site/` and published on GitHub Pages from a `gh-pages` branch holding only the built site
+  ([docs/site/README.md](docs/site/README.md)); its generator, audit and styles adapted from
+  SituCraft 0.9.0's:
+  - a home page, install, the methods with their validation and citation, and the user guide a
+    page a subject (thirteen pages, from opening data to the record), with the screenshots in both
+    themes;
+  - `docs/GETTING-STARTED.md` now points to the guide, so that it is written once; the
+    references (formats, remote control, simulated studies, installing) stay in `docs/`;
+  - a link-preview image made from a screenshot (`docs/site/og-image.mjs`);
+  - axe-core listed in `validation/sources.json` as a tool, fetched for the audit only.
+
+### Validation
+
+- **The website:** the build checks every local link, anchor and screenshot, and every link into
+  the repository's files (CI runs it on every commit); every page passes axe-core 4.13.0's WCAG 2.1
+  A and AA rules in both themes at a desktop's and a phone's width, none wider than a phone's
+  screen (`node docs/site/audit.mjs`: 16 pages, 64 checks, no problem).
+
 ## 0.2.0 (2026-10-21)
 
 Wave 2 of the [roadmap](clonoloom-spec/roadmap.md): repertoire basics. Each sample's diversity,

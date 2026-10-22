@@ -1,0 +1,33 @@
+---
+title: Figures and exports
+description: Save ClonoLoom's plots as SVG, PNG or PDF figures whose captions state the clonotype definition, unit and samples, and export rearrangements, clonotypes and results with a notice of their source and license.
+lede: Every plot saves as a figure that stands alone in a manuscript, and every table and result exports with a notice of where it came from and under what license, so that what leaves ClonoLoom still says how it was made.
+---
+      <h2 id="figures">Figures</h2>
+      <p>Each plot's ⤓ button saves it as a figure:</p>
+      <ul>
+        <li><strong>SVG</strong>: vector, for editing in Illustrator or Inkscape, with every color written in.</li>
+        <li><strong>PNG</strong> at 300 dpi, the resolution recorded in the file, so that a layout program places it at its size.</li>
+        <li><strong>PDF</strong>: one page of the figure's size, holding the 300-dpi image.</li>
+      </ul>
+      <p>The figure is the plot on white whatever the window's theme, with its title and legend and a caption saying what was measured, the clonotype definition, the abundance unit, the samples, the filter, and the ClonoLoom version and day it was made. With color-vision-friendly colors on, the figure uses them too.</p>
+
+      <h2 id="exports">Exports</h2>
+      <p><strong>Export</strong> (in the Clonotypes view, the Repertoire view, or the <strong>File</strong> menu) writes a zip:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>What</th><th>File</th><th>What it holds</th></tr></thead>
+          <tbody>
+            <tr><td>Rearrangements</td><td><code>rearrangements.tsv</code></td><td>The rows the filter keeps, as an AIRR Rearrangement TSV, each with its clonotype under the definition as <code>clone_id</code></td></tr>
+            <tr><td>Clonotypes</td><td><code>clonotypes.csv</code></td><td>One row per clonotype: its chains, its total and how many samples hold it, and one column of abundance per sample</td></tr>
+            <tr><td>Diversity</td><td><code>diversity.csv</code></td><td>Every measure of every sample, with its standard error and interval</td></tr>
+            <tr><td>Rarefaction</td><td><code>rarefaction.csv</code></td><td>Every point of every curve, and the levels compared</td></tr>
+            <tr><td>Gene usage</td><td><code>usage.csv</code></td><td>Every share, by sample or condition</td></tr>
+            <tr><td>Overlap</td><td><code>overlap.csv</code>, <code>public.csv</code></td><td>Every pair's measures; the public clonotypes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Each zip holds a <code>NOTICE.txt</code>: the files read and their SHA-256, the filter, the clonotype definition, the unit, the method, ClonoLoom's version and commit, and each public data set's license and citation. The columns of each file are in <a href="{{github}}/blob/main/docs/FORMATS.md#what-clonoloom-writes">FORMATS.md</a>.</p>
+
+      <h2 id="licenses">Data under terms of use</h2>
+      <p>Rows of public data under a provider's terms of use (the immuneACCESS example), or under no stated license, are exported only after ClonoLoom shows those terms and you accept them, and the notice then says not to share them. Results computed from such data say to read the terms before sharing them. Your own data are yours: their notice says so.</p>

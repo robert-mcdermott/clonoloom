@@ -1,0 +1,27 @@
+---
+title: The record
+description: How ClonoLoom keeps a project: saved automatically, every change undoable and logged, results kept with their lineage, a methods paragraph written from the record, and where everything is stored.
+lede: A project records where its data came from and how every result was made, so that a methods section can be written from it and the results made again. This page says what is kept, and where.
+---
+      <h2 id="project">The project</h2>
+      <p>The project saves itself to the library as you work; <strong>Open a saved project</strong> (⇧⌘O) lists them. Undo and redo cover every change. <strong>History and log</strong> (the status bar, or ⌘J) lists what was done to the project, and the session's messages. A project records its datasets by their files' paths and fingerprints, never the data themselves; their annotation, filters and definitions; and the results kept.</p>
+
+      <h2 id="results">Results and jobs</h2>
+      <p>Each analysis runs as a <strong>job</strong> in the program, shown in the <strong>Jobs</strong> view with its progress and log; a job that a stop interrupted can be resumed. Its result is kept as an artifact with its lineage: the dataset it was made from, the definition, filter and settings (with their defaults written out), the method and its version, the seed, ClonoLoom's version, and the SHA-256 of every file. The artifact's ID is made from what it measured, so asking again answers the kept result, and changing anything makes another.</p>
+      <p>Every release saves a project with its data and results, and every later release must open it and make its results again, with the same IDs and values. Results are the same bit for bit on one kind of processor, but not yet between arm64 and amd64, which differ in the last digits of some sums and logarithms.</p>
+
+      <h2 id="methods">The methods paragraph</h2>
+      <shot name="methods" alt="A methods paragraph with numbered references, ready to copy">A dataset's methods paragraph, with its references.</shot>
+      <p><strong>Methods paragraph</strong> (a dataset's menu or the inspector) writes a paragraph for a manuscript from the project's record: the data's source and license, how ClonoLoom read and checked them, the unit, a table's mapped columns, the filter with what it kept, the clonotype definition, the diversity measured, the rarefaction and the levels the samples were compared at, the genes and junctions counted, the overlap measured, and ClonoLoom's version, with numbered references. Only what was done is said, and the same record gives the same text. <strong>Copy</strong> takes it with its references.</p>
+
+      <h2 id="where">Where things are kept</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>What</th><th>macOS</th><th>Linux</th><th>Windows</th></tr></thead>
+          <tbody>
+            <tr><td>The library: projects, results, jobs, example data</td><td><code>~/Library/Application Support/ClonoLoom</code></td><td><code>~/.config/ClonoLoom</code></td><td><code>%AppData%\ClonoLoom</code></td></tr>
+            <tr><td>The cache of tables read</td><td><code>~/Library/Caches/clonoloom</code></td><td><code>~/.cache/clonoloom</code></td><td><code>%LocalAppData%\clonoloom</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><code>--data-dir</code>, <code>--examples-dir</code> and <code>--cache-dir</code> put them elsewhere. Your repertoire files are never copied into the library, moved or changed: projects refer to them where they are. Deleted projects are first moved to the library's <code>trash</code> folder. The cache stays within 10 GB (<code>--cache-limit</code>), removing what was used least recently, and can be deleted at any time; the Jobs view shows it and clears it.</p>

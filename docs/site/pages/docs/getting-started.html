@@ -1,0 +1,38 @@
+---
+title: Getting started
+description: Install ClonoLoom, start it, and try it on an example: public single-cell and bulk receptor data, or a simulated study whose truth is known.
+lede: Install ClonoLoom, start it, and try it on an example: public single-cell runs from 10x Genomics, the AIRR Community's test files, an immunoSEQ cohort, or simulated studies whose every clonotype is known.
+---
+      <h2 id="start">Install and start it</h2>
+      <p>Install ClonoLoom with the one-line installer (<a href="../install.html">Install</a>), then run:</p>
+      <div class="code"><pre><code><span class="prompt">$ </span>clonoloom</code></pre></div>
+      <p>ClonoLoom opens in its own window: Chrome, Edge, Brave or Chromium in app mode if you have one, else your default browser (<code>--window browser</code> asks for it). It runs on your computer only: nothing is uploaded, and it reaches no other computer unless you ask it to download example data (<code>--offline</code> stops even that). Closing the window stops ClonoLoom (<code>--keep-running</code> keeps it serving).</p>
+      <shot name="start" alt="ClonoLoom's start page of a first run: Open data, Example data and Open a saved project, the recent projects, and the kinds of data to bring">The start page of a first run: open data, an example or a saved project.</shot>
+      <p>You can also name files on the command line: <code>clonoloom run1/outs</code> opens a Cell Ranger output folder, and running it again while ClonoLoom is open hands the files to the open window.</p>
+
+      <h2 id="examples">Try an example</h2>
+      <shot name="examples" alt="The Example data dialog: public datasets, each with its description, source, license, citation and size, and a button to download it">The Example data dialog: each dataset with its source, size, license and citation.</shot>
+      <p><strong>Example data</strong> lists public datasets, downloaded from their publishers only when you ask, and simulated studies made on your computer:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Example</th><th>Download</th><th>License</th><th>Opens</th></tr></thead>
+          <tbody>
+            <tr><td>Human PBMC from a healthy donor, 1k cells, 5′ V(D)J (Cell Ranger 4.0.0)</td><td>2.8 MB</td><td>CC BY 4.0 (10x Genomics)</td><td>T cells, B cells</td></tr>
+            <tr><td>Splenocytes from a C57BL/6 mouse, 1k cells (Cell Ranger 4.0.0)</td><td>3.9 MB</td><td>CC BY 4.0 (10x Genomics)</td><td>T cells, B cells</td></tr>
+            <tr><td>10k human PBMCs, 5′ v2.0 (Cell Ranger 6.1.0, multi)</td><td>31 MB</td><td>CC BY 4.0 (10x Genomics)</td><td>T cells, B cells</td></tr>
+            <tr><td>5k mouse splenocytes, GEM-X 5′ v3 (Cell Ranger 9.0.0, multi)</td><td>27 MB</td><td>CC BY 4.0 (10x Genomics)</td><td>T cells, B cells</td></tr>
+            <tr><td>The AIRR Community's test and example files (v2.0.0)</td><td>71 KB</td><td>CC BY 4.0 (AIRR Community)</td><td>a valid and an invalid AIRR file</td></tr>
+            <tr><td>Emerson et al. 2017, three small samples (immunoSEQ export)</td><td>46 MB</td><td>immuneACCESS Terms of Use: research only, no redistribution</td><td>three subjects</td></tr>
+            <tr><td>A simulated TRB study with known truth</td><td>none: made here in seconds</td><td>none (simulated)</td><td>twelve samples of six subjects</td></tr>
+            <tr><td>A simulated TRB study with no difference between its groups</td><td>none: made here in seconds</td><td>none (simulated)</td><td>twelve samples of six subjects</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Every downloaded file is checked against the checksum recorded when ClonoLoom was released. Data under a provider's terms of use (the immuneACCESS data) need you to read and accept the terms first. <strong>Open T cells</strong> (or B cells) then opens an example as a dataset, which carries its license and citation from then on. The simulated studies are labeled simulated wherever they are shown; see <a href="simulation.html">Simulated studies</a>.</p>
+      <p>To follow the guide, download <strong>Human PBMC from a healthy donor, 1k cells</strong> and open its T cells; for the Repertoire pages, open <strong>A simulated TRB study with known truth</strong>.</p>
+
+      <h2 id="views">The window</h2>
+      <p>The rail on the left holds the views, in the order an analysis goes: <strong>Data</strong>, <strong>QC</strong>, <strong>Clonotypes</strong>, <strong>Repertoire</strong> and <strong>Jobs</strong>, and the views later releases fill (each says what it will do). The project tree beside them lists the datasets and the results kept; the inspector on the right describes what is chosen; the status bar shows the library, the datasets and the clonotype definition in use. <strong>Search or run a command</strong> (⌘K or Ctrl+K) finds any command, and undo and redo cover every change. The theme button in the header chooses a light or dark theme (or the system's), and turns on color-vision-friendly colors.</p>
+
+      <h2 id="next">Next</h2>
+      <p><a href="opening-data.html">Opening data</a> covers your own files and other tools' tables, and how ClonoLoom checks them.</p>

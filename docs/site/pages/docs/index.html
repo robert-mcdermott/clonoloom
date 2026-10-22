@@ -1,0 +1,30 @@
+---
+title: Documentation
+description: ClonoLoom's user guide: from installing it and opening receptor data to quality control, clonotype definitions, diversity, rarefaction, gene usage, overlap, figures, exports and the record, a page a subject.
+lede: ClonoLoom opens the output of an annotation pipeline for T- and B-cell receptors, checks it, and groups it into clonotypes by a definition you can see. From there it measures each repertoire with its uncertainty and compares samples, keeping every step on record. Everything runs on your computer; your data are never uploaded.
+---
+      <h2 id="path">A path through it</h2>
+      <p>Each page is a subject, in the order an analysis usually goes. Start with <a href="getting-started.html">Getting started</a> and an example.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Subject</th><th>Pages</th><th>What you do there</th></tr></thead>
+          <tbody>
+            <tr><td>Start</td><td><a href="getting-started.html">Getting started</a>, <a href="opening-data.html">Opening data</a></td><td>Install, try an example, open your own data or another tool's table, and check them</td></tr>
+            <tr><td>Quality and clonotypes</td><td><a href="qc.html">Quality control</a>, <a href="clonotypes.html">Clonotypes</a></td><td>See each sample's quality and the vendor's numbers recomputed, filter rows with a reason, and choose what a clonotype is</td></tr>
+            <tr><td>Repertoires</td><td><a href="diversity.html">Diversity</a>, <a href="rarefaction.html">Rarefaction</a>, <a href="genes.html">Genes and junctions</a>, <a href="overlap.html">Overlap</a></td><td>Measure each sample's diversity, compare samples at equal coverage, count their genes, junction lengths and amino acids, and measure how much they overlap, each with its uncertainty</td></tr>
+            <tr><td>Results</td><td><a href="figures.html">Figures and exports</a>, <a href="record.html">The record</a></td><td>Save figures and export data with their provenance and license; the project, its history and the methods paragraph</td></tr>
+            <tr><td>Reference</td><td><a href="simulation.html">Simulated studies</a>, <a href="remote-control.html">Remote control</a></td><td>Studies whose truth is known, to check methods against; drive ClonoLoom from scripts and notebooks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="principles">How it works</h2>
+      <ul>
+        <li><strong>One program, on your computer.</strong> ClonoLoom is a single file with nothing else to install. It reads every file with its own readers, never changes, moves or copies your data, and sends nothing anywhere.</li>
+        <li><strong>Checked before it is used.</strong> Data are checked before analysis, and the vendors' own numbers are recomputed from the rows. Each method is validated against an independent implementation or a known truth, with the numbers on the <a href="../science.html">Science</a> page.</li>
+        <li><strong>The definition travels with the result.</strong> Every clonotype count, figure, export and methods paragraph states the clonotype definition and the abundance unit it was made under.</li>
+        <li><strong>Everything is kept.</strong> Results are kept with their lineage, parameters, seeds and the SHA-256 of their files; asking again answers the result kept. Filters are kept as versions, and undo covers every change.</li>
+      </ul>
+
+      <h2 id="references">References</h2>
+      <p>Four references stay in the repository: <a href="{{github}}/blob/main/docs/FORMATS.md">Formats</a>, every file ClonoLoom reads and writes; the <a href="{{github}}/blob/main/docs/REMOTE-CONTROL.md">remote control reference</a>, every action a script can send; <a href="{{github}}/blob/main/docs/SIMULATION.md">simulated studies</a>, the model and its truth; and <a href="{{github}}/blob/main/docs/INSTALLING.md">installing</a>. The <a href="{{github}}/blob/main/CHANGELOG.md">changelog</a> says what each release added.</p>

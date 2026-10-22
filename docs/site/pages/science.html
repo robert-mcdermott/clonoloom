@@ -1,0 +1,106 @@
+---
+title: Science
+layout: page
+heading: Methods and validation
+description: The methods ClonoLoom implements for T- and B-cell receptor repertoires, each with its citation and what it was validated against, with the numbers; how to cite ClonoLoom; and credits for the example data.
+lede: ClonoLoom implements each method itself, from its publication, and checks it against an independent implementation, the vendor's own numbers, or a simulated repertoire whose every clonotype is known. Each method below names its source and what it agrees with.
+---
+      <h2 id="approach">How methods are checked</h2>
+      <p>Three kinds of check, as each method allows: the same numbers as an independent implementation of the same method on the same inputs (the <code>airr</code> library, pandas, scirpy, iNEXT, immunarch, vegan and R, run by scripts in the repository's <code>validation/reference/</code> and their outputs committed); the truth of a simulated study, whose every clonotype, sample and expectation is known; and invariants worked by hand on small cases. Tools under licenses ClonoLoom cannot include are only run, never copied.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Data</th><th>What it is</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td>10x Genomics single-cell V(D)J runs (human PBMC 1k and 10k, mouse splenocytes 1k and 5k)</td><td>Cell Ranger 4.0, 6.1 and 9.0 outputs, CC BY 4.0</td><td>Readers, QC, clonotypes, overlap, the examples, CI</td></tr>
+            <tr><td>The AIRR Community's test files (v2.0.0)</td><td>CC BY 4.0</td><td>The AIRR reader, every analysis, CI</td></tr>
+            <tr><td>Emerson et al. 2017, three subjects, in immunoSEQ's format and from the AIRR Data Commons</td><td>immuneACCESS Terms of Use: research only, no redistribution</td><td>Validation on the maintainer's computer only</td></tr>
+            <tr><td>Simulated TRB studies</td><td>Made by <code>clonoloom simulate</code>, seeded</td><td>Accuracy against the truth; interval coverage; scale</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="reading">Reading and checking data</h2>
+      <p>ClonoLoom reads AIRR Rearrangement TSV (schema 1.3 to 2.0; Vander Heiden et al. 2018) with its Repertoire metadata (Rubelt et al. 2017), Cell Ranger V(D)J contig annotations and output folders, and immunoSEQ v2 and v3 exports with its own readers, into one columnar table. Every column of 25 development files equals what the AIRR Community's <code>airr</code> library 2.0.0 and pandas 3.0.6 read from them, and the SHA-256 each reader takes while reading equals each file's recorded checksum: every byte was read, and none was changed. The readers were fuzzed with 12 million inputs without a fault. Gene calls are kept in IMGT nomenclature (Lefranc 2014), Adaptive's names mapped to IMGT's by ClonoLoom's rules and the HGNC list of human TR and IG genes (Seal et al. 2023). A table of another tool is read through a mapping of its columns that the user confirms, checked over the whole file first. A million rearrangements are read and validated in 1.5 s, at 58 bytes a row and their junctions.</p>
+
+      <h2 id="qc">Quality control</h2>
+      <p>On six bulk samples (immunoSEQ, the AIRR Data Commons and the AIRR Community's files), rows, abundance, productive share, clonotypes, singletons, doubletons and the largest clonotype's share equal an independent R implementation's, and sample coverage (Chao and Jost 2012) equals iNEXT 3.0.2's, to 10⁻¹². Cell Ranger's cell metrics (cells, cells with a productive pair, with a productive chain of each locus, as counts and shares) are reproduced exactly as Cell Ranger 4.0, 6.1 and 9.0 reported them for six T- and B-cell runs, and immunoSEQ's productive clonality, Simpson clonality, entropy and largest frequency from each rearrangement's reads, as Adaptive computes them, to seven significant digits. On the simulated standard study, each sample's estimated coverage is within 0.005 of the coverage a sample of its depth has on average.</p>
+
+      <h2 id="clonotypes">Clonotypes</h2>
+      <p>A clonotype definition names the junction (nucleotides or amino acids, the IMGT junction from the conserved cysteine at 104 to the phenylalanine or tryptophan at 118; Lefranc et al. 2003), the V and J genes at allele, gene or family level or not at all, the chains, and for single cells which chains of a cell count. On eight Cell Ranger runs (T and B cells, Cell Ranger 4.0, 6.1 and 9.0), ClonoLoom's paired definitions give exactly scirpy 0.25.1's partitions of cells (Sturm et al. 2020), by nucleotide and amino-acid junction, with and without the V gene; Cell Ranger's own clonotypes have the sizes its <code>clonotypes.csv</code> gives; bulk clonotypes equal the R implementation's on six samples under three definitions. A page of a million clonotypes, sorted and searched, comes in 37 ms.</p>
+
+      <h2 id="diversity">Diversity</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Measure</th><th>Source</th><th>Checked against</th><th>Agreement</th></tr></thead>
+          <tbody>
+            <tr><td>Hill numbers of order 0 to 4, Shannon's entropy, Simpson's index, evenness, clonality, Gini, the largest clonotypes' shares, homeostasis</td><td>Hill 1973</td><td>R; immunarch's functions on 18 samples</td><td class="agree">to 10⁻⁹</td></tr>
+            <tr><td>Chao1 (bias-corrected) and its log-transformed interval</td><td>Chao 1984; Chao et al. 2014</td><td>iNEXT 3.0.2 and immunarch</td><td class="agree">to iNEXT's three printed decimals</td></tr>
+            <tr><td>ACE</td><td>Chao and Lee 1992</td><td>vegan 2.7.6</td><td class="agree">equal</td></tr>
+            <tr><td>The Shannon and Simpson diversity of the repertoire</td><td>Chao, Wang and Jost 2013; Chao et al. 2014</td><td>iNEXT 3.0.2</td><td class="agree">to its three printed decimals</td></tr>
+            <tr><td>Sample coverage</td><td>Chao and Jost 2012</td><td>iNEXT 3.0.2</td><td class="agree">to 10⁻¹²</td></tr>
+            <tr><td>Bootstrap standard errors (200 replicates)</td><td>Chao et al. 2014, Appendix G</td><td>iNEXT 3.0.2</td><td class="agree">0.86 to 1.13 times iNEXT's (median 0.98)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Over 200 samples of a well-sampled simulated repertoire (coverage 0.99), the 95% intervals held the truth in 96.0% of samples for Chao1, 93.5% and 91.5% for the estimated Shannon and Simpson diversity, and 92.5% to 99.5% for the values seen. In an undersampled repertoire (coverage 0.62), Chao1 and the estimated Shannon diversity are lower bounds and their intervals never held the truth; the Repertoire view says so whenever a sample's coverage is below 0.9. iNEXT floors the estimated Simpson diversity's interval at the value seen; with that floor, the interval held the truth in under half the samples, so ClonoLoom does not apply it.</p>
+
+      <h2 id="rarefaction">Rarefaction and extrapolation</h2>
+      <p>Each sample's clonotypes, Shannon diversity and Simpson diversity (the Hill numbers of order 0, 1 and 2) and its coverage are rarefied below its size and extrapolated up to twice it (Chao et al. 2014), and the Hill numbers given at any coverage (Chao and Jost 2012). On 18 samples, at iNEXT 3.0.2's 40 sizes along each curve (Hsieh et al. 2016), every value equals iNEXT's to 10⁻⁹, except the extrapolated Shannon diversity, within 8 × 10⁻⁸: its extrapolation magnifies iNEXT's rounding of the value seen, which ClonoLoom computes to 10⁻¹⁵. Two cohorts compared at iNEXT's default levels give the same levels and values; the bootstrap standard errors are 0.85 to 1.26 times iNEXT's (median 1.01, over 4,240).</p>
+      <p>On simulated repertoires, rarefied to half a sample's size, every value's 95% interval held the truth in 90% to 98% of samples. Extrapolated to twice the sample, the values were within 3% of the truth on average, but where rare clonotypes abound only the Simpson diversity's intervals held the truth as often as they say. ClonoLoom therefore compares samples first at levels every sample reaches by rarefaction alone (the lowest coverage among them, or the smallest sample's size), and offers iNEXT's extrapolated levels second, with a warning.</p>
+
+      <h2 id="usage">Gene usage and junctions</h2>
+      <p>Each sample's V, D, J and C genes and families, V–J pairs, junction lengths and their mean, and amino acids overall and at each IMGT position of the commonest lengths (Lefranc et al. 2003), by clonotypes or by abundance, with intervals from 200 bootstrap replicates of the clonotypes. A call tied between genes gives each an equal part. On 15 samples, all 8,277 shares equal an independent R implementation's to 10⁻¹²; against the simulator's truth, of 2,308 intervals, 97.4% to 100% held the expected shares.</p>
+
+      <h2 id="overlap">Overlap</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Measure</th><th>Source</th><th>Checked against</th><th>Agreement</th></tr></thead>
+          <tbody>
+            <tr><td>Shared clonotypes; Jaccard's and Sørensen–Dice's indices; the overlap coefficient</td><td>Jaccard 1912; Dice 1945</td><td>immunarch and R on 69 pairs; scirpy 0.25.1 on four single-cell runs</td><td class="agree">to 10⁻⁹; the same shared clonotypes and Jaccard index</td></tr>
+            <tr><td>The same, rarefied exactly to the smallest sample</td><td>Chao et al. 2014's subsample expectations</td><td>R by lchoose; 200,000 random subsamples</td><td class="agree">to 10⁻⁹; their mean</td></tr>
+            <tr><td>Morisita's index; the Morisita–Horn index</td><td>Morisita 1959; Horn 1966</td><td>vegan 2.7.6 and immunarch</td><td class="agree">to 10⁻⁹ (vegan stops Morisita's at 1)</td></tr>
+            <tr><td>Intervals: the samples' cells resampled, widened for the chance of sharing</td><td>Horvitz and Thompson 1952</td><td>Five simulated studies, 330 pairs</td><td class="agree">held the expected shared clonotypes in 95.2% of pairs, the rarefied ones in 97.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Morisita's own index is shown first: the Morisita–Horn index, which immunarch and vegan give, reads two samples of one repertoire about 0.98 when they are shallow, and its intervals held the simulated repertoires' overlap in 85.8% of pairs, against 93.9% for Morisita's. A bootstrap of the cells alone held the shared clonotypes in only 64% of pairs: which clonotypes two samples share is itself random, and the intervals now include that.</p>
+
+      <h2 id="simulation">Simulated studies</h2>
+      <p><code>clonoloom simulate</code> makes TRB rearrangements from GRCh38's gene segments at Ensembl's annotation (Dyer et al. 2025), with V and J usage from 10x Genomics' 10k PBMC data, deletions, palindromic and non-templated insertions (Murugan et al. 2012), and productive junctions selected on their length (Elhanati et al. 2014); each subject's repertoire a population of power-law clone sizes, sampled into templates and reads. Over 150,000 rearrangements, the productive junctions' mean length is within 0.1 amino acids of the 10x data's, its standard deviation within 0.15, and V usage within 0.03 of the model's in total variation. The same seed gives the same bytes on every computer.</p>
+
+      <h2 id="record">Figures, exports and the record</h2>
+      <p>Figures are written as SVG, as PNG at 300 dpi (the resolution recorded in the file) and as PDF; the PDF's structure, page size and image are checked by tests. An exported AIRR Rearrangement TSV, read back by ClonoLoom's own reader, gives the same clonotypes with the same abundances. Each release saves a project with its data and results, and every later release must open it under the same dataset and result IDs and make each result again: the 0.2.0 project's five results are made again with the same values, the same bytes on arm64. Results are not yet the same bit for bit on every processor: arm64 and amd64 builds differ in the last digits of some sums and logarithms.</p>
+
+      <h2 id="cite">Cite ClonoLoom</h2>
+      <p>If you use ClonoLoom in your research, please cite it (the repository's <a href="{{github}}/blob/main/CITATION.cff">CITATION.cff</a>) with its version, and the methods you used as its methods paragraph lists them:</p>
+      <div class="code wrap" data-no-copy><pre><code>McDermott R. ClonoLoom: a local-first workbench for adaptive immune receptor repertoires. Version {{version}}. https://github.com/robert-mcdermott/clonoloom</code></pre></div>
+
+      <h2 id="references">References</h2>
+      <ul class="references">
+        <li>Chao A. Nonparametric estimation of the number of classes in a population. <em>Scand J Stat</em> 1984;11:265–270.</li>
+        <li>Chao A, Gotelli NJ, Hsieh TC, et al. Rarefaction and extrapolation with Hill numbers: a framework for sampling and estimation in species diversity studies. <em>Ecol Monogr</em> 2014;84:45–67.</li>
+        <li>Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. <em>Ecology</em> 2012;93:2533–2547.</li>
+        <li>Chao A, Lee SM. Estimating the number of classes via sample coverage. <em>J Am Stat Assoc</em> 1992;87:210–217.</li>
+        <li>Chao A, Wang YT, Jost L. Entropy and the species accumulation curve: a novel entropy estimator via discovery rates of new species. <em>Methods Ecol Evol</em> 2013;4:1091–1100.</li>
+        <li>Dice LR. Measures of the amount of ecologic association between species. <em>Ecology</em> 1945;26:297–302.</li>
+        <li>Dyer SC, Austine-Orimoloye O, Azov AG, et al. Ensembl 2025. <em>Nucleic Acids Res</em> 2025;53:D948–D957.</li>
+        <li>Elhanati Y, Murugan A, Callan CG Jr, Mora T, Walczak AM. Quantifying selection in immune receptor repertoires. <em>Proc Natl Acad Sci USA</em> 2014;111:9875–9880.</li>
+        <li>Emerson RO, DeWitt WS, Vignali M, et al. Immunosequencing identifies signatures of cytomegalovirus exposure history and HLA-mediated effects on the T cell repertoire. <em>Nat Genet</em> 2017;49:659–665.</li>
+        <li>Hill MO. Diversity and evenness: a unifying notation and its consequences. <em>Ecology</em> 1973;54:427–432.</li>
+        <li>Horn HS. Measurement of "overlap" in comparative ecological studies. <em>Am Nat</em> 1966;100:419–424.</li>
+        <li>Horvitz DG, Thompson DJ. A generalization of sampling without replacement from a finite universe. <em>J Am Stat Assoc</em> 1952;47:663–685.</li>
+        <li>Hsieh TC, Ma KH, Chao A. iNEXT: an R package for rarefaction and extrapolation of species diversity (Hill numbers). <em>Methods Ecol Evol</em> 2016;7:1451–1456.</li>
+        <li>Jaccard P. The distribution of the flora in the alpine zone. <em>New Phytol</em> 1912;11:37–50.</li>
+        <li>Lefranc MP. Immunoglobulin and T cell receptor genes: IMGT and the birth and rise of immunoinformatics. <em>Front Immunol</em> 2014;5:22.</li>
+        <li>Lefranc MP, Pommié C, Ruiz M, et al. IMGT unique numbering for immunoglobulin and T cell receptor variable domains and Ig superfamily V-like domains. <em>Dev Comp Immunol</em> 2003;27:55–77.</li>
+        <li>Morisita M. Measuring of interspecific association and similarity between communities. <em>Mem Fac Sci Kyushu Univ Ser E Biol</em> 1959;3:65–80.</li>
+        <li>Murugan A, Mora T, Walczak AM, Callan CG Jr. Statistical inference of the generation probability of T-cell receptors from sequence repertoires. <em>Proc Natl Acad Sci USA</em> 2012;109:16161–16166.</li>
+        <li>Rubelt F, Busse CE, Bukhari SAC, et al. Adaptive Immune Receptor Repertoire Community recommendations for sharing immune-repertoire sequencing data. <em>Nat Immunol</em> 2017;18:1274–1278.</li>
+        <li>Seal RL, Braschi B, Gray K, et al. Genenames.org: the HGNC resources in 2023. <em>Nucleic Acids Res</em> 2023;51:D1003–D1009.</li>
+        <li>Sturm G, Szabo T, Fotakis G, et al. Scirpy: a Scanpy extension for analyzing single-cell T-cell receptor-sequencing data. <em>Bioinformatics</em> 2020;36:4817–4818.</li>
+        <li>Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. <em>Front Immunol</em> 2018;9:2206.</li>
+      </ul>
+
+      <h2 id="credits">Credits</h2>
+      <p>The public example datasets are 10x Genomics' single-cell V(D)J runs and the AIRR Community's test files, each used under the Creative Commons Attribution 4.0 license, and three subjects of Emerson et al. (2017) from immuneACCESS, downloaded only by a user who accepts their terms of use. Their source and license are shown on each example's card and cited in the methods paragraph. The simulator's gene segments are GRCh38's at Ensembl (no restrictions), and its V and J usage and junction lengths are computed from 10x Genomics' 10k PBMC data (CC BY 4.0). The website, its build and parts of ClonoLoom's host and library are adapted from SituCraft and MaveScape, by the same author, under the Apache License 2.0.</p>
+      <p>ClonoLoom is for research use only. It is not a medical device and makes no diagnostic claims.</p>

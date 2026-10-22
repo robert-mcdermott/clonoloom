@@ -48,6 +48,7 @@ validation/reference/  committed reference numbers, each with the script that ma
 validation/projects/   a project saved by each release, which every later one must open
 testdata/            small synthetic files made by scripts in the repository (no real data)
 docs/                installation, formats, MCP, network
+docs/site/           the website: its generator, pages and audit (published from gh-pages)
 clonoloom-spec/      requirements, design, roadmap, research, these conventions
 ```
 

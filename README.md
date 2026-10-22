@@ -50,8 +50,8 @@ comparisons come in later releases.
   programs on this computer can drive the window through remote control.
 
 Every method is checked against an independent implementation or a known truth (the `airr`
-library, pandas, scirpy, iNEXT, immunarch, vegan and simulated studies among them): see the
-[changelog](CHANGELOG.md)'s Validation sections and [research](clonoloom-spec/research.md).
+library, pandas, scirpy, iNEXT, immunarch, vegan and simulated studies among them): see
+[methods and validation](https://robert-mcdermott.github.io/clonoloom/science.html).
 
 ## A look around
 
@@ -101,7 +101,7 @@ clonotypes' junction lengths.
 
 A methods paragraph, written from the project's record, with numbered references.
 
-More pictures, one for each step, are in the [getting started guide](docs/GETTING-STARTED.md).
+More screenshots, a page for every view, are in the [user guide](https://robert-mcdermott.github.io/clonoloom/docs/).
 
 ## Install
 
@@ -122,8 +122,6 @@ Or build from source with Go (the version in `go.mod` or newer): `go build -o cl
 
 ## Getting started
 
-[docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) walks through a first study.
-
 ```sh
 clonoloom                                  # the start page
 clonoloom /path/to/airr_rearrangement.tsv  # or open your own data
@@ -138,7 +136,7 @@ hands them to the ClonoLoom already running.
 To try it without your own data, choose **Example data**: public 10x Genomics, AIRR Community and
 immuneACCESS datasets, each shown with its source, size, license and citation and downloaded from
 its publisher only when you ask, and simulated studies whose truth is known, made on your
-computer.
+computer. The [user guide](https://robert-mcdermott.github.io/clonoloom/docs/) walks through the examples and every view.
 
 <details>
 <summary>Options</summary>
@@ -170,7 +168,8 @@ It takes `-h` for its settings.
 
 ## Documentation
 
-- [Getting started](docs/GETTING-STARTED.md): a first study, view by view.
+- [The website](https://robert-mcdermott.github.io/clonoloom/): the user guide, installing, and the methods with their validation
+  ([docs/site/](docs/site/README.md) builds it).
 - [Installing](docs/INSTALLING.md): release files, installers, upgrading, uninstalling.
 - [Formats](docs/FORMATS.md): what each reader reads and how.
 - [Remote control](docs/REMOTE-CONTROL.md): driving ClonoLoom from scripts.
@@ -191,6 +190,7 @@ node --test "web/lib/**/*.test.mjs"      # the browser modules
 node validation/run.mjs                  # checks against references (validation/README.md)
 go run . --dev --window none             # serve web/ from disk at http://127.0.0.1:8860
 node docs/capture/capture.mjs            # the documentation's pictures (docs/images)
+node docs/site/build.mjs /tmp/site       # the website, every link checked (docs/site/README.md)
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit

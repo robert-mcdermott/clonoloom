@@ -1,0 +1,54 @@
+---
+title: Remote control
+description: Drive the open ClonoLoom window from a script or a notebook: open data, choose a clonotype definition, measure diversity, rarefaction, gene usage and overlap, and read the answers as JSON.
+lede: A program on your computer (a script, a notebook, the documentation's screenshot capture) can drive the open ClonoLoom window. Each action is performed in the window, where you see it, and what it changes goes into the project's history like any edit of yours, so it can be undone.
+---
+      <h2 id="enable">Turn it on</h2>
+      <div class="code"><pre><code><span class="prompt">$ </span>clonoloom --remote-control</code></pre></div>
+      <p>ClonoLoom then writes <code>remote.json</code> to its library folder (<a href="record.html#where">where things are kept</a>): its address and a token. The file is readable by you only, and removed when ClonoLoom stops. Keep a ClonoLoom window open: actions are performed by the window most recently opened.</p>
+
+      <h2 id="send">Send an action</h2>
+      <p>POST <code>{"action": …, "args": {…}, "client": "what your program calls itself"}</code> to <code>/api/remote/action</code>; the answer is <code>{"ok": true|false, "message": …, "data": …}</code>. In Python, with the standard library alone:</p>
+      <div class="code"><pre><code>import json, pathlib, urllib.request
+
+info = json.loads(pathlib.Path("~/Library/Application Support/ClonoLoom/remote.json").expanduser().read_text())
+
+def act(action, **args):
+    request = urllib.request.Request(info["url"] + "/api/remote/action",
+        data=json.dumps({"action": action, "args": args, "client": "my notebook"}).encode(),
+        headers={"Content-Type": "application/json", "X-ClonoLoom-Token": info["token"]})
+    return json.load(urllib.request.urlopen(request))
+
+act("open_example", example="simulated-standard")
+diversity = act("measure_diversity")["data"]
+print(act("show_methods")["data"]["text"])</code></pre></div>
+
+      <h2 id="actions">The actions</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Action</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>get_state</code></td><td>The project: its datasets (format, unit, rows, samples, findings, filter, definition, license and citation of public data), the view shown, the example datasets</td></tr>
+            <tr><td><code>new_project</code></td><td>Starts a new project</td></tr>
+            <tr><td><code>open_data</code></td><td>Opens files or folders as one dataset; another tool's table through a mapping of its columns (needs the token)</td></tr>
+            <tr><td><code>open_example</code></td><td>Opens an example dataset, downloading openly licensed data first when asked</td></tr>
+            <tr><td><code>show</code></td><td>Shows a view, with a dataset in focus</td></tr>
+            <tr><td><code>set_definition</code></td><td>Chooses a dataset's clonotype definition: a preset by name, or one stated in full</td></tr>
+            <tr><td><code>select_clonotype</code></td><td>Chooses a clonotype by its rank in the table or its ID</td></tr>
+            <tr><td><code>measure_diversity</code></td><td>Measures each sample's diversity and answers the main measures with their intervals</td></tr>
+            <tr><td><code>rarefy</code></td><td>Rarefies and extrapolates each sample and answers each at a chosen level</td></tr>
+            <tr><td><code>gene_usage</code></td><td>Counts genes, junction lengths and amino acids, and answers the most used genes and commonest lengths</td></tr>
+            <tr><td><code>measure_overlap</code></td><td>Measures every pair's overlap and answers the most overlapping pairs and the public clonotypes</td></tr>
+            <tr><td><code>show_examples</code>, <code>show_methods</code>, <code>set_theme</code>, <code>close_dialogs</code></td><td>The Example data dialog; a dataset's methods paragraph with its references; the theme; closing dialogs</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Every action's arguments are in the <a href="{{github}}/blob/main/docs/REMOTE-CONTROL.md">remote control reference</a>; <code>GET /api/remote/tools</code> lists them as JSON Schema.</p>
+
+      <h2 id="allowed">What is allowed</h2>
+      <ul>
+        <li>Only programs on this computer: requests from other computers, and web pages that reach the loopback port under another name, are refused.</li>
+        <li>Reading files by path (<code>open_data</code>) needs the <code>X-ClonoLoom-Token</code> header with the token in <code>remote.json</code>, so another user of a shared computer cannot make your ClonoLoom read your files.</li>
+        <li>Data under a provider's terms of use (the immuneACCESS example) are never downloaded by a program: only you can accept their terms, in the window.</li>
+        <li>One action runs at a time, in the order they come.</li>
+      </ul>

@@ -1,0 +1,22 @@
+---
+title: Overlap
+description: Measure how much every pair of samples overlaps in ClonoLoom: shared clonotypes, Jaccard, Sørensen–Dice and the overlap coefficient as sampled and rarefied, Morisita's index, with intervals; and the public clonotypes.
+lede: The Overlap part measures how much every pair of samples shares, each value with its 95% interval, summarizes the pairs of one subject and of two, and counts the clonotypes found in more than one subject.
+---
+      <h2 id="measures">The measures</h2>
+      <shot name="overlap" alt="The Overlap part: Morisita's index for every pair of samples as a heatmap, the pairs of one subject and of two summarized, and every pair listed with its intervals">Every pair of the simulated study's samples by Morisita's index; the pairs of one subject stand out.</shot>
+      <p>Open <strong>Repertoire › Overlap</strong> and choose <strong>Measure overlap</strong>; the result is kept with the project.</p>
+      <ul>
+        <li><strong>Morisita's index</strong> weighs each clonotype by its abundance: 1 for one repertoire sampled twice, 0 for repertoires that share nothing, at any depth. The <strong>Morisita–Horn index</strong>, which immunarch and vegan give, is offered too, but it reads two samples of one repertoire below 1 when they are shallow.</li>
+        <li><strong>Jaccard's index</strong>, <strong>Sørensen–Dice's</strong> and the <strong>overlap coefficient</strong> count clonotypes seen, and grow with depth: take them <strong>rarefied</strong>, as expected with both samples brought down to the smallest sample's size (computed exactly, not by drawing one subsample).</li>
+        <li>The <strong>clonotypes shared</strong>, as sampled and rarefied, and each sample's share of its abundance in clonotypes the other holds too.</li>
+      </ul>
+
+      <h2 id="intervals">The intervals</h2>
+      <p>Which clonotypes two samples share is itself a matter of chance: a rare clonotype of both repertoires may or may not turn up in both samples. The intervals come from a bootstrap of each sample's cells, widened for that chance (Horvitz and Thompson 1952), on the logarithmic scale. Without that widening, they held the expected shared clonotypes in only 64% of simulated pairs; with it, in 95.2%. A pair that shares nothing gets an interval from zero to what a count of none allows.</p>
+
+      <h2 id="pairs">Pairs and public clonotypes</h2>
+      <p>The pairs of one subject and of two (and of one condition and of two) are summarized by their mean, lowest and highest value, and every pair is listed. The <strong>public clonotypes</strong>, found in more than one subject, are counted by how many subjects hold them, and the most public listed. Subjects come from the samples' annotation (or their AIRR metadata): without them each sample counts as its own subject, so two samples of one person would look public, and the view says so.</p>
+
+      <h2 id="use">Using the result</h2>
+      <p>The heatmap and plots save as figures, <strong>Export</strong> writes every pair's measures and the public clonotypes as CSV, and the methods paragraph says what was measured, at what depth. Scripts use <code>measure_overlap</code> (<a href="remote-control.html">Remote control</a>).</p>

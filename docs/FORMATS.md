@@ -113,7 +113,7 @@ recorded with the IMGT name it was read as. Mouse names keep their gene numbers.
 
 A CSV or TSV that no reader recognizes (VDJtools' or MiXCR's clone tables, a spreadsheet) is read
 through a **mapping** of its columns, made in the window
-([GETTING-STARTED.md](GETTING-STARTED.md#open-data)) or given to remote control's `open_data`
+([the guide](https://robert-mcdermott.github.io/clonoloom/docs/opening-data.html#mapping)) or given to remote control's `open_data`
 ([REMOTE-CONTROL.md](REMOTE-CONTROL.md)).
 
 - **Separator**: a tab if the header has one; otherwise a semicolon if the header has more

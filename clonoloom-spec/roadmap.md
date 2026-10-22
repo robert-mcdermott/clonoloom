@@ -14,8 +14,8 @@ now; later waves are outlined and refined as they come.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
-release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is done and merged, 0.1.0 not yet
-tagged; wave 2 is done, to be merged and tagged 0.2.0; wave 3 is next.
+release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); wave 2
+is merged and released as 0.2.0; wave 3 has slice 1 done, slice 2 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -42,11 +42,12 @@ The order follows the siblings' principle:
 - **Examples.** Each new capability arrives with an example that uses it, on public data or a
   simulation (labeled simulated). Each example states its question, data source and license,
   what to expect, the view it opens and its guided steps, and the validation suite checks it.
-- **Documentation.** The slice that builds a feature also writes its guide page and the capture
-  scenes for its screenshots. `docs/FORMATS.md` grows with every format read or written. The
-  README is the front page, laid out as the siblings' are. What each release brought goes in
-  `CHANGELOG.md`.
-- **Release.** Screenshots re-captured, binaries drafted by the release workflow.
+- **Documentation.** The slice that builds a feature also writes its guide page on the website
+  (`docs/site/pages/docs/`, from wave 3) and the capture scenes for its screenshots.
+  `docs/FORMATS.md` grows with every format read or written. The README is the front page, laid
+  out as the siblings' are. What each release brought goes in `CHANGELOG.md`.
+- **Release.** Screenshots re-captured, binaries drafted by the release workflow, and the website
+  published with the release's pages (`docs/site/README.md`).
 - **Projects that keep opening.** Every release saves a project as a fixture under
   `validation/projects/`. Every later version must open each fixture and reproduce its artifacts'
   recorded checksums, or say why not.
@@ -164,8 +165,8 @@ which drafts the release.
 
 ## 0.2.0: repertoire basics (wave 2)
 
-Built on the branch `wave2`, one commit per slice. **Done**: every slice committed; release 0.2.0
-once merged and tagged.
+Built on the branch `wave2`, one commit per slice. **Done**: merged as robert-mcdermott/clonoloom#2
+and released as 0.2.0.
 
 | Slice | Status |
 | --- | --- |
@@ -278,17 +279,41 @@ once merged and tagged.
 
 ## 0.3.0: tracking (wave 3)
 
-1. **Subjects and timepoints.** The study's subjects, timepoints and reference samples from the
+Built on the branch `wave3`, one commit per slice. The website was moved here from wave 8, so that
+each wave from now on adds its own pages to it.
+
+| Slice | Status |
+| --- | --- |
+| 1. The website | Done |
+| 2. Subjects and timepoints | Next |
+| 3. Simulated longitudinal studies | To come |
+| 4. Tracking | To come |
+| 5. Two-sample tests | To come |
+| 6. Beta-binomial expansion | To come |
+| 7. Classes and attribution; release 0.3.0 | To come |
+
+1. **The website (N5).** The product and documentation site, built from `docs/site/` and published
+   on GitHub Pages from a `gh-pages` branch that holds only the built site, as the siblings' are:
+   a home page, install, the methods with their validation, and the user guide a page a subject.
+   - *Done:* SituCraft 0.9.0's generator, audit and styles adapted (`docs/site/build.mjs`,
+     `audit.mjs`, `assets/`); thirteen guide pages made from `docs/GETTING-STARTED.md`, which now
+     points to them; every local link, anchor and screenshot checked by the build in CI, and every
+     page checked with axe-core in both themes at a desktop's and a phone's width.
+   - *Decided:* the guide lives on the site only, so that it is written once; the references a
+     script or another tool needs (formats, remote control, simulated studies, installing) stay in
+     `docs/`. The site is published by hand from a checkout of `gh-pages` when a release is out,
+     as the siblings' are.
+2. **Subjects and timepoints.** The study's subjects, timepoints and reference samples from the
    annotation; checked before tracking.
-2. **Simulated longitudinal studies (E1).** Expansion and contraction trajectories with biological
+3. **Simulated longitudinal studies (E1).** Expansion and contraction trajectories with biological
    variance between replicates; CAR-T kinetics and transplant examples.
-3. **Tracking (T1, T6).** Chosen clonotypes followed across a subject's samples with intervals;
+4. **Tracking (T1, T6).** Chosen clonotypes followed across a subject's samples with intervals;
    alluvial plots and clonotype threads.
-4. **Two-sample tests (T2).** Fisher's exact and binomial tests with Benjamini–Hochberg;
+5. **Two-sample tests (T2).** Fisher's exact and binomial tests with Benjamini–Hochberg;
    validated against R and the simulator's truth.
-5. **Beta-binomial expansion (T3).** Rytlewski et al. 2019; dispersion from replicates or the
+6. **Beta-binomial expansion (T3).** Rytlewski et al. 2019; dispersion from replicates or the
    published time-dependent model; false discovery controlled on null simulations.
-6. **Classes and attribution (T4, T5).** Persistent, emerging and contracting clonotypes; the share
+7. **Classes and attribution (T4, T5).** Persistent, emerging and contracting clonotypes; the share
    of a sample found in a reference sample; release 0.3.0.
 
 ## Later waves (outlined)
@@ -299,6 +324,6 @@ once merged and tagged.
 | 5 | 0.5.0 | B cells | Germline reconstruction, clonal families with thresholds from distance to nearest, mutation by region, parsimony trees, isotypes; immunization example |
 | 6 | 0.6.0 | Single cell | Expression linked by barcode, the map, phenotypes per clonotype, clonotype modularity and CoNGA-style analysis; AnnData, MuData and 10x matrices |
 | 7 | 0.7.0 | Cohorts and robustness | Study design, group comparisons with the subject as unit, robustness to the definition, GLIPH2-style groups, HLA association, contamination and batch QC, pseudobulk |
-| 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file, the website |
+| 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |
 | 9 | 0.9.0 | Suite and public data | ADC queries, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |
 | 10 | 1.0.0 | Hardening | Budgets met, accessibility audit, documentation complete, external beta feedback addressed |

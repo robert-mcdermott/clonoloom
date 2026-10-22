@@ -1,0 +1,28 @@
+---
+title: Genes and junctions
+description: Count what each sample's clonotypes are made of in ClonoLoom: V, D, J and C genes and families, V–J pairs, junction lengths and amino acids by IMGT position, by sample or condition, with intervals.
+lede: The Genes and Junctions parts of the Repertoire view show what each sample's clonotypes are made of, each share of the clonotypes (each counted once) or of the abundance, with its 95% interval, for each sample or each condition.
+---
+      <h2 id="genes">Genes</h2>
+      <shot name="genes" alt="The Genes part: a heatmap of each sample's TRBV gene usage by clonotypes, and one gene's share across the samples with 95% intervals">Each sample's V genes by clonotypes, and one gene across the samples.</shot>
+      <p>Open <strong>Repertoire › Genes</strong> and choose <strong>Count genes and junctions</strong>; one result serves both parts and is kept with the project.</p>
+      <ul>
+        <li>The <strong>V, D, J or C genes</strong>, or their <strong>families</strong> (IMGT's subgroups), as a heatmap of every sample.</li>
+        <li><strong>One gene across the samples</strong>, each share with its interval.</li>
+        <li>The <strong>V–J pairs</strong> of one sample.</li>
+      </ul>
+      <p>A clonotype's genes are its rearrangements', in proportion to their counts. A call between several genes gives each an equal part, and what was not called is said, never dropped.</p>
+
+      <h2 id="junctions">Junctions</h2>
+      <shot name="junctions" alt="The Junctions part: each sample's junction lengths, their mean with its interval, and the amino acids of the junctions">The simulated samples' spectratypes, mean lengths and amino acids.</shot>
+      <ul>
+        <li>The <strong>spectratype</strong>: each junction length's share, and the mean length with its interval.</li>
+        <li>Each <strong>amino acid</strong>'s share of the junctions.</li>
+        <li>For the commonest lengths, the <strong>amino acids at each IMGT position</strong>, from the conserved cysteine at 104 to the phenylalanine or tryptophan at 118.</li>
+      </ul>
+
+      <h2 id="weighting">Clonotypes or abundance, samples or conditions</h2>
+      <p><strong>Clonotypes</strong> counts each clonotype once: what the repertoire is made of. <strong>Abundance</strong> weights each by its cells or molecules: what the sample is mostly made of, dominated by its largest clones. Intervals come from 200 bootstrap replicates of each sample's clonotypes. <strong>Conditions</strong> summarizes each condition (from the samples' annotation or metadata) by the mean of its samples, each counted once, with their range.</p>
+
+      <h2 id="use">Using the result</h2>
+      <p>The heatmaps and plots save as figures, <strong>Export</strong> writes every share as CSV, and the methods paragraph says what was counted and how. Scripts use <code>gene_usage</code> (<a href="remote-control.html">Remote control</a>).</p>
