@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strings"
 
+	"clonoloom/internal/dmath"
 	"clonoloom/internal/random"
 )
 
@@ -413,19 +414,19 @@ func populationTruth(subject Subject) popTruth {
 	t.Clonotypes = len(keys)
 	t.Hill0 = float64(len(keys))
 	for _, p := range freq {
-		t.Shannon -= p * math.Log(p)
-		t.Simpson += p * p
+		t.Shannon -= float64(p * dmath.Log(p))
+		t.Simpson += float64(p * p)
 	}
-	t.Hill1, t.Hill2 = math.Exp(t.Shannon), 1/t.Simpson
+	t.Hill1, t.Hill2 = dmath.Exp(t.Shannon), 1/t.Simpson
 	if len(keys) > 1 {
-		t.Evenness = t.Shannon / math.Log(float64(len(keys)))
+		t.Evenness = t.Shannon / dmath.Log(float64(len(keys)))
 		t.Clonality = 1 - t.Evenness
 	}
 	sorted := append([]float64(nil), sizes...)
 	sort.Float64s(sorted)
 	var weighted, total float64
 	for i, x := range sorted {
-		weighted += float64(2*(i+1)-len(sorted)-1) * x
+		weighted += float64(float64(2*(i+1)-len(sorted)-1) * x)
 		total += x
 	}
 	t.Gini = weighted / (float64(len(sorted)) * total)
@@ -455,9 +456,9 @@ func populationTruth(subject Subject) popTruth {
 func expectedAt(freq []float64, m int) (clonotypes, coverage float64) {
 	coverage = 1
 	for _, p := range freq {
-		miss := math.Pow(1-p, float64(m))
+		miss := dmath.Exp(float64(m) * dmath.Log1p(-p)) // (1 − p)^m, without 1 − p's rounding
 		clonotypes += 1 - miss
-		coverage -= p * miss
+		coverage -= float64(p * miss)
 	}
 	return clonotypes, coverage
 }

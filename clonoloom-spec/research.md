@@ -545,6 +545,37 @@ compare the figure with another study's, without the text.
   terms are shown and accepted, and the notice then says not to share the rows. Results computed
   from such data say to read the terms before sharing them.
 
+### 5.8 Tracking and expansion (wave 3, planned)
+
+- **Two samples, one clonotype at a time** (DeWitt et al. 2015, *J Virol* 89:4517,
+  doi:10.1128/JVI.03474-14): with k₁ and k₂ the clonotype's cells or molecules in samples of
+  N₁ and N₂, Fisher's exact test of the 2×2 table [[k₁, k₂], [N₁ − k₁, N₂ − k₂]], each clonotype
+  tested on its own (the total change of the changed clonotypes assumed small). Conditional on
+  the clonotype's total n = k₁ + k₂, this is the binomial test of k₁ ~ Binomial(n, θ) with
+  θ = N₁/(N₁ + N₂), the share of the depth (Rytlewski et al. 2019's code uses this θ, though
+  their text suggests the clonotype's pooled frequency; the depth's share is the conditional
+  null, and the one that matches Fisher's test). DeWitt et al. controlled false discoveries by
+  Storey's positive FDR (q ≤ 0.01 for induced clonotypes, 0.05 for putatively reactive ones;
+  Storey 2002, *J R Stat Soc B* 64:479; Storey and Tibshirani 2003, *PNAS* 100:9440), on
+  productive rearrangements, in templates.
+- **Biological variance** (Rytlewski et al. 2019, *PLoS One* 14:e0213684,
+  doi:10.1371/journal.pone.0213684): k₁ given n is beta-binomial, with mean θ and a scale
+  v(n) = 2 + (b ln n + a)², β₁ = θv, β₂ = (1 − θ)v; the 2, which keeps the beta unimodal, is in
+  their reference code and not in the paper's equation, and a reimplementation without it does
+  not match. a and b are fitted by maximum likelihood (Nelder–Mead from (1, 1) in their code) on
+  the joint counts of two replicate samples, or two samples two weeks apart; they publish no
+  values to reuse. The two-sided p-value sums the beta-binomial probabilities of every outcome no
+  more likely than the one seen; one-sided tests sum a tail. Their defaults: clonotypes by
+  amino-acid junction, productive only, at least 5 in the two samples together (fewer are not
+  tested, nor counted in the false discovery rate), two-sided, Benjamini–Hochberg at 0.01. Between
+  technical replicates, the binomial test called about 1.2 clonotypes changed per pair, and 16 to
+  19 over two to four weeks; the beta-binomial test, far fewer.
+- **Trajectories**: a clonotype's frequency in each sample with its 95% interval (Wilson's, for a
+  count out of the sample's depth), the samples ordered by their time point; a clonotype absent
+  from a sample is shown as below that sample's detection (one in its depth), never as zero.
+- **Attribution**: the share of a sample's cells or molecules in clonotypes its subject's
+  reference sample holds, under the definition, with an interval from a bootstrap of the sample.
+
 ## 6. Datasets
 
 All are listed in `validation/sources.json` with their URL, sizes and SHA-256, and fetched by

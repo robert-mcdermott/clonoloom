@@ -8,7 +8,7 @@ lede: A project records where its data came from and how every result was made, 
 
       <h2 id="results">Results and jobs</h2>
       <p>Each analysis runs as a <strong>job</strong> in the program, shown in the <strong>Jobs</strong> view with its progress and log; a job that a stop interrupted can be resumed. Its result is kept as an artifact with its lineage: the dataset it was made from, the definition, filter and settings (with their defaults written out), the method and its version, the seed, ClonoLoom's version, and the SHA-256 of every file. The artifact's ID is made from what it measured, so asking again answers the kept result, and changing anything makes another.</p>
-      <p>Every release saves a project with its data and results, and every later release must open it and make its results again, with the same IDs and values. Results are the same bit for bit on one kind of processor, but not yet between arm64 and amd64, which differ in the last digits of some sums and logarithms.</p>
+      <p>Every release saves a project with its data and results, and every later release must open it and make its results again, with the same IDs and values. Results are the same, bit for bit, on every processor: a result made on a Mac with Apple silicon is the same file on an Intel Linux server.</p>
 
       <h2 id="methods">The methods paragraph</h2>
       <shot name="methods" alt="A methods paragraph with numbered references, ready to copy">A dataset's methods paragraph, with its references.</shot>

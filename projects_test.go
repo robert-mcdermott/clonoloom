@@ -4,13 +4,9 @@ package main
 // each project under validation/projects/<version>/ is read as that release saved it, its datasets
 // opened again from the fixture's files under the same IDs, and each result it kept made again from
 // what its manifest records, under the same artifact ID, and compared with the document that
-// release wrote.
-//
-// The documents are compared value by value, numbers to a relative 1e-9, rather than by the
-// checksums their manifests record: results are not yet the same on every processor (Go fuses
-// multiply-adds on arm64, not on amd64, and its logarithm and exponential differ between
-// processors), so the last digits of a number can differ between the computer that saved a fixture
-// and the one testing it (validation/projects/README.md). Whether the bytes are the same is logged.
+// release wrote: byte for byte, its checksum, for the projects saved since results are the same on
+// every processor (0.3.0); value by value, numbers to a relative 1e-9, for those saved before
+// (validation/projects/README.md).
 
 import (
 	"bytes"
@@ -53,6 +49,11 @@ type fixtureProject struct {
 	} `json:"artifacts"`
 }
 
+// valuesOnly are the projects saved while results could differ in their last digits between
+// processors (0.2.0's on arm64 differ from amd64's, and from results made since by
+// internal/dmath and unfused products): compared value by value, not byte for byte.
+var valuesOnly = map[string]bool{"0.2.0": true}
+
 func TestEveryReleasesProjectStillOpens(t *testing.T) {
 	projects, _ := filepath.Glob(filepath.Join("validation", "projects", "*", "project.json"))
 	if len(projects) == 0 {
@@ -60,11 +61,56 @@ func TestEveryReleasesProjectStillOpens(t *testing.T) {
 	}
 	for _, path := range projects {
 		dir := filepath.Dir(path)
-		t.Run(filepath.Base(dir), func(t *testing.T) { reopenFixture(t, dir) })
+		version := filepath.Base(dir)
+		t.Run(version, func(t *testing.T) {
+			remakeFixture(t, dir, func(t *testing.T, file string, want, got []byte) {
+				if bytes.Equal(got, want) {
+					t.Logf("%s: the same bytes", file)
+					return
+				}
+				if !valuesOnly[version] {
+					t.Errorf("%s: not the bytes %s wrote (its checksum differs)", file, version)
+					return
+				}
+				t.Logf("%s: not the same bytes; comparing the values", file)
+				var w, g any
+				if err := json.Unmarshal(want, &w); err != nil {
+					t.Fatal(err)
+				}
+				if err := json.Unmarshal(got, &g); err != nil {
+					t.Fatal(err)
+				}
+				var c valueComparison
+				c.compare(file, w, g)
+				for _, d := range c.differences {
+					t.Error(d)
+				}
+				t.Logf("%s: the largest difference is %.2g of its tolerance", file, c.largest)
+			})
+		})
 	}
 }
 
-func reopenFixture(t *testing.T, dir string) {
+// Results are the same on every processor (clonoloom-spec/conventions.md): every result of the 0.2.0
+// project, made again, pinned by the digest of its documents, which arm64 and amd64 (CI) both give.
+// A change to what a method answers changes it: pin the new digest, made on both.
+func TestResultsAreTheSameOnEveryProcessor(t *testing.T) {
+	h := sha256.New()
+	remakeFixture(t, filepath.Join("validation", "projects", "0.2.0"), func(t *testing.T, file string, want, got []byte) {
+		sum := sha256.Sum256(got)
+		fmt.Fprintf(h, "%s %s %x\n", t.Name(), file, sum)
+	})
+	if got := hex.EncodeToString(h.Sum(nil)); got != pinnedResults {
+		t.Fatalf("the results' digest is %s, pinned %s", got, pinnedResults)
+	}
+}
+
+const pinnedResults = "c6f6eac9dba04e8f2398c7c37d23accfab6f0790c432bfcfdbe85863eb4075eb"
+
+// remakeFixture opens a fixture's project, opens its datasets from its files and makes each kept
+// result again, under the IDs it records, calling each with every document: the one the release
+// wrote, and the one made now.
+func remakeFixture(t *testing.T, dir string, each func(t *testing.T, file string, want, got []byte)) {
 	raw, err := os.ReadFile(filepath.Join(dir, "project.json"))
 	if err != nil {
 		t.Fatal(err)
@@ -145,24 +191,7 @@ func reopenFixture(t *testing.T, dir string) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				if bytes.Equal(got, want) {
-					t.Logf("%s: the same bytes", f.Path)
-					continue
-				}
-				t.Logf("%s: not the same bytes; comparing the values", f.Path)
-				var w, g any
-				if err := json.Unmarshal(want, &w); err != nil {
-					t.Fatal(err)
-				}
-				if err := json.Unmarshal(got, &g); err != nil {
-					t.Fatal(err)
-				}
-				var c valueComparison
-				c.compare(f.Path, w, g)
-				for _, d := range c.differences {
-					t.Error(d)
-				}
-				t.Logf("%s: the largest difference is %.2g of its tolerance", f.Path, c.largest)
+				each(t, f.Path, want, got)
 			}
 		})
 	}

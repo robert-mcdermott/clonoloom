@@ -16,6 +16,8 @@ package diversity
 import (
 	"math"
 	"sort"
+
+	"clonoloom/internal/dmath"
 )
 
 // Orders are the Hill numbers the curves give: 0 (clonotypes), 1 (Shannon), 2 (Simpson).
@@ -102,7 +104,7 @@ func CurveSizes(n float64, knots int, endpoint float64) []float64 {
 		k = DefaultKnots / 2
 	}
 	for i := 1; i < k-1; i++ {
-		g = append(g, math.Round(math.Exp(math.Log(end)*float64(i)/float64(k-1))))
+		g = append(g, math.Round(dmath.Exp(dmath.Log(end)*float64(i)/float64(k-1))))
 	}
 	sort.Float64s(g)
 	out := g[:0]
@@ -134,7 +136,7 @@ func seq(from, to float64, k int) []float64 {
 	n1 := float64(k - 1)
 	out := []float64{from}
 	for i := 1; i < k-1; i++ {
-		out = append(out, from+float64(i)*((to-from)/n1))
+		out = append(out, from+float64(float64(i)*((to-from)/n1)))
 	}
 	return append(out, to)
 }
@@ -157,10 +159,10 @@ func newCurve(f Freq, st stats) *curve {
 	n := st.n
 	c.obs = [3]float64{float64(st.s), hill(f, n, 1), hill(f, n, 2)}
 	c.p2 = st.sumXX1 / (n * (n - 1))
-	c.asy = [3]float64{float64(st.s) + f0(st), math.Exp(shannonAsymptotic(f, st)), 1 / c.p2}
+	c.asy = [3]float64{float64(st.s) + f0(st), dmath.Exp(shannonAsymptotic(f, st)), 1 / c.p2}
 	if st.f1 > 0 {
 		f0 := f0(st)
-		c.a = n * f0 / (n*f0 + st.f1)
+		c.a = n * f0 / (float64(n*f0) + st.f1)
 	} else {
 		c.a = 1
 	}
@@ -182,16 +184,16 @@ func (c *curve) hill(m float64) [3]float64 {
 	case m > c.n:
 		var out [3]float64
 		for q := range 2 {
-			out[q] = c.obs[q] + (c.asy[q]-c.obs[q])*(1-math.Pow(1-c.beta[q], m-c.n))
+			out[q] = c.obs[q] + float64((c.asy[q]-c.obs[q])*(1-dmath.Pow(1-c.beta[q], m-c.n)))
 		}
-		out[2] = 1 / (1/m + (1-1/m)*c.p2)
+		out[2] = 1 / (1/m + float64((1-1/m)*c.p2))
 		return out
 	case m == math.Floor(m):
 		return c.interpolated(m)
 	}
 	lo, hi := c.hill(math.Floor(m)), c.hill(math.Ceil(m))
 	w := m - math.Floor(m)
-	return [3]float64{lo[0]*(1-w) + hi[0]*w, lo[1]*(1-w) + hi[1]*w, lo[2]*(1-w) + hi[2]*w}
+	return [3]float64{float64(lo[0]*(1-w)) + float64(hi[0]*w), float64(lo[1]*(1-w)) + float64(hi[1]*w), float64(lo[2]*(1-w)) + float64(hi[2]*w)}
 }
 
 // interpolated is the expected Hill numbers of a subsample of whole size m < n drawn without
@@ -201,10 +203,10 @@ func (c *curve) interpolated(m float64) [3]float64 {
 	var s, ylogy float64
 	for _, g := range c.f {
 		k := float64(g.Count)
-		s += k * -math.Expm1(logNone(c.n, g.Abundance, m))
-		ylogy += k * meanYLogY(c.n, g.Abundance, m)
+		s += float64(k * -dmath.Expm1(logNone(c.n, g.Abundance, m)))
+		ylogy += float64(k * meanYLogY(c.n, g.Abundance, m))
 	}
-	return [3]float64{s, math.Exp(math.Log(m) - ylogy/m), 1 / (1/m + (1-1/m)*c.p2)}
+	return [3]float64{s, dmath.Exp(dmath.Log(m) - ylogy/m), 1 / (1/m + float64((1-1/m)*c.p2))}
 }
 
 // coverage is the sample coverage at size m: below n, the expected share of the repertoire's
@@ -215,17 +217,17 @@ func (c *curve) coverage(m float64) float64 {
 	n := c.n
 	switch {
 	case m >= n:
-		return 1 - c.st.f1/n*math.Pow(c.a, m-n+1)
+		return 1 - float64(c.st.f1/n*dmath.Pow(c.a, m-n+1))
 	case m <= 0:
 		return 0
 	case m != math.Floor(m):
 		w := m - math.Floor(m)
-		return c.coverage(math.Floor(m))*(1-w) + c.coverage(math.Ceil(m))*w
+		return float64(c.coverage(math.Floor(m))*(1-w)) + float64(c.coverage(math.Ceil(m))*w)
 	}
 	missed := 0.0
 	for _, g := range c.f {
 		if g.Abundance <= n-m {
-			missed += float64(g.Count) * g.Abundance / n * math.Exp(logNone(n-1, g.Abundance-1, m))
+			missed += float64(float64(g.Count) * g.Abundance / n * dmath.Exp(logNone(n-1, g.Abundance-1, m)))
 		}
 	}
 	return 1 - missed
@@ -244,7 +246,7 @@ func (c *curve) sizeAt(target float64) float64 {
 		if target >= 1 || c.a <= 0 || c.a >= 1 || c.st.f1 == 0 {
 			return math.Inf(1)
 		}
-		return n - 1 + (math.Log(n/c.st.f1)+math.Log(1-target))/math.Log(c.a)
+		return n - 1 + (dmath.Log(n/c.st.f1)+dmath.Log(1-target))/dmath.Log(c.a)
 	}
 	lo, hi := 0.0, n // coverage(lo) ≤ target < coverage(hi)
 	for hi-lo > 1 {
@@ -283,7 +285,7 @@ func SeenChance(n, x, m float64) float64 {
 	if m >= n {
 		return 1
 	}
-	return -math.Expm1(logNone(n, x, m))
+	return -dmath.Expm1(logNone(n, x, m))
 }
 
 // logNone is ln P(none of a clonotype's x cells among m drawn without replacement from n),
@@ -300,7 +302,7 @@ func logNone(n, x, m float64) float64 {
 	if a <= 32 {
 		s := 0.0
 		for j := 0.0; j < a; j++ {
-			s += math.Log1p(-b / (n - j))
+			s += dmath.Log1p(-b / (n - j))
 		}
 		return s
 	}
@@ -311,19 +313,17 @@ func logNone(n, x, m float64) float64 {
 // large logarithms never meet.
 func lgammaRatio(z, a float64) float64 {
 	if z < 30 {
-		hi, _ := math.Lgamma(z + a)
-		lo, _ := math.Lgamma(z)
-		return hi - lo
+		return dmath.Lgamma(z+a) - dmath.Lgamma(z)
 	}
 	w := z + a
-	return (w-0.5)*math.Log1p(a/z) + a*math.Log(z) - a + stirling(w) - stirling(z)
+	return float64((w-0.5)*dmath.Log1p(a/z)) + float64(a*dmath.Log(z)) - a + stirling(w) - stirling(z)
 }
 
 // stirling is ln Γ(z) − [(z − ½) ln z − z + ½ ln 2π], z ≥ 30, to double precision.
 func stirling(z float64) float64 {
 	r := 1 / z
 	r2 := r * r
-	return r * (1.0/12 - r2*(1.0/360-r2*(1.0/1260-r2*(1.0/1680-r2*(1.0/1188)))))
+	return float64(r * (1.0/12 - float64(r2*(1.0/360-float64(r2*(1.0/1260-float64(r2*(1.0/1680-float64(r2*(1.0/1188))))))))))
 }
 
 // meanYLogY is E[Y ln Y] for Y the cells of a clonotype of x among m drawn without replacement
@@ -338,21 +338,21 @@ func meanYLogY(n, x, m float64) float64 {
 	sum, weighted := 1.0, ylny(mode)
 	w := 1.0
 	for k := mode; k < hi; k++ {
-		w *= (x - k) * (m - k) / ((k + 1) * (n - x - m + k + 1))
+		w = float64(w * ((x - k) * (m - k) / ((k + 1) * (n - x - m + k + 1))))
 		if w < 1e-18*sum {
 			break
 		}
 		sum += w
-		weighted += w * ylny(k+1)
+		weighted += float64(w * ylny(k+1))
 	}
 	w = 1
 	for k := mode; k > lo; k-- {
-		w *= k * (n - x - m + k) / ((x - k + 1) * (m - k + 1))
+		w = float64(w * (k * (n - x - m + k) / ((x - k + 1) * (m - k + 1))))
 		if w < 1e-18*sum {
 			break
 		}
 		sum += w
-		weighted += w * ylny(k-1)
+		weighted += float64(w * ylny(k-1))
 	}
 	return weighted / sum
 }
@@ -361,7 +361,7 @@ func ylny(y float64) float64 {
 	if y <= 1 {
 		return 0
 	}
-	return y * math.Log(y)
+	return y * dmath.Log(y)
 }
 
 // Rarefy computes a sample's curves at the levels asked, each value with its bootstrap interval
@@ -377,7 +377,7 @@ func Rarefy(abundances []float64, lv Levels, opt Options) Curves {
 	if opt.Confidence <= 0 || opt.Confidence >= 1 {
 		opt.Confidence = 0.95
 	}
-	z := normalQuantile(0.5 + opt.Confidence/2)
+	z := normalQuantile(0.5 + float64(opt.Confidence/2))
 	sizes := CurveSizes(st.n, lv.Knots, lv.Endpoint)
 	c := newCurve(f, st)
 	// The coverages the sample reaches along its curve, each once.
@@ -433,8 +433,8 @@ func Rarefy(abundances []float64, lv Levels, opt Options) Curves {
 		if replicates != nil && !math.IsNaN(point[k]) {
 			if se := spread(replicates, k); !math.IsNaN(se) {
 				v.SE = Number(se)
-				v.Lower = Number(min(max(point[k]-z*se, lo), hi))
-				v.Upper = Number(max(min(point[k]+z*se, hi), lo))
+				v.Lower = Number(min(max(point[k]-float64(z*se), lo), hi))
+				v.Upper = Number(max(min(point[k]+float64(z*se), hi), lo))
 			}
 		}
 		k++
@@ -503,7 +503,7 @@ func Suggest(samples [][]float64) (SuggestedLevels, bool) {
 		c := &curve{f: f, st: st, n: st.n, a: 1}
 		if st.f1 > 0 {
 			f0 := f0(st)
-			c.a = st.n * f0 / (st.n*f0 + st.f1)
+			c.a = st.n * f0 / (float64(st.n*f0) + st.f1)
 		}
 		if st.n < out.Size {
 			out.Size, out.SizeOf = st.n, i

@@ -26,5 +26,5 @@ func Coverage(n, f1, f2 float64) float64 {
 		a := float64((n - 1) * (f1 - 1))
 		factor = a / (a + 2)
 	}
-	return 1 - float64(f1/n)*factor
+	return 1 - float64(float64(f1/n)*factor)
 }

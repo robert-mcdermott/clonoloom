@@ -18,6 +18,7 @@ import (
 	"math"
 	"strings"
 
+	"clonoloom/internal/dmath"
 	"clonoloom/internal/random"
 )
 
@@ -318,7 +319,7 @@ func Translate(s string) string {
 // powerLaw draws a clone size from a discrete power law: P(size ≥ s) = s^-alpha, s ≥ 1, at most
 // limit.
 func powerLaw(r *random.Random, alpha float64, limit int) int {
-	s := math.Floor(math.Pow(1-r.Float64(), -1/alpha))
+	s := math.Floor(dmath.Pow(1-r.Float64(), -1/alpha))
 	if s > float64(limit) {
 		return limit
 	}

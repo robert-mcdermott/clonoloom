@@ -28,8 +28,8 @@ internal/validate/   findings with stable codes
 internal/clonotype/  definitions, clonotype tables for bulk and single-cell data
 internal/qc/         per-sample and single-cell QC
 internal/stats/      distributions, tests, multiple testing (adapted from SituCraft)
-internal/dmath/      logarithm and exponential with the same bits on every processor (not yet
-                     written: roadmap.md, wave 2, slice 8)
+internal/dmath/      logarithms, exponentials, powers, log-gamma and erfc with the same bits on
+                     every processor (wave 3)
 internal/random/     seeded random streams
 internal/jobs/       durable background jobs (wave 2)
 internal/artifacts/  results kept with their lineage (wave 2)
@@ -82,7 +82,9 @@ clonoloom-spec/      requirements, design, roadmap, research, these conventions
   multiply-add on some processors (arm64) and not others (amd64), which rounds differently: a
   floating-point product summed into a value an artifact keeps or decides on is rounded on its own
   (`float64(a*b)`). Logarithms, exponentials and powers that reach a result go through
-  `internal/dmath`. Sums over a map are taken in sorted order.
+  `internal/dmath`. Sums over a map are taken in sorted order. `validation/fused_test.go` fails on
+  any fused multiply-add the compiler makes of ClonoLoom's code for arm64, and the results of every
+  analysis and of the simulator are pinned by digests that arm64 and amd64 (CI) both give.
 - Processes are started only with argument arrays (`exec.Command(name, args...)`), never via a
   shell.
 

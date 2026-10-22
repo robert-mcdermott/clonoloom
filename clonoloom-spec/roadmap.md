@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); wave 2
-is merged and released as 0.2.0; wave 3 has slice 1 done, slice 2 next.
+is merged and released as 0.2.0; wave 3 is planned, slices 1–2 done, slice 3 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -279,18 +279,40 @@ and released as 0.2.0.
 
 ## 0.3.0: tracking (wave 3)
 
-Built on the branch `wave3`, one commit per slice. The website was moved here from wave 8, so that
-each wave from now on adds its own pages to it.
+A researcher follows clonotypes through each subject's samples over time and gets:
+- the clonotypes that expanded or contracted between two samples, tested with the sampling and,
+  where replicates allow, the biological variance accounted for, with false discoveries controlled;
+- each chosen clonotype's trajectory with its intervals, as threads and alluvial plots;
+- what share of a sample comes from a reference sample (an infusion product, a donor);
+- results that are the same, bit for bit, on every computer.
+
+Built on the branch `wave3`, one commit per slice. Planned in detail at the wave's start, after
+slice 1: the website was moved here from wave 8, so that each wave from now on adds its own pages
+to it, and making results the same on every processor was added, so that the wave's new methods
+are written under that rule from the start.
 
 | Slice | Status |
 | --- | --- |
 | 1. The website | Done |
-| 2. Subjects and timepoints | Next |
-| 3. Simulated longitudinal studies | To come |
-| 4. Tracking | To come |
-| 5. Two-sample tests | To come |
-| 6. Beta-binomial expansion | To come |
-| 7. Classes and attribution; release 0.3.0 | To come |
+| 2. Results the same on every processor | Done |
+| 3. Subjects and time points | Next |
+| 4. Simulated longitudinal studies | To come |
+| 5. Tracking | To come |
+| 6. Two-sample tests | To come |
+| 7. Beta-binomial expansion | To come |
+| 8. Classes and attribution; release 0.3.0 | To come |
+
+### Decisions for wave 3
+
+| Decision | Choice |
+| --- | --- |
+| Time | A sample's time point is a number of days relative to a subject's reference event (an infusion, a transplant, a vaccination: day 0), read from the annotation (`day 28`, `week 4`, `month 3`, `baseline`, `pre`); its unit kept; samples without one are left out of tracking, and the view says so |
+| Reference samples | A subject's sample marked as its reference (an infusion product, a donor, a baseline), from the annotation's tissue or a field of its own, used by tracking (its clonotypes followed) and attribution |
+| Default expansion test | The beta-binomial test (Rytlewski et al. 2019) when the study has replicate pairs (two samples of one subject at one time, or a pair the user names as stable) to fit its variance; otherwise the binomial test, labeled in every result and the methods as ignoring biological variance. No published variance parameters exist to build in: Rytlewski et al. fit them per study, and their reference code carries no license |
+| False discoveries | Benjamini–Hochberg at 0.01 by default (Rytlewski et al.'s); Storey's q-values offered, to reproduce DeWitt et al. 2015 |
+| What is tested | Clonotypes with at least 5 cells or molecules in the two samples together (Rytlewski et al.'s `minTotal`); fewer are left out of the test and of its false discovery count, and counted |
+| Units | Tests need counts of cells or molecules (templates, UMIs, cells); in reads, each molecule is counted many times over, and the test refuses, saying why |
+| Validation data | Simulated longitudinal studies with known trajectories and nulls (public longitudinal data with known expansions are scarce); DeWitt et al. 2015's yellow fever vaccination series (immuneACCESS, terms of use) for maintainer validation where its terms allow |
 
 1. **The website (N5).** The product and documentation site, built from `docs/site/` and published
    on GitHub Pages from a `gh-pages` branch that holds only the built site, as the siblings' are:
@@ -303,18 +325,69 @@ each wave from now on adds its own pages to it.
      script or another tool needs (formats, remote control, simulated studies, installing) stay in
      `docs/`. The site is published by hand from a checkout of `gh-pages` when a release is out,
      as the siblings' are.
-2. **Subjects and timepoints.** The study's subjects, timepoints and reference samples from the
-   annotation; checked before tracking.
-3. **Simulated longitudinal studies (E1).** Expansion and contraction trajectories with biological
-   variance between replicates; CAR-T kinetics and transplant examples.
-4. **Tracking (T1, T6).** Chosen clonotypes followed across a subject's samples with intervals;
-   alluvial plots and clonotype threads.
-5. **Two-sample tests (T2).** Fisher's exact and binomial tests with Benjamini–Hochberg;
-   validated against R and the simulator's truth.
-6. **Beta-binomial expansion (T3).** Rytlewski et al. 2019; dispersion from replicates or the
-   published time-dependent model; false discovery controlled on null simulations.
-7. **Classes and attribution (T4, T5).** Persistent, emerging and contracting clonotypes; the share
-   of a sample found in a reference sample; release 0.3.0.
+2. **Results the same on every processor (N7).** What `conventions.md` already requires, and what
+   0.2.0 found was not so (wave 2, slice 8): the same data and settings give the same bytes on
+   arm64 and amd64.
+   - `internal/dmath` from SituCraft 0.9.0: fdlibm's logarithm, exponential, power, `log1p`,
+     log-gamma and `erfc`, and `expm1` added, every product rounded on its own; every call of Go's
+     `math.Log`, `Exp`, `Pow`, `Log1p`, `Expm1`, `Lgamma`, `Log2` and `Erfc` that reaches a result,
+     a random draw or a simulated study replaced.
+   - Every product added into a sum that reaches a result rounded on its own, in diversity,
+     rarefaction, usage, overlap, QC, the random draws and the simulator.
+   - Tested: a test searches the compiler's arm64 output of every package that makes results for
+     fused multiply-adds, and fails on one not known to be exact; the digests of every analysis's
+     result on the small simulated study are pinned, and CI checks them on amd64 against those
+     made on arm64; the project fixtures from 0.3.0 on are compared by checksum (0.2.0's, saved
+     before, by value).
+   - The simulated studies, and every reference comparison, are checked to be unchanged.
+   - *Done:* `internal/dmath` (fdlibm's log, exp, pow, erfc, log-gamma and log1p from SituCraft,
+     whose fingerprint they reproduce bit for bit, and `expm1` ported from fdlibm, within an ulp of
+     256-bit values); 102 fused multiply-adds removed from diversity, rarefaction, usage, overlap,
+     QC, the random draws and the simulator, and every call of Go's logarithms and exponentials
+     there replaced. `validation/fused_test.go` searches the arm64 assembly of every function of the
+     module (1,360) and finds none; the 0.2.0 project's five results and the small simulated study
+     are pinned by digests that an amd64 build gives too.
+   - *Found:* the simulator's samples and truth populations came out byte for byte as before (every
+     reference comparison, made on them, still holds); only its truth's expectations moved, in
+     their thirteenth digit. Products a helper returns can fuse with the caller's sum once it is
+     inlined (rarefaction's Stirling series did), and a product kept in a variable can fuse with a
+     later statement: both are rounded where they are made.
+   - *Decided:* 0.2.0's fixture stays compared by value (its results were made with the fused
+     arithmetic); fixtures from 0.3.0 on, by checksum. No method's version changed: the results
+     changed in their last digits only, and results kept under 0.2.0 are still answered from the
+     cache.
+3. **Subjects and time points (D10, G3).** Each sample's subject, time point and reference role,
+   from the annotation (`Time`, above); a subject's samples in order, checked before tracking:
+   samples without a time point, two samples of one subject at one time (replicates, offered for
+   the variance), subjects without a reference sample. Remote control sets the annotation.
+4. **Simulated longitudinal studies (E1).** `clonoloom simulate` presets with each clone's
+   trajectory known: CAR-T kinetics (an infusion product and post-infusion samples, some of its
+   clones expanding, persisting or contracting), transplant (a donor and a recipient's
+   reconstitution), and a null series with biological variance between replicate samples (each
+   clone's frequency drawn around its mean, as Rytlewski et al. measured between replicates);
+   offered as examples with their truth.
+5. **Tracking (T1, T6).** The **Tracking** view: a subject's samples over time; the clonotypes
+   chosen (each sample's largest, a reference sample's, a list, or those a test called), followed
+   with each frequency's 95% interval; threads (each clonotype's trajectory) and an alluvial plot,
+   linked to the clonotype table; figures, exports, the methods paragraph and remote control's
+   `track_clonotypes`.
+6. **Two-sample tests (T2).** DeWitt et al. 2015's test of each clonotype between two samples:
+   Fisher's exact test, or the binomial test it equals conditional on the clonotype's total, with
+   the share of the first sample's depth as its null; two-sided by default; Benjamini–Hochberg and
+   Storey's q-values. Validated against R's `fisher.test` and `binom.test` and, on null
+   simulations, false discoveries counted.
+7. **Beta-binomial expansion (T3).** Rytlewski et al. 2019: the variance model
+   v(n) = 2 + (b ln n + a)² (the 2, which keeps the beta unimodal, is in their reference code and not
+   their paper) fitted by maximum likelihood on the study's replicate pairs, and the
+   beta-binomial test with it, two-sided by summing the outcomes no more likely than the one seen;
+   the default where a variance model exists. Validated against an independent R
+   implementation and, on simulated series with biological variance, false discoveries
+   controlled where the binomial test's are not.
+8. **Classes and attribution (T4, T5).** Across several time points, each clonotype classed as
+   persistent, emerging, contracting or transient from the tests' calls; the share of a sample's
+   repertoire found in a reference sample (an infusion product, a donor), with its interval and
+   the definition stated; the CAR-T and transplant examples' guided steps; release 0.3.0 with its
+   project fixture.
 
 ## Later waves (outlined)
 

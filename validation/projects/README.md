@@ -19,19 +19,20 @@ and make its results again. `go test -run TestEveryReleasesProjectStillOpens .` 
 | `artifacts/<id>/manifest.json` | Each result's manifest: what it was made from, by which method and version, and its documents' checksums. |
 | `artifacts/<id>/<kind>.json.gz` | Each result's document, gzipped. |
 
-## Why values, not checksums
+## Checksums, and 0.2.0's values
 
-The documents are compared value by value: numbers to a relative 1e-9 (an absolute 1e-12 near
-zero). Their checksums are not compared, because 0.2.0's results are not yet the same on every
-processor, as `clonoloom-spec/conventions.md` requires. Go fuses a multiplication and an addition
-into one instruction on arm64 but not on amd64, and Go's logarithm and exponential differ between
-processors. So the last digits of a number can differ between the computer that saved a fixture
-and the one testing it.
+Since 0.3.0, results are the same on every processor, bit for bit (`clonoloom-spec/conventions.md`),
+so a fixture's documents are compared by their checksums: the bytes made again must be the bytes
+the release wrote.
 
-The 0.2.0 fixture was saved on arm64. The amd64 build of the same commit writes the same overlap
-document byte for byte, but different bytes for the other documents. Its largest difference was
-under 0.1% of the tolerance. The test logs whether each document's bytes are the same. Once results
-are the same on every processor (`roadmap.md`, wave 2, slice 8), the test compares checksums.
+0.2.0's fixture is compared value by value instead: numbers to a relative 1e-9 (an absolute 1e-12
+near zero). 0.2.0's results were not the same on every processor. Go fused multiplications and
+additions on arm64 but not on amd64, and its logarithm and exponential differ between processors,
+so the last digits of a number differed. The 0.2.0 fixture was saved on arm64; the amd64 build of
+the same commit wrote the same overlap document byte for byte, but different bytes for the others,
+its largest difference under 0.1% of the tolerance. Results made since (with `internal/dmath` and
+every product rounded on its own) differ from 0.2.0's in the same last digits, on both processors,
+and within the same tolerance. The test logs whether each document's bytes are the same.
 
 A later version may add to a document, but not change what it said. A result made again under
 another ID fails the test: its method's version changed. The release that changes a method must

@@ -126,7 +126,7 @@ func Measure(rt *rep.Table, t *clonotype.Table, groups map[string]string, opt di
 	if opt.Confidence <= 0 || opt.Confidence >= 1 {
 		opt.Confidence = 0.95
 	}
-	z := diversity.NormalQuantile(0.5 + opt.Confidence/2)
+	z := diversity.NormalQuantile(0.5 + float64(opt.Confidence/2))
 	aa := junctionsAA(rt)
 	bySample := rowsBySample(rt, t)
 	res := Result{Profiled: profiled(rt, t, bySample, aa), Replicates: max(opt.Replicates, 0)}
@@ -353,7 +353,7 @@ func measureSample(rt *rep.Table, t *clonotype.Table, sample uint32, members []m
 	values := map[int]float64{}
 	add := func(k featureKey, den int, v float64) {
 		if v != 0 {
-			values[sf.id(k, den)] += v
+			values[sf.id(k, den)] += float64(v) // rounded: a product passed in is never fused with this sum
 		}
 	}
 	for _, m := range members {
@@ -396,7 +396,7 @@ func measureSample(rt *rep.Table, t *clonotype.Table, sample uint32, members []m
 				}
 				n := len(junction)
 				values[nJunction] += w
-				values[nResidues] += w * float64(n)
+				values[nResidues] += float64(w * float64(n))
 				add(featureKey{locus: l, kind: kindLength, length: n}, nJunction, w)
 				add(featureKey{locus: l, kind: kindMean}, nJunction, w*float64(n))
 				for i := 0; i < n; i++ {
@@ -433,7 +433,7 @@ func measureSample(rt *rep.Table, t *clonotype.Table, sample uint32, members []m
 	for _, it := range sf.items {
 		for k, i := range it.idx {
 			cl[i] += it.val[k]
-			ab[i] += it.abundance * it.val[k]
+			ab[i] += float64(it.abundance * it.val[k])
 		}
 	}
 	share := func(t []float64, i int) float64 {
@@ -573,8 +573,8 @@ func replicate(sf *sampleFeatures, withInterval []int, opt diversity.Options) []
 						continue
 					}
 					for k, f := range it.trackedIdx {
-						cl[f] += m * it.trackedVal[k]
-						ab[f] += m * it.abundance * it.trackedVal[k]
+						cl[f] += float64(m * it.trackedVal[k])
+						ab[f] += float64(m * it.abundance * it.trackedVal[k])
 					}
 				}
 				row := make([]float64, 2*len(withInterval))
@@ -610,7 +610,7 @@ func spread(rows [][]float64, k int) float64 {
 	var ss float64
 	for _, r := range rows {
 		if x := r[k]; !math.IsNaN(x) && !math.IsInf(x, 0) {
-			ss += (x - mean) * (x - mean)
+			ss += float64((x - mean) * (x - mean))
 		}
 	}
 	return math.Sqrt(ss / (n - 1))
@@ -621,7 +621,7 @@ func interval(estimate, se, z, hi float64) *Pair {
 	if math.IsNaN(estimate) || math.IsNaN(se) {
 		return nil
 	}
-	return &Pair{Number(min(max(estimate-z*se, 0), hi)), Number(max(min(estimate+z*se, hi), 0))}
+	return &Pair{Number(min(max(estimate-float64(z*se), 0), hi)), Number(max(min(estimate+float64(z*se), hi), 0))}
 }
 
 func residue(c byte) string {

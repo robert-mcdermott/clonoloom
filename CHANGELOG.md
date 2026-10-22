@@ -18,6 +18,21 @@ grows with each.
     references (formats, remote control, simulated studies, installing) stay in `docs/`;
   - a link-preview image made from a screenshot (`docs/site/og-image.mjs`);
   - axe-core listed in `validation/sources.json` as a tool, fetched for the audit only.
+- **`internal/dmath` (wave 3, slice 2):** logarithms, exponentials, powers, `log1p`, `expm1`,
+  log-gamma and `erfc` whose bits are the same on every processor: fdlibm 5.3's, adapted from
+  SituCraft 0.9.0 (`expm1` ported from fdlibm), every product rounded on its own.
+
+### Fixed
+
+- **Results the same on every processor (wave 3, slice 2).** Diversity, rarefaction, gene usage,
+  overlap, QC's coverage and vendor checks, the bootstrap's random draws and the simulator's truth
+  differed in their last digits between Apple silicon (arm64) and Intel and AMD processors
+  (amd64): the compiler fused 102 multiplications with the additions after them on arm64 only, and
+  Go's own logarithm and exponential differ between processors. Each product added to something
+  is now rounded on its own, and the logarithms and exponentials are ClonoLoom's (`internal/dmath`).
+  Results now differ from 0.2.0's in their last digits (at most 0.1% of the project test's
+  tolerance, a relative 10⁻⁹), on both processors alike; no method's version changed. The simulator writes the same studies as before,
+  byte for byte, but for its truth's expectations, in their thirteenth digit.
 
 ### Validation
 
@@ -25,6 +40,16 @@ grows with each.
   the repository's files (CI runs it on every commit); every page passes axe-core 4.13.0's WCAG 2.1
   A and AA rules in both themes at a desktop's and a phone's width, none wider than a phone's
   screen (`node docs/site/audit.mjs`: 16 pages, 64 checks, no problem).
+- **The same results on every processor:** `validation/fused_test.go` searches the arm64 assembly
+  of every function of the module (1,360) for fused multiply-adds, and finds none; it fails, naming
+  the line, when one is added. The 0.2.0 project's five results made again, and the small simulated
+  study, are pinned by digests that the arm64 and amd64 builds both give (CI tests on amd64; the
+  pins were made on arm64). `internal/dmath` gives SituCraft's fingerprint of its log, exp and pow
+  over 30,000 arguments bit for bit; its functions are within 3 ulps of Go's and `expm1` within an
+  ulp of 256-bit values; its digest is the same on both processors.
+- Every reference comparison (iNEXT, immunarch, vegan, scirpy, R, the simulator's truth) and the
+  0.2.0 project still agree; the 0.2.0 project's documents are compared by value (their largest
+  difference 0.1% of the tolerance), and later projects' by checksum.
 
 ## 0.2.0 (2026-10-21)
 

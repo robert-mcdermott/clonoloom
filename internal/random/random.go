@@ -7,6 +7,8 @@ package random
 import (
 	"math"
 	"math/rand/v2"
+
+	"clonoloom/internal/dmath"
 )
 
 // Random is a seeded generator.
@@ -56,9 +58,9 @@ func mul64(a, b uint64) (hi, lo uint64) {
 func (r *Random) Normal() float64 {
 	for {
 		u, v := 2*r.Float64()-1, 2*r.Float64()-1
-		s := u*u + v*v
+		s := float64(u*u) + float64(v*v)
 		if s > 0 && s < 1 {
-			return u * math.Sqrt(-2*math.Log(s)/s)
+			return u * math.Sqrt(-2*dmath.Log(s)/s)
 		}
 	}
 }
@@ -67,19 +69,19 @@ func (r *Random) Normal() float64 {
 func (r *Random) Gamma(shape float64) float64 {
 	if shape < 1 {
 		// Boost: Gamma(a) = Gamma(a+1)·U^(1/a).
-		return r.Gamma(shape+1) * math.Pow(r.Float64(), 1/shape)
+		return r.Gamma(shape+1) * dmath.Pow(r.Float64(), 1/shape)
 	}
 	d := shape - 1.0/3
 	c := 1 / math.Sqrt(9*d)
 	for {
 		x := r.Normal()
-		v := 1 + c*x
+		v := 1 + float64(c*x)
 		if v <= 0 {
 			continue
 		}
-		v = v * v * v
+		v = float64(v * v * v)
 		u := r.Float64()
-		if u < 1-0.0331*x*x*x*x || math.Log(u) < 0.5*x*x+d*(1-v+math.Log(v)) {
+		if u < 1-float64(0.0331*x*x*x*x) || dmath.Log(u) < float64(0.5*x*x)+float64(d*(1-v+dmath.Log(v))) {
 			return d * v
 		}
 	}
@@ -92,31 +94,31 @@ func (r *Random) Poisson(mean float64) int {
 		return 0
 	}
 	if mean < 10 {
-		limit, product, k := math.Exp(-mean), r.Float64(), 0
+		limit, product, k := dmath.Exp(-mean), r.Float64(), 0
 		for product > limit {
 			k++
 			product *= r.Float64()
 		}
 		return k
 	}
-	logMean := math.Log(mean)
-	b := 0.931 + 2.53*math.Sqrt(mean)
-	a := -0.059 + 0.02483*b
+	logMean := dmath.Log(mean)
+	b := 0.931 + float64(2.53*math.Sqrt(mean))
+	a := -0.059 + float64(0.02483*b)
 	invAlpha := 1.1239 + 1.1328/(b-3.4)
 	vr := 0.9277 - 3.6224/(b-2)
 	for {
 		u := r.Float64() - 0.5
 		v := r.Float64()
 		us := 0.5 - math.Abs(u)
-		k := math.Floor((2*a/us+b)*u + mean + 0.43)
+		k := math.Floor(float64((float64(2*a/us)+b)*u) + mean + 0.43)
 		if us >= 0.07 && v <= vr {
 			return int(k)
 		}
 		if k < 0 || (us < 0.013 && v > us) {
 			continue
 		}
-		lg, _ := math.Lgamma(k + 1)
-		if math.Log(v)+math.Log(invAlpha)-math.Log(a/(us*us)+b) <= -mean+k*logMean-lg {
+		lg := dmath.Lgamma(k + 1)
+		if dmath.Log(v)+dmath.Log(invAlpha)-dmath.Log(a/(us*us)+b) <= -mean+float64(k*logMean)-lg {
 			return int(k)
 		}
 	}
@@ -173,7 +175,7 @@ func (r *Random) Binomial(n int, p float64) int {
 		// Inversion: the count of successes before the cumulative chance passes a uniform draw.
 		q := 1 - p
 		s := p / q
-		f := math.Pow(q, float64(n))
+		f := dmath.Pow(q, float64(n))
 		u := r.Float64()
 		for k := 0; ; k++ {
 			if u < f || k == n {
@@ -183,34 +185,34 @@ func (r *Random) Binomial(n int, p float64) int {
 			f *= s * float64(n-k) / float64(k+1)
 		}
 	}
-	np := float64(n) * p
+	np := float64(float64(n) * p)
 	q := 1 - p
 	spq := math.Sqrt(np * q)
-	b := 1.15 + 2.53*spq
-	a := -0.0873 + 0.0248*b + 0.01*p
+	b := 1.15 + float64(2.53*spq)
+	a := -0.0873 + float64(0.0248*b) + float64(0.01*p)
 	c := np + 0.5
 	vr := 0.92 - 4.2/b
 	alpha := (2.83 + 5.1/b) * spq
-	lpq := math.Log(p / q)
+	lpq := dmath.Log(p / q)
 	m := math.Floor(float64(n+1) * p)
-	lgm, _ := math.Lgamma(m + 1)
-	lgnm, _ := math.Lgamma(float64(n) - m + 1)
+	lgm := dmath.Lgamma(m + 1)
+	lgnm := dmath.Lgamma(float64(n) - m + 1)
 	h := lgm + lgnm
 	for {
 		u := r.Float64() - 0.5
 		v := r.Float64()
 		us := 0.5 - math.Abs(u)
-		k := math.Floor((2*a/us+b)*u + c)
+		k := math.Floor(float64((float64(2*a/us)+b)*u) + c)
 		if k < 0 || k > float64(n) {
 			continue
 		}
 		if us >= 0.07 && v <= vr {
 			return int(k)
 		}
-		v = math.Log(v * alpha / (a/(us*us) + b))
-		lgk, _ := math.Lgamma(k + 1)
-		lgnk, _ := math.Lgamma(float64(n) - k + 1)
-		if v <= h-lgk-lgnk+(k-m)*lpq {
+		v = dmath.Log(v * alpha / (a/(us*us) + b))
+		lgk := dmath.Lgamma(k + 1)
+		lgnk := dmath.Lgamma(float64(n) - k + 1)
+		if v <= h-lgk-lgnk+float64((k-m)*lpq) {
 			return int(k)
 		}
 	}

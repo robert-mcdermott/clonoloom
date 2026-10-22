@@ -15,6 +15,8 @@ import (
 	"encoding/json"
 	"math"
 	"sort"
+
+	"clonoloom/internal/dmath"
 )
 
 // Number is a value that may be missing (NaN), written as null.
@@ -83,9 +85,9 @@ func statsOf(f Freq) stats {
 	st := stats{whole: true}
 	for _, g := range f {
 		c := float64(g.Count)
-		st.n += g.Abundance * c
+		st.n += float64(g.Abundance * c)
 		st.s += g.Count
-		st.sumXX1 += c * g.Abundance * (g.Abundance - 1)
+		st.sumXX1 += float64(c * g.Abundance * (g.Abundance - 1))
 		if g.Abundance != math.Trunc(g.Abundance) {
 			st.whole = false
 		}
@@ -108,7 +110,7 @@ var Profile = []float64{0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5, 
 // at q = 1.
 func hill(f Freq, n float64, q float64) float64 {
 	if q == 1 {
-		return math.Exp(shannon(f, n))
+		return dmath.Exp(shannon(f, n))
 	}
 	if q == 0 {
 		s := 0
@@ -119,9 +121,9 @@ func hill(f Freq, n float64, q float64) float64 {
 	}
 	sum := 0.0
 	for _, g := range f {
-		sum += float64(g.Count) * math.Pow(g.Abundance/n, q)
+		sum += float64(float64(g.Count) * dmath.Pow(g.Abundance/n, q))
 	}
-	return math.Pow(sum, 1/(1-q))
+	return dmath.Pow(sum, 1/(1-q))
 }
 
 // shannon is Shannon's entropy, natural log.
@@ -129,7 +131,7 @@ func shannon(f Freq, n float64) float64 {
 	h := 0.0
 	for _, g := range f {
 		p := g.Abundance / n
-		h -= float64(g.Count) * p * math.Log(p)
+		h -= float64(float64(g.Count) * p * dmath.Log(p))
 	}
 	return h
 }
@@ -149,18 +151,18 @@ func observed(f Freq, st stats, out map[string]float64) {
 	out["richness"] = s
 	h := shannon(f, n)
 	out["shannon"] = h
-	out["hill1"] = math.Exp(h)
+	out["hill1"] = dmath.Exp(h)
 	lambda := 0.0
 	for _, g := range f {
 		p := g.Abundance / n
-		lambda += float64(g.Count) * p * p
+		lambda += float64(float64(g.Count) * p * p)
 	}
 	out["simpson"] = lambda
 	out["giniSimpson"] = 1 - lambda
 	out["hill2"] = 1 / lambda
 	out["simpsonClonality"] = math.Sqrt(lambda)
 	if st.s > 1 {
-		out["evenness"] = h / math.Log(s)
+		out["evenness"] = h / dmath.Log(s)
 		out["clonality"] = 1 - out["evenness"]
 	} else {
 		out["evenness"], out["clonality"] = math.NaN(), math.NaN()
@@ -170,7 +172,7 @@ func observed(f Freq, st stats, out map[string]float64) {
 	g, a := 0.0, 0.0
 	for _, grp := range f {
 		c := float64(grp.Count)
-		g += grp.Abundance * c * (2*a + c - s)
+		g += float64(grp.Abundance * c * (float64(2*a) + c - s))
 		a += c
 	}
 	if st.s > 1 {
@@ -187,7 +189,7 @@ func observed(f Freq, st stats, out map[string]float64) {
 		left, share := top.k, 0.0
 		for i := len(f) - 1; i >= 0 && left > 0; i-- {
 			take := min(left, f[i].Count)
-			share += float64(take) * f[i].Abundance / n
+			share += float64(float64(take) * f[i].Abundance / n)
 			left -= take
 		}
 		out[top.id] = share
@@ -199,7 +201,7 @@ func observed(f Freq, st stats, out map[string]float64) {
 		p := grp.Abundance / n
 		for k, b := range Homeostasis {
 			if p <= b.Upper || k == len(Homeostasis)-1 {
-				out["homeostasis."+b.ID] += float64(grp.Count) * p
+				out["homeostasis."+b.ID] += float64(float64(grp.Count) * p)
 				break
 			}
 		}
@@ -222,9 +224,9 @@ func coverage(st stats) float64 {
 		return math.NaN()
 	}
 	if f2 > 0 {
-		return 1 - f1/n*((n-1)*f1/((n-1)*f1+2*f2))
+		return 1 - float64(f1/n*(float64((n-1)*f1)/(float64((n-1)*f1)+float64(2*f2))))
 	}
-	return 1 - f1/n*((n-1)*(f1-1)/((n-1)*(f1-1)+2))
+	return 1 - float64(f1/n*(float64((n-1)*(f1-1))/(float64((n-1)*(f1-1))+2)))
 }
 
 // f0 is Chao1's estimate of the clonotypes not seen (Chao 1984; the bias-corrected form of Chao et
@@ -249,30 +251,30 @@ func chao1(st stats, z float64, f Freq) (est, se, lower, upper float64) {
 		var v, a, p float64
 		for _, g := range f {
 			c, k := float64(g.Count), g.Abundance
-			v += c * (math.Exp(-k) - math.Exp(-2*k))
-			a += k * math.Exp(-k) * c
-			p += c * math.Exp(-k)
+			v += float64(c * (dmath.Exp(-k) - dmath.Exp(-2*k)))
+			a += float64(k * dmath.Exp(-k) * c)
+			p += float64(c * dmath.Exp(-k))
 		}
-		v -= a * a / n
+		v -= float64(a * a / n)
 		p /= s
 		se = math.Sqrt(max(v, 0))
-		return s, se, max(s, s/(1-p)-z*se/(1-p)), s/(1-p) + z*se/(1-p)
+		return s, se, max(s, s/(1-p)-float64(z*se)/(1-p)), s/(1-p) + float64(z*se)/(1-p)
 	}
 	c := (n - 1) / n
 	est = s + f0(st)
 	var v float64
 	if f2 > 0 {
 		r := f1 / f2
-		v = f2 * (c*r*r/2 + c*c*r*r*r + c*c*r*r*r*r/4)
+		v = f2 * (float64(c*r*r/2) + float64(c*c*r*r*r) + float64(c*c*r*r*r*r/4))
 	} else {
-		v = c*f1*(f1-1)/2 + c*c*f1*(2*f1-1)*(2*f1-1)/4 - c*c*f1*f1*f1*f1/4/est
+		v = float64(c*f1*(f1-1)/2) + float64(c*c*f1*(float64(2*f1)-1)*(float64(2*f1)-1)/4) - float64(c*c*f1*f1*f1*f1/4/est)
 	}
 	t := est - s
 	if t <= 0 || v <= 0 {
 		return est, math.Sqrt(max(v, 0)), est, est
 	}
-	k := math.Exp(z * math.Sqrt(math.Log(1+v/(t*t))))
-	return est, math.Sqrt(v), s + t/k, s + t*k
+	k := dmath.Exp(z * math.Sqrt(dmath.Log(1+v/(t*t))))
+	return est, math.Sqrt(v), s + t/k, s + float64(t*k)
 }
 
 // ace is the abundance-based coverage estimator (Chao and Lee 1992) with the rare clonotypes
@@ -285,8 +287,8 @@ func ace(f Freq, st stats) float64 {
 		c := float64(g.Count)
 		if g.Abundance <= 10 {
 			sRare += c
-			nRare += c * g.Abundance
-			sumI += c * g.Abundance * (g.Abundance - 1)
+			nRare += float64(c * g.Abundance)
+			sumI += float64(c * g.Abundance * (g.Abundance - 1))
 		} else {
 			sAbund += c
 		}
@@ -301,9 +303,9 @@ func ace(f Freq, st stats) float64 {
 	}
 	gamma := 0.0
 	if nRare > 1 {
-		gamma = max(sRare/cAce*sumI/(nRare*(nRare-1))-1, 0)
+		gamma = max(float64(sRare/cAce*sumI/(nRare*(nRare-1)))-1, 0)
 	}
-	return max(s, sAbund+sRare/cAce+st.f1/cAce*gamma)
+	return max(s, sAbund+sRare/cAce+float64(st.f1/cAce*gamma))
 }
 
 // shannonAsymptotic is Chao, Wang and Jost's 2013 estimator of the entropy of the whole
@@ -314,22 +316,22 @@ func shannonAsymptotic(f Freq, st stats) float64 {
 	h := 0.0
 	for _, g := range f {
 		if g.Abundance <= n-1 {
-			h += float64(g.Count) * g.Abundance / n * (psiN - digamma(g.Abundance))
+			h += float64(float64(g.Count) * g.Abundance / n * (psiN - digamma(g.Abundance)))
 		}
 	}
 	var a float64
 	switch {
 	case st.f2 > 0:
-		a = 2 * st.f2 / ((n-1)*st.f1 + 2*st.f2)
+		a = 2 * st.f2 / (float64((n-1)*st.f1) + float64(2*st.f2))
 	case st.f1 > 0:
-		a = 2 / ((n-1)*(st.f1-1) + 2)
+		a = 2 / (float64((n-1)*(st.f1-1)) + 2)
 	default:
 		a = 1
 	}
 	if st.f1 > 0 && a < 1 {
 		// (1−A)^(1−n)[−ln A − Σ_{r<n} (1−A)^r/r] = (1−A)·Σ_{j≥0} (1−A)^j/(n+j).
 		x := 1 - a
-		h += st.f1 / n * x * tail(x, n)
+		h += float64(st.f1 / n * x * tail(x, n))
 	}
 	return h
 }
@@ -338,7 +340,7 @@ func shannonAsymptotic(f Freq, st stats) float64 {
 // Euler–Maclaurin formula, e^{ns}E1(ns) + 1/(2n) + (s/n + 1/n²)/12 − (s³/n + 3s²/n² + 6s/n³ +
 // 6/n⁴)/720 with s = −ln x.
 func tail(x, n float64) float64 {
-	s := -math.Log(x)
+	s := -dmath.Log(x)
 	if n < 50 || s > 0.5 {
 		sum, term := 0.0, 1.0
 		for j := 0.0; j < 1e8; j++ {
@@ -351,7 +353,7 @@ func tail(x, n float64) float64 {
 		}
 		return sum
 	}
-	return scaledE1(n*s) + 1/(2*n) + (s/n+1/(n*n))/12 - (s*s*s/n+3*s*s/(n*n)+6*s/(n*n*n)+6/(n*n*n*n))/720
+	return scaledE1(n*s) + 1/float64(2*n) + (s/n+1/float64(n*n))/12 - (float64(s*s*s/n)+float64(3*s*s/(n*n))+float64(6*s/(n*n*n))+6/float64(n*n*n*n))/720
 }
 
 // scaledE1 is e^z·E1(z), z > 0: by its series below 1, else by its continued fraction (Lentz).
@@ -367,7 +369,7 @@ func scaledE1(z float64) float64 {
 				break
 			}
 		}
-		return math.Exp(z) * (-euler - math.Log(z) + sum)
+		return dmath.Exp(z) * (-euler - dmath.Log(z) + sum)
 	}
 	// e^z E1(z) = 1/(z+1− 1/(z+3− 4/(z+5− …))).
 	b := z + 1
@@ -377,9 +379,9 @@ func scaledE1(z float64) float64 {
 	for i := 1.0; i < 1000; i++ {
 		an := -i * i
 		b += 2
-		d = 1 / (an*d + b)
+		d = 1 / (float64(an*d) + b)
 		c = b + an/c
-		del := c * d
+		del := float64(c * d)
 		h *= del
 		if math.Abs(del-1) < 1e-16 {
 			break
@@ -398,7 +400,7 @@ func digamma(x float64) float64 {
 	}
 	inv := 1 / x
 	inv2 := inv * inv
-	return result + math.Log(x) - 0.5*inv - inv2*(1.0/12-inv2*(1.0/120-inv2*(1.0/252-inv2*(1.0/240-inv2*(1.0/132)))))
+	return result + dmath.Log(x) - float64(0.5*inv) - float64(inv2*(1.0/12-float64(inv2*(1.0/120-float64(inv2*(1.0/252-float64(inv2*(1.0/240-float64(inv2*(1.0/132))))))))))
 }
 
 // estimated computes the estimated measures, into out by measure id.
@@ -406,7 +408,7 @@ func estimated(f Freq, st stats, out map[string]float64) {
 	est, _, _, _ := chao1(st, 1.96, f)
 	out["chao1"] = est
 	out["ace"] = ace(f, st)
-	out["hill1Estimated"] = math.Exp(shannonAsymptotic(f, st))
+	out["hill1Estimated"] = dmath.Exp(shannonAsymptotic(f, st))
 	if st.sumXX1 > 0 {
 		out["hill2Estimated"] = st.n * (st.n - 1) / st.sumXX1
 	} else {
