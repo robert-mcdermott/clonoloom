@@ -116,6 +116,14 @@ export function showMenu(anchor, items, options = {}) {
   return menu;
 }
 
+// The dialogs open, each by its close (remote control's close_dialogs closes them all).
+const openDialogs = new Set();
+
+export function closeDialogs() {
+  for (const close of [...openDialogs].reverse()) close();
+  closeMenu();
+}
+
 // A modal dialog. content: element(s); buttons: [{ label, primary, danger, onClick → false keeps open }].
 export function showDialog({ title, content, buttons = [{ label: 'Close' }], width = '', onClose, dismissable = true }) {
   const scrim = h('div.scrim');
@@ -130,6 +138,7 @@ export function showDialog({ title, content, buttons = [{ label: 'Close' }], wid
   const close = (result) => {
     if (closed) return;
     closed = true;
+    openDialogs.delete(close);
     scrim.remove();
     document.removeEventListener('keydown', keys, true);
     if (opener?.isConnected && typeof opener.focus === 'function') opener.focus();
@@ -181,6 +190,7 @@ export function showDialog({ title, content, buttons = [{ label: 'Close' }], wid
   document.addEventListener('keydown', keys, true);
   root().append(scrim);
   setTimeout(() => (dialog.querySelector('[autofocus]') ?? dialog.querySelector('input, select, textarea') ?? foot?.querySelector('.btn.primary'))?.focus(), 30);
+  openDialogs.add(close);
   return { close, dialog, body };
 }
 
@@ -188,7 +198,7 @@ export function confirmDialog({ title, message, confirm = 'OK', danger = false }
   return new Promise((resolve) => {
     showDialog({
       title,
-      content: h('p', message),
+      content: message instanceof Node ? message : h('p', message),
       buttons: [
         { label: 'Cancel', ghost: true, value: false },
         { label: confirm, primary: !danger, danger, value: true, onClick: () => true },

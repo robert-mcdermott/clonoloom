@@ -11,13 +11,58 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Status:** in development; the first release, 0.1.0, is being built
-([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+**Status:** in development. 0.2.0 measures repertoires with their uncertainty: diversity,
+rarefaction, gene usage and overlap ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/clonotypes-dark.webp">
-  <img alt="ClonoLoom's Clonotypes view: 10x Genomics' 10k PBMC T cells grouped into paired αβ clonotypes by amino-acid junction, V and J genes, the definition stated above the table, and the largest clonotype's chains and cells in the inspector" src="docs/images/clonotypes-light.webp">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/diversity-dark.webp">
+  <img alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis, under a warning that the samples' coverage makes the richness estimates lower bounds" src="docs/images/diversity-light.webp">
 </picture>
+
+## In 0.2.0
+
+The second release measures the repertoires themselves, each number with its uncertainty, and
+writes results others can use:
+
+- **Diversity.** Hill numbers, Chao1, ACE, the Shannon and Simpson diversity of the repertoire a
+  sample was drawn from, clonality, Gini and clonal space homeostasis, each with a 95% bootstrap
+  interval.
+- **Rarefaction and extrapolation.** Each sample's curves by size and by coverage, and the samples
+  compared at a level reached by rarefaction alone.
+- **Gene usage and junctions.** V, D, J and C genes and families, V–J pairs, junction lengths and
+  amino acids by IMGT position; by clonotypes or abundance, by sample or condition.
+- **Overlap.** For every pair of samples: shared clonotypes, Jaccard, Sørensen–Dice and the overlap
+  coefficient (as sampled and rarefied), and Morisita's index. Also the public clonotypes by
+  subject.
+- **Figures and exports.** Every plot saved as SVG, PNG (300 dpi) or PDF, its caption stating the
+  clonotype definition, unit and samples. Rearrangements exported as AIRR TSV, clonotypes and
+  results as CSV, each with a notice of its data's license and citation.
+- **Any tool's table.** A CSV or TSV no reader recognizes, opened through a mapping of its columns
+  that is checked column by column.
+- **Simulated studies and scripts.** `clonoloom simulate` writes studies whose truth is known;
+  programs on this computer can drive the window; long work runs as jobs; results are kept with
+  their lineage.
+
+Each method is checked against iNEXT, immunarch, vegan, scirpy or R, and against simulated truth
+(the [changelog](CHANGELOG.md)'s Validation section).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/rarefaction-dark.webp">
+  <img alt="The Rarefaction part: each sample's Shannon diversity at the lowest coverage among them, with 95% intervals, and the curves by size and by coverage, solid where rarefied and dashed where extrapolated" src="docs/images/rarefaction-light.webp">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/genes-dark.webp">
+  <img alt="The Genes part: a heatmap of each sample's TRBV gene usage by clonotypes, and one gene's share across the samples with 95% intervals" src="docs/images/genes-light.webp">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/overlap-dark.webp">
+  <img alt="The Overlap part: Morisita's index for every pair of samples as a heatmap, the pairs of one subject and of two summarized, and every pair listed with its intervals" src="docs/images/overlap-light.webp">
+</picture>
+
+<sub>Pictures: a simulated TRB study (`clonoloom simulate`, the standard preset: six subjects, two
+samples each), opened from ClonoLoom's Example data.</sub>
 
 ## In 0.1.0
 
@@ -35,6 +80,11 @@ with a project that records where every number came from:
   in words with every table; a million clonotypes sorted and searched as they scroll.
 - **The record.** Example data with their licenses and citations, and a methods paragraph per
   dataset with numbered references, written from what was done.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/clonotypes-dark.webp">
+  <img alt="ClonoLoom's Clonotypes view: 10x Genomics' 10k PBMC T cells grouped into paired αβ clonotypes by amino-acid junction, V and J genes, the definition stated above the table, and the largest clonotype's chains and cells in the inspector" src="docs/images/clonotypes-light.webp">
+</picture>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/data-dark.webp">
@@ -76,14 +126,13 @@ independent reference implementation or a simulated truth.
 
 ## Install
 
-Releases are not published yet. Build from source with Go (the version in `go.mod` or newer):
+Each [release](https://github.com/robert-mcdermott/clonoloom/releases) is one file per platform,
+installed by a one-line installer that checks its checksum ([docs/INSTALLING.md](docs/INSTALLING.md)).
+Or build from source with Go (the version in `go.mod` or newer):
 
 ```sh
 go build -o clonoloom .
 ```
-
-Once releases are published, one file per platform will be installed by a one-line installer that
-checks its checksum ([docs/INSTALLING.md](docs/INSTALLING.md)).
 
 ## Getting started
 
@@ -102,7 +151,9 @@ hands them to the ClonoLoom already running.
 
 To try it without your own data, choose **Example data**: public 10x Genomics, AIRR Community and
 immuneACCESS datasets, each shown with its source, size, license and citation and downloaded from
-its publisher only when you ask.
+its publisher only when you ask, and simulated studies whose truth is known, made on your
+computer. `clonoloom simulate` writes those from the command line
+([docs/SIMULATION.md](docs/SIMULATION.md)).
 
 <details>
 <summary>Options</summary>
@@ -114,7 +165,10 @@ its publisher only when you ask.
 | `--keep-running` | off | Keep serving after the window is closed |
 | `--data-dir` | `<user config dir>/ClonoLoom` | Where the project library is kept |
 | `--examples-dir` | `<data dir>/examples` | Where example data are downloaded, when asked |
+| `--cache-dir` | `<user cache dir>/clonoloom` | Where tables read once are kept, to reopen datasets quickly |
+| `--cache-limit` | `10GB` | The size the cache is kept within (`0`: none) |
 | `--offline` | off | Download nothing: ClonoLoom then reaches no other computer |
+| `--remote-control` | off | Let programs on this computer drive the window ([docs/REMOTE-CONTROL.md](docs/REMOTE-CONTROL.md)) |
 | `--host` | 127.0.0.1 | Interface to bind |
 | `--dev` | off | Serve `web/` from the working directory (development) |
 | `--version` | | Print `clonoloom X.Y.Z` and exit |
@@ -126,6 +180,8 @@ its publisher only when you ask.
 - [Getting started](docs/GETTING-STARTED.md): a first study, view by view.
 - [Installing](docs/INSTALLING.md): release files, installers, upgrading, uninstalling.
 - [Formats](docs/FORMATS.md): what each reader reads and how.
+- [Remote control](docs/REMOTE-CONTROL.md): driving ClonoLoom from scripts.
+- [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.
 - [Design](clonoloom-spec/design.md): how it is built and why.
 - [Roadmap](clonoloom-spec/roadmap.md): the order of the work, wave by wave (wave *N* is release
@@ -145,7 +201,7 @@ node docs/capture/capture.mjs            # the documentation's pictures (docs/im
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.1.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.2.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Siblings

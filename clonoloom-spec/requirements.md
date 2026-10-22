@@ -30,7 +30,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | P1 | One self-contained program for macOS, Linux and Windows (x64 and ARM64); one-line install with checksum and version checks, no administrator rights; installs as `$HOME/.local/bin/clonoloom` and `%LocalAppData%\Programs\ClonoLoom` | partial (wave 1, slice 1: six binaries of about 7 MB built by the release workflow, installers checking SHA-256 and version; the first release is drafted at the end of wave 1) |
 | P2 | Opens as a desktop window (a Chromium-family browser in app mode with its own profile), else the default browser; a second launch hands its paths to the running ClonoLoom | done (wave 1, slice 1: from SituCraft 0.9.0; slice 3: what a launch names opens as datasets) |
 | P3 | Ports 8860–8879, clear of the siblings' (Proteoscope 8765–8814, CytoWeave 8770–8789, MaveScape 8820–8839, SituCraft 8840–8859), checked by a test | done (wave 1, slice 1) |
-| P4 | `--offline`, `--data-dir`, `--cache-dir`, `--cache-limit`, `--examples-dir`, `--remote-control`, `--host`, `--port`, `--window`, `--version` (prints `clonoloom X.Y.Z`) | partial (wave 1: `--offline`, `--data-dir`, `--examples-dir`, `--host`, `--port`, `--window`, `--version`; wave 2: the cache's flags and `--remote-control`) |
+| P4 | `--offline`, `--data-dir`, `--cache-dir`, `--cache-limit`, `--examples-dir`, `--remote-control`, `--host`, `--port`, `--window`, `--version` (prints `clonoloom X.Y.Z`) | done (wave 1: `--offline`, `--data-dir`, `--examples-dir`, `--host`, `--port`, `--window`, `--version`; wave 2: `--remote-control`, `--cache-dir`, `--cache-limit`) |
 | P5 | Light and dark themes, color-vision-friendly palettes, keyboard operation, WCAG AA contrast, plots described in text | planned (wave 1, every wave) |
 | P6 | A container build file for the headless commands (AIRR Software WG guidance) | planned (wave 8) |
 | P7 | Apache-2.0; no third-party runtime dependencies in Go or JavaScript; nothing under an incompatible license copied in or bundled | done (wave 1, slice 1; every slice keeps it: the only data built in is HGNC's gene list, CC0) |
@@ -46,13 +46,13 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | D4 | Read Adaptive immunoSEQ Analyzer exports (v2 and v3 column sets), including immuneACCESS downloads, with templates and reads kept apart | done (wave 1, slice 2: v2 and v3; templates, else reads for a whole file; Adaptive's gene names mapped to IMGT's and recorded; equal to pandas' reading of three Emerson 2017 samples) |
 | D5 | Read MiXCR clone tables (exported TSV), TRUST4 AIRR output and report, Change-O/IgBLAST AIRR output, IMGT/HighV-QUEST summaries, VDJtools tables, OAS/OTS data units, VDJdb release tables | planned (wave 1: Change-O; wave 4: MiXCR, OAS/OTS, VDJdb; wave 5: IMGT/HighV-QUEST; wave 9: TRUST4, VDJtools) |
 | D6 | Read AnnData `.h5ad` and MuData `.h5mu` (GEX and scirpy's `airr` structures) and 10x feature-barcode matrices (MEX, `.h5`) | planned (wave 6) |
-| D7 | Generic CSV/TSV import with a column mapping, checked column by column | planned (wave 2) |
+| D7 | Generic CSV/TSV import with a column mapping, checked column by column | done (wave 2, slice 8: a table no reader recognizes opens a dialog with its first rows and a column for each field, guessed from the columns' names (VDJtools', MiXCR's and others'); the count's unit said, never guessed; the whole file checked column by column before it opens; the mapping kept with the dataset, part of its ID, and stated in the methods) |
 | D8 | Validator: findings (fatal, warning, note) with stable codes, counts, examples and remedies | done (wave 1, slices 2 and 3: 28 codes, each planted fault found once; the report in the Data view; grows in every wave) |
 | D9 | Query and download public data from AIRR Data Commons repositories (ADC API v1, unauthenticated), recorded with repository, query, date and checksums | planned (wave 9) |
 | D10 | Sample annotation: subject, timepoint, tissue, cell subset, condition, batch, HLA typing; suggested from file names; MiAIRR metadata mapped when present | done (wave 1, slice 3: typed, suggested from names (after CytoWeave), or filled from AIRR Repertoire metadata and immunoSEQ sample tags, each value's origin kept) |
 | D11 | Sources read in place, never modified; fingerprints (size and SHA-256) recorded; a moved source found again and checked | done (wave 1, slice 3: SHA-256 taken while reading, equal to the recorded checksums of every development file; a moved file found by its size and SHA-256 near where it was, or chosen and checked; a changed file said) |
 | D12 | A library of projects; project archives (`.clz`) bundling the project and, where licenses allow, its data | partial (wave 1: the library, saved automatically; wave 8: archives) |
-| D13 | Public dataset catalog: license, size and citation shown before a download the user confirms; checksums verified; license status carried into exports and methods | partial (wave 1, slice 6: the catalog of six datasets, downloads confirmed, checked by SHA-256 and put in place whole, terms of use accepted first, `--offline`; a dataset whose files are an example's carries its license and citation; methods in slice 7, exports in wave 2; every wave adds datasets) |
+| D13 | Public dataset catalog: license, size and citation shown before a download the user confirms; checksums verified; license status carried into exports and methods | partial (wave 1, slice 6: the catalog of six datasets, downloads confirmed, checked by SHA-256 and put in place whole, terms of use accepted first, `--offline`; a dataset whose files are an example's carries its license and citation; methods in slice 7; exports in wave 2, slice 8; every wave adds datasets) |
 
 ## Quality control
 
@@ -60,7 +60,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | --- | --- | --- |
 | Q1 | Per-sample QC: total abundance in its unit, unique rearrangements, productive fraction, out-of-frame and stop-codon fractions, CDR3 length distribution, gene-resolution rates, singleton fraction | done (wave 1, slice 4: abundance, rows, productive, out-of-frame, stop-codon and unexplained non-productive shares, clonotypes, singletons, doubletons, the largest clonotype's share, V and J resolution, reads per template or UMI, junction lengths; equal to an independent R implementation on six bulk samples; immunoSEQ's own row counts reproduced) |
 | Q2 | Single-cell QC: cells with 0, 1, 2 or more chains of each locus, pairing rate, multi-chain cells, UMI support per contig, `is_cell` and `high_confidence` handling | done (wave 1, slice 4: cells by their productive chains, paired, one arm, none, more than two of a locus, UMIs per contig; Cell Ranger's own counts of cells, pairs and loci reproduced exactly on six runs of Cell Ranger 4, 6 and 9) |
-| Q3 | Depth and saturation: richness against depth, sample coverage (Good–Turing, Chao and Jost), a suggested common depth or coverage for a cohort | partial (wave 1, slice 4: sample coverage by Chao and Jost, equal to iNEXT's to 10⁻¹²; curves and suggestions in wave 2) |
+| Q3 | Depth and saturation: richness against depth, sample coverage (Good–Turing, Chao and Jost), a suggested common depth or coverage for a cohort | done (wave 1, slice 4: sample coverage by Chao and Jost, equal to iNEXT's to 10⁻¹²; wave 2, slice 5: the curves of clonotypes, Shannon and Simpson diversity and coverage against depth, and a common coverage and size suggested, reached by rarefaction alone, with iNEXT's extrapolated ones beside them) |
 | Q4 | Cross-sample contamination check: identical nucleotide rearrangements at high abundance in unrelated subjects flagged, with public clonotypes (high generation probability) set apart | planned (wave 7) |
 | Q5 | Batch QC: metrics by batch or run, outliers flagged by robust z-scores | planned (wave 7) |
 | Q6 | QC never deletes data: filters are named versions with recorded reasons | done (wave 1, slice 4: productive only, minimum count, loci, cells only, high confidence only, most chains of a locus, samples left out; each version kept with its reason; what each rule left out counted) |
@@ -70,7 +70,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | # | Requirement | Status |
 | --- | --- | --- |
 | C1 | Explicit, named clonotype definitions: nucleotide or amino-acid junction; V and J by gene, family or not at all; one chain or paired chains; for BCR, a distance-thresholded definition (C4) | partial (wave 1, slice 5: nucleotide or amino-acid junction; V and J by allele, gene, family or not at all; each locus, one locus, or paired αβ, γδ and heavy–light chains; the source's own clonotypes; presets, an editor and definitions saved for reuse; IDs made from the definition and the key; equal to scirpy's partitions of eight Cell Ranger runs under four definitions, and to Cell Ranger's own clonotype sizes; C4 in wave 5) |
-| C2 | The definition is part of every result's lineage and is shown with every table and figure | partial (wave 1, slice 5: said in words above the clonotype table, in the inspector and in the status bar with the unit; results' lineage from wave 2) |
+| C2 | The definition is part of every result's lineage and is shown with every table and figure | partial (wave 1, slice 5: said in words above the clonotype table, in the inspector and in the status bar with the unit; wave 2: in every result's lineage, and with the unit and samples in every figure's caption and every export's notice) |
 | C3 | Single-cell rules for cells with extra or missing chains: primary pair by UMIs, all chains, or excluded; orphan chains kept or dropped | done (wave 1, slice 5: the primary chain of each locus by UMIs, then reads, then contig ID; or every chain; cells without both chains grouped with cells of the same chain alone, or left out; QC's filter leaves out cells with too many chains) |
 | C4 | BCR clonal families: same V, J and junction length, junction distance under a threshold chosen from the distance-to-nearest distribution; light chains used when paired | planned (wave 5) |
 | C5 | Sensitivity: key results recomputed under alternative definitions, with a plain verdict on whether the conclusion holds | planned (wave 7) |
@@ -80,11 +80,11 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| R1 | Diversity: Hill numbers of order 0, 1, 2 and the profile; Chao1 and ACE; Shannon and Simpson with their effective numbers; Pielou evenness and clonality; Gini; top-N share; each with a bootstrap interval | planned (wave 2) |
-| R2 | Rarefaction and extrapolation by sample size and by coverage (Chao et al. 2014), to compare samples at equal depth or equal coverage | planned (wave 2) |
-| R3 | Gene usage (V, D, J, C and V–J pairs) by sample and group; CDR3 length spectratypes; amino-acid composition | planned (wave 2) |
-| R4 | Overlap: shared clonotypes, Jaccard, overlap coefficient, Morisita–Horn, rarefied versions; public clonotypes across subjects, including against public cohorts | planned (wave 2: within a project; wave 4: against public cohorts) |
-| R5 | Clonal space homeostasis: the shares of rare, small, medium, large and hyperexpanded clonotypes | planned (wave 2) |
+| R1 | Diversity: Hill numbers of order 0, 1, 2 and the profile; Chao1 and ACE; Shannon and Simpson with their effective numbers; Pielou evenness and clonality; Gini; top-N share; each with a bootstrap interval | done (wave 2, slice 4: with Simpson clonality, the asymptotic Shannon and Simpson diversities and coverage; agreeing with iNEXT, immunarch and vegan on 18 samples; interval coverage measured on simulations) |
+| R2 | Rarefaction and extrapolation by sample size and by coverage (Chao et al. 2014), to compare samples at equal depth or equal coverage | done (wave 2, slice 5: the Hill numbers of order 0, 1 and 2 and the coverage, with bootstrap intervals; equal to iNEXT's on 18 samples and two cohorts; the intervals' coverage measured on simulations) |
+| R3 | Gene usage (V, D, J, C and V–J pairs) by sample and group; CDR3 length spectratypes; amino-acid composition | done (wave 2, slice 6: genes and families of each segment, V–J pairs, junction lengths and their mean, amino acids overall and by IMGT position, by clonotypes and by abundance, with bootstrap intervals; conditions by the mean of their samples; equal to an independent R implementation on 15 samples, and the intervals checked against the simulator's truth) |
+| R4 | Overlap: shared clonotypes, Jaccard, overlap coefficient, Morisita–Horn, rarefied versions; public clonotypes across subjects, including against public cohorts | partial (wave 2, slice 7: within a project, with Sørensen–Dice and Morisita's own index, the rarefied forms exact, intervals checked against the simulator's truth; equal to immunarch, vegan and scirpy; wave 4: against public cohorts) |
+| R5 | Clonal space homeostasis: the shares of rare, small, medium, large and hyperexpanded clonotypes | done (wave 2, slice 4: immunarch's bins, with bootstrap intervals) |
 | R6 | Generation probability of CDR3s under published V(D)J recombination models (OLGA's algorithm, IGoR models downloaded on request) | planned (wave 4) |
 | R7 | k-mer and motif summaries | planned (wave 7) |
 
@@ -145,15 +145,15 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| O1 | Figures (SVG, PNG, PDF) with the clonotype definition, abundance unit and n in the legend | planned (wave 2, every wave) |
-| O2 | Methods paragraph with numbered references, written from the record (versions, references and their versions, public datasets with accession and download date, parameters) | partial (wave 1, slice 7: a paragraph per dataset, from the record: the data's source, license and date, the format and reader, the unit, the validator's findings, the filter with what it kept, the clonotype definition and its ID, ClonoLoom's version and commit, with numbered references; wave 2: analyses; grown in every wave) |
-| O3 | Exports: AIRR-C Rearrangement, Clone, Cell and Repertoire; AnnData; Parquet; CSV; FASTA; Newick | planned (wave 2: AIRR, CSV; wave 5: FASTA, Newick; wave 6: AnnData; wave 8: Parquet) |
+| O1 | Figures (SVG, PNG, PDF) with the clonotype definition, abundance unit and n in the legend | partial (wave 2, slice 8: every plot of the QC and Repertoire views saved as SVG, PNG at 300 dpi or PDF, on white with its title, legend and a caption stating what was measured, the clonotype definition, the unit, the samples, the filter and ClonoLoom's version; grown in every wave) |
+| O2 | Methods paragraph with numbered references, written from the record (versions, references and their versions, public datasets with accession and download date, parameters) | partial (wave 1, slice 7: a paragraph per dataset, from the record: the data's source, license and date, the format and reader, the unit, the validator's findings, the filter with what it kept, the clonotype definition and its ID, ClonoLoom's version and commit, with numbered references; wave 2: diversity, rarefaction, gene usage, overlap and tables read through a column mapping; grown in every wave) |
+| O3 | Exports: AIRR-C Rearrangement, Clone, Cell and Repertoire; AnnData; Parquet; CSV; FASTA; Newick | partial (wave 2, slice 8: the rearrangements as AIRR Rearrangement TSV with each one's clonotype, the clonotype table and every analysis's result as CSV; AIRR Clone, Cell and Repertoire to come; wave 5: FASTA, Newick; wave 6: AnnData; wave 8: Parquet) |
 | O4 | Excel workbooks with provenance sheets; GraphPad Prism export | planned (wave 9) |
 | O5 | Certificates: inputs' fingerprints, the recipe, every reported number; `clonoloom verify` recomputes and compares bit for bit | planned (wave 8) |
 | O6 | Self-checking HTML reports that open in any browser | planned (wave 8) |
 | O7 | Checkpoints with plain-language differences between analysis versions | planned (wave 8) |
 | O8 | MiAIRR completeness checklist | planned (wave 9) |
-| O9 | Exports carry each public input's license and citation; an export that would redistribute restricted data warns first | planned (wave 2, every wave) |
+| O9 | Exports carry each public input's license and citation; an export that would redistribute restricted data warns first | partial (wave 2, slice 8: every export's NOTICE.txt names the data's files and fingerprints, the filter, definition and unit, the method and ClonoLoom's version, and each public data set's license and citation; rows of data under terms of use are written only after their terms are shown and accepted, and say not to share them; every wave's exports alike) |
 | O10 | De-identification on export: subject IDs replaced, free-text metadata and HLA dropped on request | planned (wave 8) |
 
 ## Automation
@@ -166,13 +166,13 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | A4 | Python and R clients generated from the tool list | planned (wave 8) |
 | A5 | An agent benchmark with tasks whose answers are known, graded by code | planned (wave 8) |
 | A6 | `clonoloom run --recipe --input --out`: headless runs, one dataset or a batch, friendly to cluster array tasks | planned (wave 8) |
-| A7 | Remote control from local programs (the documentation's screenshots, later agents) | planned (wave 2) |
+| A7 | Remote control from local programs (the documentation's screenshots, later agents) | done (wave 2, slice 1: eleven actions, token for reading files, `remote.json`; the screenshots use it; agents in wave 8) |
 
 ## Examples and learning
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| E1 | Simulated studies with their truth (`clonoloom simulate`) | planned (wave 2: bulk TCR; wave 3: longitudinal; wave 4: specificity; wave 5: BCR lineages; wave 6: single cell with expression) |
+| E1 | Simulated studies with their truth (`clonoloom simulate`) | partial (wave 2, slice 2: bulk TRB studies from ClonoLoom's own recombination model, with each population's truth; presets standard, null and small; offered as examples; wave 3: longitudinal; wave 4: specificity; wave 5: BCR lineages; wave 6: single cell with expression) |
 | E2 | Public example datasets downloaded on request with license and citation shown | done (wave 1, slice 6: six datasets of 10x Genomics, the AIRR Community and immuneACCESS; every wave adds its own) |
 | E3 | Guided tours and worked examples per view | planned (wave 2, every wave) |
 | E4 | Exercises graded against simulated truth, with class codes | parked |

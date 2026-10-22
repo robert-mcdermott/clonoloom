@@ -124,3 +124,37 @@ func TestCellRangerMetricsAreReproduced(t *testing.T) {
 		}
 	}
 }
+
+// immunoSEQ's own clonality, Simpson clonality, entropy and largest frequency, reproduced from the
+// export's rows: from each productive rearrangement's reads (Adaptive's templates give other
+// numbers).
+func TestImmunoSEQClonalityIsReproducedFromReads(t *testing.T) {
+	compared := 0
+	for _, name := range []string{"P00207", "P00441", "P00572"} {
+		path := filepath.Join(dataRoot(), "emerson-2017-immunoseq", name+".tsv")
+		if _, err := os.Stat(path); err != nil {
+			continue
+		}
+		res, err := reads.ReadFiles(context.Background(), []string{path})
+		if err != nil {
+			t.Fatal(err)
+		}
+		found := 0
+		for _, c := range qc.CompareImmunoSEQ(res.Table, 0) {
+			if !strings.Contains(c.Metric, "from reads") {
+				continue
+			}
+			found++
+			if c.Agrees == nil || !*c.Agrees {
+				t.Errorf("%s %s: reported %s, recomputed %s", name, c.Metric, c.Reported, c.Recomputed)
+			}
+		}
+		if found != 4 {
+			t.Errorf("%s: %d clonality checks", name, found)
+		}
+		compared++
+	}
+	if compared == 0 {
+		t.Skip("the immunoSEQ development files are not fetched (maintainer validation)")
+	}
+}

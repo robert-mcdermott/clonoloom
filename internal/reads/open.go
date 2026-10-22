@@ -76,6 +76,15 @@ func Open(ctx context.Context, paths []string) (*Result, error) {
 // OpenInputs is Open for inputs whose names may not be their paths' (files the page added to the
 // library are stored under their SHA-256): a file is known by its name's extension.
 func OpenInputs(ctx context.Context, inputs []Input) (*Result, error) {
+	return OpenInputsWith(ctx, inputs, ReadInputs)
+}
+
+// TableReader reads the rearrangement tables of a dataset into one Result: ReadInputs, or the
+// table cache's reader (internal/cache), which answers a table read before without reading it.
+type TableReader func(ctx context.Context, inputs []Input) (*Result, error)
+
+// OpenInputsWith is OpenInputs reading the tables with readTables.
+func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader) (*Result, error) {
 	var tables, metadata []Input
 	var companions []Companion
 	for _, in := range inputs {
@@ -119,7 +128,7 @@ func OpenInputs(ctx context.Context, inputs []Input) (*Result, error) {
 		}
 		return nil, errors.New("no rearrangement tables among the files named")
 	}
-	res, err := ReadInputs(ctx, tables)
+	res, err := readTables(ctx, tables)
 	if err != nil {
 		return nil, err
 	}

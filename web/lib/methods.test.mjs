@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { methodsParagraph, joinList } from './methods.js';
 
 const program = { version: '0.1.0', commit: '96a92f4c0ffee' };
@@ -65,4 +66,68 @@ test('the same inputs give the same text', () => {
   const inputs = { dataset: pbmc, program };
   assert.deepEqual(methodsParagraph(inputs), methodsParagraph(inputs));
   assert.equal(joinList(['a', 'b', 'c']), 'a, b and c');
+});
+
+test('simulated data say how they were made, citing the sources of the model', () => {
+  const dataset = { ...pbmc, credits: [], formats: ['AIRR Rearrangement TSV'], sources: [{ ...pbmc.sources[0], format: 'airr' }], singleCell: false, unit: 'umis' };
+  const summary = { samples: [{ name: 'S01-1', repertoire: { repertoireId: 'S01-1', studyId: 'clonoloom-simulated-standard', studyTitle: 'A simulated TRB study' } }], sources: [{}] };
+  const { text, references } = methodsParagraph({ dataset, summary, program });
+  assert.match(text, /^The data are simulated \(A simulated TRB study\): T-cell receptor β rearrangements made by ClonoLoom's simulator \[1\] from GRCh38's gene segments at Ensembl's annotation \[2\]/);
+  assert.match(text, /selection on junction length to that data's \[3\]/);
+  assert.match(references[1], /Ensembl 2025/);
+  assert.match(references[2], /Quantifying selection/);
+});
+
+test('a diversity result kept says how each measure was made, citing each method once', () => {
+  const results = [{ kind: 'diversity', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { replicates: 200, seed: 20140101 } }];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /Each sample's diversity was measured over its clonotypes' abundances in templates \("Amino-acid junction, V and J genes"\) by ClonoLoom \[2\]/);
+  assert.match(text, /200 bootstrap replicates of each sample drawn from its estimated repertoire \[\d+\] \(seed 20140101\)/);
+  const cited = references.map((r) => r.replace(/^\[\d+\] /, ''));
+  assert.equal(new Set(cited).size, cited.length);
+  for (const work of ['Hill MO', 'Chao A. Nonparametric', 'Chao A, Lee SM', 'Chao A, Wang YT', 'Chao A, Gotelli NJ', 'Chao A, Jost L']) {
+    assert.ok(cited.some((r) => r.startsWith(work)), work);
+  }
+});
+
+test('a rarefaction result kept says how the samples were compared, citing each method once', () => {
+  const results = [
+    { kind: 'diversity', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { replicates: 200, seed: 20140101 } },
+    { kind: 'rarefaction', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: 'Productive v2', options: { replicates: 200, seed: 20140101 }, levels: { coverage: 0.87402, size: 9438, extrapolatedCoverage: 0.93, extrapolatedSize: 18876 } },
+  ];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /were rarefied and extrapolated, over its clonotypes' abundances in templates \("Amino-acid junction, V and J genes", filter Productive v2\)/);
+  assert.match(text, /compared at a sample coverage of 0\.874, the lowest among them, and at 9,438 templates, the smallest sample's size/);
+  // Chao et al. 2014, Chao and Jost 2012, Hill and ClonoLoom each cited once.
+  for (const key of ['Rarefaction and extrapolation with Hill numbers', 'Coverage-based rarefaction', 'Diversity and evenness', 'ClonoLoom, version']) {
+    assert.equal(references.filter((r) => r.includes(key)).length, 1, key);
+  }
+});
+
+test('a gene usage result kept says what was counted and how, citing IMGT once', () => {
+  const results = [{ kind: 'usage', unit: 'umis', definition: 'Amino-acid junction, V and J genes', filter: null, options: { replicates: 200, seed: 20140101 }, groups: 2 }];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /What each sample's clonotypes \("Amino-acid junction, V and J genes"\) are made of was counted by ClonoLoom/);
+  assert.match(text, /of its abundance in UMIs, with a 95% interval from 200 bootstrap replicates of the sample's clonotypes \(seed 20140101\)/);
+  assert.match(text, /Each condition was summarized by the mean of its samples' shares/);
+  assert.equal(references.filter((r) => r.includes('IMGT unique numbering')).length, 1);
+});
+
+test('an overlap result kept says what was measured, at what depth, citing each index once', () => {
+  const results = [{ kind: 'overlap', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { replicates: 200, seed: 20140101 }, depth: 9438, publicBy: 'subject' }];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /both samples rarefied to 9,438 templates, the smallest sample's size/);
+  assert.match(text, /Clonotypes found in more than one of the subjects were counted as public/);
+  for (const key of ['Jaccard P.', 'Dice LR.', 'Morisita M.', 'Horn HS.', 'Horvitz DG']) {
+    assert.equal(references.filter((r) => r.includes(key)).length, 1, key);
+  }
+});
+
+test('a table read through a mapping says which of its columns gave what (the 0.2.0 project)', () => {
+  const project = JSON.parse(readFileSync(new URL('../../validation/projects/0.2.0/project.json', import.meta.url), 'utf8'));
+  const dataset = project.datasets.find((d) => d.sources.some((s) => s.mapping));
+  const { text } = methodsParagraph({ dataset, results: project.artifacts.filter((a) => a.dataset === dataset.id), program });
+  assert.match(text, /The file \(a table with mapped columns\) was read/);
+  assert.match(text, /S02-1\.vdjtools\.txt's columns were mapped by the user: the junction's amino acids from "cdr3aa", the junction's nucleotides from "cdr3nt", the V gene from "v", the D gene from "d", the J gene from "j" and the count from "count", the count being of UMIs, every row of sample S02-1; a rearrangement was taken as productive when its junction is whole codons with no stop codon\./);
+  assert.match(text, /Each sample's diversity was measured over its clonotypes' abundances in UMIs/);
 });

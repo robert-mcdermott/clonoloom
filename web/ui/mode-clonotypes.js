@@ -6,7 +6,8 @@
 // cells it is made of.
 
 import { h, icon, clear, debounce } from './dom.js';
-import { showDialog, toast } from './overlays.js';
+import { showDialog, showMenu, toast } from './overlays.js';
+import { exportDataset } from './exports.js';
 import { clonotypeDetail, clonotypePage, clonotypePresets } from './storage.js';
 import { UNITS, datasetUnit } from '../lib/datasets.js';
 import { datasetFilter } from '../lib/filters.js';
@@ -32,7 +33,16 @@ export function mountClonotypes(app, container) {
     h('label.unit-confirm', h('span.muted', 'Dataset'), datasetSelect),
     h('label.unit-confirm', h('span.muted', 'Definition'), definitionSelect),
     h('button.btn.small', { type: 'button', onclick: () => editDefinition() }, icon('edit'), 'Edit…'),
-    search);
+    search,
+    h('button.btn.small', { type: 'button', title: 'Export the clonotypes or the rearrangements', onclick: (e) => {
+      const d = dataset();
+      if (!d) return;
+      showMenu(e.currentTarget, [
+        { section: 'Export, with a NOTICE of the data\'s source and license' },
+        { label: 'Clonotypes (CSV)', icon: 'download', onSelect: () => exportDataset(app, d, 'clonotypes') },
+        { label: 'Rearrangements (AIRR TSV)', icon: 'download', onSelect: () => exportDataset(app, d, 'rearrangements') },
+      ]);
+    } }, icon('download'), 'Export'));
   const info = h('div.clonotype-info');
   const header = h('div.ctable-head', { role: 'row' });
   const spacer = h('div.ctable-spacer');
@@ -126,6 +136,8 @@ export function mountClonotypes(app, container) {
       meta = first;
       pages.set(0, first.rows);
       app.clonotypeContext = { dataset: d.id, request: request(0), describe: first.describe, unit: first.unit, name: definition().name };
+      // A clonotype chosen before the table's first page (by a script) is described now.
+      if (store.ui.focus?.kind === 'clonotype') app.inspector.render();
       store.notify(['clonotype-context']);
       drawInfo();
       drawHeader();
@@ -242,6 +254,20 @@ export function mountClonotypes(app, container) {
     app.focusItem({ kind: 'clonotype', id });
     paint();
   }
+
+  // For remote control (ui/remote.js): the dataset shown, a page of its clonotypes as the table
+  // sorts them, and choosing one.
+  const view = {
+    dataset: () => dataset()?.id ?? null,
+    show(id) {
+      if (dataset()?.id === id) return;
+      chosen = id;
+      reset();
+    },
+    page: (offset, limit = 1) => clonotypePage({ ...request(offset), limit }),
+    select,
+  };
+  app.clonotypesView = view;
 
   // The definition editor: a definition of the user's own, from the one in use.
   function editDefinition() {
@@ -360,6 +386,7 @@ export function mountClonotypes(app, container) {
       }
     },
     destroy() {
+      if (app.clonotypesView === view) app.clonotypesView = null;
       window.removeEventListener('resize', onResize);
       app.inspector.setSection('clonotype', null);
       root.remove();

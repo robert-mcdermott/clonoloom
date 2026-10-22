@@ -10,6 +10,7 @@ import { datasetQC } from './storage.js';
 import { UNITS, datasetUnit } from '../lib/datasets.js';
 import { LOCI, RULES, cleanRules, datasetFilter, describeRules, saveFilter, useFilter } from '../lib/filters.js';
 import { columns, stackedBars } from '../lib/plot.js';
+import { exportable, madeBy } from './figures.js';
 
 const count = (n) => (Number.isFinite(n) ? Number(n).toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—');
 const pct = (v, digits = 1) => (Number.isFinite(v) ? `${(100 * v).toFixed(digits)}%` : '—');
@@ -17,10 +18,10 @@ const fixed = (v, digits = 3) => (Number.isFinite(v) ? v.toFixed(digits) : '—'
 
 // What each metric measures, said once beside the table.
 const EXPLAIN = [
-  ['Abundance', 'The sample\'s total in the dataset\'s unit (templates, reads, UMIs), or for single cells its cells with a productive chain. Samples sequenced to very different depths are compared at equal depth or coverage (Repertoire view).'],
+  ['Abundance', 'The sample\'s total in the dataset\'s unit (templates, reads, UMIs), or for single cells its cells with a productive chain. Samples sequenced to very different depths are compared at equal depth or coverage (Repertoire › Rarefaction).'],
   ['Productive', 'The share of the abundance in productive rearrangements, in frame without a stop codon. Out-of-frame rearrangements are common in genomic DNA (15–30% in immunoSEQ data) and rare in RNA; a high share can mean a failed library.'],
   ['Clonotypes, singletons', 'Distinct productive rearrangements by locus, amino-acid junction, V gene and J gene, and how many were seen once. Many singletons mean many clonotypes were not seen at all.'],
-  ['Coverage', 'Sample coverage (Chao and Jost 2012): the estimated share of the repertoire\'s abundance belonging to clonotypes the sample saw. Low coverage means the sample is far from saturated; diversity comparisons should then be made at a common coverage. Counted in reads, coverage is optimistic: amplification gives every molecule many reads, so few clonotypes are seen once; templates and UMIs say more.'],
+  ['Coverage', 'Sample coverage (Chao and Jost 2012): the estimated share of the repertoire\'s abundance belonging to clonotypes the sample saw. Low coverage means the sample is far from saturated; diversity comparisons should then be made at a common coverage (Repertoire › Rarefaction). Counted in reads, coverage is optimistic: amplification gives every molecule many reads, so few clonotypes are seen once; templates and UMIs say more.'],
   ['Largest', 'The largest clonotype\'s share of the productive abundance: a hint of a dominant expansion (or of contamination).'],
   ['V gene, J gene', 'The share of the productive abundance whose V (J) call names one gene. Calls between several genes are kept as sets and never merged.'],
   ['Reads per unit', 'Reads per template or UMI where the data give both: how deeply each molecule was sequenced.'],
@@ -189,8 +190,16 @@ export function mountQC(app, container) {
       h('tbody', ...rows)));
   }
 
-  function plotCard(title, plot, note) {
-    return h('figure.plot-card', h('figcaption', title), h('div.plot-holder', { html: plot.svg }), note ? h('p.muted.small', note) : null);
+  // A plot card, saved as a figure with its legend and a caption: what it shows, the samples and
+  // filter, QC's clonotypes and the unit.
+  function plotCard(title, plot, note, legend = []) {
+    const d = dataset();
+    const filter = datasetFilter(store.project, d);
+    const card = h('figure.plot-card', h('figcaption', title), h('div.plot-holder', { html: plot.svg }), note ? h('p.muted.small', note) : null);
+    return exportable(card, () => ({
+      name: `${d.name} ${title}`, title: `${title}, ${d.name}`, plot: plot.svg, legend,
+      caption: [typeof note === 'string' ? note : '', `${d.name}: ${answer.report.samples.length} samples${filter ? `, filter "${filter.name}" version ${filter.version}` : ''}. Clonotypes for QC: productive rearrangements by locus, amino-acid junction, V gene and J gene. Abundance in ${UNITS[datasetUnit(d)] ?? 'counts'}.`, madeBy(app.version)].filter(Boolean),
+    }));
   }
 
   function statusPlot(report) {
@@ -206,7 +215,7 @@ export function mountQC(app, container) {
     });
     const shown = keys.filter((k) => report.samples.some((s) => s[k.key] > 0));
     return plotCard(report.singleCell ? 'Contigs: productive, out of frame, stop codon' : 'Abundance: productive, out of frame, stop codon', plot,
-      h('span.plot-legend', ...shown.map((k) => h('span', h(`span.swatch.${k.className}`), k.label))));
+      h('span.plot-legend', ...shown.map((k) => h('span', h(`span.swatch.${k.className}`), k.label))), shown);
   }
 
   function lengthsPlot(report) {
@@ -216,7 +225,8 @@ export function mountQC(app, container) {
     const toggle = h('div.segmented', ...[['clonotypes', 'Clonotypes'], ['abundance', report.singleCell ? 'Contigs' : 'Abundance']].map(([id, label]) =>
       h(`button${lengthBy === id ? '.active' : ''}`, { type: 'button', onclick: () => { lengthBy = id; draw(); } }, label)));
     const card = plotCard(`Junction lengths · ${s?.name ?? ''}`, plot, 'Productive junctions, from the conserved cysteine to the phenylalanine or tryptophan. Choose a sample in the table.');
-    card.querySelector('figcaption').append(toggle);
+    const caption = card.querySelector('figcaption');
+    caption.insertBefore(toggle, caption.querySelector('.figure-export'));
     return card;
   }
 
@@ -233,7 +243,7 @@ export function mountQC(app, container) {
       for (const k of top) parts[k] = (s.chains?.configurations?.[k] ?? 0) / total;
       return { label: s.name, parts };
     }), keys, { label: 'Cells by their productive chains', share: true, labelWidth: 150 });
-    return plotCard('Cells by their productive chains', plot, h('span.plot-legend', ...keys.map((k) => h('span', h(`span.swatch.${k.className}`), k.label))));
+    return plotCard('Cells by their productive chains', plot, h('span.plot-legend', ...keys.map((k) => h('span', h(`span.swatch.${k.className}`), k.label))), keys);
   }
 
   function vendorChecks() {

@@ -12,6 +12,11 @@ Slices are done in order within a wave unless noted. Each slice names the requir
 confirmed or re-cut, and the decisions taken are recorded here. Waves 1–3 are planned to the slice
 now; later waves are outlined and refined as they come.
 
+**Progress** is marked here as each slice is committed: done, with what it settled or changed from
+the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
+release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is done and merged, 0.1.0 not yet
+tagged; wave 2 is done, to be merged and tagged 0.2.0; wave 3 is next.
+
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
    that says when not to trust the data.
@@ -56,6 +61,11 @@ A researcher opens the output of their annotation pipeline and gets:
 
 ### Wave 1
 
+**Done**: every slice committed, then a walk through the whole wave fixed what it found (AIRR
+Repertoire metadata kept with their dataset across a restart; coverage not estimated under a
+minimum count above one). Merged as robert-mcdermott/clonoloom#1. **Still to do:** tag v0.1.0,
+which drafts the release.
+
 1. **The program and its window (P1, P2, P3, P4, P5, P7, P8, N1).** Ported from SituCraft 0.9.0
    with renames:
    - **Go host:** `main.go`, `security.go`, `local.go`, `store.go`, `records.go`, `window.go`
@@ -76,6 +86,7 @@ A researcher opens the output of their annotation pipeline and gets:
      library round trips, every web module embedded, the commit reported, ports clear of the
      siblings'); the accessibility suite (contrast of both themes, palettes apart in each color
      vision); a release dry run builds six binaries with `SHA256SUMS`.
+   - *Done:* six binaries of about 7 MB each.
 2. **Reading repertoires (D1, D2, D3, D4, D5, D11, N2).** ClonoLoom's own readers:
    - `internal/seq` (codons, translation, reverse complement), `internal/genes` (IMGT names
      parsed into locus, segment, family, gene and allele; Adaptive's names mapped; ambiguous
@@ -95,6 +106,8 @@ A researcher opens the output of their annotation pipeline and gets:
      `validation/reference/` with their outputs reduced to checksums.
    - **Budget:** a 1M-row immunoSEQ file read within 5 s.
    - **Fuzzing:** every reader fuzzed, with a corpus of small hostile cases.
+   - *Done:* 1.5 s for the million rows. Repertoire YAML and Cell Ranger's JSON annotations are
+     not read (`requirements.md`, D2 and D3).
 3. **Datasets and their validation (D8, D10, D11, Q6).** The Data view:
    - files named on the command line, by **Open**, or dropped become datasets with their
      fingerprints, format and samples;
@@ -111,6 +124,7 @@ A researcher opens the output of their annotation pipeline and gets:
    - Validation: a broken-data set made by a script from the synthetic fixtures (each fault
      planted once) raises exactly the expected findings; the development datasets validate with
      no fatal finding; no source file changes (checksums before and after every test).
+   - *Done:* 28 finding codes, each planted fault found once.
 4. **QC (Q1, Q2, Q3, Q6).** The QC view:
    - per-sample metrics: abundance in its unit, rearrangements, productive, out-of-frame and
      stop-codon shares, junction length distribution, V and J resolution, singletons, sample
@@ -121,6 +135,8 @@ A researcher opens the output of their annotation pipeline and gets:
    - Validation: metrics equal pandas' on the development files and hand-computed values on the
      synthetic fixtures; Cell Ranger's own `metrics_summary.csv` numbers recomputed where the
      contigs allow, differences explained.
+   - *Done:* equal to an independent R implementation on six bulk samples; Cell Ranger's counts of
+     cells, pairs and loci reproduced exactly on six runs.
 5. **Clonotypes (C1, C2, C3, C6).** The Clonotypes view:
    - named definitions with presets (bulk TRB: amino-acid junction + V gene + J gene; paired
      αβ; 10x's own clonotypes as given) and an editor;
@@ -131,37 +147,134 @@ A researcher opens the output of their annotation pipeline and gets:
      `define_clonotypes` on the development data; Cell Ranger's own clonotypes reproduced by the
      definition that matches theirs, differences explained; the budget of 100 ms per page on a
      1M-row table.
+   - *Done:* 37 ms a page; equal to scirpy's partitions of eight Cell Ranger runs under four
+     definitions.
 6. **Public data (D13, E2, P4).** The Example data dialog:
    - the catalog of the wave's public datasets with source, size, license class and citation;
      downloads only after the user confirms, checked against their checksums, into
      `--examples-dir`; `--offline` turns them off;
    - an opened example becomes a dataset like any other, with its license and citation in its
      record.
+   - *Done:* six datasets, of 10x Genomics, the AIRR Community and immuneACCESS.
 7. **The record and the release (O2, N5, N6).** The project's history in the drawer; a methods
    paragraph per dataset (format, reader, validation, filters, definition, the data's source and
    license, ClonoLoom's version); `docs/FORMATS.md` and `docs/GETTING-STARTED.md`; README with
    screenshots; release 0.1.0 drafted.
+   - *Done*, but for the release: 0.1.0 is drafted when v0.1.0 is tagged.
 
 ## 0.2.0: repertoire basics (wave 2)
 
+Built on the branch `wave2`, one commit per slice. **Done**: every slice committed; release 0.2.0
+once merged and tagged.
+
+| Slice | Status |
+| --- | --- |
+| 1. Remote control and screenshots | Done |
+| 2. Simulated repertoires | Done |
+| 3. Artifacts, jobs and the cache | Done |
+| 4. Diversity | Done |
+| 5. Rarefaction and extrapolation | Done |
+| 6. Gene usage and spectratypes | Done |
+| 7. Overlap | Done |
+| 8. Figures, exports and methods; release 0.2.0 | Done |
+
 1. **Remote control and screenshots (A7).** SituCraft's hub and capture scenes.
+   - *Done:* eleven actions (a twelfth, `measure_diversity`, came with slice 4). Reading files by
+     path needs the token in `remote.json`; data under terms of use are never downloaded by a
+     program. Wave 1's pictures are captured through it.
 2. **Simulated repertoires (E1).** `clonoloom simulate`: bulk TRB studies from a V(D)J
    recombination model of ClonoLoom's own (gene usage, deletions, N insertions), power-law clone
    sizes, sampling of templates and reads; the truth written beside the data.
+   - *Done:* GRCh38 TRB segments from Ensembl; V and J usage and junction lengths from 10x
+     Genomics' 10k PBMC data (CC BY 4.0); palindromic nucleotides and selection on junction length
+     added to the model. Presets standard, null and small, the same bytes for the same seed,
+     offered in Example data.
 3. **Artifacts, jobs and the cache.** SituCraft's `internal/jobs` and `internal/artifacts`; the
    rearrangement-table cache.
+   - *Done:* example downloads and simulations run as jobs, shown in the Jobs view and resumable
+     after a restart. The cache is keyed by each file's SHA-256, size and name and the readers'
+     version, checked by CRC, and trimmed least-recently-used beyond `--cache-limit` (10 GB). A
+     100-sample cohort reopens in 118 ms (budget 2 s).
 4. **Diversity (R1, R5).** Hill numbers, Chao1, ACE, Shannon, Simpson, evenness, clonality, Gini,
    top-N share, homeostasis, each with a bootstrap interval; validated against immunarch, iNEXT
    and closed forms; interval coverage on simulations.
+   - *Done:* with the asymptotic Shannon and Simpson diversities (Chao et al. 2013, 2014), Simpson
+     clonality and sample coverage, in the Repertoire view. Validated against vegan (ACE) and R as
+     well, on 18 samples.
+   - *Decided:* the estimated Simpson diversity's interval is not floored at the value seen, as
+     iNEXT's is: with the floor it held the truth in under half the simulated samples
+     (`research.md` §5.3).
+   - *Found:* immunoSEQ's clonality columns are computed from reads, not templates; QC now
+     reproduces them.
+   - *Moved to slice 8:* the Repertoire view's capture scene and picture.
 5. **Rarefaction and extrapolation (R2, Q3).** Chao et al. 2014 by size and coverage; curves and a
    suggested common depth; validated against iNEXT.
+   - *Done:* the Hill numbers of order 0, 1 and 2 and the coverage, by size and by coverage, in the
+     Repertoire view's Rarefaction part, from the same bootstrap replicates as the measures; the
+     interval coverage measured on simulations as well. A million-cell sample in about 2 s:
+     iNEXT's subsample sums take every size, ClonoLoom's start at each distribution's mode.
+   - *Decided:* the samples are compared first at levels reached by rarefaction alone (the lowest
+     coverage among them, the smallest sample's size); iNEXT's defaults, extrapolated to twice a
+     sample's size, come second. In simulations of repertoires with many rare clonotypes, values
+     extrapolated that far were within 1–3% of the truth, but their intervals were narrower than
+     that (`research.md` §5.4).
+   - *Found:* in reads, few clonotypes are seen once, so every sample looks complete; both parts of
+     the view now warn. Sizes spaced on a logarithmic scale added to iNEXT's, so the curves draw on
+     a logarithmic axis.
+   - *Moved to slice 8:* the Rarefaction part's capture scene, with the Repertoire view's.
 6. **Gene usage and spectratypes (R3).** V, D, J, C and V–J usage; junction lengths; amino-acid
    composition.
+   - *Done:* the Repertoire view's Genes and Junctions parts, from one analysis: each segment's
+     genes and families, V–J pairs, junction lengths and their mean, amino acids overall and at
+     each IMGT position of the commonest lengths; by clonotypes or by abundance, with intervals
+     from a bootstrap of each sample's clonotypes; conditions as the mean of their samples, each
+     counted once. Validated against an independent R implementation (15 samples) and the
+     simulator's truth.
+   - *Decided:* a call tied between genes gives each an equal part (immunarch counts the tie as a
+     gene of its own); a clonotype's genes are its rearrangements', in proportion to their counts.
+   - *Found:* plot axes could end below their largest value, clipping the tallest column, line or
+     interval (QC's junction lengths since wave 1): every axis now holds its values.
+   - *Moved to slice 8:* the Genes and Junctions parts' capture scenes.
 7. **Overlap (R4).** Shared clonotypes, Jaccard, overlap coefficient, Morisita–Horn, rarefied;
    public clonotypes within the project; validated against immunarch and scirpy.
+   - *Done:* the Repertoire view's Overlap part: every pair of samples by each measure, with
+     Sørensen–Dice and Morisita's own index besides, the rarefied forms as exact expectations, 95%
+     intervals; the pairs of one subject and of two summarized; the public clonotypes by subject.
+     Validated against immunarch, vegan and R (69 pairs) and scirpy (four single-cell runs), and on
+     five simulated studies against their truth.
+   - *Decided:* Morisita's own index is the measure shown first: the Morisita–Horn index (immunarch's
+     and vegan's) is biased low in shallow samples, and two samples of one simulated repertoire read
+     about 0.98 by it.
+   - *Found:* a bootstrap of the samples' cells alone gave intervals that held the expected shared
+     clonotypes in two pairs of three: which clonotypes two samples share is itself random. With
+     that variance added (Horvitz–Thompson) and the intervals on the logarithmic scale, 95%.
+   - *Moved to slice 8:* the Overlap part's capture scene.
 8. **Figures, exports and methods (O1, O2, O3, O9, D7).** SVG/PNG/PDF figures with the
    definition and unit in their legends; AIRR and CSV exports with license notes; generic CSV
    import; the methods paragraph for each analysis; release 0.2.0.
+   - Also: the capture scenes of the views wave 2 built, the README's pictures re-captured, and
+     the first project fixture under `validation/projects/` (see "In every wave").
+   - *Done:* every plot of the QC and Repertoire views saved as SVG, PNG (300 dpi) or PDF, its
+     caption stating the definition, unit, samples, filter and version. The rearrangements exported
+     as AIRR TSV, the clonotypes and each result as CSV, each in a zip with a NOTICE of the data's
+     files, method, license and citation; rows under terms of use only once the terms are accepted.
+     A table no reader recognizes opened through a mapping of its columns, checked column by column
+     first, kept with the dataset and stated in its methods. The Repertoire view's five parts
+     captured. The first project fixture, `validation/projects/0.2.0`, made through remote control
+     and opened again by a test, its datasets under the same IDs and its five results made again.
+   - *Decided:* the fixture holds its data (the small simulated study, gzipped, and a VDJtools
+     table: 200 KB in all) rather than simulating them again, so a later simulator may change. A PDF
+     figure holds the 300-dpi PNG: a vector PDF would need a PDF writer for text and paths, and
+     the SVG is the vector form.
+   - *Found:* results are not yet the same on every processor, as `conventions.md` requires. The
+     arm64 build fuses 98 multiply-adds in diversity, rarefaction, usage, overlap, QC and the random
+     draws, and these call Go's `math.Log`, `Exp` and `Pow`, which differ between processors
+     (`internal/dmath` was never written). On amd64 the fixture's diversity, rarefaction and usage
+     documents differ from arm64's in their last digits (at most 0.1% of a relative 10⁻⁹), and its
+     overlap document is the same. So the fixture is compared value by value until results are made
+     the same, which wave 8's certificates (bit for bit) need.
+   - Plot axes leave room for their last tick's label, which was cut off at the right of line
+     and curve plots.
 
 ## 0.3.0: tracking (wave 3)
 

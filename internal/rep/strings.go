@@ -100,3 +100,25 @@ func (s *Strings) Freeze() {
 func (s *Strings) Size() int64 {
 	return int64(cap(s.data)) + 4*int64(cap(s.ends))
 }
+
+// Raw is the store's arena and the end of each string in it, for writing the store (the caller
+// must not change them).
+func (s *Strings) Raw() (data []byte, ends []uint32) {
+	return s.data, s.ends
+}
+
+// StringsFrom is a frozen store of an arena and its ends, as Raw gave them: the ends must rise
+// within the arena.
+func StringsFrom(data []byte, ends []uint32) (*Strings, error) {
+	last := uint32(0)
+	for _, e := range ends {
+		if e < last || int(e) > len(data) {
+			return nil, errors.New("a string store whose ends do not rise within its text")
+		}
+		last = e
+	}
+	if len(ends) > 0 && int(last) != len(data) {
+		return nil, errors.New("a string store with text after its last string")
+	}
+	return &Strings{data: data, ends: ends}, nil
+}

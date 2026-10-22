@@ -109,6 +109,39 @@ to its family is called by its ties: `TCRBV20` with ties `TCRBV20-01,TCRBV20-or0
 `TRBV20-1,TRBV20/OR9-2`; `TCRBV12-03/12-04` is `TRBV12-3,TRBV12-4`. Every name a file uses is
 recorded with the IMGT name it was read as. Mouse names keep their gene numbers.
 
+## Tables with mapped columns
+
+A CSV or TSV that no reader recognizes (VDJtools' or MiXCR's clone tables, a spreadsheet) is read
+through a **mapping** of its columns, made in the window
+([GETTING-STARTED.md](GETTING-STARTED.md#open-data)) or given to remote control's `open_data`
+([REMOTE-CONTROL.md](REMOTE-CONTROL.md)).
+
+- **Separator**: a tab if the header has one; otherwise a semicolon if the header has more
+  semicolons than commas; otherwise a comma. Fields may be quoted as CSV quotes them.
+- **Fields**: `junction_aa`, `junction`, `v_call`, `d_call`, `j_call`, `c_call`, `count`,
+  `sample`, `locus`, `productive`, `cell_id`, `clone_id` and `sequence_id`, each from one column.
+  A junction (amino acids or nucleotides) is required.
+- **The guess**: each field is guessed from the columns' names, compared without case, spaces or
+  punctuation. For example, `cdr3aa` and `aaSeqCDR3` give `junction_aa`; `cdr3nt` and `nSeqCDR3`
+  give `junction`; `v` and `allVHitsWithScore` give `v_call`; `count`, `cloneCount` and `reads`
+  give `count`. A bare `CDR3` or `junction` column is amino acids or nucleotides, as its values
+  look.
+- **The count's unit** (reads, UMIs, templates or cells) is said with the mapping, never taken
+  from the file. It is guessed from the count's name: `umi` or `molecule` gives UMIs, `template`
+  gives templates, `read` or `duplicate` gives reads. Without a count, each row is one sequence.
+- **The sample**: from its column, or one name for every row (the file's name by default).
+- **Missing values**: empty, `NA`, `NaN`, `null`, `none`, `-`, `.` and `n/a`.
+- **Productive**: as its column says (`T`/`F`, `true`/`false`, `yes`/`no`, `1`/`0`, `in`/`out`,
+  `productive`/`unproductive`, `functional`/`nonfunctional`). With no such column, a rearrangement is productive when its junction is whole
+  codons without a stop codon.
+- **Check**: before a mapping is used, the whole file is read through it. For each field, ClonoLoom
+  reports how many values are valid, with examples of those that are not, and notes: the share of
+  junctions that begin with C and end with F or W, the share of nucleotide junctions that are whole
+  codons, and how many counts are not whole numbers.
+
+The mapping is part of the dataset: it is kept in the project, makes part of the dataset's ID (one
+file read through two mappings is two datasets), and is stated in the methods paragraph.
+
 ## Gene calls
 
 Calls are read as IMGT names: locus, segment, family (IMGT's subgroup), gene and allele
@@ -117,6 +150,71 @@ Calls are read as IMGT names: locus, segment, family (IMGT's subgroup), gene and
 constant gene) are recognized. MiXCR's scores (`TRBV5-1*00(1250)`) are dropped. A call naming
 several genes keeps them all: a clonotype definition at gene level keys it by its distinct genes
 (`TRBV6-2|TRBV6-3`), so ties never merge clonotypes silently.
+
+## What ClonoLoom writes
+
+### Exports
+
+**Export** writes a zip named `<dataset>-<what>.zip` holding the files and a `NOTICE.txt`.
+
+| What | Files |
+| --- | --- |
+| Rearrangements | `rearrangements.tsv` |
+| Clonotypes | `clonotypes.csv` |
+| A diversity result | `diversity.csv` |
+| A rarefaction result | `rarefaction.csv` |
+| A gene usage result | `usage.csv` |
+| An overlap result | `overlap.csv`, `public.csv` |
+
+**`rearrangements.tsv`** is an AIRR Rearrangement TSV of the rows the dataset's filter keeps, with
+these columns:
+- the schema's required fields: `sequence_id`, `sequence`, `rev_comp`, `productive`,
+  `vj_in_frame`, `stop_codon`, `v_call`, `d_call`, `j_call`, `sequence_alignment`,
+  `germline_alignment`, `junction`, `junction_aa`, `v_cigar`, `d_cigar` and `j_cigar`;
+- `locus`, `c_call`, `duplicate_count` (reads), `umi_count`, `templates`, `cell_id`, `clone_id`
+  and `repertoire_id`.
+
+The sequences, alignments and CIGARs are empty: ClonoLoom does not keep them, and the source
+files have them. `clone_id` is the row's clonotype under the definition. `templates` holds an
+immunoSEQ export's templates, which the schema has no field for. The file reads back into the same
+clonotypes.
+
+**`clonotypes.csv`** has one row per clonotype:
+- `clonotype_id`;
+- for each chain, `chainN_locus`, `chainN_junction`, `chainN_v` and `chainN_j`;
+- `total` (the abundance over the samples) and `samples` (how many hold it);
+- one column of abundance per sample, empty where the sample does not hold it.
+
+**Results** are written one row per value, with its 95% interval (and its standard error, for
+diversity and overlap):
+- `diversity.csv`: sample, measure, estimate;
+- `rarefaction.csv`: each curve's points by size and by coverage, and the levels compared;
+- `usage.csv`: each share by sample or condition, segment, level, length and IMGT position;
+- `overlap.csv`: each pair of samples and each measure;
+- `public.csv`: the public clonotypes, and how many clonotypes are found in one subject, two and
+  more.
+
+Numbers are written in their shortest exact form; a value that does not exist is empty.
+
+**`NOTICE.txt`** says what the export holds and where it came from:
+- the dataset, its ID, samples and unit;
+- each file with its SHA-256;
+- the filter, the clonotype definition and its ID;
+- the method, ClonoLoom's version and commit, and when it was made;
+- each public data set's license and citation.
+
+Rows of public data under a provider's terms of use (or no stated license) are exported only after
+the window shows their terms and you accept them. The notice then says not to share them.
+
+### Figures
+
+Each plot is saved on its own:
+- **SVG**: vector, with its fonts named and every color written in;
+- **PNG**: at 300 dpi, the resolution recorded in the file;
+- **PDF**: one page of the figure's size, holding the PNG.
+
+A figure is the plot on white, with its title, its legend and a caption. The caption says what was
+measured, the clonotype definition, the unit, the samples, the filter and ClonoLoom's version.
 
 ## Development data
 

@@ -39,7 +39,7 @@ func listExamples(t *testing.T, handler http.Handler) exampleList {
 func TestExamplesDownloadAndOpenWithTheirCredits(t *testing.T) {
 	a, handler := testApp(t)
 	list := listExamples(t, handler)
-	if len(list.Examples) != 6 || list.Offline || len(list.Hosts) != 3 {
+	if len(list.Examples) != 8 || list.Offline || len(list.Hosts) != 3 {
 		t.Fatalf("%+v", list)
 	}
 	terms := ""
@@ -114,5 +114,37 @@ func TestExamplesAreDownloadedOnlyFromThisComputer(t *testing.T) {
 	handler.ServeHTTP(rec, req)
 	if rec.Code != http.StatusForbidden {
 		t.Errorf("%d", rec.Code)
+	}
+}
+
+// A simulated study is made on this computer, offline too, and opens as one dataset of its
+// samples with their subjects and conditions.
+func TestASimulatedExampleIsMadeAndOpened(t *testing.T) {
+	a, handler := testApp(t)
+	a.examples.Offline = true
+	a.examples.Generated = []examples.Generated{simulatedExample("small", "Small", "A small study.", "Both samples.", 1<<20)}
+	if rec := postJSON(t, handler, "/api/examples/simulated-small", `{}`); rec.Code != http.StatusOK {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	var list exampleList
+	deadline := time.Now().Add(60 * time.Second)
+	for {
+		list = listExamples(t, handler)
+		last := list.Examples[len(list.Examples)-1]
+		if last.State == "ready" || (last.Download != nil && last.Download.Error != "") || time.Now().After(deadline) {
+			break
+		}
+		time.Sleep(50 * time.Millisecond)
+	}
+	e := list.Examples[len(list.Examples)-1]
+	if e.Name != "simulated-small" || e.State != "ready" || len(e.Paths) != 1 || len(e.Paths[0]) != 3 {
+		t.Fatalf("%+v", e)
+	}
+	body, _ := json.Marshal(map[string]any{"paths": e.Paths[0]})
+	rec := postJSON(t, handler, "/api/datasets/open", string(body))
+	var s datasetSummary
+	json.Unmarshal(rec.Body.Bytes(), &s)
+	if rec.Code != http.StatusOK || len(s.Samples) != 2 || s.Report.Fatal+s.Report.Warnings != 0 || s.Samples[0].Repertoire == nil || s.Samples[0].Repertoire.StudyGroup != "control" || len(s.Credits) != 0 {
+		t.Fatalf("%d %+v %+v", rec.Code, s.Report, s.Samples)
 	}
 }

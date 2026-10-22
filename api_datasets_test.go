@@ -1,6 +1,7 @@
 package main
 
 import (
+	"clonoloom/internal/reads"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -206,5 +207,108 @@ func TestLibraryFilesOpenByTheirNames(t *testing.T) {
 	json.Unmarshal(rec.Body.Bytes(), &s)
 	if rec.Code != http.StatusOK || len(s.Metadata) != 1 || s.Metadata[0].Name != "study.airr.json" || s.Samples[1].Repertoire == nil || s.Samples[1].Repertoire.SubjectID != "S02" {
 		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+}
+
+// A dataset opened again is read from the table cache; the cache is listed and cleared.
+func TestDatasetsReopenFromTheCache(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "study.tsv")
+	os.WriteFile(path, []byte(datasetTSV), 0o644)
+	a, handler := testApp(t)
+	first := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`)
+	var s1 datasetSummary
+	json.Unmarshal(first.Body.Bytes(), &s1)
+	usage := func() map[string]any {
+		var u map[string]any
+		json.Unmarshal(request(t, handler, http.MethodGet, "/api/cache", nil, nil).Body.Bytes(), &u)
+		return u
+	}
+	if u := usage(); u["enabled"] != true || u["tables"] != 1.0 {
+		t.Fatalf("after opening: %v", u)
+	}
+	// Closed and opened again (as after a restart): the same dataset, from the cache.
+	a.datasets.remove(s1.ID)
+	second := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`)
+	var s2 datasetSummary
+	json.Unmarshal(second.Body.Bytes(), &s2)
+	if s2.ID != s1.ID || s2.Rows != s1.Rows || s2.Sources[0].Path != path || usage()["tables"] != 1.0 {
+		t.Fatalf("reopened: %s %d %v", s2.ID, s2.Rows, usage())
+	}
+	del := httptest.NewRequest(http.MethodDelete, "/api/cache", nil)
+	del.Host, del.RemoteAddr = "127.0.0.1:8860", "127.0.0.1:5555"
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, del)
+	if rec.Code != http.StatusOK || usage()["tables"] != 0.0 {
+		t.Fatalf("clear: %d %v", rec.Code, usage())
+	}
+}
+
+// Jobs over HTTP: listed, read, and refused when there is no such job.
+func TestTheJobsAPI(t *testing.T) {
+	_, handler := testApp(t)
+	if rec := request(t, handler, http.MethodGet, "/api/jobs", nil, nil); rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `"jobs":[]`) {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	for _, path := range []string{"/api/jobs/nothing"} {
+		if rec := request(t, handler, http.MethodGet, path, nil, nil); rec.Code != http.StatusNotFound {
+			t.Errorf("%s: %d", path, rec.Code)
+		}
+	}
+	if rec := postJSON(t, handler, "/api/jobs/nothing/cancel", `{}`); rec.Code != http.StatusNotFound {
+		t.Errorf("cancel: %d", rec.Code)
+	}
+	if rec := request(t, handler, http.MethodGet, "/api/artifacts", nil, nil); rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `"artifacts":[]`) {
+		t.Errorf("artifacts: %d %s", rec.Code, rec.Body)
+	}
+}
+
+// A table of another tool: inspected, its mapping checked column by column, opened through it;
+// opened again with the same mapping, the same dataset; with another, another.
+func TestOpenATableThroughAMapping(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "patient7.tsv")
+	os.WriteFile(path, []byte("count\tfreq\tcdr3nt\tcdr3aa\tv\td\tj\n120\t0.6\tTGTGCCAGCAGCTTAGCGGGAGGGCCTGAAGCTTTCTTT\tCASSLAGGPEAFF\tTRBV5-1\tTRBD2\tTRBJ2-7\n60\t0.3\tTGTGCC\tCASSER\tTRBV6-2\t.\tTRBJ1-1\n"), 0o644)
+	_, handler := testApp(t)
+	// Not a format ClonoLoom recognizes.
+	if rec := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`); rec.Code != http.StatusUnprocessableEntity || !strings.Contains(rec.Body.String(), `"code":"format"`) {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	rec := postJSON(t, handler, "/api/datasets/inspect", `{"path": `+jsonString(path)+`}`)
+	var inspected struct {
+		Inspection reads.Inspection `json:"inspection"`
+		Fields     []map[string]string
+	}
+	json.Unmarshal(rec.Body.Bytes(), &inspected)
+	if rec.Code != http.StatusOK || inspected.Inspection.Guess.Columns["junction_aa"] != "cdr3aa" || len(inspected.Fields) < 10 {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	mapping := `{"columns": {"junction_aa": "cdr3aa", "v_call": "v", "j_call": "j", "count": "count"}, "unit": "reads"}`
+	rec = postJSON(t, handler, "/api/datasets/check", `{"path": `+jsonString(path)+`, "mapping": `+mapping+`}`)
+	if rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `"rows":2`) {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	if rec := postJSON(t, handler, "/api/datasets/check", `{"path": `+jsonString(path)+`, "mapping": {"columns": {"v_call": "v"}}}`); rec.Code != http.StatusUnprocessableEntity || !strings.Contains(rec.Body.String(), "map a junction") {
+		t.Errorf("no junction: %d %s", rec.Code, rec.Body)
+	}
+	open := func(m string) datasetSummary {
+		t.Helper()
+		rec := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`], "mappings": {`+jsonString(path)+`: `+m+`}}`)
+		var s datasetSummary
+		json.Unmarshal(rec.Body.Bytes(), &s)
+		if rec.Code != http.StatusOK {
+			t.Fatalf("%d %s", rec.Code, rec.Body)
+		}
+		return s
+	}
+	a := open(mapping)
+	if a.Rows != 2 || a.Unit != "reads" || a.Sources[0].Format != reads.FormatTable || a.Sources[0].Mapping == nil || a.Samples[0].Name != "patient7" {
+		t.Errorf("%+v", a)
+	}
+	if b := open(mapping); b.ID != a.ID {
+		t.Errorf("the same mapping, another dataset: %s, %s", a.ID, b.ID)
+	}
+	if c := open(`{"columns": {"junction_aa": "cdr3aa"}}`); c.ID == a.ID || c.Unit != "sequences" {
+		t.Errorf("another mapping: %+v", c)
 	}
 }

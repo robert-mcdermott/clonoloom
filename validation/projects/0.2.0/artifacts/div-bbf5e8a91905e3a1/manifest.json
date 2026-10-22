@@ -1,0 +1,88 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "div-bbf5e8a91905e3a1",
+  "kind": "diversity",
+  "name": "Diversity · A VDJtools table",
+  "dataset": "d-d5ec144758219e25",
+  "state": "complete",
+  "created": "2026-10-22T03:09:47.473543Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-d5ec144758219e25",
+        "name": "A VDJtools table"
+      }
+    ],
+    "job": {
+      "id": "jmviyqamm-5",
+      "kind": "diversity",
+      "spec": {
+        "dataset": "d-d5ec144758219e25",
+        "definition": {
+          "name": "Amino-acid junction, V and J genes",
+          "chains": [],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Hill numbers, Chao1, ACE and the asymptotic Shannon and Simpson diversity, with bootstrap intervals",
+      "version": "1",
+      "citation": "Chao A, Gotelli NJ, Hsieh TC, et al. Rarefaction and extrapolation with Hill numbers. Ecol Monogr. 2014;84:45–67. doi:10.1890/13-0133.1"
+    },
+    "parameters": {
+      "dataset": "d-d5ec144758219e25",
+      "definition": {
+        "name": "Amino-acid junction, V and J genes",
+        "chains": [],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.2.0"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "diversity.json",
+      "role": "diversity",
+      "size": 4813,
+      "sha256": "1e014893da35457079a5457ca84edf0c55b1906eccdeaabe028e747c1beb53f0"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "definition": "Amino-acid junction, V and J genes",
+    "samples": 1,
+    "unit": "umis"
+  }
+}

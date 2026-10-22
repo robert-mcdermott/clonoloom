@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readdirSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 import { PROJECT_FORMAT, PROJECT_VERSION, createProject, isEmptyProject, parseProject, rename, serializeProject } from './project.js';
 
@@ -53,5 +54,18 @@ test('a project with a dataset, decision or saved view is worth saving', () => {
   assert.ok(isEmptyProject(empty));
   for (const field of ['datasets', 'artifacts', 'decisions', 'views']) {
     assert.equal(isEmptyProject({ ...empty, [field]: [{ id: 'x' }] }), false, field);
+  }
+});
+
+test('every release\'s saved project still opens, byte for byte (validation/projects)', () => {
+  const root = new URL('../../validation/projects/', import.meta.url);
+  const versions = readdirSync(root).filter((v) => /^\d+\.\d+\.\d+$/.test(v));
+  assert.ok(versions.includes('0.2.0'));
+  for (const v of versions) {
+    const text = readFileSync(new URL(`${v}/project.json`, root), 'utf8');
+    const project = parseProject(text);
+    assert.equal(serializeProject(project), text, v);
+    assert.ok(project.datasets.length && project.artifacts.length, v);
+    for (const a of project.artifacts) assert.ok(project.datasets.some((d) => d.id === a.dataset), `${v}: ${a.id}`);
   }
 });

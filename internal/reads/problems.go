@@ -1,6 +1,7 @@
 package reads
 
 import (
+	"encoding/json"
 	"fmt"
 	"sort"
 )
@@ -32,6 +33,31 @@ const examplesPerCode = 5
 
 func newProblems() *Problems {
 	return &Problems{counts: map[string]int{}, examples: map[string][]Problem{}}
+}
+
+// problemsJSON is Problems as JSON (the table cache keeps them with the table).
+type problemsJSON struct {
+	Counts   map[string]int       `json:"counts"`
+	Examples map[string][]Problem `json:"examples"`
+}
+
+func (p *Problems) MarshalJSON() ([]byte, error) {
+	return json.Marshal(problemsJSON{Counts: p.counts, Examples: p.examples})
+}
+
+func (p *Problems) UnmarshalJSON(data []byte) error {
+	var v problemsJSON
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	*p = Problems{counts: v.Counts, examples: v.Examples}
+	if p.counts == nil {
+		p.counts = map[string]int{}
+	}
+	if p.examples == nil {
+		p.examples = map[string][]Problem{}
+	}
+	return nil
 }
 
 func (p *Problems) add(problem Problem) {

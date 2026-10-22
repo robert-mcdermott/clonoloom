@@ -779,7 +779,9 @@ table.data tr.selected td { background: var(--active); }
 .swatch.plot-c5 { background: var(--brand-a); }
 .plot-grid-row, .plot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 12px; margin-top: 12px; }
 .plot-card { margin: 0; border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; background: var(--panel); min-width: 0; }
-.plot-card figcaption { font-weight: 650; font-size: 12.5px; margin-bottom: 6px; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.plot-card figcaption { font-weight: 650; font-size: 12.5px; margin-bottom: 6px; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; justify-content: space-between; }
+.plot-card figcaption select.input { width: auto; max-width: 100%; }
+.plot-pickers { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
 .plot-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11.5px; color: var(--text-2); }
 .plot-legend > span { display: inline-flex; gap: 5px; align-items: center; }
 
@@ -847,3 +849,47 @@ button.ctable-th:hover { color: var(--text); }
 .methods-text { font-size: 13.5px; line-height: 1.6; margin: 0 0 12px; user-select: text; }
 .methods-references { margin: 4px 0 10px; padding-left: 26px; font-size: 12px; line-height: 1.5; color: var(--text-2); user-select: text; }
 .methods-references li { margin-bottom: 3px; }
+
+/* The Jobs view (ui/mode-jobs.js), adapted from SituCraft 0.9.0. */
+.job-remedy { margin: 4px 0 0; font-size: 12px; }
+.jobs-body { max-width: 980px; margin: 0 auto; padding: 18px 24px 40px; }
+.jobs-intro { font-size: 12.5px; margin: 0 0 14px; }
+.jobs-empty { font-size: 12.5px; margin: 4px 0 12px; }
+.job-card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); padding: 10px 12px; margin: 8px 0; display: flex; flex-direction: column; gap: 6px; }
+.job-card.focused { border-color: var(--accent); }
+.job-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.job-head b { font-size: 13px; }
+.job-meta { font-size: 12px; }
+.job-error { margin: 0; font-size: 12px; color: var(--danger-text, var(--danger)); }
+.job-note { margin: 0; font-size: 12px; }
+.job-foot { font-size: 12px; }
+.job-log { font-size: 12px; display: flex; flex-direction: column; gap: 2px; max-height: 320px; overflow: auto; background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 6px 8px; }
+.job-event { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; }
+.job-event.warning span:last-child { color: var(--warn-text, inherit); }
+.job-event.error span:last-child { color: var(--danger-text, var(--danger)); }
+.job-spec { font-size: 12px; margin-top: 6px; }
+.job-spec pre { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 6px 8px; overflow: auto; }
+button.link { background: none; border: 0; padding: 0; color: var(--accent-text); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.jobs-cache { margin-top: 18px; }
+
+/* Estimates with intervals, and lines (lib/plot.js): series by group, from the theme's tokens. */
+.plot-whisker { stroke: var(--text-2); stroke-width: 1.4; }
+.plot-line { fill: none; stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
+.plot-dashed { stroke-dasharray: 5 4; }
+.plot-heat { fill: var(--accent); stroke: none; }
+.plot-guide { stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 3 3; }
+.plot-band { stroke: none; fill-opacity: 0.13; }
+.plot-band.plot-s1 { fill: var(--accent); }
+.plot-band.plot-s2 { fill: var(--brand-b); }
+.plot-band.plot-s3 { fill: var(--accent-2); }
+.plot-band.plot-s4 { fill: var(--brand-a); }
+.plot-band.plot-s5 { fill: var(--ok); }
+.plot-band.plot-s6 { fill: var(--text-3); }
+.plot-line.plot-s1 { stroke: var(--accent); } circle.plot-s1, .swatch.plot-s1 { fill: var(--accent); background: var(--accent); }
+.plot-line.plot-s2 { stroke: var(--brand-b); } circle.plot-s2, .swatch.plot-s2 { fill: var(--brand-b); background: var(--brand-b); }
+.plot-line.plot-s3 { stroke: var(--accent-2); } circle.plot-s3, .swatch.plot-s3 { fill: var(--accent-2); background: var(--accent-2); }
+.plot-line.plot-s4 { stroke: var(--brand-a); } circle.plot-s4, .swatch.plot-s4 { fill: var(--brand-a); background: var(--brand-a); }
+.plot-line.plot-s5 { stroke: var(--ok); } circle.plot-s5, .swatch.plot-s5 { fill: var(--ok); background: var(--ok); }
+.plot-line.plot-s6 { stroke: var(--text-3); } circle.plot-s6, .swatch.plot-s6 { fill: var(--text-3); background: var(--text-3); }
+.repertoire-spec { margin: 0 0 10px; } .mapping-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 14px; margin: 12px 0; } .mapping-field { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; } .mapping-field select.input, .mapping-field input.input { width: 120px; } .mapping-preview td, .mapping-preview th { white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; } .mapping-check { margin-top: 8px; }
+.repertoire-controls { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0 0 10px; } .repertoire-controls select.input { width: auto; max-width: 100%; } .repertoire-start { max-width: 760px; } .repertoire-start p { margin: 6px 0 10px; } .repertoire-table td .muted { margin-left: 4px; }

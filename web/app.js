@@ -7,7 +7,11 @@ import { createStore } from './ui/store.js';
 import { createLibrary, detectBackend, getDataset, locateFile, openDataset, prefs } from './ui/storage.js';
 import { pickPaths } from './ui/file-picker.js';
 import { createExamples } from './ui/examples.js';
+import { createJobs } from './ui/jobs.js';
 import { showMethods } from './ui/methods.js';
+import { exportDataset } from './ui/exports.js';
+import { mapColumns } from './ui/mapping.js';
+import { installRemote } from './ui/remote.js';
 import { mountSidebar } from './ui/sidebar.js';
 import { mountInspector } from './ui/inspector.js';
 import { mountDrawer } from './ui/drawer.js';
@@ -18,7 +22,7 @@ import { createProject, isEmptyProject, parseProject, rename, serializeProject }
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -30,14 +34,7 @@ const MODES = [
   { id: 'data', label: 'Data', icon: 'database', load: () => import('./ui/mode-data.js').then((m) => m.mountData) },
   { id: 'qc', label: 'QC', icon: 'qc', load: () => import('./ui/mode-qc.js').then((m) => m.mountQC) },
   { id: 'clonotypes', label: 'Clonotypes', icon: 'clonotypes', load: () => import('./ui/mode-clonotypes.js').then((m) => m.mountClonotypes) },
-  {
-    id: 'repertoire', label: 'Repertoire', icon: 'repertoire',
-    load: async () => plannedMode({
-      title: 'Repertoire', icon: 'repertoire',
-      purpose: 'How diverse each repertoire is and how repertoires overlap: Hill numbers and their profile, richness estimators, clonality and evenness with intervals; rarefaction and extrapolation to compare samples at equal depth or coverage; gene usage, junction lengths and shared clonotypes.',
-      steps: ['Define clonotypes.', 'Choose the samples and the depth or coverage to compare at.', 'Read each statistic with its interval and its plain-language explanation.'],
-    }),
-  },
+  { id: 'repertoire', label: 'Repertoire', icon: 'repertoire', load: () => import('./ui/mode-repertoire.js').then((m) => m.mountRepertoire) },
   {
     id: 'tracking', label: 'Tracking', icon: 'threads',
     load: async () => plannedMode({
@@ -87,14 +84,7 @@ const MODES = [
       steps: ['Analyze.', 'Choose the figures and results to report.', 'Export.'],
     }),
   },
-  {
-    id: 'jobs', label: 'Jobs', icon: 'jobs',
-    load: async () => plannedMode({
-      title: 'Jobs', icon: 'jobs',
-      purpose: 'Work that runs in the background (distances, generation probabilities, lineage trees, downloads): progress, logs and cancellation. Jobs keep running when the window reloads, and their results are checked before they can be used.',
-      steps: ['Start work that takes a while, in any view.', 'Follow it here, or keep working elsewhere.'],
-    }),
-  },
+  { id: 'jobs', label: 'Jobs', icon: 'jobs', load: () => import('./ui/mode-jobs.js').then((m) => m.mountJobs) },
 ];
 
 // --- Theme ---------------------------------------------------------------------------------------
@@ -213,7 +203,12 @@ async function start() {
     current.update?.(new Set(['project', 'focus', 'selection', 'mode']));
   };
 
-  app.focusItem = (focus) => store.setUI({ focus }, ['focus']);
+  app.focusItem = (focus) => {
+    store.setUI({ focus }, ['focus']);
+    // A result opens in its view.
+    const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
+    if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
+  };
 
   app.toggleDrawer = (open = !store.ui.drawer.open, tab = store.ui.drawer.tab) => {
     store.setUI({ drawer: { open, tab } }, ['drawer']);
@@ -261,7 +256,9 @@ async function start() {
     if (paths?.length) await app.openData(paths);
   };
 
-  // Public example data, downloaded when asked (ui/examples.js).
+  // The program's background jobs (ui/jobs.js), and public example data, downloaded when asked
+  // (ui/examples.js).
+  app.jobs = createJobs(app);
   app.examples = createExamples(app);
   app.showExamples = () => app.examples.dialog();
 
@@ -277,12 +274,25 @@ async function start() {
   };
 
   // Opens files as one dataset and records it in the project.
-  app.openData = async (paths, { name = '', library = null } = {}) => {
+  // rethrow: an error is thrown to the caller (remote control) as well as shown.
+  app.openData = async (paths, { name = '', library = null, mappings = null, rethrow = false } = {}) => {
     const sameProject = store.sameProject();
     const busy = `open-${Date.now()}`;
     store.setBusy(busy, `Reading ${library ? `${library.length} file${library.length === 1 ? '' : 's'}` : paths.length === 1 ? paths[0].split(/[\\/]/).pop() : `${paths.length} files`}…`);
     try {
-      const summary = await openDataset(library ? { library, name } : { paths, name });
+      let summary;
+      try {
+        summary = await openDataset(library ? { library, name } : { paths, name, ...(mappings ? { mappings } : {}) });
+      } catch (error) {
+        // One table ClonoLoom does not recognize: its columns mapped, if the user maps them.
+        const one = library ? library.length === 1 : paths.length === 1;
+        if (error.code !== 'format' || !one || rethrow) throw error;
+        store.setBusy(busy, null);
+        const mapping = await mapColumns(library ? { sha256: library[0].sha256, name: library[0].name } : { path: paths[0] });
+        if (!mapping) return null;
+        store.setBusy(busy, 'Reading through the mapping…');
+        summary = await openDataset(library ? { library: [{ ...library[0], mapping }], name } : { paths, name, mappings: { [paths[0]]: mapping } });
+      }
       if (!sameProject()) return null;
       app.datasetStates.set(summary.id, { status: 'open', summary });
       store.commit(addDataset(store.project, datasetRecord(summary)), `Open ${summary.name}`, ['datasets']);
@@ -295,6 +305,7 @@ async function start() {
     } catch (error) {
       toast(error.message, { kind: 'error', timeout: 6000 });
       app.log(error.message);
+      if (rethrow) throw error;
       return null;
     } finally {
       store.setBusy(busy, null);
@@ -309,7 +320,11 @@ async function start() {
     const promise = (async () => {
       try {
         let summary = await getDataset(record.id);
-        if (!summary) summary = await openDataset({ paths: datasetFiles(record).map((s) => s.path), name: record.name });
+        if (!summary) {
+          // Tables read through a mapping of their columns are read through it again.
+          const mappings = Object.fromEntries(record.sources.filter((s) => s.mapping).map((s) => [s.path, s.mapping]));
+          summary = await openDataset({ paths: datasetFiles(record).map((s) => s.path), name: record.name, ...(Object.keys(mappings).length ? { mappings } : {}) });
+        }
         if (summary.id !== record.id) {
           const state = { status: 'changed', summary, error: 'The files are not those the project recorded: their contents changed.' };
           setState(record.id, state);
@@ -535,10 +550,19 @@ async function start() {
       '-',
       { section: 'Export' },
       { label: 'Project document (JSON)', icon: 'download', onSelect: exportProjectJSON },
+      { label: 'Clonotypes of the dataset in focus (CSV)', icon: 'download', onSelect: () => exportFocused('clonotypes') },
+      { label: 'Its rearrangements (AIRR TSV)', icon: 'download', onSelect: () => exportFocused('rearrangements') },
       '-',
       { label: 'Start page', icon: 'grid', onSelect: () => app.setMode('welcome') },
     ]);
   });
+
+  // The dataset in focus's clonotypes or rearrangements, exported (ui/exports.js).
+  function exportFocused(what) {
+    const d = store.project.datasets.find((x) => store.ui.focus?.kind === 'dataset' && x.id === store.ui.focus.id) ?? store.project.datasets[0];
+    if (d) exportDataset(app, d, what);
+    else toast('Open data first.', { kind: 'error' });
+  }
 
   // --- Commands (palette) ------------------------------------------------------------------------
 
@@ -556,6 +580,8 @@ async function start() {
     { label: 'Open a saved project', icon: 'library', hint: `${modKey}⇧O`, run: openLibraryDialog },
     { label: 'Save project now', icon: 'save', hint: `${modKey}S`, run: saveNow },
     { label: 'Export the project document', icon: 'download', run: exportProjectJSON },
+    { label: 'Export the clonotypes of the dataset in focus (CSV)', icon: 'download', run: () => exportFocused('clonotypes'), keywords: 'csv table download' },
+    { label: 'Export the rearrangements of the dataset in focus (AIRR TSV)', icon: 'download', run: () => exportFocused('rearrangements'), keywords: 'airr tsv download' },
     { label: 'Show or hide the drawer (history, log)', icon: 'drawer', hint: `${modKey}J`, run: () => app.toggleDrawer(), keywords: 'history log undo' },
     { label: 'Toggle dark theme', icon: 'moon', run: () => toggleTheme() },
     { label: 'Color-vision-friendly colors (on or off)', icon: 'eye', run: () => toggleColorVision(), keywords: 'color blind accessibility deuteranopia protanopia palette' },
@@ -600,6 +626,7 @@ async function start() {
     store.notify(['theme', 'colors']);
     toast(next ? 'Color-vision-friendly colors: palettes and status colors stay distinguishable with red–green and blue–yellow color blindness.' : 'Default colors.', { timeout: 3500 });
   }
+  app.setTheme = (next) => setTheme(next);
   function setTheme(next) {
     prefs.set('theme', next);
     store.state.ui.theme = next;
@@ -849,6 +876,8 @@ async function start() {
   window.addEventListener('focus', check);
   setInterval(check, 30000);
   window.clonoloom = app;
+  // Programs on this computer may drive the window (clonoloom --remote-control).
+  if (info.remoteControl) app.remote = installRemote(app);
 }
 
 start().catch((error) => {

@@ -19,9 +19,15 @@ Go tests in this folder check whole results against independent references (`go 
 Data sets are required by naming them in `CLONOLOOM_REQUIRE_DATA` (a comma-separated list, or 1
 for all); otherwise a missing one is skipped. CI requires the openly licensed ones.
 
-Later slices add:
-- QC and clonotypes against pandas and scirpy (wave 1, slices 4 and 5);
-- each statistic against its reference implementation and simulated truth (wave 2 onward).
+The other Go tests here check QC and clonotypes against pandas and scirpy, and each statistic
+against its reference implementation and the simulator's truth (`qc_test.go`,
+`clonotypes_test.go`, `diversity_test.go`, `rarefaction_test.go`, `coverage_test.go`,
+`usage_test.go`, `overlap_test.go`, `simulated_test.go`). Each test's header says what it compares
+and to what tolerance; the CHANGELOG's Validation sections give the results.
+
+`validation/projects/` holds a project saved by each release, with its data and results; every
+later version must open it and make its results again ([projects/README.md](projects/README.md),
+`go test -run TestEveryReleasesProjectStillOpens .`).
 
 Reference outputs are committed in `validation/reference/` with the script and tool version that
 produced them. Public datasets are fetched and checksummed by `validation/fetch.mjs` into

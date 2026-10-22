@@ -49,11 +49,12 @@ export function createExamples(app) {
     for (const e of list ?? []) {
       if (before.get(e.name) !== 'downloading' || e.state === 'downloading') continue;
       if (e.state === 'ready') {
-        app.log(`Downloaded ${e.title} into ${e.path}; every file checked against its recorded SHA-256.`);
+        app.log(e.generated ? `Made ${e.title} in ${e.path}; its truth is in its truth folder.` : `Downloaded ${e.title} into ${e.path}; every file checked against its recorded SHA-256.`);
         toast(`${e.title} is ready.`, { kind: 'ok', timeout: 6000, action: e.opens?.length ? { label: `Open ${e.opens[0].title}`, onClick: () => open(e, 0) } : null });
       } else if (e.download?.error) {
-        app.log(`${e.title} was not downloaded: ${e.download.error}`);
-        toast(`${e.title} was not downloaded: ${e.download.error}`, { kind: 'error' });
+        const verb = e.generated ? 'made' : 'downloaded';
+        app.log(`${e.title} was not ${verb}: ${e.download.error}`);
+        toast(`${e.title} was not ${verb}: ${e.download.error}`, { kind: 'error' });
       }
     }
     // A download's progress, while one runs.
@@ -96,7 +97,7 @@ export function createExamples(app) {
     }
     try {
       await getJSON(`/api/examples/${encodeURIComponent(example.name)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accept }) });
-      app.log(`Downloading ${example.title} (${formatBytes(example.size)}) from ${example.publisher} into ${dir}.`);
+      app.log(example.generated ? `Making ${example.title} in ${dir}.` : `Downloading ${example.title} (${formatBytes(example.size)}) from ${example.publisher} into ${dir}.`);
     } catch (e) {
       toast(e.message, { kind: 'error' });
     }
@@ -143,20 +144,24 @@ export function createExamples(app) {
       ];
     } else if (e.state === 'downloading') {
       actions = [h('button.btn.small', { type: 'button', onclick: () => cancel(e) }, 'Cancel')];
+    } else if (e.generated) {
+      actions = [h('button.btn.small.primary', { type: 'button', onclick: () => download(e) }, icon('sparkles'), `Make · about ${formatBytes(e.size)}`)];
     } else {
       actions = [h('button.btn.small.primary', { type: 'button', disabled: offline, onclick: () => download(e) }, icon('download'), `${e.state === 'incomplete' ? 'Download again' : 'Download'} · ${formatBytes(e.size)}`)];
     }
     return h('div.card.example-card',
       h('div.example-head',
         h('h4', e.title),
-        h(`span.badge.${LICENSE_BADGE[e.licenseClass] ?? 'accent'}`, { title: e.license }, e.licenseClass === 'open' ? e.license.replace(/\s*\(.*\)$/, '') : 'Terms of use')),
+        e.generated
+          ? h('span.badge.accent', { title: e.license }, 'Simulated')
+          : h(`span.badge.${LICENSE_BADGE[e.licenseClass] ?? 'accent'}`, { title: e.license }, e.licenseClass === 'open' ? e.license.replace(/\s*\(.*\)$/, '') : 'Terms of use')),
       h('p', e.description),
       h('ul.example-opens', ...e.opens.map((o) => h('li', h('b', o.title), ': ', o.summary))),
       h('dl.kv.small',
-        h('dt', 'Source'), h('dd', external(e.page, e.source)),
+        h('dt', 'Source'), h('dd', e.page ? external(e.page, e.source) : e.source),
         h('dt', 'License'), h('dd', e.licenseUrl ? external(e.licenseUrl, e.license) : e.license),
         h('dt', 'Cite'), h('dd', e.citation),
-        h('dt', 'Size'), h('dd', `${formatBytes(e.size)} in ${e.files.length} file${e.files.length === 1 ? '' : 's'}`)),
+        h('dt', 'Size'), h('dd', e.generated ? `about ${formatBytes(e.size)}` : `${formatBytes(e.size)} in ${e.files.length} file${e.files.length === 1 ? '' : 's'}`)),
       e.download?.error && e.state !== 'downloading' ? h('div.callout.danger', h('p', e.download.error)) : null,
       progress,
       h('div.btn-row', ...actions));
@@ -172,8 +177,8 @@ export function createExamples(app) {
         content.append(h('p.muted', 'Reading the list…'));
         return;
       }
-      content.append(h('p', 'Public immune repertoires to learn ClonoLoom on and to check it against: single-cell TCR and BCR from 10x Genomics, the AIRR Community\'s test files, and bulk immunoSEQ exports. Each opens as a dataset that carries its source, license and citation into your methods.'));
-      if (offline) content.append(h('div.callout', h('p', 'ClonoLoom was started with --offline: it downloads nothing. Examples already downloaded open as usual.')));
+      content.append(h('p', 'Public immune repertoires to learn ClonoLoom on and to check it against: single-cell TCR and BCR from 10x Genomics, the AIRR Community\'s test files, and bulk immunoSEQ exports, each opened as a dataset that carries its source, license and citation into your methods; and simulated studies, made on this computer, whose truth is known.'));
+      if (offline) content.append(h('div.callout', h('p', 'ClonoLoom was started with --offline: it downloads nothing. Examples already downloaded open as usual, and simulated studies are made as usual.')));
       content.append(...list.map((e) => card(e, () => close())));
       content.append(h('p.muted.small', `Downloaded only when you ask, from ${hosts.join(', ')}, into ${dir}. Every file is checked against the size and SHA-256 recorded when ClonoLoom was released; a file the publisher has changed is refused.`));
     };

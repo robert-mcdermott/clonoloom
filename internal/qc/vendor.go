@@ -230,6 +230,73 @@ func CompareImmunoSEQ(t *rep.Table, sample int) []Check {
 		count("Out-of-frame templates", "outofframe_templates", outOfFrame, earlier)
 		count("Stop-codon templates", "stop_templates", stop, earlier)
 	}
+	checks = append(checks, adaptiveClonality(t, sample, meta)...)
+	return checks
+}
+
+// adaptiveClonality recomputes immunoSEQ's clonality columns as Adaptive defines them (its tech
+// notes MRK-00342 and MRK-00355): over the productive rearrangements (rows, not clonotypes), each
+// one's frequency of the productive reads. Adaptive computes these from reads, not templates (its
+// reported values are reproduced from reads alone, on every published export checked): the
+// entropy (log base 2), the clonality 1 − entropy/log2(rearrangements), the Simpson clonality
+// √Σp² and the largest frequency.
+func adaptiveClonality(t *rep.Table, sample int, meta map[string]string) []Check {
+	readsOf := func(row int) float64 {
+		switch {
+		case t.Reads != nil:
+			return t.Reads[row]
+		case t.Unit == rep.Reads:
+			return t.Count[row]
+		}
+		return math.NaN()
+	}
+	var reads []float64
+	total := 0.0
+	for row := 0; row < t.Len(); row++ {
+		if int(t.Sample[row]) != sample || t.Productive[row] != rep.True {
+			continue
+		}
+		if r := readsOf(row); r > 0 {
+			reads = append(reads, r)
+			total += r
+		}
+	}
+	if len(reads) < 2 {
+		return nil
+	}
+	var h, simpson, top float64
+	for _, r := range reads {
+		p := r / total
+		h -= p * math.Log2(p)
+		simpson += p * p
+		top = max(top, p)
+	}
+	mine := map[string]float64{
+		"productive_entropy": h, "productive_clonality": 1 - h/math.Log2(float64(len(reads))),
+		"productive_simpson_clonality": math.Sqrt(simpson), "max_productive_frequency": top,
+	}
+	var checks []Check
+	for _, c := range []struct{ metric, key string }{
+		{"Productive clonality (from reads)", "productive_clonality"}, {"Productive Simpson clonality (from reads)", "productive_simpson_clonality"},
+		{"Productive entropy, log2 (from reads)", "productive_entropy"}, {"Largest productive frequency (from reads)", "max_productive_frequency"},
+	} {
+		v, ok := meta[c.key]
+		if !ok {
+			continue
+		}
+		reported, err := strconv.ParseFloat(strings.TrimSpace(v), 64)
+		if err != nil {
+			continue
+		}
+		// Agreeing to seven significant digits: Adaptive's entropy differs from the exact one by
+		// about 2·10⁻⁸ of itself (computed in lower precision), its other columns by less.
+		same := math.Abs(reported-mine[c.key]) <= 1e-7*math.Max(1e-3, math.Abs(reported))
+		check := Check{Metric: c.metric, Reported: v, Recomputed: strconv.FormatFloat(mine[c.key], 'g', 10, 64), Agrees: agree(same)}
+		if !same {
+			check.Note = "immunoSEQ's value differs from its rows' reads"
+		}
+		checks = append(checks, check)
+	}
 	return checks
 }
 

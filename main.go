@@ -28,13 +28,16 @@ import (
 	"syscall"
 	"time"
 
+	"clonoloom/internal/artifacts"
+	"clonoloom/internal/cache"
 	"clonoloom/internal/examples"
+	"clonoloom/internal/jobs"
 )
 
 //go:embed web/index.html web/styles.css web/app.js web/favicon.svg web/lib/*.js web/ui/*.js
 var content embed.FS
 
-var version = "0.1.0"
+var version = "0.2.0"
 
 // commit is the source revision the program was built from. Release builds set it with
 // -ldflags "-X main.commit=..."; otherwise it comes from the version-control stamp Go records
@@ -56,7 +59,10 @@ type config struct {
 	keepRunning bool
 	dataDir     string
 	examplesDir string
+	cacheDir    string
+	cacheLimit  int64
 	offline     bool
+	remote      bool
 	dev         bool
 	showVersion bool
 	files       []string
@@ -74,8 +80,15 @@ type app struct {
 	// clonotypes are the clonotype tables lately computed (api_clonotypes.go).
 	clonotypes *clonotypeTables
 	// examples are the example datasets, downloaded when asked (api_examples.go).
-	examples  *examples.Library
-	downloads *downloads
+	examples *examples.Library
+	// jobs runs the long computations in the background (api_jobs.go), kept in the library.
+	jobs *jobs.Manager
+	// artifacts are the results kept, with their lineage (internal/artifacts), in the library.
+	artifacts *artifacts.Store
+	// cache keeps the tables read, to reopen datasets quickly (internal/cache); nil: none.
+	cache *cache.Cache
+	// remote is the remote-control hub (remote.go), with --remote-control.
+	remote *remoteHub
 }
 
 func init() {
@@ -88,6 +101,9 @@ func init() {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "simulate" {
+		os.Exit(runSimulate(os.Args[2:], os.Stdout, os.Stderr))
+	}
 	cfg, err := parseConfig(os.Args[1:])
 	if errors.Is(err, flag.ErrHelp) {
 		return
@@ -182,10 +198,17 @@ type runningServer struct {
 	url          string
 	cancel       context.CancelFunc
 	windowClosed <-chan struct{}
+	// connection is remote.json, with --remote-control.
+	connection string
 }
 
 func (s *runningServer) stop(timeout time.Duration) {
+	if s.connection != "" {
+		removeConnectionFile(s.connection, s.app.remote.token)
+	}
 	s.cancel()
+	// A running job is interrupted, kept to be resumed.
+	defer s.app.jobs.Close()
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	s.server.Shutdown(ctx)
@@ -214,13 +237,23 @@ func start(cfg config, out io.Writer) (*runningServer, error) {
 	}
 	url := "http://" + net.JoinHostPort(cfg.host, strconv.Itoa(actualPort))
 	a.printBanner(out, url)
+	connection := ""
+	if a.remote != nil {
+		path, err := writeConnectionFile(cfg.dataDir, url, a.remote.token)
+		if err != nil {
+			listener.Close()
+			return nil, fmt.Errorf("remote control: %w", err)
+		}
+		connection = path
+		fmt.Fprintf(out, "Remote control is on: scripts find this ClonoLoom (its address and token) in %s\n", path)
+	}
 	base, cancel := context.WithCancel(context.Background())
 	server := &http.Server{
 		Handler:           protect(handler, cfg.host, actualPort),
 		ReadHeaderTimeout: 10 * time.Second,
 		BaseContext:       func(net.Listener) context.Context { return base },
 	}
-	running := &runningServer{app: a, server: server, listener: listener, url: url, cancel: cancel}
+	running := &runningServer{app: a, server: server, listener: listener, url: url, cancel: cancel, connection: connection}
 	if cfg.window != "none" {
 		closed := make(chan struct{})
 		running.windowClosed = closed
@@ -263,16 +296,24 @@ func parseConfig(args []string) (config, error) {
 	flags.StringVar(&cfg.dataDir, "data-dir", "", "folder for the project library (default: <user config dir>/ClonoLoom)")
 	flags.StringVar(&cfg.examplesDir, "examples-dir", "", "folder the example datasets are downloaded into, when asked (default: <data dir>/examples)")
 	flags.BoolVar(&cfg.offline, "offline", false, "download nothing: ClonoLoom then reaches no other computer")
+	flags.StringVar(&cfg.cacheDir, "cache-dir", "", "folder for the table cache, which can be deleted and made again (default: <user cache dir>/clonoloom)")
+	cacheLimit := flags.String("cache-limit", "10GB", "size the table cache is kept within, removing what was used least recently (for example 500MB or 20GB; 0 for no limit)")
+	flags.BoolVar(&cfg.remote, "remote-control", false, "accept actions from programs on this computer at /api/remote/action (scripts, the documentation's screenshots)")
 	flags.BoolVar(&cfg.dev, "dev", false, "serve web/ from the working directory instead of the embedded copy")
 	flags.BoolVar(&cfg.showVersion, "version", false, "print the version and exit")
 	noOpen := flags.Bool("no-open", false, "same as --window none")
 	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: clonoloom [flags] [repertoire tables (AIRR .tsv, Cell Ranger contig .csv, immunoSEQ exports), Cell Ranger output folders, projects (.clz) or folders of them...]")
+		fmt.Fprintln(flags.Output(), "Usage: clonoloom [flags] [repertoire tables (AIRR .tsv, Cell Ranger contig .csv, immunoSEQ exports), Cell Ranger output folders, projects (.clz) or folders of them...]\n       clonoloom simulate [flags]   (a simulated study with its truth; clonoloom simulate -h)")
 		flags.PrintDefaults()
 	}
 	files, err := parseArgs(flags, args)
 	if *noOpen {
 		cfg.window = "none"
+	}
+	if err == nil {
+		if cfg.cacheLimit, err = cache.ParseSize(*cacheLimit); err != nil {
+			fmt.Fprintf(flags.Output(), "--cache-limit: %v\n", err)
+		}
 	}
 	switch cfg.window {
 	case "app", "browser", "none":
@@ -320,7 +361,9 @@ func newApp(cfg config) (*app, error) {
 		datasets:   newDatasets(),
 		clonotypes: &clonotypeTables{},
 		examples:   newExamples(cfg.examplesDir, cfg.offline),
-		downloads:  &downloads{running: map[string]*download{}, failed: map[string]*download{}},
+	}
+	if cfg.remote {
+		a.remote = newRemoteHub(a.session)
 	}
 	if problems := a.files.add(cfg.files); len(problems) > 0 {
 		for _, problem := range problems {
@@ -334,6 +377,24 @@ func newApp(cfg config) (*app, error) {
 		return nil, fmt.Errorf("the project library (%s): %w", cfg.dataDir, err)
 	}
 	a.store = s
+	manager, err := jobs.Open(filepath.Join(s.dir, "jobs"))
+	if err != nil {
+		return nil, fmt.Errorf("the jobs folder: %w", err)
+	}
+	a.jobs = manager
+	a.handleJobs()
+	if a.artifacts, err = artifacts.Open(filepath.Join(s.dir, "artifacts")); err != nil {
+		return nil, fmt.Errorf("the artifacts folder: %w", err)
+	}
+	// Without a cache (a folder that cannot be made), datasets are read each time they open.
+	if cfg.cacheDir == "" {
+		cfg.cacheDir = defaultCacheDir()
+	}
+	if c, err := cache.Open(cfg.cacheDir, cfg.cacheLimit); err != nil {
+		log.Printf("the table cache (%s): %v; datasets are read each time they open", cfg.cacheDir, err)
+	} else {
+		a.cache = c
+	}
 	if !cfg.dev {
 		return a, nil
 	}
@@ -355,6 +416,9 @@ func (a *app) printBanner(out io.Writer, url string) {
 		fmt.Fprintf(out, "Dev mode: serving web/ from disk in %s (no-store)\n", a.assetDir)
 	}
 	fmt.Fprintf(out, "Project library: %s\n", a.store.dir)
+	if a.cache != nil {
+		fmt.Fprintf(out, "Table cache: %s\n", a.cache.Dir())
+	}
 	if a.examples.Offline {
 		fmt.Fprintln(out, "Offline: no example data are downloaded")
 	}
@@ -388,11 +452,15 @@ type info struct {
 	DataDir  string      `json:"dataDir"`
 	Files    []localFile `json:"files"`
 	Platform string      `json:"platform"`
+	// RemoteControl: the page takes actions from programs on this computer (remote.go), whose
+	// version API is.
+	RemoteControl bool `json:"remoteControl"`
+	API           int  `json:"api"`
 }
 
 func (a *app) registerAPI(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/info", func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, info{Name: "ClonoLoom", Session: a.session, Version: version, Commit: buildCommit(), Mode: "desktop", DataDir: a.store.dir, Files: a.files.list(), Platform: platformName()})
+		writeJSON(w, info{Name: "ClonoLoom", Session: a.session, Version: version, Commit: buildCommit(), Mode: "desktop", DataDir: a.store.dir, Files: a.files.list(), Platform: platformName(), RemoteControl: a.remote != nil, API: apiVersion})
 	})
 	mux.HandleFunc("GET /api/local/{index}", a.files.serve)
 	mux.HandleFunc("POST /api/open", a.openPaths)
@@ -402,6 +470,14 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerQC(mux)
 	a.registerClonotypes(mux)
 	a.registerExamples(mux)
+	a.registerJobs(mux)
+	a.registerCache(mux)
+	a.registerAnalyses(mux)
+	a.registerFigures(mux)
+	a.registerExports(mux)
+	if a.remote != nil {
+		a.remote.register(mux)
+	}
 	mux.HandleFunc("POST /api/library/local/{index}", func(w http.ResponseWriter, r *http.Request) {
 		file, ok := a.files.get(r.PathValue("index"))
 		if !ok {
