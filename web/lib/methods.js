@@ -36,6 +36,7 @@ export const REFERENCES = {
   morisita: 'Morisita M. Measuring of interspecific association and similarity between communities. Mem Fac Sci Kyushu Univ Ser E Biol. 1959;3:65–80',
   horn: 'Horn HS. Measurement of "overlap" in comparative ecological studies. Am Nat. 1966;100:419–424. doi:10.1086/282436',
   horvitzThompson: 'Horvitz DG, Thompson DJ. A generalization of sampling without replacement from a finite universe. J Am Stat Assoc. 1952;47:663–685. doi:10.1080/01621459.1952.10483446',
+  dash: 'Dash P, Fiore-Gartland AJ, Hertz T, et al. Quantifiable predictive features define epitope-specific T cell receptor repertoires. Nature. 2017;547:89–93. doi:10.1038/nature22383',
   oas: 'Olsen TH, Boyles F, Deane CM. Observed Antibody Space: a diverse database of cleaned, annotated, and translated unpaired and paired antibody sequences. Protein Sci. 2022;31:141–146. doi:10.1002/pro.4205',
   ots: 'Raybould MIJ, Greenshields-Watson A, Agarwal P, et al. The Observed T cell receptor Space database enables paired-chain repertoire mining, coherence analysis, and language modeling. Cell Rep. 2024;43:114704. doi:10.1016/j.celrep.2024.114704',
   tcrdist3: 'Mayer-Blackwell K, Schattgen S, Cohen-Lavi L, et al. TCR meta-clonotypes for biomarker discovery with tcrdist3 enabled identification of public, HLA-restricted clusters of SARS-CoV-2 TCRs. eLife. 2021;10:e68605. doi:10.7554/eLife.68605',
@@ -265,6 +266,15 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     const interval = r.intervals ? `, with Wilson's ${Math.round(100 * (r.options?.confidence ?? 0.95))}% score interval for sampling ${cite('wilson')}` : '';
     const derived = r.derived ? ` For the ${plural(r.derived, 'subject')} whose reference shared few clonotypes with the samples before the reference event (at most 25% of its ${unit}), the share derived from the reference was estimated as the share, of a sample's ${unit} in clonotypes found in the reference or in the samples before but not in both, in the reference's${interval}.` : '';
     sentences.push(`Each sample's share of ${unit} in the clonotypes (${under}) its subject's reference sample (${(r.references ?? []).join(', ') || 'reference'}) holds was measured by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}${interval}; it counts the subject's own cells where the reference holds their clonotypes, and not the clonotypes the reference sample missed.${derived}`);
+  }
+
+  // TCRdist between clonotypes.
+  for (const r of results.filter((x) => x.kind === 'tcrdist')) {
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const loops = r.cdr3Only
+      ? 'their CDR3s alone (the IMGT junction less its first three and last two residues, weighted 3, each residue of difference in length costing 12)'
+      : `their CDR3s (the IMGT junction less its first three and last two residues, weighted 3, each residue of difference in length costing 12) and their V genes' CDR1, CDR2 and CDR2.5 (each weighted 1), the loops of each ${r.organism} V allele taken from tcrdist3's database of genes (${r.loops?.file ?? 'combo_xcr_2024-03-05.tsv'}, SHA-256 ${r.loops?.sha256 ?? ''}), made from IMGT's germline genes ${cite('imgtNames')}`;
+    sentences.push(`Each T-cell clonotype (${under}) was compared with every other of the same chains by TCRdist ${cite('dash')}, as tcrdist3 computes it ${cite('tcrdist3')}, by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: two residues differing by min(4, 4 − BLOSUM62), a pair of chains by the sum of its chains', each chain by ${loops}. Of ${plural(r.compared ?? 0, 'clonotype')} compared, ${count(r.withNeighbors ?? 0)} had another within ${r.radius} TCRdist units.`);
   }
 
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

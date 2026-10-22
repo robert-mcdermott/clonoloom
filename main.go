@@ -81,6 +81,10 @@ type app struct {
 	clonotypes *clonotypeTables
 	// examples are the example datasets, downloaded when asked (api_examples.go).
 	examples *examples.Library
+	// references are the reference data the analyses use, downloaded when asked
+	// (api_references.go), and loops the V genes' loops TCRdist uses, read from them once.
+	references *examples.Library
+	loops      loopsCache
 	// jobs runs the long computations in the background (api_jobs.go), kept in the library.
 	jobs *jobs.Manager
 	// artifacts are the results kept, with their lineage (internal/artifacts), in the library.
@@ -361,6 +365,7 @@ func newApp(cfg config) (*app, error) {
 		datasets:   newDatasets(),
 		clonotypes: &clonotypeTables{},
 		examples:   newExamples(cfg.examplesDir, cfg.offline),
+		references: newReferences(filepath.Join(cfg.dataDir, "references"), cfg.offline),
 	}
 	if cfg.remote {
 		a.remote = newRemoteHub(a.session)
@@ -470,9 +475,11 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerQC(mux)
 	a.registerClonotypes(mux)
 	a.registerExamples(mux)
+	a.registerReferences(mux)
 	a.registerJobs(mux)
 	a.registerCache(mux)
 	a.registerAnalyses(mux)
+	a.registerTCRdist(mux)
 	a.registerFigures(mux)
 	a.registerExports(mux)
 	a.registerStudy(mux)

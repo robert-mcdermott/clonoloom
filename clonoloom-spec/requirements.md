@@ -103,7 +103,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| S1 | TCRdist (Dash et al. 2017; tcrdist3's defaults), single or paired chains | planned (wave 4) |
+| S1 | TCRdist (Dash et al. 2017; tcrdist3's defaults), single or paired chains | done (wave 4, slice 2: as tcrdist3 computes it, with the V genes' loops from tcrdist3's database of genes downloaded on request, or the CDR3s alone; each clonotype's neighbors within a radius and its nearest, and a clonotype's nearest loop by loop; every distance between Dash et al.'s 2,339 clones equal to tcrdist3's; 100,000 paired TCRs in 25 s on 10 processors) |
 | S2 | TCRdist neighborhoods with enrichment against a background (V/J/length-matched synthetic, shuffled, or a public paired background) | planned (wave 4) |
 | S3 | GLIPH2-style specificity groups (global and local similarity, motif enrichment, scores) | planned (wave 7) |
 | S4 | Clonotype networks by CDR3 identity, edit distance or TCRdist | planned (wave 4) |

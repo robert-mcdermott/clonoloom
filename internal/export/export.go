@@ -574,3 +574,29 @@ func Attribution(w io.Writer, res track.Attribution) error {
 	}
 	return writeAll(w, rows)
 }
+
+// Neighbor is a clonotype TCRdist compared: its neighbors within the radius, and its nearest other
+// clonotype of the same chains ("" when it has none) with their distance.
+type Neighbor struct {
+	ID        string
+	Chains    []clonotype.Chain
+	Total     float64
+	Samples   int
+	Neighbors int
+	Nearest   string
+	Distance  int
+}
+
+// TCRdist writes each clonotype TCRdist compared (tcrdist.csv): its chains, abundance and samples,
+// its neighbors within the radius, and its nearest clonotype with their distance.
+func TCRdist(w io.Writer, radius int, rows []Neighbor) error {
+	out := [][]string{{"clonotype_id", "chains", "total", "samples", "radius", "neighbors", "nearest_id", "nearest_distance"}}
+	for _, r := range rows {
+		distance := ""
+		if r.Nearest != "" {
+			distance = strconv.Itoa(r.Distance)
+		}
+		out = append(out, []string{r.ID, chainsText(r.Chains), number(r.Total), strconv.Itoa(r.Samples), strconv.Itoa(radius), strconv.Itoa(r.Neighbors), r.Nearest, distance})
+	}
+	return writeAll(w, out)
+}

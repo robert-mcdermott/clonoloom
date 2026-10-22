@@ -136,7 +136,7 @@ jobs:
         run: node validation/fetch.mjs --ci
       - name: Readers against independent readers, and the budgets
         env:
-          CLONOLOOM_REQUIRE_DATA: 10x-pbmc-1k,10x-mouse-splenocytes-1k,10x-pbmc-10k-v2,10x-mouse-splenocytes-5k-gemx,airr-standards-tests,dash-2017-tcrdist3,ots-healthy-pbmc,oas-units,pyclonal-mixcr
+          CLONOLOOM_REQUIRE_DATA: 10x-pbmc-1k,10x-mouse-splenocytes-1k,10x-pbmc-10k-v2,10x-mouse-splenocytes-5k-gemx,airr-standards-tests,dash-2017-tcrdist3,ots-healthy-pbmc,oas-units,pyclonal-mixcr,tcrdist3-loops
         run: go test -v ./validation/
 
   installers:

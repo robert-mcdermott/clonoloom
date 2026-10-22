@@ -11,7 +11,7 @@
 // Needs Go (to build ClonoLoom) and Chrome, Chromium, Edge or Brave (CHROME=path).
 
 import { spawn } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -231,6 +231,16 @@ const scenes = {
     await js(`(() => { const g = document.querySelector('.tracking-guide'); if (g) g.open = false; return true; })()`);
     await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 2`);
     await js(`(() => { const el = document.querySelectorAll('.tracking-view .plot-card')[1]; el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
+  },
+  // Dash et al.'s mouse TCRs compared by TCRdist with their V genes' loops (the reference data put
+  // in the library, as a download leaves them): each clonotype's distance to its nearest, and the
+  // clonotype with the most neighbors with its nearest, loop by loop.
+  async tcrdist() {
+    cpSync(join(DATA, 'tcrdist3-loops'), join(places.library, 'references', 'tcrdist3-loops'), { recursive: true });
+    await act('open_example', { example: 'dash-2017-tcrdist3', download: true });
+    await act('find_neighbors', { select: 1 });
+    await waitFor(`Boolean(document.querySelector('.specificity-view .nearest table'))`);
+    await js(`(() => { const el = document.querySelector('.specificity-view .plot-card'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
   },
 };
 

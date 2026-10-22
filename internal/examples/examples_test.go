@@ -78,6 +78,34 @@ func TestTheRecordedExamples(t *testing.T) {
 	}
 }
 
+// The reference data sources.json records (the V genes' loops TCRdist compares): downloaded like
+// the examples, each file recorded, and never offered as an example.
+func TestTheRecordedReferenceData(t *testing.T) {
+	raw, err := os.ReadFile("../../validation/sources.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	refs, err := ParseReferences(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(refs) == 0 || refs[0].Name != "tcrdist3-loops" || refs[0].Base == "" || len(refs[0].Files) != 1 || refs[0].Files[0].SHA256 == "" || refs[0].LicenseClass != "open" {
+		t.Fatalf("%+v", refs)
+	}
+	offered, _ := Parse(raw)
+	all, _ := ParseAll(raw)
+	for _, list := range [][]Source{offered, all} {
+		for _, s := range list {
+			if s.Name == "tcrdist3-loops" {
+				t.Error("reference data listed with the data sets")
+			}
+		}
+	}
+	if _, err := ParseReferences([]byte(`{"references": {"x": {"files": [{"path": "a"}]}}}`)); err == nil {
+		t.Error("reference data without a base URL")
+	}
+}
+
 // Files under a base URL: downloaded, checked, put in place; listed ready with each opening's
 // paths; recognized by their SHA-256; removed.
 func TestFilesDownloadAndCheck(t *testing.T) {

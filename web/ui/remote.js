@@ -21,7 +21,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const count = (n, noun) => `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`;
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', jobs: 'jobs' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.
@@ -344,6 +344,41 @@ export function remoteActions(app) {
           })),
         },
       };
+    },
+
+    async find_neighbors({ dataset, radius, cdr3Only, organism, top = 10, select }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      const changes = {};
+      if (radius !== undefined) changes.radius = Math.round(Number(radius));
+      if (cdr3Only !== undefined) changes.cdr3Only = Boolean(cdr3Only);
+      if (organism !== undefined) changes.organism = String(organism);
+      if (Object.keys(changes).length) await view.choose(changes);
+      await view.load();
+      await view.settled();
+      let state = view.neighbors();
+      if (state.status === 'no-loops') throw new ActionError('The V genes\' loops are not downloaded: download them in Reference data (tcrdist3-loops), or ask with cdr3Only.');
+      if (state.status === 'unsupported') throw new ActionError('TCRdist compares the amino-acid junctions of T-cell receptors: this dataset or its definition has none.');
+      if (state.status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.neighbors().status) && view.neighbors(), 30 * 60 * 1000, 'the comparison');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const r = done.result;
+      const ranked = [...r.clonotypes].sort((a, b) => b.neighbors - a.neighbors || (a.nearest ? a.distance : Infinity) - (b.nearest ? b.distance : Infinity) || b.total - a.total || (a.id < b.id ? -1 : 1));
+      const row = (c) => ({ id: c.id, chains: c.chains, total: c.total, samples: c.samples, neighbors: c.neighbors, nearest: c.nearest ?? null, distance: c.nearest ? c.distance : null });
+      const data = {
+        result: done.artifact, radius: r.radius, cdr3Only: r.cdr3Only, organism: r.organism ?? null, loops: r.loops ?? null, definition: r.describe,
+        compared: r.compared, withNeighbors: r.withNeighbors, excluded: r.excluded, groups: r.groups.map((g) => ({ loci: g.loci, clonotypes: g.receptors })),
+        top: ranked.slice(0, Math.max(0, Math.round(top))).map(row),
+      };
+      if (select) {
+        const chosen = ranked[Math.round(select) - 1];
+        if (!chosen) throw new ActionError(`select: from 1 to ${ranked.length}.`);
+        await view.select(chosen.id);
+        data.selected = row(chosen);
+      }
+      return { message: `${d.name}: ${count(r.compared, 'clonotype')} compared by TCRdist; ${r.withNeighbors} have a neighbor within ${r.radius} (${done.artifact}).`, data };
     },
 
     async select_clonotype({ dataset, rank, id }) {

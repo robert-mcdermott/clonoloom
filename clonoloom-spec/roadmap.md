@@ -551,8 +551,8 @@ queries make a public cohort more than one example's files.
 | Slice | Status |
 | --- | --- |
 | 1. Readers of wave 4 | Done |
-| 2. TCRdist | Next |
-| 3. Generation probability | To come |
+| 2. TCRdist | Done |
+| 3. Generation probability | Next |
 | 4. Simulated antigen-specific responses | To come |
 | 5. Neighborhoods and backgrounds | To come |
 | 6. Clonotype networks | To come |
@@ -620,6 +620,32 @@ queries make a public cohort more than one example's files.
    - Validation: every distance between Dash et al.'s clones (about 1.85 million pairs of mouse
      TCRs and 86,000 of human), α, β and paired, equal to tcrdist3's; the budget measured on OTS
      units (the neighbors of 100,000 paired TCRs in under 2 minutes on 10 cores).
+   - *Done:* `internal/tcrdist` (the matrix from BLOSUM62, the CDR3's and the loops' distances,
+     tcrdist3's database of genes read and looked up, the receptors of a clonotype table grouped by
+     their chains, neighbors in parallel with a lower bound that skips far pairs, a receptor's
+     nearest and the distance loop by loop); the reference data `tcrdist3-loops` in
+     `sources.json`'s new `references`, downloaded on request through a Reference data dialog
+     (`api_references.go`, the example dialog's code); the analysis `tcrdist` (`api_tcrdist.go`)
+     and `POST /api/tcrdist/nearest`; the Specificity view's Neighbors part; CSV export, the methods
+     paragraph's sentence, `find_neighbors`, the guide's page and capture scene.
+   - *Validation:* every distance between Dash et al.'s 1,924 mouse and 415 human clones (3.87
+     million pairs, rather than the half the plan counted: each pair both ways), α, β and paired,
+     and each loop's alone, equal to tcrdist3 0.3's; every clone's neighbors and nearest at radii 0,
+     24, 48 and 96 equal to those of every distance; the neighbors of 100,000 paired TCRs (the OTS
+     donors' α and β chains paired at random) in 25 s on 10 processors, within 0.1 GB.
+   - *Decided:* the radius 24 TCRdist units a chain by default (48 for a pair: two CDR3
+     substitutions of the most different residues); the organism whose database names the most of
+     the V genes, unless chosen; a V gene called without its allele (a definition by gene keeps
+     none) read as its \*01, a tie as its first gene, and the result lists them; a definition by V
+     family, or without V, compares the CDR3s alone; B-cell clonotypes are left out, counted.
+     A clonotype's nearest are computed when asked, not kept. Reference data are listed in
+     `sources.json` beside the development data and the tools, so that CI fetches them too.
+   - *Found:* tcrdist3 keeps each loop's matrix before its weight, the CDR3's a third of what
+     enters the chain's sum. Paralogous V genes with the same loops (mouse TRAV3-3 and TRAV3D-3)
+     make receptors of different V genes 0 apart, as tcrdist3 does. On a healthy donor's 3,576
+     paired clonotypes, 1% had a neighbor within 48; on Dash et al.'s epitope-sorted mouse TCRs,
+     54%. tcrdist3 needs parasail, whose macOS wheels are for x86_64 only: its reference is made
+     under Rosetta, with numba 0.60.
 3. **Generation probability (R6).** `internal/pgen`: IGoR's model files read; OLGA's dynamic
    programming for amino-acid and nucleotide CDR3s, with V and J masks; receptors drawn from a
    model (for backgrounds); the simulator's model in the same terms. Each clonotype's generation

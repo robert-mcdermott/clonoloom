@@ -7,6 +7,31 @@ grows with each.
 
 ### Added
 
+- **TCRdist (wave 4, slice 2).** The **Specificity** view's first part, Neighbors
+  (`internal/tcrdist`, `api_tcrdist.go`, `web/ui/mode-specificity.js`):
+  - each T-cell clonotype compared with every other of the same chains by TCRdist (Dash et al.
+    2017) as tcrdist3 computes it: the CDR3 (less its first three and last two residues, weighted
+    3, its gap placed where it costs least, 12 a residue of difference in length) and the V gene's
+    CDR1, CDR2 and CDR2.5 (weighted 1, a gap against a residue costing nothing), residues differing
+    by 4 less their BLOSUM62 score; a pair of chains the sum of its chains';
+  - each clonotype's neighbors within a radius (24 TCRdist units a chain by default) and its
+    nearest, found in parallel, far pairs skipped by a lower bound (the V loops' distance and the
+    CDR3s' difference in length); the distribution of the distance to the nearest, the clonotypes
+    with the most neighbors, and a chosen one's ten nearest, loop by loop (`POST
+    /api/tcrdist/nearest`);
+  - the V genes' loops from tcrdist3's database of genes (MIT; made from IMGT's germline genes,
+    human, mouse and rhesus), downloaded on request in a new **Reference data** dialog, checked
+    against its recorded SHA-256 and named by it in every result; the organism guessed from the V
+    genes, a gene without its allele read as its \*01; without them, or for a definition by V
+    family, the CDR3s alone, and the result says so;
+  - kept as a result, exported as CSV, in the methods paragraph; remote control's
+    `find_neighbors` (and `show` now names the Specificity view); the guide's page, Similar
+    receptors (TCRdist), and its capture scene.
+  - Validated: every distance between Dash et al.'s 1,924 mouse and 415 human clones (3.87
+    million pairs), α, β and paired, and each loop's alone, equal to tcrdist3 0.3's
+    (`validation/reference/tcrdist3_distances.py`); every clone's neighbors and nearest at four
+    radii equal to those of every distance; the neighbors of 100,000 paired TCRs found in 25 s on
+    10 processors within 0.1 GB (budget: 2 minutes, 8 GB).
 - **Readers of wave 4 (wave 4, slice 1).** ClonoLoom's own readers of three more formats
   (`internal/reads/mixcr.go`, `oas.go`, `tcrdist3.go`; [docs/FORMATS.md](docs/FORMATS.md)):
   - **MiXCR clone tables** (MiXCR 2, 3 and 4; a file per chain or all chains): each segment's

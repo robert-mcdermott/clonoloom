@@ -13,7 +13,9 @@ Go tests in this folder check whole results against independent references (`go 
 
 | Test | What it checks | Data |
 | --- | --- | --- |
-| `TestReadersAgreeWithIndependentReaders` | Every column ClonoLoom reads from every development file equals what an independent reader reads: the AIRR Community's `airr` library for AIRR files, pandas for Cell Ranger and immunoSEQ files; immunoSEQ gene names mapped as the dataset records them | `reference/readers.json` (made by `reference/read_repertoires.py`), the files of `sources.json` |
+| `TestReadersAgreeWithIndependentReaders` | Every column ClonoLoom reads from every development file equals what an independent reader reads: the AIRR Community's `airr` library for AIRR files, pandas for Cell Ranger, immunoSEQ, MiXCR, OAS and OTS and tcrdist3 files; immunoSEQ gene names mapped as the dataset records them, a data unit's metadata as given | `reference/readers.json` (made by `reference/read_repertoires.py`), the files of `sources.json` |
+| `TestTCRdistEqualsTCRdist3` | Every TCRdist between Dash et al. 2017's 1,924 mouse and 415 human clones, α, β and paired and each loop's alone, equals tcrdist3's; every clone's neighbors and nearest, found with pruning in parallel, equal those of every distance | `reference/tcrdist3.json` (made by `reference/tcrdist3_distances.py`), `dash-2017-tcrdist3`, `tcrdist3-loops` |
+| `TestTCRdistNeighborsWithinBudget` | The neighbors of 100,000 paired TCRs (the OTS donors' chains paired at random) within 2 minutes on 10 cores and 8 GB (not under the race detector) | `ots-healthy-pbmc`, `tcrdist3-loops` |
 | `TestOpenAMillionRearrangementsWithinBudget` | A 1M-row immunoSEQ file read and validated within 5 s, its table within 64 bytes a row plus its junctions (not under the race detector) | generated |
 
 Data sets are required by naming them in `CLONOLOOM_REQUIRE_DATA` (a comma-separated list, or 1

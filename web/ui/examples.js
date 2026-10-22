@@ -2,7 +2,9 @@
 // data listed with their source, size, license and citation; downloaded from their publishers
 // only when asked (data under a provider's terms of use only once those are accepted), every file
 // checked against its recorded SHA-256; opened as datasets that carry their license and citation.
-// Adapted from SituCraft 0.9.0 web/ui/examples.js.
+// The reference data the analyses use (api_references.go: the V genes' loops TCRdist compares)
+// are listed, downloaded and removed alike, but not opened. Adapted from SituCraft 0.9.0
+// web/ui/examples.js.
 
 import { h, icon, clear, formatBytes } from './dom.js';
 import { showDialog, toast } from './overlays.js';
@@ -23,7 +25,17 @@ const LICENSE_BADGE = { open: 'ok', terms: 'warn' };
 // A link to a publisher's page, in the browser.
 const external = (href, text) => h('a', { href, target: '_blank', rel: 'noopener noreferrer' }, text);
 
-export function createExamples(app) {
+// What the list is: the examples (the default), or the reference data (REFERENCES).
+const EXAMPLES = {
+  api: '/api/examples', title: 'Example data', folder: 'examples folder',
+  intro: 'Public immune repertoires to learn ClonoLoom on and to check it against: single-cell TCR and BCR from 10x Genomics, the AIRR Community\'s test files, epitope-specific TCRs (Dash et al. 2017) and a healthy donor\'s paired TCRs from the Observed T cell receptor Space, and bulk immunoSEQ exports, each opened as a dataset that carries its source, license and citation into your methods; and simulated studies, made on this computer, whose truth is known.',
+};
+export const REFERENCES = {
+  api: '/api/references', title: 'Reference data', folder: 'reference data folder',
+  intro: 'Published data the analyses use rather than open: the V genes\' loops TCRdist compares. Each is downloaded once, when you ask, kept on this computer, and named with its checksum in every result that uses it.',
+};
+
+export function createExamples(app, kind = EXAMPLES) {
   let list = null;
   let dir = '';
   let offline = false;
@@ -37,7 +49,7 @@ export function createExamples(app) {
     clearTimeout(timer);
     const before = new Map((list ?? []).map((e) => [e.name, e.state]));
     try {
-      const body = await getJSON('/api/examples');
+      const body = await getJSON(kind.api);
       list = body.examples ?? [];
       dir = body.dir ?? '';
       offline = Boolean(body.offline);
@@ -72,7 +84,7 @@ export function createExamples(app) {
         title: 'Terms of use',
         content: [
           h('p', h('b', example.title), ` is published by ${example.publisher} under its own terms, not an open license: `, h('b', example.license), '.'),
-          h('p', 'Read the terms before you download. ClonoLoom fetches the files for you from the publisher, as your browser would; it keeps them in your examples folder and never passes them on.'),
+          h('p', `Read the terms before you download. ClonoLoom fetches the files for you from the publisher, as your browser would; it keeps them in your ${kind.folder} and never passes them on.`),
           h('p', external(example.licenseUrl, 'Read the terms of use'), ' · ', external(example.page, 'The project\'s page')),
           h('label.check-row', check, h('span', 'I have read the terms and will use these data under them.')),
         ],
@@ -96,7 +108,7 @@ export function createExamples(app) {
       app.log(`Accepted ${example.license} (${example.licenseUrl}) for ${example.title}.`);
     }
     try {
-      await getJSON(`/api/examples/${encodeURIComponent(example.name)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accept }) });
+      await getJSON(`${kind.api}/${encodeURIComponent(example.name)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accept }) });
       app.log(example.generated ? `Making ${example.title} in ${dir}.` : `Downloading ${example.title} (${formatBytes(example.size)}) from ${example.publisher} into ${dir}.`);
     } catch (e) {
       toast(e.message, { kind: 'error' });
@@ -106,7 +118,7 @@ export function createExamples(app) {
 
   async function cancel(example) {
     try {
-      await getJSON(`/api/examples/${encodeURIComponent(example.name)}/cancel`, { method: 'POST' });
+      await getJSON(`${kind.api}/${encodeURIComponent(example.name)}/cancel`, { method: 'POST' });
     } catch (e) {
       toast(e.message, { kind: 'error' });
     }
@@ -115,7 +127,7 @@ export function createExamples(app) {
 
   async function remove(example) {
     try {
-      await getJSON(`/api/examples/${encodeURIComponent(example.name)}`, { method: 'DELETE' });
+      await getJSON(`${kind.api}/${encodeURIComponent(example.name)}`, { method: 'DELETE' });
       app.log(`Removed ${example.title} from ${example.path}.`);
     } catch (e) {
       toast(e.message, { kind: 'error' });
@@ -138,7 +150,7 @@ export function createExamples(app) {
     let actions;
     if (e.state === 'ready') {
       actions = [
-        ...e.opens.map((o, k) => h('button.btn.small.primary', { type: 'button', title: o.summary, onclick: async () => { close(); await open(e, k); } }, icon('folder'), `Open ${o.title}`)),
+        ...(e.opens ?? []).map((o, k) => h('button.btn.small.primary', { type: 'button', title: o.summary, onclick: async () => { close(); await open(e, k); } }, icon('folder'), `Open ${o.title}`)),
         h('span.spacer'),
         h('button.btn.small.ghost', { type: 'button', title: `Delete it from ${e.path}`, onclick: () => remove(e) }, icon('trash'), 'Remove'),
       ];
@@ -156,8 +168,8 @@ export function createExamples(app) {
           ? h('span.badge.accent', { title: e.license }, 'Simulated')
           : h(`span.badge.${LICENSE_BADGE[e.licenseClass] ?? 'accent'}`, { title: e.license }, e.licenseClass === 'open' ? e.license.replace(/\s*\(.*\)$/, '') : 'Terms of use')),
       h('p', e.description),
-      h('ul.example-opens', ...e.opens.map((o) => h('li', h('b', o.title), ': ', o.summary))),
-      e.opens.some((o) => o.steps?.length)
+      e.opens?.length ? h('ul.example-opens', ...e.opens.map((o) => h('li', h('b', o.title), ': ', o.summary))) : null,
+      e.opens?.some((o) => o.steps?.length)
         ? h('details.example-steps', h('summary', 'Guided steps, in the Tracking view'), h('ol', ...e.opens.flatMap((o) => o.steps ?? []).map((step) => h('li', step.title))))
         : null,
       h('dl.kv.small',
@@ -180,17 +192,17 @@ export function createExamples(app) {
         content.append(h('p.muted', 'Reading the list…'));
         return;
       }
-      content.append(h('p', 'Public immune repertoires to learn ClonoLoom on and to check it against: single-cell TCR and BCR from 10x Genomics, the AIRR Community\'s test files, and bulk immunoSEQ exports, each opened as a dataset that carries its source, license and citation into your methods; and simulated studies, made on this computer, whose truth is known.'));
-      if (offline) content.append(h('div.callout', h('p', 'ClonoLoom was started with --offline: it downloads nothing. Examples already downloaded open as usual, and simulated studies are made as usual.')));
+      content.append(h('p', kind.intro));
+      if (offline) content.append(h('div.callout', h('p', kind === EXAMPLES ? 'ClonoLoom was started with --offline: it downloads nothing. Examples already downloaded open as usual, and simulated studies are made as usual.' : 'ClonoLoom was started with --offline: it downloads nothing. Reference data already downloaded are used as usual.')));
       content.append(...list.map((e) => card(e, () => close())));
       content.append(h('p.muted.small', `Downloaded only when you ask, from ${hosts.join(', ')}, into ${dir}. Every file is checked against the size and SHA-256 recorded when ClonoLoom was released; a file the publisher has changed is refused.`));
     };
     listeners.add(render);
-    const shown = showDialog({ title: 'Example data', width: 'wide', content, onClose: () => listeners.delete(render) });
+    const shown = showDialog({ title: kind.title, width: 'wide', content, onClose: () => listeners.delete(render) });
     close = shown.close;
     render();
     refresh();
   }
 
-  return { refresh, dialog, list: () => list };
+  return { refresh, dialog, download, list: () => list, subscribe: (fn) => { listeners.add(fn); return () => listeners.delete(fn); } };
 }

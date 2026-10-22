@@ -78,6 +78,18 @@ test('the readers of MiXCR\'s tables, OAS and OTS units and tcrdist3\'s tables s
   assert.match(ots, /Data units of the Observed T cell receptor Space \[2\] were read/);
 });
 
+test('a TCRdist result says how the clonotypes were compared, with the loops\' database named by its checksum', () => {
+  const result = { kind: 'tcrdist', definition: 'Paired αβ', filter: null, radius: 48, cdr3Only: false, organism: 'mouse', loops: { file: 'combo_xcr_2024-03-05.tsv', sha256: '1d7fcac3' }, compared: 1746, withNeighbors: 936 };
+  const { text, references } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [result], program });
+  assert.match(text, /Each T-cell clonotype \("Paired αβ"\) was compared with every other of the same chains by TCRdist \[\d\], as tcrdist3 computes it \[\d\]/);
+  assert.match(text, /the loops of each mouse V allele taken from tcrdist3's database of genes \(combo_xcr_2024-03-05\.tsv, SHA-256 1d7fcac3\)/);
+  assert.match(text, /Of 1,746 clonotypes compared, 936 had another within 48 TCRdist units\./);
+  assert.ok(references.some((r) => /Dash P/.test(r)) && references.some((r) => /Mayer-Blackwell/.test(r)));
+  const alone = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [{ ...result, cdr3Only: true, loops: null }], program }).text;
+  assert.match(alone, /each chain by their CDR3s alone/);
+  assert.doesNotMatch(alone, /tcrdist3's database/);
+});
+
 test('the same inputs give the same text', () => {
   const inputs = { dataset: pbmc, program };
   assert.deepEqual(methodsParagraph(inputs), methodsParagraph(inputs));

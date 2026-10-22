@@ -216,6 +216,22 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		}
 		notice.What = fmt.Sprintf("Each sample and time point of %s attributed to its subject's reference sample: its share in the reference's clonotypes and, where it can be told, the share derived from the reference, each with its %g%% interval (Wilson's) (attribution.csv). %s", ds.Name, 100*doc.Confidence, doc.Caveat)
 		files["attribution.csv"] = func(f io.Writer) error { return export.Attribution(f, doc.Attribution) }
+	case "tcrdist":
+		var doc tcrdistDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		compared := "the CDR3s alone"
+		if doc.Loops != nil {
+			compared = fmt.Sprintf("the CDR3s and the V genes' loops (%s, %s, SHA-256 %s)", doc.Organism, doc.Loops.File, doc.Loops.SHA256)
+		}
+		notice.What = fmt.Sprintf("Each T-cell clonotype of %s compared by TCRdist with every other of the same chains, comparing %s: its neighbors within %d TCRdist units and its nearest (tcrdist.csv).", ds.Name, compared, doc.Radius)
+		rows := make([]export.Neighbor, len(doc.Clonotype))
+		for i, r := range doc.Clonotype {
+			rows[i] = export.Neighbor{ID: r.ID, Chains: r.Chains, Total: r.Total, Samples: r.Samples, Neighbors: r.Neighbors, Nearest: r.Nearest, Distance: r.Distance}
+		}
+		files["tcrdist.csv"] = func(f io.Writer) error { return export.TCRdist(f, doc.Radius, rows) }
 	default:
 		writeError(w, http.StatusBadRequest, "This result has nothing to export as a table.")
 		return

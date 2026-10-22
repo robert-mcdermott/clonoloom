@@ -57,8 +57,8 @@ var remoteActions = []remoteAction{
 		"opening":  textArg("What of it to open, such as \"T cells\" (its first if not given)."),
 		"download": flagArg("Download it first if it is not downloaded (openly licensed data only)."),
 	}, "example")},
-	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, tracking, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
-		"view":    textArg("start, data, qc, clonotypes, repertoire, tracking or jobs."),
+	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, tracking, specificity, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
+		"view":    textArg("start, data, qc, clonotypes, repertoire, tracking, specificity or jobs."),
 		"dataset": datasetArg,
 	}, "view")},
 	{Name: "set_definition", Title: "Define clonotypes", Description: "Chooses a dataset's clonotype definition: a preset by name, or one stated in full.", InputSchema: schema(map[string]any{
@@ -102,6 +102,14 @@ var remoteActions = []remoteAction{
 	})},
 	{Name: "attribute_samples", Title: "Attribute samples to the reference", Description: "Shows the Tracking view's Attribution part and measures each sample of each subject with a reference sample (an infusion product, a donor) under the dataset's clonotype definition and filter (a job; the result kept with the project): its share in the clonotypes the reference sample holds, and, where the subject has samples before the reference event and the reference shares few clonotypes with them (a donor), the share derived from the reference, each with its 95% interval (Wilson's). Answers each subject's time points, the share before the event and the reference's overlap with it.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
+	})},
+	{Name: "find_neighbors", Title: "Find similar receptors by TCRdist", Description: "Shows the Specificity view's Neighbors part and compares each T-cell clonotype of the dataset with every other of the same chains by TCRdist, as tcrdist3 computes it, under the dataset's clonotype definition and filter (a job; the result kept with the project): with the V genes' CDR1, CDR2 and CDR2.5 (the reference data tcrdist3-loops, which must be downloaded) or the CDR3s alone. The options given are kept with the dataset. Answers how many clonotypes were compared and have a neighbor within the radius, and the clonotypes with the most neighbors; with select, the chosen clonotype's nearest, loop by loop.", InputSchema: schema(map[string]any{
+		"dataset":  datasetArg,
+		"radius":   numberArg("The radius within which two clonotypes are neighbors, in TCRdist units (default: 24 a chain)."),
+		"cdr3Only": flagArg("Compare the CDR3s alone, without the V genes' loops."),
+		"organism": textArg("Whose loops: human, mouse or rhesus (default: guessed from the V genes)."),
+		"top":      numberArg("How many of the clonotypes with the most neighbors to answer (default 10)."),
+		"select":   numberArg("A clonotype to show the nearest of, by its rank among those with the most neighbors (from 1)."),
 	})},
 	{Name: "select_clonotype", Title: "Choose a clonotype", Description: "Shows the Clonotypes view and chooses a clonotype, which the inspector describes: by its rank in the table (1 for the first) or its ID.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,

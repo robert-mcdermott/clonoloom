@@ -615,6 +615,28 @@
       ]
     }
   },
+  "references": {
+    "tcrdist3-loops": {
+      "title": "The V genes' loops for TCRdist (tcrdist3's database of genes)",
+      "description": "Each T-cell receptor V allele's CDR1, CDR2 and CDR2.5 (the loop between CDR2 and CDR3 that faces the peptide–MHC), aligned, for human, mouse and rhesus macaque, as tcrdist3 computes TCRdist with them: its database of genes, made from IMGT's germline genes. Without it, TCRdist compares the CDR3s alone.",
+      "source": "tcrdist3, tcrdist/db/combo_xcr_2024-03-05.tsv (https://github.com/kmayerb/tcrdist3)",
+      "page": "https://github.com/kmayerb/tcrdist3",
+      "publisher": "tcrdist3 (Mayer-Blackwell, Fiore-Gartland, Bradley and colleagues), from IMGT",
+      "license": "MIT (tcrdist3); the germline sequences are IMGT's, CC BY 4.0",
+      "licenseUrl": "https://github.com/kmayerb/tcrdist3/blob/master/LICENSE",
+      "licenseClass": "open",
+      "citation": "Mayer-Blackwell K, et al. TCR meta-clonotypes for biomarker discovery with tcrdist3 enabled identification of public, HLA-restricted clusters of SARS-CoV-2 TCRs. eLife 2021;10:e68605. doi:10.7554/eLife.68605. Germline genes: Lefranc MP, et al. IMGT, the international ImMunoGeneTics information system. Nucleic Acids Res 2009;37:D1006–D1012. doi:10.1093/nar/gkn838",
+      "ci": true,
+      "base": "https://raw.githubusercontent.com/kmayerb/tcrdist3/0e6efa39092e2c64c9c0b52a72c2f5961c161ebb/",
+      "files": [
+        {
+          "path": "tcrdist/db/combo_xcr_2024-03-05.tsv",
+          "size": 1234156,
+          "sha256": "1d7fcac37ad6d955b3a3f693526e36623186464aef2c528cf8e0322dc89706cd"
+        }
+      ]
+    }
+  },
   "tools": {
     "axe-core": {
       "title": "axe-core 4.13.0 (Deque Systems)",

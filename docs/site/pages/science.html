@@ -15,6 +15,7 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
             <tr><td>The AIRR Community's test files (v2.0.0)</td><td>CC BY 4.0</td><td>The AIRR reader, every analysis, CI</td></tr>
             <tr><td>Dash et al. 2017's epitope-specific TCRs (mouse and human), as tcrdist3 distributes them</td><td>MIT (tcrdist3)</td><td>The tcrdist3 reader, an example, CI</td></tr>
             <tr><td>OTS and OAS data units: three donors' paired TCRs, an antibody repertoire's paired and unpaired chains</td><td>CC BY 4.0 (Oxford Protein Informatics Group)</td><td>The units' reader, an example, CI</td></tr>
+            <tr><td>tcrdist3's database of genes (the V genes' CDR1, CDR2 and CDR2.5), downloaded on request</td><td>MIT (tcrdist3); IMGT's germline genes, CC BY 4.0</td><td>TCRdist's loops, CI</td></tr>
             <tr><td>MiXCR 3 clone tables (PyClonal's sample inputs) and a MiXCR 4 single-cell table (MiLaboratories' benchmark)</td><td>MIT; no license stated</td><td>The MiXCR reader: CI, and the maintainer's computer only for MiXCR 4's</td></tr>
             <tr><td>Emerson et al. 2017, three subjects, in immunoSEQ's format and from the AIRR Data Commons</td><td>immuneACCESS Terms of Use: research only, no redistribution</td><td>Validation on the maintainer's computer only</td></tr>
             <tr><td>Simulated TRB studies</td><td>Made by <code>clonoloom simulate</code>, seeded</td><td>Accuracy against the truth; interval coverage; scale</td></tr>
@@ -111,6 +112,18 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
       </div>
       <p>The share in the reference's clonotypes ran 0.17 (CAR-T) to 0.28 (transplant) below the share in all the reference population's clonotypes, which the reference sample misses some of; its interval, for sampling alone, held the truth it estimates in about half the samples. Where the reference was made from the subject's own blood (an infusion product), about 60% of the blood was in its clonotypes before the infusion, and three quarters of its cells were in clonotypes found before it: no measure by clonotype tells the infused cells from the patient's own, and the share derived from it is not given.</p>
 
+      <h2 id="specificity">Similar receptors</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Measure</th><th>Source</th><th>Checked against</th><th>Agreement</th></tr></thead>
+          <tbody>
+            <tr><td>TCRdist between two T-cell receptors, α, β and paired, with the V genes' CDR1, CDR2 and CDR2.5, and each loop's alone</td><td>Dash et al. 2017, as tcrdist3 computes it (Mayer-Blackwell et al. 2021)</td><td>tcrdist3 0.3 on Dash et al.'s 1,924 mouse and 415 human clones, every pair (3.87 million)</td><td class="agree">every distance equal</td></tr>
+            <tr><td>Each clonotype's neighbors within a radius and its nearest, found in parallel with a lower bound that skips far pairs</td><td></td><td>Every distance, on the same clones, at radii 0, 24, 48 and 96</td><td class="agree">every neighborhood equal</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Where tcrdist3 and Dash et al.'s description differ, ClonoLoom does as tcrdist3 does: the CDR3's gap placed where it costs least, 12 for each residue of difference in length, and the gap character of the V genes' aligned loops costing nothing against a residue. The loops are tcrdist3's database of genes (made from IMGT's germline genes), downloaded on request and named by its checksum in every result. The neighbors of 100,000 paired TCRs (real α and β chains of three OTS donors, paired at random) are found in 25 seconds on 10 processors, within 0.1 GB.</p>
+
       <h2 id="simulation">Simulated studies</h2>
       <p><code>clonoloom simulate</code> makes TRB rearrangements from GRCh38's gene segments at Ensembl's annotation (Dyer et al. 2025), with V and J usage from 10x Genomics' 10k PBMC data, deletions, palindromic and non-templated insertions (Murugan et al. 2012), and productive junctions selected on their length (Elhanati et al. 2014); each subject's repertoire a population of power-law clone sizes, sampled into templates and reads. Over 150,000 rearrangements, the productive junctions' mean length is within 0.1 amino acids of the 10x data's, its standard deviation within 0.15, and V usage within 0.03 of the model's in total variation. The same seed gives the same bytes on every computer.</p>
 
@@ -131,6 +144,7 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
         <li>Chao A, Wang YT, Jost L. Entropy and the species accumulation curve: a novel entropy estimator via discovery rates of new species. <em>Methods Ecol Evol</em> 2013;4:1091–1100.</li>
         <li>DeWitt WS, Emerson RO, Lindau P, et al. Dynamics of the cytotoxic T cell response to a model of acute viral infection. <em>J Virol</em> 2015;89:4517–4526.</li>
         <li>Dice LR. Measures of the amount of ecologic association between species. <em>Ecology</em> 1945;26:297–302.</li>
+        <li>Dash P, Fiore-Gartland AJ, Hertz T, et al. Quantifiable predictive features define epitope-specific T cell receptor repertoires. <em>Nature</em> 2017;547:89–93.</li>
         <li>Dyer SC, Austine-Orimoloye O, Azov AG, et al. Ensembl 2025. <em>Nucleic Acids Res</em> 2025;53:D948–D957.</li>
         <li>Elhanati Y, Murugan A, Callan CG Jr, Mora T, Walczak AM. Quantifying selection in immune receptor repertoires. <em>Proc Natl Acad Sci USA</em> 2014;111:9875–9880.</li>
         <li>Emerson RO, DeWitt WS, Vignali M, et al. Immunosequencing identifies signatures of cytomegalovirus exposure history and HLA-mediated effects on the T cell repertoire. <em>Nat Genet</em> 2017;49:659–665.</li>

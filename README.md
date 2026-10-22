@@ -52,6 +52,9 @@ releases.
   controlled, and classed across several as emerging, transient, contracting or persistent. Each
   sample measured against its reference sample: an infusion product's clonotypes, or a donor's
   share of the blood.
+- **Find receptors alike.** Every T-cell clonotype compared with every other of its chains by
+  TCRdist, as tcrdist3 computes it, with the V genes' loops downloaded on request: each one's
+  neighbors within a radius and its nearest, loop by loop.
 - **Write results others can check.** Figures (SVG, PNG, PDF) whose captions state the clonotype
   definition, unit and samples; AIRR and CSV exports with a notice of each data set's license and
   citation; a methods paragraph with numbered references, written from the record. Every result is
@@ -60,7 +63,7 @@ releases.
   programs on this computer can drive the window through remote control.
 
 Every method is checked against an independent implementation or a known truth (the `airr`
-library, pandas, scirpy, iNEXT, immunarch, vegan and simulated studies among them): see
+library, pandas, scirpy, iNEXT, immunarch, vegan, tcrdist3 and simulated studies among them): see
 [methods and validation](https://robert-mcdermott.github.io/clonoloom/science.html).
 
 ## A look around

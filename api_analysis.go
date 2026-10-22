@@ -42,10 +42,13 @@ type analysis struct {
 	subjects bool
 	over     string
 	work     func(a *app, k analysis, spec analysisSpec) jobs.Func
+	// prepare completes a normalized spec with what the app knows (the reference data it uses), or
+	// refuses it; nil when nothing is needed.
+	prepare func(a *app, spec *analysisSpec) error
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis}
 
 // analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
 // (condition) and subject (by sample name), for the analyses that use them; Study is the samples'
@@ -63,6 +66,7 @@ type analysisSpec struct {
 	Track      *track.Choice        `json:"track,omitempty"`
 	Compare    *track.Comparison    `json:"compare,omitempty"`
 	Class      *track.Classing      `json:"class,omitempty"`
+	TCRdist    *tcrdistOptions      `json:"tcrdist,omitempty"`
 	Method     int                  `json:"method"`
 }
 
@@ -128,8 +132,9 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Track      *track.Choice     `json:"track,omitempty"`
 		Compare    *track.Comparison `json:"compare,omitempty"`
 		Class      *track.Classing   `json:"class,omitempty"`
+		TCRdist    *tcrdistOptions   `json:"tcrdist,omitempty"`
 		Method     int               `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -179,13 +184,27 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 			}
 		case "attribute":
 			body.Track, body.Compare, body.Class = nil, nil, nil
+		case "tcrdist":
+			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
+			if body.TCRdist == nil {
+				body.TCRdist = &tcrdistOptions{}
+			}
 		default:
 			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
+		}
+		if k.over != "tcrdist" {
+			body.TCRdist = nil
 		}
 		spec, err := body.analysisSpec.normalized(k.version)
 		if err != nil {
 			writeError(w, http.StatusBadRequest, err.Error())
 			return
+		}
+		if k.prepare != nil {
+			if err := k.prepare(a, &spec); err != nil {
+				writeErrorCode(w, http.StatusBadRequest, prepareCode(err), err.Error())
+				return
+			}
 		}
 		id := spec.artifactID(k.prefix)
 		if m, err := a.artifacts.Get(id); err == nil && m.State == artifacts.Complete {
