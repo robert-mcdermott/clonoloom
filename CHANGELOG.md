@@ -1,12 +1,41 @@
 # Changelog
 
-## 0.3.0 (unreleased)
+## 0.3.0 (2026-10-22)
 
-Wave 3 of the [roadmap](clonoloom-spec/roadmap.md): tracking. Built slice by slice; this section
-grows with each.
+Wave 3 of the [roadmap](clonoloom-spec/roadmap.md): tracking. Each subject's samples placed in time
+from their annotation; its clonotypes followed through the time points with their intervals,
+tested between two time points by the beta-binomial test (its variance between blood samples fitted
+on replicate samples) with false discoveries controlled, classed across several, and each sample
+measured against an infusion product or a donor; simulated studies over time to check it all
+against; results the same, bit for bit, on every processor; and the website.
 
 ### Added
 
+- **Classes, attribution and guided steps (wave 3, slice 8).** The **Tracking** view's last two
+  parts (`internal/track/classes.go`, `attribution.go`, `api_classes.go`,
+  `web/ui/tracking-classes.js`, `tracking-attribution.js`):
+  - **Classes:** in each subject, each clonotype tested between a base time point and every later
+    one by the Tests part's test, the false discovery rate controlled within each comparison, and
+    classed by its calls: emerging (called increased at the last time point), transient (called
+    changed between, not at the last), contracting (called decreased at the last) or persistent
+    (never called, found at every time point); each subject's clonotypes by class, a class's
+    clonotypes as threads and in a table of their calls, and **Follow this class** (the
+    Clonotypes part follows a class: `by: class`);
+  - **Attribution:** each sample's share in the clonotypes its reference sample holds, and, where the
+    subject has samples before the reference event and the reference shares few clonotypes with
+    them (a donor), the share derived from the reference, from the clonotypes found on one side
+    only, each with Wilson's interval; the share before the event, and how much of the reference
+    the samples before it hold. An infusion product made from the patient's own blood cannot be told
+    apart from it by clonotype, and the view says so;
+  - each kept as a result, exported as CSV, in the methods paragraph; remote control's
+    `class_clonotypes` and `attribute_samples`; the guide's pages, Classes across time points and
+    Attribution to a reference;
+  - **guided steps** for the simulated CAR-T and transplant examples: listed on their cards, and
+    shown in the Tracking view, each saying what to look at and done by **Do it** with the actions
+    scripts use (`app.actions`, `web/ui/remote.js`);
+  - the 0.3.0 project fixture (`validation/projects/0.3.0`): a small simulated CAR-T series and its
+    diversity, tracking, tests, classes and attribution, compared byte for byte by every later
+    release; every picture re-captured.
 - **The website (wave 3, slice 1).** <https://robert-mcdermott.github.io/clonoloom/>, built from
   `docs/site/` and published on GitHub Pages from a `gh-pages` branch holding only the built site
   ([docs/site/README.md](docs/site/README.md)); its generator, audit and styles adapted from
@@ -159,9 +188,20 @@ grows with each.
   pins were made on arm64). `internal/dmath` gives SituCraft's fingerprint of its log, exp and pow
   over 30,000 arguments bit for bit; its functions are within 3 ulps of Go's and `expm1` within an
   ulp of 256-bit values; its digest is the same on both processors.
+- **Classes** (`validation/classes_test.go`): on the simulated CAR-T study with its variance between
+  blood samples, against the week before the infusion, all 20 clonotypes classed by their calls
+  classed the way the truth's frequencies moved (the product's expanding clones, transient).
+- **Attribution** (`validation/classes_test.go`): on the simulated CAR-T and transplant studies, the
+  share in the reference sample's clonotypes within 0.023 of the share the truth expects in them at
+  every sample (its sampling interval held that truth in about half the samples, the studies varying
+  beyond sampling), and 0.17 to 0.28 below the share in all the reference population's clonotypes;
+  the share derived from the donor within 0.065 of the donor's true share at every sample, and
+  withheld for the CAR-T products (74–79% of their cells in clonotypes found before the infusion).
+- **The guided steps** are actions remote control knows, with arguments it takes (Go test).
 - Every reference comparison (iNEXT, immunarch, vegan, scirpy, R, the simulator's truth) and the
   0.2.0 project still agree; the 0.2.0 project's documents are compared by value (their largest
-  difference 0.1% of the tolerance), and later projects' by checksum.
+  difference 0.1% of the tolerance), and later projects' by checksum: the 0.3.0 project's five
+  results are made again byte for byte.
 
 ## 0.2.0 (2026-10-21)
 

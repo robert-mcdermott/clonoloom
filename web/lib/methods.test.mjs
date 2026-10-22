@@ -154,6 +154,19 @@ test('a test result kept says what was tested between which time points, and how
   assert.match(bb.text, /a two-sided test at 0\.05 called 8\.2% of the clonotypes changed by sampling alone, and 2\.7% with the fitted variance/);
 });
 
+test('classes and attribution kept say how they were made', () => {
+  const results = [
+    { kind: 'classes', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, classing: { base: 'day -7', test: 'auto', correction: 'bh', alpha: 0.01, minTotal: 5 }, used: 'betabinomial', fit: { on: 'replicates', pairs: 3, clonotypes: 2142, a: 3.631, b: 0.2349 }, subjects: 3, counts: { emerging: 0, transient: 20, contracting: 0, persistent: 1800 } },
+    { kind: 'attribution', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { confidence: 0.95 }, subjects: 3, derived: 3, references: ['donor blood'], intervals: true },
+  ];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /tested between day -7 and every later time point of each subject by ClonoLoom \[\d\], by the beta-binomial test \[\d\], its variance fitted on the replicate samples \(a = 3\.631, b = 0\.2349\), two-sided/);
+  assert.match(text, /In 3 subjects, 0 clonotypes were emerging, 20 transient, 0 contracting and 1,800 persistent\./);
+  assert.match(text, /Each sample's share of templates in the clonotypes \("Amino-acid junction, V and J genes"\) its subject's reference sample \(donor blood\) holds was measured by ClonoLoom \[\d\], with Wilson's 95% score interval for sampling \[\d\]/);
+  assert.match(text, /For the 3 subjects whose reference shared few clonotypes with the samples before the reference event/);
+  assert.equal(references.filter((r) => r.includes('Wilson EB.')).length, 1);
+});
+
 test('a table read through a mapping says which of its columns gave what (the 0.2.0 project)', () => {
   const project = JSON.parse(readFileSync(new URL('../../validation/projects/0.2.0/project.json', import.meta.url), 'utf8'));
   const dataset = project.datasets.find((d) => d.sources.some((s) => s.mapping));

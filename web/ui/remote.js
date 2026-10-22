@@ -55,7 +55,9 @@ async function getJSON(url, options = {}) {
   return body;
 }
 
-export function installRemote(app) {
+// The actions, as the window performs them: for scripts through remote control (installRemote),
+// and for the examples' guided steps (app.actions).
+export function remoteActions(app) {
   const { store } = app;
 
   // A dataset of the project by id or name; the one in focus, else the first.
@@ -194,10 +196,14 @@ export function installRemote(app) {
       return { message: `${d.name}: ${count(design.subjects.length, 'subject')}, ${count(design.findings.length, 'finding')}.`, data: design };
     },
 
-    async track_clonotypes({ dataset, by, n, list, subject }) {
+    async track_clonotypes({ dataset, by, n, list, subject, class: cls }) {
       const d = datasetOf(dataset);
       const choice = {};
-      if (by !== undefined && by !== '') choice.by = choose(by, ['reference', 'largest', 'list', 'test'], 'way of choosing');
+      if (by !== undefined && by !== '') choice.by = choose(by, ['reference', 'largest', 'list', 'test', 'class'], 'way of choosing');
+      if (cls !== undefined && cls !== '') {
+        choice.class = choose(cls, ['emerging', 'transient', 'contracting', 'persistent'], 'class');
+        choice.by ??= 'class';
+      }
       if (n !== undefined && n !== null) {
         const k = Number(n);
         if (!Number.isInteger(k) || k < 1 || k > 100) throw new ActionError('n is a whole number from 1 to 100.');
@@ -278,6 +284,63 @@ export function installRemote(app) {
             subject: s.subject, from: { label: s.from.label, samples: s.from.samples, total: s.totalA }, to: { label: s.to.label, samples: s.to.samples, total: s.totalB },
             tested: s.tested, leftOut: s.leftOut, increased: s.increased, decreased: s.decreased, pi0: s.pi0,
             calls: s.clonotypes.filter((c) => c.call).slice(0, most).map((c) => ({ id: c.id, chains: c.chains, call: c.call, a: c.a, b: c.b, freqA: c.freqA, freqB: c.freqB, log2Fold: c.log2Fold, p: c.p, q: c.q })),
+          })),
+        },
+      };
+    },
+
+    async class_clonotypes({ dataset, base, subject, class: cls, count: most }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('tracking');
+      const view = await waitFor(() => app.trackingView, 5000, 'the Tracking view');
+      view.show('classes');
+      await view.choose(d.id);
+      if (view.state().status !== 'ready') throw new ActionError(view.state().error ?? `The subjects of ${d.name} could not be read.`);
+      if (base !== undefined && base !== '') {
+        const keys = timePoints(view.state().design).map((p) => p.key).filter((k) => k !== 'reference');
+        const next = useComparison(store.project, d.id, { base: choose(base, keys, 'time point') });
+        if (next !== store.project) store.commit(next, `Choose the base time point in ${d.name}`);
+        await view.choose(d.id);
+      }
+      if (view.classed().status === 'absent') await view.run('classes');
+      const done = await waitFor(() => ['ready', 'failed', 'unavailable'].includes(view.classed().status) && view.classed(), 30 * 60 * 1000, 'the classes');
+      if (done.status !== 'ready') throw new ActionError(done.error ?? `${d.name}'s subjects have no two time points to class clonotypes between.`);
+      const r = done.result;
+      const shown = cls !== undefined && cls !== '' ? choose(cls, ['emerging', 'transient', 'contracting', 'persistent'], 'class') : 'emerging';
+      view.showClassed(subject !== undefined && subject !== '' ? choose(subject, r.subjects.map((s) => s.subject), 'subject') : null, shown);
+      const k = Math.max(1, Math.min(Number(most) || 10, 200));
+      return {
+        message: `${d.name}: the clonotypes of ${count(r.subjects.length, 'subject')} classed against ${r.classing.base} (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, classing: r.classing, test: r.test, caveat: r.caveat, without: r.without ?? [],
+          subjects: r.subjects.map((s) => ({
+            subject: s.subject, base: s.base.label, later: s.later.map((p) => p.label), counts: s.counts,
+            [shown]: s.clonotypes.filter((c) => c.class === shown).slice(0, k).map((c) => ({ id: c.id, chains: c.chains, frequencies: c.frequencies, calls: c.calls, q: c.q })),
+          })),
+        },
+      };
+    },
+
+    async attribute_samples({ dataset }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('tracking');
+      const view = await waitFor(() => app.trackingView, 5000, 'the Tracking view');
+      view.show('attribution');
+      await view.choose(d.id);
+      if (view.attributed().status === 'absent') await view.run('attribution');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.attributed().status) && view.attributed(), 30 * 60 * 1000, 'the attribution');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const r = done.result;
+      const value = (v) => (v ? { count: v.count, total: v.total, share: v.frequency, lower: v.lower, upper: v.upper } : null);
+      return {
+        message: `${d.name}: the samples of ${count(r.subjects.length, 'subject')} attributed to their reference samples (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, caveat: r.caveat, without: r.without ?? [],
+          subjects: r.subjects.map((s) => ({
+            subject: s.subject, reference: s.reference, label: s.label, clonotypes: s.clonotypes, before: value(s.before), overlap: s.overlap ?? null, derived: s.derived, why: s.why ?? null,
+            points: s.points.map((p) => ({ label: p.point.label, days: p.days ?? null, inReference: value(p.value), derived: value(p.from) })),
           })),
         },
       };
@@ -441,6 +504,11 @@ export function installRemote(app) {
       return { message: 'Closed.' };
     },
   };
+  return actions;
+}
+
+export function installRemote(app) {
+  const actions = app.actions ?? remoteActions(app);
 
   async function perform(event) {
     let outcome;

@@ -10,6 +10,13 @@ and make its results again. `go test -run TestEveryReleasesProjectStillOpens .` 
 
 `web/lib/project.test.mjs` checks that each project still parses and saves back to the same bytes.
 
+## The fixtures
+
+| Version | Data | Results |
+| --- | --- | --- |
+| 0.2.0 | A small simulated study (two samples) and a VDJtools table read through a mapping | Diversity (two), rarefaction, gene usage, overlap |
+| 0.3.0 | A small simulated CAR-T series: two patients, two samples a week before the infusion and four after it, with their infusion products (14 samples, gzipped, 330 KB) | Diversity, tracking (each product's 10 largest), tests (the week before against two weeks after, the beta-binomial test fitted on the replicates), classes (against the week before), attribution |
+
 ## What a fixture holds
 
 | Path | What it is |

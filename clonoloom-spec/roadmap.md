@@ -15,7 +15,8 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); wave 2
-is merged and released as 0.2.0; wave 3 is planned, slices 1–7 done, slice 8 next.
+is merged and released as 0.2.0; wave 3 is done (0.3.0, to be merged and tagged); wave 4 is next,
+to be planned to the slice at its start.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -300,7 +301,7 @@ are written under that rule from the start.
 | 5. Tracking | Done |
 | 6. Two-sample tests | Done |
 | 7. Beta-binomial expansion | Done |
-| 8. Classes and attribution; release 0.3.0 | Next |
+| 8. Classes and attribution; release 0.3.0 | Done |
 
 ### Decisions for wave 3
 
@@ -495,6 +496,39 @@ are written under that rule from the start.
    repertoire found in a reference sample (an infusion product, a donor), with its interval and
    the definition stated; the CAR-T and transplant examples' guided steps; release 0.3.0 with its
    project fixture.
+   - *Done:* `track.Classify`: in each subject, each clonotype tested between the base time point
+     and every later one (each key once, reference samples aside) by the comparison's test, its
+     variance fitted once for the study, the false discovery rate controlled within each
+     comparison, and classed: emerging, transient, contracting or persistent (the others counted,
+     not classed); `track.Attribute`: each sample's and time point's share in the reference
+     sample's clonotypes, and, where the subject has samples before the event and at most a quarter
+     of the reference's cells are in clonotypes found before it, the share derived from the
+     reference, from the clonotypes found on one side only, each with Wilson's interval; the share
+     before the event, and that overlap. `api_classes.go`, two analyses; the Tracking view's Classes
+     and Attribution parts; the Clonotypes part follows a class; exports, the methods paragraph,
+     `class_clonotypes` and `attribute_samples`. The simulated CAR-T and transplant examples' guided
+     steps, listed on their cards and done in the Tracking view by the remote control actions
+     (`app.actions`). Release 0.3.0: its project fixture (a small simulated CAR-T series, 448 KB,
+     with its diversity, tracking, tests, classes and attribution), every picture re-captured, the
+     website's pages.
+   - *Validation:* on the CAR-T example with its variance, all 20 clonotypes classed by their calls
+     classed the way the truth moved; attribution within 0.023 of the share the truth expects in the
+     reference sample's clonotypes, at every sample of the CAR-T and transplant examples; the share
+     derived from the donor within 0.065 of the truth (60% to 97%), withheld for the CAR-T products;
+     the 0.3.0 fixture's five results made again byte for byte.
+   - *Decided:* attribution counts the clonotypes the reference *sample* holds, the only ones
+     observed; the truth's attribution, over the whole reference population, is not what can be
+     measured, and the share derived from the reference is offered where it means something (a
+     donor) and withheld, with the reason, where it does not (a product made from the patient's
+     blood). Its interval is Wilson's, the limit of a bootstrap of the sample's cells, so no random
+     draws. A class is decided by the last time point first; several comparisons make false calls
+     likelier, and the view says so. Guided steps are the remote control actions, so a step and a
+     script do the same.
+   - *Found:* the share in the reference sample's clonotypes runs 0.17 to 0.28 below the share in
+     the whole reference's, its sample missing some of them; and for a product made from the
+     patient's blood, 74–79% of its cells are in clonotypes found before the infusion. On the
+     CAR-T example, the beta-binomial test finds the product's expansions transient (up at day 14,
+     back by day 90); none emerging or contracting at day 90.
 
 ## Later waves (outlined)
 

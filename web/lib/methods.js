@@ -229,5 +229,25 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     sentences.push(`Each clonotype (${under}) was tested between ${c.from} and ${c.to} in each subject by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}, the samples at one time pooled: ${test}, ${side}. Clonotypes with fewer than ${c.minTotal ?? 5} ${unit} in the two together were not tested ${cite('rytlewski')}. The false discovery rate was controlled within each subject by ${correction}, and clonotypes with an adjusted p-value of at most ${c.alpha ?? 0.01} called increased or decreased: ${plural(r.increased ?? 0, 'clonotype')} increased and ${plural(r.decreased ?? 0, 'clonotype')} decreased of ${plural(r.tested ?? 0, 'clonotype')} tested in ${plural(r.subjects ?? 0, 'subject')}.${caution}`);
   }
 
+  // Clonotypes classed across time points, likewise.
+  for (const r of results.filter((x) => x.kind === 'classes')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const c = r.classing ?? {};
+    const test = r.used === 'betabinomial' ? `the beta-binomial test ${cite('rytlewski')}, its variance fitted on ${r.fit?.on === 'stable' ? 'two time points taken to be stable' : 'the replicate samples'} (a = ${Number(r.fit?.a).toPrecision(4)}, b = ${Number(r.fit?.b).toPrecision(4)})` : r.used === 'fisher' ? `Fisher's exact test ${cite('dewitt')}` : `the binomial test ${cite('rytlewski')}`;
+    const correction = c.correction === 'storey' ? `Storey's q-values ${cite('storey')}` : `Benjamini and Hochberg's procedure ${cite('bh')}`;
+    const n = r.counts ?? {};
+    sentences.push(`Each clonotype (${under}) was tested between ${c.base} and every later time point of each subject by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}, by ${test}, two-sided, over its ${unit}, the false discovery rate controlled within each comparison by ${correction} at ${c.alpha ?? 0.01}, and classed by its calls: emerging where called increased at the last time point, contracting where called decreased at it, transient where called changed at a time point between but not at the last, and persistent where never called and found at every time point. In ${plural(r.subjects ?? 0, 'subject')}, ${plural(n.emerging ?? 0, 'clonotype')} were emerging, ${count(n.transient ?? 0)} transient, ${count(n.contracting ?? 0)} contracting and ${count(n.persistent ?? 0)} persistent.`);
+  }
+
+  // Attribution, likewise.
+  for (const r of results.filter((x) => x.kind === 'attribution')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const interval = r.intervals ? `, with Wilson's ${Math.round(100 * (r.options?.confidence ?? 0.95))}% score interval for sampling ${cite('wilson')}` : '';
+    const derived = r.derived ? ` For the ${plural(r.derived, 'subject')} whose reference shared few clonotypes with the samples before the reference event (at most 25% of its ${unit}), the share derived from the reference was estimated as the share, of a sample's ${unit} in clonotypes found in the reference or in the samples before but not in both, in the reference's${interval}.` : '';
+    sentences.push(`Each sample's share of ${unit} in the clonotypes (${under}) its subject's reference sample (${(r.references ?? []).join(', ') || 'reference'}) holds was measured by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}${interval}; it counts the subject's own cells where the reference holds their clonotypes, and not the clonotypes the reference sample missed.${derived}`);
+  }
+
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };
 }

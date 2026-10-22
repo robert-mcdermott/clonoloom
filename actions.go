@@ -75,7 +75,8 @@ var remoteActions = []remoteAction{
 	})},
 	{Name: "track_clonotypes", Title: "Follow clonotypes over time", Description: "Shows the Tracking view's Clonotypes part and follows clonotypes through each subject's samples in time order, under the dataset's clonotype definition and filter (a job; the result kept with the project): each subject's reference sample's largest clonotypes (the default; each sample's largest for a subject without one), each sample's largest, a list, or those a test called. Answers each subject's time points and, for each clonotype followed, why it was chosen and its count, frequency and 95% interval (Wilson's) at each time point, the samples taken at one time pooled.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
-		"by":      textArg("reference (each reference sample's n largest; the default), largest (each sample's n largest), list, or test (the n clonotypes the dataset's comparison called, the most significant first: see test_expansion)."),
+		"by":      textArg("reference (each reference sample's n largest; the default), largest (each sample's n largest), list, test (the n clonotypes the dataset's comparison called, the most significant first: see test_expansion), or class (the n clonotypes of a class against the dataset's base time point: see class_clonotypes)."),
+		"class":   textArg("With by class: emerging (the default), transient, contracting or persistent."),
 		"n":       numberArg("How many: 10 of a reference sample, 5 of each sample and 20 of a test's calls by default, at most 100."),
 		"list":    map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "With by list: the clonotypes, by ID (c-…) or junction (CASSLAGGPEAFF; a paired clonotype's chains joined by \"; \")."},
 		"subject": textArg("The subject to show (the first by default)."),
@@ -92,6 +93,16 @@ var remoteActions = []remoteAction{
 		"subject":     textArg("The subject to show (the first by default)."),
 		"calls":       numberArg("How many of each subject's calls to answer (10 by default)."),
 	}, "from", "to")},
+	{Name: "class_clonotypes", Title: "Class clonotypes across time points", Description: "Shows the Tracking view's Classes part and, in each subject, tests each clonotype between a base time point and every later one by the dataset's test (as test_expansion chose it; the beta-binomial test where its variance can be fitted), and classes it by its calls: emerging (called increased at the last time point), transient (called changed at a time point between, not at the last), contracting (called decreased at the last) or persistent (never called, found at every time point). A job; the result kept with the project. Answers each subject's clonotypes by class and the most significant of a class.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"base":    textArg("The base time point, by its key (day -7, baseline): the first other than the reference sample's by default."),
+		"subject": textArg("The subject to show (the first by default)."),
+		"class":   textArg("The class to show and answer: emerging (the default), transient, contracting or persistent."),
+		"count":   numberArg("How many of the class to answer in each subject (10 by default)."),
+	})},
+	{Name: "attribute_samples", Title: "Attribute samples to the reference", Description: "Shows the Tracking view's Attribution part and measures each sample of each subject with a reference sample (an infusion product, a donor) under the dataset's clonotype definition and filter (a job; the result kept with the project): its share in the clonotypes the reference sample holds, and, where the subject has samples before the reference event and the reference shares few clonotypes with them (a donor), the share derived from the reference, each with its 95% interval (Wilson's). Answers each subject's time points, the share before the event and the reference's overlap with it.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+	})},
 	{Name: "select_clonotype", Title: "Choose a clonotype", Description: "Shows the Clonotypes view and chooses a clonotype, which the inspector describes: by its rank in the table (1 for the first) or its ID.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
 		"rank":    numberArg("Its rank in the table as sorted, from 1."),

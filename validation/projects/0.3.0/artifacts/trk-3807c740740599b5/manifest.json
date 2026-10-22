@@ -1,0 +1,268 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "trk-3807c740740599b5",
+  "kind": "tracking",
+  "name": "Tracking · Small simulated series",
+  "dataset": "d-4ea5258778f3d2f8",
+  "state": "complete",
+  "created": "2026-10-22T14:08:57.135046Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-4ea5258778f3d2f8",
+        "name": "Small simulated series"
+      }
+    ],
+    "job": {
+      "id": "jmvjm9zcc-2",
+      "kind": "tracking",
+      "spec": {
+        "dataset": "d-4ea5258778f3d2f8",
+        "definition": {
+          "name": "Amino-acid junction, V and J genes",
+          "chains": [],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "study": [
+          {
+            "name": "S01-d14",
+            "subject": "S01",
+            "timepoint": "14 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-d28",
+            "subject": "S01",
+            "timepoint": "28 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-d7",
+            "subject": "S01",
+            "timepoint": "7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-d90",
+            "subject": "S01",
+            "timepoint": "90 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-pre-1",
+            "subject": "S01",
+            "timepoint": "-7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-pre-2",
+            "subject": "S01",
+            "timepoint": "-7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-product",
+            "subject": "S01",
+            "tissue": "infusion product"
+          },
+          {
+            "name": "S02-d14",
+            "subject": "S02",
+            "timepoint": "14 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d28",
+            "subject": "S02",
+            "timepoint": "28 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d7",
+            "subject": "S02",
+            "timepoint": "7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d90",
+            "subject": "S02",
+            "timepoint": "90 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-pre-1",
+            "subject": "S02",
+            "timepoint": "-7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-pre-2",
+            "subject": "S02",
+            "timepoint": "-7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-product",
+            "subject": "S02",
+            "tissue": "infusion product"
+          }
+        ],
+        "track": {
+          "by": "reference",
+          "n": 10
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Clonotypes followed through each subject's samples over time, each frequency with Wilson's score interval",
+      "version": "1",
+      "citation": "Wilson EB. Probable inference, the law of succession, and statistical inference. J Am Stat Assoc. 1927;22:209–212"
+    },
+    "parameters": {
+      "dataset": "d-4ea5258778f3d2f8",
+      "definition": {
+        "name": "Amino-acid junction, V and J genes",
+        "chains": [],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "study": [
+        {
+          "name": "S01-d14",
+          "subject": "S01",
+          "timepoint": "14 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-d28",
+          "subject": "S01",
+          "timepoint": "28 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-d7",
+          "subject": "S01",
+          "timepoint": "7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-d90",
+          "subject": "S01",
+          "timepoint": "90 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-pre-1",
+          "subject": "S01",
+          "timepoint": "-7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-pre-2",
+          "subject": "S01",
+          "timepoint": "-7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-product",
+          "subject": "S01",
+          "tissue": "infusion product"
+        },
+        {
+          "name": "S02-d14",
+          "subject": "S02",
+          "timepoint": "14 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d28",
+          "subject": "S02",
+          "timepoint": "28 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d7",
+          "subject": "S02",
+          "timepoint": "7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d90",
+          "subject": "S02",
+          "timepoint": "90 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-pre-1",
+          "subject": "S02",
+          "timepoint": "-7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-pre-2",
+          "subject": "S02",
+          "timepoint": "-7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-product",
+          "subject": "S02",
+          "tissue": "infusion product"
+        }
+      ],
+      "track": {
+        "by": "reference",
+        "n": 10
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.3.0"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "tracking.json",
+      "role": "tracking",
+      "size": 36778,
+      "sha256": "6e0073475ac650da0aa37d6be8a6558ffa24349afc60e620571a468221f70e93"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "by": "reference",
+    "clonotypes": 20,
+    "definition": "Amino-acid junction, V and J genes",
+    "n": 10,
+    "samples": 14,
+    "subjects": 2,
+    "unit": "umis"
+  }
+}

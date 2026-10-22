@@ -95,8 +95,8 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | T1 | Chosen clonotypes (top N, a reference sample's, matched to a specificity, a list) followed across a subject's samples, with frequency intervals | partial (wave 3, slice 5: a reference sample's largest, each sample's largest or a list, with Wilson's intervals; slice 6: those a test called; matched to a specificity in wave 4) |
 | T2 | Two-sample differential abundance by Fisher's exact or binomial test (DeWitt et al. 2015), with false discovery rate | done (wave 3, slice 6: between two time points of each subject; Benjamini–Hochberg or Storey's q-values) |
 | T3 | Beta-binomial differential abundance with variance from replicates or a time-dependent model (Rytlewski et al. 2019); the default when a variance model exists | done (wave 3, slice 7: fitted on replicate samples or two time points named as stable) |
-| T4 | Several timepoints: clonotypes classed as persistent, emerging or contracting; a negative-binomial model for designs with replicates | planned (wave 3: classes; wave 7: model) |
-| T5 | Source attribution: the share of a sample's repertoire found in a reference sample (infusion product, donor), with the definition stated | planned (wave 3) |
+| T4 | Several timepoints: clonotypes classed as persistent, emerging or contracting; a negative-binomial model for designs with replicates | partial (wave 3, slice 8: emerging, transient, contracting or persistent from the tests' calls against a base time point; wave 7: model) |
+| T5 | Source attribution: the share of a sample's repertoire found in a reference sample (infusion product, donor), with the definition stated | done (wave 3, slice 8: the share in the reference sample's clonotypes, and, for a reference sharing few clonotypes with the samples before the event, the share derived from it, each with its interval) |
 | T6 | Alluvial plots and per-clonotype trajectories ("threads") linked to the clonotype table | done (wave 3, slice 5) |
 
 ## Specificity
@@ -174,7 +174,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | --- | --- | --- |
 | E1 | Simulated studies with their truth (`clonoloom simulate`) | partial (wave 2, slice 2: bulk TRB studies from ClonoLoom's own recombination model, with each population's truth; presets standard, null and small; offered as examples; wave 3, slice 4: studies over time, CAR-T and transplant with an infusion product or a donor mixed into the blood in known shares, clones on known trajectories and biological variance between samples, offered as examples, and a null series; wave 4: specificity; wave 5: BCR lineages; wave 6: single cell with expression) |
 | E2 | Public example datasets downloaded on request with license and citation shown | done (wave 1, slice 6: six datasets of 10x Genomics, the AIRR Community and immuneACCESS; every wave adds its own) |
-| E3 | Guided tours and worked examples per view | planned (wave 2, every wave) |
+| E3 | Guided tours and worked examples per view | partial (wave 3, slice 8: the simulated CAR-T and transplant studies' guided steps in the Tracking view, each done by its remote control action; every wave adds its own) |
 | E4 | Exercises graded against simulated truth, with class codes | parked |
 
 ## Cross-suite

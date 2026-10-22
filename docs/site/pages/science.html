@@ -95,6 +95,19 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
       </div>
       <p>The binomial and Fisher's tests account for sampling alone. When each clone's frequency in each blood sample also varies around its expectation (by a factor of mean 1 and variance 0.1), they called 13 of 6,599 clonotypes on the series where nothing changes (0.2%, as Rytlewski et al. found between blood samples two weeks apart), and 6 of the binomial test's 73 calls on the CAR-T study were against the truth (8%, against the 1% asked for). The beta-binomial test, its variance fitted on the replicate samples, called none on the series, and none of its 20 calls on the CAR-T study was against the truth. Between the replicate samples themselves, a test at 0.05 called 8.2% of the clonotypes changed by sampling alone, and 2.7% with the fitted variance.</p>
 
+      <h2 id="classes">Classes and attribution</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Measure</th><th>Source</th><th>Checked against</th><th>Agreement</th></tr></thead>
+          <tbody>
+            <tr><td>Each clonotype classed emerging, transient, contracting or persistent by its calls against a base time point</td><td>The beta-binomial test (Rytlewski et al. 2019)</td><td>The simulated CAR-T study, with its variation between blood samples, against the week before the infusion</td><td class="agree">all 20 clonotypes classed by their calls classed the way the truth's frequencies moved</td></tr>
+            <tr><td>A sample's share in its reference sample's clonotypes, with Wilson's interval</td><td>Wilson 1927</td><td>The simulated CAR-T and transplant studies: the share the truth expects in the clonotypes the reference sample holds</td><td class="agree">within 0.023 at every sample</td></tr>
+            <tr><td>The share derived from a donor, among the clonotypes found on one side only</td><td></td><td>The simulated transplant study: the donor's true share of each recipient's blood</td><td class="agree">within 0.065 at every sample (60% to 97%)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The share in the reference's clonotypes ran 0.17 (CAR-T) to 0.28 (transplant) below the share in all the reference population's clonotypes, which the reference sample misses some of; its interval, for sampling alone, held the truth it estimates in about half the samples. Where the reference was made from the subject's own blood (an infusion product), about 60% of the blood was in its clonotypes before the infusion, and three quarters of its cells were in clonotypes found before it: no measure by clonotype tells the infused cells from the patient's own, and the share derived from it is not given.</p>
+
       <h2 id="simulation">Simulated studies</h2>
       <p><code>clonoloom simulate</code> makes TRB rearrangements from GRCh38's gene segments at Ensembl's annotation (Dyer et al. 2025), with V and J usage from 10x Genomics' 10k PBMC data, deletions, palindromic and non-templated insertions (Murugan et al. 2012), and productive junctions selected on their length (Elhanati et al. 2014); each subject's repertoire a population of power-law clone sizes, sampled into templates and reads. Over 150,000 rearrangements, the productive junctions' mean length is within 0.1 amino acids of the 10x data's, its standard deviation within 0.15, and V usage within 0.03 of the model's in total variation. The same seed gives the same bytes on every computer.</p>
 

@@ -1,0 +1,27 @@
+---
+title: Classes across time points
+description: Class each clonotype of a subject as emerging, transient, contracting or persistent in ClonoLoom, by its calls between a base time point and every later one, and follow a class.
+lede: The Tracking view's Classes part tests each clonotype of each subject between a base time point and every later one, and classes it by those calls. It counts each subject's clonotypes by class, draws a class through the time points, and follows it on request.
+---
+      <h2 id="classes">The classes</h2>
+      <shot name="classes" alt="The Tracking view's Classes part on the simulated CAR-T study: each patient's clonotypes by class against the week before the infusion, and one patient's transient clonotypes as threads rising to day 14 and falling back, with a table of their calls">The simulated CAR-T study against the week before the infusion: the product's expanding clones are transient, up at day 14 and back down by day 90.</shot>
+      <p>Open <strong>Tracking › Classes</strong> and choose the base time point (<strong>Against</strong>; the first other than the reference sample's by default). Each later time point is compared with it, by the Tests part's test, the false discovery rate controlled within each comparison (<a href="tests.html">Expanded and contracted clonotypes</a>). A clonotype is:</p>
+      <ul>
+        <li><strong>Emerging</strong>: called increased at the last time point.</li>
+        <li><strong>Transient</strong>: called changed at a time point between, not at the last.</li>
+        <li><strong>Contracting</strong>: called decreased at the last time point.</li>
+        <li><strong>Persistent</strong>: never called, and found at the base and at every later time point.</li>
+      </ul>
+      <p>The others (never called, and missing at one time point or more) are counted but not classed. A clonotype called at one of several comparisons is more likely a false discovery than one called at a single comparison, and the view says so.</p>
+
+      <h2 id="read">Reading the result</h2>
+      <ul>
+        <li><strong>Clonotypes by class</strong>: each subject's clonotypes called changed, stacked by class, and every class counted in a table.</li>
+        <li>The beta-binomial test's variance, where it was fitted, as in the Tests part.</li>
+        <li>One subject's clonotypes of the class chosen as <strong>threads</strong> through the base and later time points, and in a table with their frequency at each, the calls marked ↑ and ↓, and the least adjusted p-value. A row's button shows the clonotype in the Clonotypes view.</li>
+        <li><strong>Follow this class</strong> follows each subject's 20 most significant clonotypes of the class (the largest, for persistent ones) in the Clonotypes part, with their intervals.</li>
+      </ul>
+      <p>On the simulated CAR-T study, with its variation between blood samples, the 20 clonotypes classed by their calls were all classed the way the truth's frequencies moved: the product's expanding clones, transient, peaking two weeks after the infusion.</p>
+
+      <h2 id="use">Using the result</h2>
+      <p>The plots save as figures. <strong>Export</strong> writes each classed clonotype at each time point, with its call, each subject's counts by class, and the fit, as CSV. The methods paragraph says how the clonotypes were classed. Scripts use <code>class_clonotypes</code>, and <code>track_clonotypes</code> with <code>by: "class"</code> (<a href="remote-control.html">Remote control</a>).</p>

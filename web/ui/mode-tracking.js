@@ -7,8 +7,12 @@
 // largest, or a list the user keeps) followed through each subject's time points by the program as
 // a job, kept as a result (api_tracking.go, internal/track): threads of their frequencies with
 // their intervals, an alluvial plot, and a table, linked to each other and to the Clonotypes view.
-// Tests (slice 6: T2; tracking-tests.js): each clonotype tested between two time points of each
-// subject (api_expansion.go), the calls followed in the Clonotypes part on request.
+// Tests (slices 6 and 7: T2, T3; tracking-tests.js): each clonotype tested between two time points
+// of each subject (api_expansion.go), the calls followed in the Clonotypes part on request. Classes
+// (slice 8: T4; tracking-classes.js): each clonotype classed by its calls between a base time point
+// and every later one. Attribution (slice 8: T5; tracking-attribution.js): each sample against its
+// subject's reference sample. A dataset opened from an example with guided steps shows them, each
+// performed by the action scripts use (remote.js).
 
 import { h, icon, clear } from './dom.js';
 import { showDialog, toast } from './overlays.js';
@@ -17,22 +21,24 @@ import { UNITS, datasetUnit, fieldValue, studySamples } from '../lib/datasets.js
 import { datasetDefinition } from '../lib/definitions.js';
 import { datasetFilter } from '../lib/filters.js';
 import { addResult } from '../lib/results.js';
-import { BY, CORRECTIONS, MAX_LIST, TESTS, choiceShort, choiceWords, compareRequest, comparisonChoice, comparisonWords, parseList, timePoints, trackRequest, trackingChoice, useComparison, useTracking } from '../lib/tracking.js';
+import { BY, CLASSES, CORRECTIONS, MAX_LIST, TESTS, choiceShort, choiceWords, classRequest, compareRequest, comparisonChoice, comparisonWords, parseList, timePoints, trackRequest, trackingChoice, useComparison, useTracking } from '../lib/tracking.js';
 import { exportable, madeBy } from './figures.js';
 import { exportResult } from './exports.js';
 import { renderTests } from './tracking-tests.js';
+import { renderClasses } from './tracking-classes.js';
+import { renderAttribution } from './tracking-attribution.js';
 
 const SEVERITY = {
   warning: { label: 'Warning', badge: 'warn', icon: 'warning' },
   note: { label: 'Note', badge: 'accent', icon: 'info' },
 };
 
-const PARTS = { subjects: 'Subjects', clonotypes: 'Clonotypes', tests: 'Tests' };
+const PARTS = { subjects: 'Subjects', clonotypes: 'Clonotypes', tests: 'Tests', classes: 'Classes', attribution: 'Attribution' };
 // The analysis each part shows, the part each opens in, and what the head's button says.
-const KIND_OF = { clonotypes: 'tracking', tests: 'expansion' };
-const PART_OF = { tracking: 'clonotypes', expansion: 'tests' };
-const KINDS = ['tracking', 'expansion'];
-const START = { tracking: 'Follow clonotypes', expansion: 'Test the clonotypes' };
+const KIND_OF = { clonotypes: 'tracking', tests: 'expansion', classes: 'classes', attribution: 'attribution' };
+const PART_OF = { tracking: 'clonotypes', expansion: 'tests', classes: 'classes', attribution: 'attribution' };
+const KINDS = ['tracking', 'expansion', 'classes', 'attribution'];
+const START = { tracking: 'Follow clonotypes', expansion: 'Test the clonotypes', classes: 'Class the clonotypes', attribution: 'Attribute the samples' };
 const SIZES = [5, 10, 20, 50];
 
 const count = (n) => Number(n ?? 0).toLocaleString('en-US');
@@ -58,6 +64,7 @@ function whyWords(why) {
   const parts = why.map((r) => {
     if (r.listed) return `listed as ${r.listed}`;
     if (r.called) return `${r.called === 'increase' ? 'increased' : 'decreased'}, the ${r.rank === 1 ? '' : `${nth(r.rank)} `}most significant call`;
+    if (r.class) return `${r.class}, the ${r.rank === 1 ? '' : `${nth(r.rank)} `}${r.class === 'persistent' ? 'largest' : 'most significant'}`;
     return `${r.rank === 1 ? 'largest' : `${nth(r.rank)} largest`} in ${r.sample}`;
   });
   return parts.length > 2 ? `${parts.slice(0, 2).join(', ')} and ${parts.length - 2} more` : parts.join(', ');
@@ -66,6 +73,24 @@ const nth = (n) => `${n}${[, 'st', 'nd', 'rd'][n % 100 > 10 && n % 100 < 14 ? 0 
 
 // A time point as the plots label it, and in full.
 const pointLabel = (p) => ({ label: p.label, title: `${p.label}${p.event ? ` (${p.event})` : ''}${p.samples.length > 1 ? `, ${p.samples.length} samples pooled` : ''}` });
+
+// The examples, as the program lists them (api_examples.go), read once.
+let examplesList = null;
+async function exampleList() {
+  examplesList ??= getJSON('api/examples').then((r) => r.examples ?? r).catch(() => []);
+  return examplesList;
+}
+
+// The example a dataset was opened from: its public data's credit, or its simulated study's ID.
+function exampleOf(d, summary) {
+  const credited = d.credits?.find((c) => c.example)?.example;
+  if (credited) return credited;
+  const study = (summary?.samples ?? []).map((x) => x.repertoire?.studyId).find((x) => x?.startsWith('clonoloom-simulated-'));
+  return study ? study.replace(/^clonoloom-/, '') : null;
+}
+
+// Whether the guided steps are open (closed by the user, they stay closed).
+let guideOpen = true;
 
 export function mountTracking(app, container) {
   const { store } = app;
@@ -89,12 +114,13 @@ export function mountTracking(app, container) {
   let state = { status: 'idle' };
   // Each analysis's result: idle | looking | absent | running | ready | failed (and, for the tests,
   // unavailable: no two time points to compare).
-  const results = { tracking: { status: 'idle' }, expansion: { status: 'idle' } };
+  const results = Object.fromEntries(KINDS.map((k) => [k, { status: 'idle' }]));
   let spec = null;
   let subjectShown = null;
   let selectedKey = null;
-  // The Tests part's subject and clonotype chosen.
+  // The Tests and Classes parts' subject, clonotype and class chosen.
   const testsUI = { subject: null, selected: null };
+  const classesUI = { subject: null, selected: null, class: 'emerging' };
   // Analyses whose choice the user just made: run at once when no result is kept for it.
   const startWhenAbsent = new Set();
   let generation = 0;
@@ -108,12 +134,15 @@ export function mountTracking(app, container) {
     const comparison = comparisonChoice(d, points);
     const choice = trackingChoice(d, comparison);
     const comparable = Boolean(comparison.from && comparison.to);
+    const classable = Boolean(comparison.base);
     return { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, study: samples, points, comparison, choice,
-      track: choice.by === 'test' && !comparable ? null : trackRequest(choice), compare: comparable ? compareRequest(comparison) : null };
+      track: (choice.by === 'test' && !comparable) || (choice.by === 'class' && !classable) ? null : trackRequest(choice),
+      compare: comparable ? compareRequest(comparison) : null, classing: classable ? classRequest(comparison) : null };
   }
-  // What each analysis is asked: the clonotypes followed, or the comparison.
-  const request = (kind, extra = {}) => JSON.stringify({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, study: spec.study,
-    ...(kind === 'tracking' ? { track: spec.track } : { compare: spec.compare }), ...extra });
+  // What each analysis is asked: the clonotypes followed, the comparison, the classing, or the
+  // study alone.
+  const asked = { tracking: () => ({ track: spec.track }), expansion: () => ({ compare: spec.compare }), classes: () => ({ class: spec.classing }), attribution: () => ({}) };
+  const request = (kind, extra = {}) => JSON.stringify({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, study: spec.study, ...asked[kind](), ...extra });
 
   // The latest load, and a promise that settles once no later one has begun (a load the store's
   // notice begins after a script's edit supersedes the one the script waits for).
@@ -147,9 +176,11 @@ export function mountTracking(app, container) {
       if (open.status !== 'open') throw new Error(open.error ?? `${d.name} could not be opened.`);
       const samples = studySamples(store.project, d.id, open.summary);
       const design = await postJSON('api/study', { samples });
+      const name = exampleOf(d, open.summary);
+      const example = name ? (await exampleList()).find((e) => e.name === name) : null;
       if (mine !== generation) return;
       spec = specOf(d, open, samples, design);
-      state = { status: 'ready', dataset: d.id, design, samples, summary: open.summary };
+      state = { status: 'ready', dataset: d.id, design, samples, summary: open.summary, example };
     } catch (error) {
       if (mine !== generation) return;
       state = { status: 'failed', error: error.message };
@@ -165,7 +196,7 @@ export function mountTracking(app, container) {
   // An analysis as chosen: the result kept, a job still running, or none yet (run at once when the
   // user just chose it).
   async function look(mine, d, kind) {
-    if ((kind === 'tracking' && !spec.track) || (kind === 'expansion' && !spec.compare)) {
+    if ((kind === 'tracking' && !spec.track) || (kind === 'expansion' && !spec.compare) || (kind === 'classes' && !spec.classing)) {
       results[kind] = { status: 'unavailable' };
       startWhenAbsent.delete(kind);
       return;
@@ -180,6 +211,7 @@ export function mountTracking(app, container) {
         keep(kind, d, read);
         if (kind === 'tracking' && !read.result.subjects.some((s) => s.id === subjectShown)) subjectShown = read.result.subjects[0]?.id ?? null;
         if (kind === 'expansion' && !read.result.subjects.some((s) => s.subject === testsUI.subject)) testsUI.subject = read.result.subjects[0]?.subject ?? null;
+        if (kind === 'classes' && !read.result.subjects.some((s) => s.subject === classesUI.subject)) classesUI.subject = read.result.subjects[0]?.subject ?? null;
       } else {
         results[kind] = { status: answer.job ? 'running' : 'absent', artifact: answer.artifact, job: answer.job };
         if (answer.job) watch(kind, answer.job);
@@ -206,13 +238,20 @@ export function mountTracking(app, container) {
       made: read.artifact.created, unit: r.unit, describe: r.describe,
     };
     const sum = (key) => r.subjects.reduce((n, s) => n + s[key], 0);
-    const record = kind === 'tracking'
-      ? { ...common, options: { confidence: r.confidence }, name: `Tracking · ${d.name}`, method: `Clonotypes followed over time, ${choiceShort({ ...r.choice, list: r.choice.list ?? [] })}; Wilson score intervals`,
-        choice: r.choice, subjects: r.subjects.length, followed: r.subjects.reduce((n, s) => n + s.clonotypes.length, 0), intervals: r.intervals }
-      : { ...common, name: `Tests · ${d.name}`, method: `${TESTS[r.test]?.label ?? r.test} between ${r.comparison.from} and ${r.comparison.to}; ${CORRECTIONS[r.comparison.correction]?.label ?? r.comparison.correction} at ${r.comparison.alpha}`,
-        comparison: r.comparison, used: r.test, subjects: r.subjects.length, tested: sum('tested'), increased: sum('increased'), decreased: sum('decreased'),
-        fit: r.fit ? { on: r.fit.on, pairs: r.fit.pairs.length, clonotypes: r.fit.clonotypes, a: r.fit.model.a, b: r.fit.model.b, calledBySampling: r.fit.calledBySampling, calledByModel: r.fit.calledByModel } : null };
-    store.commit(addResult(store.project, record), kind === 'tracking' ? `Follow clonotypes of ${d.name}` : `Test the clonotypes of ${d.name}`, ['project']);
+    const fitOf = (f) => (f ? { on: f.on, pairs: f.pairs.length, clonotypes: f.clonotypes, a: f.model.a, b: f.model.b, calledBySampling: f.calledBySampling, calledByModel: f.calledByModel } : null);
+    const records = {
+      tracking: () => ({ ...common, options: { confidence: r.confidence }, name: `Tracking · ${d.name}`, method: `Clonotypes followed over time, ${choiceShort({ ...r.choice, list: r.choice.list ?? [] })}; Wilson score intervals`,
+        choice: r.choice, subjects: r.subjects.length, followed: r.subjects.reduce((n, s) => n + s.clonotypes.length, 0), intervals: r.intervals }),
+      expansion: () => ({ ...common, name: `Tests · ${d.name}`, method: `${TESTS[r.test]?.label ?? r.test} between ${r.comparison.from} and ${r.comparison.to}; ${CORRECTIONS[r.comparison.correction]?.label ?? r.comparison.correction} at ${r.comparison.alpha}`,
+        comparison: r.comparison, used: r.test, subjects: r.subjects.length, tested: sum('tested'), increased: sum('increased'), decreased: sum('decreased'), fit: fitOf(r.fit) }),
+      classes: () => ({ ...common, name: `Classes · ${d.name}`, method: `Clonotypes classed against ${r.classing.base} by ${TESTS[r.test]?.name ?? r.test}; ${CORRECTIONS[r.classing.correction]?.label ?? r.classing.correction} at ${r.classing.alpha}`,
+        classing: r.classing, used: r.test, subjects: r.subjects.length, later: Math.max(0, ...r.subjects.map((s) => s.later.length)),
+        counts: Object.fromEntries(Object.keys(CLASSES).map((k) => [k, r.subjects.reduce((n, s) => n + s.counts[k], 0)])), fit: fitOf(r.fit) }),
+      attribution: () => ({ ...common, options: { confidence: r.confidence }, name: `Attribution · ${d.name}`, method: 'Each sample\'s share in its reference sample\'s clonotypes, and the share derived from it where told; Wilson score intervals',
+        subjects: r.subjects.length, derived: r.subjects.filter((s) => s.derived).length, references: [...new Set(r.subjects.map((s) => s.label))], intervals: r.intervals }),
+    };
+    const labels = { tracking: 'Follow clonotypes', expansion: 'Test the clonotypes', classes: 'Class the clonotypes', attribution: 'Attribute the samples' };
+    store.commit(addResult(store.project, records[kind]()), `${labels[kind]} of ${d.name}`, ['project']);
   }
 
   // When a job ends: its result read, or what went wrong said. Each job watched once.
@@ -242,7 +281,12 @@ export function mountTracking(app, container) {
         return;
       }
       results[kind] = { status: 'running', artifact: answer.artifact, job: answer.job };
-      app.log(kind === 'tracking' ? `Follow the clonotypes of ${d.name}: ${choiceWords(spec.choice)}.` : `Test the clonotypes of ${d.name}: ${spec.comparison.from} against ${spec.comparison.to}, ${comparisonWords(spec.comparison)}.`);
+      app.log({
+        tracking: () => `Follow the clonotypes of ${d.name}: ${choiceWords(spec.choice)}.`,
+        expansion: () => `Test the clonotypes of ${d.name}: ${spec.comparison.from} against ${spec.comparison.to}, ${comparisonWords(spec.comparison)}.`,
+        classes: () => `Class the clonotypes of ${d.name} against ${spec.comparison.base}.`,
+        attribution: () => `Attribute the samples of ${d.name} to their reference samples.`,
+      }[kind]());
       render();
       watch(kind, answer.job);
     } catch (error) {
@@ -267,10 +311,23 @@ export function mountTracking(app, container) {
     if (!d || !spec) return;
     const next = useComparison(store.project, d.id, { ...spec.comparison, ...changes });
     if (next === store.project) return;
-    startWhenAbsent.add('expansion');
-    if (spec.choice.by === 'test') startWhenAbsent.add('tracking');
+    startWhenAbsent.add(part === 'classes' ? 'classes' : 'expansion');
+    if (spec.choice.by === 'test' || spec.choice.by === 'class') startWhenAbsent.add('tracking');
     testsUI.selected = null;
+    classesUI.selected = null;
     store.commit(next, `Choose the time points compared in ${d.name}`);
+  }
+
+  // A class followed in the Clonotypes part.
+  function followClass(cls) {
+    part = 'clonotypes';
+    selectedKey = null;
+    const d = dataset();
+    if (spec?.choice.by === 'class' && d?.tracking?.class === cls) {
+      render();
+      return;
+    }
+    choose({ by: 'class', class: cls });
   }
 
   // The calls of the comparison followed in the Clonotypes part.
@@ -363,12 +420,45 @@ export function mountTracking(app, container) {
       for (const f of state.design.findings) body.append(finding(f));
       return;
     }
+    const steps = state.example?.opens?.flatMap((o) => o.steps ?? []) ?? [];
+    if (steps.length) body.append(guide(d, state.example, steps));
     if (part === 'clonotypes') renderClonotypes(d);
     else if (part === 'tests') {
       renderTests({ app, body, d, points: spec.points, comparison: spec.comparison, state: results.expansion, spec, ui: testsUI,
         compareWith, run: () => run('expansion'), followCalls, showInClonotypes, render,
         select: (key) => { testsUI.selected = testsUI.selected === key ? null : key; render(); } });
+    } else if (part === 'classes') {
+      renderClasses({ app, body, d, points: spec.points, comparison: spec.comparison, state: results.classes, spec, ui: classesUI,
+        compareWith, run: () => run('classes'), followClass, showInClonotypes, render,
+        select: (key) => { classesUI.selected = classesUI.selected === key ? null : key; render(); } });
+    } else if (part === 'attribution') {
+      renderAttribution({ app, body, d, state: results.attribution, render, run: () => run('attribution') });
     } else renderSubjects(d);
+  }
+
+  // The example's guided steps, each done by its action on this dataset.
+  function guide(d, example, steps) {
+    const doing = new Set();
+    const list = h('ol.tracking-steps', ...steps.map((step, i) => {
+      const button = h('button.btn.small', { type: 'button', onclick: async () => {
+        if (doing.has(i)) return;
+        doing.add(i);
+        button.disabled = true;
+        try {
+          const result = await app.actions[step.action]({ dataset: d.id, ...(step.args ?? {}) });
+          toast(result?.message ?? 'Done.', { kind: 'ok' });
+        } catch (error) {
+          toast(error.message, { kind: 'error' });
+        } finally {
+          doing.delete(i);
+          button.disabled = false;
+        }
+      } }, icon('play'), 'Do it');
+      return h('li', h('div.tracking-step', h('div', h('b', step.title), h('p.muted.small', step.words)), button));
+    }));
+    const details = h('details.card.tracking-guide', { open: guideOpen, ontoggle: () => { guideOpen = details.open; } },
+      h('summary', h('b', 'Guided steps'), h('span.muted', ` · ${example.title}`)), list);
+    return details;
   }
 
   function show(key) {
@@ -492,7 +582,7 @@ export function mountTracking(app, container) {
     const bySelect = h('select.input.small', { 'aria-label': 'Follow', onchange: (e) => (e.target.value === 'list' && !choice.list.length ? editList() : choose({ by: e.target.value })) },
       ...Object.entries(BY).map(([key, b]) => h('option', { value: key, selected: key === choice.by }, b.label)));
     const sizeSelect = h('select.input.small', { 'aria-label': 'How many', onchange: (e) => choose({ n: Number(e.target.value) }) },
-      ...[...new Set([...SIZES, choice.n ?? 10])].sort((a, b) => a - b).map((n) => h('option', { value: n, selected: n === choice.n }, choice.by === 'test' ? `${n} most significant` : `${n} largest`)));
+      ...[...new Set([...SIZES, choice.n ?? 10])].sort((a, b) => a - b).map((n) => h('option', { value: n, selected: n === choice.n }, choice.by === 'test' || choice.by === 'class' ? `${n} most significant` : `${n} largest`)));
     const subjectSelect = h('select.input.small', { 'aria-label': 'Subject', onchange: (e) => { subjectShown = e.target.value; selectedKey = null; render(); } },
       ...subjects.map((s) => h('option', { value: s.id, selected: s.id === subjectShown }, s.id)));
     body.append(h('div.repertoire-controls',
@@ -502,6 +592,10 @@ export function mountTracking(app, container) {
         : sizeSelect,
       choice.by === 'test' && spec?.comparison.from
         ? h('button.btn.small', { type: 'button', title: 'Choose the time points compared and the test in the Tests part', onclick: () => show('tests') }, `${spec.comparison.from} against ${spec.comparison.to}`)
+        : null,
+      choice.by === 'class'
+        ? h('select.input.small', { 'aria-label': 'Class', onchange: (e) => choose({ by: 'class', class: e.target.value }) },
+          ...Object.entries(CLASSES).map(([k, x]) => h('option', { value: k, selected: k === choice.classing?.class }, `${x.label}, against ${spec?.comparison.base ?? 'the base'}`)))
         : null,
       subjects.length ? h('label.kv-inline', h('span.muted', 'Subject'), subjectSelect) : null));
     if (spec) {
@@ -513,7 +607,7 @@ export function mountTracking(app, container) {
       return;
     }
     if (followed.status === 'unavailable') {
-      body.append(h('div.callout', h('p', 'The subjects need samples at two time points for a test to call clonotypes: give the samples their time points in the Data view\'s samples table, or follow other clonotypes.')));
+      body.append(h('div.callout', h('p', 'The subjects need samples at two time points for a test to call or class clonotypes: give the samples their time points in the Data view\'s samples table, or follow other clonotypes.')));
       return;
     }
     if (followed.status === 'failed') {
@@ -554,7 +648,7 @@ export function mountTracking(app, container) {
       s.clonotypes.length ? `Together they hold ${reference ? `${percent(reference.followed)} of the ${reference.label} and ` : ''}${percent(last.followed)} of the sample at ${last.label}.` : '',
       s.more ? ` ${plural(s.more, 'more clonotype')} chosen are left out (at most 200 a subject).` : ''));
     if (!s.clonotypes.length) {
-      body.append(h('div.callout', h('p', { list: 'None of the clonotypes listed is under this definition.', test: `The test called no clonotype in ${s.id} between ${result.choice.test?.from} and ${result.choice.test?.to}.` }[result.choice.by] ?? 'The samples hold no clonotype to follow.')));
+      body.append(h('div.callout', h('p', { list: 'None of the clonotypes listed is under this definition.', test: `The test called no clonotype in ${s.id} between ${result.choice.test?.from} and ${result.choice.test?.to}.`, class: `No clonotype of ${s.id} is ${result.choice.class} against ${result.choice.classing?.base}.` }[result.choice.by] ?? 'The samples hold no clonotype to follow.')));
       return;
     }
     if (!s.clonotypes.some((c) => c.points.some((v) => v.count > 0))) {
@@ -645,6 +739,7 @@ export function mountTracking(app, container) {
           if (r.choice.test) store.commit(useComparison(store.project, d.id, compareRequest(r.choice.test)), `Show the clonotypes followed in ${d.name}`);
         }
         if (d && r.kind === 'expansion' && r.comparison) store.commit(useComparison(store.project, d.id, compareRequest(r.comparison)), `Show the clonotypes tested in ${d.name}`);
+        if (d && r.kind === 'classes' && r.classing) store.commit(useComparison(store.project, d.id, { ...classRequest(r.classing), base: r.classing.base }), `Show the clonotypes classed in ${d.name}`);
         if (r.dataset !== chosen) {
           chosen = r.dataset;
           shownChoices = choices();
@@ -667,6 +762,9 @@ export function mountTracking(app, container) {
     state: () => state,
     followed: () => results.tracking,
     tested: () => results.expansion,
+    classed: () => results.classes,
+    attributed: () => results.attribution,
+    run: (kind) => run(kind),
     show,
     follow: () => run('tracking'),
     test: () => run('expansion'),
@@ -679,6 +777,12 @@ export function mountTracking(app, container) {
     showTested: (subject, key = null) => {
       if (subject) testsUI.subject = subject;
       testsUI.selected = key;
+      render();
+    },
+    showClassed: (subject, cls, key = null) => {
+      if (subject) classesUI.subject = subject;
+      if (cls) classesUI.class = cls;
+      classesUI.selected = key;
       render();
     },
     choose: (id) => {

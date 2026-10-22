@@ -84,7 +84,7 @@ export function renderTests(ctx) {
     return;
   }
   body.append(h(`div.callout${result.test === 'betabinomial' ? '' : '.warn'}`, h('p', result.caveat)));
-  if (result.fit) body.append(fitCard(ctx, result));
+  if (result.fit) body.append(fitCard(ctx, result.fit, { stable: result.comparison.stable, minTotal: result.comparison.minTotal, describe: result.describe }));
   if (result.without?.length) body.append(h('p.muted.small', `Not tested, without samples at both time points: ${result.without.join(', ')}.`));
   const s = subjects.find((x) => x.subject === ui.subject) ?? subjects[0];
   if (!s) {
@@ -102,24 +102,24 @@ function defaultStable(points) {
   return a && b ? { from: a.key, to: b.key } : null;
 }
 
-// The variance model fitted, and the variance between the samples it was fitted on.
-function fitCard(ctx, result) {
+// The variance model fitted, and the variance between the samples it was fitted on (the Tests and
+// Classes parts'): { stable, minTotal, describe } of the result.
+export function fitCard(ctx, f, { stable, minTotal, describe }) {
   const { app, d } = ctx;
-  const f = result.fit;
   const m = f.model;
   const pairs = f.on === 'stable'
-    ? `two time points named stable (${result.comparison.stable?.from} and ${result.comparison.stable?.to}), in ${plural(f.pairs.length, 'subject')}`
+    ? `two time points named stable (${stable?.from} and ${stable?.to}), in ${plural(f.pairs.length, 'subject')}`
     : `${plural(f.pairs.length, 'pair')} of replicate samples (${f.pairs.slice(0, 3).map((p) => `${p.a.join('+')} and ${p.b.join('+')}`).join('; ')}${f.pairs.length > 3 ? '; …' : ''})`;
   const plot = dispersion(f.points, scaleOf(m), { label: 'The variance between the samples fitted on' });
   const note = `Each clonotype of the samples the variance was fitted on, at its total in the pair and its difference between them in sampling's standard deviations: sampling's 95% band dashed, the fitted model's shaded. Between them, a test at 0.05 calls ${percent(f.calledBySampling)} of the clonotypes changed by sampling alone, ${percent(f.calledByModel)} with the model (at most 5% where the model holds).`;
   return exportable(h('figure.plot-card',
     h('figcaption', h('span', 'The variance between samples')),
-    h('p.small', `Fitted by maximum likelihood on ${pairs}: ${plural(f.clonotypes, 'clonotype')} with at least ${result.comparison.minTotal} in the two. `, h('b', modelWords(m)), ` (Rytlewski et al. 2019).`),
+    h('p.small', `Fitted by maximum likelihood on ${pairs}: ${plural(f.clonotypes, 'clonotype')} with at least ${minTotal} in the two. `, h('b', modelWords(m)), ` (Rytlewski et al. 2019).`),
     h('div.plot-holder', { html: plot.svg }),
     h('p.muted.small', note)), () => ({
     name: `${d.name} variance`, title: `The variance between samples, ${d.name}`, plot: plot.svg,
     legend: [{ label: 'the model\'s 95% band', className: 'plot-s1' }, { label: 'clonotype', className: 'plot-dim' }],
-    caption: [note, `${d.name}: fitted on ${pairs}; ${modelWords(m)}. Clonotypes: ${result.describe}.`, madeBy(app.version)],
+    caption: [note, `${d.name}: fitted on ${pairs}; ${modelWords(m)}. Clonotypes: ${describe}.`, madeBy(app.version)],
   }));
 }
 

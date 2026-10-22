@@ -11,7 +11,7 @@ import { createJobs } from './ui/jobs.js';
 import { showMethods } from './ui/methods.js';
 import { exportDataset } from './ui/exports.js';
 import { mapColumns } from './ui/mapping.js';
-import { installRemote } from './ui/remote.js';
+import { installRemote, remoteActions } from './ui/remote.js';
 import { mountSidebar } from './ui/sidebar.js';
 import { mountInspector } from './ui/inspector.js';
 import { mountDrawer } from './ui/drawer.js';
@@ -22,7 +22,7 @@ import { createProject, isEmptyProject, parseProject, rename, serializeProject }
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -201,7 +201,7 @@ async function start() {
     // A result opens in its view.
     const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
     if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
-    if ((result?.kind === 'tracking' || result?.kind === 'expansion') && store.ui.mode !== 'tracking') app.setMode('tracking');
+    if (['tracking', 'expansion', 'classes', 'attribution'].includes(result?.kind) && store.ui.mode !== 'tracking') app.setMode('tracking');
   };
 
   app.toggleDrawer = (open = !store.ui.drawer.open, tab = store.ui.drawer.tab) => {
@@ -871,6 +871,8 @@ async function start() {
   setInterval(check, 30000);
   window.clonoloom = app;
   // Programs on this computer may drive the window (clonoloom --remote-control).
+  // The actions scripts take, which the examples' guided steps take too.
+  app.actions = remoteActions(app);
   if (info.remoteControl) app.remote = installRemote(app);
 }
 

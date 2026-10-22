@@ -196,6 +196,26 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = fmt.Sprintf("Each clonotype of %s tested between two time points of each subject (%s and %s; the samples at one time pooled) by the %s test%s, %s, with %s and the calls at %g (tests.csv); each subject's comparison in sum (subjects.csv). %s", ds.Name, c.From, c.To, test, fitted, c.Alternative, correction, c.Alpha, doc.Caveat)
 		files["tests.csv"] = func(f io.Writer) error { return export.Expansion(f, doc.Tests) }
 		files["subjects.csv"] = func(f io.Writer) error { return export.ExpansionSubjects(f, doc.Tests) }
+	case "classes":
+		var doc classesDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		notice.What = fmt.Sprintf("The clonotypes of %s classed across time points in each subject by their calls against %s, the base (by the %s test): each classed clonotype at each time point, with its frequency and call (classes.csv), and each subject's clonotypes by class (class-counts.csv). %s", ds.Name, doc.Classing.Base, doc.Test, doc.Caveat)
+		files["classes.csv"] = func(f io.Writer) error { return export.Classes(f, doc.ClassResult) }
+		files["class-counts.csv"] = func(f io.Writer) error { return export.ClassCounts(f, doc.ClassResult) }
+		if doc.Fit != nil {
+			files["fit.csv"] = func(f io.Writer) error { return export.ExpansionFit(f, doc.Fit) }
+		}
+	case "attribution":
+		var doc attributionDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		notice.What = fmt.Sprintf("Each sample and time point of %s attributed to its subject's reference sample: its share in the reference's clonotypes and, where it can be told, the share derived from the reference, each with its %g%% interval (Wilson's) (attribution.csv). %s", ds.Name, 100*doc.Confidence, doc.Caveat)
+		files["attribution.csv"] = func(f io.Writer) error { return export.Attribution(f, doc.Attribution) }
 	default:
 		writeError(w, http.StatusBadRequest, "This result has nothing to export as a table.")
 		return

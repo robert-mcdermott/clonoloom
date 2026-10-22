@@ -233,3 +233,101 @@ func TestCompareTwoTimePoints(t *testing.T) {
 		t.Error("one time compared with itself")
 	}
 }
+
+// Classes from the base (a week before) to day 7 and day 28: CASSA up at both (emerging), CASSD
+// down at day 7 only (transient), CASSC never called and found throughout (persistent), CASSB never
+// called and missing at day 7 (not classed).
+func TestClassify(t *testing.T) {
+	ct := table(rep.Templates, junctions, counts)
+	res, err := Classify(ct, names, study.Describe(samples), Classing{Base: "day -7", Options: expansion.Options{Test: expansion.Binomial, Alpha: 0.05}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.Test != expansion.Binomial || len(res.Subjects) != 1 || len(res.Without) != 1 || res.Fit != nil {
+		t.Fatalf("%+v", res)
+	}
+	s := res.Subjects[0]
+	if s.Base.Label != "day -7" || len(s.Later) != 2 || s.Later[1].Label != "week 4" || s.Counts != (ClassCounts{Emerging: 1, Transient: 1, Persistent: 1, Unclassed: 1}) {
+		t.Fatalf("%+v", s)
+	}
+	got := map[string]ClassedClonotype{}
+	for _, c := range s.Clonotypes {
+		got[c.ID] = c
+	}
+	if a := got["c-CASSA"]; a.Class != Emerging || a.Calls[0] != expansion.Increase || a.Calls[1] != expansion.Increase || a.Frequencies[1] != 0.3 {
+		t.Errorf("CASSA %+v", a)
+	}
+	if d := got["c-CASSD"]; d.Class != Transient || d.Calls[0] != expansion.Decrease || d.Calls[1] != "" {
+		t.Errorf("CASSD %+v", d)
+	}
+	if c := got["c-CASSC"]; c.Class != Persistent || c.Q != 1 {
+		t.Errorf("CASSC %+v", c)
+	}
+	if s.Clonotypes[0].ID != "c-CASSA" || s.Clonotypes[2].ID != "c-CASSC" {
+		t.Errorf("order %+v", s.Clonotypes)
+	}
+	// Automatically, the beta-binomial test, fitted on the two samples taken a week before.
+	if res, err := Classify(ct, names, study.Describe(samples), Classing{Base: "day -7"}); err != nil || res.Test != expansion.BetaBinomial || res.Fit == nil {
+		t.Errorf("auto: %v %+v", err, res)
+	}
+	if _, err := (Classing{}).Normalize(); err == nil {
+		t.Error("no base")
+	}
+}
+
+// Each sample's share in the clonotypes of the infusion product (CASSA, CASSB, CASSC), and before
+// the infusion.
+func TestAttribute(t *testing.T) {
+	ct := table(rep.Templates, junctions, counts)
+	res, err := Attribute(ct, names, study.Describe(samples), 0.95)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res.Subjects) != 1 || len(res.Without) != 1 || res.Without[0] != "P2" || !res.Intervals {
+		t.Fatalf("%+v", res)
+	}
+	a := res.Subjects[0]
+	if a.Label != "infusion product" || a.Clonotypes != 3 || len(a.Samples) != 4 || len(a.Points) != 3 || a.Before == nil {
+		t.Fatalf("%+v", a)
+	}
+	want := []float64{0.055, 0.34, 0.14}
+	for k, p := range a.Points {
+		if math.Abs(float64(p.Value.Frequency)-want[k]) > 1e-15 || !(float64(p.Value.Lower) < want[k] && want[k] < float64(p.Value.Upper)) {
+			t.Errorf("%s: %+v", p.Point.Label, p.Value)
+		}
+	}
+	if a.Before.Count != 11 || a.Before.Total != 200 || a.Samples[1].Name != "P1-pre-b" || a.Samples[1].Value.Count != 6 {
+		t.Errorf("before %+v, samples %+v", a.Before, a.Samples)
+	}
+	// The product's clonotypes are all found before the infusion: its cells cannot be told apart.
+	if a.Overlap == nil || *a.Overlap != 1 || a.Derived || a.Why == "" || a.Points[1].From != nil {
+		t.Errorf("overlap %v, derived %v (%s)", a.Overlap, a.Derived, a.Why)
+	}
+	// A donor sharing no clonotype with the recipient before the transplant: of a later sample's
+	// cells in clonotypes of one side only (6 of the donor's, 3 of the recipient's), 6 of 9.
+	ct = table(rep.Templates, []string{"CASSX", "CASSY", "CASSZ"}, [][]float64{{10, 0, 6}, {0, 20, 3}, {0, 0, 1}})
+	res, err = Attribute(ct, []string{"D", "pre", "d30"}, study.Describe([]study.Sample{
+		{Name: "D", Subject: "R1", Tissue: "donor"}, {Name: "pre", Subject: "R1", Time: "baseline"}, {Name: "d30", Subject: "R1", Time: "day 30"}}), 0.95)
+	if err != nil {
+		t.Fatal(err)
+	}
+	b := res.Subjects[0]
+	if !b.Derived || *b.Overlap != 0 || b.Points[0].From != nil || b.Points[1].From == nil || b.Points[1].From.Count != 6 || b.Points[1].From.Total != 9 || float64(b.Points[1].Value.Frequency) != 0.6 {
+		t.Errorf("%+v", b)
+	}
+}
+
+// Following a class: the emerging clonotypes, CASSA.
+func TestFollowAClass(t *testing.T) {
+	ct := table(rep.Templates, junctions, counts)
+	res, err := Follow(ct, names, study.Describe(samples), Choice{By: ByClass, Class: Emerging, Classing: &Classing{Base: "day -7", Options: expansion.Options{Test: expansion.Binomial, Alpha: 0.05}}}, 0.95)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.Choice.N != 20 || len(res.Subjects) != 1 || len(res.Subjects[0].Clonotypes) != 1 || res.Subjects[0].Clonotypes[0].Why[0] != (Reason{Class: Emerging, Rank: 1}) {
+		t.Fatalf("%+v", res)
+	}
+	if _, err := (Choice{By: ByClass, Class: "rising", Classing: &Classing{Base: "day 0"}}).Normalize(); err == nil {
+		t.Error("an unknown class")
+	}
+}

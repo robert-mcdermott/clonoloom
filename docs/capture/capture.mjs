@@ -215,6 +215,23 @@ const scenes = {
     })()`);
     await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 1 && Boolean(document.querySelector('.plot-ring'))`);
   },
+  // Its clonotypes classed against the week before the infusion: the guided steps folded away, the
+  // classes by subject, then the second patient's transient clonotypes rising to day 14.
+  async classes() {
+    await act('open_example', { example: 'simulated-car-t', download: true });
+    await act('class_clonotypes', { base: 'day -7', class: 'transient', subject: 'S02' });
+    await js(`(() => { const g = document.querySelector('.tracking-guide'); if (g) g.open = false; return true; })()`);
+    await waitFor(`Boolean(document.querySelector('.tracking-class-head'))`);
+    await js(`(() => { const el = document.querySelector('.tracking-class-head'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 160; return true; })()`);
+  },
+  // The transplant study's samples attributed to the donors: the share derived from each donor.
+  async attribution() {
+    await act('open_example', { example: 'simulated-transplant', download: true });
+    await act('attribute_samples');
+    await js(`(() => { const g = document.querySelector('.tracking-guide'); if (g) g.open = false; return true; })()`);
+    await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 2`);
+    await js(`(() => { const el = document.querySelectorAll('.tracking-view .plot-card')[1]; el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
+  },
 };
 
 const names = wanted.length ? wanted : Object.keys(scenes);

@@ -1,0 +1,22 @@
+---
+title: Attribution to a reference
+description: Measure each sample of a subject against its reference sample in ClonoLoom: its share in the reference's clonotypes, and, for a donor, the share derived from the reference, each with its interval.
+lede: The Tracking view's Attribution part measures each sample of a subject against its reference sample, such as an infusion product or a donor's blood, and says what the measures can and cannot tell.
+---
+      <h2 id="measures">Two measures</h2>
+      <shot name="attribution" alt="The Tracking view's Attribution part on the simulated transplant study: each recipient's share derived from the donor at days 30, 100 and 365, rising from about 60% to 97%, with intervals, and a table of every sample's measures">The simulated transplant study: the donor's share of each recipient's blood, derived from the clonotypes found on one side only.</shot>
+      <p>Mark each subject's reference sample first (<a href="subjects.html">Subjects and time points</a>), then open <strong>Tracking › Attribution</strong>. For each sample and each time point (the samples at one time pooled), with a 95% interval for sampling (Wilson's):</p>
+      <ul>
+        <li><strong>The share in the reference's clonotypes</strong>: the sample's cells or molecules in the clonotypes the reference sample holds. It counts the subject's own cells where the reference holds their clonotypes, and misses the reference's clonotypes its sample did not catch.</li>
+        <li><strong>The share derived from the reference</strong>, where the subject has samples before the reference event and the reference shares few clonotypes with them (at most a quarter of its cells): among the sample's cells in clonotypes found in the reference or in the samples before, but not in both, the share in the reference's. Clonotypes either side missed, or both hold, say nothing of where a cell came from, and are left out.</li>
+      </ul>
+
+      <h2 id="donor">A donor and an infusion product</h2>
+      <ul>
+        <li><strong>A donor</strong> shares few clonotypes with the recipient, so the share derived from it is the donor's share of the blood. On the simulated transplant study, it was within 0.065 of the truth at every sample, about 60% at day 30, 85% at day 100 and 97% at day 365.</li>
+        <li><strong>An infusion product</strong> made from the patient's own blood holds the blood's largest clonotypes. On the simulated CAR-T study, about 60% of the blood was in the product's clonotypes before the infusion, and three quarters of the product's cells were in clonotypes found before it. Neither measure tells the infused cells apart from the patient's own, so the share derived from the product is not given, and the view says why. Compare each sample with the share before the infusion, or follow the clonotypes that changed (<a href="classes.html">Classes across time points</a>).</li>
+      </ul>
+      <p>The share in the reference's clonotypes was within 0.023 of the share the truth expects in the clonotypes the reference sample holds, on both studies. Its interval is for sampling alone: with the studies' variation between blood samples, it held that truth in about half the samples. It ran 0.17 to 0.28 below the share in all the reference's clonotypes, which its sample misses some of.</p>
+
+      <h2 id="use">Using the result</h2>
+      <p>The plots save as figures. <strong>Export</strong> writes every sample's and time point's measures, with their counts and intervals, as CSV. The methods paragraph says how they were made. Scripts use <code>attribute_samples</code> (<a href="remote-control.html">Remote control</a>).</p>

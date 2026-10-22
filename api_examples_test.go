@@ -122,7 +122,7 @@ func TestExamplesAreDownloadedOnlyFromThisComputer(t *testing.T) {
 func TestASimulatedExampleIsMadeAndOpened(t *testing.T) {
 	a, handler := testApp(t)
 	a.examples.Offline = true
-	a.examples.Generated = []examples.Generated{simulatedExample("small", "Small", "A small study.", "Both samples.", 1<<20)}
+	a.examples.Generated = []examples.Generated{simulatedExample("small", nil, "Small", "A small study.", "Both samples.", 1<<20)}
 	if rec := postJSON(t, handler, "/api/examples/simulated-small", `{}`); rec.Code != http.StatusOK {
 		t.Fatalf("%d %s", rec.Code, rec.Body)
 	}
@@ -146,5 +146,36 @@ func TestASimulatedExampleIsMadeAndOpened(t *testing.T) {
 	json.Unmarshal(rec.Body.Bytes(), &s)
 	if rec.Code != http.StatusOK || len(s.Samples) != 2 || s.Report.Fatal+s.Report.Warnings != 0 || s.Samples[0].Repertoire == nil || s.Samples[0].Repertoire.StudyGroup != "control" || len(s.Credits) != 0 {
 		t.Fatalf("%d %+v %+v", rec.Code, s.Report, s.Samples)
+	}
+}
+
+// Every guided step is an action remote control knows, with arguments it takes (and never reads
+// files, which needs the token).
+func TestGuidedStepsAreActions(t *testing.T) {
+	known := map[string]remoteAction{}
+	for _, a := range remoteActions {
+		known[a.Name] = a
+	}
+	steps := 0
+	for _, g := range simulatedExamples() {
+		for _, o := range g.Source.Opens {
+			for _, s := range o.Steps {
+				steps++
+				a, ok := known[s.Action]
+				if !ok || a.reads || s.Title == "" || s.Words == "" {
+					t.Errorf("%s: step %q, action %s", g.Source.Name, s.Title, s.Action)
+					continue
+				}
+				properties := a.InputSchema["properties"].(map[string]any)
+				for arg := range s.Args {
+					if _, ok := properties[arg]; !ok {
+						t.Errorf("%s: step %q: %s takes no %s", g.Source.Name, s.Title, s.Action, arg)
+					}
+				}
+			}
+		}
+	}
+	if steps != 10 {
+		t.Errorf("%d steps", steps)
 	}
 }

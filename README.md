@@ -16,7 +16,7 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Current release:** 0.2.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+**Current release:** 0.3.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
 Following clonotypes over time, specificity, B-cell lineages, single-cell phenotypes and cohort
 comparisons come in later releases.
 
@@ -48,7 +48,9 @@ comparisons come in later releases.
   each frequency with its interval, a clonotype not found shown as not found. Each clonotype tested
   between two time points by the beta-binomial test, its variance between samples fitted on
   replicate samples (or the binomial test, or Fisher's exact test), the false discovery rate
-  controlled, and the calls followed.
+  controlled, and classed across several as emerging, transient, contracting or persistent. Each
+  sample measured against its reference sample: an infusion product's clonotypes, or a donor's
+  share of the blood.
 - **Write results others can check.** Figures (SVG, PNG, PDF) whose captions state the clonotype
   definition, unit and samples; AIRR and CSV exports with a notice of each data set's license and
   citation; a methods paragraph with numbered references, written from the record. Every result is
@@ -209,7 +211,7 @@ node docs/site/build.mjs /tmp/site       # the website, every link checked (docs
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.2.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.3.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Example data

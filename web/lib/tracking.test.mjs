@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createProject } from './project.js';
-import { choiceShort, choiceWords, comparisonChoice, comparisonWords, compareRequest, followAlso, parseList, timePoints, trackingChoice, trackRequest, useComparison, useTracking } from './tracking.js';
+import { choiceShort, choiceWords, classRequest, comparisonChoice, comparisonWords, compareRequest, followAlso, parseList, timePoints, trackingChoice, trackRequest, useComparison, useTracking } from './tracking.js';
 
 const NOW = '2026-10-21T12:00:00.000Z';
 const project = () => ({ ...createProject('S', { now: NOW }), datasets: [{ id: 'd-1', name: 'CAR-T' }] });
@@ -56,7 +56,8 @@ test('the time points subjects can be compared at, and the comparison chosen', (
   assert.deepEqual(points.map((p) => [p.key, p.label, p.subjects]), [['reference', 'infusion product', 1], ['baseline', 'baseline', 2], ['day 7', 'day 7', 1], ['day 28', 'week 4', 2]]);
   let p = project();
   const c = comparisonChoice(p.datasets[0], points);
-  assert.deepEqual(c, { from: 'baseline', to: 'day 7', test: 'auto', alternative: 'two-sided', correction: 'bh', alpha: 0.01, stable: null });
+  assert.deepEqual(c, { from: 'baseline', to: 'day 7', base: 'baseline', test: 'auto', alternative: 'two-sided', correction: 'bh', alpha: 0.01, stable: null });
+  assert.deepEqual(classRequest(c), { base: 'baseline', test: 'auto', correction: 'bh', alpha: 0.01 });
   assert.match(comparisonWords(c), /^the beta-binomial test of its count at the first time point given its total, its variance fitted on samples that should not differ, or, without them, the binomial test, two-sided, the false discovery rate controlled within each subject by Benjamini and Hochberg's procedure at 0\.01$/);
   // Two time points named as stable go with the beta-binomial test only.
   assert.deepEqual(compareRequest({ ...c, stable: { from: 'baseline', to: 'day 7' } }).stable, { from: 'baseline', to: 'day 7' });
@@ -75,4 +76,21 @@ test('the time points subjects can be compared at, and the comparison chosen', (
   assert.deepEqual(trackRequest(choice), { by: 'test', n: 20, test: compareRequest(d) });
   assert.equal(choiceShort(choice), 'the 20 most significant calls between baseline and day 28');
   assert.match(choiceWords(choice), /the 20 clonotypes the beta-binomial test \(the binomial test where its variance could not be fitted\) called changed most significantly between baseline and day 28/);
+});
+
+test('following a class across time points', () => {
+  const points = timePoints(design);
+  let p = useTracking(project(), 'd-1', { by: 'class', class: 'transient' }, NOW);
+  const c = comparisonChoice(p.datasets[0], points);
+  const choice = trackingChoice(p.datasets[0], c);
+  assert.deepEqual(trackRequest(choice), { by: 'class', n: 20, class: 'transient', classing: { base: 'baseline', test: 'auto', correction: 'bh', alpha: 0.01 } });
+  assert.equal(choiceShort(choice), 'the 20 transient clonotypes');
+  // As the program records it: the class beside the classing.
+  assert.equal(choiceShort({ by: 'class', n: 20, class: 'transient', classing: { base: 'day -7' } }), 'the 20 transient clonotypes');
+  assert.match(choiceWords(choice), /the 20 transient clonotypes most significantly classed against baseline/);
+  p = useTracking(p, 'd-1', { class: 'emerging' }, NOW);
+  assert.equal(p.datasets[0].tracking.class, 'emerging');
+  // Following another way keeps the class for later.
+  p = useTracking(p, 'd-1', { by: 'largest' }, NOW);
+  assert.deepEqual(p.datasets[0].tracking, { by: 'largest', n: 5, class: 'emerging' });
 });

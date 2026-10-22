@@ -925,4 +925,14 @@ circle.plot-dim { fill: var(--text-3); opacity: 0.45; }
 .tracking-table td .swatch { margin-top: 3px; }
 .tracking-interval { display: block; white-space: nowrap; }
 .tracking-calls-title { display: flex; align-items: center; gap: 10px; }
+.tracking-class-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+.tracking-call { color: var(--accent-text); font-weight: 650; }
+.tracking-guide { padding: 10px 14px; }
+.tracking-guide summary { cursor: pointer; }
+.tracking-steps { margin: 8px 0 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.tracking-step { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.tracking-step p { margin: 2px 0 0; }
+.example-steps { font-size: 12.5px; margin: 6px 0; }
+.example-steps summary { cursor: pointer; color: var(--accent-text); }
+.example-steps ol { margin: 6px 0 0; padding-left: 20px; }
 textarea.tracking-list { width: 100%; font-family: var(--mono); font-size: 12px; resize: vertical; }

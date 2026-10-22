@@ -1,0 +1,281 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "cls-6908977c44be9a3c",
+  "kind": "classes",
+  "name": "Classes · Small simulated series",
+  "dataset": "d-4ea5258778f3d2f8",
+  "state": "complete",
+  "created": "2026-10-22T14:08:57.714663Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-4ea5258778f3d2f8",
+        "name": "Small simulated series"
+      }
+    ],
+    "job": {
+      "id": "jmvjm9zsa-4",
+      "kind": "classes",
+      "spec": {
+        "dataset": "d-4ea5258778f3d2f8",
+        "definition": {
+          "name": "Amino-acid junction, V and J genes",
+          "chains": [],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "study": [
+          {
+            "name": "S01-d14",
+            "subject": "S01",
+            "timepoint": "14 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-d28",
+            "subject": "S01",
+            "timepoint": "28 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-d7",
+            "subject": "S01",
+            "timepoint": "7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-d90",
+            "subject": "S01",
+            "timepoint": "90 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-pre-1",
+            "subject": "S01",
+            "timepoint": "-7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-pre-2",
+            "subject": "S01",
+            "timepoint": "-7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-product",
+            "subject": "S01",
+            "tissue": "infusion product"
+          },
+          {
+            "name": "S02-d14",
+            "subject": "S02",
+            "timepoint": "14 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d28",
+            "subject": "S02",
+            "timepoint": "28 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d7",
+            "subject": "S02",
+            "timepoint": "7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d90",
+            "subject": "S02",
+            "timepoint": "90 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-pre-1",
+            "subject": "S02",
+            "timepoint": "-7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-pre-2",
+            "subject": "S02",
+            "timepoint": "-7 day (infusion)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-product",
+            "subject": "S02",
+            "tissue": "infusion product"
+          }
+        ],
+        "class": {
+          "base": "day -7",
+          "test": "auto",
+          "alternative": "two-sided",
+          "correction": "bh",
+          "alpha": 0.01,
+          "minTotal": 5
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Clonotypes classed across time points by their calls against the base time point: Each clonotype tested between two time points by the beta-binomial test conditional on its total, at the share of the depth, its variance v(n) = 2 + (b ln n + a)² fitted by maximum likelihood",
+      "version": "1",
+      "citation": "Rytlewski J, Deng S, Xie T, et al. Model to improve specificity for identification of clinically-relevant expanded T cells in peripheral blood. PLoS One. 2019;14:e0213684"
+    },
+    "parameters": {
+      "dataset": "d-4ea5258778f3d2f8",
+      "definition": {
+        "name": "Amino-acid junction, V and J genes",
+        "chains": [],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "study": [
+        {
+          "name": "S01-d14",
+          "subject": "S01",
+          "timepoint": "14 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-d28",
+          "subject": "S01",
+          "timepoint": "28 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-d7",
+          "subject": "S01",
+          "timepoint": "7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-d90",
+          "subject": "S01",
+          "timepoint": "90 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-pre-1",
+          "subject": "S01",
+          "timepoint": "-7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-pre-2",
+          "subject": "S01",
+          "timepoint": "-7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-product",
+          "subject": "S01",
+          "tissue": "infusion product"
+        },
+        {
+          "name": "S02-d14",
+          "subject": "S02",
+          "timepoint": "14 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d28",
+          "subject": "S02",
+          "timepoint": "28 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d7",
+          "subject": "S02",
+          "timepoint": "7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d90",
+          "subject": "S02",
+          "timepoint": "90 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-pre-1",
+          "subject": "S02",
+          "timepoint": "-7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-pre-2",
+          "subject": "S02",
+          "timepoint": "-7 day (infusion)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-product",
+          "subject": "S02",
+          "tissue": "infusion product"
+        }
+      ],
+      "class": {
+        "base": "day -7",
+        "test": "auto",
+        "alternative": "two-sided",
+        "correction": "bh",
+        "alpha": 0.01,
+        "minTotal": 5
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.3.0"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "classes.json",
+      "role": "classes",
+      "size": 66381,
+      "sha256": "44b82fe09dafb868ea38635c755ced12fd2c2a8accc676aeb2247939d76edafe"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "base": "day -7",
+    "counts": {
+      "emerging": 0,
+      "transient": 1,
+      "contracting": 0,
+      "persistent": 209,
+      "unclassed": 0
+    },
+    "definition": "Amino-acid junction, V and J genes",
+    "subjects": 2,
+    "test": "betabinomial",
+    "unit": "umis"
+  }
+}

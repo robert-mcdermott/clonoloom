@@ -31,8 +31,8 @@ import (
 // its result's file, {kind}.json), its artifact ids' prefix, its method's version (which changes
 // when what it answers changes), its name in words, whether it uses the samples' groups and
 // subjects (the spec's Groups and Subjects; ignored otherwise), what of a study over time it uses
-// (over: "track", the spec's Study and Track; "compare", its Study and Compare; "", neither), and
-// its work (given its own kind).
+// (over: "track", the spec's Study and Track; "compare", its Study and Compare; "class", its Study
+// and Class; "attribute", its Study; "", none), and its work (given its own kind).
 type analysis struct {
 	kind     string
 	prefix   string
@@ -45,12 +45,13 @@ type analysis struct {
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis}
 
 // analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
 // (condition) and subject (by sample name), for the analyses that use them; Study is the samples'
-// annotation a study over time is read from (internal/study), Track the clonotypes it follows, and
-// Compare the two time points it tests the clonotypes between.
+// annotation a study over time is read from (internal/study), Track the clonotypes it follows,
+// Compare the two time points it tests the clonotypes between, and Class how it classes them
+// across time points.
 type analysisSpec struct {
 	Dataset    string               `json:"dataset"`
 	Definition clonotype.Definition `json:"definition"`
@@ -61,6 +62,7 @@ type analysisSpec struct {
 	Study      []study.Sample       `json:"study,omitempty"`
 	Track      *track.Choice        `json:"track,omitempty"`
 	Compare    *track.Comparison    `json:"compare,omitempty"`
+	Class      *track.Classing      `json:"class,omitempty"`
 	Method     int                  `json:"method"`
 }
 
@@ -103,6 +105,13 @@ func (s analysisSpec) normalized(version int) (analysisSpec, error) {
 		}
 		s.Compare = &c
 	}
+	if s.Class != nil {
+		c, err := s.Class.Normalize()
+		if err != nil {
+			return s, err
+		}
+		s.Class = &c
+	}
 	s.Method = version
 	return s, nil
 }
@@ -118,8 +127,9 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Study      []study.Sample    `json:"study,omitempty"`
 		Track      *track.Choice     `json:"track,omitempty"`
 		Compare    *track.Comparison `json:"compare,omitempty"`
+		Class      *track.Classing   `json:"class,omitempty"`
 		Method     int               `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -151,18 +161,26 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 		}
 		switch k.over {
 		case "track":
-			body.Compare = nil
+			body.Compare, body.Class = nil, nil
 			if body.Track == nil {
 				body.Track = &track.Choice{}
 			}
 		case "compare":
-			body.Track = nil
+			body.Track, body.Class = nil, nil
 			if body.Compare == nil {
 				writeError(w, http.StatusBadRequest, "Send the comparison: {\"compare\": {\"from\", \"to\"}}, two time points' keys.")
 				return
 			}
+		case "class":
+			body.Track, body.Compare = nil, nil
+			if body.Class == nil {
+				writeError(w, http.StatusBadRequest, "Send the classing: {\"class\": {\"base\"}}, the base time point's key.")
+				return
+			}
+		case "attribute":
+			body.Track, body.Compare, body.Class = nil, nil, nil
 		default:
-			body.Study, body.Track, body.Compare = nil, nil, nil
+			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
 		}
 		spec, err := body.analysisSpec.normalized(k.version)
 		if err != nil {

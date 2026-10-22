@@ -1,0 +1,696 @@
+{
+  "Info": {
+    "description": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products (simulated by ClonoLoom 0.2.0)",
+    "title": "AIRR Data File"
+  },
+  "Repertoire": [
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-pre-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S01-pre-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": -7,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-pre-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-pre-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S01-pre-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": -7,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-pre-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-d7.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S01-d7",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": 7,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-d7",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-d14.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S01-d14",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-d14",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-d28.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S01-d28",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": 28,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-d28",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-d90.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S01-d90",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": 90,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-d90",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-product.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S01-product",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-product",
+          "template_class": "DNA",
+          "tissue": {
+            "id": null,
+            "label": "infusion product"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-pre-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S02-pre-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": -7,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-pre-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "non-responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-pre-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S02-pre-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": -7,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-pre-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "non-responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-d7.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S02-d7",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": 7,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-d7",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "non-responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-d14.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S02-d14",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-d14",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "non-responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-d28.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S02-d28",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": 28,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-d28",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "non-responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-d90.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S02-d90",
+      "sample": [
+        {
+          "collection_time_point_reference": "infusion",
+          "collection_time_point_relative": 90,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-d90",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "non-responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-product.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S02-product",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-product",
+          "template_class": "DNA",
+          "tissue": {
+            "id": null,
+            "label": "infusion product"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small-series",
+        "study_title": "A small simulated CAR-T series: two patients' blood before and after infusion, with their infusion products"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "non-responder"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    }
+  ]
+}

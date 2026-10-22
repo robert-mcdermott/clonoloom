@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"slices"
 	"sort"
 	"strings"
 
@@ -34,6 +35,9 @@ const (
 	// ByTest: the n clonotypes a test called changed between two time points, the most significant
 	// first.
 	ByTest = "test"
+	// ByClass: the n clonotypes of a class across time points (classes.go), the most significant
+	// first (the largest, for persistent ones).
+	ByClass = "class"
 )
 
 // MaxFollowed is the most clonotypes followed in one subject; MaxN the most of each sample's
@@ -45,24 +49,38 @@ const (
 )
 
 // Choice is which clonotypes are followed: by a reference sample, each sample's largest, a list
-// (clonotype IDs, or junctions as the definition writes them), or a test's calls.
+// (clonotype IDs, or junctions as the definition writes them), a test's calls, or a class.
 type Choice struct {
-	By   string      `json:"by"`
-	N    int         `json:"n,omitempty"`
-	List []string    `json:"list,omitempty"`
-	Test *Comparison `json:"test,omitempty"`
+	By       string      `json:"by"`
+	N        int         `json:"n,omitempty"`
+	List     []string    `json:"list,omitempty"`
+	Test     *Comparison `json:"test,omitempty"`
+	Class    string      `json:"class,omitempty"`
+	Classing *Classing   `json:"classing,omitempty"`
 }
 
 // Normalize completes a choice: the default way (a reference sample's), its default number (10 of
-// a reference sample, 5 of each sample, 20 of a test's calls), a list trimmed of blanks and
-// repeats, a comparison's defaults.
+// a reference sample, 5 of each sample, 20 of a test's calls or a class), a list trimmed of blanks
+// and repeats, a comparison's or a classing's defaults.
 func (c Choice) Normalize() (Choice, error) {
 	switch c.By {
 	case "":
 		c.By = ByReference
-	case ByReference, ByLargest, ByList, ByTest:
+	case ByReference, ByLargest, ByList, ByTest, ByClass:
 	default:
-		return c, fmt.Errorf("track by %q: by is reference, largest, list or test", c.By)
+		return c, fmt.Errorf("track by %q: by is reference, largest, list, test or class", c.By)
+	}
+	if c.By == ByClass {
+		if c.Classing == nil || !slices.Contains(Classes, c.Class) {
+			return c, errors.New("track by class: give the class (emerging, transient, contracting or persistent) and the classing (base, and the tests' options)")
+		}
+		cl, err := c.Classing.Normalize()
+		if err != nil {
+			return c, err
+		}
+		c.Classing = &cl
+	} else {
+		c.Class, c.Classing = "", nil
 	}
 	if c.By == ByTest {
 		if c.Test == nil {
@@ -98,7 +116,7 @@ func (c Choice) Normalize() (Choice, error) {
 	}
 	c.List = nil
 	if c.N == 0 {
-		c.N = map[string]int{ByReference: 10, ByLargest: 5, ByTest: 20}[c.By]
+		c.N = map[string]int{ByReference: 10, ByLargest: 5, ByTest: 20, ByClass: 20}[c.By]
 	}
 	if c.N < 1 || c.N > MaxN {
 		return c, fmt.Errorf("n: from 1 to %d", MaxN)
@@ -141,12 +159,14 @@ type Sample struct {
 }
 
 // Reason is why a clonotype is followed: its rank among a sample's largest, the list's entry that
-// names it, or the test's call (increase or decrease) and its rank among the calls.
+// names it, the test's call (increase or decrease) and its rank among the calls, or its class and
+// its rank in it.
 type Reason struct {
 	Sample string `json:"sample,omitempty"`
 	Rank   int    `json:"rank,omitempty"`
 	Listed string `json:"listed,omitempty"`
 	Called string `json:"called,omitempty"`
+	Class  string `json:"class,omitempty"`
 }
 
 // Followed is a clonotype followed through a subject's samples: its chains, why, its value in
@@ -214,11 +234,15 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 		listed, res.Unmatched = match(t, choice.List)
 	}
 	var model *expansion.Model
-	if choice.By == ByTest {
+	if choice.By == ByTest || choice.By == ByClass {
 		if t.Unit == rep.Reads {
 			return Result{}, ErrReads
 		}
-		if model, _, _, err = prepare(t, index, design, *choice.Test); err != nil {
+		cmp := choice.Test
+		if choice.By == ByClass {
+			cmp = &Comparison{From: choice.Classing.Base, Options: choice.Classing.Options, Stable: choice.Classing.Stable}
+		}
+		if model, _, _, err = prepare(t, index, design, *cmp); err != nil {
 			return Result{}, err
 		}
 	}
@@ -229,6 +253,7 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 		samples []uint32
 		sub     Subject
 		tested  *Tested
+		classed *Classed
 	}
 	var plans []*plan
 	wanted := map[uint32]bool{}
@@ -249,6 +274,17 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 				continue
 			}
 			p.tested = &tested
+		}
+		if choice.By == ByClass {
+			classed, _, ok, err := classify(t, index, s, *choice.Classing, model)
+			if err != nil {
+				return Result{}, err
+			}
+			if !ok {
+				res.Without = append(res.Without, s.ID)
+				continue
+			}
+			p.classed = &classed
 		}
 		p.sub.By = choice.By
 		if choice.By == ByReference && len(s.References) == 0 {
@@ -284,6 +320,22 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 			chosen[i] = append(chosen[i], r)
 		}
 		switch sub.By {
+		case ByClass:
+			byID := map[string]int{}
+			for i, c := range t.Clonotypes {
+				byID[c.ID] = i
+			}
+			rank := 0
+			for _, c := range p.classed.Clonotypes {
+				if c.Class != choice.Class {
+					continue
+				}
+				if rank == choice.N {
+					break
+				}
+				rank++
+				add(byID[c.ID], Reason{Class: c.Class, Rank: rank})
+			}
 		case ByTest:
 			byID := map[string]int{}
 			for i, c := range t.Clonotypes {
