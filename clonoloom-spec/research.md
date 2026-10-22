@@ -272,6 +272,19 @@ implementations.
   coefficient, top-ten share and homeostasis bins; for each sample, the clonotypes and coverage a
   sample of its depth shows on average (Σ 1−(1−p)^m and 1 − Σ p(1−p)^m); for each pair of
   subjects, the clonotypes their populations share.
+- **Over time (wave 3, slice 4; `internal/simulate/series.go`).** A subject's blood at a time point
+  is its own population, each clone's cells multiplied by its trajectory's fold there (a class of
+  clones chosen at random), mixed with a reference population in a given share: an infusion
+  product (cells collected from the subject's own blood by a multinomial draw, each clone then
+  expanded ex vivo by a log-normal fold) or a donor's population. In each sample, each clone's
+  cells are then multiplied by a gamma of mean 1 and variance v (0.1 in the presets), drawn anew
+  for every sample: the biological variance between blood samples, which a binomial test of two
+  samples ignores (Rytlewski et al. 2019 found it between samples two weeks apart). The log of such
+  a gamma has variance ψ′(1/v) (0.105 for v = 0.1), so two samples' log ratio for a large clone
+  varies by 2ψ′(1/v) beyond sampling. Templates are drawn from each sample's blood by a multinomial.
+  The truth gives each productive clonotype's expected share of the productive cells at each time
+  point (the variance left out), the reference's share of each sample, and the expected share of
+  each sample's productive cells in clonotypes the reference population holds.
 
 ### 5.3 Diversity (wave 2)
 

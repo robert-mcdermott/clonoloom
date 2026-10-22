@@ -36,6 +36,7 @@ export const REFERENCES = {
   horn: 'Horn HS. Measurement of "overlap" in comparative ecological studies. Am Nat. 1966;100:419–424. doi:10.1086/282436',
   horvitzThompson: 'Horvitz DG, Thompson DJ. A generalization of sampling without replacement from a finite universe. J Am Stat Assoc. 1952;47:663–685. doi:10.1080/01621459.1952.10483446',
   chaoJost: 'Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. Ecology. 2012;93:2533–2547. doi:10.1890/11-1952.1',
+  rytlewski: 'Rytlewski J, Deng S, Xie T, et al. Model to improve specificity for identification of clinically-relevant expanded T cells in peripheral blood. PLoS One. 2019;14:e0213684. doi:10.1371/journal.pone.0213684',
 };
 
 const coverageWords = (v) => (v > 0.99 && v < 1 ? v.toFixed(4) : v.toFixed(3));
@@ -93,6 +94,18 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const simulated = (summary?.samples ?? []).map((s) => s.repertoire).find((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
   if (simulated) {
     sentences.push(`The data are simulated (${simulated.studyTitle || simulated.studyId}): T-cell receptor β rearrangements made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} from GRCh38's gene segments at Ensembl's annotation ${cite('ensembl')}, with the V and J usage of 10x Genomics' 10k PBMC data, deletions and non-templated insertions at the junctions, and selection on junction length to that data's ${cite('selection')}; each subject's clones of power-law sizes, each sample templates drawn from them and sequenced into reads. Their truth is recorded beside them.`);
+    // A study over time: its samples' time points and reference samples say so.
+    const repertoires = (summary?.samples ?? []).map((x) => x.repertoire).filter(Boolean);
+    const event = repertoires.map((r) => /\(([^()]+)\)$/.exec(r.timePoint ?? '')?.[1]).find(Boolean);
+    if (event) {
+      const tissues = repertoires.map((r) => r.tissue ?? '');
+      const reference = tissues.includes('infusion product')
+        ? ' An infusion product, made from each subject\'s own T cells and expanded ex vivo, was mixed into its blood in known shares after the infusion, and sampled as its reference sample.'
+        : tissues.includes('donor blood')
+          ? ' A donor\'s repertoire was mixed into each recipient\'s blood in known shares after the transplant, and sampled as its reference sample.'
+          : '';
+      sentences.push(`Each subject was sampled at several time points, in days from the ${event}, its clones' frequencies following known trajectories and varying between samples beyond sampling, as between blood samples ${cite('rytlewski')}.${reference}`);
+    }
   }
 
   // How they were read: the formats by the readers' codes, in the order of the files.

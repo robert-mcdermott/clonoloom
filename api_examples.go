@@ -45,6 +45,12 @@ func simulatedExamples() []examples.Generated {
 		simulatedExample("null", "A simulated TRB study with no difference between its groups",
 			"Six subjects of one kind in two groups (control and treated), two samples each: whatever a comparison of the groups finds is chance. Made on this computer in a few seconds, its truth beside it.",
 			"The twelve samples, with their subjects and groups, in templates.", 38<<20),
+		simulatedExample("car-t", "A simulated CAR-T study with known truth",
+			"Three patients' T-cell receptor β repertoires (two who respond, one who does not) sampled a week before infusion (twice), then 7, 14, 28 and 90 days after it, with their infusion products, made from each patient's own T cells. Some of the product's clones expand after infusion and some contract, and the product's share of the blood rises and falls; every clone's trajectory, and the product's share of every sample, is known (truth/). Made on this computer in a few seconds.",
+			"The 21 samples, with their subjects, time points and infusion products, in templates.", 33<<20),
+		simulatedExample("transplant", "A simulated transplant study with known truth",
+			"Three recipients' T-cell receptor β repertoires sampled before an allogeneic transplant and 30, 100 and 365 days after it (twice), with their donors' blood. The donor's share of the recipient's blood grows from 60% to 97%, and in the recipient with graft-versus-host disease a few donor clones expand; every clone's trajectory, and the donor's share of every sample, is known (truth/). Made on this computer in a few seconds.",
+			"The 18 samples, with their subjects, time points and donors, in templates.", 35<<20),
 	}
 }
 

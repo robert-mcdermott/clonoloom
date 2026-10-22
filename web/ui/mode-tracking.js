@@ -194,7 +194,7 @@ export function mountTracking(app, container) {
         h('td', h('b', s.id)),
         h('td', h('div.subject-samples', ...s.samples.map((p) => h('span.subject-sample', { title: p.referenceFrom === 'tissue' ? 'A reference sample by its tissue' : null },
           p.reference ? h('span.badge.accent', p.reference) : null,
-          h('span.mono', p.name), h('span.muted', when(p.time)),
+          h('span.mono', p.name), h('span.muted', { title: when(p.time) }, p.time ? p.time.label : 'no time point'),
           replicateOf.has(p.name) ? h('span.badge', { title: 'Taken at one time with other samples: replicates' }, `replicate ${replicateOf.get(p.name)}`) : null)))),
         h('td.muted', (s.untimed ?? []).join(', ') || '—'));
     });

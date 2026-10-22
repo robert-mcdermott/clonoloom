@@ -180,6 +180,13 @@ const scenes = {
     await act('measure_overlap');
     await waitFor(`document.querySelectorAll('.repertoire-view .plot-card svg').length >= 2`);
   },
+  // The simulated CAR-T study's subjects: each patient's samples in days from the infusion, its
+  // infusion product as its reference sample, and the two samples taken before it (replicates).
+  async subjects() {
+    await act('open_example', { example: 'simulated-car-t', download: true });
+    await act('describe_subjects');
+    await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 1`);
+  },
 };
 
 const names = wanted.length ? wanted : Object.keys(scenes);

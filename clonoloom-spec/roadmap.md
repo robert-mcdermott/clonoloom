@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); wave 2
-is merged and released as 0.2.0; wave 3 is planned, slices 1–3 done, slice 4 next.
+is merged and released as 0.2.0; wave 3 is planned, slices 1–4 done, slice 5 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -296,8 +296,8 @@ are written under that rule from the start.
 | 1. The website | Done |
 | 2. Results the same on every processor | Done |
 | 3. Subjects and time points | Done |
-| 4. Simulated longitudinal studies | Next |
-| 5. Tracking | To come |
+| 4. Simulated longitudinal studies | Done |
+| 5. Tracking | Next |
 | 6. Two-sample tests | To come |
 | 7. Beta-binomial expansion | To come |
 | 8. Classes and attribution; release 0.3.0 | To come |
@@ -380,6 +380,28 @@ are written under that rule from the start.
    reconstitution), and a null series with biological variance between replicate samples (each
    clone's frequency drawn around its mean, as Rytlewski et al. measured between replicates);
    offered as examples with their truth.
+   - *Done:* a `series` in a study's parameters (`internal/simulate/series.go`): time points with
+     their replicates, trajectories (classes of clones and their folds), a reference population
+     (an infusion product made from the subject's own blood, or a donor) in a share of the blood at
+     each time, and the variance between samples; presets `car-t`, `transplant` and `null-series`,
+     the first two in the Example data dialog. Each sample's time point and the reference's tissue
+     are in its AIRR Repertoire metadata, so the Tracking view places every sample without
+     annotation. The truth adds each sample's day, the reference's share of it and the expected
+     share in the reference's clonotypes, and each clonotype's expected frequency at every time
+     point. The simulated series' methods paragraph says how they were made. The Subjects part's
+     capture scene, moved here from slice 3, on the CAR-T example.
+   - *Validation:* every preset reads with no finding and is placed as made (subjects, days,
+     references, replicates); attribution within 0.016 of the truth in every one of 33 samples;
+     the CAR-T product's expanding and contracting clonotypes, pooled, within 6% of their expected
+     share at every time point, and the transplant's 80 alloreactive ones within 16%;
+     replicates differing by 0.218 beyond sampling over 298 clonotypes, the model's 0.210; the null
+     series' expectations the same at every time.
+   - *Decided:* the cross-sectional presets come out byte for byte as before: a series is made by
+     its own path. Every sample, replicates at one time included, draws its own biological
+     variance, so that replicates measure what the expansion tests must allow for.
+   - *Found:* a product made from the subject's own blood holds its largest clonotypes, so about
+     three quarters of the blood is in the product's clonotypes before the infusion: attribution by
+     clonotype is not the infused share, and the truth gives both (slice 8 must say so).
 5. **Tracking (T1, T6).** The **Tracking** view: a subject's samples over time; the clonotypes
    chosen (each sample's largest, a reference sample's, a list, or those a test called), followed
    with each frequency's 95% interval; threads (each clonotype's trajectory) and an alluvial plot,

@@ -18,6 +18,22 @@ grows with each.
     references (formats, remote control, simulated studies, installing) stay in `docs/`;
   - a link-preview image made from a screenshot (`docs/site/og-image.mjs`);
   - axe-core listed in `validation/sources.json` as a tool, fetched for the audit only.
+- **Simulated studies over time (wave 3, slice 4).** `clonoloom simulate --preset car-t`,
+  `transplant` and `null-series` ([docs/SIMULATION.md](docs/SIMULATION.md)), the first two in the
+  Example data dialog:
+  - each subject sampled at time points in days from its event (an infusion, a transplant), with
+    replicates; classes of clones on known trajectories (CAR-T: a few of the product's clones expand,
+    many contract; transplant: alloreactive donor clones in the recipient with graft-versus-host
+    disease);
+  - a reference population mixed into the blood in a known share at each time: an infusion product
+    made from the subject's own blood and expanded ex vivo, or a donor's repertoire, sampled once as
+    the subject's reference sample;
+  - biological variance between samples, replicates at one time included;
+  - time points and the reference's tissue in the AIRR Repertoire metadata, which the Tracking view
+    reads without annotation;
+  - the truth: each sample's day, the reference's share of it and the expected share in the
+    reference's clonotypes; each clonotype's expected frequency at every time point;
+  - the methods paragraph says how a simulated series was made.
 - **Subjects and time points (wave 3, slice 3).** The **Tracking** view's first part, Subjects
   (`internal/study`, `api_study.go`, `web/ui/mode-tracking.js`):
   - each sample's time point read as days from its subject's reference event: `day 28`, `d28`,
@@ -57,6 +73,13 @@ grows with each.
   the repository's files (CI runs it on every commit); every page passes axe-core 4.13.0's WCAG 2.1
   A and AA rules in both themes at a desktop's and a phone's width, none wider than a phone's
   screen (`node docs/site/audit.mjs`: 16 pages, 64 checks, no problem).
+- **Simulated series against their truth** (`validation/series_test.go`): each preset read with no
+  finding, its subjects, days, references and replicates placed as made; attribution within 0.016 of
+  the truth in each of 33 samples (mean 0.005); the CAR-T product's expanding and contracting
+  clonotypes, pooled, within 6% of their expected share at every time point, and the transplant's
+  80 alloreactive ones within 16%; replicates' log ratios varying by 0.218 beyond sampling
+  over 298 clonotypes, the model's 0.210; the null series' expectations unchanged over time. A small
+  series pinned by its digest on arm64 and amd64; its parameters' eleven ways of being wrong refused.
 - **Subjects and time points** (Go and Node tests): 29 spellings of time points read to their days
   and labels, and text that is not one refused; a design of three subjects ordered (a product without
   a time point first, then baseline, then days; week 4 and day 28 one time, and replicates), its

@@ -131,3 +131,17 @@ test('a table read through a mapping says which of its columns gave what (the 0.
   assert.match(text, /S02-1\.vdjtools\.txt's columns were mapped by the user: the junction's amino acids from "cdr3aa", the junction's nucleotides from "cdr3nt", the V gene from "v", the D gene from "d", the J gene from "j" and the count from "count", the count being of UMIs, every row of sample S02-1; a rearrangement was taken as productive when its junction is whole codons with no stop codon\./);
   assert.match(text, /Each sample's diversity was measured over its clonotypes' abundances in UMIs/);
 });
+
+test('a simulated series says it was sampled over time, and how its reference was mixed in', () => {
+  const dataset = { ...pbmc, credits: [], formats: ['AIRR Rearrangement TSV'], sources: [{ ...pbmc.sources[0], format: 'airr' }], singleCell: false, unit: 'umis' };
+  const summary = { samples: [
+    { name: 'S01-d7', repertoire: { repertoireId: 'S01-d7', studyId: 'clonoloom-simulated-car-t', studyTitle: 'A simulated CAR-T study', timePoint: '7 day (infusion)', tissue: 'blood' } },
+    { name: 'S01-product', repertoire: { repertoireId: 'S01-product', studyId: 'clonoloom-simulated-car-t', studyTitle: 'A simulated CAR-T study', tissue: 'infusion product' } },
+  ], sources: [{}] };
+  const { text, references } = methodsParagraph({ dataset, summary, program });
+  assert.match(text, /Each subject was sampled at several time points, in days from the infusion, its clones' frequencies following known trajectories and varying between samples beyond sampling, as between blood samples \[4\]\. An infusion product, made from each subject's own T cells and expanded ex vivo, was mixed into its blood in known shares after the infusion, and sampled as its reference sample\./);
+  assert.match(references[3], /^\[4\] Rytlewski J/);
+  // A study at one time says nothing of it.
+  const standard = { samples: [{ name: 'S01-1', repertoire: { repertoireId: 'S01-1', studyId: 'clonoloom-simulated-standard', studyTitle: 'A simulated TRB study' } }], sources: [{}] };
+  assert.doesNotMatch(methodsParagraph({ dataset, summary: standard, program }).text, /time points/);
+});

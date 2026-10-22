@@ -49,6 +49,8 @@ type Study struct {
 	ReadsPerTemplate  float64       `json:"readsPerTemplate"`
 	ReadsSize         float64       `json:"readsSize"`
 	Recombination     Recombination `json:"recombination"`
+	// Series: a study over time (series.go), SamplesPerSubject then unused.
+	Series *Series `json:"series,omitempty"`
 }
 
 // Presets are the studies `clonoloom simulate` starts from.
@@ -89,6 +91,68 @@ var Presets = map[string]Study{
 		ReadsPerTemplate:  8, ReadsSize: 2,
 		Recombination: DefaultRecombination(),
 	},
+	// Studies over time (series.go).
+	"car-t": {
+		Name: "car-t", Title: "A simulated CAR-T study: three patients' blood before and after infusion, with their infusion products",
+		Seed: 20261023,
+		Groups: []Group{
+			{Condition: "responder", Subjects: 2, Population: Population{Clonotypes: 30000, Alpha: 1.2, MaxSize: 100000, Nonproductive: 0.15}},
+			{Condition: "non-responder", Subjects: 1, Population: Population{Clonotypes: 30000, Alpha: 1.2, MaxSize: 100000, Nonproductive: 0.15}},
+		},
+		SamplesPerSubject: 1,
+		Templates:         []int{12000, 18000, 15000, 20000, 10000, 16000},
+		ReadsPerTemplate:  8, ReadsSize: 2,
+		Recombination: DefaultRecombination(),
+		Series: &Series{
+			Event:    "infusion",
+			Times:    []TimePoint{{Day: -7, Replicates: 2}, {Day: 7, Replicates: 1}, {Day: 14, Replicates: 1}, {Day: 28, Replicates: 1}, {Day: 90, Replicates: 1}},
+			Variance: 0.1,
+			Reference: &Reference{Kind: "product", Label: "infusion product", Cells: 30000, Expansion: 1, Templates: 15000,
+				Shares: map[string][]float64{"responder": {0, 0.10, 0.25, 0.10, 0.03}, "non-responder": {0, 0.02, 0.03, 0.01, 0.002}},
+				Trajectories: []Trajectory{
+					{Name: "expanding", Share: 0.02, Folds: []float64{1, 5, 20, 10, 5}},
+					{Name: "contracting", Share: 0.2, Folds: []float64{1, 1, 0.3, 0.1, 0.02}},
+				}},
+		},
+	},
+	"transplant": {
+		Name: "transplant", Title: "A simulated transplant study: three recipients' blood before and after an allogeneic transplant, with their donors",
+		Seed: 20261024,
+		Groups: []Group{
+			{Condition: "no GVHD", Subjects: 2, Population: Population{Clonotypes: 30000, Alpha: 1.2, MaxSize: 100000, Nonproductive: 0.15}},
+			{Condition: "GVHD", Subjects: 1, Population: Population{Clonotypes: 30000, Alpha: 1.2, MaxSize: 100000, Nonproductive: 0.15}},
+		},
+		SamplesPerSubject: 1,
+		Templates:         []int{12000, 18000, 15000, 20000, 10000, 16000},
+		ReadsPerTemplate:  8, ReadsSize: 2,
+		Recombination: DefaultRecombination(),
+		Series: &Series{
+			Event:    "transplant",
+			Times:    []TimePoint{{Day: -14, Replicates: 1}, {Day: 30, Replicates: 1}, {Day: 100, Replicates: 1}, {Day: 365, Replicates: 2}},
+			Variance: 0.1,
+			Reference: &Reference{Kind: "donor", Label: "donor blood", Population: &Population{Clonotypes: 40000, Alpha: 1.3, MaxSize: 100000, Nonproductive: 0.15}, Templates: 15000,
+				Shares: map[string][]float64{"no GVHD": {0, 0.6, 0.85, 0.97}, "GVHD": {0, 0.6, 0.85, 0.97}},
+				Trajectories: []Trajectory{
+					{Name: "alloreactive", Share: 0.002, Folds: []float64{1, 10, 40, 5}, Conditions: []string{"GVHD"}},
+				}},
+		},
+	},
+	"null-series": {
+		Name: "null-series", Title: "A simulated series with no change: four subjects sampled three times, two samples each time",
+		Seed: 20261025,
+		Groups: []Group{
+			{Condition: "healthy", Subjects: 4, Population: Population{Clonotypes: 40000, Alpha: 1.3, MaxSize: 100000, Nonproductive: 0.15}},
+		},
+		SamplesPerSubject: 1,
+		Templates:         []int{12000, 18000, 15000, 20000, 10000, 16000},
+		ReadsPerTemplate:  8, ReadsSize: 2,
+		Recombination: DefaultRecombination(),
+		Series: &Series{
+			Event:    "the first sample",
+			Times:    []TimePoint{{Day: 0, Replicates: 2}, {Day: 14, Replicates: 2}, {Day: 28, Replicates: 2}},
+			Variance: 0.1,
+		},
+	},
 }
 
 // Check says what is wrong with a study's parameters.
@@ -116,6 +180,9 @@ func (s Study) Check() error {
 	}
 	if s.ReadsPerTemplate <= 0 || s.ReadsSize <= 0 {
 		return fmt.Errorf("readsPerTemplate and readsSize must be positive")
+	}
+	if s.Series != nil {
+		return s.Series.check(s)
 	}
 	return nil
 }
@@ -225,6 +292,15 @@ type SampleTruth struct {
 	// the population's cells they hold, 1 - Σ p(1-p)^m.
 	ExpectedClonotypes float64 `json:"expectedClonotypes"`
 	ExpectedCoverage   float64 `json:"expectedCoverage"`
+	// In a study over time: the sample's day and replicate; or whether it is the subject's
+	// reference sample; the reference population's expected share of its cells, and the expected
+	// share of its productive cells in clonotypes the reference population holds (what attribution
+	// measures).
+	Day            *float64 `json:"day,omitempty"`
+	Replicate      int      `json:"replicate,omitempty"`
+	Reference      bool     `json:"reference,omitempty"`
+	ReferenceShare *float64 `json:"referenceShare,omitempty"`
+	Attribution    *float64 `json:"attribution,omitempty"`
 }
 
 // sampled draws a sample's templates from the population (each in proportion to its clone's
@@ -274,6 +350,9 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 	}
 	if err := os.MkdirAll(filepath.Join(dir, "truth"), 0o755); err != nil {
 		return Summary{}, err
+	}
+	if s.Series != nil {
+		return runSeries(ctx, s, dir, version, progress)
 	}
 	g := NewGenerator(&humanTRB, s.Recombination)
 	var subjects []Subject
@@ -504,6 +583,7 @@ type studyTruth struct {
 	Subjects  []SubjectTruth `json:"subjects"`
 	Samples   []SampleTruth  `json:"samples"`
 	Sharing   []SharingTruth `json:"sharing"`
+	Series    []SeriesTruth  `json:"series,omitempty"`
 }
 
 var sampleColumns = []string{"sequence_id", "sequence", "rev_comp", "productive", "vj_in_frame", "stop_codon", "locus", "v_call", "d_call", "j_call",
