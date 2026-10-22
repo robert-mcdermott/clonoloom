@@ -1,5 +1,5 @@
 // Plots for the views, as SVG markup: horizontal bars (stacked or not), columns, estimates with
-// their intervals, and lines. Pure: each
+// their intervals, lines, and rarefaction curves. Pure: each
 // takes its data and options and returns { svg, description }, the description saying in words
 // what the plot shows (for screen readers, and as the plot's title). Colors are CSS classes the
 // page styles (web/styles.css, "Plots"), so plots follow the theme and color-vision setting.
@@ -153,6 +153,76 @@ export function lines(series, { label = 'Lines', width = 520, height = 220, xLab
   if (xLabel) body += `<text class="plot-label" x="${left + plotWidth / 2}" y="${height - 4}" text-anchor="middle">${esc(xLabel)}</text>`;
   if (yLabel) body += `<text class="plot-label" transform="translate(13 ${10 + plotHeight / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text>`;
   const description = `${label}: ${series.length} line${series.length === 1 ? '' : 's'} (${series.map((s) => s.label).join(', ')}).`;
+  return { svg: wrap(width, height, label, description, body), description };
+}
+
+// Rarefaction and extrapolation curves: series [{ label, className, points: [{ x, y, lower,
+// upper, extrapolated }], observed: { x, y } }], each drawn solid where interpolated and dashed
+// where extrapolated, its interval as a band (with bands), a dot where the sample itself is.
+// guides [{ x, label }] are vertical reference lines. x is linear from 0 (to xMax when given), or
+// logarithmic with logX (x > 0); y is linear from 0.
+export function curves(series, { label = 'Curves', width = 560, height = 260, xLabel = '', yLabel = '', logX = false, bands = true, guides = [], xMax = null, xFormat = defaultFormat, yFormat = defaultFormat } = {}) {
+  const left = 62;
+  const top = 12;
+  const bottom = 36;
+  const plotWidth = width - left - 16;
+  const plotHeight = height - top - bottom;
+  const usable = (p) => Number.isFinite(p.x) && Number.isFinite(p.y) && (!logX || p.x > 0);
+  const pts = series.flatMap((s) => s.points.filter(usable));
+  const xs = pts.map((p) => p.x);
+  let x0 = 0;
+  let x1;
+  let xt;
+  if (logX) {
+    x0 = Math.floor(Math.log10(Math.min(...xs, 10)));
+    x1 = Math.max(Math.ceil(Math.log10(Math.max(...xs, 10))), x0 + 1);
+    xt = Array.from({ length: x1 - x0 + 1 }, (_, k) => x0 + k);
+  } else {
+    xt = ticks(xMax ?? Math.max(...xs, 1), 4);
+    x1 = xMax ?? (xt.at(-1) || 1);
+  }
+  const yHi = Math.max(1, ...pts.map((p) => (bands && Number.isFinite(p.upper) ? Math.max(p.y, p.upper) : p.y)));
+  const yt = ticks(yHi, 4);
+  const y1 = yt.at(-1) || 1;
+  const px = (v) => left + (((logX ? Math.log10(v) : v) - x0) / (x1 - x0 || 1)) * plotWidth;
+  const py = (v) => top + plotHeight - (Math.min(Math.max(v, 0), y1) / y1) * plotHeight;
+  const path = (list) => list.map((p) => `${px(p.x).toFixed(1)},${py(p.y).toFixed(1)}`).join(' ');
+  let body = '';
+  for (const t of yt) body += `<line class="plot-gridline" x1="${left}" x2="${left + plotWidth}" y1="${py(t)}" y2="${py(t)}"/><text class="plot-tick" x="${left - 6}" y="${py(t) + 4}" text-anchor="end">${yFormat(t)}</text>`;
+  for (const t of xt) {
+    const v = logX ? 10 ** t : t;
+    body += `<text class="plot-tick" x="${px(v)}" y="${top + plotHeight + 15}" text-anchor="middle">${xFormat(v)}</text>`;
+  }
+  body += `<line class="plot-axis" x1="${left}" x2="${left + plotWidth}" y1="${top + plotHeight}" y2="${top + plotHeight}"/>`;
+  for (const s of series) {
+    const ok = s.points.filter(usable);
+    if (!ok.length) continue;
+    const cls = s.className ?? 'plot-s1';
+    const banded = ok.filter((p) => Number.isFinite(p.lower) && Number.isFinite(p.upper));
+    if (bands && banded.length > 1) {
+      const upper = banded.map((p) => ({ x: p.x, y: p.upper }));
+      const lower = banded.map((p) => ({ x: p.x, y: p.lower })).reverse();
+      body += `<polygon class="plot-band ${cls}" points="${path(upper)} ${path(lower)}"/>`;
+    }
+    const within = ok.filter((p) => !p.extrapolated);
+    const beyond = ok.filter((p) => p.extrapolated);
+    if (within.length > 1) body += `<polyline class="plot-line ${cls}" points="${path(within)}"><title>${esc(s.label)}</title></polyline>`;
+    if (beyond.length) body += `<polyline class="plot-line plot-dashed ${cls}" points="${path([...within.slice(-1), ...beyond])}"><title>${esc(`${s.label}, extrapolated`)}</title></polyline>`;
+    if (s.observed && usable(s.observed)) body += `<circle class="${cls}" cx="${px(s.observed.x).toFixed(1)}" cy="${py(s.observed.y).toFixed(1)}" r="3.5"><title>${esc(`${s.label}: ${yFormat(s.observed.y)} at ${xFormat(s.observed.x)}`)}</title></circle>`;
+  }
+  for (const g of guides) {
+    if (!Number.isFinite(g.x) || (logX && g.x <= 0)) continue;
+    const x = px(g.x).toFixed(1);
+    body += `<line class="plot-guide" x1="${x}" x2="${x}" y1="${top}" y2="${top + plotHeight}"/>`;
+    if (g.label) body += `<text class="plot-tick" x="${x}" y="${top + 9}" dx="4">${esc(g.label)}</text>`;
+  }
+  if (xLabel) body += `<text class="plot-label" x="${left + plotWidth / 2}" y="${height - 4}" text-anchor="middle">${esc(xLabel)}</text>`;
+  if (yLabel) body += `<text class="plot-label" transform="translate(13 ${top + plotHeight / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text>`;
+  const ends = series.map((s) => {
+    const last = s.points.filter(usable).at(-1);
+    return last ? `${s.label} ${yFormat(last.y)} at ${xFormat(last.x)}` : `${s.label} none`;
+  });
+  const description = `${label}: ${series.length} curve${series.length === 1 ? '' : 's'}, solid where interpolated and dashed where extrapolated, ending at ${ends.join('; ')}.`;
   return { svg: wrap(width, height, label, description, body), description };
 }
 

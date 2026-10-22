@@ -90,28 +90,27 @@ func Measure(abundances []float64, opt Options) Result {
 	z := normalQuantile(0.5 + opt.Confidence/2)
 	replicates := [][]float64(nil)
 	if st.whole && opt.Replicates > 1 && st.n > 0 {
-		replicates = bootstrap(f, st, ids, opt)
+		replicates = bootstrap(f, st, opt, func(rf Freq) []float64 {
+			rst := statsOf(rf)
+			values := map[string]float64{}
+			observed(rf, rst, values)
+			estimated(rf, rst, values)
+			row := make([]float64, len(ids))
+			for k, id := range ids {
+				v, ok := values[id]
+				if !ok {
+					v = math.NaN()
+				}
+				row[k] = v
+			}
+			return row
+		})
 		res.Replicates = opt.Replicates
 	}
 	for k, id := range ids {
 		v := Value{Estimate: Number(point[id]), SE: Number(math.NaN()), Lower: Number(math.NaN()), Upper: Number(math.NaN())}
 		if replicates != nil {
-			var sum, n float64
-			for _, r := range replicates {
-				if x := r[k]; !math.IsNaN(x) && !math.IsInf(x, 0) {
-					sum += x
-					n++
-				}
-			}
-			if n > 1 {
-				mean := sum / n
-				var ss float64
-				for _, r := range replicates {
-					if x := r[k]; !math.IsNaN(x) && !math.IsInf(x, 0) {
-						ss += (x - mean) * (x - mean)
-					}
-				}
-				se := math.Sqrt(ss / (n - 1))
+			if se := spread(replicates, k); !math.IsNaN(se) {
 				lo, hi := bounds(id, float64(st.s))
 				// The asymptotic Shannon diversity is at least that seen in the sample, which is
 				// biased low (iNEXT's floor). iNEXT floors the Simpson diversity too, but the one seen
@@ -143,9 +142,57 @@ func Measure(abundances []float64, opt Options) Result {
 // Appendix G): the clonotypes seen, their frequencies tuned down for having been seen
 // (p̂ = (X/n)(1 − λ(1 − X/n)^n), λ = (1 − Ĉ)/Σ (X/n)(1 − X/n)^n), and ⌈f̂0⌉ clonotypes not seen,
 // each (1 − Ĉ)/⌈f̂0⌉; each replicate a multinomial sample of the same size, every measure
-// computed again from it. Each replicate has its own random stream and its own slot, so the
-// result is the same however many processors draw them.
-func bootstrap(f Freq, st stats, ids []string, opt Options) [][]float64 {
+// computed again from it (by measure, which answers a row of values). Each replicate has its own
+// random stream and its own slot, so the result is the same however many processors draw them, and
+// the curves (Rarefy) are drawn from the same replicates as the measures.
+func bootstrap(f Freq, st stats, opt Options, measure func(Freq) []float64) [][]float64 {
+	chances := community(f, st)
+	draws := int(math.Round(st.n))
+	out := make([][]float64, opt.Replicates)
+	work := make(chan int)
+	var wg sync.WaitGroup
+	for range max(1, runtime.GOMAXPROCS(0)) {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			var counts, hist, seen []int
+			for b := range work {
+				r := random.New(opt.Seed, opt.Stream<<24|uint64(b))
+				counts = r.Multinomial(draws, chances, counts)
+				// The replicate's frequency counts, through a histogram reused between replicates.
+				seen = seen[:0]
+				for _, c := range counts {
+					if c == 0 {
+						continue
+					}
+					if c >= len(hist) {
+						hist = append(hist, make([]int, c-len(hist)+1)...)
+					}
+					if hist[c] == 0 {
+						seen = append(seen, c)
+					}
+					hist[c]++
+				}
+				sort.Ints(seen)
+				rf := make(Freq, len(seen))
+				for i, c := range seen {
+					rf[i].Abundance, rf[i].Count = float64(c), hist[c]
+					hist[c] = 0
+				}
+				out[b] = measure(rf)
+			}
+		}()
+	}
+	for b := range opt.Replicates {
+		work <- b
+	}
+	close(work)
+	wg.Wait()
+	return out
+}
+
+// community is the estimated repertoire the replicates are drawn from: each clonotype's chance.
+func community(f Freq, st stats) []float64 {
 	n := st.n
 	cHat := coverage(st)
 	if math.IsNaN(cHat) || cHat > 1 {
@@ -175,63 +222,30 @@ func bootstrap(f Freq, st stats, ids []string, opt Options) [][]float64 {
 	for range unseen {
 		chances = append(chances, (1-cHat)/float64(unseen))
 	}
-	draws := int(math.Round(n))
-	out := make([][]float64, opt.Replicates)
-	work := make(chan int)
-	var wg sync.WaitGroup
-	for range max(1, runtime.GOMAXPROCS(0)) {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			var counts []int
-			var hist []int
-			var seen []int
-			values := map[string]float64{}
-			for b := range work {
-				r := random.New(opt.Seed, opt.Stream<<24|uint64(b))
-				counts = r.Multinomial(draws, chances, counts)
-				// The replicate's frequency counts, through a histogram reused between replicates.
-				seen = seen[:0]
-				for _, c := range counts {
-					if c == 0 {
-						continue
-					}
-					if c >= len(hist) {
-						hist = append(hist, make([]int, c-len(hist)+1)...)
-					}
-					if hist[c] == 0 {
-						seen = append(seen, c)
-					}
-					hist[c]++
-				}
-				sort.Ints(seen)
-				rf := make(Freq, len(seen))
-				for i, c := range seen {
-					rf[i].Abundance, rf[i].Count = float64(c), hist[c]
-					hist[c] = 0
-				}
-				rst := statsOf(rf)
-				clear(values)
-				observed(rf, rst, values)
-				estimated(rf, rst, values)
-				row := make([]float64, len(ids))
-				for k, id := range ids {
-					v, ok := values[id]
-					if !ok {
-						v = math.NaN()
-					}
-					row[k] = v
-				}
-				out[b] = row
-			}
-		}()
+	return chances
+}
+
+// spread is a column's standard error over the replicates, those not finite left out (NaN with
+// fewer than two).
+func spread(replicates [][]float64, k int) float64 {
+	var sum, n float64
+	for _, r := range replicates {
+		if x := r[k]; !math.IsNaN(x) && !math.IsInf(x, 0) {
+			sum += x
+			n++
+		}
 	}
-	for b := range opt.Replicates {
-		work <- b
+	if n < 2 {
+		return math.NaN()
 	}
-	close(work)
-	wg.Wait()
-	return out
+	mean := sum / n
+	var ss float64
+	for _, r := range replicates {
+		if x := r[k]; !math.IsNaN(x) && !math.IsInf(x, 0) {
+			ss += (x - mean) * (x - mean)
+		}
+	}
+	return math.Sqrt(ss / (n - 1))
 }
 
 // normalQuantile is the standard normal distribution's quantile function (Acklam's rational

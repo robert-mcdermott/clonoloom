@@ -73,6 +73,10 @@ var remoteActions = []remoteAction{
 	{Name: "measure_diversity", Title: "Measure diversity", Description: "Shows the Repertoire view and measures each sample's diversity under the dataset's clonotype definition and filter (a job; the result kept with the project), answering each sample's main measures with their 95% intervals: clonotypes seen, Chao1, the Shannon and Simpson diversity seen and estimated, clonality, Simpson clonality, Gini and coverage.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
 	})},
+	{Name: "rarefy", Title: "Rarefy and extrapolate", Description: "Shows the Repertoire view's Rarefaction part and computes each sample's rarefaction and extrapolation curves under the dataset's clonotype definition and filter (a job; the result kept with the project), answering the levels the samples are best compared at and each sample's clonotypes, Shannon diversity and Simpson diversity at the level chosen, with their 95% intervals.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"level":   textArg("Where the samples are compared: coverage (the lowest sample coverage among them; the default), size (the smallest sample's), extrapolatedCoverage or extrapolatedSize (iNEXT's defaults, reached by extrapolating to twice a sample's size)."),
+	})},
 	{Name: "show_examples", Title: "Show the example data", Description: "Opens the Example data dialog.", InputSchema: schema(map[string]any{})},
 	{Name: "show_methods", Title: "Write the methods paragraph", Description: "Shows a dataset's methods paragraph and answers it with its references.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,

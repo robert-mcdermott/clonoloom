@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { columns, intervals, lines, stackedBars, ticks } from './plot.js';
+import { curves, columns, intervals, lines, stackedBars, ticks } from './plot.js';
 
 test('ticks are nice numbers covering the range', () => {
   assert.deepEqual(ticks(1), [0, 0.25, 0.5, 0.75, 1]);
@@ -48,4 +48,32 @@ test('lines on a logarithmic axis leave out what is not positive', () => {
   assert.equal((svg.match(/,/g) ?? []).length >= 5, true);
   assert.match(description, /2 lines \(S01-1, S04-1\)/);
   assert.match(svg, />100,000</);
+});
+
+test('curves draw interpolation solid, extrapolation dashed, the sample as a dot, bands and guides', () => {
+  const points = [
+    { x: 1, y: 1, lower: 1, upper: 1 },
+    { x: 50, y: 30, lower: 25, upper: 35 },
+    { x: 100, y: 45, lower: 40, upper: 50 },
+    { x: 150, y: 52, lower: 44, upper: 60, extrapolated: true },
+    { x: 200, y: 56, lower: 45, upper: 67, extrapolated: true },
+    { x: NaN, y: 3 },
+  ];
+  const { svg, description } = curves([{ label: 'S<1>', className: 'plot-s2', points, observed: { x: 100, y: 45 } }],
+    { label: 'Clonotypes by size', xLabel: 'Templates', guides: [{ x: 120, label: 'compared' }] });
+  assert.equal((svg.match(/<polyline/g) ?? []).length, 2);
+  assert.match(svg, /class="plot-line plot-dashed plot-s2"/);
+  assert.match(svg, /<polygon class="plot-band plot-s2"/);
+  assert.match(svg, /<circle class="plot-s2"/);
+  assert.match(svg, /class="plot-guide"/);
+  assert.match(svg, /S&lt;1&gt;/);
+  assert.match(description, /1 curve, solid where interpolated and dashed where extrapolated, ending at S<1> 56 at 200/);
+  // The dashed line starts where the solid one ends.
+  const dashed = svg.match(/plot-dashed plot-s2" points="([^"]+)"/)[1].split(' ');
+  const solid = svg.match(/class="plot-line plot-s2" points="([^"]+)"/)[1].split(' ');
+  assert.equal(dashed[0], solid.at(-1));
+  // Without bands, none; on a logarithmic axis, decades.
+  const log = curves([{ label: 'a', points }], { logX: true, bands: false });
+  assert.doesNotMatch(log.svg, /plot-band/);
+  assert.match(log.svg, />1,000</);
 });

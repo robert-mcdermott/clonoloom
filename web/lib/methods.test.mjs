@@ -88,3 +88,17 @@ test('a diversity result kept says how each measure was made, citing each method
     assert.ok(cited.some((r) => r.startsWith(work)), work);
   }
 });
+
+test('a rarefaction result kept says how the samples were compared, citing each method once', () => {
+  const results = [
+    { kind: 'diversity', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { replicates: 200, seed: 20140101 } },
+    { kind: 'rarefaction', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: 'Productive v2', options: { replicates: 200, seed: 20140101 }, levels: { coverage: 0.87402, size: 9438, extrapolatedCoverage: 0.93, extrapolatedSize: 18876 } },
+  ];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /were rarefied and extrapolated, over its clonotypes' abundances in templates \("Amino-acid junction, V and J genes", filter Productive v2\)/);
+  assert.match(text, /compared at a sample coverage of 0\.874, the lowest among them, and at 9,438 templates, the smallest sample's size/);
+  // Chao et al. 2014, Chao and Jost 2012, Hill and ClonoLoom each cited once.
+  for (const key of ['Rarefaction and extrapolation with Hill numbers', 'Coverage-based rarefaction', 'Diversity and evenness', 'ClonoLoom, version']) {
+    assert.equal(references.filter((r) => r.includes(key)).length, 1, key);
+  }
+});

@@ -183,6 +183,7 @@ export function installRemote(app) {
       app.focusItem({ kind: 'dataset', id: d.id });
       await app.setMode('repertoire');
       const view = await waitFor(() => app.repertoireView, 5000, 'the Repertoire view');
+      view.show('diversity');
       await waitFor(() => !['looking', 'idle'].includes(view.state().status), 60000, 'the view to look for a result');
       if (view.state().status === 'absent') await view.measure();
       const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'the measurement');
@@ -193,6 +194,33 @@ export function installRemote(app) {
         data: {
           result: done.artifact, unit: done.result.unit, definition: done.result.describe,
           samples: done.result.samples.map((s) => ({ name: s.name, abundance: s.result.abundance, measures: Object.fromEntries(keys.map((k) => [k, s.result.measures[k] ?? null])) })),
+        },
+      };
+    },
+
+    async rarefy({ dataset, level }) {
+      const d = datasetOf(dataset);
+      const key = level === undefined || level === '' ? 'coverage' : choose(level, ['coverage', 'size', 'extrapolatedCoverage', 'extrapolatedSize'], 'level');
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('repertoire');
+      const view = await waitFor(() => app.repertoireView, 5000, 'the Repertoire view');
+      view.show('rarefaction');
+      await waitFor(() => !['looking', 'idle'].includes(view.state('rarefaction').status), 60000, 'the view to look for a result');
+      if (view.state('rarefaction').status === 'absent') await view.measure('rarefaction');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state('rarefaction').status) && view.state('rarefaction'), 30 * 60 * 1000, 'the curves');
+      if (done.status === 'failed') throw new ActionError(done.error);
+      view.setLevel(key);
+      const r = done.result;
+      const bySize = /size/i.test(key);
+      const index = key.startsWith('extrapolated') ? 1 : 0;
+      return {
+        message: `${d.name}'s ${r.samples.length} samples compared at ${bySize ? 'equal size' : 'equal coverage'} (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, levels: r.levels, comparedAt: key,
+          samples: r.samples.map((s) => {
+            const p = (bySize ? s.curves.atSize : s.curves.atCoverage)?.[index];
+            return { name: s.name, abundance: s.curves.abundance, size: p?.size ?? null, coverage: p?.coverage ?? null, method: p?.method ?? null, clonotypes: p?.hill?.[0] ?? null, shannon: p?.hill?.[1] ?? null, simpson: p?.hill?.[2] ?? null };
+          }),
         },
       };
     },

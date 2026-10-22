@@ -1,12 +1,14 @@
-// The Repertoire view (clonoloom-spec/requirements.md, R1 and R5): each sample's diversity under
-// its dataset's clonotype definition and filter, measured by the program as a job and kept as a
-// result (api_diversity.go): a measure for every sample with its interval, the Hill numbers'
-// profile, clonal space homeostasis, and a table of the measures; each explained in words, and
-// where a sample is too little sampled for an estimate to hold, said so.
+// The Repertoire view (clonoloom-spec/requirements.md, R1, R2, R5 and Q3): each sample's diversity
+// under its dataset's clonotype definition and filter, in two parts, each measured by the program
+// as a job and kept as a result (api_analysis.go). Measures: a measure for every sample with its
+// interval, the Hill numbers' profile, clonal space homeostasis and a table. Rarefaction: the
+// samples compared at equal coverage or equal size, their curves by size and by coverage, and how
+// complete each sample is. Every measure explained in words; where a value cannot be trusted as
+// far as its interval says, said so.
 
 import { h, icon, clear } from './dom.js';
 import { toast } from './overlays.js';
-import { intervals, lines, stackedBars } from '../lib/plot.js';
+import { curves, intervals, lines, stackedBars } from '../lib/plot.js';
 import { UNITS, annotation, datasetUnit, fieldsFromMetadata } from '../lib/datasets.js';
 import { datasetDefinition } from '../lib/definitions.js';
 import { datasetFilter } from '../lib/filters.js';
@@ -18,7 +20,7 @@ export const MEASURES = [
   { id: 'hill1Estimated', label: 'Shannon diversity (Hill number 1), estimated', words: 'The Shannon diversity of the whole repertoire the sample was drawn from (Chao, Wang and Jost 2013). Where the sample coverage is low, a lower bound.' },
   { id: 'hill2', label: 'Simpson diversity (Hill number 2), seen', words: 'The number of equally common clonotypes that would give the sample\'s Simpson index: 1/Σp². It counts mostly the largest clonotypes.' },
   { id: 'hill2Estimated', label: 'Simpson diversity (Hill number 2), estimated', words: 'The Simpson diversity of the whole repertoire: n(n−1)/ΣX(X−1), nearly unbiased at any depth (Chao et al. 2014).' },
-  { id: 'richness', label: 'Clonotypes seen (Hill number 0)', words: 'The clonotypes in the sample. It grows with depth: compare samples of different depths at equal coverage (rarefaction) instead.' },
+  { id: 'richness', label: 'Clonotypes seen (Hill number 0)', words: 'The clonotypes in the sample. It grows with depth: compare samples of different depths at equal coverage (Rarefaction) instead.' },
   { id: 'chao1', label: 'Richness, estimated (Chao1)', words: 'The clonotypes of the whole repertoire, seen and unseen, from those seen once and twice (Chao 1984; bias-corrected). A lower bound; where the coverage is low, far below the truth.' },
   { id: 'ace', label: 'Richness, estimated (ACE)', words: 'The abundance-based coverage estimator (Chao and Lee 1992), from the clonotypes seen at most 10 times. Unstable in deep repertoires; prefer Chao1 or a comparison at equal coverage.' },
   { id: 'clonality', label: 'Clonality (1 − evenness)', words: 'One minus Pielou\'s evenness H/ln S: 0 when every clonotype is equally common, near 1 when a few dominate. Adaptive\'s "clonality". It depends on depth.' },
@@ -41,11 +43,41 @@ const HOMEOSTASIS = [
   { key: 'hyperexpanded', label: 'hyperexpanded', className: 'plot-danger' },
 ];
 
+// The curves' orders.
+export const ORDERS = [
+  { q: 0, label: 'Clonotypes (Hill number 0)', short: 'Clonotypes', words: 'the clonotypes a sample of that size or coverage would hold' },
+  { q: 1, label: 'Shannon diversity (Hill number 1)', short: 'Shannon diversity', words: 'the Shannon diversity it would show' },
+  { q: 2, label: 'Simpson diversity (Hill number 2)', short: 'Simpson diversity', words: 'the Simpson diversity it would show' },
+];
+
+// The levels the samples are compared at (diversity.SuggestedLevels): two reached by rarefaction
+// alone, two by extrapolating to twice a sample's size.
+export const LEVELS = [
+  { key: 'coverage', base: 'coverage', index: 0, extrapolated: false },
+  { key: 'size', base: 'size', index: 0, extrapolated: false },
+  { key: 'extrapolatedCoverage', base: 'coverage', index: 1, extrapolated: true },
+  { key: 'extrapolatedSize', base: 'size', index: 1, extrapolated: true },
+];
+
+// The two parts and what each says before its result is there.
+const PARTS = {
+  diversity: {
+    label: 'Measures', start: 'Measure diversity', title: 'Each sample\'s diversity',
+    words: 'Measured by the program over every sample\'s clonotypes under this definition and filter: the Hill numbers and their profile, Shannon\'s entropy, Simpson\'s index, evenness, clonality, Gini\'s coefficient, the largest clonotypes\' shares, clonal space homeostasis, and the whole repertoire\'s richness (Chao1, ACE) and Shannon and Simpson diversity, each with a 95% interval from 200 bootstrap replicates. The result is kept with the project, with how it was made.',
+  },
+  rarefaction: {
+    label: 'Rarefaction', start: 'Rarefy and extrapolate', title: 'Samples compared at equal coverage',
+    words: 'A deeper sample holds more clonotypes because it is deeper. The program computes what each sample would show at any size up to twice its own, and at any sample coverage (Chao et al. 2014; Chao and Jost 2012): the clonotypes, the Shannon diversity and the Simpson diversity, each with a 95% interval from 200 bootstrap replicates (the same replicates as the measures). The samples are then compared at the same completeness, or the same size. The result is kept with the project.',
+  },
+};
+
 const fmt = (v, share) => {
   if (!Number.isFinite(v)) return '—';
+  if (v === 0) return '0';
   if (share) return v < 0.001 && v > 0 ? v.toExponential(2) : v.toFixed(3);
   return v >= 100 ? Math.round(v).toLocaleString('en-US') : v.toPrecision(4);
 };
+const fmtCoverage = (v) => (!Number.isFinite(v) ? '—' : v > 0.99 && v < 1 ? v.toFixed(4) : v.toFixed(3));
 
 async function getJSON(url, options = {}) {
   const response = await fetch(url, { cache: 'no-store', ...options });
@@ -61,15 +93,22 @@ async function getJSON(url, options = {}) {
 export function mountRepertoire(app, container) {
   const { store } = app;
   const datasetSelect = h('select.input.small', { 'aria-label': 'Dataset', onchange: (e) => { chosen = e.target.value; load(); } });
-  const measureButton = h('button.btn.primary.small', { type: 'button', onclick: () => measure() }, icon('play'), 'Measure diversity');
-  const head = h('div.workbench-head', h('h1', icon('repertoire'), 'Repertoire'), h('span.spacer'),
+  const partSwitch = h('div.segmented', { role: 'tablist', 'aria-label': 'Part' });
+  const measureButton = h('button.btn.primary.small', { type: 'button', onclick: () => measure(part) });
+  const head = h('div.workbench-head', h('h1', icon('repertoire'), 'Repertoire'), partSwitch, h('span.spacer'),
     h('label.kv-inline', h('span.muted', 'Dataset'), datasetSelect), measureButton);
   const body = h('div.view-body.repertoire-view');
   const root = h('div.view', head, h('div.workbench-scroll', body));
   container.append(root);
-  let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : store.project.datasets.find((d) => store.ui.focus?.kind === 'result' && store.project.artifacts.find((a) => a.id === store.ui.focus.id)?.dataset === d.id)?.id ?? store.project.datasets[0]?.id ?? null;
-  let state = { status: 'idle' }; // idle | looking | absent | running | ready | failed
+  const focusedResult = store.ui.focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === store.ui.focus.id) : null;
+  let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : focusedResult?.dataset ?? store.project.datasets[0]?.id ?? null;
+  let part = focusedResult?.kind === 'rarefaction' ? 'rarefaction' : 'diversity';
+  // Each part's state: idle | looking | absent | running | ready | failed.
+  const states = { diversity: { status: 'idle' }, rarefaction: { status: 'idle' } };
+  let spec = null;
   let shown = 'hill1';
+  let order = 1;
+  let level = 'coverage';
   let generation = 0;
 
   const dataset = () => store.project.datasets.find((d) => d.id === chosen) ?? store.project.datasets[0] ?? null;
@@ -82,72 +121,104 @@ export function mountRepertoire(app, container) {
     return { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter };
   }
 
+  const request = (s, extra = {}) => JSON.stringify({ dataset: s.dataset, definition: s.definition, filter: s.filter, ...extra });
+
+  // Looks for each part's result kept for the dataset as chosen; follows a job still running.
   async function load() {
     const mine = ++generation;
     const d = dataset();
     renderHead();
+    spec = null;
     if (!d) {
-      state = { status: 'idle' };
+      for (const kind of Object.keys(PARTS)) states[kind] = { status: 'idle' };
       render();
       return;
     }
-    state = { status: 'looking' };
+    for (const kind of Object.keys(PARTS)) states[kind] = { status: 'looking' };
     render();
     try {
-      const spec = await specOf(d);
-      const answer = await getJSON('api/diversity', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, start: false }) });
-      if (mine !== generation) return;
-      if (answer.ready) {
-        const read = await getJSON(`api/diversity/${encodeURIComponent(answer.artifact)}`);
-        if (mine !== generation) return;
-        state = { status: 'ready', artifact: answer.artifact, result: read.result, manifest: read.artifact, spec };
-        keep(d, spec, read);
-      } else {
-        state = { status: answer.job ? 'running' : 'absent', artifact: answer.artifact, job: answer.job, spec };
-      }
+      spec = await specOf(d);
     } catch (error) {
       if (mine !== generation) return;
-      state = { status: 'failed', error: error.message };
+      for (const kind of Object.keys(PARTS)) states[kind] = { status: 'failed', error: error.message };
+      render();
+      return;
     }
-    render();
+    await Promise.all(Object.keys(PARTS).map(async (kind) => {
+      try {
+        const answer = await getJSON(`api/${kind}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request(spec, { start: false }) });
+        if (mine !== generation) return;
+        if (answer.ready) {
+          const read = await getJSON(`api/${kind}/${encodeURIComponent(answer.artifact)}`);
+          if (mine !== generation) return;
+          states[kind] = { status: 'ready', artifact: answer.artifact, result: read.result, manifest: read.artifact };
+          keep(kind, d, read);
+        } else {
+          states[kind] = { status: answer.job ? 'running' : 'absent', artifact: answer.artifact, job: answer.job };
+          if (answer.job) follow(kind, answer.job);
+        }
+      } catch (error) {
+        if (mine !== generation) return;
+        states[kind] = { status: 'failed', error: error.message };
+      }
+    }));
+    if (mine === generation) render();
   }
 
   // The result in the project's record (the project tree lists it; the methods paragraph says it).
-  function keep(d, spec, read) {
+  function keep(kind, d, read) {
     if (store.project.artifacts.some((a) => a.id === read.artifact.id)) return;
-    store.commit(addResult(store.project, {
-      id: read.artifact.id, kind: 'diversity', name: `Diversity · ${d.name}`, dataset: d.id, definition: spec.definition.name ?? '',
+    const r = read.result;
+    const common = {
+      id: read.artifact.id, kind, dataset: d.id, definition: spec.definition.name ?? '',
       filter: spec.filterRecord ? `${spec.filterRecord.name} v${spec.filterRecord.version}` : null,
-      method: `Hill numbers, Chao1, ACE; ${read.result.options.replicates} bootstrap replicates`, made: read.artifact.created,
-      options: read.result.options, unit: read.result.unit, describe: read.result.describe,
-    }), `Measure the diversity of ${d.name}`, ['project']);
+      made: read.artifact.created, options: r.options, unit: r.unit, describe: r.describe,
+    };
+    const record = kind === 'diversity'
+      ? { ...common, name: `Diversity · ${d.name}`, method: `Hill numbers, Chao1, ACE; ${r.options.replicates} bootstrap replicates` }
+      : { ...common, name: `Rarefaction · ${d.name}`, method: `Rarefaction and extrapolation by size and coverage; ${r.options.replicates} bootstrap replicates`, levels: r.levels };
+    store.commit(addResult(store.project, record), `${kind === 'diversity' ? 'Measure the diversity' : 'Rarefy the samples'} of ${d.name}`, ['project']);
   }
 
-  async function measure() {
+  // When a part's job ends: its result read, or what went wrong said. Each job followed once.
+  const following = new Set();
+  function follow(kind, jobId) {
+    if (following.has(jobId)) return;
+    following.add(jobId);
+    const stop = app.jobs.onFinished((job) => {
+      if (job.id !== jobId) return;
+      stop();
+      following.delete(jobId);
+      if (job.state === 'complete') load();
+      else {
+        states[kind] = { status: 'failed', error: job.error || `The job ended ${job.state}.` };
+        render();
+      }
+    });
+  }
+
+  async function measure(kind) {
     const d = dataset();
     if (!d) return;
     try {
-      const spec = state.spec ?? await specOf(d);
-      const answer = await getJSON('api/diversity', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter }) });
+      spec = spec ?? await specOf(d);
+      const answer = await getJSON(`api/${kind}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request(spec) });
       if (answer.ready) {
         load();
         return;
       }
-      state = { status: 'running', artifact: answer.artifact, job: answer.job, spec };
-      app.log(`Measuring the diversity of ${d.name} (${spec.definition.name ?? 'its definition'}).`);
+      states[kind] = { status: 'running', artifact: answer.artifact, job: answer.job };
+      app.log(`${kind === 'diversity' ? 'Measuring the diversity' : 'Rarefying the samples'} of ${d.name} (${spec.definition.name ?? 'its definition'}).`);
       render();
-      const stop = app.jobs.onFinished((job) => {
-        if (job.id !== answer.job) return;
-        stop();
-        if (job.state === 'complete') load();
-        else {
-          state = { status: 'failed', error: job.error || `The job ended ${job.state}.` };
-          render();
-        }
-      });
+      follow(kind, answer.job);
     } catch (error) {
       toast(error.message, { kind: 'error' });
     }
+  }
+
+  function show(kind) {
+    part = kind;
+    render();
   }
 
   function renderHead() {
@@ -157,21 +228,31 @@ export function mountRepertoire(app, container) {
   }
 
   function render() {
+    clear(partSwitch);
+    for (const [kind, p] of Object.entries(PARTS)) {
+      partSwitch.append(h(`button${kind === part ? '.active' : ''}`, { type: 'button', role: 'tab', 'aria-selected': kind === part ? 'true' : 'false', onclick: () => show(kind) }, p.label));
+    }
     clear(body);
     const d = dataset();
+    const state = states[part];
+    clear(measureButton);
+    measureButton.append(icon('play'), PARTS[part].start);
     measureButton.hidden = !d || state.status === 'ready' || state.status === 'running';
     if (!d) {
       body.append(h('div.empty', icon('repertoire'), h('h3', 'No data yet'),
-        h('p', 'Open data, define clonotypes, and measure each sample\'s diversity here, every measure with its interval.'),
+        h('p', 'Open data, define clonotypes, and measure each sample\'s diversity here, every measure with its interval, and compare samples at equal coverage.'),
         h('div.btn-row', { style: { justifyContent: 'center', marginTop: '10px' } },
           h('button.btn.primary', { type: 'button', onclick: () => app.openPathDialog() }, icon('folder'), 'Open data'),
           h('button.btn', { type: 'button', onclick: () => app.showExamples() }, icon('flask'), 'Example data'))));
       return;
     }
-    const spec = state.spec;
     if (spec) {
       body.append(h('p.muted.small.repertoire-spec', 'Clonotypes: ', h('b', spec.definition.name ?? 'the definition'), spec.filterRecord ? ` · filter "${spec.filterRecord.name}" v${spec.filterRecord.version}` : ' · no filter',
         ` · abundance in ${UNITS[datasetUnit(d)] ?? 'counts'}`));
+    }
+    // The estimators count each cell or molecule once; reads count each many times over.
+    if (datasetUnit(d) === 'reads') {
+      body.append(h('div.callout.warn', h('p', 'Abundance in reads: a clonotype\'s reads count each of its cells many times over, as often as it was amplified and sequenced, so few clonotypes are seen once or twice. Chao1, ACE, the sample coverage, the estimated diversities and the curves\' coverage and extrapolation all rest on those clonotypes: in reads, a sample looks complete when it is not. Rarefied to equal reads, samples are compared at equal sequencing depth, not equal numbers of cells. Use templates, UMIs or cells where the data have them.')));
     }
     if (state.status === 'looking') {
       body.append(h('p.muted', 'Reading…'));
@@ -184,29 +265,40 @@ export function mountRepertoire(app, container) {
     if (state.status === 'absent' || state.status === 'running') {
       const job = state.job ? app.jobs.get(state.job) : null;
       body.append(h('div.card.repertoire-start',
-        h('h3', 'Each sample\'s diversity'),
-        h('p', 'Measured by the program over every sample\'s clonotypes under this definition and filter: the Hill numbers and their profile, Shannon\'s entropy, Simpson\'s index, evenness, clonality, Gini\'s coefficient, the largest clonotypes\' shares, clonal space homeostasis, and the whole repertoire\'s richness (Chao1, ACE) and Shannon and Simpson diversity, each with a 95% interval from 200 bootstrap replicates. The result is kept with the project, with how it was made.'),
+        h('h3', PARTS[part].title),
+        h('p', PARTS[part].words),
         state.status === 'running'
           ? h('div.example-progress', h('div.progress', h('div', { style: { width: `${Math.round((job?.progress ?? 0) * 100)}%` } })), h('span.muted.small', job?.message ?? 'Waiting'))
-          : h('div.btn-row', h('button.btn.primary', { type: 'button', onclick: () => measure() }, icon('play'), 'Measure diversity'))));
+          : h('div.btn-row', h('button.btn.primary', { type: 'button', onclick: () => measure(part) }, icon('play'), PARTS[part].start))));
       return;
     }
     if (state.status !== 'ready') return;
-    const result = state.result;
-    const samples = result.samples;
-    const unit = UNITS[result.unit] ?? 'counts';
-    // Groups by condition: the samples' annotation, else their metadata's.
+    if (part === 'diversity') renderMeasures(d, state);
+    else renderRarefaction(d, state);
+  }
+
+  // Groups by condition: the samples' annotation, else their metadata's.
+  function colors(d, names) {
     const summary = app.datasetStates.get(d.id)?.summary;
     const conditionOf = (name) => annotation(store.project, d.id, name).fields.condition
       ?? (summary ? fieldsFromMetadata(summary.samples.find((x) => x.name === name) ?? {}).condition : undefined);
-    const conditions = [...new Set(samples.map((s) => conditionOf(s.name)).filter(Boolean))];
+    const conditions = [...new Set(names.map((n) => conditionOf(n)).filter(Boolean))];
     const classOf = (name) => {
       const c = conditionOf(name);
       return c ? `plot-s${(conditions.indexOf(c) % 6) + 1}` : 'plot-s1';
     };
+    const legend = () => (conditions.length ? h('div.plot-legend', ...conditions.map((c, i) => h('span', h(`span.swatch.plot-s${(i % 6) + 1}`), c))) : null);
+    return { classOf, legend };
+  }
+
+  function renderMeasures(d, state) {
+    const result = state.result;
+    const samples = result.samples;
+    const unit = UNITS[result.unit] ?? 'counts';
+    const { classOf, legend } = colors(d, samples.map((s) => s.name));
     const low = samples.filter((s) => Number.isFinite(s.result.measures.coverage?.estimate) && s.result.measures.coverage.estimate < 0.9);
     const notes = [];
-    if (low.length) notes.push(h('div.callout.warn', h('p', `${low.length === samples.length ? 'Every sample has' : `${low.length} of ${samples.length} samples have`} a sample coverage below 0.9 (${low.slice(0, 4).map((s) => `${s.name} ${s.result.measures.coverage.estimate.toFixed(2)}`).join(', ')}${low.length > 4 ? ', …' : ''}): there, Chao1 and the estimated Shannon diversity are lower bounds, and in ClonoLoom's simulations their intervals did not hold the truth. Compare such samples at equal coverage instead.`)));
+    if (low.length) notes.push(h('div.callout.warn', h('p', `${low.length === samples.length ? 'Every sample has' : `${low.length} of ${samples.length} samples have`} a sample coverage below 0.9 (${low.slice(0, 4).map((s) => `${s.name} ${s.result.measures.coverage.estimate.toFixed(2)}`).join(', ')}${low.length > 4 ? ', …' : ''}): there, Chao1 and the estimated Shannon diversity are lower bounds, and in ClonoLoom's simulations their intervals did not hold the truth. Compare such samples at equal coverage instead (Rarefaction).`)));
     const notWhole = samples.filter((s) => !s.result.whole);
     if (notWhole.length) notes.push(h('div.callout', h('p', `${notWhole.length} sample${notWhole.length === 1 ? '\'s' : 's\''} abundances are not whole numbers: only the measures that do not need counts are given, without intervals.`)));
     body.append(...notes);
@@ -220,11 +312,10 @@ export function mountRepertoire(app, container) {
       return { label: s.name, value: v.estimate ?? NaN, lower: v.lower ?? NaN, upper: v.upper ?? NaN, className: classOf(s.name) };
     });
     const plot = intervals(rows, { label: info.label, width: 560, labelWidth: 140, format: (v) => fmt(v, SHARES.has(info.id)) });
-    const legend = conditions.length ? h('div.plot-legend', ...conditions.map((c, i) => h('span', h(`span.swatch.plot-s${(i % 6) + 1}`), c))) : null;
     body.append(h('figure.plot-card',
       h('figcaption', h('span', 'Each sample'), picker),
       h('div.plot-holder', { html: plot.svg }),
-      legend,
+      legend(),
       h('p.muted.small', info.words, ' ', 'Bars are 95% intervals (Chao1\'s from its variance, the others from 200 bootstrap replicates of each sample).')));
 
     // The Hill profile and homeostasis.
@@ -233,7 +324,7 @@ export function mountRepertoire(app, container) {
       { label: 'Hill numbers by order', xLabel: 'Order q', yLabel: 'Effective clonotypes', log: true });
     const homeo = stackedBars(samples.map((s) => ({ label: s.name, parts: Object.fromEntries(HOMEOSTASIS.map((b) => [b.key, s.result.measures[`homeostasis.${b.key}`]?.estimate ?? 0])) })), HOMEOSTASIS, { label: 'Clonal space homeostasis', share: true });
     body.append(h('div.plot-grid',
-      h('figure.plot-card', h('figcaption', 'The Hill profile'), h('div.plot-holder', { html: profile.svg }), legend?.cloneNode(true),
+      h('figure.plot-card', h('figcaption', 'The Hill profile'), h('div.plot-holder', { html: profile.svg }), legend(),
         h('p.muted.small', 'Each sample\'s Hill numbers from order 0 (clonotypes seen) through 1 (Shannon) and 2 (Simpson) to 4: a profile that falls fast belongs to a repertoire dominated by a few clonotypes.')),
       h('figure.plot-card', h('figcaption', 'Clonal space homeostasis'), h('div.plot-holder', { html: homeo.svg }),
         h('div.plot-legend', ...HOMEOSTASIS.map((b) => h('span', h(`span.swatch.${b.className}`), b.label))),
@@ -254,6 +345,105 @@ export function mountRepertoire(app, container) {
       h('p.muted.small', `Measured ${new Date(state.manifest.created).toLocaleString()} by ClonoLoom ${state.manifest.lineage?.software?.[0]?.version ?? ''}, ${result.options.replicates} bootstrap replicates (seed ${result.options.seed}); kept as ${state.artifact}. Clonotypes: ${result.describe}.`));
   }
 
+  // Each level in words: what it is, and which sample sets it.
+  function levelWords(l, result, unit) {
+    const levels = result.levels;
+    const nameOf = (i) => result.samples[i]?.name ?? 'one sample';
+    switch (l.key) {
+      case 'coverage': return { label: `Coverage ${fmtCoverage(levels.coverage)} · rarefied`, words: `a sample coverage of ${fmtCoverage(levels.coverage)}, the lowest among the samples (${nameOf(levels.coverageOf)}'s): every sample rarefied to it, none extrapolated` };
+      case 'size': return { label: `${fmt(levels.size)} ${unit} · rarefied`, words: `${fmt(levels.size)} ${unit}, the smallest sample's size (${nameOf(levels.sizeOf)}'s): every sample rarefied to it` };
+      case 'extrapolatedCoverage': return { label: `Coverage ${fmtCoverage(levels.extrapolatedCoverage)} · extrapolated`, words: `a sample coverage of ${fmtCoverage(levels.extrapolatedCoverage)}, the lowest any sample reaches at twice its size (iNEXT's default): samples whose own coverage is lower extrapolated to it` };
+      default: return { label: `${fmt(levels.extrapolatedSize)} ${unit} · extrapolated`, words: `${fmt(levels.extrapolatedSize)} ${unit}, twice the smallest sample's size (iNEXT's default): samples smaller than it extrapolated` };
+    }
+  }
+
+  function renderRarefaction(d, state) {
+    const result = state.result;
+    const samples = result.samples;
+    const unit = UNITS[result.unit] ?? 'counts';
+    const { classOf, legend } = colors(d, samples.map((s) => s.name));
+    if (!result.levels) {
+      body.append(h('div.callout', h('p', 'No sample can be rarefied: rarefaction needs abundances that are whole numbers (counts of cells, templates, UMIs or reads), and at least two of them.')));
+      return;
+    }
+    const notWhole = samples.filter((s) => !s.curves.whole);
+    if (notWhole.length) body.append(h('div.callout', h('p', `${notWhole.length} sample${notWhole.length === 1 ? '\'s' : 's\''} abundances are not whole numbers: ${notWhole.length === 1 ? 'it is' : 'they are'} not rarefied.`)));
+    const lv = LEVELS.find((l) => l.key === level) ?? LEVELS[0];
+    const ord = ORDERS[order];
+    const words = levelWords(lv, result, unit);
+    const at = (s) => (lv.base === 'size' ? s.curves.atSize : s.curves.atCoverage)?.[lv.index];
+
+    // The comparison: every sample at the level chosen.
+    const levelPicker = h('select.input.small', { 'aria-label': 'Compared at', onchange: (e) => { level = e.target.value; render(); } },
+      ...LEVELS.map((l) => h('option', { value: l.key, selected: l.key === lv.key }, levelWords(l, result, unit).label)));
+    const orderPicker = h('select.input.small', { 'aria-label': 'Order', onchange: (e) => { order = Number(e.target.value); render(); } },
+      ...ORDERS.map((o) => h('option', { value: o.q, selected: o.q === ord.q }, o.label)));
+    const rows = samples.filter((s) => s.curves.whole && at(s)).map((s) => {
+      const p = at(s);
+      const v = p.hill?.[ord.q] ?? {};
+      return { label: `${s.name}${p.method === 'extrapolated' ? ' (extrapolated)' : ''}`, value: v.estimate ?? NaN, lower: v.lower ?? NaN, upper: v.upper ?? NaN, className: classOf(s.name) };
+    });
+    const plot = intervals(rows, { label: `${ord.label} at ${words.label}`, width: 560, labelWidth: 170, format: (v) => fmt(v) });
+    const extrapolatedHere = samples.filter((s) => at(s)?.method === 'extrapolated');
+    body.append(h('figure.plot-card',
+      h('figcaption', h('span', 'Each sample at'), h('span.plot-pickers', levelPicker, orderPicker)),
+      h('div.plot-holder', { html: plot.svg }),
+      legend(),
+      h('p.muted.small', `${ord.short} at ${words.words}. Bars are 95% intervals from ${result.options.replicates} bootstrap replicates of each sample. Comparing at equal coverage is fairer than at equal size: a sample twice as deep is not just more of the same repertoire (Chao and Jost 2012).`)));
+    if (extrapolatedHere.length) {
+      body.append(h('div.callout.warn', h('p', `${extrapolatedHere.length} sample${extrapolatedHere.length === 1 ? ' is' : 's are'} extrapolated at this level. In ClonoLoom's simulations of repertoires with many rare clonotypes, values extrapolated to twice a sample's size were within 1–3% of the truth on average, but their intervals were narrower than that and often missed it (the Simpson diversity's excepted). Prefer a rarefied level where it suffices.`)));
+    }
+
+    // The curves.
+    const sizes = samples.map((s) => s.curves.abundance).filter((n) => n > 0);
+    const logX = sizes.length > 1 && Math.max(...sizes) / Math.min(...sizes) > 10;
+    const bands = samples.length <= 8;
+    const point = (p, x, y, interval) => ({ x, y: y?.estimate ?? NaN, lower: interval ? y?.lower ?? NaN : NaN, upper: interval ? y?.upper ?? NaN : NaN, extrapolated: p.method === 'extrapolated' });
+    const series = (pick) => samples.filter((s) => s.curves.whole && s.curves.bySize).map((s) => {
+      const { points, observed } = pick(s);
+      return { label: s.name, className: classOf(s.name), points, observed };
+    });
+    const bySize = curves(series((s) => {
+      const points = s.curves.bySize.map((p) => point(p, p.size, p.hill[ord.q], true));
+      const own = s.curves.bySize.find((p) => p.method === 'observed');
+      return { points, observed: own ? { x: own.size, y: own.hill[ord.q].estimate } : null };
+    }), { label: `${ord.short} by sample size`, xLabel: `Sample size (${unit}${logX ? ', logarithmic' : ''})`, yLabel: ord.short, logX, bands,
+      guides: lv.base === 'size' ? [{ x: lv.index ? result.levels.extrapolatedSize : result.levels.size, label: 'compared' }] : [] });
+    const byCoverage = curves(series((s) => {
+      const points = s.curves.byCoverage.filter((p) => Number.isFinite(p.size)).map((p) => point(p, p.coverage.estimate, p.hill[ord.q], true));
+      const own = s.curves.byCoverage.find((p) => p.method === 'observed');
+      return { points, observed: own ? { x: own.coverage.estimate, y: own.hill[ord.q].estimate } : null };
+    }), { label: `${ord.short} by sample coverage`, xLabel: 'Sample coverage', yLabel: ord.short, xMax: 1, bands, xFormat: (v) => String(Number(v.toFixed(2))),
+      guides: lv.base === 'coverage' ? [{ x: lv.index ? result.levels.extrapolatedCoverage : result.levels.coverage, label: 'compared' }] : [] });
+    const completeness = curves(series((s) => {
+      const points = s.curves.bySize.map((p) => point(p, p.size, p.coverage, true));
+      const own = s.curves.bySize.find((p) => p.method === 'observed');
+      return { points, observed: own ? { x: own.size, y: own.coverage.estimate } : null };
+    }), { label: 'Sample coverage by sample size', xLabel: `Sample size (${unit}${logX ? ', logarithmic' : ''})`, yLabel: 'Sample coverage', logX, bands, yFormat: (v) => String(Number(v.toFixed(2))) });
+    const card = (title, plotted, text) => h('figure.plot-card', h('figcaption', title), h('div.plot-holder', { html: plotted.svg }), legend(), h('p.muted.small', text));
+    body.append(h('div.plot-grid',
+      card(`${ord.short} by size`, bySize, `What each sample would show at each size: solid where rarefied, dashed where extrapolated (to twice its size), the dot the sample itself${bands ? ', the band its 95% interval' : ''}.`),
+      card(`${ord.short} by coverage`, byCoverage, `The same against the sample coverage each size reaches: where the curves cross a coverage, the samples are equally complete there.`),
+      card('Sample completeness', completeness, `How the sample coverage rises with size (Chao and Jost 2012): a curve still rising at its dot is far from complete, and extrapolating it is less sure.`)));
+
+    // The table: each sample at the level chosen, every order.
+    const cell = (v) => (v && Number.isFinite(v.estimate)
+      ? h('td.r', { title: Number.isFinite(v.lower) ? `95% interval ${fmt(v.lower)}–${fmt(v.upper)}` : '' }, fmt(v.estimate), Number.isFinite(v.lower) ? h('span.muted.small', ` ${fmt(v.lower)}–${fmt(v.upper)}`) : null)
+      : h('td.r', '—'));
+    body.append(h('div.section-title', `Samples at ${words.label} · ${samples.length}`),
+      h('div.table-scroll', { tabIndex: 0 }, h('table.data.repertoire-table',
+        h('thead', h('tr', h('th', 'Sample'), h('th.r', `Abundance (${unit})`), h('th.r', 'Coverage seen'), h('th.r', lv.base === 'size' ? 'Coverage there' : `Size there (${unit})`),
+          ...ORDERS.map((o) => h('th.r', o.short)), h('th', 'How'))),
+        h('tbody', ...samples.map((s) => {
+          const p = at(s);
+          const own = s.curves.bySize?.find((x) => x.method === 'observed');
+          return h('tr', h('td.sample-name', { title: s.name }, s.name), h('td.r', fmt(s.curves.abundance)), h('td.r', fmtCoverage(own?.coverage?.estimate)),
+            h('td.r', p ? (lv.base === 'size' ? fmtCoverage(p.coverage?.estimate) : fmt(p.size)) : '—'),
+            ...ORDERS.map((o) => cell(p?.hill?.[o.q])), h('td', p ? { interpolated: 'rarefied', observed: 'as sampled', extrapolated: 'extrapolated', unreachable: 'out of reach' }[p.method] ?? p.method : 'not rarefied'));
+        })))),
+      h('p.muted.small', `Computed ${new Date(state.manifest.created).toLocaleString()} by ClonoLoom ${state.manifest.lineage?.software?.[0]?.version ?? ''}: ${result.knots} sizes along each curve, ${result.options.replicates} bootstrap replicates (seed ${result.options.seed}, the measures' replicates); kept as ${state.artifact}. Clonotypes: ${result.describe}.`));
+  }
+
   // What the shown result depends on: the dataset, its definition and its filter as chosen.
   const choices = () => {
     const d = dataset();
@@ -262,9 +452,20 @@ export function mountRepertoire(app, container) {
   let shownChoices = choices();
 
   // A running job's progress, as the program reports it; a new definition or filter, measured again
-  // or looked up.
+  // or looked up; a result chosen elsewhere, shown in its part.
   function update(topics) {
-    if (topics.has('jobs') && state.status === 'running') render();
+    if (topics.has('jobs') && states[part].status === 'running') render();
+    if (topics.has('focus')) {
+      const r = store.ui.focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === store.ui.focus.id) : null;
+      if (r && PARTS[r.kind] && (r.kind !== part || r.dataset !== chosen)) {
+        part = r.kind;
+        if (r.dataset !== chosen) {
+          chosen = r.dataset;
+          shownChoices = choices();
+          load();
+        } else render();
+      }
+    }
     if (topics.has('project') || topics.has('project-loaded') || topics.has('datasets')) {
       if (!store.project.datasets.some((d) => d.id === chosen)) chosen = store.project.datasets[0]?.id ?? null;
       if (topics.has('project-loaded') || choices() !== shownChoices) {
@@ -274,7 +475,17 @@ export function mountRepertoire(app, container) {
     }
   }
 
-  app.repertoireView = { measure: () => measure(), load: () => load(), state: () => state };
+  app.repertoireView = {
+    measure: (kind = 'diversity') => measure(kind),
+    show,
+    setLevel: (key, q) => {
+      if (key && LEVELS.some((l) => l.key === key)) level = key;
+      if (q !== undefined && ORDERS[q]) order = q;
+      render();
+    },
+    load: () => load(),
+    state: (kind = 'diversity') => states[kind],
+  };
   load();
   return {
     update,

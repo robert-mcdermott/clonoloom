@@ -30,7 +30,10 @@ internal/qc/         per-sample and single-cell QC
 internal/stats/      distributions, tests, multiple testing (adapted from SituCraft)
 internal/dmath/      logarithm and exponential with the same bits on every processor
 internal/random/     seeded random streams
-internal/jobs/       durable background jobs (later waves)
+internal/jobs/       durable background jobs (wave 2)
+internal/artifacts/  results kept with their lineage (wave 2)
+internal/cache/      the table cache (wave 2)
+internal/diversity/  diversity, rarefaction and extrapolation (wave 2)
 internal/simulate/   seeded simulated repertoires with their truth (wave 2)
 web/index.html, web/styles.css, web/app.js     app shell
 web/lib/*.js         pure modules: no DOM, no globals, importable by Node

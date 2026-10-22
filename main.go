@@ -472,7 +472,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerExamples(mux)
 	a.registerJobs(mux)
 	a.registerCache(mux)
-	a.registerDiversity(mux)
+	a.registerAnalyses(mux)
 	if a.remote != nil {
 		a.remote.register(mux)
 	}

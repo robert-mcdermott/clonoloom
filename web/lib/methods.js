@@ -33,6 +33,8 @@ export const REFERENCES = {
   chaoJost: 'Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. Ecology. 2012;93:2533–2547. doi:10.1890/11-1952.1',
 };
 
+const coverageWords = (v) => (v > 0.99 && v < 1 ? v.toFixed(4) : v.toFixed(3));
+
 const UNIT_WORDS = { cells: 'cells', templates: 'templates', reads: 'reads', umis: 'UMIs', sequences: 'sequences' };
 
 // The formats' names, as a methods section says them.
@@ -125,6 +127,16 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     const opts = r.options ?? {};
     const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
     sentences.push(`Each sample's diversity was measured over its clonotypes' abundances in ${unit} (${under}) by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: the Hill numbers of order 0 to 4 ${cite('hill')}, Shannon's entropy (natural log), Simpson's index, Pielou's evenness, clonality (1 − evenness) and Simpson clonality (√Σp²), Gini's coefficient, the largest clonotypes' shares and clonal space homeostasis; the richness of the repertoire each was drawn from by Chao1 (bias-corrected) ${cite('chao1984')} ${cite('chao2014')} and ACE ${cite('chaoLee')}, its Shannon diversity by Chao, Wang and Jost's estimator ${cite('chaoWangJost')} and its Simpson diversity by n(n−1)/ΣX(X−1) ${cite('chao2014')}; and the sample coverage ${cite('chaoJost')}. Intervals are 95%: Chao1's from its variance, log-transformed; the others' from ${opts.replicates ?? 200} bootstrap replicates of each sample drawn from its estimated repertoire ${cite('chao2014')} (seed ${opts.seed ?? '—'}), the estimate ± 1.96 standard errors.`);
+  }
+
+  // Rarefaction and extrapolation, likewise, with the levels the samples were compared at.
+  for (const r of results.filter((x) => x.kind === 'rarefaction')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const opts = r.options ?? {};
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const l = r.levels;
+    const levels = l ? ` The samples were compared at a sample coverage of ${coverageWords(l.coverage)}, the lowest among them, and at ${Math.round(l.size).toLocaleString('en-US')} ${unit}, the smallest sample's size, each sample rarefied to them.` : '';
+    sentences.push(`Each sample's clonotypes, Shannon diversity and Simpson diversity (the Hill numbers of order 0, 1 and 2 ${cite('hill')}) were rarefied and extrapolated, over its clonotypes' abundances in ${unit} (${under}), by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: at sample sizes up to twice its own ${cite('chao2014')}, and at equal sample coverage ${cite('chaoJost')}, with 95% intervals from ${opts.replicates ?? 200} bootstrap replicates of each sample drawn from its estimated repertoire (seed ${opts.seed ?? '—'}), the estimate ± 1.96 standard errors.${levels}`);
   }
 
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

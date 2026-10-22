@@ -205,7 +205,7 @@ async function start() {
     store.setUI({ focus }, ['focus']);
     // A result opens in its view.
     const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
-    if (result?.kind === 'diversity' && store.ui.mode !== 'repertoire') app.setMode('repertoire');
+    if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
   };
 
   app.toggleDrawer = (open = !store.ui.drawer.open, tab = store.ui.drawer.tab) => {

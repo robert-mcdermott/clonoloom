@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is done and merged, 0.1.0 not yet
-tagged; wave 2 has slices 1–4 done, slice 5 next.
+tagged; wave 2 has slices 1–5 done, slice 6 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -172,8 +172,8 @@ Built on the branch `wave2`, one commit per slice.
 | 2. Simulated repertoires | Done |
 | 3. Artifacts, jobs and the cache | Done |
 | 4. Diversity | Done |
-| 5. Rarefaction and extrapolation | Next |
-| 6. Gene usage and spectratypes | To come |
+| 5. Rarefaction and extrapolation | Done |
+| 6. Gene usage and spectratypes | Next |
 | 7. Overlap | To come |
 | 8. Figures, exports and methods; release 0.2.0 | To come |
 
@@ -208,6 +208,19 @@ Built on the branch `wave2`, one commit per slice.
    - *Moved to slice 8:* the Repertoire view's capture scene and picture.
 5. **Rarefaction and extrapolation (R2, Q3).** Chao et al. 2014 by size and coverage; curves and a
    suggested common depth; validated against iNEXT.
+   - *Done:* the Hill numbers of order 0, 1 and 2 and the coverage, by size and by coverage, in the
+     Repertoire view's Rarefaction part, from the same bootstrap replicates as the measures; the
+     interval coverage measured on simulations as well. A million-cell sample in about 2 s:
+     iNEXT's subsample sums take every size, ClonoLoom's start at each distribution's mode.
+   - *Decided:* the samples are compared first at levels reached by rarefaction alone (the lowest
+     coverage among them, the smallest sample's size); iNEXT's defaults, extrapolated to twice a
+     sample's size, come second. In simulations of repertoires with many rare clonotypes, values
+     extrapolated that far were within 1–3% of the truth, but their intervals were narrower than
+     that (`research.md` §5.4).
+   - *Found:* in reads, few clonotypes are seen once, so every sample looks complete; both parts of
+     the view now warn. Sizes spaced on a logarithmic scale added to iNEXT's, so the curves draw on
+     a logarithmic axis.
+   - *Moved to slice 8:* the Rarefaction part's capture scene, with the Repertoire view's.
 6. **Gene usage and spectratypes (R3).** V, D, J, C and V–J usage; junction lengths; amino-acid
    composition.
 7. **Overlap (R4).** Shared clonotypes, Jaccard, overlap coefficient, Morisita–Horn, rarefied;

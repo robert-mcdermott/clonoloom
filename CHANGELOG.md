@@ -71,6 +71,27 @@ section grows with each.
     warning where a sample's coverage makes Chao1 and the estimated Shannon diversity lower bounds;
   - the methods paragraph says how diversity was measured, with its references; remote control's
     `measure_diversity` measures it and answers the main measures.
+- **Rarefaction and extrapolation (wave 2, slice 5).** The Repertoire view's **Rarefaction** part
+  (`internal/diversity`, `api_rarefaction.go`):
+  - each sample's clonotypes, Shannon diversity and Simpson diversity (the Hill numbers of order 0,
+    1 and 2) and its sample coverage at any size up to twice its own, rarefied below it and
+    extrapolated above (Chao et al. 2014), and the Hill numbers at any sample coverage (Chao and
+    Jost 2012); each with a 95% interval from the same 200 bootstrap replicates as the measures;
+  - the samples compared at a level suggested for them, reached by rarefaction alone: the lowest
+    sample coverage among them, or the smallest sample's size. iNEXT's defaults, extrapolated to
+    twice a sample's size, are offered beside them, with a warning where a sample is extrapolated;
+  - the curves by size and by coverage (solid where rarefied, dashed where extrapolated, a dot at
+    the sample, bands for the intervals), how each sample's coverage rises with size, on a
+    logarithmic size axis where the samples' sizes differ more than tenfold, and a table of each
+    sample at the level chosen;
+  - a million-cell sample's curves in about 2 s: each clonotype's subsample expectation is summed
+    outward from its distribution's mode, where iNEXT sums every size;
+  - the methods paragraph says how the samples were rarefied and compared, with its references;
+    remote control's `rarefy` computes the curves and answers each sample at a level.
+- Both parts of the Repertoire view warn when abundance is in reads: each cell is counted many times
+  over, so few clonotypes are seen once and every sample looks complete.
+- Diversity and rarefaction are asked for, computed, kept and read back alike (`api_analysis.go`);
+  diversity results kept before keep their ids.
 - **immunoSEQ's own clonality, Simpson clonality, entropy and largest frequency** are recomputed in
   QC's vendor checks: from each productive rearrangement's reads, as Adaptive computes them.
 - `internal/random` (from the simulator) draws binomial and multinomial variates too.
@@ -116,6 +137,25 @@ section grows with each.
   those seen, and never for Chao1 and the estimated Shannon diversity, which are lower bounds
   there. iNEXT's floor on the estimated Simpson diversity's interval (at the value seen) made it
   hold the truth in under half the samples: ClonoLoom does not apply it (research.md §5.3).
+- **Rarefaction against iNEXT** (`validation/rarefaction_test.go`,
+  `validation/reference/rarefaction.R`): on the same 18 samples, at iNEXT 3.0.2's 40 sizes along
+  each curve, every Hill number and coverage equals iNEXT's to 10⁻⁹, but the extrapolated Shannon
+  diversity, within 8·10⁻⁸ (its extrapolation magnifies iNEXT's rounding of the value seen, which
+  ClonoLoom computes to 10⁻¹⁵); at each coverage, the same to what iNEXT's numerical minimization
+  leaves of the size there. Two cohorts compared at iNEXT's default levels: the same levels and
+  values. The bootstrap standard errors are 0.85 to 1.26 times iNEXT's (median 1.01, over 4,240).
+- **The curves against the truth on simulations** (`validation/coverage_test.go`, 200 samples of
+  each repertoire): rarefied to half a sample's size, every value's 95% interval held the truth in
+  90–98% of samples, in a nearly complete repertoire and in one of many rare clonotypes sampled to
+  coverages of 0.62, 0.83 and 0.97. Extrapolated to twice the sample, the values were within 3% of
+  the truth on average (the Simpson diversity within 0.3%), but where rare clonotypes abound only
+  the Simpson diversity's intervals held the truth as often as they say (92–95.5%); those of the
+  coverage, the clonotypes and the Shannon diversity held it in 0–87%. Hence ClonoLoom suggests
+  levels reached by rarefaction first (research.md §5.4).
+- The interpolation equal to its definition summed term by term (to 10⁻¹⁰) and to every term of each
+  hypergeometric summed in 256-bit arithmetic (to 10⁻¹³); the extrapolation approaching the
+  asymptotes and equal to Chao et al. 2014's Eq. 9 for clonotypes; size and coverage inverting each
+  other; the curves the same with one processor or many.
 - **immunoSEQ's clonality reproduced**: Adaptive's productive clonality, Simpson clonality, entropy
   and largest frequency, from the rows' reads, on Emerson et al. 2017's three exports (to seven
   significant digits; templates give other values).

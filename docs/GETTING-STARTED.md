@@ -131,8 +131,30 @@ result with the project. Each measure has a 95% interval:
 
 Choose a measure to see it across the samples, colored by condition. Read the coverage first:
 where a sample's coverage is below about 0.9, its Chao1 and estimated Shannon diversity are lower
-bounds, and the view says so. Samples of different depths are best compared at equal coverage,
-which the next release adds.
+bounds, and the view says so.
+
+## Compare samples at equal coverage
+
+A deeper sample holds more clonotypes because it is deeper. **Repertoire › Rarefaction** computes
+what each sample would show at any size up to twice its own, and at any **sample coverage** (the
+share of the repertoire's cells whose clonotype the sample holds): **Rarefy and extrapolate** runs
+it in the program and keeps the result. Then:
+
+- **Each sample at** a level: by default the lowest coverage among the samples, every sample
+  rarefied to it, none extrapolated (or the smallest sample's size). The clonotypes, Shannon
+  diversity and Simpson diversity there, each with its 95% interval, are the samples compared
+  fairly. Comparing at equal coverage is better than at equal size: a sample twice as deep is not
+  just more of the same repertoire.
+- The curves by size and by coverage: solid where rarefied, dashed where extrapolated, a dot at the
+  sample itself; and how each sample's coverage rises with size.
+- Two more levels extrapolate to twice a sample's size, as iNEXT does by default. In ClonoLoom's
+  simulations of repertoires with many rare clonotypes, values extrapolated that far were within
+  1–3% of the truth, but their intervals were narrower than that; the view says so when a sample is
+  extrapolated.
+
+The curves and their intervals come from the same bootstrap replicates as the measures. They need
+counts of cells or molecules: in **reads**, each cell is counted many times over, so few clonotypes
+are seen once, every sample looks complete, and the view warns.
 
 ## Write down what was done
 
@@ -147,11 +169,12 @@ which the next release adds.
   session's messages.
 - **Methods paragraph** (a dataset's menu or the inspector) writes a paragraph for a manuscript
   from the project's record: the data's source and license, how ClonoLoom read and checked them,
-  the unit, the filter with what it kept, the clonotype definition, the diversity measured, and
-  ClonoLoom's version, with numbered references. Only what was done is said. **Copy** takes it with its references.
+  the unit, the filter with what it kept, the clonotype definition, the diversity measured, the
+  rarefaction and the levels the samples were compared at, and ClonoLoom's version, with numbered
+  references. Only what was done is said. **Copy** takes it with its references.
 
 ## Next
 
-ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): rarefaction, gene
-usage, overlap, figures and AIRR exports complete 0.2.0; following
+ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): gene usage, overlap,
+figures and AIRR exports complete 0.2.0; following
 clonotypes over time in 0.3.0; specificity, B-cell lineages, cells and cohorts after that.

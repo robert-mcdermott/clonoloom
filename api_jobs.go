@@ -120,11 +120,13 @@ func (a *app) handleJobs() {
 		}
 		return a.exampleWork(s), nil
 	}, nil)
-	a.jobs.Handle("diversity", func(spec json.RawMessage) (jobs.Func, error) {
-		var s diversitySpec
-		if err := json.Unmarshal(spec, &s); err != nil || s.Dataset == "" {
-			return nil, errors.New("its spec names no dataset")
-		}
-		return a.diversityWork(s), nil
-	}, nil)
+	for _, k := range analyses {
+		a.jobs.Handle(k.kind, func(spec json.RawMessage) (jobs.Func, error) {
+			var s analysisSpec
+			if err := json.Unmarshal(spec, &s); err != nil || s.Dataset == "" {
+				return nil, errors.New("its spec names no dataset")
+			}
+			return k.work(a, k, s), nil
+		}, nil)
+	}
 }

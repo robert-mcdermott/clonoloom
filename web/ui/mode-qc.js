@@ -17,10 +17,10 @@ const fixed = (v, digits = 3) => (Number.isFinite(v) ? v.toFixed(digits) : '—'
 
 // What each metric measures, said once beside the table.
 const EXPLAIN = [
-  ['Abundance', 'The sample\'s total in the dataset\'s unit (templates, reads, UMIs), or for single cells its cells with a productive chain. Samples sequenced to very different depths are compared at equal depth or coverage (Repertoire view).'],
+  ['Abundance', 'The sample\'s total in the dataset\'s unit (templates, reads, UMIs), or for single cells its cells with a productive chain. Samples sequenced to very different depths are compared at equal depth or coverage (Repertoire › Rarefaction).'],
   ['Productive', 'The share of the abundance in productive rearrangements, in frame without a stop codon. Out-of-frame rearrangements are common in genomic DNA (15–30% in immunoSEQ data) and rare in RNA; a high share can mean a failed library.'],
   ['Clonotypes, singletons', 'Distinct productive rearrangements by locus, amino-acid junction, V gene and J gene, and how many were seen once. Many singletons mean many clonotypes were not seen at all.'],
-  ['Coverage', 'Sample coverage (Chao and Jost 2012): the estimated share of the repertoire\'s abundance belonging to clonotypes the sample saw. Low coverage means the sample is far from saturated; diversity comparisons should then be made at a common coverage. Counted in reads, coverage is optimistic: amplification gives every molecule many reads, so few clonotypes are seen once; templates and UMIs say more.'],
+  ['Coverage', 'Sample coverage (Chao and Jost 2012): the estimated share of the repertoire\'s abundance belonging to clonotypes the sample saw. Low coverage means the sample is far from saturated; diversity comparisons should then be made at a common coverage (Repertoire › Rarefaction). Counted in reads, coverage is optimistic: amplification gives every molecule many reads, so few clonotypes are seen once; templates and UMIs say more.'],
   ['Largest', 'The largest clonotype\'s share of the productive abundance: a hint of a dominant expansion (or of contamination).'],
   ['V gene, J gene', 'The share of the productive abundance whose V (J) call names one gene. Calls between several genes are kept as sets and never merged.'],
   ['Reads per unit', 'Reads per template or UMI where the data give both: how deeply each molecule was sequenced.'],

@@ -305,13 +305,90 @@ measures are given.
   The share of 95% intervals holding the truth (the repertoire's own value for the estimates; the
   expected value at the sample's depth for those seen). Where the coverage is low, Chao1 and the
   estimated Shannon diversity are lower bounds, as their authors say: the Repertoire view says so
-  beside them, and comparisons at equal coverage (rarefaction, the next slice) are the remedy.
+  beside them, and comparisons at equal coverage (rarefaction, §5.4) are the remedy.
 - **immunoSEQ's own clonality** (QC's vendor checks): Adaptive computes `productive_clonality`,
   `productive_simpson_clonality`, `productive_entropy` (log2) and `max_productive_frequency` over
   the productive rearrangements (rows) **from their reads, not their templates**: on the three
   Emerson et al. 2017 exports they are reproduced from reads to seven significant digits (the
   entropy carries about 2·10⁻⁸ of rounding), and templates give other values (P00207's clonality
   0.245 from reads, 0.202 from templates).
+
+### 5.4 Rarefaction and extrapolation (wave 2)
+
+`diversity.Rarefy` answers, for a sample of whole counts, its Hill numbers of order 0, 1 and 2 and
+its sample coverage at other sizes, and its Hill numbers at other coverages (Chao et al. 2014;
+Chao & Jost 2012, *Ecology* 93:2533, doi:10.1890/11-1952.1), as iNEXT 3.0 computes them:
+
+- **Interpolated** (size m below the sample's n): the expectation over subsamples of m drawn
+  without replacement. Clonotypes Σ_i [1 − C(n−X_i, m)/C(n, m)]; Shannon diversity
+  exp(ln m − Σ_i E[Y_i ln Y_i]/m), Y_i hypergeometric; Simpson diversity
+  1/(1/m + (1 − 1/m)·ΣX(X−1)/(n(n−1))); coverage 1 − Σ_i (X_i/n)·C(n−X_i, m)/C(n−1, m). Each ratio
+  of binomial coefficients is a product of its smaller side's terms, or a difference of Stirling
+  series, never the difference of two large log-gammas. iNEXT sums E f_k(m) over every k from 1 to
+  m for every clonotype, which takes minutes for a million cells; ClonoLoom sums each clonotype's
+  hypergeometric outward from its mode until the terms fall below 10⁻¹⁸ of the sum, the same
+  expectation (equal to every term summed in 256-bit arithmetic to 10⁻¹³, and to the definition's
+  sum to 10⁻¹⁰). A million-cell sample's curves, with 200 replicates, take about 2 s on ten cores.
+- **Extrapolated** (above n, to twice n): obs + (asy − obs)(1 − (1 − β)^(m−n)) with asy Chao1 or
+  the asymptotic Shannon diversity (§5.3, not floored) and β = (obs − D(n−1))/(asy − D(n−1)), as
+  iNEXT 3.0 has it (for clonotypes, Chao et al. 2014's Eq. 9); the Simpson diversity by its closed
+  form; coverage 1 − (f1/n)·A^(m−n+1).
+- **At a coverage**: the size where the sample reaches it, below the sample's own coverage by
+  bisection over whole sizes and linearly between them (iNEXT minimizes numerically, to about
+  10⁻⁴ of a cell), above it by the extrapolated coverage's closed form; then the Hill numbers
+  there (linearly between whole sizes, as iNEXT).
+- **Sizes along a curve**: iNEXT's 40 (19 evenly from 1 to n − 1, n, 20 evenly to 2n) and 18 more
+  evenly on a logarithmic scale, since repertoires' sizes span orders of magnitude and iNEXT's
+  first step is a twentieth of the sample.
+- **Intervals**: 95%, from the measures' 200 bootstrap replicates (§5.3, the same seed and streams,
+  so the same replicates), every value computed again from each at the same size, or at the same
+  coverage (iNEXT's "unconditional" variance); the estimate ± 1.96 SE.
+- **Levels suggested** (ClonoLoom's choice): first, the lowest sample coverage among the samples and
+  the smallest sample's size, which every sample reaches by rarefaction; then iNEXT's defaults, the
+  lowest coverage any sample reaches at twice its size and twice the smallest size (after Chao et
+  al. 2014 and Chao & Jost 2012), marked as extrapolated, for the reason below.
+- **Agreement** (`validation/rarefaction_test.go`, `validation/reference/rarefaction.R`): on the
+  18 samples of §5.3, at iNEXT 3.0.2's 40 sizes along each curve, every Hill number and coverage
+  equals iNEXT's to 10⁻⁹, except the extrapolated Shannon diversity, within 8·10⁻⁸: its β divides
+  by the small difference between the values at n and n − 1 (0.17 for S01-1), which magnifies
+  iNEXT's rounding of the value at n (R sums a term for every clonotype: 2768.6720701115 in iNEXT,
+  2768.6720701097 in ClonoLoom, 2768.67207010965 exactly). At each coverage, the same to what
+  iNEXT's minimization leaves of the size there (R's `optimize` stops within √ε·m of it, about
+  10⁻³ of a cell at 10⁵), except where the coverage barely changes with size (the AIRR Community's
+  three-clonotype test files: 35 coverages), where the size is not determined and iNEXT's
+  minimizer answers any along the flat stretch. Two cohorts, the simulated study's twelve samples
+  and Emerson et al.'s three subjects, compared at iNEXT's default levels (`estimateD`): the same
+  levels and the same values. The bootstrap standard errors are 0.85 to 1.26 times iNEXT's (4,240
+  compared; median 1.01, 95% of them 0.90–1.14), each a random draw of its own.
+- **The curves against the truth on simulations** (`validation/coverage_test.go`, 200 samples of
+  each repertoire, 200 replicates each; power-law clonotype sizes, α = 1.3; the truth the value a
+  sample of that size from the repertoire has, exactly for coverage, clonotypes and the Simpson
+  diversity, and as exp of the mean entropy of 200 such samples for the Shannon diversity). The
+  share of 95% intervals holding the truth, and the mean estimate's error relative to it:
+
+  | Repertoire | Coverage | Size | Coverage | Clonotypes | Shannon | Simpson |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | 5,000 clonotypes, 50,000 templates | 0.99 | n/2 | 98.0%, 0.0% | 96.5%, 0.0% | 94.0%, 0.0% | 91.5%, −0.2% |
+  | | | 2n | 100%, 0.0% | 100%, 0.0% | 90.5%, +0.7% | 91.5%, −0.2% |
+  | 50,000 clonotypes, 20,000 templates | 0.62 | n/2 | 92.0%, 0.0% | 93.5%, 0.0% | 92.5%, +0.3% | 92.0%, −0.3% |
+  | | | 2n | 1.0%, +2.7% | 72.0%, −0.9% | 50.5%, +2.9% | 92.0%, −0.3% |
+  | 50,000 clonotypes, 80,000 templates | 0.83 | n/2 | 93.5%, 0.0% | 92.5%, 0.0% | 93.0%, +0.1% | 95.5%, +0.1% |
+  | | | 2n | 0.0%, +1.1% | 37.5%, −1.0% | 20.5%, +2.2% | 95.5%, +0.1% |
+  | 50,000 clonotypes, 320,000 templates | 0.97 | n/2 | 97.5%, 0.0% | 95.5%, 0.0% | 90.0%, +0.1% | 94.5%, +0.1% |
+  | | | 2n | 16.5%, +0.1% | 87.0%, −0.2% | 17.5%, +1.1% | 94.5%, +0.1% |
+
+  Rarefied, every value's interval held the truth in 90–98% of samples. Extrapolated to twice the
+  sample, the values were within 3% of the truth on average (the Simpson diversity within 0.3%),
+  but where the repertoire has many rare clonotypes the intervals were narrower than that error,
+  and only the Simpson diversity's held the truth as often as they say: the bootstrap's intervals
+  measure the sampling variation of an estimator whose bias they do not see. Extrapolation is
+  iNEXT's, unchanged; hence the levels reached by rarefaction come first, and the view says so
+  where a sample is extrapolated.
+- **Reads**: the estimators count each cell or molecule once. In reads each counts many times over,
+  so few clonotypes are seen once or twice, and Chao1, ACE, the coverage, the estimated diversities
+  and extrapolation all read a sample as complete (Emerson et al. 2017's three subjects, opened as
+  one dataset in reads, each have a coverage of 1). The Repertoire view warns where a dataset's
+  unit is reads; rarefying to equal reads compares equal sequencing depth, not equal cells.
 
 ## 6. Datasets
 

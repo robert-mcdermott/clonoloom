@@ -779,7 +779,9 @@ table.data tr.selected td { background: var(--active); }
 .swatch.plot-c5 { background: var(--brand-a); }
 .plot-grid-row, .plot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 12px; margin-top: 12px; }
 .plot-card { margin: 0; border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; background: var(--panel); min-width: 0; }
-.plot-card figcaption { font-weight: 650; font-size: 12.5px; margin-bottom: 6px; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.plot-card figcaption { font-weight: 650; font-size: 12.5px; margin-bottom: 6px; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; justify-content: space-between; }
+.plot-card figcaption select.input { width: auto; max-width: 100%; }
+.plot-pickers { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
 .plot-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11.5px; color: var(--text-2); }
 .plot-legend > span { display: inline-flex; gap: 5px; align-items: center; }
 
@@ -873,6 +875,15 @@ button.link { background: none; border: 0; padding: 0; color: var(--accent-text)
 /* Estimates with intervals, and lines (lib/plot.js): series by group, from the theme's tokens. */
 .plot-whisker { stroke: var(--text-2); stroke-width: 1.4; }
 .plot-line { fill: none; stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
+.plot-dashed { stroke-dasharray: 5 4; }
+.plot-guide { stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 3 3; }
+.plot-band { stroke: none; fill-opacity: 0.13; }
+.plot-band.plot-s1 { fill: var(--accent); }
+.plot-band.plot-s2 { fill: var(--brand-b); }
+.plot-band.plot-s3 { fill: var(--accent-2); }
+.plot-band.plot-s4 { fill: var(--brand-a); }
+.plot-band.plot-s5 { fill: var(--ok); }
+.plot-band.plot-s6 { fill: var(--text-3); }
 .plot-line.plot-s1 { stroke: var(--accent); } circle.plot-s1, .swatch.plot-s1 { fill: var(--accent); background: var(--accent); }
 .plot-line.plot-s2 { stroke: var(--brand-b); } circle.plot-s2, .swatch.plot-s2 { fill: var(--brand-b); background: var(--brand-b); }
 .plot-line.plot-s3 { stroke: var(--accent-2); } circle.plot-s3, .swatch.plot-s3 { fill: var(--accent-2); background: var(--accent-2); }

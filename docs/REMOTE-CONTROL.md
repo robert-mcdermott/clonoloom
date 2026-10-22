@@ -58,6 +58,7 @@ print(act("show_methods")["data"]["text"])
 | `set_definition` | Chooses a dataset's clonotype definition: a `preset` by name, or a `definition` in full. |
 | `select_clonotype` | Chooses a clonotype by its `rank` in the table or its `id`. |
 | `measure_diversity` | Measures each sample's diversity (a job; the result kept) and answers the main measures with their 95% intervals (`dataset`). |
+| `rarefy` | Rarefies and extrapolates each sample (a job; the result kept) and answers the levels the samples are best compared at and each sample's clonotypes, Shannon and Simpson diversity at one of them, with their 95% intervals (`dataset`; `level`: `coverage`, the default, `size`, `extrapolatedCoverage` or `extrapolatedSize`). |
 | `show_examples` | Opens the Example data dialog. |
 | `show_methods` | Shows a dataset's methods paragraph and answers it with its references. |
 | `set_theme` | `light`, `dark` or `system`. |
