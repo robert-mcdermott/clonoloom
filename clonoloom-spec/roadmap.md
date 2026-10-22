@@ -554,8 +554,8 @@ queries make a public cohort more than one example's files.
 | 2. TCRdist | Done |
 | 3. Generation probability | Done |
 | 4. Simulated antigen-specific responses | Done |
-| 5. Neighborhoods and backgrounds | Next |
-| 6. Clonotype networks | To come |
+| 5. Neighborhoods and backgrounds | Done |
+| 6. Clonotype networks | Next |
 | 7. Specificity databases | To come |
 | 8. Invariant populations and the examples; release 0.4.0 | To come |
 
@@ -744,6 +744,60 @@ queries make a public cohort more than one example's files.
    - Validation: neighbor counts, weights and radii equal to tcrdist3's on Dash et al.'s TCRs with
      the same background; on the simulated responses, the families found against their truth
      (each family's members found, and the neighbors not of it).
+   - Plan: `internal/neighborhood`, on one locus's chains (the β chains of a bulk study, as
+     Mayer-Blackwell et al. work).
+     - *Backgrounds* (`background.go`), each receptor with a weight: `model`, receptors drawn from a
+       recombination model (`internal/pgen`) conditioned on the dataset's V–J usage, each weighted
+       by the model's own probability of its V–J pair over the dataset's share of it, so that the
+       background's rate is the rate in a repertoire recombination alone makes; `shuffled`, the
+       dataset's own chains with their CDR3s moved among its V–J pairs (weight 1). A public repertoire
+       the user opens as a background waits for a later slice: the two above need no data of their
+       own.
+     - *Radii* (`neighborhood.go`): each centroid's is the largest of 0, 2, …, 48 at which the weighted
+       background within it is at most a share of the background's receptors (10⁻⁶ by default,
+       Mayer-Blackwell et al.'s; tcrdist3's own default is 10⁻⁵), 0 where none is.
+     - *Enrichment* (`neighborhood.go`): at that radius, the neighbors in the dataset (the centroid
+       counted, as tcrdist3 counts it) and in the background, weighted and not; the rates
+       (n + 1)/(N + 2), their ratio, the odds ratio with one added to each count, and a χ² test of
+       the two with Yates's correction, as tcrdist3 computes them.
+     - *Motifs* (`motif.go`): the neighbors' residues at each position of the centroid's CDR3,
+       aligned as TCRdist aligned them (`tcrdist.AlignCDR3`), written as a pattern: a residue, a
+       set of up to three, or `.`; a gap makes it optional.
+     - *The view*: the Specificity view's third part, Neighborhoods: the background chosen and
+       made (a job, kept as a result), the centroids by enrichment with their radius, neighbors,
+       rate against the background and motif, and a chosen one's neighbors.
+   - Validation: the radii and enrichment equal to tcrdist3 0.3's `bkgd_cntl_nn2` on Dash et al.'s
+     TCRs against a background of OLGA draws, run in `validation/reference/`; on the simulated
+     vaccine study, each family's members found within its founder's radius and the enrichment of
+     the epitopes' centroids above the rest; a budget (10,000 centroids against 100,000 background
+     receptors in under 2 minutes on 10 cores).
+   - *Done:* `internal/neighborhood` (the two backgrounds, each centroid's radius and
+     neighborhood found in parallel, the enrichment, the motif from the alignment TCRdist chose,
+     `tcrdist.AlignCDR3` added for it); `pgen.Generator.DrawWith` and `pgen.Model.Usage`, to draw a
+     background of named genes and weigh it; the analysis `neighborhoods` (`api_neighborhoods.go`)
+     and `POST /api/neighborhoods/loci`; the Specificity view's Neighborhoods part with the chosen
+     neighborhood's receptors; CSV export, the methods paragraph's sentence,
+     `find_neighborhoods`, the guide's page and capture scene.
+   - *Validation:* all 415 centroids' radii, hits, weighted hits, rates, relative rate, odds ratio
+     and χ² equal to tcrdist3 0.3's on Dash et al.'s human β chains against 5,204 OTS β chains with
+     weights (the background's own construction is ClonoLoom's, so the reference fixes the
+     background and compares what is computed from it); on the vaccine study's S01 at day 14, the
+     20 most enriched neighborhoods and all 149 receptors in them recognize an epitope, and on S04
+     (placebo) none of the 20 does; 10,000 receptors against 100,000 in 1.3 s on 10 processors.
+   - *Decided:* neighborhoods are of one locus's chains, as Mayer-Blackwell et al. work and as a
+     background is drawn; the locus is the dataset's commonest unless chosen. A result keeps the
+     500 most enriched centroids and each one's first 100 receptors, so that a large dataset's
+     document stays small. The motif uses the alignment the distance chose, so that a neighbor of
+     another length lines up as TCRdist lined it up, and covers the positions the distance compares
+     (the first three and last two residues left out), as tcrdist3's regex does. A public
+     repertoire as a background waits for a later wave.
+   - *Found:* tcrdist3 falls back to a radius of 0 where no threshold holds the control rate, and
+     then still counts the background at distance 0 — two of Dash et al.'s 415 centroids differ
+     without it. With a background ten times the dataset and a radius chosen to leave almost none
+     of it within, a relative rate above 10 and "no background within the radius" are both true of
+     nearly every centroid: the summary reports the largest neighborhood instead, and the table
+     orders by χ², which accounts for both counts. On the vaccine study the neighborhoods are exact
+     where slice 4's plain neighbor counts were swamped by common background CDR3s.
 6. **Clonotype networks (S4).** Clonotypes joined by identical CDR3s, by edit distance
    (Levenshtein or Hamming) or by TCRdist within a threshold, on one chain or both; the clusters
    (connected components), with their sizes and samples; a layout computed by ClonoLoom, the same

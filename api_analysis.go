@@ -49,7 +49,7 @@ type analysis struct {
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis, pgenAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis, pgenAnalysis, neighborhoodAnalysis}
 
 // analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
 // (condition) and subject (by sample name), for the analyses that use them; Study is the samples'
@@ -69,7 +69,9 @@ type analysisSpec struct {
 	Class      *track.Classing      `json:"class,omitempty"`
 	TCRdist    *tcrdistOptions      `json:"tcrdist,omitempty"`
 	PGen       *pgenOptions         `json:"pgen,omitempty"`
-	Method     int                  `json:"method"`
+	// Neighborhoods: of similar receptors against a background (api_neighborhoods.go).
+	Neighborhoods *neighborhoodOptions `json:"neighborhoods,omitempty"`
+	Method        int                  `json:"method"`
 }
 
 // normalized completes a request: the definition normalized (its meaning, not its name, makes the
@@ -136,8 +138,10 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Class      *track.Classing   `json:"class,omitempty"`
 		TCRdist    *tcrdistOptions   `json:"tcrdist,omitempty"`
 		PGen       *pgenOptions      `json:"pgen,omitempty"`
-		Method     int               `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.PGen, s.Method}
+
+		Neighborhoods *neighborhoodOptions `json:"neighborhoods,omitempty"`
+		Method        int                  `json:"method"`
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.PGen, s.Neighborhoods, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -197,6 +201,11 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 			if body.PGen == nil {
 				body.PGen = &pgenOptions{}
 			}
+		case "neighborhoods":
+			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
+			if body.Neighborhoods == nil {
+				body.Neighborhoods = &neighborhoodOptions{}
+			}
 		default:
 			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
 		}
@@ -205,6 +214,9 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 		}
 		if k.over != "pgen" {
 			body.PGen = nil
+		}
+		if k.over != "neighborhoods" {
+			body.Neighborhoods = nil
 		}
 		spec, err := body.analysisSpec.normalized(k.version)
 		if err != nil {

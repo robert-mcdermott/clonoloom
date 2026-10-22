@@ -157,3 +157,74 @@ export function pgenOrder(rows, by = 'abundant') {
     return (by === 'probable' ? b.pgen - a.pgen : a.pgen - b.pgen) || tie(a, b);
   });
 }
+
+// Neighborhoods' options, kept with the dataset: the background ('model', receptors drawn from a
+// recombination model with the dataset's V–J usage; 'shuffled', the dataset's own chains with
+// their CDR3s moved among them), the locus whose chains are compared ('' the commonest), the
+// share of the background a radius may hold, and the neighbors a centroid is reported with.
+export const BACKGROUNDS = {
+  model: 'Drawn from a recombination model',
+  shuffled: 'The dataset\'s own CDR3s, shuffled',
+};
+export const CONTROL_RATES = { 1e-5: '10⁻⁵ (tcrdist3\'s)', 1e-6: '10⁻⁶ (Mayer-Blackwell et al.\'s)', 1e-7: '10⁻⁷' };
+
+export function neighborhoodOptions(dataset) {
+  const o = dataset?.neighborhoods ?? {};
+  const control = Number(o.control);
+  return {
+    background: BACKGROUNDS[o.background] ? o.background : 'model',
+    locus: typeof o.locus === 'string' ? o.locus : '',
+    control: CONTROL_RATES[control] ? control : 1e-6,
+    minNeighbors: Number.isInteger(o.minNeighbors) && o.minNeighbors > 0 ? o.minNeighbors : 2,
+  };
+}
+
+export function useNeighborhoods(project, datasetId, changes, now = new Date().toISOString()) {
+  const dataset = project.datasets.find((d) => d.id === datasetId);
+  if (!dataset) return project;
+  const before = neighborhoodOptions(dataset);
+  const next = neighborhoodOptions({ neighborhoods: { ...before, ...changes } });
+  if (JSON.stringify(next) === JSON.stringify(before)) return project;
+  const neighborhoods = {
+    ...(next.background !== 'model' ? { background: next.background } : {}),
+    ...(next.locus ? { locus: next.locus } : {}),
+    ...(next.control !== 1e-6 ? { control: next.control } : {}),
+    ...(next.minNeighbors !== 2 ? { minNeighbors: next.minNeighbors } : {}),
+  };
+  return touch({
+    ...project,
+    datasets: project.datasets.map((d) => (d.id === datasetId ? { ...d, neighborhoods } : d)),
+    history: [...project.history, { time: now, action: 'Chose how neighborhoods are found', detail: `${dataset.name}: ${neighborhoodWords(next)}` }],
+  }, now);
+}
+
+// The request for a dataset's neighborhoods.
+export function neighborhoodRequest(options) {
+  return { background: options.background, locus: options.locus, control: options.control, minNeighbors: options.minNeighbors };
+}
+
+// The options in words.
+export function neighborhoodWords(o) {
+  const against = o.background === 'shuffled' ? 'the dataset\'s own CDR3s shuffled among its genes' : 'receptors drawn from a recombination model';
+  return `${o.locus ? `${o.locus} chains` : 'the commonest locus\'s chains'} against ${against}, each radius holding at most ${tenTo(Math.round(Math.log10(o.control)))} of it`;
+}
+
+// A centroid's neighborhood in words: how much commoner it is in the dataset than in the
+// background, and how much of the background its radius holds.
+export function enrichmentWords(row) {
+  const times = row.relativeRate >= 100 ? Math.round(row.relativeRate) : Number(row.relativeRate.toPrecision(2));
+  return `${times.toLocaleString('en-US')}× commoner than in the background`;
+}
+
+// The centroids in the order chosen: 'enriched' (the most enriched first, as the program answers
+// them), 'neighbors' (the largest neighborhoods first) or 'abundant' (the most cells or
+// molecules first).
+export const CENTER_ORDERS = { enriched: 'Most enriched', neighbors: 'Largest', abundant: 'Most abundant' };
+export function centerOrder(rows, by = 'enriched') {
+  const tie = (a, b) => b.chiSquare - a.chiSquare || (a.id < b.id ? -1 : 1);
+  return [...rows].sort((a, b) => {
+    if (by === 'neighbors') return b.neighbors - a.neighbors || tie(a, b);
+    if (by === 'abundant') return b.abundance - a.abundance || tie(a, b);
+    return tie(a, b);
+  });
+}

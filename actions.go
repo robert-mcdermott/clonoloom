@@ -111,6 +111,16 @@ var remoteActions = []remoteAction{
 		"top":      numberArg("How many of the clonotypes with the most neighbors to answer (default 10)."),
 		"select":   numberArg("A clonotype to show the nearest of, by its rank among those with the most neighbors (from 1)."),
 	})},
+	{Name: "find_neighborhoods", Title: "Find neighborhoods against a background", Description: "Shows the Specificity view's Neighborhoods part and finds, for each receptor of one locus, the largest radius at which a background holds few enough receptors and the dataset's receptors within it (a job; the result kept with the project), as Mayer-Blackwell et al. 2021 define a neighborhood. The background is drawn from a recombination model with the dataset's V and J usage, or made by moving the dataset's own CDR3s among its genes. The options given are kept with the dataset. Answers how many receptors have a neighborhood and the first by enrichment, each with its radius, its neighborhood's receptors, how much commoner it is than in the background, and its motif.", InputSchema: schema(map[string]any{
+		"dataset":      datasetArg,
+		"background":   textArg("model (drawn from a recombination model; the default) or shuffled (the dataset's own CDR3s moved among its genes)."),
+		"locus":        textArg("The locus whose chains are compared (default: the dataset's commonest)."),
+		"control":      numberArg("The share of the background a radius may hold: 1e-5, 1e-6 (the default) or 1e-7."),
+		"minNeighbors": numberArg("How many receptors a neighborhood needs to be reported, its centroid counted (default 2)."),
+		"order":        textArg("Which neighborhoods first: enriched (the default), neighbors or abundant."),
+		"top":          numberArg("How many neighborhoods to answer (default 10)."),
+		"select":       numberArg("A neighborhood to show the receptors of, by its rank in the order asked for (from 1)."),
+	})},
 	{Name: "measure_generation", Title: "Compute generation probabilities", Description: "Shows the Specificity view's Generation part and computes each clonotype's generation probability, the probability that V(D)J recombination alone makes its CDR3s, as OLGA computes it, under the dataset's clonotype definition and filter (a job; the result kept with the project): under OLGA's default models (the reference data olga-models, which must be downloaded) or ClonoLoom's own model of human TRB; a pair's is the product of its chains'. The options given are kept with the dataset. Answers the models and how many clonotypes have a probability, each sample's quartiles (log10), and the first clonotypes in the order asked for.", InputSchema: schema(map[string]any{
 		"dataset":  datasetArg,
 		"models":   textArg("Whose models: olga, clonoloom, or \"\" for OLGA's where downloaded, else ClonoLoom's (the default)."),

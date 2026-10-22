@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createProject } from './project.js';
 import { addDataset, datasetRecord } from './datasets.js';
-import { log10Histogram, nearestHistogram, optionWords, pgenOptions, pgenOrder, pgenRequest, probabilityWords, radiusOf, regionWords, tcrdistOptions, tcrdistRequest, tenTo, usePgen, useTCRdist } from './specificity.js';
+import { centerOrder, enrichmentWords, neighborhoodOptions, neighborhoodRequest, useNeighborhoods, log10Histogram, nearestHistogram, optionWords, pgenOptions, pgenOrder, pgenRequest, probabilityWords, radiusOf, regionWords, tcrdistOptions, tcrdistRequest, tenTo, usePgen, useTCRdist } from './specificity.js';
 
 const NOW = '2026-10-22T12:00:00.000Z';
 const summary = { id: 'd-1', name: 'Dash', unit: 'cells', formats: [], singleCell: true, rows: 10, readerVersion: 1, sources: [], samples: [{ name: 's' }], report: { fatal: 0, warnings: 0, notes: 0, findings: [] } };
@@ -66,4 +66,30 @@ test('clonotypes in order of their probability', () => {
   assert.deepEqual(pgenOrder(rows, 'abundant').map((r) => r.id), ['b', 'a', 'd', 'c']);
   assert.deepEqual(pgenOrder(rows, 'probable').map((r) => r.id), ['c', 'a', 'd', 'b']);
   assert.deepEqual(pgenOrder(rows, 'improbable').map((r) => r.id), ['d', 'a', 'c', 'b']);
+});
+
+test('neighborhoods\' options are kept with the dataset', () => {
+  let project = addDataset(createProject('P', { now: NOW }), datasetRecord(summary, NOW), NOW);
+  assert.deepEqual(neighborhoodOptions(project.datasets[0]), { background: 'model', locus: '', control: 1e-6, minNeighbors: 2 });
+  project = useNeighborhoods(project, 'd-1', { background: 'shuffled', locus: 'TRB', control: 1e-5 }, NOW);
+  assert.deepEqual(project.datasets[0].neighborhoods, { background: 'shuffled', locus: 'TRB', control: 1e-5 });
+  assert.match(project.history.at(-1).detail, /TRB chains against the dataset's own CDR3s shuffled among its genes, each radius holding at most 10⁻⁵ of it/);
+  assert.equal(useNeighborhoods(project, 'd-1', { locus: 'TRB' }, NOW), project);
+  // Values the program does not offer fall back to the defaults.
+  const odd = neighborhoodOptions({ neighborhoods: { background: 'public', control: 0.5, minNeighbors: 0 } });
+  assert.deepEqual(odd, { background: 'model', locus: '', control: 1e-6, minNeighbors: 2 });
+  assert.deepEqual(neighborhoodRequest(odd), { background: 'model', locus: '', control: 1e-6, minNeighbors: 2 });
+});
+
+test('centroids in the order chosen', () => {
+  const rows = [
+    { id: 'a', chiSquare: 10, neighbors: 2, abundance: 50 },
+    { id: 'b', chiSquare: 40, neighbors: 3, abundance: 5 },
+    { id: 'c', chiSquare: 20, neighbors: 9, abundance: 1 },
+  ];
+  assert.deepEqual(centerOrder(rows, 'enriched').map((r) => r.id), ['b', 'c', 'a']);
+  assert.deepEqual(centerOrder(rows, 'neighbors').map((r) => r.id), ['c', 'b', 'a']);
+  assert.deepEqual(centerOrder(rows, 'abundant').map((r) => r.id), ['a', 'b', 'c']);
+  assert.equal(enrichmentWords({ relativeRate: 143.6 }), '144× commoner than in the background');
+  assert.equal(enrichmentWords({ relativeRate: 2.345 }), '2.3× commoner than in the background');
 });

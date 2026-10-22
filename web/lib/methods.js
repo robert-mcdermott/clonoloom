@@ -289,5 +289,17 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     sentences.push(`Each clonotype's generation probability (${under}), the probability that V(D)J recombination alone makes its CDR3s${r.genes ? ' with their V and J genes' : ''}, summed over every gene choice, deletion and insertion that makes them, was computed by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} as OLGA computes it ${cite('sethna')}, under ${models}, ${r.organism ?? 'human'}; a pair's as the product of its chains'. Of ${plural(r.clonotypes ?? 0, 'clonotype')}, ${count(r.computed ?? 0)} had one.`);
   }
 
+  // Neighborhoods against a background.
+  for (const r of results.filter((x) => x.kind === 'neighborhoods')) {
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const background = r.background?.kind === 'shuffled'
+      ? `the same receptors with their CDR3s moved among their V and J genes (${count(r.background?.receptors ?? 0)} receptors)`
+      : `${count(r.background?.receptors ?? 0)} receptors drawn from ${r.background?.name ?? 'a recombination model'} (checksum ${r.background?.checksum ?? ''}) with the dataset's V–J usage, each weighted by the model's probability of its V–J pair over the dataset's share of it`;
+    const loops = r.cdr3Only
+      ? 'their CDR3s alone'
+      : `their CDR3s and their V genes' CDR1, CDR2 and CDR2.5, the loops of each ${r.organism} V allele taken from tcrdist3's database of genes (${r.loops?.file ?? ''}, SHA-256 ${r.loops?.sha256 ?? ''})`;
+    sentences.push(`Each ${r.locus} receptor (${under}) was taken as the centre of a neighborhood by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} as Mayer-Blackwell et al. define one ${cite('tcrdist3')}: its radius the largest of 0, 2, …, ${r.maxRadius ?? 48} TCRdist units ${cite('dash')} at which the weighted background within it was at most a share ${r.control ?? 1e-6} of the background's receptors, against a background of ${background}, comparing ${loops}. Of ${plural(r.receptors ?? 0, 'receptor')}, ${count(r.centers ?? 0)} had a neighborhood of ${r.minNeighbors ?? 2} receptors or more, each reported with the rates (n + 1)/(N + 2) in the dataset and the background, their ratio, an odds ratio and a χ² test.`);
+  }
+
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };
 }

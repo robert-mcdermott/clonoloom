@@ -12,9 +12,12 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 
+	"clonoloom/internal/neighborhood"
+	"clonoloom/internal/pgen"
 	"clonoloom/internal/simulate"
 	"clonoloom/internal/tcrdist"
 )
@@ -124,4 +127,123 @@ func TestVaccineReceptorsAsNearAsDash(t *testing.T) {
 			t.Errorf("within %d: %.2f, Dash et al.'s %.2f and %.2f", r, shares[k], dash[0][k], dash[1][k])
 		}
 	}
+}
+
+// Neighborhoods (internal/neighborhood) against the vaccine study's truth: against a background
+// drawn from the model the study was simulated with, the centroids the enrichment ranks first in a
+// vaccinated subject are the receptors that recognize the vaccine's epitopes, and their
+// neighborhoods hold them; in a subject given the placebo, which holds the same receptors but
+// rare and unexpanded, they are not found.
+func TestNeighborhoodsFindTheSimulatedFamilies(t *testing.T) {
+	if raceDetector {
+		t.Skip("measured without the race detector, which slows the simulation tenfold")
+	}
+	loops := loopsFile(t)
+	dir := filepath.Join(t.TempDir(), "vaccine")
+	if _, err := simulate.Run(context.Background(), simulate.Presets["vaccine"], dir, "validation", nil); err != nil {
+		t.Fatal(err)
+	}
+	// The truth: the receptors that recognize an epitope.
+	epitope := map[string]string{}
+	f, err := os.Open(filepath.Join(dir, "truth", "specificity.tsv"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	sc := bufio.NewScanner(f)
+	sc.Scan()
+	col := map[string]int{}
+	for i, h := range strings.Split(sc.Text(), "\t") {
+		col[h] = i
+	}
+	for sc.Scan() {
+		r := strings.Split(sc.Text(), "\t")
+		epitope[r[col["v_call"]]+"|"+r[col["j_call"]]+"|"+r[col["junction_aa"]]] = r[col["epitope"]]
+	}
+	f.Close()
+
+	// S01 is vaccinated, S04 given the placebo (the study's first three subjects are vaccinated).
+	for _, c := range []struct {
+		sample            string
+		condition         string
+		mostSpecific, few int
+	}{
+		{"S01-d14.tsv", "vaccinated", 16, 0},
+		{"S04-d14.tsv", "given the placebo", 0, 4},
+	} {
+		t.Run(c.condition, func(t *testing.T) {
+			sample := neighborhoodOf(t, filepath.Join(dir, c.sample))
+			background, src, err := neighborhood.ModelBackground(context.Background(), sample, pgen.Simulator(), "clonoloom_human_T_beta", "1", 100000, 20261027, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			res, err := neighborhood.Find(context.Background(), sample, background, loops, "human", neighborhood.DefaultOptions(), 0, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			specific, inside, held := 0, 0, 0
+			const top = 20
+			for i, center := range res.Centers {
+				if i >= top {
+					break
+				}
+				r := sample.Receptors[center.Receptor]
+				if epitope[r.V+"|"+r.J+"|"+r.CDR3] != "" {
+					specific++
+				}
+				for _, m := range center.Members {
+					x := sample.Receptors[m]
+					if epitope[x.V+"|"+x.J+"|"+x.CDR3] != "" {
+						inside++
+					}
+				}
+				held += center.Neighbors
+			}
+			t.Logf("%s (%s): %d receptors, %d background (%d V–J pairs); %d centroids, of the first %d by enrichment %d recognize an epitope, and %d of %d receptors in their neighborhoods do",
+				c.sample, c.condition, sample.Len(), src.Receptors, src.Pairs, len(res.Centers), top, specific, inside, held)
+			if c.mostSpecific > 0 && specific < c.mostSpecific {
+				t.Errorf("only %d of the first %d centroids recognize an epitope", specific, top)
+			}
+			if c.few > 0 && specific > c.few {
+				t.Errorf("%d of the first %d centroids recognize an epitope, though the subject was %s", specific, top, c.condition)
+			}
+		})
+	}
+}
+
+// neighborhoodOf reads a sample's productive β chains as a repertoire, its clonotypes by
+// amino-acid junction, V gene and J gene.
+func neighborhoodOf(t *testing.T, path string) *neighborhood.Repertoire {
+	t.Helper()
+	f, err := os.Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	sc := bufio.NewScanner(f)
+	sc.Buffer(make([]byte, 1<<20), 1<<20)
+	sc.Scan()
+	col := map[string]int{}
+	for i, h := range strings.Split(sc.Text(), "\t") {
+		col[h] = i
+	}
+	out := &neighborhood.Repertoire{Locus: "TRB"}
+	at := map[string]int{}
+	for sc.Scan() {
+		r := strings.Split(sc.Text(), "\t")
+		if r[col["productive"]] != "T" {
+			continue
+		}
+		key := r[col["v_call"]] + "|" + r[col["j_call"]] + "|" + r[col["junction_aa"]]
+		n, _ := strconv.ParseFloat(r[col["umi_count"]], 64)
+		if i, seen := at[key]; seen {
+			out.Receptors[i].Count += n
+			continue
+		}
+		at[key] = len(out.Receptors)
+		out.Receptors = append(out.Receptors, neighborhood.Receptor{
+			CDR3: r[col["junction_aa"]], V: r[col["v_call"]], J: r[col["j_call"]],
+			Clonotype: len(out.Receptors), Count: n, Samples: 1,
+		})
+	}
+	return out
 }

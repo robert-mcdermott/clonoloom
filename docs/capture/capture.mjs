@@ -242,6 +242,17 @@ const scenes = {
     await waitFor(`Boolean(document.querySelector('.specificity-view .nearest table'))`);
     await js(`(() => { const el = document.querySelector('.specificity-view .plot-card'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
   },
+  // The simulated vaccination study's neighborhoods against a background drawn from OLGA's human
+  // TRB model (the reference data put in the library, as a download leaves them), the most
+  // enriched first.
+  async neighborhoods() {
+    cpSync(join(DATA, 'tcrdist3-loops'), join(places.library, 'references', 'tcrdist3-loops'), { recursive: true });
+    cpSync(join(DATA, 'olga-models'), join(places.library, 'references', 'olga-models'), { recursive: true });
+    await act('open_example', { example: 'simulated-vaccine', download: true });
+    await act('find_neighborhoods', {});
+    await waitFor(`document.querySelectorAll('.specificity-view table.selectable tbody tr').length > 10`);
+    await js(`(() => { const el = document.querySelector('.specificity-view .summary-card'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
+  },
   // Dash et al.'s mouse TCRs' generation probabilities under OLGA's mouse models (the reference
   // data put in the library, as a download leaves them): their distribution, and the clonotypes,
   // the most abundant first.

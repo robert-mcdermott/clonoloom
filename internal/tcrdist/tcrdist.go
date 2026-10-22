@@ -158,3 +158,54 @@ func Distance(x, y []Chain) int {
 	}
 	return d
 }
+
+// AlignCDR3 aligns another chain's CDR3 to a centroid's, as the distance between them aligns
+// them: for each position of the centroid's CDR3, the position of the other's that stands against
+// it, or −1 where the other has none (the centroid is longer there). Of equal lengths, each
+// position stands against its own; of different lengths, the shorter stands against the longer's
+// two ends, the longer's extra residues left out where the distance leaves them out. The
+// positions the distance trims from the ends are aligned too, so that a motif may show them.
+func AlignCDR3(centroid, other Chain) []int {
+	a, b := centroid.CDR3, other.CDR3
+	out := make([]int, len(a))
+	if len(a) == len(b) {
+		for i := range out {
+			out[i] = i
+		}
+		return out
+	}
+	short := min(len(a), len(b))
+	// The gap the distance chose, among the places it searches.
+	lo, hi := 5, short-5
+	for lo > hi {
+		lo--
+		hi++
+	}
+	gap, best := lo, -1
+	for g := lo; g <= hi; g++ {
+		d := 0
+		for i := cdr3Region.ntrim; i < g; i++ {
+			d += int(table[a[i]][b[i]])
+		}
+		for c := cdr3Region.ctrim; c < short-g; c++ {
+			d += int(table[a[len(a)-1-c]][b[len(b)-1-c]])
+		}
+		if best < 0 || d < best {
+			gap, best = g, d
+		}
+		if best == 0 {
+			break
+		}
+	}
+	for i := range out {
+		switch {
+		case i < gap:
+			out[i] = i
+		case i >= len(a)-(short-gap):
+			out[i] = len(b) - (len(a) - i)
+		default:
+			out[i] = -1 // the centroid's own extra residues, against none
+		}
+	}
+	return out
+}

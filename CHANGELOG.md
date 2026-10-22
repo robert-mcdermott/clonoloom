@@ -7,6 +7,29 @@ grows with each.
 
 ### Added
 
+- **Neighborhoods and backgrounds (wave 4, slice 5).** The Specificity view's Neighborhoods part
+  (`internal/neighborhood`, `api_neighborhoods.go`):
+  - each receptor of one locus as a centroid, its radius the largest of 0, 2, …, 48 TCRdist units
+    at which the weighted background within it is at most a share of the background's receptors
+    (10⁻⁶ by default, Mayer-Blackwell et al. 2021's; tcrdist3's own default is 10⁻⁵), and the
+    dataset's receptors within it its neighborhood;
+  - each neighborhood's enrichment against the background (the rates (n + 1)/(N + 2), their ratio,
+    an odds ratio and a χ² test with Yates's correction, as tcrdist3 computes them) and its motif,
+    the residues its neighbors have at each position the distance compares;
+  - backgrounds of ClonoLoom's own: receptors **drawn from a recombination model** with the
+    dataset's V–J usage, each weighted by the model's probability of its pair over the dataset's
+    share of it, so that the weighted background is the repertoire recombination alone makes; or
+    the dataset's own chains with their **CDR3s shuffled** among its genes;
+  - kept as a result, exported as CSV (`neighborhoods.csv`, `members.csv`), in the methods
+    paragraph; remote control's `find_neighborhoods`; the guide's page, Neighborhoods and
+    backgrounds, and its capture scene.
+  - Validated: every centroid's radius, its neighbors in the dataset and the background, and the
+    rates, odds ratio and χ² computed from them equal to tcrdist3 0.3's `bkgd_cntl_nn2` on Dash et
+    al.'s 415 human β chains against 5,204 OTS β chains with weights
+    (`validation/reference/tcrdist3_neighborhoods.py`); on the simulated vaccination study, the 20
+    most enriched neighborhoods of a vaccinated subject's day-14 sample, and all 149 receptors in
+    them, recognize the vaccine's epitopes, and none in a subject given the placebo does; 10,000
+    receptors against a background of 100,000 in 1.3 s on 10 processors (budget: 2 minutes).
 - **Simulated antigen-specific responses (wave 4, slice 4).** A study over time may hold receptors
   of known specificity (`internal/simulate/response.go`; [docs/SIMULATION.md](docs/SIMULATION.md)):
   - each epitope's founders, rearrangements every subject shares; each subject's family of a

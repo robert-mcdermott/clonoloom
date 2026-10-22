@@ -102,6 +102,21 @@ test('a generation probabilities result names its models by their checksum', () 
   assert.ok(!own.references.some((r) => /Marcou Q/.test(r)));
 });
 
+test('a neighborhoods result names its background and how each radius was chosen', () => {
+  const result = { kind: 'neighborhoods', definition: 'AA', filter: null, locus: 'TRB', cdr3Only: false, organism: 'human',
+    loops: { file: 'combo_xcr_2024-03-05.tsv', sha256: '1d7fcac3' }, control: 1e-6, maxRadius: 48, minNeighbors: 2,
+    background: { kind: 'model', name: 'human_T_beta', checksum: 'ab12cd34', receptors: 100000 },
+    receptors: 7658, centers: 956 };
+  const { text, references } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [result], program });
+  assert.match(text, /Each TRB receptor \("AA"\) was taken as the centre of a neighborhood by ClonoLoom \[\d\] as Mayer-Blackwell et al\. define one \[\d\]/);
+  assert.match(text, /at most a share 0\.000001 of the background's receptors, against a background of 100,000 receptors drawn from human_T_beta \(checksum ab12cd34\)/);
+  assert.match(text, /Of 7,658 receptors, 956 had a neighborhood of 2 receptors or more/);
+  assert.ok(references.some((r) => /Mayer-Blackwell/.test(r)) && references.some((r) => /Dash P/.test(r)));
+  const shuffled = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [{ ...result, cdr3Only: true, loops: null, background: { kind: 'shuffled', receptors: 7658 } }], program }).text;
+  assert.match(shuffled, /the same receptors with their CDR3s moved among their V and J genes \(7,658 receptors\)/);
+  assert.match(shuffled, /comparing their CDR3s alone/);
+});
+
 test('the same inputs give the same text', () => {
   const inputs = { dataset: pbmc, program };
   assert.deepEqual(methodsParagraph(inputs), methodsParagraph(inputs));

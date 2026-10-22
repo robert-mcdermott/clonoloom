@@ -658,3 +658,49 @@ func PgenSamples(w io.Writer, rows []PgenSample) error {
 	}
 	return writeAll(w, out)
 }
+
+// Neighborhood is a centroid of a neighborhoods result, for neighborhoods.csv.
+type Neighborhood struct {
+	ID                                           string
+	Locus, Junction, V, J                        string
+	Total                                        float64
+	Samples, Radius, Neighbors                   int
+	Abundance                                    float64
+	Background                                   int
+	Weighted, Rate, BackgroundRate, RelativeRate float64
+	OddsRatio, ChiSquare                         float64
+	Motif                                        string
+}
+
+// Neighborhoods writes each centroid: its chain, radius, neighborhood and enrichment.
+func Neighborhoods(w io.Writer, rows []Neighborhood) error {
+	out := [][]string{{"centroid_id", "locus", "junction_aa", "v_call", "j_call", "total", "samples", "radius",
+		"neighbors", "neighbor_abundance", "background", "background_weighted", "rate", "background_rate",
+		"relative_rate", "odds_ratio", "chi_square", "motif"}}
+	for _, r := range rows {
+		out = append(out, []string{r.ID, r.Locus, r.Junction, r.V, r.J, number(r.Total), strconv.Itoa(r.Samples),
+			strconv.Itoa(r.Radius), strconv.Itoa(r.Neighbors), number(r.Abundance), strconv.Itoa(r.Background),
+			strconv.FormatFloat(r.Weighted, 'g', 10, 64), strconv.FormatFloat(r.Rate, 'g', 10, 64),
+			strconv.FormatFloat(r.BackgroundRate, 'g', 10, 64), strconv.FormatFloat(r.RelativeRate, 'g', 10, 64),
+			strconv.FormatFloat(r.OddsRatio, 'g', 10, 64), strconv.FormatFloat(r.ChiSquare, 'g', 10, 64), r.Motif})
+	}
+	return writeAll(w, out)
+}
+
+// NeighborhoodMember is a receptor of a neighborhood, for members.csv.
+type NeighborhoodMember struct {
+	Centroid, ID   string
+	Junction, V, J string
+	Total          float64
+	Samples        int
+	Distance       int
+}
+
+// NeighborhoodMembers writes each neighborhood's receptors, its centroid first.
+func NeighborhoodMembers(w io.Writer, rows []NeighborhoodMember) error {
+	out := [][]string{{"centroid_id", "clonotype_id", "junction_aa", "v_call", "j_call", "total", "samples", "distance"}}
+	for _, r := range rows {
+		out = append(out, []string{r.Centroid, r.ID, r.Junction, r.V, r.J, number(r.Total), strconv.Itoa(r.Samples), strconv.Itoa(r.Distance)})
+	}
+	return writeAll(w, out)
+}

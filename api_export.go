@@ -253,6 +253,30 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		}
 		files["pgen.csv"] = func(f io.Writer) error { return export.Pgen(f, rows) }
 		files["samples.csv"] = func(f io.Writer) error { return export.PgenSamples(f, samples) }
+	case "neighborhoods":
+		var doc neighborhoodDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		against := "the dataset's own chains with their CDR3s moved among them"
+		if doc.Source.Kind == "model" {
+			against = fmt.Sprintf("%d receptors drawn from %s with the dataset's V–J usage, each weighted by what recombination makes over what the dataset holds", doc.Source.Receptors, doc.Source.Name)
+		}
+		notice.What = fmt.Sprintf("The neighborhoods of %s's %s receptors against a background of %s (neighborhoods.csv: each centroid's radius, its neighborhood and its enrichment; members.csv: each neighborhood's receptors). A centroid's radius is the largest at which the background within it is at most a share %g of the background's receptors.", ds.Name, doc.Locus, against, doc.Options.Control)
+		centers := make([]export.Neighborhood, len(doc.Rows))
+		var members []export.NeighborhoodMember
+		for i, r := range doc.Rows {
+			centers[i] = export.Neighborhood{ID: r.ID, Locus: r.Chain.Locus, Junction: r.Chain.Junction, V: r.Chain.V, J: r.Chain.J,
+				Total: r.Total, Samples: r.Samples, Radius: r.Radius, Neighbors: r.Neighbors, Abundance: r.Abundance,
+				Background: r.Background, Weighted: r.Weighted, Rate: r.Rate, BackgroundRate: r.BackgroundRate,
+				RelativeRate: r.RelativeRate, OddsRatio: r.OddsRatio, ChiSquare: r.ChiSquare, Motif: r.Motif}
+			for _, m := range r.Members {
+				members = append(members, export.NeighborhoodMember{Centroid: r.ID, ID: m.ID, Junction: m.Junction, V: m.V, J: m.J, Total: m.Total, Samples: m.Samples, Distance: m.Distance})
+			}
+		}
+		files["neighborhoods.csv"] = func(f io.Writer) error { return export.Neighborhoods(f, centers) }
+		files["members.csv"] = func(f io.Writer) error { return export.NeighborhoodMembers(f, members) }
 	default:
 		writeError(w, http.StatusBadRequest, "This result has nothing to export as a table.")
 		return

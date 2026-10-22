@@ -54,7 +54,9 @@ releases.
   share of the blood.
 - **Find receptors alike.** Every T-cell clonotype compared with every other of its chains by
   TCRdist, as tcrdist3 computes it, with the V genes' loops downloaded on request: each one's
-  neighbors within a radius and its nearest, loop by loop. Each clonotype's generation
+  neighbors within a radius and its nearest, loop by loop. The neighborhoods a background does
+  not explain, each radius controlled at a rate of receptors drawn from a recombination model with
+  the dataset's own gene usage, with their enrichment and motif. Each clonotype's generation
   probability, how likely recombination alone is to make it, as OLGA computes it, under OLGA's
   models (downloaded on request) or ClonoLoom's own model of human TRB.
 - **Write results others can check.** Figures (SVG, PNG, PDF) whose captions state the clonotype

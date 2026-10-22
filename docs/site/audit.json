@@ -63,6 +63,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/neighborhoods.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/opening-data.html",
   "theme": "light",
   "width": "desktop",
@@ -224,6 +231,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/neighborhoods.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/opening-data.html",
   "theme": "dark",
   "width": "desktop",
@@ -385,6 +399,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/neighborhoods.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/opening-data.html",
   "theme": "light",
   "width": "phone",
@@ -540,6 +561,13 @@
  },
  {
   "page": "docs/index.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/neighborhoods.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

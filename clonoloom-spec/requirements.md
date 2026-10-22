@@ -104,7 +104,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | # | Requirement | Status |
 | --- | --- | --- |
 | S1 | TCRdist (Dash et al. 2017; tcrdist3's defaults), single or paired chains | done (wave 4, slice 2: as tcrdist3 computes it, with the V genes' loops from tcrdist3's database of genes downloaded on request, or the CDR3s alone; each clonotype's neighbors within a radius and its nearest, and a clonotype's nearest loop by loop; every distance between Dash et al.'s 2,339 clones equal to tcrdist3's; 100,000 paired TCRs in 25 s on 10 processors) |
-| S2 | TCRdist neighborhoods with enrichment against a background (V/J/length-matched synthetic, shuffled, or a public paired background) | planned (wave 4) |
+| S2 | TCRdist neighborhoods with enrichment against a background (V/J/length-matched synthetic, shuffled, or a public paired background) | done (wave 4, slice 5: each receptor of one locus a centroid, its radius controlled at a rate of a background drawn from a recombination model with the dataset's V–J usage and weighted to what recombination makes, or of its own CDR3s shuffled; each neighborhood's receptors, enrichment and motif; every centroid equal to tcrdist3 0.3's on Dash et al.'s chains; a public background waits for a later wave) |
 | S3 | GLIPH2-style specificity groups (global and local similarity, motif enrichment, scores) | planned (wave 7) |
 | S4 | Clonotype networks by CDR3 identity, edit distance or TCRdist | planned (wave 4) |
 | S5 | Matching against specificity databases (VDJdb first; McPAS-TCR and IEDB as their terms allow) by exact or TCRdist-near match, with species, MHC and evidence; database versions recorded; downloaded on request, never bundled | planned (wave 4) |

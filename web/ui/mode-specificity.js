@@ -6,6 +6,11 @@
 //     the CDR3s alone; each clonotype's distance to its nearest, the clonotypes with the most
 //     neighbors within the radius, and a chosen clonotype's nearest, their distance loop by loop.
 //     Similar receptors may share a specificity; distance alone does not show that they do.
+//   - Neighborhoods (slice 5: S2): each receptor of one locus as a centroid, its radius the
+//     largest at which a background holds few enough receptors (api_neighborhoods.go,
+//     internal/neighborhood), and the receptors within it its neighborhood; the background drawn
+//     from a recombination model with the dataset's V–J usage, or the dataset's own CDR3s
+//     shuffled. A neighborhood the background does not explain may share a specificity.
 //   - Generation (slice 3: R6): each clonotype's generation probability, the probability that
 //     recombination alone makes its CDR3s, as OLGA computes it (api_pgen.go, internal/pgen), under
 //     OLGA's models (the reference data olga-models) or ClonoLoom's own model of human TRB; each
@@ -18,16 +23,16 @@ import { UNITS } from '../lib/datasets.js';
 import { datasetDefinition } from '../lib/definitions.js';
 import { datasetFilter } from '../lib/filters.js';
 import { addResult } from '../lib/results.js';
-import { MODELS, ORGANISMS, PGEN_ORDERS, PGEN_ORGANISMS, genesOf, junctionsOf, log10Histogram, nearestHistogram, optionWords, pgenOptions, pgenOrder, pgenRequest, pgenWords, probabilityWords, radiusOf, regionWords, tcrdistOptions, tcrdistRequest, tenTo, usePgen, useTCRdist } from '../lib/specificity.js';
+import { BACKGROUNDS, CENTER_ORDERS, CONTROL_RATES, MODELS, ORGANISMS, PGEN_ORDERS, PGEN_ORGANISMS, centerOrder, enrichmentWords, genesOf, junctionsOf, log10Histogram, nearestHistogram, neighborhoodOptions, neighborhoodRequest, neighborhoodWords, optionWords, pgenOptions, pgenOrder, pgenRequest, pgenWords, probabilityWords, radiusOf, regionWords, tcrdistOptions, tcrdistRequest, tenTo, useNeighborhoods, usePgen, useTCRdist } from '../lib/specificity.js';
 import { exportable, madeBy } from './figures.js';
 import { exportResult } from './exports.js';
 
-const PARTS = { neighbors: 'Neighbors', generation: 'Generation' };
+const PARTS = { neighbors: 'Neighbors', neighborhoods: 'Neighborhoods', generation: 'Generation' };
 // The analysis each part shows, the part each opens in, its API, and what the head's button says.
-const KIND_OF = { neighbors: 'tcrdist', generation: 'pgen' };
-const PART_OF = { tcrdist: 'neighbors', pgen: 'generation' };
-const KINDS = ['tcrdist', 'pgen'];
-const START = { tcrdist: 'Compare the receptors', pgen: 'Compute the probabilities' };
+const KIND_OF = { neighbors: 'tcrdist', neighborhoods: 'neighborhoods', generation: 'pgen' };
+const PART_OF = { tcrdist: 'neighbors', neighborhoods: 'neighborhoods', pgen: 'generation' };
+const KINDS = ['tcrdist', 'neighborhoods', 'pgen'];
+const START = { tcrdist: 'Compare the receptors', neighborhoods: 'Find the neighborhoods', pgen: 'Compute the probabilities' };
 const SHOWN = 100;
 
 const count = (n) => Number(n ?? 0).toLocaleString('en-US');
@@ -47,6 +52,7 @@ const postJSON = (url, body) => getJSON(url, { method: 'POST', headers: { 'Conte
 
 // What each part says before its result is there.
 export const NEIGHBORS_WORDS = 'The program compares each T-cell clonotype with every other of the same chains by TCRdist (Dash et al. 2017), as tcrdist3 computes it: the CDR3 (weighted 3) and the V gene\'s CDR1, CDR2 and CDR2.5 (each weighted 1), each pair of residues by how BLOSUM62 scores them, and a pair of chains as the sum of its chains. Each clonotype\'s neighbors within the radius are counted, and its nearest found. The result is kept with the project.';
+export const NEIGHBORHOODS_WORDS = 'The program takes each receptor of one locus as a centroid and gives it the largest radius at which a background holds few enough receptors: one recombination makes often takes a small radius, one it rarely makes a large one. The dataset\'s receptors within that radius are the centroid\'s neighborhood, and how much commoner they are there than in the background is its enrichment (Mayer-Blackwell et al. 2021). The background is drawn from a recombination model with the dataset\'s V and J usage, or made by moving the dataset\'s own CDR3s among its genes. The result is kept with the project.';
 export const GENERATION_WORDS = 'The program computes each clonotype\'s generation probability: the probability that V(D)J recombination alone makes its CDR3 (Sethna et al. 2019), summed over every way of making it (each gene, deletion and insertion), as OLGA computes it, under the recombination model of its chain; a pair\'s is the product of its chains\'. With the V and J genes, it is the probability of the CDR3 with those genes. The result is kept with the project.';
 
 export function mountSpecificity(app, container) {
@@ -73,6 +79,8 @@ export function mountSpecificity(app, container) {
   let spec = null;
   let selected = null;
   let order = 'abundant';
+  let centerBy = 'enriched';
+  let selectedCenter = null;
   let nearest = { status: 'idle' };
   let generation = 0;
   let latest = Promise.resolve();
@@ -84,7 +92,8 @@ export function mountSpecificity(app, container) {
   const dataset = () => store.project.datasets.find((d) => d.id === chosen) ?? store.project.datasets[0] ?? null;
   const request = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, tcrdist: tcrdistRequest(spec.options), ...extra });
   const pgenBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, pgen: pgenRequest(spec.pgen), ...extra });
-  const bodyOf = (kind, extra) => (kind === 'pgen' ? pgenBody(extra) : request(extra));
+  const hoodBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, neighborhoods: neighborhoodRequest(spec.neighborhoods), ...extra });
+  const bodyOf = (kind, extra) => (kind === 'pgen' ? pgenBody(extra) : kind === 'neighborhoods' ? hoodBody(extra) : request(extra));
 
   function load() {
     latest = reload();
@@ -113,7 +122,7 @@ export function mountSpecificity(app, container) {
       if (mine !== generation) return;
       const loci = Object.keys(open.summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
       const filter = datasetFilter(store.project, d);
-      spec = { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, options: tcrdistOptions(d), pgen: pgenOptions(d), loci };
+      spec = { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, options: tcrdistOptions(d), pgen: pgenOptions(d), neighborhoods: neighborhoodOptions(d), loci };
       state = { status: 'ready', dataset: d.id, summary: open.summary };
     } catch (error) {
       if (mine !== generation) return;
@@ -131,6 +140,7 @@ export function mountSpecificity(app, container) {
     if (spec.definition.vendor) return 'vendor';
     if (kind === 'pgen') return null;
     if ((spec.definition.junction ?? 'aa') !== 'aa') return 'aa';
+    if (kind === 'neighborhoods') return null;
     if (!spec.loci.some((l) => l.startsWith('TR'))) return 'tcells';
     return null;
   }
@@ -164,6 +174,18 @@ export function mountSpecificity(app, container) {
   function keep(d, kind, read) {
     if (store.project.artifacts.some((a) => a.id === read.artifact.id)) return;
     const r = read.result;
+    if (kind === 'neighborhoods') {
+      store.commit(addResult(store.project, {
+        id: read.artifact.id, kind: 'neighborhoods', dataset: d.id, definition: spec.definition.name ?? '',
+        filter: spec.filterRecord ? `${spec.filterRecord.name} v${spec.filterRecord.version}` : null,
+        made: read.artifact.created, unit: r.unit, describe: r.describe, name: `Neighborhoods · ${d.name}`,
+        method: `Neighborhoods of ${r.locus} receptors against ${r.source.kind === 'shuffled' ? 'the dataset\'s own CDR3s shuffled' : 'receptors drawn from a recombination model'}, each radius holding at most ${tenTo(Math.round(Math.log10(r.neighborhoods.control)))} of it`,
+        locus: r.locus, background: r.source, control: r.neighborhoods.control, cdr3Only: Boolean(r.neighborhoods.cdr3Only),
+        organism: r.organism ?? '', loops: r.loops ? { file: r.loops.file, sha256: r.loops.sha256 } : null,
+        receptors: r.result.receptors, centers: r.result.centers, largest: r.result.largest,
+      }), `Find the neighborhoods of ${d.name}`, ['project']);
+      return;
+    }
     if (kind === 'pgen') {
       store.commit(addResult(store.project, {
         id: read.artifact.id, kind: 'pgen', dataset: d.id, definition: spec.definition.name ?? '',
@@ -213,7 +235,9 @@ export function mountSpecificity(app, container) {
       results[kind] = { status: 'running', artifact: answer.artifact, job: answer.job };
       app.log(kind === 'pgen'
         ? `Compute the generation probabilities of ${d.name}: ${pgenWords(spec.pgen)}.`
-        : `Compare the receptors of ${d.name} by TCRdist: ${optionWords(spec.options, spec.definition)}.`);
+        : kind === 'neighborhoods'
+          ? `Find the neighborhoods of ${d.name}: ${neighborhoodWords(spec.neighborhoods)}.`
+          : `Compare the receptors of ${d.name} by TCRdist: ${optionWords(spec.options, spec.definition)}.`);
       render();
       watch(kind, answer.job);
     } catch (error) {
@@ -233,6 +257,13 @@ export function mountSpecificity(app, container) {
     const next = useTCRdist(store.project, d.id, changes);
     if (next === store.project) return;
     store.commit(next, `Choose how TCRdist compares the clonotypes of ${d.name}`);
+  }
+  function chooseNeighborhoods(changes) {
+    const d = dataset();
+    if (!d) return;
+    const next = useNeighborhoods(store.project, d.id, changes);
+    if (next === store.project) return;
+    store.commit(next, `Choose how the neighborhoods of ${d.name} are found`);
   }
   function choosePgen(changes) {
     const d = dataset();
@@ -347,6 +378,10 @@ export function mountSpecificity(app, container) {
       drawGeneration(d, result);
       return;
     }
+    if (kind === 'neighborhoods') {
+      drawNeighborhoods(d, result);
+      return;
+    }
     body.append(optionsRow());
     if (result.status === 'looking' || result.status === 'idle') {
       body.append(h('p.muted', 'Reading…'));
@@ -415,6 +450,116 @@ export function mountSpecificity(app, container) {
         })))),
       h('p.muted.small', 'Choose a clonotype to see its nearest, and how far apart each loop is.'),
       h('p.muted.small', `Compared ${new Date(result.manifest.created).toLocaleString()} by ClonoLoom ${result.manifest.lineage?.software?.[0]?.version ?? ''}; kept as ${result.artifact}. Clonotypes: ${r.describe}.`));
+  }
+
+  // --- Neighborhoods ---------------------------------------------------------------------------
+
+  function neighborhoodOptionsRow(result) {
+    const o = spec.neighborhoods;
+    const loci = Object.keys(result.status === 'ready' ? result.result.loci ?? {} : {}).sort();
+    const background = h('select.input.small', { 'aria-label': 'Background', onchange: (e) => chooseNeighborhoods({ background: e.target.value }) },
+      ...Object.entries(BACKGROUNDS).map(([k, label]) => h('option', { value: k, selected: k === o.background }, label)));
+    const locus = h('select.input.small', { 'aria-label': 'Locus', onchange: (e) => chooseNeighborhoods({ locus: e.target.value }) },
+      h('option', { value: '', selected: !o.locus }, 'The commonest'),
+      ...loci.map((l) => h('option', { value: l, selected: l === o.locus }, l)));
+    const control = h('select.input.small', { 'aria-label': 'Background within a radius', onchange: (e) => chooseNeighborhoods({ control: Number(e.target.value) }) },
+      ...Object.entries(CONTROL_RATES).map(([k, label]) => h('option', { value: k, selected: Number(k) === o.control }, label)));
+    return h('div.options-row',
+      h('label.kv-inline', h('span.muted', 'Background'), background),
+      h('label.kv-inline', h('span.muted', 'Locus'), locus),
+      h('label.kv-inline', { title: 'A centroid\'s radius is the largest at which the background within it is at most this share of the background\'s receptors' },
+        h('span.muted', 'Background within a radius'), control),
+      h('span.muted.small', neighborhoodWords(o)));
+  }
+
+  function drawNeighborhoods(d, result) {
+    body.append(neighborhoodOptionsRow(result));
+    if (result.status === 'looking' || result.status === 'idle') {
+      body.append(h('p.muted', 'Reading…'));
+      return;
+    }
+    if (result.status === 'failed') {
+      body.append(h('div.callout.danger', h('p', result.error)));
+      return;
+    }
+    if (result.status === 'no-loops') {
+      body.append(h('div.card.repertoire-start',
+        h('h3', 'The V genes\' loops'),
+        h('p', 'A neighborhood is found by TCRdist, which compares each chain\'s CDR1, CDR2 and CDR2.5 as well as its CDR3: the loops each V gene gives, as tcrdist3\'s database of genes aligns them (1.2 MB, MIT; made from IMGT\'s germline genes). ClonoLoom downloads it once, when you ask, and names its checksum in every result.'),
+        h('div.btn-row',
+          h('button.btn.primary', { type: 'button', onclick: () => app.showReferences() }, icon('download'), 'Reference data…'))));
+      return;
+    }
+    if (result.status === 'no-models') {
+      body.append(h('div.card.repertoire-start',
+        h('h3', 'A model to draw the background from'),
+        h('p', 'A drawn background needs a recombination model of this locus: OLGA\'s default models, downloaded on request, or ClonoLoom\'s own model of human TRB, built in.'),
+        h('div.btn-row',
+          h('button.btn.primary', { type: 'button', onclick: () => app.showReferences() }, icon('download'), 'Reference data…'),
+          h('button.btn', { type: 'button', onclick: () => chooseNeighborhoods({ background: 'shuffled' }) }, 'Shuffle the dataset\'s own CDR3s'))));
+      return;
+    }
+    if (result.status === 'absent' || result.status === 'running') {
+      const job = result.job ? app.jobs.get(result.job) : null;
+      body.append(h('div.card.repertoire-start',
+        h('h3', 'Receptors a background does not explain'),
+        h('p', NEIGHBORHOODS_WORDS),
+        result.status === 'running'
+          ? h('div.example-progress', h('div.progress', h('div', { style: { width: `${Math.round((job?.progress ?? 0) * 100)}%` } })), h('span.muted.small', job?.message ?? 'Waiting'))
+          : h('div.btn-row', h('button.btn.primary', { type: 'button', onclick: () => run('neighborhoods') }, icon('play'), START.neighborhoods))));
+      return;
+    }
+    renderNeighborhoods(d, result);
+  }
+
+  function renderNeighborhoods(d, result) {
+    const r = result.result;
+    body.append(h('div.callout', h('p', 'A receptor recombination makes often has many background neighbors, so it takes a small radius; one it rarely makes can take a large one. A neighborhood of many receptors at a large radius is one the background does not explain: its receptors may share a specificity, which the distance alone does not show.')));
+    const against = r.source.kind === 'shuffled'
+      ? `${plural(r.source.receptors, 'receptor')} of the dataset itself, their CDR3s moved among its genes`
+      : `${plural(r.source.receptors, 'receptor')} drawn from ${r.source.name} over ${count(r.source.pairs)} of the dataset's V–J pairs, each weighted by what recombination makes over what the dataset holds`;
+    const loops = r.neighborhoods.cdr3Only
+      ? 'the CDR3s alone'
+      : `the CDR3s and the V genes' loops (${r.organism}, from ${r.loops?.file ?? ''}, SHA-256 ${(r.loops?.sha256 ?? '').slice(0, 12)}…)`;
+    const excluded = Object.entries(r.result.excluded ?? {}).map(([why, n]) => `${count(n)} with ${why}`);
+    body.append(h('div.card.summary-card',
+      h('p', `${plural(r.result.receptors, r.locus + ' receptor')} compared with ${against}, comparing ${loops}. `,
+        h('b', `${count(r.result.centers)} have a neighborhood`), ` of ${r.neighborhoods.minNeighbors} receptors or more; the largest holds ${plural(r.result.largest, 'receptor')}, within ${count(r.result.largestRadius)} TCRdist units.`),
+      excluded.length ? h('p.muted.small', `Not compared: ${excluded.join('; ')}.`) : null,
+      r.result.noLoops ? h('p.muted.small', `${plural(r.result.noLoops, 'receptor')} have a V gene the loops' database lacks, compared by their CDR3s alone.`) : null,
+      r.result.shown < r.result.centers ? h('p.muted.small', `The ${count(r.result.shown)} most enriched are kept with the result.`) : null));
+    const rows = centerOrder(r.centers, centerBy);
+    const unit = UNITS[r.unit] ?? 'count';
+    const orderSelect = h('select.input.small', { 'aria-label': 'Order', onchange: (e) => { centerBy = e.target.value; render(); } },
+      ...Object.entries(CENTER_ORDERS).map(([k, label]) => h('option', { value: k, selected: k === centerBy }, label)));
+    body.append(h('div.section-title', `The neighborhoods · ${count(Math.min(SHOWN, rows.length))} of ${count(rows.length)}`),
+      h('div.options-row', h('label.kv-inline', h('span.muted', 'First'), orderSelect)),
+      h('div.table-scroll', { tabIndex: 0 }, h('table.data.selectable',
+        h('thead', h('tr', h('th', 'Centroid'), h('th', 'Genes'), h('th.r', 'Radius'), h('th.r', 'Receptors'),
+          h('th.r', unit.charAt(0).toUpperCase() + unit.slice(1)), h('th.r', { title: 'How much commoner the neighborhood is in the dataset than in the background' }, 'Enrichment'), h('th', 'Motif'))),
+        h('tbody', ...rows.slice(0, SHOWN).flatMap((c) => {
+          const row = h(`tr${c.id === selectedCenter ? '.selected' : ''}`, { tabIndex: 0, onclick: () => showCenter(c.id), onkeydown: (e) => { if (e.key === 'Enter') showCenter(c.id); } },
+            h('td.mono', c.chain.junction), h('td.small', [c.chain.v, c.chain.j].filter(Boolean).join(' ')),
+            h('td.r', count(c.radius)), h('td.r', count(c.neighbors)), h('td.r', count(c.abundance)),
+            h('td.r', { title: `${enrichmentWords(c)}: ${count(c.neighbors)} of ${count(r.result.receptors)} receptors, against ${c.weighted.toFixed(2)} of ${count(r.source.receptors)} weighted in the background; χ² ${c.chiSquare.toFixed(1)}` }, `${Math.round(c.relativeRate).toLocaleString('en-US')}×`),
+            h('td.mono.small', c.motif));
+          return c.id === selectedCenter ? [row, h('tr.detail', h('td', { colSpan: 7 }, centerPanel(c, r)))] : [row];
+        })))),
+      h('p.muted.small', 'Choose a neighborhood to see its receptors, nearest first.'),
+      h('p.muted.small', `Found ${new Date(result.manifest.created).toLocaleString()} by ClonoLoom ${result.manifest.lineage?.software?.[0]?.version ?? ''}; kept as ${result.artifact}. Clonotypes: ${r.describe}.`));
+  }
+
+  function centerPanel(c, r) {
+    return h('div.nearest',
+      h('table.data.compact',
+        h('thead', h('tr', h('th', `The neighborhood's receptors · ${count(c.members.length)} of ${count(c.neighbors)}`), h('th', 'Genes'), h('th.r', 'TCRdist'), h('th.r', 'Abundance'), h('th.r', 'Samples'))),
+        h('tbody', ...c.members.map((m) => h('tr', h('td.mono', m.junction), h('td.small', [m.v, m.j].filter(Boolean).join(' ')), h('td.r', count(m.distance)), h('td.r', count(m.total)), h('td.r', count(m.samples)))))),
+      h('div.btn-row', h('button.btn.small', { type: 'button', onclick: () => showInClonotypes(c.id) }, icon('clonotypes'), 'Show the centroid in the Clonotypes view')));
+  }
+
+  function showCenter(id) {
+    selectedCenter = selectedCenter === id ? null : id;
+    render();
   }
 
   // --- Generation ------------------------------------------------------------------------------
@@ -540,7 +685,7 @@ export function mountSpecificity(app, container) {
   let shownChoices = '';
   const choices = () => {
     const d = dataset();
-    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d?.tcrdist ?? null, d?.pgen ?? null]);
+    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d?.tcrdist ?? null, d?.pgen ?? null, d?.neighborhoods ?? null]);
   };
   function update(topics) {
     if (topics.has('jobs') && results[KIND_OF[part]].status === 'running') render();
@@ -593,6 +738,19 @@ export function mountSpecificity(app, container) {
     choosePgen: (changes) => {
       choosePgen(changes);
       return settled();
+    },
+    neighborhoods: () => results.neighborhoods,
+    chooseNeighborhoods: (changes) => {
+      chooseNeighborhoods(changes);
+      return settled();
+    },
+    centerOrder: (by) => {
+      centerBy = CENTER_ORDERS[by] ? by : centerBy;
+      render();
+    },
+    selectCenter: (id) => {
+      selectedCenter = id;
+      render();
     },
     order: (by) => {
       order = PGEN_ORDERS[by] ? by : order;

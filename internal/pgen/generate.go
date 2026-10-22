@@ -19,8 +19,13 @@ type Draw struct {
 // again. A CDR3 is drawn with its generation probability over the probability of the events that
 // make one (1 for ClonoLoom's own model).
 type Generator struct {
-	m              *Model
-	v, jd, vj      []float64
+	m         *Model
+	v, jd, vj []float64
+	// dGivenJ[j]: the D genes' cumulative weights given J, for a draw of named genes; gene[seg]:
+	// each V or J gene's used alleles, by the gene's name.
+	dGivenJ        [][]float64
+	vGene          map[string][]int
+	jGene          map[string][]int
 	delV, delJ     [][]float64
 	delD5          [][]float64
 	delD3          [][][]float64
@@ -85,7 +90,139 @@ func NewGenerator(m *Model) *Generator {
 		g.chainVD[b] = cum(m.MarkovVD[b][:])
 	}
 	g.firstVD = cum(m.StationaryVD[:])
+	if m.VDJ {
+		g.dGivenJ = make([][]float64, len(m.J))
+		for j := range m.J {
+			g.dGivenJ[j] = cum(m.PJD[j])
+		}
+	}
+	g.vGene, g.jGene = usedByGene(m.V, m.vExt), usedByGene(m.J, m.jExt)
 	return g
+}
+
+// usedByGene lists each gene's used alleles (that the model can make a CDR3 from), by the gene's
+// name and by each allele's.
+func usedByGene(genes []Gene, ext [][]uint8) map[string][]int {
+	out := map[string][]int{}
+	for i, g := range genes {
+		if !g.Used || ext[i] == nil {
+			continue
+		}
+		out[g.Name] = append(out[g.Name], i)
+		if gene, _, ok := strings.Cut(g.Name, "*"); ok {
+			out[gene] = append(out[gene], i)
+		}
+	}
+	return out
+}
+
+// Usage answers the probability of each pair of V and J genes the model uses, by their gene names
+// (each gene's alleles summed), over the pairs it can make.
+func (m *Model) Usage() map[[2]string]float64 {
+	gene := func(name string) string {
+		g, _, _ := strings.Cut(name, "*")
+		return g
+	}
+	out := map[[2]string]float64{}
+	total := 0.0
+	for v := range m.V {
+		if !m.V[v].Used || m.vExt[v] == nil {
+			continue
+		}
+		for j := range m.J {
+			if !m.J[j].Used || m.jExt[j] == nil {
+				continue
+			}
+			p := 0.0
+			if m.VDJ {
+				for d := range m.D {
+					p += float64(m.PV[v] * m.PJD[j][d])
+				}
+			} else {
+				p = m.PVJ[v][j]
+			}
+			if p > 0 {
+				out[[2]string{gene(m.V[v].Name), gene(m.J[j].Name)}] += p
+				total += p
+			}
+		}
+	}
+	if total > 0 {
+		for k, p := range out {
+			out[k] = p / total
+		}
+	}
+	return out
+}
+
+// Genes answers whether the model uses a V gene and a J gene of these names (a gene, or one of
+// its alleles), which DrawWith can draw.
+func (g *Generator) Genes(v, j string) bool {
+	return len(g.vGene[v]) > 0 && len(g.jGene[j]) > 0
+}
+
+// DrawWith draws a receptor of the V and J genes named (a gene, one of whose used alleles is
+// chosen in proportion to the model's probability, or one allele), every other event as the model
+// gives it; false when the model uses no such genes. A D gene is drawn given the J, as the model
+// gives it.
+func (g *Generator) DrawWith(r *random.Random, v, j string) (Draw, bool) {
+	vs, js := g.vGene[v], g.jGene[j]
+	if len(vs) == 0 || len(js) == 0 {
+		return Draw{}, false
+	}
+	m := g.m
+	// An allele of each gene, in proportion to the model's probability of it.
+	allele := func(list []int, weight func(int) float64) int {
+		if len(list) == 1 {
+			return list[0]
+		}
+		w := make([]float64, len(list))
+		for i, x := range list {
+			w[i] = weight(x)
+		}
+		c := random.Cumulate(w)
+		if at := pick(r, c); at >= 0 {
+			return list[at]
+		}
+		return list[r.IntN(len(list))]
+	}
+	jTotal := func(x int) float64 {
+		if !m.VDJ {
+			p := 0.0
+			for vi := range m.V {
+				p += m.PVJ[vi][x]
+			}
+			return p
+		}
+		p := 0.0
+		for d := range m.D {
+			p += m.PJD[x][d]
+		}
+		return p
+	}
+	vTotal := func(x int) float64 {
+		if m.VDJ {
+			return m.PV[x]
+		}
+		p := 0.0
+		for ji := range m.J {
+			p += m.PVJ[x][ji]
+		}
+		return p
+	}
+	for range 1000 {
+		vi, ji := allele(vs, vTotal), allele(js, jTotal)
+		d := 0
+		if m.VDJ {
+			if d = pick(r, g.dGivenJ[ji]); d < 0 {
+				continue
+			}
+		}
+		if out, ok := g.draw(r, vi, ji, d); ok {
+			return out, true
+		}
+	}
+	return Draw{}, false
 }
 
 // pick draws an index from cumulative weights, or −1 when they are all 0.
@@ -115,36 +252,45 @@ func (g *Generator) Draw(r *random.Random) Draw {
 			}
 			v, j = vj/len(m.J), vj%len(m.J)
 		}
-		var b strings.Builder
-		vExt, jExt := m.vExt[v], m.jExt[j]
-		tv, tj := pick(r, g.delV[v]), pick(r, g.delJ[j])
-		if tv < 0 || tj < 0 || tv > len(vExt) || tj > len(jExt) {
-			continue
+		if out, ok := g.draw(r, v, j, d); ok {
+			return out
 		}
-		write(&b, vExt[:len(vExt)-tv])
-		b.WriteString(g.insertion(r, g.insVD, g.firstVD, &g.chainVD, false))
-		if m.VDJ {
-			dExt := m.dExt[d]
-			t5 := pick(r, g.delD5[d])
-			if t5 < 0 || t5 >= len(g.delD3[d]) {
-				continue
-			}
-			t3 := pick(r, g.delD3[d][t5])
-			if t3 < 0 || t5+t3 > len(dExt) {
-				continue
-			}
-			write(&b, dExt[t5:len(dExt)-t3])
-			b.WriteString(g.insertion(r, g.insDJ, g.endDJ, &g.chainDJ, true))
-		}
-		write(&b, jExt[tj:])
-		nt := b.String()
-		out := Draw{NT: nt, V: m.V[v].Name, J: m.J[j].Name}
-		if len(nt) > 0 && len(nt)%3 == 0 {
-			out.AA = Translate(nt)
-			out.Productive = !strings.ContainsAny(out.AA, "*X")
-		}
-		return out
 	}
+}
+
+// draw draws a receptor of these genes' every other event, or false where they make no CDR3 (a
+// deletion longer than its segment, a D deleted past itself).
+func (g *Generator) draw(r *random.Random, v, j, d int) (Draw, bool) {
+	m := g.m
+	var b strings.Builder
+	vExt, jExt := m.vExt[v], m.jExt[j]
+	tv, tj := pick(r, g.delV[v]), pick(r, g.delJ[j])
+	if tv < 0 || tj < 0 || tv > len(vExt) || tj > len(jExt) {
+		return Draw{}, false
+	}
+	write(&b, vExt[:len(vExt)-tv])
+	b.WriteString(g.insertion(r, g.insVD, g.firstVD, &g.chainVD, false))
+	if m.VDJ {
+		dExt := m.dExt[d]
+		t5 := pick(r, g.delD5[d])
+		if t5 < 0 || t5 >= len(g.delD3[d]) {
+			return Draw{}, false
+		}
+		t3 := pick(r, g.delD3[d][t5])
+		if t3 < 0 || t5+t3 > len(dExt) {
+			return Draw{}, false
+		}
+		write(&b, dExt[t5:len(dExt)-t3])
+		b.WriteString(g.insertion(r, g.insDJ, g.endDJ, &g.chainDJ, true))
+	}
+	write(&b, jExt[tj:])
+	nt := b.String()
+	out := Draw{NT: nt, V: m.V[v].Name, J: m.J[j].Name}
+	if len(nt) > 0 && len(nt)%3 == 0 {
+		out.AA = Translate(nt)
+		out.Productive = !strings.ContainsAny(out.AA, "*X")
+	}
+	return out, true
 }
 
 // insertion draws an insertion's nucleotides: its length, then its first nucleotide from first and

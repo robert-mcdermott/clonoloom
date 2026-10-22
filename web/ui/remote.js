@@ -12,7 +12,7 @@ import { datasetDefinition, sameMeaning, useDefinition } from '../lib/definition
 import { datasetFilter } from '../lib/filters.js';
 import { SAMPLE_FIELDS, annotate, datasetUnit } from '../lib/datasets.js';
 import { ALPHAS, MAX_LIST, timePoints, trackingChoice, useComparison, useTracking } from '../lib/tracking.js';
-import { PGEN_ORDERS, pgenOrder } from '../lib/specificity.js';
+import { BACKGROUNDS, CENTER_ORDERS, PGEN_ORDERS, centerOrder, pgenOrder } from '../lib/specificity.js';
 
 export class ActionError extends Error {}
 
@@ -381,6 +381,53 @@ export function remoteActions(app) {
         data.selected = row(chosen);
       }
       return { message: `${d.name}: ${count(r.compared, 'clonotype')} compared by TCRdist; ${r.withNeighbors} have a neighbor within ${r.radius} (${done.artifact}).`, data };
+    },
+
+    async find_neighborhoods({ dataset, background, locus, control, minNeighbors, order = 'enriched', top = 10, select }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('neighborhoods');
+      const by = choose(order, Object.keys(CENTER_ORDERS), 'order');
+      view.centerOrder(by);
+      const changes = {};
+      if (background !== undefined) changes.background = choose(String(background), Object.keys(BACKGROUNDS), 'background');
+      if (locus !== undefined) changes.locus = String(locus).toUpperCase();
+      if (control !== undefined) changes.control = Number(control);
+      if (minNeighbors !== undefined) changes.minNeighbors = Math.round(Number(minNeighbors));
+      if (Object.keys(changes).length) await view.chooseNeighborhoods(changes);
+      await view.load();
+      await view.settled();
+      const state = view.neighborhoods();
+      if (state.status === 'no-loops') throw new ActionError('The V genes\' loops are not downloaded: download them in Reference data (tcrdist3-loops).');
+      if (state.status === 'no-models') throw new ActionError('No recombination model of this locus is downloaded: download OLGA\'s models in Reference data (olga-models), or ask with background "shuffled".');
+      if (state.status === 'unsupported') throw new ActionError('Neighborhoods need clonotypes defined by their amino-acid junctions: choose another definition.');
+      if (state.status === 'absent') await view.run('neighborhoods');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.neighborhoods().status) && view.neighborhoods(), 30 * 60 * 1000, 'the neighborhoods');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const r = done.result;
+      const ranked = centerOrder(r.centers, by);
+      const row = (c) => ({
+        id: c.id, chain: c.chain, total: c.total, samples: c.samples, radius: c.radius, neighbors: c.neighbors,
+        abundance: c.abundance, background: c.background, backgroundWeighted: c.weighted,
+        relativeRate: c.relativeRate, oddsRatio: c.oddsRatio, chiSquare: c.chiSquare, motif: c.motif,
+      });
+      const data = {
+        result: done.artifact, locus: r.locus, loci: r.loci, definition: r.describe,
+        source: r.source, organism: r.organism ?? null, loops: r.loops ?? null, cdr3Only: Boolean(r.neighborhoods.cdr3Only),
+        control: r.neighborhoods.control, minNeighbors: r.neighborhoods.minNeighbors,
+        receptors: r.result.receptors, centers: r.result.centers, shown: r.result.shown,
+        largest: r.result.largest, largestRadius: r.result.largestRadius, excluded: r.result.excluded,
+        order: by, top: ranked.slice(0, Math.max(0, Math.round(top))).map(row),
+      };
+      if (select) {
+        const chosen = ranked[Math.round(select) - 1];
+        if (!chosen) throw new ActionError(`select: from 1 to ${ranked.length}.`);
+        view.selectCenter(chosen.id);
+        data.selected = { ...row(chosen), members: chosen.members };
+      }
+      return { message: `${d.name}: ${count(r.result.centers, 'receptor')} of ${r.result.receptors.toLocaleString('en-US')} have a neighborhood of ${r.neighborhoods.minNeighbors} or more (${done.artifact}).`, data };
     },
 
     async measure_generation({ dataset, models, organism, genes, order = 'abundant', top = 10 }) {

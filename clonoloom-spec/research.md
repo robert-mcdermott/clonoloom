@@ -660,8 +660,13 @@ compare the figure with another study's, without the text.
   plus 100,000 cord-blood receptors of weight 1. Each centroid's report: its neighbors in the
   sample and the background, the weighted background rate, the relative rate
   ((n + 1)/(N + 2) over the background's), an odds ratio with one added to each count, and a χ²
-  test; a motif from the neighbors aligned to the centroid (ambiguity up to 3 residues in
-  tcrdist3's code, 5 in the paper).
+  test (scipy's `chi2_contingency`, so with Yates's correction on the 2 × 2 table); a motif from
+  the neighbors aligned to the centroid (ambiguity up to 3 residues in tcrdist3's code, 5 in the
+  paper). Where no threshold holds the rate, tcrdist3 falls back to a radius of 0 and still counts
+  the background at distance 0 (roadmap, wave 4, slice 5). ClonoLoom's backgrounds are its own
+  (the paper's cord-blood set is not redistributable): receptors drawn from a recombination model
+  with the dataset's V–J usage, weighted by the model's probability of the pair over the dataset's
+  share of it, or the dataset's own chains with their CDR3s moved among its genes.
 - **Generation probability** (Sethna et al. 2019, *Bioinformatics* 35:2974,
   doi:10.1093/bioinformatics/btz035; models in IGoR's format, Marcou et al. 2018, *Nat Commun*
   9:561). The probability of an amino-acid CDR3 (the junction, both conserved residues included)
