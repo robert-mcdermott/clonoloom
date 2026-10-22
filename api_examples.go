@@ -51,6 +51,9 @@ func simulatedExamples() []examples.Generated {
 		simulatedExample("transplant", transplantSteps, "A simulated transplant study with known truth",
 			"Three recipients' T-cell receptor β repertoires sampled before an allogeneic transplant and 30, 100 and 365 days after it (twice), with their donors' blood. The donor's share of the recipient's blood grows from 60% to 97%, and in the recipient with graft-versus-host disease a few donor clones expand; every clone's trajectory, and the donor's share of every sample, is known (truth/). Made on this computer in a few seconds.",
 			"The 18 samples, with their subjects, time points and donors, in templates.", 35<<20),
+		simulatedExample("vaccine", vaccineSteps, "A simulated vaccination study with known specificities",
+			"Five subjects' T-cell receptor β repertoires sampled a week before a vaccination (twice), then 7, 14, 28 and 90 days after it: three vaccinated, two given a placebo. Receptors that recognize three of the vaccine's epitopes (made up), in families around founders the subjects share and of each subject's own, rise from 0.1% of the blood to 3% at day 14 in the vaccinated. Every receptor's epitope, or none, is known (truth/), and a specificity database of the epitopes in VDJdb's format is beside the samples (database/). Made on this computer in a few seconds.",
+			"The 30 samples, with their subjects and time points, in templates.", 58<<20),
 	}
 }
 
@@ -69,6 +72,16 @@ var (
 			Words: "Their threads rise to day 14 and fall back; most were not found before the infusion."},
 		{Title: "Attribute each sample to the product", Action: "attribute_samples",
 			Words: "About 60% of the blood is in the product's clonotypes before the infusion already: a product made from the patient's own blood cannot be told apart from it by clonotype."},
+	}
+	vaccineSteps = []examples.Step{
+		{Title: "See each subject's samples in time", Action: "describe_subjects",
+			Words: "Five subjects, sampled twice a week before the vaccination and 7, 14, 28 and 90 days after it: three vaccinated, two given a placebo."},
+		{Title: "Test the week before against two weeks after", Action: "test_expansion", Args: map[string]any{"from": "day -7", "to": "day 14"},
+			Words: "The beta-binomial test, its variance fitted on the two samples taken before the vaccination: the few clonotypes it calls are receptors that recognize the vaccine's epitopes, in the vaccinated subjects alone. Most of the response is spread over too many small clones to call one by one."},
+		{Title: "Class every clonotype against the week before", Action: "class_clonotypes", Args: map[string]any{"base": "day -7", "class": "transient"},
+			Words: "The response peaks at day 14 and falls back: its clonotypes called are transient."},
+		{Title: "Follow the transient clonotypes", Action: "track_clonotypes", Args: map[string]any{"by": "class", "class": "transient"},
+			Words: "Their threads rise from a few templates, or none, before the vaccination to a peak at day 14, and fall back."},
 	}
 	transplantSteps = []examples.Step{
 		{Title: "See each recipient's samples in time", Action: "describe_subjects",

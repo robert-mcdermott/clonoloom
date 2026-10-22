@@ -7,7 +7,9 @@ package simulate
 // product, made from the subject's own T cells and expanded ex vivo, or a donor's repertoire. Every
 // sample, replicates at one time included, draws each clone's frequency around its expectation
 // with the biological variance between samples, as Rytlewski et al. 2019 measured between blood
-// samples (PLoS One 14:e0213684): two samples of one subject differ by more than sampling.
+// samples (PLoS One 14:e0213684): two samples of one subject differ by more than sampling. A
+// series may have an antigen-specific response too (response.go): families of receptors that
+// recognize an epitope, a known share of the blood at each time point.
 
 import (
 	"bufio"
@@ -28,13 +30,14 @@ import (
 // Series is a study over time: each subject sampled at Times (with their replicates), the event
 // day 0 is (Event), the variance of each clone's frequency between samples around its expectation
 // (Variance: of a gamma of mean 1 that multiplies it), the trajectories of classes of the
-// subject's own clones, and a reference population, if any.
+// subject's own clones, a reference population, if any, and an antigen-specific response, if any.
 type Series struct {
 	Event        string       `json:"event"`
 	Times        []TimePoint  `json:"times"`
 	Variance     float64      `json:"variance"`
 	Trajectories []Trajectory `json:"trajectories,omitempty"`
 	Reference    *Reference   `json:"reference,omitempty"`
+	Response     *Response    `json:"response,omitempty"`
 }
 
 // TimePoint is a day from the event and how many samples are taken then (replicates).
@@ -128,6 +131,9 @@ func (ser *Series) check(s Study) error {
 			return err
 		}
 	}
+	if ser.Response != nil {
+		return ser.Response.check(s, ser)
+	}
 	return nil
 }
 
@@ -199,12 +205,13 @@ func (p part) weights(trajectories []Trajectory, t int) ([]float64, float64) {
 }
 
 // SeriesTruth is a subject's series: its reference population, how many of its clones (and the
-// reference's) each trajectory took, and the file that holds every clonotype's expected frequency
-// at each time point.
+// reference's) each trajectory took, its receptors that recognize the response's epitopes, and the
+// file that holds every clonotype's expected frequency at each time point.
 type SeriesTruth struct {
 	Subject   string          `json:"subject"`
 	Reference *ReferenceTruth `json:"reference,omitempty"`
 	Classes   map[string]int  `json:"classes,omitempty"`
+	Response  *ResponseTruth  `json:"response,omitempty"`
 	File      string          `json:"file"`
 }
 
@@ -220,8 +227,8 @@ type ReferenceTruth struct {
 }
 
 // runSeries makes a study over time (Run, with s.Series): each subject's own population as Run
-// makes it, its reference population, and its samples at each time point and its reference
-// sample, with the truth.
+// makes it, its reference population, its families of receptors that recognize the response's
+// epitopes, and its samples at each time point and its reference sample, with the truth.
 func runSeries(ctx context.Context, s Study, dir, version string, progress Progress) (Summary, error) {
 	ser := s.Series
 	g := NewGenerator(&humanTRB, s.Recombination)
@@ -243,6 +250,12 @@ func runSeries(ctx context.Context, s Study, dir, version string, progress Progr
 	}
 	summary := Summary{Dir: dir, Subjects: len(subjects)}
 	truth := studyTruth{Simulator: "ClonoLoom simulate " + version, Study: s, Germline: humanTRB.Source}
+	// The response's founders, the same in every subject.
+	var fs []founder
+	var specific []specificRow
+	if ser.Response != nil {
+		fs = founders(g, ser.Response, random.New(s.Seed, 8000))
+	}
 	var repertoires []map[string]any
 	k := 0
 	for si, subject := range subjects {
@@ -297,6 +310,34 @@ func runSeries(ctx context.Context, s Study, dir, version string, progress Progr
 			st.Reference = rt
 			ref = &p
 		}
+		// The subject's families, each member a clonotype its blood does not already hold.
+		var resp *part
+		var respShares []float64
+		epitopeOf := map[string]string{}
+		if rp := ser.Response; rp != nil {
+			respShares = rp.Shares[subject.Condition]
+			taken := map[string]bool{}
+			for i := range clones {
+				if clones[i].Productive {
+					taken[clonotypeKey(&clones[i])] = true
+				}
+			}
+			members := families(g, fs, rp, taken, subject.ID, random.New(s.Seed, uint64(9000+si)))
+			p := responsePart(members, rp, len(clones))
+			for _, m := range members {
+				clones = append(clones, m.Clone)
+				epitopeOf[rearrangementKey(&m.Rearrangement)] = rp.Epitopes[m.founder.epitope].Peptide
+				specific = append(specific, specificRow{subject: subject.ID, m: m})
+			}
+			st.Response = responseTruth(members, rp)
+			resp = &p
+		}
+		respShare := func(t int) float64 {
+			if resp == nil {
+				return 0
+			}
+			return respShares[t]
+		}
 		whole := Subject{ID: subject.ID, Condition: subject.Condition, Clones: clones}
 		// Each time point's expected productive frequencies by clonotype, for the truth.
 		expected := make([]map[string]float64, len(ser.Times))
@@ -305,7 +346,7 @@ func runSeries(ctx context.Context, s Study, dir, version string, progress Progr
 			if ref != nil {
 				share = shares[t]
 			}
-			expected[t] = expectedFrequencies(clones, own, ser.Trajectories, ref, refTrajectories(ser), share, t)
+			expected[t] = expectedFrequencies(clones, own, ser.Trajectories, ref, refTrajectories(ser), share, resp, respShare(t), t)
 		}
 		refKeys := map[string]bool{}
 		if ref != nil {
@@ -326,7 +367,7 @@ func runSeries(ctx context.Context, s Study, dir, version string, progress Progr
 				if tp.Replicates > 1 {
 					id += "-" + strconv.Itoa(rep)
 				}
-				weights := sampleWeights(len(clones), own, ser.Trajectories, ref, refTrajectories(ser), share, t, ser.Variance, random.New(s.Seed, uint64(6000+k)))
+				weights := sampleWeights(len(clones), own, ser.Trajectories, ref, refTrajectories(ser), share, resp, respShare(t), t, ser.Variance, random.New(s.Seed, uint64(6000+k)))
 				seen, sample := drawSample(clones, s, s.Templates[k%len(s.Templates)], weights, random.New(s.Seed, uint64(7000+k)))
 				k++
 				sample.ID, sample.Subject = id, subject.ID
@@ -380,11 +421,27 @@ func runSeries(ctx context.Context, s Study, dir, version string, progress Progr
 		if err := writePopulation(filepath.Join(dir, "truth", subject.ID+".tsv.gz"), subject); err != nil {
 			return Summary{}, err
 		}
-		if err := writeSeries(filepath.Join(dir, st.File), ser, clones, own, ref, refKeys, expected); err != nil {
+		if err := writeSeries(filepath.Join(dir, st.File), ser, clones, own, ref, refKeys, epitopeOf, expected); err != nil {
 			return Summary{}, err
 		}
 		summary.Files = append(summary.Files, filepath.Join("truth", subject.ID+".tsv.gz"), st.File)
 		truth.Series = append(truth.Series, st)
+	}
+	if rp := ser.Response; rp != nil {
+		sp := &SpecificityTruth{Founders: filepath.Join("truth", "founders.tsv"), Clonotypes: filepath.Join("truth", "specificity.tsv"), Database: filepath.Join("database", "vdjdb.txt")}
+		if err := writeFounders(filepath.Join(dir, sp.Founders), fs, rp); err != nil {
+			return Summary{}, err
+		}
+		if err := writeSpecificity(filepath.Join(dir, sp.Clonotypes), specific, rp); err != nil {
+			return Summary{}, err
+		}
+		rows, err := writeDatabase(filepath.Join(dir, sp.Database), s.Name, fs, rp, random.New(s.Seed, 8500))
+		if err != nil {
+			return Summary{}, err
+		}
+		sp.DatabaseRows = rows
+		truth.Specificity = sp
+		summary.Files = append(summary.Files, sp.Founders, sp.Clonotypes, sp.Database)
 	}
 	truth.Sharing = sharing(subjects)
 	if err := writeJSON(filepath.Join(dir, "repertoires.airr.json"), map[string]any{
@@ -431,14 +488,15 @@ func noisy(cells, variance float64, r *random.Random) float64 {
 }
 
 // sampleWeights are each clone's cells in one sample's blood at time point t: the subject's own
-// population, in the share 1 − share, and the reference's, in share, each part's cells relative
-// to its total, its trajectories' folds applied, and each entry varying around that by variance.
-func sampleWeights(rows int, own part, ownTr []Trajectory, ref *part, refTr []Trajectory, share float64, t int, variance float64, r *random.Random) []float64 {
+// population, in the share 1 − share − respShare, the reference's, in share, and the response's,
+// in respShare, each part's cells relative to its total, its trajectories' folds applied, and each
+// entry varying around that by variance.
+func sampleWeights(rows int, own part, ownTr []Trajectory, ref *part, refTr []Trajectory, share float64, resp *part, respShare float64, t int, variance float64, r *random.Random) []float64 {
 	out := make([]float64, rows)
 	w, total := own.weights(ownTr, t)
 	for i, c := range w {
 		if total > 0 {
-			out[own.row[i]] += noisy(float64((1-share)*c)/total, variance, r)
+			out[own.row[i]] += noisy(float64((1-share-respShare)*c)/total, variance, r)
 		}
 	}
 	if ref != nil && share > 0 {
@@ -446,6 +504,14 @@ func sampleWeights(rows int, own part, ownTr []Trajectory, ref *part, refTr []Tr
 		for i, c := range w {
 			if total > 0 {
 				out[ref.row[i]] += noisy(float64(share*c)/total, variance, r)
+			}
+		}
+	}
+	if resp != nil && respShare > 0 {
+		w, total := resp.weights(nil, t)
+		for i, c := range w {
+			if total > 0 {
+				out[resp.row[i]] += noisy(float64(respShare*c)/total, variance, r)
 			}
 		}
 	}
@@ -482,7 +548,7 @@ func drawSample(clones []Clone, s Study, templates int, weights []float64, r *ra
 
 // expectedFrequencies are the productive clonotypes' expected shares of a sample's productive
 // cells at time point t (its blood without the variance between samples).
-func expectedFrequencies(clones []Clone, own part, ownTr []Trajectory, ref *part, refTr []Trajectory, share float64, t int) map[string]float64 {
+func expectedFrequencies(clones []Clone, own part, ownTr []Trajectory, ref *part, refTr []Trajectory, share float64, resp *part, respShare float64, t int) map[string]float64 {
 	cells := map[string]float64{}
 	add := func(p part, tr []Trajectory, weight float64) {
 		w, total := p.weights(tr, t)
@@ -495,9 +561,12 @@ func expectedFrequencies(clones []Clone, own part, ownTr []Trajectory, ref *part
 			}
 		}
 	}
-	add(own, ownTr, 1-share)
+	add(own, ownTr, 1-share-respShare)
 	if ref != nil && share > 0 {
 		add(*ref, refTr, share)
+	}
+	if resp != nil && respShare > 0 {
+		add(*resp, nil, respShare)
 	}
 	total := 0.0
 	for _, key := range sortedKeys(cells) {
@@ -529,8 +598,9 @@ func sorted(m map[string]float64) []float64 {
 
 // writeSeries writes a subject's clonotypes over time: each productive clonotype, the trajectory
 // its clones follow (own, and the reference's), whether the reference holds it and its share of
-// the reference's productive cells, and its expected share of the productive cells at each time.
-func writeSeries(path string, ser *Series, clones []Clone, own part, ref *part, refKeys map[string]bool, expected []map[string]float64) error {
+// the reference's productive cells, the epitope it recognizes (in a series with a response), and
+// its expected share of the productive cells at each time.
+func writeSeries(path string, ser *Series, clones []Clone, own part, ref *part, refKeys map[string]bool, epitopeOf map[string]string, expected []map[string]float64) error {
 	classOf := map[string][]string{}
 	note := func(p part, tr []Trajectory, prefix string) {
 		for i, row := range p.row {
@@ -544,6 +614,10 @@ func writeSeries(path string, ser *Series, clones []Clone, own part, ref *part, 
 		}
 	}
 	note(own, ser.Trajectories, "")
+	// The response's receptors follow its shares.
+	for key := range epitopeOf {
+		classOf[key] = append(classOf[key], "response")
+	}
 	refShare := map[string]float64{}
 	if ref != nil {
 		note(*ref, ser.Reference.Trajectories, ser.Reference.Kind+" ")
@@ -579,6 +653,9 @@ func writeSeries(path string, ser *Series, clones []Clone, own part, ref *part, 
 	z := gzip.NewWriter(f)
 	w := bufio.NewWriter(z)
 	header := []string{"v_call", "j_call", "junction_aa", "trajectory", "in_reference", "reference_frequency"}
+	if ser.Response != nil {
+		header = append(header, "epitope")
+	}
 	for _, tp := range ser.Times {
 		header = append(header, "frequency_"+dayName(tp.Day))
 	}
@@ -587,6 +664,9 @@ func writeSeries(path string, ser *Series, clones []Clone, own part, ref *part, 
 	for _, key := range all {
 		parts := strings.SplitN(key, "|", 3)
 		row := []string{parts[0], parts[1], parts[2], strings.Join(classOf[key], ","), flag(refKeys[key]), num(refShare[key])}
+		if ser.Response != nil {
+			row = append(row, epitopeOf[key])
+		}
 		for _, e := range expected {
 			row = append(row, num(e[key]))
 		}

@@ -264,22 +264,32 @@ func (g *Generator) Rearrange(r *random.Random) Rearrangement {
 	out.DelD3 = deletion(r, m.D3Deletions, len(d.Seq)-max(out.DelD5, 0))
 	out.N1 = insertion(r, m.VDInsertion)
 	out.N2 = insertion(r, m.DJInsertion)
-	vPart := trim3(v.Seq, out.DelV)
-	dPart := trim3(trim5(d.Seq, out.DelD5), out.DelD3)
-	jPart := trim5(j.Seq, out.DelJ)
-	start := max(0, v.Anchor-30)
-	full := vPart + out.N1 + dPart + out.N2 + jPart
-	end := len(vPart) + len(out.N1) + len(dPart) + len(out.N2) + j.Anchor - out.DelJ + 3
-	out.Sequence = full[start:]
-	out.JunctionStart = v.Anchor - start
-	out.Junction = full[v.Anchor:end]
-	out.InFrame = len(out.Junction)%3 == 0
-	if out.InFrame {
-		out.JunctionAA = Translate(out.Junction)
-		out.Stop = strings.Contains(out.JunctionAA, "*")
-	}
-	out.Productive = out.InFrame && !out.Stop
+	out.assemble()
 	return out
+}
+
+// parts are a rearrangement's V, D and J as its deletions leave them.
+func (x *Rearrangement) parts() (vPart, dPart, jPart string) {
+	return trim3(x.V.Seq, x.DelV), trim3(trim5(x.D.Seq, x.DelD5), x.DelD3), trim5(x.J.Seq, x.DelJ)
+}
+
+// assemble makes a rearrangement's sequence and junction from its segments, deletions and
+// insertions.
+func (x *Rearrangement) assemble() {
+	vPart, dPart, jPart := x.parts()
+	start := max(0, x.V.Anchor-30)
+	full := vPart + x.N1 + dPart + x.N2 + jPart
+	end := len(vPart) + len(x.N1) + len(dPart) + len(x.N2) + x.J.Anchor - x.DelJ + 3
+	x.Sequence = full[start:]
+	x.JunctionStart = x.V.Anchor - start
+	x.Junction = full[x.V.Anchor:end]
+	x.InFrame = len(x.Junction)%3 == 0
+	x.JunctionAA, x.Stop = "", false
+	if x.InFrame {
+		x.JunctionAA = Translate(x.Junction)
+		x.Stop = strings.Contains(x.JunctionAA, "*")
+	}
+	x.Productive = x.InFrame && !x.Stop
 }
 
 var complement = [256]byte{'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}

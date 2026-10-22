@@ -20,6 +20,7 @@ Go tests in this folder check whole results against independent references (`go 
 | `TestPgenOfTheSimulatorsModel` | Under ClonoLoom's own model of human TRB, 200 junctions (chosen from a pilot run) as frequent among 20 million rearrangements of the simulator as their probabilities say (mean z near 0, mean squared z near 1); and the generator's receptors likewise | the simulator |
 | `TestGeneratorAgreesWithPgen` | Receptors drawn from OLGA's human TRB model as frequent as their probabilities say, relative to the junctions compared | `olga-models` |
 | `TestPgenWithinBudget` | A million TRB CDR3s' probabilities (productive ones ClonoLoom's generator draws from OLGA's human TRB model) within 2 minutes on 10 cores (not under the race detector) | `olga-models` |
+| `TestVaccineReceptorsAsNearAsDash` | The simulated vaccine study's receptors that recognize an epitope as near each other as Dash et al. 2017's epitope-specific β chains: each one's nearest of the same epitope by TCRdist with the V genes' loops, the shares within 12, 24 and 48 units within 0.1 of the range Dash et al.'s human and mouse chains span (their shares in each sample against the truth: `TestSimulatedSeriesAgainstTheirTruth`) | `dash-2017-tcrdist3`, `tcrdist3-loops` |
 | `TestOpenAMillionRearrangementsWithinBudget` | A 1M-row immunoSEQ file read and validated within 5 s, its table within 64 bytes a row plus its junctions (not under the race detector) | generated |
 
 Data sets are required by naming them in `CLONOLOOM_REQUIRE_DATA` (a comma-separated list, or 1

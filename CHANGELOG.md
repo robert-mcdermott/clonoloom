@@ -7,6 +7,25 @@ grows with each.
 
 ### Added
 
+- **Simulated antigen-specific responses (wave 4, slice 4).** A study over time may hold receptors
+  of known specificity (`internal/simulate/response.go`; [docs/SIMULATION.md](docs/SIMULATION.md)):
+  - each epitope's founders, rearrangements every subject shares; each subject's family of a
+    founder, receptors of its genes and deletions whose non-templated nucleotides differ, so that
+    their CDR3s differ by a residue or two, mostly ones alike; and receptors of each subject's own;
+    a known share of the blood at each time point, by condition;
+  - the preset `vaccine`, offered as an example with guided steps: three vaccinated subjects and
+    two given a placebo, sampled a week before (twice) and 7, 14, 28 and 90 days after, receptors
+    of three epitopes rising from 0.1% of the blood to 3% at day 14 in the vaccinated;
+  - the truth gives every receptor's epitope, or none (`truth/specificity.tsv`, the founders, an
+    `epitope` column in each subject's series), and a specificity database in VDJdb's format
+    (`database/vdjdb.txt`: the founders, receptors of other donors around them, and two epitopes no
+    subject responds to), which opening the study's folder leaves out.
+  - Validated: the receptors as near each other as Dash et al.'s epitope-specific β chains (58%, 63%
+    and 68% with another of the same epitope within 12, 24 and 48 TCRdist units; Dash et al.'s,
+    54–61%, 59–71% and 69–85%); their share of every sample within a quarter of the truth's; the
+    same bytes on arm64 and amd64; the other presets unchanged, byte for byte. On the example, the
+    clonotypes the beta-binomial test calls between the week before and day 14 are all receptors of
+    the vaccine's epitopes, in the vaccinated subjects alone.
 - **Generation probability (wave 4, slice 3).** The Specificity view's second part, Generation
   (`internal/pgen`, `api_pgen.go`):
   - each clonotype's generation probability (Sethna et al. 2019): the probability that V(D)J

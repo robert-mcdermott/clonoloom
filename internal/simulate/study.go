@@ -137,6 +137,36 @@ var Presets = map[string]Study{
 				}},
 		},
 	},
+	"vaccine": {
+		Name: "vaccine", Title: "A simulated vaccination study: three vaccinated subjects and two given a placebo, before and after, with receptors that recognize three of the vaccine's epitopes",
+		Seed: 20261026,
+		Groups: []Group{
+			{Condition: "vaccine", Subjects: 3, Population: Population{Clonotypes: 30000, Alpha: 1.2, MaxSize: 100000, Nonproductive: 0.15}},
+			{Condition: "placebo", Subjects: 2, Population: Population{Clonotypes: 30000, Alpha: 1.2, MaxSize: 100000, Nonproductive: 0.15}},
+		},
+		SamplesPerSubject: 1,
+		Templates:         []int{15000, 20000, 18000, 25000, 16000, 22000},
+		ReadsPerTemplate:  8, ReadsSize: 2,
+		Recombination: DefaultRecombination(),
+		Series: &Series{
+			Event:    "vaccination",
+			Times:    []TimePoint{{Day: -7, Replicates: 2}, {Day: 7, Replicates: 1}, {Day: 14, Replicates: 1}, {Day: 28, Replicates: 1}, {Day: 90, Replicates: 1}},
+			Variance: 0.1,
+			Response: &Response{
+				Epitopes: []Epitope{
+					{Peptide: "KLDTEVYNA", Antigen: "simulated vaccine antigen", Weight: 0.5, Founders: 20},
+					{Peptide: "RPQGFSWLV", Antigen: "simulated vaccine antigen", Weight: 0.3, Founders: 15},
+					{Peptide: "YTNEAMPLC", Antigen: "simulated vaccine antigen", Weight: 0.2, Founders: 10},
+					// In the database only: no subject responds to them.
+					{Peptide: "GHSKLWDTF", Antigen: "simulated unrelated antigen", Founders: 10},
+					{Peptide: "VNRQEPAIL", Antigen: "simulated unrelated antigen", Founders: 10},
+				},
+				Family:   Family{Members: 4, Substitutions: 1, Similarity: 0.5, Private: 2, Alpha: 1.3, MaxSize: 1000},
+				Shares:   map[string][]float64{"vaccine": {0.001, 0.01, 0.03, 0.01, 0.003}, "placebo": {0.001, 0.001, 0.001, 0.001, 0.001}},
+				Database: 3,
+			},
+		},
+	},
 	"null-series": {
 		Name: "null-series", Title: "A simulated series with no change: four subjects sampled three times, two samples each time",
 		Seed: 20261025,
@@ -584,6 +614,9 @@ type studyTruth struct {
 	Samples   []SampleTruth  `json:"samples"`
 	Sharing   []SharingTruth `json:"sharing"`
 	Series    []SeriesTruth  `json:"series,omitempty"`
+	// Specificity: a study with a response's founders, receptors that recognize an epitope, and
+	// specificity database.
+	Specificity *SpecificityTruth `json:"specificity,omitempty"`
 }
 
 var sampleColumns = []string{"sequence_id", "sequence", "rev_comp", "productive", "vj_in_frame", "stop_codon", "locus", "v_call", "d_call", "j_call",
@@ -690,7 +723,7 @@ func writeJSON(path string, v any) error {
 }
 
 func readme(s Study, summary Summary, version string) string {
-	return fmt.Sprintf(`# %s
+	text := fmt.Sprintf(`# %s
 
 Simulated by ClonoLoom %s (clonoloom simulate --preset %s --seed %d): %d subjects, %d samples, %d
 rearrangements. Open this folder in ClonoLoom (or the samples' .tsv files with
@@ -711,4 +744,18 @@ restrictions), with the V and J usage and junction lengths of 10x Genomics' 10k 
 4.0); deletions and insertions of ClonoLoom's own choosing; clone sizes from a power law. These
 data are simulated: they describe no person, and may be used and shared without restriction.
 `, s.Title, version, s.Name, s.Seed, summary.Subjects, summary.Samples, summary.Rows)
+	if s.Series != nil && s.Series.Response != nil {
+		text += `
+Some receptors recognize an epitope of an antigen: families of receptors around founders the
+subjects share, and receptors of each subject's own, a known share of its blood at each time point.
+The epitopes and antigens are made up.
+
+- truth/specificity.tsv: every subject's receptors that recognize an epitope, with their epitope
+  and founder (any other clonotype recognizes none of them); truth/founders.tsv: the founders.
+- database/vdjdb.txt: a specificity database in VDJdb's format, each epitope's founders and
+  receptors of other donors around them, with epitopes no subject responds to. ClonoLoom does
+  not open it with the samples.
+`
+	}
+	return text
 }

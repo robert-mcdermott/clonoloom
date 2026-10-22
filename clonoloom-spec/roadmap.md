@@ -553,8 +553,8 @@ queries make a public cohort more than one example's files.
 | 1. Readers of wave 4 | Done |
 | 2. TCRdist | Done |
 | 3. Generation probability | Done |
-| 4. Simulated antigen-specific responses | Next |
-| 5. Neighborhoods and backgrounds | To come |
+| 4. Simulated antigen-specific responses | Done |
+| 5. Neighborhoods and backgrounds | Next |
 | 6. Clonotype networks | To come |
 | 7. Specificity databases | To come |
 | 8. Invariant populations and the examples; release 0.4.0 | To come |
@@ -693,6 +693,50 @@ queries make a public cohort more than one example's files.
    et al. found epitope-specific receptors to be; a vaccination series in which the families
    expand in a repertoire; and a specificity database of the founders' epitopes (for slice 7). The
    truth gives each clonotype's epitope, or none. Offered as the vaccine example.
+   - Plan: a series' `response` (`internal/simulate/response.go`). Each epitope's founders are
+     rearrangements the generator makes, the same in every subject; a subject's family of a founder
+     are receptors of its V, D and J genes and deletions whose non-templated nucleotides differ, so
+     that their CDR3s differ by a few residues, mostly ones alike (a substitution d TCRdist units
+     away chosen in proportion to e^(−κd)); a family's size drawn for each founder, so that some are
+     large in every subject and many small. The families are a share of each subject's blood at
+     each time point by its condition, beside its own repertoire (and a reference, where a study
+     has one), with the series' variance between samples. The preset `vaccine`: three vaccinated
+     subjects and two given a placebo, a week before (twice) and 7, 14, 28 and 90 days after; three
+     epitopes of a simulated antigen whose families expand from 0.1% of the blood to 3% at day 14
+     in the vaccinated; and a database in VDJdb's format (`database/vdjdb.txt`) of each epitope's
+     founders and receptors of other donors around them, with two epitopes no subject responds to.
+     The truth adds each subject's epitope-specific clonotypes, their epitope and founder.
+   - Validation: the families as close as Dash et al.'s epitope-specific β chains (each one's
+     nearest of the same epitope, by TCRdist with the V genes' loops: the shares within 12, 24 and
+     48 units); each sample's share of templates in the families against the truth's expectation;
+     the database's every founder and the subjects' families within reach of it; the same bytes for
+     the same seed, and the other presets unchanged.
+   - *Done:* as planned, with private receptors (below); `truth/specificity.tsv` and
+     `truth/founders.tsv`, the series files' `epitope` column and `response` trajectory; the
+     study's folder opened without its `database` folder; the vaccine example with four guided
+     steps (its subjects, the test of day −7 against day 14, the classes, the transient clonotypes
+     followed); SIMULATION.md and the guide's page.
+   - *Validation:* pooled across subjects, 58%, 63% and 68% of the receptors have another of the
+     same epitope within 12, 24 and 48 TCRdist units (with the V genes' loops; median 12), against
+     Dash et al.'s 54%, 59% and 69% (human, 415 β chains) and 61%, 71% and 85% (mouse, 1,924); the
+     response's share of the samples within a quarter of the truth's at every time point (day 14:
+     0.102 pooled, the truth 0.107); replicate samples' variance as the series'; each family member
+     its founder's genes and deletions, differing only at codons its insertions made, by the
+     residues counted; the small response's bytes pinned on arm64 and checked on amd64; standard,
+     car-t, transplant and null-series byte for byte as before.
+   - *Decided:* members differ from their founder only where its non-templated nucleotides make a
+     codon, so that each is a rearrangement of its own (the truth's deletions and insertions make its
+     junction), and keep its junction's length (Dash et al.'s nearest neighbors are mostly of one
+     length); a substitution d TCRdist units away is chosen in proportion to e^(−0.5d). The epitopes
+     are peptides made up for the study, the database's MHC `simulated`, so that nothing reads as a
+     real specificity. The database lists gene-level calls, as the simulator makes them.
+   - *Found:* families alone are nearer than Dash et al.'s receptors (90% within 12, 99% within 24):
+     a third or more of an epitope's receptors have no near neighbor, so each subject has receptors
+     of its own besides its families, twice as many as the epitope's founders on average. On the
+     example, the beta-binomial test between day −7 and day 14 calls 10 clonotypes, each a receptor
+     of the vaccine's epitopes, and none in the placebo group; most of the response is too many small
+     clones to call one by one, and TCRdist's neighbor counts over the whole dataset are led by
+     common background CDR3s (CASSLGGNTEAFF): what slice 5's backgrounds are for.
 5. **Neighborhoods and backgrounds (S2).** Each clonotype's neighbors within a radius in its
    sample and in a background (above); each radius chosen from the background's rate; the
    neighborhood's enrichment (Mayer-Blackwell et al.'s rates, odds ratio and test) and its CDR3
