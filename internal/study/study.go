@@ -132,7 +132,7 @@ func Describe(samples []Sample) Design {
 			if (a.Time == nil) != (b.Time == nil) {
 				return a.Time == nil // a reference without a time point first
 			}
-			if a.Time != nil && !same(*a.Time, *b.Time) {
+			if a.Time != nil && !Same(*a.Time, *b.Time) {
 				return earlier(*a.Time, *b.Time)
 			}
 			return naturalLess(a.Name, b.Name)
@@ -143,7 +143,7 @@ func Describe(samples []Sample) Design {
 			j := i + 1
 			if sub.Samples[i].Time != nil {
 				kinds[sub.Samples[i].Time.Kind] = true
-				for j < len(sub.Samples) && sub.Samples[j].Time != nil && same(*sub.Samples[i].Time, *sub.Samples[j].Time) {
+				for j < len(sub.Samples) && sub.Samples[j].Time != nil && Same(*sub.Samples[i].Time, *sub.Samples[j].Time) {
 					j++
 				}
 			}
@@ -165,7 +165,7 @@ func Describe(samples []Sample) Design {
 		var last *Time
 		for _, p := range sub.Samples {
 			if p.Reference == "" {
-				if last == nil || !same(*last, *p.Time) {
+				if last == nil || !Same(*last, *p.Time) {
 					times++
 				}
 				last = p.Time

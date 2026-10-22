@@ -115,9 +115,9 @@ func ParseTime(text string) (Time, bool) {
 	return t, false
 }
 
-// same says whether two time points are the same time: the same number of days (day 28 and week 4
+// Same says whether two time points are the same time: the same number of days (day 28 and week 4
 // are), both baseline or both after, or the same visit.
-func same(a, b Time) bool {
+func Same(a, b Time) bool {
 	if a.Kind != b.Kind {
 		return false
 	}

@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); wave 2
-is merged and released as 0.2.0; wave 3 is planned, slices 1–4 done, slice 5 next.
+is merged and released as 0.2.0; wave 3 is planned, slices 1–5 done, slice 6 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -297,8 +297,8 @@ are written under that rule from the start.
 | 2. Results the same on every processor | Done |
 | 3. Subjects and time points | Done |
 | 4. Simulated longitudinal studies | Done |
-| 5. Tracking | Next |
-| 6. Two-sample tests | To come |
+| 5. Tracking | Done |
+| 6. Two-sample tests | Next |
 | 7. Beta-binomial expansion | To come |
 | 8. Classes and attribution; release 0.3.0 | To come |
 
@@ -407,6 +407,27 @@ are written under that rule from the start.
    with each frequency's 95% interval; threads (each clonotype's trajectory) and an alluvial plot,
    linked to the clonotype table; figures, exports, the methods paragraph and remote control's
    `track_clonotypes`.
+   - *Done:* `internal/track` follows each reference sample's largest clonotypes (each sample's
+     largest for a subject without one), each sample's largest, or a list by ID or junction through
+     each subject's time points: the samples taken at one time pooled, a reference sample its own
+     point, each frequency with Wilson's score interval; `api_tracking.go`, an analysis whose ID
+     holds the samples' annotation and the choice; the Tracking view's Clonotypes part with
+     threads, an alluvial plot and a table, linked to each other and to the Clonotypes view (whose
+     inspector adds a clonotype to the list with Follow over time); CSV export, the methods
+     paragraph's sentence, `track_clonotypes`, the guide's page and capture scene.
+   - *Validation:* Wilson's interval equal to R's `prop.test` (without continuity correction) to
+     10⁻¹⁴; on the CAR-T example made without biological variance, the intervals held the true
+     frequency in 95.2% of 2,700 blood-sample checks; with the example's variance, in 76.9%.
+   - *Decided:* time points are equally spaced in the threads and the alluvial plot, in time order
+     (the Subjects part's timeline keeps the days' scale); a clonotype not found is drawn on its
+     own lane, never at zero on a logarithmic axis; the choice is kept with the dataset (a list is
+     kept whatever is followed), and a choice the user makes is followed at once; in reads, no
+     interval is given; a listed clonotype is followed in every subject, found or not.
+   - *Found:* Wilson's interval is for sampling alone, and blood samples vary beyond it: the view,
+     the methods paragraph and the Science page say so, and the tests of slices 6 and 7 are where
+     that variance is modeled. A script's edit is noticed by the view a moment later, so a script
+     waiting for the view must wait for its latest load, not the first (remote control's
+     `track_clonotypes` does).
 6. **Two-sample tests (T2).** DeWitt et al. 2015's test of each clonotype between two samples:
    Fisher's exact test, or the binomial test it equals conditional on the clonotype's total, with
    the share of the first sample's depth as its null; two-sided by default; Benjamini–Hochberg and

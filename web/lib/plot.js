@@ -291,6 +291,147 @@ export function timeline(rows, { label = 'Timeline', width = 640, labelWidth = 9
   return { svg: wrap(width, height, label, description, body), description };
 }
 
+// A frequency as a percentage, to three significant digits: 0.1234 is 12.3%, 1e-5 is 0.001%.
+export const percent = (v) => (Number.isFinite(v) ? `${Number((100 * v).toPrecision(3))}%` : '—');
+
+// The x axis of a subject's time points, equally spaced in time order: their labels below, each
+// truncated to its place.
+function pointAxis(points, left, plotWidth, y) {
+  const step = plotWidth / Math.max(points.length, 1);
+  const px = (i) => left + (i + 0.5) * step;
+  let body = '';
+  points.forEach((p, i) => {
+    body += `<text class="plot-tick" x="${px(i).toFixed(1)}" y="${y}" text-anchor="middle">${esc(truncate(p.label, Math.max(6, Math.floor(step / 6.4))))}<title>${esc(p.title ?? p.label)}</title></text>`;
+  });
+  return { px, step, body };
+}
+
+// Threads: clonotypes' frequencies through a subject's time points (points [{ label, title }],
+// equally spaced in time order), on a logarithmic axis: series [{ key, label, className, values:
+// [{ y, lower, upper, absent }] }], one value a point (y a frequency; not finite where the point
+// has no abundance). A clonotype not found at a point is drawn on the lane below the axis as an
+// open circle, never as zero, the lines to it dashed. With selected (a series' key), that series is
+// drawn over the others with its intervals (at a point it was not found, up to what the point
+// could have missed), and the others faded. Every series' marks carry data-key for the page.
+export function threads(points, series, { label = 'Threads', width = 680, height = 300, selected = null, format = percent } = {}) {
+  const left = 64;
+  const top = 10;
+  const lane = 30;
+  const bottom = 30;
+  const plotWidth = width - left - 16;
+  const plotHeight = height - top - lane - bottom;
+  const finite = (v) => Number.isFinite(v) && v > 0;
+  const seen = series.flatMap((s) => s.values.filter((v) => !v.absent && finite(v.y)).flatMap((v) => [v.y, ...(finite(v.lower) ? [v.lower] : []), ...(finite(v.upper) ? [v.upper] : [])]));
+  const limits = series.flatMap((s) => s.values.filter((v) => v.absent && finite(v.upper)).map((v) => v.upper));
+  let y0 = Math.floor(Math.log10(seen.length || limits.length ? Math.min(...seen, ...limits) : 0.001));
+  const y1 = Math.max(Math.ceil(Math.log10(seen.length ? Math.max(...seen) : 0.01)), y0 + 1);
+  y0 = Math.max(y0, y1 - 7);
+  const py = (v) => top + plotHeight - ((Math.min(Math.max(Math.log10(v), y0), y1) - y0) / (y1 - y0)) * plotHeight;
+  const laneY = top + plotHeight + lane / 2 + 4;
+  const axis = pointAxis(points, left, plotWidth, top + plotHeight + lane + 16);
+  const at = (v) => (v.absent ? laneY : finite(v.y) ? py(v.y) : null);
+  let body = '';
+  for (let t = y0; t <= y1; t += 1) body += `<line class="plot-gridline" x1="${left}" x2="${left + plotWidth}" y1="${py(10 ** t).toFixed(1)}" y2="${py(10 ** t).toFixed(1)}"/><text class="plot-tick" x="${left - 6}" y="${(py(10 ** t) + 4).toFixed(1)}" text-anchor="end">${format(10 ** t)}</text>`;
+  body += `<line class="plot-axis" x1="${left}" x2="${left + plotWidth}" y1="${top + plotHeight}" y2="${top + plotHeight}"/>`;
+  body += `<text class="plot-tick" x="${left - 6}" y="${laneY + 4}" text-anchor="end">not found</text><line class="plot-gridline plot-dashed" x1="${left}" x2="${left + plotWidth}" y1="${laneY}" y2="${laneY}"/>`;
+  body += axis.body;
+  const draw = (s, chosen) => {
+    const cls = `${s.className ?? 'plot-s1'}${selected !== null && !chosen ? ' plot-faded' : ''}${chosen ? ' plot-chosen' : ''}`;
+    const key = esc(s.key ?? s.label);
+    let out = `<g data-key="${key}"><title>${esc(s.label)}</title>`;
+    for (let i = 0; i + 1 < s.values.length; i += 1) {
+      const a = at(s.values[i]);
+      const b = at(s.values[i + 1]);
+      if (a === null || b === null || (s.values[i].absent && s.values[i + 1].absent)) continue;
+      const dashed = s.values[i].absent || s.values[i + 1].absent ? ' plot-dashed' : '';
+      out += `<path class="plot-line plot-thread ${cls}${dashed}" d="M${axis.px(i).toFixed(1)} ${a.toFixed(1)}L${axis.px(i + 1).toFixed(1)} ${b.toFixed(1)}"/>`;
+    }
+    s.values.forEach((v, i) => {
+      const y = at(v);
+      if (y === null) return;
+      const x = axis.px(i).toFixed(1);
+      if (chosen && finite(v.upper)) {
+        const lo = v.absent ? laneY : py(finite(v.lower) ? v.lower : 10 ** y0);
+        out += `<line class="plot-whisker${v.absent ? ' plot-dashed' : ''}" x1="${x}" x2="${x}" y1="${lo.toFixed(1)}" y2="${py(v.upper).toFixed(1)}"/>`;
+      }
+      const words = `${s.label} at ${points[i]?.title ?? points[i]?.label}: ${v.absent ? `not found${finite(v.upper) ? ` (up to ${format(v.upper)})` : ''}` : `${format(v.y)}${finite(v.lower) ? ` (${format(v.lower)}–${format(v.upper)})` : ''}`}`;
+      out += v.absent
+        ? `<circle class="plot-absent ${cls}" cx="${x}" cy="${y.toFixed(1)}" r="${chosen ? 4 : 3}"><title>${esc(words)}</title></circle>`
+        : `<circle class="${cls}" cx="${x}" cy="${y.toFixed(1)}" r="${chosen ? 4 : 2.6}"><title>${esc(words)}</title></circle>`;
+    });
+    return `${out}</g>`;
+  };
+  const picked = series.find((s) => selected !== null && (s.key ?? s.label) === selected);
+  for (const s of series) if (s !== picked) body += draw(s, false);
+  if (picked) body += draw(picked, true);
+  body += `<text class="plot-label" transform="translate(13 ${top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Frequency (logarithmic)</text>`;
+  const peaks = series.slice(0, 3).map((s) => {
+    let best = -1;
+    s.values.forEach((v, i) => { if (!v.absent && finite(v.y) && (best < 0 || v.y > s.values[best].y)) best = i; });
+    return best < 0 ? `${s.label} not found` : `${s.label} highest at ${points[best].label} (${format(s.values[best].y)})`;
+  });
+  const description = `${label}: ${series.length} clonotype${series.length === 1 ? '' : 's'} through ${points.length} time points (${points.map((p) => p.label).join(', ')})${peaks.length ? `; ${peaks.join('; ')}` : ''}.`;
+  return { svg: wrap(width, height, label, description, body), description };
+}
+
+// An alluvial plot: at each of a subject's time points (points [{ label, title }], equally spaced
+// in time order), the clonotypes' frequencies stacked (series [{ key, label, className, values:
+// [frequency] }], the first at the bottom, in one order at every point), each joined to the next
+// point by a ribbon; the axis is the share of the sample, from 0 to the largest stack. With
+// selected, the others are faded. Every series' marks carry data-key for the page.
+export function alluvial(points, series, { label = 'Alluvial plot', width = 680, height = 300, selected = null, format = percent } = {}) {
+  const left = 64;
+  const top = 10;
+  const bottom = 30;
+  const plotWidth = width - left - 16;
+  const plotHeight = height - top - bottom;
+  const value = (v) => (Number.isFinite(v) && v > 0 ? v : 0);
+  const totals = points.map((_, i) => series.reduce((sum, s) => sum + value(s.values[i]), 0));
+  const yt = scale(Math.max(...totals, 0), 4);
+  const hi = yt.at(-1) || 1;
+  const py = (v) => top + plotHeight - (v / hi) * plotHeight;
+  const axis = pointAxis(points, left, plotWidth, top + plotHeight + 16);
+  const barW = Math.max(6, Math.min(26, axis.step * 0.28));
+  // Each series' band at each point: [bottom, top] in shares, stacked in the series' order.
+  const bands = series.map(() => []);
+  points.forEach((_, i) => {
+    let at = 0;
+    series.forEach((s, k) => {
+      const v = value(s.values[i]);
+      bands[k][i] = [at, at + v];
+      at += v;
+    });
+  });
+  let body = '';
+  for (const t of yt) body += `<line class="plot-gridline" x1="${left}" x2="${left + plotWidth}" y1="${py(t).toFixed(1)}" y2="${py(t).toFixed(1)}"/><text class="plot-tick" x="${left - 6}" y="${(py(t) + 4).toFixed(1)}" text-anchor="end">${format(t)}</text>`;
+  body += `<line class="plot-axis" x1="${left}" x2="${left + plotWidth}" y1="${top + plotHeight}" y2="${top + plotHeight}"/>`;
+  body += axis.body;
+  series.forEach((s, k) => {
+    const chosen = selected !== null && (s.key ?? s.label) === selected;
+    const cls = `${s.className ?? 'plot-s1'}${selected !== null && !chosen ? ' plot-faded' : ''}`;
+    let out = `<g data-key="${esc(s.key ?? s.label)}"><title>${esc(s.label)}</title>`;
+    for (let i = 0; i + 1 < points.length; i += 1) {
+      const [b1, t1] = bands[k][i];
+      const [b2, t2] = bands[k][i + 1];
+      if (t1 - b1 <= 0 && t2 - b2 <= 0) continue;
+      const x1 = axis.px(i) + barW / 2;
+      const x2 = axis.px(i + 1) - barW / 2;
+      const mx = (x1 + x2) / 2;
+      const f = (v) => v.toFixed(1);
+      out += `<path class="plot-ribbon ${cls}" d="M${f(x1)} ${f(py(t1))}C${f(mx)} ${f(py(t1))} ${f(mx)} ${f(py(t2))} ${f(x2)} ${f(py(t2))}L${f(x2)} ${f(py(b2))}C${f(mx)} ${f(py(b2))} ${f(mx)} ${f(py(b1))} ${f(x1)} ${f(py(b1))}Z"/>`;
+    }
+    points.forEach((p, i) => {
+      const [b, t] = bands[k][i];
+      if (t - b <= 0) return;
+      out += `<rect class="${cls}" x="${(axis.px(i) - barW / 2).toFixed(1)}" y="${py(t).toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(0.6, py(b) - py(t)).toFixed(1)}"><title>${esc(`${s.label} at ${p.title ?? p.label}: ${format(t - b)}`)}</title></rect>`;
+    });
+    body += `${out}</g>`;
+  });
+  body += `<text class="plot-label" transform="translate(13 ${top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Share of the sample</text>`;
+  const description = `${label}: ${series.length} clonotype${series.length === 1 ? '' : 's'} stacked at ${points.length} time points, holding ${points.map((p, i) => `${format(totals[i])} at ${p.label}`).join(', ')}.`;
+  return { svg: wrap(width, height, label, description, body), description };
+}
+
 // A heatmap: values[r][c] (not finite: left blank) for rowLabels × colLabels, each cell shaded from
 // none to max (the largest value when not given), titled by title(r, c, v), with a scale. Column
 // labels are turned to read upward.
@@ -352,9 +493,10 @@ export function figureStyle({ colorVision = false, font = 'Helvetica, Arial, san
     + `.plot-ok{fill:${c.ok}}.plot-warn{fill:${c.warn}}.plot-danger{fill:${c.danger}}.plot-muted{fill:${c.text3}}.plot-accent{fill:${c.accent}}.plot-c4{fill:${c.accent2}}.plot-c5{fill:${c.brandA}}.plot-reference{fill:${c.brandA}}`
     + `.plot-whisker{stroke:${c.text2};stroke-width:1.4}.plot-line{fill:none;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}.plot-line-accent{stroke:${c.accent}}`
     + `.plot-dashed{stroke-dasharray:5 4}.plot-heat{fill:${c.accent};stroke:none}.plot-guide{stroke:${c.text3};stroke-width:1;stroke-dasharray:3 3}.plot-band{stroke:none;fill-opacity:0.13}`
-    + `.figure-title{font-size:14px;font-weight:bold;fill:${c.text}}.figure-caption{font-size:10.5px;fill:${c.text2}}.figure-legend{font-size:11px;fill:${c.text2}}`;
+    + `.figure-title{font-size:14px;font-weight:bold;fill:${c.text}}.figure-caption{font-size:10.5px;fill:${c.text2}}.figure-legend{font-size:11px;fill:${c.text2}}`
+    + `circle.plot-absent{fill:#ffffff;stroke-width:1.4}path.plot-ribbon{fill-opacity:0.3;stroke:none}.plot-thread{stroke-width:1.3}.plot-thread.plot-chosen{stroke-width:2.6}.plot-faded{opacity:0.16}`;
   series.forEach((color, i) => {
-    css += `.plot-band.plot-s${i + 1}{fill:${color}}.plot-line.plot-s${i + 1}{stroke:${color}}circle.plot-s${i + 1},rect.plot-s${i + 1}{fill:${color}}`;
+    css += `.plot-band.plot-s${i + 1}{fill:${color}}.plot-line.plot-s${i + 1}{stroke:${color}}circle.plot-s${i + 1},rect.plot-s${i + 1},path.plot-ribbon.plot-s${i + 1}{fill:${color}}circle.plot-absent.plot-s${i + 1}{fill:#ffffff;stroke:${color}}`;
   });
   return css;
 }

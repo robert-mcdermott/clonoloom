@@ -123,6 +123,20 @@ test('an overlap result kept says what was measured, at what depth, citing each 
   }
 });
 
+test('a tracking result kept says what was followed and how, citing Wilson once; in reads, without intervals', () => {
+  const results = [
+    { kind: 'tracking', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { confidence: 0.95 }, choice: { by: 'reference', n: 10, list: [] }, subjects: 3, followed: 30, intervals: true },
+    { kind: 'tracking', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { confidence: 0.95 }, choice: { by: 'list', list: ['c-1', 'CASSA'] }, subjects: 3, followed: 4, intervals: true },
+  ];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /Clonotypes \("Amino-acid junction, V and J genes"\) were followed through each subject's samples in time order by ClonoLoom \[\d\]: each reference sample's 10 largest clonotypes \(each sample's 10 largest for a subject without one\), 30 clonotypes in 3 subjects; each one's frequency at each time point is its count of the templates there, the samples taken at one time pooled, with Wilson's 95% score interval \[\d\]/);
+  assert.match(text, /: 2 clonotypes listed by ID or junction, 4 clonotypes in 3 subjects;/);
+  assert.equal(references.filter((r) => r.includes('Wilson EB.')).length, 1);
+  const reads = methodsParagraph({ dataset: pbmc, results: [{ ...results[0], unit: 'reads', intervals: false }], program });
+  assert.match(reads.text, /its share of the reads there, the samples taken at one time pooled, without an interval \(reads count each molecule many times over\)\./);
+  assert.ok(!reads.references.some((r) => r.includes('Wilson EB.')));
+});
+
 test('a table read through a mapping says which of its columns gave what (the 0.2.0 project)', () => {
   const project = JSON.parse(readFileSync(new URL('../../validation/projects/0.2.0/project.json', import.meta.url), 'utf8'));
   const dataset = project.datasets.find((d) => d.sources.some((s) => s.mapping));

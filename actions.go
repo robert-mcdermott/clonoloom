@@ -73,6 +73,13 @@ var remoteActions = []remoteAction{
 	{Name: "describe_subjects", Title: "Describe the subjects", Description: "Shows the Tracking view and answers the dataset's subjects as the program reads their annotation: each one's samples in time order with their time points read as days from the subject's reference event, its reference samples and the samples taken at one time (replicates), and the checks' findings (samples without a subject or a time point, time points not understood, subjects without a reference sample).", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
 	})},
+	{Name: "track_clonotypes", Title: "Follow clonotypes over time", Description: "Shows the Tracking view's Clonotypes part and follows clonotypes through each subject's samples in time order, under the dataset's clonotype definition and filter (a job; the result kept with the project): each subject's reference sample's largest clonotypes (the default; each sample's largest for a subject without one), each sample's largest, or a list. Answers each subject's time points and, for each clonotype followed, why it was chosen and its count, frequency and 95% interval (Wilson's) at each time point, the samples taken at one time pooled.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"by":      textArg("reference (each reference sample's n largest; the default), largest (each sample's n largest) or list."),
+		"n":       numberArg("How many of each sample's largest: 10 of a reference sample and 5 of each sample by default, at most 100."),
+		"list":    map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "With by list: the clonotypes, by ID (c-…) or junction (CASSLAGGPEAFF; a paired clonotype's chains joined by \"; \")."},
+		"subject": textArg("The subject to show (the first by default)."),
+	})},
 	{Name: "select_clonotype", Title: "Choose a clonotype", Description: "Shows the Clonotypes view and chooses a clonotype, which the inspector describes: by its rank in the table (1 for the first) or its ID.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
 		"rank":    numberArg("Its rank in the table as sorted, from 1."),

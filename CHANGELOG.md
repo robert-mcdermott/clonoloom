@@ -18,6 +18,28 @@ grows with each.
     references (formats, remote control, simulated studies, installing) stay in `docs/`;
   - a link-preview image made from a screenshot (`docs/site/og-image.mjs`);
   - axe-core listed in `validation/sources.json` as a tool, fetched for the audit only.
+- **Following clonotypes (wave 3, slice 5).** The **Tracking** view's Clonotypes part
+  (`internal/track`, `api_tracking.go`, `web/ui/mode-tracking.js`):
+  - the clonotypes chosen followed through each subject's samples in time order: each reference
+    sample's 10 largest (the default; each sample's largest for a subject without one), each
+    sample's largest (5 by default), or a list by ID or junction, kept with the dataset; the
+    Clonotypes view's inspector adds a clonotype to the list with **Follow over time**;
+  - each clonotype's count and frequency in every sample and at every time point (the samples taken
+    at one time pooled), with its 95% interval (Wilson's score interval) where the counts are of
+    cells or molecules; a clonotype not found is shown as not found, with what the depth could
+    have missed, never as zero; in reads, no intervals, and the view says why;
+  - threads (each clonotype's frequency through the time points, on a logarithmic axis, the one
+    chosen drawn with its intervals), an alluvial plot of their shares, and a table, linked to each
+    other and to the Clonotypes view; the plots save as figures;
+  - a job whose result is kept with the project (its ID made from the samples' annotation and the
+    choice); its export as CSV (each sample, and each time point); the methods paragraph's sentence,
+    citing Wilson 1927;
+  - remote control's `track_clonotypes`; the guide's page, Following clonotypes; the Science page's
+    Tracking section.
+  - Validated: Wilson's interval against R's `prop.test` to 10⁻¹⁴; on the simulated CAR-T study,
+    the intervals held the true frequency in 95.2% of 2,700 checks where samples differ by sampling
+    alone, and in 76.9% with the study's biological variance between samples, which the view and
+    the methods paragraph say (`validation/tracking_test.go`).
 - **Simulated studies over time (wave 3, slice 4).** `clonoloom simulate --preset car-t`,
   `transplant` and `null-series` ([docs/SIMULATION.md](docs/SIMULATION.md)), the first two in the
   Example data dialog:

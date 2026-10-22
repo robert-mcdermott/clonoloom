@@ -187,6 +187,20 @@ const scenes = {
     await act('describe_subjects');
     await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 1`);
   },
+  // Its second patient's clonotypes followed through time: each sample's five largest, the one
+  // that rises most after the infusion chosen and drawn with its intervals.
+  async tracking() {
+    await act('open_example', { example: 'simulated-car-t', download: true });
+    await act('track_clonotypes', { by: 'largest', n: 5, subject: 'S02' });
+    await js(`(() => {
+      const view = window.clonoloom.trackingView;
+      const s = view.followed().result.subjects.find((x) => x.id === 'S02');
+      const rise = (c) => Math.max(...c.points.slice(2).map((v) => v.frequency ?? 0)) / Math.max(c.points[1].frequency ?? 0, 1e-6);
+      view.select([...s.clonotypes].sort((a, b) => rise(b) - rise(a))[0].id);
+      return true;
+    })()`);
+    await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 2 && Boolean(document.querySelector('.plot-chosen'))`);
+  },
 };
 
 const names = wanted.length ? wanted : Object.keys(scenes);

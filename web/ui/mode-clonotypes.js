@@ -3,7 +3,7 @@
 // (api_clonotypes.go), so that a million rows scroll as smoothly as a hundred. The definition is
 // chosen from the presets or edited, and said in words above the table; a clonotype selected is
 // described in the inspector: its chains, its abundance in every sample, and the rearrangements or
-// cells it is made of.
+// cells it is made of; Follow over time adds it to the clonotypes the Tracking view follows.
 
 import { h, icon, clear, debounce } from './dom.js';
 import { showDialog, showMenu, toast } from './overlays.js';
@@ -12,6 +12,7 @@ import { clonotypeDetail, clonotypePage, clonotypePresets } from './storage.js';
 import { UNITS, datasetUnit } from '../lib/datasets.js';
 import { datasetFilter } from '../lib/filters.js';
 import { JUNCTIONS, LEVELS, datasetDefinition, sameMeaning, saveDefinition, useDefinition } from '../lib/definitions.js';
+import { followAlso } from '../lib/tracking.js';
 
 const ROW = 30;
 // The header row's height, above the rows inside the scrolling area.
@@ -344,6 +345,7 @@ export function mountClonotypes(app, container) {
     return h('section.inspector-section',
       h('h3', icon('clonotypes'), 'Clonotype'),
       h('p.mono.small', { title: 'The ID is made from the definition and the clonotype\'s chains: the same clonotype has the same ID in every run.' }, c.id),
+      h('div.btn-row', h('button.btn.small', { type: 'button', title: 'Add this clonotype to the list the Tracking view follows through each subject\'s samples, and show it there', onclick: () => followOverTime(c.id) }, icon('threads'), 'Follow over time')),
       ...c.chains.map((ch) => h('dl.kv',
         h('dt', 'Locus'), h('dd', ch.locus),
         h('dt', 'Junction'), h('dd.mono', ch.junction),
@@ -363,6 +365,19 @@ export function mountClonotypes(app, container) {
       detail.memberCount > 100 ? h('p.muted.small', `The first 100 of ${count(detail.memberCount)}.`) : null,
       h('p.muted.small', { style: { marginTop: '8px' } }, `Defined as: ${detail.describe}.`));
   });
+
+  // The clonotype added to the dataset's list of clonotypes followed, and followed in the Tracking
+  // view.
+  async function followOverTime(id) {
+    const datasetId = app.clonotypeContext?.dataset;
+    const d = store.project.datasets.find((x) => x.id === datasetId);
+    if (!d) return;
+    store.commit(followAlso(store.project, d.id, [id]), `Follow a clonotype of ${d.name} over time`);
+    app.focusItem({ kind: 'dataset', id: d.id });
+    await app.setMode('tracking');
+    app.trackingView?.show('clonotypes');
+    app.trackingView?.followNow();
+  }
 
   clonotypePresets().then((list) => { presets = list; drawControls(); }).catch(() => {});
   reload();

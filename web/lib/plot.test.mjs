@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { curves, columns, figure, figureStyle, heatmap, intervals, lines, scale, stackedBars, ticks, timeline } from './plot.js';
+import { alluvial, curves, columns, figure, figureStyle, heatmap, intervals, lines, percent, scale, stackedBars, threads, ticks, timeline } from './plot.js';
 
 test('ticks are nice numbers covering the range', () => {
   assert.deepEqual(ticks(1), [0, 0.25, 0.5, 0.75, 1]);
@@ -108,7 +108,7 @@ test('a figure stands alone: the plot on white with its title, legend, caption a
   });
   assert.match(svg, /^<svg xmlns="http:\/\/www.w3.org\/2000\/svg" width="\d+" height="\d+"/);
   assert.match(svg, /<style>[^<]*\.plot-whisker\{stroke:#4b5468/);
-  assert.match(svg, /circle\.plot-s2,rect\.plot-s2\{fill:#e9a23b\}/);
+  assert.match(svg, /circle\.plot-s2,rect\.plot-s2,path\.plot-ribbon\.plot-s2\{fill:#e9a23b\}/);
   assert.match(svg, /<text class="figure-title"[^>]*>Shannon diversity of each sample<\/text>/);
   assert.match(svg, /expanded &lt;x&gt;/);
   assert.match(svg, /<text class="figure-caption"[^>]*>ClonoLoom 0.2.0.<\/text>/);
@@ -137,4 +137,59 @@ test('a timeline places each subject\'s samples by day, references and baselines
   assert.match(svg, /P2 &lt;x&gt;/);
   assert.match(svg, />Days from infusion</);
   assert.match(description, /2 subjects; P1: infusion product, baseline, day 7, day 28, week 4; P2 <x>: day -7, month 3\./);
+});
+
+const POINTS = [{ label: 'infusion product' }, { label: 'day -7' }, { label: 'day 14', title: 'day 14 (2 samples)' }];
+
+test('percentages to three digits', () => {
+  assert.equal(percent(0.1234), '12.3%');
+  assert.equal(percent(1e-5), '0.001%');
+  assert.equal(percent(NaN), '—');
+});
+
+test('threads draw each clonotype through the time points, one not found on its own lane, the chosen with its intervals', () => {
+  const series = [
+    { key: 'c-1', label: 'CASSA', className: 'plot-s1', values: [{ y: 0.05, lower: 0.04, upper: 0.06 }, { y: 0, absent: true, upper: 0.0004 }, { y: 0.01, lower: 0.008, upper: 0.012 }] },
+    { key: 'c-<2>', label: 'CASSB <b>', className: 'plot-s2', values: [{ y: 0.002, lower: 0.001, upper: 0.003 }, { y: 0.001 }, { y: NaN }] },
+  ];
+  const { svg, description } = threads(POINTS, series, { label: 'Threads', selected: 'c-1' });
+  assert.match(svg, /^<svg class="plot"/);
+  assert.match(svg, />not found<\/text>/);
+  // One open circle, its segments dashed; the missing value draws nothing.
+  assert.equal((svg.match(/class="plot-absent /g) ?? []).length, 1);
+  assert.equal((svg.match(/plot-thread plot-s1 plot-chosen plot-dashed/g) ?? []).length, 2);
+  assert.equal((svg.match(/plot-thread plot-s2 plot-faded"/g) ?? []).length, 1);
+  // The chosen drawn last, with a whisker at each point (dashed where not found); the others none.
+  assert.ok(svg.indexOf('data-key="c-1"') > svg.indexOf('data-key="c-&lt;2&gt;"'));
+  assert.equal((svg.match(/class="plot-whisker/g) ?? []).length, 3);
+  assert.match(svg, /CASSA at infusion product: 5%/);
+  assert.match(svg, /CASSA at day -7: not found \(up to 0\.04%\)/);
+  assert.match(svg, />10%<\/text>/);
+  assert.match(description, /2 clonotypes through 3 time points \(infusion product, day -7, day 14\); CASSA highest at infusion product \(5%\); CASSB <b> highest at infusion product \(0\.2%\)\./);
+});
+
+test('an alluvial plot stacks the clonotypes in one order at every point and joins them by ribbons', () => {
+  const series = [
+    { key: 'c-1', label: 'CASSA', className: 'plot-s1', values: [0.5, 0, 0.2] },
+    { key: 'c-2', label: 'CASSB', className: 'plot-s2', values: [0.3, 0.1, 0.1] },
+  ];
+  const { svg, description } = alluvial(POINTS, series, { label: 'Alluvial', selected: 'c-2' });
+  // Bars where present (CASSA not at day -7), ribbons wherever either end is.
+  assert.equal((svg.match(/<rect /g) ?? []).length, 5);
+  assert.equal((svg.match(/class="plot-ribbon /g) ?? []).length, 4);
+  assert.equal((svg.match(/plot-faded/g) ?? []).length, 2 + 2);
+  // At the product, CASSB sits on CASSA: its bar's bottom is CASSA's top.
+  const bars = [...svg.matchAll(/<rect class="(plot-s\d)[^"]*" x="([\d.]+)" y="([\d.]+)" width="[\d.]+" height="([\d.]+)"/g)].map((m) => ({ cls: m[1], x: Number(m[2]), y: Number(m[3]), h: Number(m[4]) }));
+  const [a, b] = bars.filter((r) => r.x === bars[0].x);
+  assert.equal(a.cls, 'plot-s1');
+  assert.ok(Math.abs(b.y + b.h - a.y) < 0.11);
+  assert.match(svg, />80%<\/text>/);
+  assert.match(description, /2 clonotypes stacked at 3 time points, holding 80% at infusion product, 10% at day -7, 30% at day 14\./);
+});
+
+test('figures style threads, ribbons and clonotypes not found', () => {
+  const css = figureStyle();
+  assert.match(css, /path\.plot-ribbon\.plot-s2\{fill:#e9a23b\}/);
+  assert.match(css, /circle\.plot-absent\.plot-s1\{fill:#ffffff;stroke:#5b4ce6\}/);
+  assert.match(css, /\.plot-faded\{opacity:0\.16\}/);
 });

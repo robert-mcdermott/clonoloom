@@ -166,6 +166,19 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = "Every pair of samples' overlap in " + ds.Name + ", with their 95% intervals (overlap.csv), and the public clonotypes (public.csv)."
 		files["overlap.csv"] = func(f io.Writer) error { return export.Overlap(f, res) }
 		files["public.csv"] = func(f io.Writer) error { return export.Public(f, res) }
+	case "tracking":
+		var doc trackingDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		intervals := fmt.Sprintf("with their %g%% intervals (Wilson's)", 100*doc.Confidence)
+		if !doc.Intervals {
+			intervals = "without intervals (" + doc.Caveat + ")"
+		}
+		notice.What = "The clonotypes followed through each subject's samples of " + ds.Name + ": each one's count, frequency and its interval in each sample (tracking.csv) and at each time point, the samples taken at one time pooled (time-points.csv), " + intervals + "."
+		files["tracking.csv"] = func(f io.Writer) error { return export.Tracking(f, doc.Result) }
+		files["time-points.csv"] = func(f io.Writer) error { return export.TrackingPoints(f, doc.Result) }
 	default:
 		writeError(w, http.StatusBadRequest, "This result has nothing to export as a table.")
 		return

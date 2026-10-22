@@ -11,6 +11,7 @@ import { showMethods } from './methods.js';
 import { datasetDefinition, sameMeaning, useDefinition } from '../lib/definitions.js';
 import { datasetFilter } from '../lib/filters.js';
 import { SAMPLE_FIELDS, annotate, datasetUnit } from '../lib/datasets.js';
+import { MAX_LIST, trackingChoice, useTracking } from '../lib/tracking.js';
 
 export class ActionError extends Error {}
 
@@ -191,6 +192,50 @@ export function installRemote(app) {
       if (state.status !== 'ready') throw new ActionError(state.error ?? `The subjects of ${d.name} could not be read.`);
       const { design } = state;
       return { message: `${d.name}: ${count(design.subjects.length, 'subject')}, ${count(design.findings.length, 'finding')}.`, data: design };
+    },
+
+    async track_clonotypes({ dataset, by, n, list, subject }) {
+      const d = datasetOf(dataset);
+      const choice = {};
+      if (by !== undefined && by !== '') choice.by = choose(by, ['reference', 'largest', 'list'], 'way of choosing');
+      if (n !== undefined && n !== null) {
+        const k = Number(n);
+        if (!Number.isInteger(k) || k < 1 || k > 100) throw new ActionError('n is a whole number from 1 to 100.');
+        choice.n = k;
+      }
+      if (list !== undefined) {
+        if (!Array.isArray(list) || list.some((e) => typeof e !== 'string')) throw new ActionError('list is an array of clonotype IDs or junctions.');
+        if (list.length > MAX_LIST) throw new ActionError(`list holds at most ${MAX_LIST} clonotypes.`);
+        choice.list = list;
+        choice.by ??= 'list';
+      }
+      if (choice.by === 'list' && !(choice.list ?? trackingChoice(d).list).length) throw new ActionError('Following a list needs one: list the clonotypes by ID or junction.');
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('tracking');
+      const view = await waitFor(() => app.trackingView, 5000, 'the Tracking view');
+      view.show('clonotypes');
+      const next = useTracking(store.project, d.id, choice);
+      if (next !== store.project) store.commit(next, `Choose the clonotypes followed in ${d.name}`);
+      await view.choose(d.id);
+      if (view.state().status === 'failed') throw new ActionError(view.state().error);
+      if (view.followed().status === 'absent') await view.follow();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.followed().status) && view.followed(), 30 * 60 * 1000, 'the clonotypes to be followed');
+      if (done.status === 'failed') throw new ActionError(done.error);
+      const r = done.result;
+      if (subject !== undefined && subject !== '') view.showSubject(choose(subject, r.subjects.map((s) => s.id), 'subject'));
+      const followed = r.subjects.reduce((k, s) => k + s.clonotypes.length, 0);
+      const value = (v) => ({ count: v.count, total: v.total, frequency: v.frequency, lower: v.lower, upper: v.upper });
+      return {
+        message: `${d.name}: ${count(followed, 'clonotype')} followed in ${count(r.subjects.length, 'subject')} (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, choice: r.choice, intervals: r.intervals, caveat: r.caveat ?? null, unmatched: r.unmatched ?? [], without: r.without ?? [],
+          subjects: r.subjects.map((s) => ({
+            id: s.id, by: s.by,
+            points: s.points.map((p) => ({ label: p.label, kind: p.kind, days: p.days ?? null, samples: p.samples, followed: p.followed })),
+            clonotypes: s.clonotypes.map((c) => ({ id: c.id, chains: c.chains, why: c.why, peak: s.points[c.peak]?.label ?? null, points: c.points.map(value) })),
+          })),
+        },
+      };
     },
 
     async select_clonotype({ dataset, rank, id }) {

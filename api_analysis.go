@@ -1,9 +1,10 @@
 package main
 
-// Analyses of a dataset's samples (diversity, rarefaction) over HTTP: a job computes one over every
-// sample under the dataset's clonotype definition and filter, and keeps the result as an artifact
-// (internal/artifacts) whose id is made from what it measured: the dataset (its files'
-// fingerprints), the definition's meaning, the filter, the options and the method's version, so
+// Analyses of a dataset's samples (diversity, rarefaction, gene usage, overlap, tracking) over
+// HTTP: a job computes one over every sample under the dataset's clonotype definition and filter,
+// and keeps the result as an artifact (internal/artifacts) whose id is made from what it measured:
+// the dataset (its files' fingerprints), the definition's meaning, the filter, the options (and,
+// for tracking, the samples' annotation and the clonotypes chosen) and the method's version, so
 // asking again answers the result kept. Results are read back by their id.
 
 import (
@@ -22,12 +23,15 @@ import (
 	"clonoloom/internal/diversity"
 	"clonoloom/internal/jobs"
 	"clonoloom/internal/qc"
+	"clonoloom/internal/study"
+	"clonoloom/internal/track"
 )
 
 // analysis is a kind of analysis: its jobs' and artifacts' kind (and its routes, /api/{kind}, and
 // its result's file, {kind}.json), its artifact ids' prefix, its method's version (which changes
 // when what it answers changes), its name in words, whether it uses the samples' groups and
-// subjects (the spec's Groups and Subjects; ignored otherwise), and its work (given its own kind).
+// subjects (the spec's Groups and Subjects; ignored otherwise), whether it follows a study over
+// time (the spec's Study and Track), and its work (given its own kind).
 type analysis struct {
 	kind     string
 	prefix   string
@@ -35,14 +39,16 @@ type analysis struct {
 	title    string
 	grouped  bool
 	subjects bool
+	study    bool
 	work     func(a *app, k analysis, spec analysisSpec) jobs.Func
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis}
 
 // analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
-// (condition) and subject (by sample name), for the analyses that use them.
+// (condition) and subject (by sample name), for the analyses that use them; Study is the samples'
+// annotation a study over time is read from (internal/study), and Track the clonotypes it follows.
 type analysisSpec struct {
 	Dataset    string               `json:"dataset"`
 	Definition clonotype.Definition `json:"definition"`
@@ -50,6 +56,8 @@ type analysisSpec struct {
 	Options    diversity.Options    `json:"options"`
 	Groups     map[string]string    `json:"groups,omitempty"`
 	Subjects   map[string]string    `json:"subjects,omitempty"`
+	Study      []study.Sample       `json:"study,omitempty"`
+	Track      *track.Choice        `json:"track,omitempty"`
 	Method     int                  `json:"method"`
 }
 
@@ -78,6 +86,13 @@ func (s analysisSpec) normalized(version int) (analysisSpec, error) {
 		return s, errors.New("confidence: between 0 and 1")
 	}
 	s.Options.Stream = 0
+	if s.Track != nil {
+		c, err := s.Track.Normalize()
+		if err != nil {
+			return s, err
+		}
+		s.Track = &c
+	}
 	s.Method = version
 	return s, nil
 }
@@ -90,8 +105,10 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Options    diversity.Options `json:"options"`
 		Groups     map[string]string `json:"groups,omitempty"`
 		Subjects   map[string]string `json:"subjects,omitempty"`
+		Study      []study.Sample    `json:"study,omitempty"`
+		Track      *track.Choice     `json:"track,omitempty"`
 		Method     int               `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -120,6 +137,11 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 		}
 		if !k.subjects {
 			body.Subjects = nil
+		}
+		if !k.study {
+			body.Study, body.Track = nil, nil
+		} else if body.Track == nil {
+			body.Track = &track.Choice{}
 		}
 		spec, err := body.analysisSpec.normalized(k.version)
 		if err != nil {

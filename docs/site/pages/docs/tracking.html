@@ -1,0 +1,30 @@
+---
+title: Following clonotypes
+description: Follow chosen clonotypes through each subject's samples over time in ClonoLoom: an infusion product's largest, each sample's largest, or a list, each frequency with its interval, as threads, an alluvial plot and a table.
+lede: The Tracking view's Clonotypes part follows clonotypes through each subject's samples in time order: their frequency at every time point, with its interval, drawn as threads and an alluvial plot, and listed in a table linked to both.
+---
+      <h2 id="choose">Choose what to follow</h2>
+      <shot name="tracking" alt="The Tracking view's Clonotypes part on the simulated CAR-T study: each sample's five largest clonotypes of one patient as threads through the infusion product and six time points, the one that peaks at day 14 chosen and drawn with its intervals, and an alluvial plot of their shares below">The simulated CAR-T study's second patient: each sample's five largest clonotypes, the one that peaks two weeks after the infusion chosen.</shot>
+      <p>Give the samples their subjects and time points first (<a href="subjects.html">Subjects and time points</a>). Then open <strong>Tracking › Clonotypes</strong> and choose what to follow:</p>
+      <ul>
+        <li><strong>The reference sample's largest</strong> (the default): the 10 largest clonotypes of each subject's reference sample, such as an infusion product or a donor's blood. A subject without a reference sample has each sample's largest instead, and the view says so.</li>
+        <li><strong>Each sample's largest</strong>: the 5 largest of every sample of the subject, together.</li>
+        <li><strong>A list</strong>: clonotypes by their ID or junction, one a line. In the Clonotypes view, <strong>Follow over time</strong> in the inspector adds the clonotype chosen there to the list.</li>
+      </ul>
+      <p>How many of the largest is chosen beside it (5 to 50). The choice is kept with the dataset, and each result with the project: choosing again finds a result kept.</p>
+
+      <h2 id="frequencies">Frequencies and their intervals</h2>
+      <p>At each time point, a clonotype's frequency is its count among the cells or molecules there, under the dataset's clonotype definition and filter. Samples taken at one time are pooled. Each frequency has its 95% interval (Wilson's score interval, Wilson 1927), which holds for a count of any size, zero included.</p>
+      <ul>
+        <li>A clonotype not found at a time point is shown as <strong>not found</strong>, on a lane of its own below the axis, never as a frequency of zero. Its interval runs from zero to what that sample's depth could have missed.</li>
+        <li>The intervals are for <strong>sampling alone</strong>. Two blood samples taken at one time differ by more than sampling. On ClonoLoom's simulated CAR-T study, the intervals held the true frequency in 95.2% of 2,700 checks when samples differed only by sampling. With the study's variance between blood samples, they held it in 76.9%. The expansion tests account for that variance from replicate samples.</li>
+        <li>In reads, each cell or molecule is counted many times over, so no interval is given and the view says why.</li>
+      </ul>
+
+      <h2 id="plots">Threads, the alluvial plot and the table</h2>
+      <ul>
+        <li><strong>Threads</strong>: each clonotype's frequency through the time points, on a logarithmic axis. The time points are equally spaced, in time order, the reference sample first. Choose a clonotype, on a plot or in the table, to draw it over the others with its intervals.</li>
+        <li><strong>The alluvial plot</strong>: at each time point, the clonotypes' shares of the sample, stacked in one order and joined by ribbons. The stack's height is the share the clonotypes followed hold together.</li>
+        <li><strong>The table</strong>: each clonotype with its genes, why it is followed, and its frequency and interval at every time point. A row's button shows the clonotype in the Clonotypes view, where the inspector describes it.</li>
+      </ul>
+      <p>The plots save as figures. <strong>Export</strong> writes each clonotype's count, frequency and interval in every sample, and at every time point, as CSV. The methods paragraph says what was followed and how. Scripts use <code>track_clonotypes</code> (<a href="remote-control.html">Remote control</a>).</p>

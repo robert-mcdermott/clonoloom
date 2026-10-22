@@ -7,6 +7,7 @@
 
 import { UNITS, datasetUnit } from './datasets.js';
 import { describeRules } from './filters.js';
+import { choiceWords } from './tracking.js';
 
 const count = (n) => Number(n).toLocaleString('en-US');
 const plural = (n, word, words = `${word}s`) => `${count(n)} ${n === 1 ? word : words}`;
@@ -37,6 +38,7 @@ export const REFERENCES = {
   horvitzThompson: 'Horvitz DG, Thompson DJ. A generalization of sampling without replacement from a finite universe. J Am Stat Assoc. 1952;47:663–685. doi:10.1080/01621459.1952.10483446',
   chaoJost: 'Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. Ecology. 2012;93:2533–2547. doi:10.1890/11-1952.1',
   rytlewski: 'Rytlewski J, Deng S, Xie T, et al. Model to improve specificity for identification of clinically-relevant expanded T cells in peripheral blood. PLoS One. 2019;14:e0213684. doi:10.1371/journal.pone.0213684',
+  wilson: 'Wilson EB. Probable inference, the law of succession, and statistical inference. J Am Stat Assoc. 1927;22:209–212. doi:10.1080/01621459.1927.10502953',
 };
 
 const coverageWords = (v) => (v > 0.99 && v < 1 ? v.toFixed(4) : v.toFixed(3));
@@ -194,6 +196,17 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     const depth = r.depth > 0 ? `, as sampled and with both samples rarefied to ${Math.round(r.depth).toLocaleString('en-US')} ${unit}, the smallest sample's size (the exact expectation)` : '';
     const by = r.publicBy === 'subject' ? 'subjects' : 'samples';
     sentences.push(`The overlap of every pair of samples (clonotypes ${under}) was measured by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: the clonotypes they share, Jaccard's index ${cite('jaccard')}, Sørensen–Dice's ${cite('dice')} and the overlap coefficient${depth}; and over their abundances in ${unit}, Morisita's index ${cite('morisita')} and the Morisita–Horn index ${cite('horn')}. Intervals are 95%: from ${opts.replicates ?? 200} bootstrap replicates of each sample's cells (seed ${opts.seed ?? '—'}), widened for the chance that decides which clonotypes two samples share ${cite('horvitzThompson')}, on the logarithmic scale. Clonotypes found in more than one of the ${by} were counted as public.`);
+  }
+
+  // Clonotypes followed over time, likewise.
+  for (const r of results.filter((x) => x.kind === 'tracking')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const choice = r.choice ?? { by: 'reference', n: 10, list: [] };
+    const how = r.intervals
+      ? `each one's frequency at each time point is its count of the ${unit} there, the samples taken at one time pooled, with Wilson's ${Math.round(100 * (r.options?.confidence ?? 0.95))}% score interval ${cite('wilson')}, which accounts for sampling alone; a clonotype not found at a time point is reported as not found, the interval's upper end being what that depth could have missed`
+      : `each one's frequency at each time point is its share of the ${unit} there, the samples taken at one time pooled, without an interval (${r.unit === 'reads' ? 'reads count each molecule many times over' : 'the abundances are not whole counts'})`;
+    sentences.push(`Clonotypes (${under}) were followed through each subject's samples in time order by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: ${choiceWords(choice)}, ${plural(r.followed ?? 0, 'clonotype')} in ${plural(r.subjects ?? 0, 'subject')}; ${how}.`);
   }
 
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

@@ -65,6 +65,19 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
       </div>
       <p>Morisita's own index is shown first: the Morisita–Horn index, which immunarch and vegan give, reads two samples of one repertoire about 0.98 when they are shallow, and its intervals held the simulated repertoires' overlap in 85.8% of pairs, against 93.9% for Morisita's. A bootstrap of the cells alone held the shared clonotypes in only 64% of pairs: which clonotypes two samples share is itself random, and the intervals now include that.</p>
 
+      <h2 id="tracking">Tracking</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Measure</th><th>Source</th><th>Checked against</th><th>Agreement</th></tr></thead>
+          <tbody>
+            <tr><td>Time points read as days from a subject's reference event; each subject's samples ordered, its reference samples and replicates found</td><td>AIRR Repertoire metadata; the forms studies write</td><td>Every simulated series, read back as made</td><td class="agree">every sample placed at its day, with its reference and replicates</td></tr>
+            <tr><td>A clonotype's frequency at a time point (the samples taken at one time pooled), with Wilson's score interval</td><td>Wilson 1927</td><td>R's <code>prop.test</code> without continuity correction</td><td class="agree">to 10⁻¹⁴</td></tr>
+            <tr><td>The intervals against the truth</td><td>Wilson 1927</td><td>The simulated CAR-T study, 2,700 frequencies in blood samples</td><td class="agree">held the true frequency in 95.2% where samples differ by sampling alone</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Wilson's interval is for sampling alone. When each clone's frequency in each blood sample also varies around its expectation, as in the simulated CAR-T study (by a factor of mean 1 and variance 0.1), the same intervals held the true frequency in only 76.9% of cases. The view and the methods paragraph say so, and the expansion tests account for that variance from replicate samples.</p>
+
       <h2 id="simulation">Simulated studies</h2>
       <p><code>clonoloom simulate</code> makes TRB rearrangements from GRCh38's gene segments at Ensembl's annotation (Dyer et al. 2025), with V and J usage from 10x Genomics' 10k PBMC data, deletions, palindromic and non-templated insertions (Murugan et al. 2012), and productive junctions selected on their length (Elhanati et al. 2014); each subject's repertoire a population of power-law clone sizes, sampled into templates and reads. Over 150,000 rearrangements, the productive junctions' mean length is within 0.1 amino acids of the 10x data's, its standard deviation within 0.15, and V usage within 0.03 of the model's in total variation. The same seed gives the same bytes on every computer.</p>
 
@@ -99,6 +112,7 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
         <li>Seal RL, Braschi B, Gray K, et al. Genenames.org: the HGNC resources in 2023. <em>Nucleic Acids Res</em> 2023;51:D1003–D1009.</li>
         <li>Sturm G, Szabo T, Fotakis G, et al. Scirpy: a Scanpy extension for analyzing single-cell T-cell receptor-sequencing data. <em>Bioinformatics</em> 2020;36:4817–4818.</li>
         <li>Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. <em>Front Immunol</em> 2018;9:2206.</li>
+        <li>Wilson EB. Probable inference, the law of succession, and statistical inference. <em>J Am Stat Assoc</em> 1927;22:209–212.</li>
       </ul>
 
       <h2 id="credits">Credits</h2>

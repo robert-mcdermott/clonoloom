@@ -42,6 +42,10 @@ comparisons come in later releases.
 - **Compare samples.** Every pair's shared clonotypes, Jaccard, Sørensen–Dice and the overlap
   coefficient (as sampled and rarefied) and Morisita's index, with intervals; the public
   clonotypes by subject.
+- **Follow clonotypes over time.** Each subject's samples placed in time from their annotation
+  or metadata, checked before anything is followed; an infusion product's or each sample's largest
+  clonotypes, or a list, followed through the time points as threads, alluvial plots and a table,
+  each frequency with its interval, a clonotype not found shown as not found.
 - **Write results others can check.** Figures (SVG, PNG, PDF) whose captions state the clonotype
   definition, unit and samples; AIRR and CSV exports with a notice of each data set's license and
   citation; a methods paragraph with numbered references, written from the record. Every result is
@@ -54,6 +58,14 @@ library, pandas, scirpy, iNEXT, immunarch, vegan and simulated studies among the
 [methods and validation](https://robert-mcdermott.github.io/clonoloom/science.html).
 
 ## A look around
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/tracking-dark.webp">
+  <img alt="The Tracking view's Clonotypes part on the simulated CAR-T study: each sample's five largest clonotypes of one patient as threads through the infusion product and six time points, the one that peaks at day 14 chosen and drawn with its intervals, and an alluvial plot of their shares below" src="docs/images/tracking-light.webp">
+</picture>
+
+Tracking: a simulated CAR-T patient's largest clonotypes through the infusion product and six
+time points, the one that peaks two weeks after the infusion drawn with its intervals.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/rarefaction-dark.webp">

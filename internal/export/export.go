@@ -22,6 +22,7 @@ import (
 	"clonoloom/internal/diversity"
 	"clonoloom/internal/overlap"
 	"clonoloom/internal/rep"
+	"clonoloom/internal/track"
 	"clonoloom/internal/usage"
 )
 
@@ -415,4 +416,68 @@ func Public(w io.Writer, res overlap.Result) error {
 		rows = append(rows, []string{strconv.Itoa(x.Units), strconv.Itoa(x.Clonotypes)})
 	}
 	return writeAll(w, rows)
+}
+
+// chainsText is a clonotype's chains as one cell: each chain's locus, junction, V and J, chains
+// joined by " / ".
+func chainsText(chains []clonotype.Chain) string {
+	var out []string
+	for _, ch := range chains {
+		out = append(out, strings.TrimSpace(strings.Join([]string{ch.Locus, ch.Junction, ch.V, ch.J}, " ")))
+	}
+	return strings.Join(out, " / ")
+}
+
+// whyText is why a clonotype was followed, as one cell: "rank 2 in P1-product; listed as CASS…".
+func whyText(why []track.Reason) string {
+	var out []string
+	for _, r := range why {
+		if r.Listed != "" {
+			out = append(out, "listed as "+r.Listed)
+		} else {
+			out = append(out, fmt.Sprintf("rank %d in %s", r.Rank, r.Sample))
+		}
+	}
+	return strings.Join(out, "; ")
+}
+
+func trackValue(prefix []string, v track.Value) []string {
+	return append(prefix, number(v.Count), number(v.Total), number(float64(v.Frequency)), number(float64(v.Lower)), number(float64(v.Upper)))
+}
+
+// Tracking writes each clonotype followed, in each of its subject's samples (tracking.csv): its
+// count of the sample's total, its frequency and the frequency's interval.
+func Tracking(w io.Writer, res track.Result) error {
+	rows := [][]string{{"subject", "clonotype_id", "chains", "why", "sample", "time_point", "days", "reference", "count", "total", "frequency", "lower", "upper"}}
+	for _, s := range res.Subjects {
+		for _, c := range s.Clonotypes {
+			for k, v := range c.Samples {
+				p := s.Points[s.Samples[k].Point]
+				rows = append(rows, trackValue([]string{s.ID, c.ID, chainsText(c.Chains), whyText(c.Why), s.Samples[k].Name, p.Label, daysText(p.Days), p.Reference}, v))
+			}
+		}
+	}
+	return writeAll(w, rows)
+}
+
+// TrackingPoints writes each clonotype followed at each of its subject's time points
+// (time-points.csv), the samples taken at one time pooled.
+func TrackingPoints(w io.Writer, res track.Result) error {
+	rows := [][]string{{"subject", "clonotype_id", "chains", "time_point", "days", "reference", "samples", "count", "total", "frequency", "lower", "upper"}}
+	for _, s := range res.Subjects {
+		for _, c := range s.Clonotypes {
+			for k, v := range c.Points {
+				p := s.Points[k]
+				rows = append(rows, trackValue([]string{s.ID, c.ID, chainsText(c.Chains), p.Label, daysText(p.Days), p.Reference, strings.Join(p.Samples, " ")}, v))
+			}
+		}
+	}
+	return writeAll(w, rows)
+}
+
+func daysText(days *float64) string {
+	if days == nil {
+		return ""
+	}
+	return number(*days)
 }
