@@ -37,7 +37,8 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
             <tr><td><code>set_definition</code></td><td>Chooses a dataset's clonotype definition: a preset by name, or one stated in full</td></tr>
             <tr><td><code>annotate_samples</code></td><td>Sets samples' subject, time point, reference role, tissue, cell subset, condition, batch and HLA</td></tr>
             <tr><td><code>describe_subjects</code></td><td>Answers each subject's samples in time order, its reference samples and replicates, and the checks' findings</td></tr>
-            <tr><td><code>track_clonotypes</code></td><td>Follows a reference sample's largest clonotypes, each sample's largest, or a list through each subject's time points, and answers each one's frequency with its interval</td></tr>
+            <tr><td><code>track_clonotypes</code></td><td>Follows a reference sample's largest clonotypes, each sample's largest, a list, or a test's calls through each subject's time points, and answers each one's frequency with its interval</td></tr>
+            <tr><td><code>test_expansion</code></td><td>Tests each clonotype between two time points of each subject, and answers each subject's calls with their p-values</td></tr>
             <tr><td><code>select_clonotype</code></td><td>Chooses a clonotype by its rank in the table or its ID</td></tr>
             <tr><td><code>measure_diversity</code></td><td>Measures each sample's diversity and answers the main measures with their intervals</td></tr>
             <tr><td><code>rarefy</code></td><td>Rarefies and extrapolates each sample and answers each at a chosen level</td></tr>

@@ -908,6 +908,9 @@ path.plot-ribbon { fill-opacity: 0.3; stroke: none; }
 .plot-thread.plot-chosen { stroke-width: 2.6; }
 .plot-faded { opacity: 0.16; }
 .tracking-plot [data-key] { cursor: pointer; }
+circle.plot-dim { fill: var(--text-3); opacity: 0.45; }
+.swatch.plot-dim { background: var(--text-3); opacity: 0.45; }
+.plot-ring { fill: none; stroke: var(--text); stroke-width: 1.6; }
 .repertoire-spec { margin: 0 0 10px; } .mapping-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 14px; margin: 12px 0; } .mapping-field { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; } .mapping-field select.input, .mapping-field input.input { width: 120px; } .mapping-preview td, .mapping-preview th { white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; } .mapping-check { margin-top: 8px; }
 .repertoire-controls { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0 0 10px; } .repertoire-controls select.input { width: auto; max-width: 100%; } .repertoire-start { max-width: 760px; } .repertoire-start p { margin: 6px 0 10px; } .repertoire-table td .muted { margin-left: 4px; }
 
@@ -921,4 +924,5 @@ path.plot-ribbon { fill-opacity: 0.3; stroke: none; }
 .tracking-table td { vertical-align: top; }
 .tracking-table td .swatch { margin-top: 3px; }
 .tracking-interval { display: block; white-space: nowrap; }
+.tracking-calls-title { display: flex; align-items: center; gap: 10px; }
 textarea.tracking-list { width: 100%; font-family: var(--mono); font-size: 12px; resize: vertical; }

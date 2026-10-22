@@ -1,10 +1,12 @@
 package track
 
 import (
+	"errors"
 	"math"
 	"testing"
 
 	"clonoloom/internal/clonotype"
+	"clonoloom/internal/expansion"
 	"clonoloom/internal/rep"
 	"clonoloom/internal/study"
 )
@@ -156,5 +158,53 @@ func TestChoiceNormalize(t *testing.T) {
 	}
 	if c, _ := (Choice{}).Normalize(); c.By != ByReference || c.N != 10 {
 		t.Errorf("%+v", c)
+	}
+}
+
+// Two time points compared in each subject that has both, the samples at one time pooled; and the
+// clonotypes called followed.
+func TestCompareTwoTimePoints(t *testing.T) {
+	ct := table(rep.Templates, junctions, counts)
+	design := study.Describe(samples)
+	if s := design.Subjects[0].Samples; s[0].Key != "reference" || s[1].Key != "day -7" || s[4].Key != "day 28" {
+		t.Fatalf("keys %+v", s)
+	}
+	c := Comparison{From: "day -7", To: "day 7", Options: expansion.Options{Alpha: 0.05}}
+	res, err := Test(ct, names, design, c)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res.Subjects) != 1 || len(res.Without) != 1 || res.Without[0] != "P2" || res.Caveat == "" || res.Comparison.Test != expansion.Binomial {
+		t.Fatalf("%+v", res)
+	}
+	s := res.Subjects[0]
+	// Before: 200 templates in two samples; day 7: 100. CASSB, 2 in all, is not tested.
+	if s.From.Label != "day -7" || len(s.From.Samples) != 2 || s.TotalA != 200 || s.TotalB != 100 || s.Tested != 3 || s.LeftOut != 1 || s.Increased != 1 || s.Decreased != 1 {
+		t.Fatalf("%+v", s)
+	}
+	if s.Clonotypes[0].ID != "c-CASSA" || s.Clonotypes[0].Call != expansion.Increase || s.Clonotypes[1].ID != "c-CASSD" || s.Clonotypes[1].Call != expansion.Decrease {
+		t.Errorf("%+v", s.Clonotypes)
+	}
+	// Followed: the calls, the most significant first.
+	f, err := Follow(ct, names, design, Choice{By: ByTest, Test: &c}, 0.95)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if f.Choice.N != 20 || len(f.Subjects) != 1 || len(f.Without) != 1 {
+		t.Fatalf("%+v", f)
+	}
+	got := f.Subjects[0].Clonotypes
+	if len(got) != 2 || got[0].Why[0] != (Reason{Called: expansion.Increase, Rank: 1}) && got[1].Why[0] != (Reason{Called: expansion.Increase, Rank: 1}) {
+		t.Errorf("%+v", got)
+	}
+	// Against the infusion product; in reads, refused; a comparison of one time with itself.
+	if res, _ := Test(ct, names, design, Comparison{From: "reference", To: "day 28"}); len(res.Subjects) != 1 || res.Subjects[0].From.Label != "infusion product" {
+		t.Errorf("%+v", res)
+	}
+	if _, err := Test(table(rep.Reads, junctions, counts), names, design, c); !errors.Is(err, ErrReads) {
+		t.Errorf("reads: %v", err)
+	}
+	if _, err := (Choice{By: ByTest, Test: &Comparison{From: "day 7", To: "day 7"}}).Normalize(); err == nil {
+		t.Error("one time compared with itself")
 	}
 }

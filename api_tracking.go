@@ -14,7 +14,7 @@ import (
 	"clonoloom/internal/track"
 )
 
-var trackingAnalysis = analysis{kind: "tracking", prefix: "trk-", version: 1, title: "Tracking", study: true, work: (*app).trackingWork}
+var trackingAnalysis = analysis{kind: "tracking", prefix: "trk-", version: 1, title: "Tracking", over: "track", work: (*app).trackingWork}
 
 // trackingDocument is a tracking artifact's tracking.json: the samples followed (every subject's),
 // and the result.

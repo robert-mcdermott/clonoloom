@@ -10,14 +10,15 @@ lede: The Tracking view's Clonotypes part follows clonotypes through each subjec
         <li><strong>The reference sample's largest</strong> (the default): the 10 largest clonotypes of each subject's reference sample, such as an infusion product or a donor's blood. A subject without a reference sample has each sample's largest instead, and the view says so.</li>
         <li><strong>Each sample's largest</strong>: the 5 largest of every sample of the subject, together.</li>
         <li><strong>A list</strong>: clonotypes by their ID or junction, one a line. In the Clonotypes view, <strong>Follow over time</strong> in the inspector adds the clonotype chosen there to the list.</li>
+        <li><strong>Those a test called</strong>: each subject's 20 most significant calls between the two time points the Tests part compares (<a href="tests.html">Expanded and contracted clonotypes</a>).</li>
       </ul>
-      <p>How many of the largest is chosen beside it (5 to 50). The choice is kept with the dataset, and each result with the project: choosing again finds a result kept.</p>
+      <p>How many is chosen beside it (5 to 50). The choice is kept with the dataset, and each result with the project: choosing again finds a result kept.</p>
 
       <h2 id="frequencies">Frequencies and their intervals</h2>
       <p>At each time point, a clonotype's frequency is its count among the cells or molecules there, under the dataset's clonotype definition and filter. Samples taken at one time are pooled. Each frequency has its 95% interval (Wilson's score interval, Wilson 1927), which holds for a count of any size, zero included.</p>
       <ul>
         <li>A clonotype not found at a time point is shown as <strong>not found</strong>, on a lane of its own below the axis, never as a frequency of zero. Its interval runs from zero to what that sample's depth could have missed.</li>
-        <li>The intervals are for <strong>sampling alone</strong>. Two blood samples taken at one time differ by more than sampling. On ClonoLoom's simulated CAR-T study, the intervals held the true frequency in 95.2% of 2,700 checks when samples differed only by sampling. With the study's variance between blood samples, they held it in 76.9%. The expansion tests account for that variance from replicate samples.</li>
+        <li>The intervals are for <strong>sampling alone</strong>. Two blood samples taken at one time differ by more than sampling. On ClonoLoom's simulated CAR-T study, the intervals held the true frequency in 95.2% of 2,700 checks when samples differed only by sampling. With the study's variance between blood samples, they held it in 76.9%. Replicate samples, taken at one time, measure that variance.</li>
         <li>In reads, each cell or molecule is counted many times over, so no interval is given and the view says why.</li>
       </ul>
 

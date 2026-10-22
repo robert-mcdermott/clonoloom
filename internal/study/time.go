@@ -21,6 +21,20 @@ type Time struct {
 	Bare  bool     `json:"bare,omitempty"`
 }
 
+// Key names a time point the same way whatever its spelling, so that one time is compared across
+// subjects: day 28 and week 4 are "day 28", baseline and pre are "baseline", visit 2 is "visit 2".
+func (t Time) Key() string {
+	switch t.Kind {
+	case Day:
+		return "day " + strconv.FormatFloat(*t.Days, 'f', -1, 64)
+	case Before:
+		return "baseline"
+	case Visit:
+		return "visit " + strconv.FormatFloat(t.Value, 'f', -1, 64)
+	}
+	return "after"
+}
+
 // The kinds of time point.
 const (
 	Day    = "day"

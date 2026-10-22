@@ -201,6 +201,19 @@ const scenes = {
     })()`);
     await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 2 && Boolean(document.querySelector('.plot-chosen'))`);
   },
+  // Its second patient's clonotypes tested between the week before the infusion and two weeks
+  // after: those called colored, the most significant increase chosen.
+  async tests() {
+    await act('open_example', { example: 'simulated-car-t', download: true });
+    await act('test_expansion', { from: 'day -7', to: 'day 14', subject: 'S02' });
+    await js(`(() => {
+      const view = window.clonoloom.trackingView;
+      const s = view.tested().result.subjects.find((x) => x.subject === 'S02');
+      view.showTested('S02', s.clonotypes.find((c) => c.call === 'increase').id);
+      return true;
+    })()`);
+    await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 1 && Boolean(document.querySelector('.plot-ring'))`);
+  },
 };
 
 const names = wanted.length ? wanted : Object.keys(scenes);

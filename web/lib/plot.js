@@ -432,6 +432,52 @@ export function alluvial(points, series, { label = 'Alluvial plot', width = 680,
   return { svg: wrap(width, height, label, description, body), description };
 }
 
+// Changes between two time points: each clonotype at its frequency at the first (x) and at the
+// second (y), on logarithmic axes of one range, the line of no change dashed; a clonotype not found
+// at one of them on that axis's own lane, never at zero. points [{ key, x, y, className, label }]
+// are drawn in order (the calls last, over the others); with selected (a point's key), that point
+// is ringed. Every point carries data-key for the page.
+export function changes(points, { label = 'Changes', width = 520, height = 440, xLabel = 'First', yLabel = 'Second', selected = null, format = percent } = {}) {
+  const left = 78;
+  const bottom = 58;
+  const top = 10;
+  const lane = 28;
+  const side = Math.min(width - left - 16, height - top - bottom);
+  const seen = points.flatMap((p) => [p.x, p.y]).filter((v) => Number.isFinite(v) && v > 0);
+  const lo = Math.floor(Math.log10(seen.length ? Math.min(...seen) : 1e-4));
+  const hi = Math.max(Math.ceil(Math.log10(seen.length ? Math.max(...seen) : 0.1)), lo + 1);
+  const x0 = left + lane;
+  const y0 = top + side;
+  const span = side - lane;
+  const px = (v) => (v > 0 ? x0 + ((Math.log10(v) - lo) / (hi - lo)) * span : left + lane / 2 - 2);
+  const py = (v) => (v > 0 ? y0 - lane - ((Math.log10(v) - lo) / (hi - lo)) * span : y0 - lane / 2 + 2);
+  let body = '';
+  for (let t = lo; t <= hi; t += 1) {
+    const v = 10 ** t;
+    body += `<line class="plot-gridline" x1="${x0}" x2="${x0 + span}" y1="${py(v).toFixed(1)}" y2="${py(v).toFixed(1)}"/><text class="plot-tick" x="${left - 4}" y="${(py(v) + 4).toFixed(1)}" text-anchor="end">${format(v)}</text>`;
+    body += `<line class="plot-gridline" x1="${px(v).toFixed(1)}" x2="${px(v).toFixed(1)}" y1="${y0 - lane - span}" y2="${y0 - lane}"/><text class="plot-tick" x="${px(v).toFixed(1)}" y="${y0 + 14}" text-anchor="middle">${format(v)}</text>`;
+  }
+  // The lanes of clonotypes not found at one time point, and the line of no change.
+  body += `<line class="plot-gridline plot-dashed" x1="${px(0)}" x2="${px(0)}" y1="${y0 - lane - span}" y2="${y0 - lane}"/><line class="plot-gridline plot-dashed" x1="${x0}" x2="${x0 + span}" y1="${py(0)}" y2="${py(0)}"/>`;
+  body += `<text class="plot-tick" x="${left - 4}" y="${py(0) + 4}" text-anchor="end">not found</text><text class="plot-tick" x="${px(0)}" y="${y0 + 28}" text-anchor="middle">not found</text>`;
+  body += `<line class="plot-guide" x1="${x0}" y1="${y0 - lane}" x2="${x0 + span}" y2="${y0 - lane - span}"/>`;
+  body += `<line class="plot-axis" x1="${x0}" x2="${x0 + span}" y1="${y0 - lane}" y2="${y0 - lane}"/><line class="plot-axis" x1="${x0}" x2="${x0}" y1="${y0 - lane - span}" y2="${y0 - lane}"/>`;
+  let ring = '';
+  for (const p of points) {
+    const title = `<title>${esc(`${p.label}: ${p.x > 0 ? format(p.x) : 'not found'} at the first, ${p.y > 0 ? format(p.y) : 'not found'} at the second`)}</title>`;
+    const at = `cx="${px(p.x).toFixed(1)}" cy="${py(p.y).toFixed(1)}"`;
+    body += `<circle class="${p.className ?? 'plot-s1'}" ${at} r="${p.r ?? 2.6}" data-key="${esc(p.key ?? p.label)}">${title}</circle>`;
+    if (selected !== null && (p.key ?? p.label) === selected) ring = `<circle class="plot-ring" ${at} r="7"/>`;
+  }
+  body += ring;
+  body += `<text class="plot-label" x="${x0 + span / 2}" y="${y0 + 44}" text-anchor="middle">${esc(xLabel)}</text>`;
+  body += `<text class="plot-label" transform="translate(13 ${y0 - lane - span / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text>`;
+  const kinds = new Map();
+  for (const p of points) kinds.set(p.kind ?? '', (kinds.get(p.kind ?? '') ?? 0) + 1);
+  const description = `${label}: ${points.length} clonotype${points.length === 1 ? '' : 's'}${[...kinds].filter(([k]) => k).map(([k, n]) => `, ${n} ${k}`).join('')}; ${xLabel} against ${yLabel}, on logarithmic axes.`;
+  return { svg: wrap(left + side + 16, height, label, description, body), description };
+}
+
 // A heatmap: values[r][c] (not finite: left blank) for rowLabels × colLabels, each cell shaded from
 // none to max (the largest value when not given), titled by title(r, c, v), with a scale. Column
 // labels are turned to read upward.
@@ -494,7 +540,8 @@ export function figureStyle({ colorVision = false, font = 'Helvetica, Arial, san
     + `.plot-whisker{stroke:${c.text2};stroke-width:1.4}.plot-line{fill:none;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}.plot-line-accent{stroke:${c.accent}}`
     + `.plot-dashed{stroke-dasharray:5 4}.plot-heat{fill:${c.accent};stroke:none}.plot-guide{stroke:${c.text3};stroke-width:1;stroke-dasharray:3 3}.plot-band{stroke:none;fill-opacity:0.13}`
     + `.figure-title{font-size:14px;font-weight:bold;fill:${c.text}}.figure-caption{font-size:10.5px;fill:${c.text2}}.figure-legend{font-size:11px;fill:${c.text2}}`
-    + `circle.plot-absent{fill:#ffffff;stroke-width:1.4}path.plot-ribbon{fill-opacity:0.3;stroke:none}.plot-thread{stroke-width:1.3}.plot-thread.plot-chosen{stroke-width:2.6}.plot-faded{opacity:0.16}`;
+    + `circle.plot-absent{fill:#ffffff;stroke-width:1.4}path.plot-ribbon{fill-opacity:0.3;stroke:none}.plot-thread{stroke-width:1.3}.plot-thread.plot-chosen{stroke-width:2.6}.plot-faded{opacity:0.16}`
+    + `circle.plot-dim,rect.plot-dim{fill:${c.text3};opacity:0.45}.plot-ring{fill:none;stroke:${c.text};stroke-width:1.6}`;
   series.forEach((color, i) => {
     css += `.plot-band.plot-s${i + 1}{fill:${color}}.plot-line.plot-s${i + 1}{stroke:${color}}circle.plot-s${i + 1},rect.plot-s${i + 1},path.plot-ribbon.plot-s${i + 1}{fill:${color}}circle.plot-absent.plot-s${i + 1}{fill:#ffffff;stroke:${color}}`;
   });

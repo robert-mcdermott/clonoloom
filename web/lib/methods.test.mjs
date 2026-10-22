@@ -137,6 +137,18 @@ test('a tracking result kept says what was followed and how, citing Wilson once;
   assert.ok(!reads.references.some((r) => r.includes('Wilson EB.')));
 });
 
+test('a test result kept says what was tested between which time points, and how false discoveries were controlled', () => {
+  const binomial = { kind: 'expansion', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, comparison: { from: 'day -7', to: 'day 14', test: 'binomial', alternative: 'two-sided', correction: 'bh', alpha: 0.01, minTotal: 5 }, subjects: 3, tested: 9000, increased: 40, decreased: 12 };
+  const { text, references } = methodsParagraph({ dataset: pbmc, results: [binomial], program });
+  assert.match(text, /Each clonotype \("Amino-acid junction, V and J genes"\) was tested between day -7 and day 14 in each subject by ClonoLoom \[\d\], the samples at one time pooled: the binomial test of its count at the first time point given its total in the two, at the first's share of their templates \[\d\]/);
+  assert.match(text, /Clonotypes with fewer than 5 templates in the two together were not tested \[\d\]\. The false discovery rate was controlled within each subject by Benjamini and Hochberg's procedure \[\d\], and clonotypes with an adjusted p-value of at most 0\.01 called increased or decreased: 40 clonotypes increased and 12 clonotypes decreased of 9,000 clonotypes tested in 3 subjects\. The test accounts for sampling alone/);
+  for (const key of ['Rytlewski J', 'DeWitt WS', 'Benjamini Y']) assert.equal(references.filter((r) => r.includes(key)).length, 1, key);
+  const fisher = methodsParagraph({ dataset: pbmc, results: [{ ...binomial, comparison: { ...binomial.comparison, test: 'fisher', correction: 'storey', alternative: 'increase' } }], program });
+  assert.match(fisher.text, /Fisher's exact test of its count against the others' at the two time points \[\d\], one-sided, for an increase/);
+  assert.match(fisher.text, /Storey's q-values, π₀ estimated at λ = 0\.5 \[\d\]/);
+  assert.ok(fisher.references.some((r) => r.includes('Storey JD')));
+});
+
 test('a table read through a mapping says which of its columns gave what (the 0.2.0 project)', () => {
   const project = JSON.parse(readFileSync(new URL('../../validation/projects/0.2.0/project.json', import.meta.url), 'utf8'));
   const dataset = project.datasets.find((d) => d.sources.some((s) => s.mapping));

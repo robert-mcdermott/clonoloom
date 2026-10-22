@@ -481,3 +481,27 @@ func daysText(days *float64) string {
 	}
 	return number(*days)
 }
+
+// Expansion writes each clonotype tested in each subject (tests.csv): its counts and frequencies at
+// the two time points, the log₂ of their ratio, its p-value, adjusted p-value and call.
+func Expansion(w io.Writer, res track.Tests) error {
+	rows := [][]string{{"subject", "from", "to", "clonotype_id", "chains", "count_from", "count_to", "total_from", "total_to", "frequency_from", "frequency_to", "log2_fold", "p", "q", "call"}}
+	for _, s := range res.Subjects {
+		for _, c := range s.Clonotypes {
+			rows = append(rows, []string{s.Subject, s.From.Label, s.To.Label, c.ID, chainsText(c.Chains), number(c.A), number(c.B), number(s.TotalA), number(s.TotalB),
+				number(c.FreqA), number(c.FreqB), number(float64(c.Log2Fold)), number(c.P), number(c.Q), c.Call})
+		}
+	}
+	return writeAll(w, rows)
+}
+
+// ExpansionSubjects writes each subject's comparison in sum (subjects.csv): its two time points
+// and their samples, the clonotypes tested and left out, and those called each way.
+func ExpansionSubjects(w io.Writer, res track.Tests) error {
+	rows := [][]string{{"subject", "from", "to", "samples_from", "samples_to", "total_from", "total_to", "tested", "left_out", "increased", "decreased", "pi0"}}
+	for _, s := range res.Subjects {
+		rows = append(rows, []string{s.Subject, s.From.Label, s.To.Label, strings.Join(s.From.Samples, " "), strings.Join(s.To.Samples, " "), number(s.TotalA), number(s.TotalB),
+			strconv.Itoa(s.Tested), strconv.Itoa(s.LeftOut), strconv.Itoa(s.Increased), strconv.Itoa(s.Decreased), number(float64(s.Pi0))})
+	}
+	return writeAll(w, rows)
+}

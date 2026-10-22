@@ -179,6 +179,17 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = "The clonotypes followed through each subject's samples of " + ds.Name + ": each one's count, frequency and its interval in each sample (tracking.csv) and at each time point, the samples taken at one time pooled (time-points.csv), " + intervals + "."
 		files["tracking.csv"] = func(f io.Writer) error { return export.Tracking(f, doc.Result) }
 		files["time-points.csv"] = func(f io.Writer) error { return export.TrackingPoints(f, doc.Result) }
+	case "expansion":
+		var doc expansionDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		c := doc.Comparison
+		correction := map[string]string{"bh": "Benjamini and Hochberg's adjusted p-values", "storey": "Storey's q-values"}[c.Correction]
+		notice.What = fmt.Sprintf("Each clonotype of %s tested between two time points of each subject (%s and %s; the samples at one time pooled) by the %s test, %s, with %s and the calls at %g (tests.csv); each subject's comparison in sum (subjects.csv). %s", ds.Name, c.From, c.To, c.Test, c.Alternative, correction, c.Alpha, doc.Caveat)
+		files["tests.csv"] = func(f io.Writer) error { return export.Expansion(f, doc.Tests) }
+		files["subjects.csv"] = func(f io.Writer) error { return export.ExpansionSubjects(f, doc.Tests) }
 	default:
 		writeError(w, http.StatusBadRequest, "This result has nothing to export as a table.")
 		return

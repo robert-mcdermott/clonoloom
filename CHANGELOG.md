@@ -18,6 +18,30 @@ grows with each.
     references (formats, remote control, simulated studies, installing) stay in `docs/`;
   - a link-preview image made from a screenshot (`docs/site/og-image.mjs`);
   - axe-core listed in `validation/sources.json` as a tool, fetched for the audit only.
+- **Expanded and contracted clonotypes (wave 3, slice 6).** The **Tracking** view's Tests part
+  (`internal/expansion`, `internal/track/test.go`, `api_expansion.go`, `web/ui/tracking-tests.js`):
+  - each clonotype tested between two time points of each subject, the samples at one time
+    pooled: the binomial test of its count at the first given its total (Rytlewski et al. 2019;
+    the default) or Fisher's exact test (DeWitt et al. 2015); two-sided, or one-sided for an
+    increase or a decrease; clonotypes with fewer than 5 in the two together not tested;
+  - the false discovery rate controlled within each subject by Benjamini and Hochberg's procedure
+    (the default) or Storey's q-values (π₀ at λ = 0.5), at 0.01, 0.05 or 0.1; the calls increased
+    or decreased;
+  - each clonotype at its two frequencies, the calls colored, and a table of the calls, linked to
+    the plot and the Clonotypes view; **Follow the calls** follows each subject's most significant
+    calls in the Clonotypes part, which can follow a test's calls (`by: test`);
+  - the tests refuse reads, and say they account for sampling alone; each time point has a key
+    (`day 28` for week 4) that names it across subjects;
+  - a job whose result is kept with the project; its export as CSV (every clonotype tested, and
+    each subject in sum); the methods paragraph's sentence, citing DeWitt et al., Rytlewski et al.,
+    Benjamini and Hochberg, and Storey; remote control's `test_expansion`; the guide's page,
+    Expanded and contracted clonotypes; the Science page's section.
+  - Validated: both tests' p-values against R's `binom.test` and `fisher.test`, two-sided and
+    one-sided, on 215 cases, to 4 × 10⁻¹²; BH's and Storey's adjusted p-values against R; on a
+    simulated series where nothing changes, no false call where samples differ by sampling alone,
+    13 of 6,599 (0.2%) with variance between blood samples; on the simulated CAR-T study, all 66
+    calls in the true direction without that variance, 6 of 73 against the truth with it
+    (`validation/expansion_test.go`, `validation/reference/expansion.R`).
 - **Following clonotypes (wave 3, slice 5).** The **Tracking** view's Clonotypes part
   (`internal/track`, `api_tracking.go`, `web/ui/mode-tracking.js`):
   - the clonotypes chosen followed through each subject's samples in time order: each reference

@@ -1,6 +1,7 @@
 // Package track follows chosen clonotypes through each subject's samples over time
 // (clonoloom-spec/requirements.md, T1 and T6; roadmap.md, wave 3, slice 5): a reference sample's
-// largest clonotypes, each sample's largest, or a list, each one's count and frequency in every
+// largest clonotypes, each sample's largest, a list, or those a test called between two time
+// points (test.go; T2, slice 6), each one's count and frequency in every
 // sample of its subject and at every time point (the samples taken at one time pooled), with the
 // frequency's interval (Wilson's score interval) where the counts are of cells or molecules. A
 // clonotype absent from a sample has a count of 0 and an interval from 0 to what the sample's
@@ -29,6 +30,9 @@ const (
 	ByLargest = "largest"
 	// ByList: the clonotypes a list names, by ID or junction.
 	ByList = "list"
+	// ByTest: the n clonotypes a test called changed between two time points, the most significant
+	// first.
+	ByTest = "test"
 )
 
 // MaxFollowed is the most clonotypes followed in one subject; MaxN the most of each sample's
@@ -39,23 +43,37 @@ const (
 	MaxList     = 1000
 )
 
-// Choice is which clonotypes are followed: by a reference sample, each sample's largest, or a list
-// (clonotype IDs, or junctions as the definition writes them).
+// Choice is which clonotypes are followed: by a reference sample, each sample's largest, a list
+// (clonotype IDs, or junctions as the definition writes them), or a test's calls.
 type Choice struct {
-	By   string   `json:"by"`
-	N    int      `json:"n,omitempty"`
-	List []string `json:"list,omitempty"`
+	By   string      `json:"by"`
+	N    int         `json:"n,omitempty"`
+	List []string    `json:"list,omitempty"`
+	Test *Comparison `json:"test,omitempty"`
 }
 
 // Normalize completes a choice: the default way (a reference sample's), its default number (10 of
-// a reference sample, 5 of each sample), a list trimmed of blanks and repeats.
+// a reference sample, 5 of each sample, 20 of a test's calls), a list trimmed of blanks and
+// repeats, a comparison's defaults.
 func (c Choice) Normalize() (Choice, error) {
 	switch c.By {
 	case "":
 		c.By = ByReference
-	case ByReference, ByLargest, ByList:
+	case ByReference, ByLargest, ByList, ByTest:
 	default:
-		return c, fmt.Errorf("track by %q: by is reference, largest or list", c.By)
+		return c, fmt.Errorf("track by %q: by is reference, largest, list or test", c.By)
+	}
+	if c.By == ByTest {
+		if c.Test == nil {
+			return c, errors.New("track by test: give the comparison (from, to, and the test's options)")
+		}
+		cmp, err := c.Test.Normalize()
+		if err != nil {
+			return c, err
+		}
+		c.Test, c.List = &cmp, nil
+	} else {
+		c.Test = nil
 	}
 	if c.By == ByList {
 		c.N = 0
@@ -79,10 +97,7 @@ func (c Choice) Normalize() (Choice, error) {
 	}
 	c.List = nil
 	if c.N == 0 {
-		c.N = 10
-		if c.By == ByLargest {
-			c.N = 5
-		}
+		c.N = map[string]int{ByReference: 10, ByLargest: 5, ByTest: 20}[c.By]
 	}
 	if c.N < 1 || c.N > MaxN {
 		return c, fmt.Errorf("n: from 1 to %d", MaxN)
@@ -102,8 +117,10 @@ type Value struct {
 
 // Point is one of a subject's time points: its samples (those taken at one time together), or a
 // reference sample on its own. Kind is reference (a reference sample without a time point),
-// before, day, visit or after; Followed the share of its abundance in the clonotypes followed.
+// before, day, visit or after; Key names its time across subjects (study.Placed); Followed the
+// share of its abundance in the clonotypes followed.
 type Point struct {
+	Key       string           `json:"key"`
 	Label     string           `json:"label"`
 	Kind      string           `json:"kind"`
 	Days      *float64         `json:"days,omitempty"`
@@ -122,12 +139,13 @@ type Sample struct {
 	Total float64 `json:"total"`
 }
 
-// Reason is why a clonotype is followed: its rank among a sample's largest, or the list's entry
-// that names it.
+// Reason is why a clonotype is followed: its rank among a sample's largest, the list's entry that
+// names it, or the test's call (increase or decrease) and its rank among the calls.
 type Reason struct {
 	Sample string `json:"sample,omitempty"`
 	Rank   int    `json:"rank,omitempty"`
 	Listed string `json:"listed,omitempty"`
+	Called string `json:"called,omitempty"`
 }
 
 // Followed is a clonotype followed through a subject's samples: its chains, why, its value in
@@ -157,7 +175,8 @@ type Subject struct {
 // Result is the clonotypes followed in every subject with two samples or more, or one and a
 // reference sample. Intervals says whether frequencies have intervals (Caveat says why not, or
 // what to keep in mind); Unmatched the list's entries that name no clonotype; Without the subjects
-// left out, with too few samples to follow anything through.
+// left out, with too few samples to follow anything through (or, following a test's calls, without
+// both its time points).
 type Result struct {
 	Choice     Choice    `json:"choice"`
 	Confidence float64   `json:"confidence"`
@@ -202,39 +221,27 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 		subject study.Subject
 		samples []uint32
 		sub     Subject
+		tested  *Tested
 	}
 	var plans []*plan
 	wanted := map[uint32]bool{}
 	for _, s := range design.Subjects {
-		p := &plan{subject: s, sub: Subject{ID: s.ID, Samples: []Sample{}, Points: []Point{}, Clonotypes: []Followed{}}}
-		// The time of the last point, when it is not a reference sample's: samples at that time join it.
-		var last *study.Time
-		for _, placed := range s.Samples {
-			i, ok := index[placed.Name]
-			if !ok {
-				continue
-			}
-			p.samples = append(p.samples, i)
-			if placed.Reference == "" && last != nil && study.Same(*placed.Time, *last) {
-				n := len(p.sub.Points) - 1
-				p.sub.Points[n].Samples = append(p.sub.Points[n].Samples, placed.Name)
-				p.sub.Samples = append(p.sub.Samples, Sample{Name: placed.Name, Point: n, Total: t.SampleTotals[i]})
-				continue
-			}
-			pt := Point{Kind: "reference", Label: placed.Reference, Reference: placed.Reference, Samples: []string{placed.Name}}
-			if placed.Time != nil {
-				pt.Kind, pt.Label, pt.Days, pt.Event = placed.Time.Kind, placed.Time.Label, placed.Time.Days, placed.Time.Event
-			}
-			last = nil
-			if placed.Reference == "" {
-				last = placed.Time
-			}
-			p.sub.Points = append(p.sub.Points, pt)
-			p.sub.Samples = append(p.sub.Samples, Sample{Name: placed.Name, Point: len(p.sub.Points) - 1, Total: t.SampleTotals[i]})
-		}
+		p := &plan{subject: s, sub: Subject{ID: s.ID, Clonotypes: []Followed{}}}
+		p.sub.Points, p.sub.Samples, p.samples = Timeline(t, index, s)
 		if len(p.sub.Points) < 2 {
 			res.Without = append(res.Without, s.ID)
 			continue
+		}
+		if choice.By == ByTest {
+			tested, ok, err := compare(t, index, s, p.sub.Points, *choice.Test)
+			if err != nil {
+				return Result{}, err
+			}
+			if !ok {
+				res.Without = append(res.Without, s.ID)
+				continue
+			}
+			p.tested = &tested
 		}
 		p.sub.By = choice.By
 		if choice.By == ByReference && len(s.References) == 0 {
@@ -248,7 +255,7 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 
 	// Each wanted sample's clonotypes, for its largest.
 	present := map[uint32][]entry{}
-	if choice.By != ByList {
+	if choice.By == ByReference || choice.By == ByLargest {
 		for i := range t.Clonotypes {
 			samples, values := t.Abundances(i)
 			for k, s := range samples {
@@ -270,6 +277,19 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 			chosen[i] = append(chosen[i], r)
 		}
 		switch sub.By {
+		case ByTest:
+			byID := map[string]int{}
+			for i, c := range t.Clonotypes {
+				byID[c.ID] = i
+			}
+			rank := 0
+			for _, c := range p.tested.Clonotypes {
+				if c.Call == "" || rank == choice.N {
+					break
+				}
+				rank++
+				add(byID[c.ID], Reason{Called: c.Call, Rank: rank})
+			}
 		case ByList:
 			ids := make([]int, 0, len(listed))
 			for i := range listed {
@@ -304,14 +324,9 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 			sub.More = len(sub.Clonotypes) - MaxFollowed
 			sub.Clonotypes = sub.Clonotypes[:MaxFollowed]
 		}
-		// Each point's abundance, and its share in the clonotypes followed.
+		// Each point's share in the clonotypes followed.
 		for k := range sub.Points {
 			pt := &sub.Points[k]
-			for _, s := range sub.Samples {
-				if s.Point == k {
-					pt.Total += s.Total
-				}
-			}
 			in := 0.0
 			for _, c := range sub.Clonotypes {
 				in += c.Points[k].Count
@@ -324,6 +339,40 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 		res.Subjects = append(res.Subjects, *sub)
 	}
 	return res, nil
+}
+
+// Timeline places a subject's samples of the table (by name, index) at its time points, in time
+// order: the samples taken at one time together, a reference sample on its own. Answers the points
+// (each with its total), the samples with their points, and the samples' indices in the table.
+func Timeline(t *clonotype.Table, index map[string]uint32, s study.Subject) ([]Point, []Sample, []uint32) {
+	points, samples, indices := []Point{}, []Sample{}, []uint32{}
+	// The time of the last point, when it is not a reference sample's: samples at that time join it.
+	var last *study.Time
+	for _, placed := range s.Samples {
+		i, ok := index[placed.Name]
+		if !ok {
+			continue
+		}
+		indices = append(indices, i)
+		if placed.Reference == "" && last != nil && study.Same(*placed.Time, *last) {
+			n := len(points) - 1
+			points[n].Samples = append(points[n].Samples, placed.Name)
+			points[n].Total += t.SampleTotals[i]
+			samples = append(samples, Sample{Name: placed.Name, Point: n, Total: t.SampleTotals[i]})
+			continue
+		}
+		pt := Point{Key: placed.Key, Kind: "reference", Label: placed.Reference, Reference: placed.Reference, Samples: []string{placed.Name}, Total: t.SampleTotals[i]}
+		if placed.Time != nil {
+			pt.Kind, pt.Label, pt.Days, pt.Event = placed.Time.Kind, placed.Time.Label, placed.Time.Days, placed.Time.Event
+		}
+		last = nil
+		if placed.Reference == "" {
+			last = placed.Time
+		}
+		points = append(points, pt)
+		samples = append(samples, Sample{Name: placed.Name, Point: len(points) - 1, Total: t.SampleTotals[i]})
+	}
+	return points, samples, indices
 }
 
 // entry is a clonotype's abundance in a sample.

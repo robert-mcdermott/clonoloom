@@ -7,7 +7,8 @@
 // largest, or a list the user keeps) followed through each subject's time points by the program as
 // a job, kept as a result (api_tracking.go, internal/track): threads of their frequencies with
 // their intervals, an alluvial plot, and a table, linked to each other and to the Clonotypes view.
-// The parts that test clonotypes come with their slices.
+// Tests (slice 6: T2; tracking-tests.js): each clonotype tested between two time points of each
+// subject (api_expansion.go), the calls followed in the Clonotypes part on request.
 
 import { h, icon, clear } from './dom.js';
 import { showDialog, toast } from './overlays.js';
@@ -16,16 +17,22 @@ import { UNITS, datasetUnit, fieldValue, studySamples } from '../lib/datasets.js
 import { datasetDefinition } from '../lib/definitions.js';
 import { datasetFilter } from '../lib/filters.js';
 import { addResult } from '../lib/results.js';
-import { BY, MAX_LIST, choiceShort, choiceWords, parseList, trackRequest, trackingChoice, useTracking } from '../lib/tracking.js';
+import { BY, CORRECTIONS, MAX_LIST, TESTS, choiceShort, choiceWords, compareRequest, comparisonChoice, comparisonWords, parseList, timePoints, trackRequest, trackingChoice, useComparison, useTracking } from '../lib/tracking.js';
 import { exportable, madeBy } from './figures.js';
 import { exportResult } from './exports.js';
+import { renderTests } from './tracking-tests.js';
 
 const SEVERITY = {
   warning: { label: 'Warning', badge: 'warn', icon: 'warning' },
   note: { label: 'Note', badge: 'accent', icon: 'info' },
 };
 
-const PARTS = { subjects: 'Subjects', clonotypes: 'Clonotypes' };
+const PARTS = { subjects: 'Subjects', clonotypes: 'Clonotypes', tests: 'Tests' };
+// The analysis each part shows, the part each opens in, and what the head's button says.
+const KIND_OF = { clonotypes: 'tracking', tests: 'expansion' };
+const PART_OF = { tracking: 'clonotypes', expansion: 'tests' };
+const KINDS = ['tracking', 'expansion'];
+const START = { tracking: 'Follow clonotypes', expansion: 'Test the clonotypes' };
 const SIZES = [5, 10, 20, 50];
 
 const count = (n) => Number(n ?? 0).toLocaleString('en-US');
@@ -48,10 +55,14 @@ const genesOf = (c) => c.chains.map((ch) => [ch.v, ch.j].filter(Boolean).join(' 
 
 // Why a clonotype is followed, in words.
 function whyWords(why) {
-  const parts = why.map((r) => (r.listed ? `listed as ${r.listed}` : `${ordinal(r.rank)} in ${r.sample}`));
+  const parts = why.map((r) => {
+    if (r.listed) return `listed as ${r.listed}`;
+    if (r.called) return `${r.called === 'increase' ? 'increased' : 'decreased'}, the ${r.rank === 1 ? '' : `${nth(r.rank)} `}most significant call`;
+    return `${r.rank === 1 ? 'largest' : `${nth(r.rank)} largest`} in ${r.sample}`;
+  });
   return parts.length > 2 ? `${parts.slice(0, 2).join(', ')} and ${parts.length - 2} more` : parts.join(', ');
 }
-const ordinal = (n) => (n === 1 ? 'largest' : `${n}${[, 'st', 'nd', 'rd'][n % 100 > 10 && n % 100 < 14 ? 0 : n % 10] ?? 'th'} largest`);
+const nth = (n) => `${n}${[, 'st', 'nd', 'rd'][n % 100 > 10 && n % 100 < 14 ? 0 : n % 10] ?? 'th'}`;
 
 // A time point as the plots label it, and in full.
 const pointLabel = (p) => ({ label: p.label, title: `${p.label}${p.event ? ` (${p.event})` : ''}${p.samples.length > 1 ? `, ${p.samples.length} samples pooled` : ''}` });
@@ -61,38 +72,48 @@ export function mountTracking(app, container) {
   const datasetSelect = h('select.input.small', { 'aria-label': 'Dataset', onchange: (e) => { chosen = e.target.value; load(); } });
   const partSwitch = h('div.segmented', { role: 'tablist', 'aria-label': 'Part' });
   const annotateButton = h('button.btn.small', { type: 'button', title: 'Give the samples their subjects, time points and reference in the Data view\'s samples table', onclick: () => app.setMode('data') }, icon('edit'), 'Annotate samples');
-  const followButton = h('button.btn.primary.small', { type: 'button', onclick: () => follow() }, icon('play'), 'Follow clonotypes');
-  const exportButton = h('button.btn.small', { type: 'button', title: 'Export the clonotypes followed as CSV, with a NOTICE of the data\'s source and license', onclick: () => {
-    if (followed.status === 'ready') exportResult(app, dataset(), followed.artifact);
+  const startButton = h('button.btn.primary.small', { type: 'button', onclick: () => run(KIND_OF[part]) });
+  const exportButton = h('button.btn.small', { type: 'button', title: 'Export this result as CSV, with a NOTICE of the data\'s source and license', onclick: () => {
+    const r = results[KIND_OF[part]];
+    if (r?.status === 'ready') exportResult(app, dataset(), r.artifact);
   } }, icon('download'), 'Export');
   const head = h('div.workbench-head', h('h1', icon('threads'), 'Tracking'), partSwitch,
-    h('span.spacer'), h('label.kv-inline', h('span.muted', 'Dataset'), datasetSelect), annotateButton, followButton, exportButton);
+    h('span.spacer'), h('label.kv-inline', h('span.muted', 'Dataset'), datasetSelect), annotateButton, startButton, exportButton);
   const body = h('div.view-body.tracking-view');
   const root = h('div.view', head, h('div.workbench-scroll', body));
   container.append(root);
   const focusedResult = store.ui.focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === store.ui.focus.id) : null;
   let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : focusedResult?.dataset ?? store.project.datasets[0]?.id ?? null;
-  let part = focusedResult?.kind === 'tracking' ? 'clonotypes' : 'subjects';
+  let part = PART_OF[focusedResult?.kind] ?? 'subjects';
   // The design: idle | loading | ready | failed, with the design and the samples it was read from.
   let state = { status: 'idle' };
-  // The clonotypes followed: idle | looking | absent | running | ready | failed.
-  let followed = { status: 'idle' };
+  // Each analysis's result: idle | looking | absent | running | ready | failed (and, for the tests,
+  // unavailable: no two time points to compare).
+  const results = { tracking: { status: 'idle' }, expansion: { status: 'idle' } };
   let spec = null;
   let subjectShown = null;
   let selectedKey = null;
-  // A choice the user just made is followed at once when no result is kept for it.
-  let startWhenAbsent = false;
+  // The Tests part's subject and clonotype chosen.
+  const testsUI = { subject: null, selected: null };
+  // Analyses whose choice the user just made: run at once when no result is kept for it.
+  const startWhenAbsent = new Set();
   let generation = 0;
 
   const dataset = () => store.project.datasets.find((d) => d.id === chosen) ?? store.project.datasets[0] ?? null;
 
-  async function specOf(d, open, samples) {
+  function specOf(d, open, samples, design) {
     const loci = Object.keys(open.summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
     const filter = datasetFilter(store.project, d);
-    const choice = trackingChoice(d);
-    return { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, study: samples, choice, track: trackRequest(choice) };
+    const points = timePoints(design);
+    const comparison = comparisonChoice(d, points);
+    const choice = trackingChoice(d, comparison);
+    const comparable = Boolean(comparison.from && comparison.to);
+    return { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, study: samples, points, comparison, choice,
+      track: choice.by === 'test' && !comparable ? null : trackRequest(choice), compare: comparable ? compareRequest(comparison) : null };
   }
-  const request = (s, extra = {}) => JSON.stringify({ dataset: s.dataset, definition: s.definition, filter: s.filter, study: s.study, track: s.track, ...extra });
+  // What each analysis is asked: the clonotypes followed, or the comparison.
+  const request = (kind, extra = {}) => JSON.stringify({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, study: spec.study,
+    ...(kind === 'tracking' ? { track: spec.track } : { compare: spec.compare }), ...extra });
 
   // The latest load, and a promise that settles once no later one has begun (a load the store's
   // notice begins after a script's edit supersedes the one the script waits for).
@@ -112,13 +133,13 @@ export function mountTracking(app, container) {
     renderHead();
     if (!d) {
       state = { status: 'idle' };
-      followed = { status: 'idle' };
+      for (const kind of KINDS) results[kind] = { status: 'idle' };
       render();
       return;
     }
     if (state.status !== 'ready' || state.dataset !== d.id) {
       state = { status: 'loading' };
-      followed = { status: 'looking' };
+      for (const kind of KINDS) results[kind] = { status: 'looking' };
       render();
     }
     try {
@@ -126,66 +147,76 @@ export function mountTracking(app, container) {
       if (open.status !== 'open') throw new Error(open.error ?? `${d.name} could not be opened.`);
       const samples = studySamples(store.project, d.id, open.summary);
       const design = await postJSON('api/study', { samples });
-      spec = await specOf(d, open, samples);
       if (mine !== generation) return;
+      spec = specOf(d, open, samples, design);
       state = { status: 'ready', dataset: d.id, design, samples, summary: open.summary };
     } catch (error) {
       if (mine !== generation) return;
       state = { status: 'failed', error: error.message };
-      followed = { status: 'failed', error: error.message };
+      for (const kind of KINDS) results[kind] = { status: 'failed', error: error.message };
       render();
       return;
     }
     render();
-    await look(mine, d);
+    await Promise.all(KINDS.map((kind) => look(mine, d, kind)));
+    if (mine === generation) render();
   }
 
-  // The clonotypes followed as chosen: the result kept, a job still running, or none yet (followed
-  // at once when the user just chose them).
-  async function look(mine, d) {
+  // An analysis as chosen: the result kept, a job still running, or none yet (run at once when the
+  // user just chose it).
+  async function look(mine, d, kind) {
+    if ((kind === 'tracking' && !spec.track) || (kind === 'expansion' && !spec.compare)) {
+      results[kind] = { status: 'unavailable' };
+      startWhenAbsent.delete(kind);
+      return;
+    }
     try {
-      const answer = await postJSON('api/tracking', request(spec, { start: false }));
+      const answer = await postJSON(`api/${kind}`, request(kind, { start: false }));
       if (mine !== generation) return;
       if (answer.ready) {
-        const read = await getJSON(`api/tracking/${encodeURIComponent(answer.artifact)}`);
+        const read = await getJSON(`api/${kind}/${encodeURIComponent(answer.artifact)}`);
         if (mine !== generation) return;
-        followed = { status: 'ready', artifact: answer.artifact, result: read.result, manifest: read.artifact };
-        keep(d, read);
-        if (!read.result.subjects.some((s) => s.id === subjectShown)) subjectShown = read.result.subjects[0]?.id ?? null;
+        results[kind] = { status: 'ready', artifact: answer.artifact, result: read.result, manifest: read.artifact };
+        keep(kind, d, read);
+        if (kind === 'tracking' && !read.result.subjects.some((s) => s.id === subjectShown)) subjectShown = read.result.subjects[0]?.id ?? null;
+        if (kind === 'expansion' && !read.result.subjects.some((s) => s.subject === testsUI.subject)) testsUI.subject = read.result.subjects[0]?.subject ?? null;
       } else {
-        followed = { status: answer.job ? 'running' : 'absent', artifact: answer.artifact, job: answer.job };
-        if (answer.job) watch(answer.job);
-        else if (startWhenAbsent) {
-          startWhenAbsent = false;
-          await follow();
+        results[kind] = { status: answer.job ? 'running' : 'absent', artifact: answer.artifact, job: answer.job };
+        if (answer.job) watch(kind, answer.job);
+        else if (startWhenAbsent.has(kind)) {
+          startWhenAbsent.delete(kind);
+          await run(kind);
           return;
         }
       }
     } catch (error) {
       if (mine !== generation) return;
-      followed = { status: 'failed', error: error.message };
+      results[kind] = { status: 'failed', error: error.message };
     }
-    startWhenAbsent = false;
-    if (mine === generation) render();
+    startWhenAbsent.delete(kind);
   }
 
   // The result in the project's record (the project tree lists it; the methods paragraph says it).
-  function keep(d, read) {
+  function keep(kind, d, read) {
     if (store.project.artifacts.some((a) => a.id === read.artifact.id)) return;
     const r = read.result;
-    const record = {
-      id: read.artifact.id, kind: 'tracking', dataset: d.id, definition: spec.definition.name ?? '',
+    const common = {
+      id: read.artifact.id, kind, dataset: d.id, definition: spec.definition.name ?? '',
       filter: spec.filterRecord ? `${spec.filterRecord.name} v${spec.filterRecord.version}` : null,
-      made: read.artifact.created, options: { confidence: r.confidence }, unit: r.unit, describe: r.describe,
-      name: `Tracking · ${d.name}`, method: `Clonotypes followed over time, ${choiceShort({ ...r.choice, list: r.choice.list ?? [] })}; Wilson score intervals`,
-      choice: r.choice, subjects: r.subjects.length, followed: r.subjects.reduce((n, s) => n + s.clonotypes.length, 0), intervals: r.intervals,
+      made: read.artifact.created, unit: r.unit, describe: r.describe,
     };
-    store.commit(addResult(store.project, record), `Follow clonotypes of ${d.name}`, ['project']);
+    const sum = (key) => r.subjects.reduce((n, s) => n + s[key], 0);
+    const record = kind === 'tracking'
+      ? { ...common, options: { confidence: r.confidence }, name: `Tracking · ${d.name}`, method: `Clonotypes followed over time, ${choiceShort({ ...r.choice, list: r.choice.list ?? [] })}; Wilson score intervals`,
+        choice: r.choice, subjects: r.subjects.length, followed: r.subjects.reduce((n, s) => n + s.clonotypes.length, 0), intervals: r.intervals }
+      : { ...common, name: `Tests · ${d.name}`, method: `${TESTS[r.comparison.test]?.label ?? r.comparison.test} between ${r.comparison.from} and ${r.comparison.to}; ${CORRECTIONS[r.comparison.correction]?.label ?? r.comparison.correction} at ${r.comparison.alpha}`,
+        comparison: r.comparison, subjects: r.subjects.length, tested: sum('tested'), increased: sum('increased'), decreased: sum('decreased') };
+    store.commit(addResult(store.project, record), kind === 'tracking' ? `Follow clonotypes of ${d.name}` : `Test the clonotypes of ${d.name}`, ['project']);
   }
 
-  // When the job ends: its result read, or what went wrong said. Each job watched once.
+  // When a job ends: its result read, or what went wrong said. Each job watched once.
   const watching = new Set();
-  function watch(jobId) {
+  function watch(kind, jobId) {
     if (watching.has(jobId)) return;
     watching.add(jobId);
     const stop = app.jobs.onFinished((job) => {
@@ -194,25 +225,25 @@ export function mountTracking(app, container) {
       watching.delete(jobId);
       if (job.state === 'complete') load();
       else {
-        followed = { status: 'failed', error: job.error || `The job ended ${job.state}.` };
+        results[kind] = { status: 'failed', error: job.error || `The job ended ${job.state}.` };
         render();
       }
     });
   }
 
-  async function follow() {
+  async function run(kind) {
     const d = dataset();
-    if (!d || !spec) return;
+    if (!d || !spec || !kind) return;
     try {
-      const answer = await postJSON('api/tracking', request(spec));
+      const answer = await postJSON(`api/${kind}`, request(kind));
       if (answer.ready) {
         load();
         return;
       }
-      followed = { status: 'running', artifact: answer.artifact, job: answer.job };
-      app.log(`Follow the clonotypes of ${d.name}: ${choiceWords(spec.choice)}.`);
+      results[kind] = { status: 'running', artifact: answer.artifact, job: answer.job };
+      app.log(kind === 'tracking' ? `Follow the clonotypes of ${d.name}: ${choiceWords(spec.choice)}.` : `Test the clonotypes of ${d.name}: ${spec.comparison.from} against ${spec.comparison.to}, ${comparisonWords(spec.comparison)}.`);
       render();
-      watch(answer.job);
+      watch(kind, answer.job);
     } catch (error) {
       toast(error.message, { kind: 'error' });
     }
@@ -224,8 +255,32 @@ export function mountTracking(app, container) {
     if (!d) return;
     const next = useTracking(store.project, d.id, choice);
     if (next === store.project) return;
-    startWhenAbsent = true;
+    startWhenAbsent.add('tracking');
     store.commit(next, `Choose the clonotypes followed in ${d.name}`);
+  }
+
+  // The user's choice of the time points compared and how, kept with the dataset; the calls
+  // followed again where the Clonotypes part follows them.
+  function compareWith(changes) {
+    const d = dataset();
+    if (!d || !spec) return;
+    const next = useComparison(store.project, d.id, { ...spec.comparison, ...changes });
+    if (next === store.project) return;
+    startWhenAbsent.add('expansion');
+    if (spec.choice.by === 'test') startWhenAbsent.add('tracking');
+    testsUI.selected = null;
+    store.commit(next, `Choose the time points compared in ${d.name}`);
+  }
+
+  // The calls of the comparison followed in the Clonotypes part.
+  function followCalls() {
+    part = 'clonotypes';
+    selectedKey = null;
+    if (spec?.choice.by === 'test') {
+      render();
+      return;
+    }
+    choose({ by: 'test' });
   }
 
   function editList() {
@@ -281,9 +336,11 @@ export function mountTracking(app, container) {
     }
     clear(body);
     const d = dataset();
+    const shown = results[KIND_OF[part]];
     annotateButton.hidden = !d || part !== 'subjects';
-    followButton.hidden = !d || part !== 'clonotypes' || followed.status !== 'absent';
-    exportButton.hidden = !d || part !== 'clonotypes' || followed.status !== 'ready';
+    clear(startButton).append(icon('play'), START[KIND_OF[part]] ?? '');
+    startButton.hidden = !d || shown?.status !== 'absent';
+    exportButton.hidden = !d || shown?.status !== 'ready';
     if (!d) {
       body.append(h('div.empty', icon('threads'), h('h3', 'No data yet'),
         h('p', 'Open a study\'s samples, give each its subject and time point (and mark each subject\'s reference sample, such as an infusion product), and follow its clonotypes through time here.'),
@@ -306,7 +363,11 @@ export function mountTracking(app, container) {
       return;
     }
     if (part === 'clonotypes') renderClonotypes(d);
-    else renderSubjects(d);
+    else if (part === 'tests') {
+      renderTests({ app, body, d, points: spec.points, comparison: spec.comparison, state: results.expansion, spec, ui: testsUI,
+        compareWith, run: () => run('expansion'), followCalls, showInClonotypes, render,
+        select: (key) => { testsUI.selected = testsUI.selected === key ? null : key; render(); } });
+    } else renderSubjects(d);
   }
 
   function show(key) {
@@ -422,14 +483,15 @@ export function mountTracking(app, container) {
   // --- Clonotypes followed -------------------------------------------------------------------------
 
   function renderClonotypes(d) {
-    const choice = trackingChoice(d);
+    const followed = results.tracking;
+    const choice = spec?.choice ?? trackingChoice(d);
     const result = followed.status === 'ready' ? followed.result : null;
     const subjects = result ? result.subjects : [];
     // What is followed, how many, and which subject is shown.
     const bySelect = h('select.input.small', { 'aria-label': 'Follow', onchange: (e) => (e.target.value === 'list' && !choice.list.length ? editList() : choose({ by: e.target.value })) },
       ...Object.entries(BY).map(([key, b]) => h('option', { value: key, selected: key === choice.by }, b.label)));
     const sizeSelect = h('select.input.small', { 'aria-label': 'How many', onchange: (e) => choose({ n: Number(e.target.value) }) },
-      ...[...new Set([...SIZES, choice.n ?? 10])].sort((a, b) => a - b).map((n) => h('option', { value: n, selected: n === choice.n }, `${n} largest`)));
+      ...[...new Set([...SIZES, choice.n ?? 10])].sort((a, b) => a - b).map((n) => h('option', { value: n, selected: n === choice.n }, choice.by === 'test' ? `${n} most significant` : `${n} largest`)));
     const subjectSelect = h('select.input.small', { 'aria-label': 'Subject', onchange: (e) => { subjectShown = e.target.value; selectedKey = null; render(); } },
       ...subjects.map((s) => h('option', { value: s.id, selected: s.id === subjectShown }, s.id)));
     body.append(h('div.repertoire-controls',
@@ -437,6 +499,9 @@ export function mountTracking(app, container) {
       choice.by === 'list'
         ? h('button.btn.small', { type: 'button', onclick: () => editList() }, icon('edit'), `Edit the list (${count(choice.list.length)})`)
         : sizeSelect,
+      choice.by === 'test' && spec?.comparison.from
+        ? h('button.btn.small', { type: 'button', title: 'Choose the time points compared and the test in the Tests part', onclick: () => show('tests') }, `${spec.comparison.from} against ${spec.comparison.to}`)
+        : null,
       subjects.length ? h('label.kv-inline', h('span.muted', 'Subject'), subjectSelect) : null));
     if (spec) {
       body.append(h('p.muted.small.repertoire-spec', 'Clonotypes: ', h('b', spec.definition.name ?? 'the definition'), spec.filterRecord ? ` · filter "${spec.filterRecord.name}" v${spec.filterRecord.version}` : ' · no filter',
@@ -444,6 +509,10 @@ export function mountTracking(app, container) {
     }
     if (followed.status === 'looking' || followed.status === 'idle') {
       body.append(h('p.muted', 'Reading…'));
+      return;
+    }
+    if (followed.status === 'unavailable') {
+      body.append(h('div.callout', h('p', 'The subjects need samples at two time points for a test to call clonotypes: give the samples their time points in the Data view\'s samples table, or follow other clonotypes.')));
       return;
     }
     if (followed.status === 'failed') {
@@ -457,12 +526,12 @@ export function mountTracking(app, container) {
         h('p', `The program follows ${choiceWords(choice)} through each subject's samples in time order, under this definition and filter: each one's frequency at every time point, the samples taken at one time pooled, with its 95% interval (Wilson's score interval) where the counts are of cells or molecules. A clonotype not found at a time point is shown as not found, with what that sample's depth could have missed, never as zero. The result is kept with the project.`),
         followed.status === 'running'
           ? h('div.example-progress', h('div.progress', h('div', { style: { width: `${Math.round((job?.progress ?? 0) * 100)}%` } })), h('span.muted.small', job?.message ?? 'Waiting'))
-          : h('div.btn-row', h('button.btn.primary', { type: 'button', onclick: () => follow() }, icon('play'), 'Follow clonotypes'))));
+          : h('div.btn-row', h('button.btn.primary', { type: 'button', onclick: () => run('tracking') }, icon('play'), 'Follow clonotypes'))));
       return;
     }
     if (result.caveat) body.append(h(`div.callout${result.intervals ? '' : '.warn'}`, h('p', result.caveat)));
     if (result.unmatched?.length) body.append(h('div.callout.warn', h('p', `${plural(result.unmatched.length, 'entry', 'entries')} of the list name no clonotype under this definition: ${result.unmatched.slice(0, 8).join(', ')}${result.unmatched.length > 8 ? ', …' : ''}.`)));
-    if (result.without?.length) body.append(h('p.muted.small', `Not followed, with fewer than two time points: ${result.without.join(', ')}.`));
+    if (result.without?.length) body.append(h('p.muted.small', `Not followed, with fewer than two time points${result.choice.by === 'test' ? ' or without both time points compared' : ''}: ${result.without.join(', ')}.`));
     const s = subjects.find((x) => x.id === subjectShown) ?? subjects[0];
     if (!s) {
       body.append(h('div.callout', h('p', 'No subject has samples at two time points or more (or one and a reference sample): there is nothing to follow.')));
@@ -478,12 +547,13 @@ export function mountTracking(app, container) {
     const reference = s.points.find((p) => p.kind === 'reference');
     const last = s.points.at(-1);
     const how = s.by !== result.choice.by ? `each sample's ${result.choice.n} largest, as ${s.id} has no reference sample` : choiceShort({ ...result.choice, list: result.choice.list ?? [] });
+    const followed = results.tracking;
     body.append(h('p.tracking-summary',
       `${s.id}: ${plural(s.points.length, 'time point')}, ${plural(s.clonotypes.length, 'clonotype')} followed (${how}). `,
       s.clonotypes.length ? `Together they hold ${reference ? `${percent(reference.followed)} of the ${reference.label} and ` : ''}${percent(last.followed)} of the sample at ${last.label}.` : '',
       s.more ? ` ${plural(s.more, 'more clonotype')} chosen are left out (at most 200 a subject).` : ''));
     if (!s.clonotypes.length) {
-      body.append(h('div.callout', h('p', result.choice.by === 'list' ? 'None of the clonotypes listed is under this definition.' : 'The samples hold no clonotype to follow.')));
+      body.append(h('div.callout', h('p', { list: 'None of the clonotypes listed is under this definition.', test: `The test called no clonotype in ${s.id} between ${result.choice.test?.from} and ${result.choice.test?.to}.` }[result.choice.by] ?? 'The samples hold no clonotype to follow.')));
       return;
     }
     if (!s.clonotypes.some((c) => c.points.some((v) => v.count > 0))) {
@@ -505,7 +575,7 @@ export function mountTracking(app, container) {
     const legend = s.clonotypes.slice(0, 12).map((c, i) => ({ label: junctionsOf(c), className: classOf(i) }));
     const caption = (note) => [note, `${d.name}, subject ${s.id}: ${plural(s.clonotypes.length, 'clonotype')} followed (${how}). Clonotypes: ${result.describe}. Abundance in ${unit}.`, madeBy(app.version)];
     const threadPlot = threads(points, series, { label: `Clonotypes of ${s.id} through time`, selected });
-    const threadsNote = `Each clonotype's frequency at each time point (equally spaced, in time order; the samples taken at one time pooled), on a logarithmic axis; a clonotype not found at a time point on the lane below, as an open circle.${result.intervals ? ' The clonotype chosen is drawn with its 95% intervals (Wilson\'s); where it was not found, up to what that depth could have missed. The intervals are for sampling alone: two blood samples of one time differ by more, which the expansion tests account for.' : ''}`;
+    const threadsNote = `Each clonotype's frequency at each time point (equally spaced, in time order; the samples taken at one time pooled), on a logarithmic axis; a clonotype not found at a time point on the lane below, as an open circle.${result.intervals ? ' The clonotype chosen is drawn with its 95% intervals (Wilson\'s); where it was not found, up to what that depth could have missed. The intervals are for sampling alone: two blood samples of one time differ by more.' : ''}`;
     body.append(exportable(h('figure.plot-card.tracking-plot',
       h('figcaption', h('span', 'Threads'), h('span.plot-pickers', chosenOne ? h('span.muted.small', junctionsOf(chosenOne)) : h('span.muted.small', 'Choose a clonotype on a plot or in the table'))),
       h('div.plot-holder', { html: threadPlot.svg, onclick: pick }),
@@ -558,19 +628,22 @@ export function mountTracking(app, container) {
     const d = dataset();
     const summary = d ? app.datasetStates.get(d.id)?.summary : null;
     return JSON.stringify([d?.id ?? null, d && summary ? studySamples(store.project, d.id, summary) : null, d && summary ? summary.samples.map((s) => fieldValue(store.project, d.id, s, 'condition') ?? null) : null,
-      d?.definition ?? null, d?.filter ?? null, d ? trackingChoice(d) : null]);
+      d?.definition ?? null, d?.filter ?? null, d?.tracking ?? null, d?.comparison ?? null]);
   };
   function update(topics) {
-    if (topics.has('jobs') && followed.status === 'running' && part === 'clonotypes') render();
+    if (topics.has('jobs') && results[KIND_OF[part]]?.status === 'running') render();
     if (topics.has('focus')) {
       const r = store.ui.focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === store.ui.focus.id) : null;
-      if (r?.kind === 'tracking') {
-        part = 'clonotypes';
+      if (PART_OF[r?.kind]) {
+        part = PART_OF[r.kind];
         // A result kept for another choice: that choice shown again.
         const d = store.project.datasets.find((x) => x.id === r.dataset);
-        if (d && r.choice && JSON.stringify(trackRequest(trackingChoice({ tracking: r.choice }))) !== JSON.stringify(trackRequest(trackingChoice(d)))) {
-          store.commit(useTracking(store.project, d.id, r.choice), `Show the clonotypes followed in ${d.name}`);
+        if (d && r.kind === 'tracking' && r.choice) {
+          const kept = { by: r.choice.by, n: r.choice.n, list: r.choice.list };
+          if (JSON.stringify(trackRequest(trackingChoice({ tracking: kept }))) !== JSON.stringify(trackRequest(trackingChoice(d)))) store.commit(useTracking(store.project, d.id, kept), `Show the clonotypes followed in ${d.name}`);
+          if (r.choice.test) store.commit(useComparison(store.project, d.id, compareRequest(r.choice.test)), `Show the clonotypes followed in ${d.name}`);
         }
+        if (d && r.kind === 'expansion' && r.comparison) store.commit(useComparison(store.project, d.id, compareRequest(r.comparison)), `Show the clonotypes tested in ${d.name}`);
         if (r.dataset !== chosen) {
           chosen = r.dataset;
           shownChoices = choices();
@@ -591,14 +664,21 @@ export function mountTracking(app, container) {
   app.trackingView = {
     load: () => load(),
     state: () => state,
-    followed: () => followed,
+    followed: () => results.tracking,
+    tested: () => results.expansion,
     show,
-    follow: () => follow(),
+    follow: () => run('tracking'),
+    test: () => run('expansion'),
     // The clonotypes as chosen now followed, at once when no result is kept for them.
     followNow: () => {
-      startWhenAbsent = true;
+      startWhenAbsent.add('tracking');
       load();
       return settled();
+    },
+    showTested: (subject, key = null) => {
+      if (subject) testsUI.subject = subject;
+      testsUI.selected = key;
+      render();
     },
     choose: (id) => {
       chosen = id;

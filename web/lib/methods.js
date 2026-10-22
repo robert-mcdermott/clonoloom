@@ -38,6 +38,9 @@ export const REFERENCES = {
   horvitzThompson: 'Horvitz DG, Thompson DJ. A generalization of sampling without replacement from a finite universe. J Am Stat Assoc. 1952;47:663–685. doi:10.1080/01621459.1952.10483446',
   chaoJost: 'Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. Ecology. 2012;93:2533–2547. doi:10.1890/11-1952.1',
   rytlewski: 'Rytlewski J, Deng S, Xie T, et al. Model to improve specificity for identification of clinically-relevant expanded T cells in peripheral blood. PLoS One. 2019;14:e0213684. doi:10.1371/journal.pone.0213684',
+  dewitt: 'DeWitt WS, Emerson RO, Lindau P, et al. Dynamics of the cytotoxic T cell response to a model of acute viral infection. J Virol. 2015;89:4517–4526. doi:10.1128/JVI.03474-14',
+  bh: 'Benjamini Y, Hochberg Y. Controlling the false discovery rate: a practical and powerful approach to multiple testing. J R Stat Soc B. 1995;57:289–300. doi:10.1111/j.2517-6161.1995.tb02031.x',
+  storey: 'Storey JD. A direct approach to false discovery rates. J R Stat Soc B. 2002;64:479–498. doi:10.1111/1467-9868.00346',
   wilson: 'Wilson EB. Probable inference, the law of succession, and statistical inference. J Am Stat Assoc. 1927;22:209–212. doi:10.1080/01621459.1927.10502953',
 };
 
@@ -207,6 +210,17 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
       ? `each one's frequency at each time point is its count of the ${unit} there, the samples taken at one time pooled, with Wilson's ${Math.round(100 * (r.options?.confidence ?? 0.95))}% score interval ${cite('wilson')}, which accounts for sampling alone; a clonotype not found at a time point is reported as not found, the interval's upper end being what that depth could have missed`
       : `each one's frequency at each time point is its share of the ${unit} there, the samples taken at one time pooled, without an interval (${r.unit === 'reads' ? 'reads count each molecule many times over' : 'the abundances are not whole counts'})`;
     sentences.push(`Clonotypes (${under}) were followed through each subject's samples in time order by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: ${choiceWords(choice)}, ${plural(r.followed ?? 0, 'clonotype')} in ${plural(r.subjects ?? 0, 'subject')}; ${how}.`);
+  }
+
+  // Clonotypes tested between two time points, likewise.
+  for (const r of results.filter((x) => x.kind === 'expansion')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const c = r.comparison ?? {};
+    const test = c.test === 'fisher' ? `Fisher's exact test of its count against the others' at the two time points ${cite('dewitt')}` : `the binomial test of its count at the first time point given its total in the two, at the first's share of their ${unit} ${cite('rytlewski')}, which approximates Fisher's exact test, as DeWitt et al. used it ${cite('dewitt')}, when the clonotype is a small part of the samples`;
+    const correction = c.correction === 'storey' ? `Storey's q-values, π₀ estimated at λ = 0.5 ${cite('storey')}` : `Benjamini and Hochberg's procedure ${cite('bh')}`;
+    const side = c.alternative === 'increase' ? 'one-sided, for an increase' : c.alternative === 'decrease' ? 'one-sided, for a decrease' : 'two-sided, summing the outcomes no more likely than the one seen';
+    sentences.push(`Each clonotype (${under}) was tested between ${c.from} and ${c.to} in each subject by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}, the samples at one time pooled: ${test}, ${side}. Clonotypes with fewer than ${c.minTotal ?? 5} ${unit} in the two together were not tested ${cite('rytlewski')}. The false discovery rate was controlled within each subject by ${correction}, and clonotypes with an adjusted p-value of at most ${c.alpha ?? 0.01} called increased or decreased: ${plural(r.increased ?? 0, 'clonotype')} increased and ${plural(r.decreased ?? 0, 'clonotype')} decreased of ${plural(r.tested ?? 0, 'clonotype')} tested in ${plural(r.subjects ?? 0, 'subject')}. The test accounts for sampling alone, not for the variation between samples taken at one time.`);
   }
 
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

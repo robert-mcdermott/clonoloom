@@ -30,8 +30,9 @@ import (
 // analysis is a kind of analysis: its jobs' and artifacts' kind (and its routes, /api/{kind}, and
 // its result's file, {kind}.json), its artifact ids' prefix, its method's version (which changes
 // when what it answers changes), its name in words, whether it uses the samples' groups and
-// subjects (the spec's Groups and Subjects; ignored otherwise), whether it follows a study over
-// time (the spec's Study and Track), and its work (given its own kind).
+// subjects (the spec's Groups and Subjects; ignored otherwise), what of a study over time it uses
+// (over: "track", the spec's Study and Track; "compare", its Study and Compare; "", neither), and
+// its work (given its own kind).
 type analysis struct {
 	kind     string
 	prefix   string
@@ -39,16 +40,17 @@ type analysis struct {
 	title    string
 	grouped  bool
 	subjects bool
-	study    bool
+	over     string
 	work     func(a *app, k analysis, spec analysisSpec) jobs.Func
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis}
 
 // analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
 // (condition) and subject (by sample name), for the analyses that use them; Study is the samples'
-// annotation a study over time is read from (internal/study), and Track the clonotypes it follows.
+// annotation a study over time is read from (internal/study), Track the clonotypes it follows, and
+// Compare the two time points it tests the clonotypes between.
 type analysisSpec struct {
 	Dataset    string               `json:"dataset"`
 	Definition clonotype.Definition `json:"definition"`
@@ -58,6 +60,7 @@ type analysisSpec struct {
 	Subjects   map[string]string    `json:"subjects,omitempty"`
 	Study      []study.Sample       `json:"study,omitempty"`
 	Track      *track.Choice        `json:"track,omitempty"`
+	Compare    *track.Comparison    `json:"compare,omitempty"`
 	Method     int                  `json:"method"`
 }
 
@@ -93,6 +96,13 @@ func (s analysisSpec) normalized(version int) (analysisSpec, error) {
 		}
 		s.Track = &c
 	}
+	if s.Compare != nil {
+		c, err := s.Compare.Normalize()
+		if err != nil {
+			return s, err
+		}
+		s.Compare = &c
+	}
 	s.Method = version
 	return s, nil
 }
@@ -107,8 +117,9 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Subjects   map[string]string `json:"subjects,omitempty"`
 		Study      []study.Sample    `json:"study,omitempty"`
 		Track      *track.Choice     `json:"track,omitempty"`
+		Compare    *track.Comparison `json:"compare,omitempty"`
 		Method     int               `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -138,10 +149,20 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 		if !k.subjects {
 			body.Subjects = nil
 		}
-		if !k.study {
-			body.Study, body.Track = nil, nil
-		} else if body.Track == nil {
-			body.Track = &track.Choice{}
+		switch k.over {
+		case "track":
+			body.Compare = nil
+			if body.Track == nil {
+				body.Track = &track.Choice{}
+			}
+		case "compare":
+			body.Track = nil
+			if body.Compare == nil {
+				writeError(w, http.StatusBadRequest, "Send the comparison: {\"compare\": {\"from\", \"to\"}}, two time points' keys.")
+				return
+			}
+		default:
+			body.Study, body.Track, body.Compare = nil, nil, nil
 		}
 		spec, err := body.analysisSpec.normalized(k.version)
 		if err != nil {

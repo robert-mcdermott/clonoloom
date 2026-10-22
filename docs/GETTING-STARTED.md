@@ -14,7 +14,8 @@ The guide is on ClonoLoom's website, a page a subject:
   [genes and junctions](https://robert-mcdermott.github.io/clonoloom/docs/genes.html);
   [overlap](https://robert-mcdermott.github.io/clonoloom/docs/overlap.html).
 - **Tracking:** [subjects and time points](https://robert-mcdermott.github.io/clonoloom/docs/subjects.html),
-  [following clonotypes](https://robert-mcdermott.github.io/clonoloom/docs/tracking.html).
+  [following clonotypes](https://robert-mcdermott.github.io/clonoloom/docs/tracking.html),
+  [expanded and contracted clonotypes](https://robert-mcdermott.github.io/clonoloom/docs/tests.html).
 - **Results:** [figures and exports](https://robert-mcdermott.github.io/clonoloom/docs/figures.html);
   [the record](https://robert-mcdermott.github.io/clonoloom/docs/record.html).
 - **Reference:** [simulated studies](https://robert-mcdermott.github.io/clonoloom/docs/simulation.html);

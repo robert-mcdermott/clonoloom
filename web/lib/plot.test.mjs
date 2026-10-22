@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { alluvial, curves, columns, figure, figureStyle, heatmap, intervals, lines, percent, scale, stackedBars, threads, ticks, timeline } from './plot.js';
+import { alluvial, changes, curves, columns, figure, figureStyle, heatmap, intervals, lines, percent, scale, stackedBars, threads, ticks, timeline } from './plot.js';
 
 test('ticks are nice numbers covering the range', () => {
   assert.deepEqual(ticks(1), [0, 0.25, 0.5, 0.75, 1]);
@@ -192,4 +192,22 @@ test('figures style threads, ribbons and clonotypes not found', () => {
   assert.match(css, /path\.plot-ribbon\.plot-s2\{fill:#e9a23b\}/);
   assert.match(css, /circle\.plot-absent\.plot-s1\{fill:#ffffff;stroke:#5b4ce6\}/);
   assert.match(css, /\.plot-faded\{opacity:0\.16\}/);
+});
+
+test('changes place each clonotype at its two frequencies, one not found on its lane, the chosen ringed', () => {
+  const points = [
+    { key: 'c-1', label: 'CASSA', x: 0.001, y: 0.01, className: 'plot-s1', kind: 'increased' },
+    { key: 'c-2', label: 'CASSB', x: 0.002, y: 0, className: 'plot-s4', kind: 'decreased' },
+    { key: 'c-3', label: 'CASSC', x: 0.0005, y: 0.0004, className: 'plot-dim' },
+  ];
+  const { svg, description } = changes(points, { label: 'Changes', xLabel: 'day -7', yLabel: 'day 14', selected: 'c-1' });
+  assert.equal((svg.match(/<circle class="plot-(s1|s4|dim)"/g) ?? []).length, 3);
+  assert.equal((svg.match(/>not found</g) ?? []).length, 2);
+  assert.match(svg, /class="plot-guide"/);
+  assert.match(svg, /<circle class="plot-ring"/);
+  assert.match(svg, /CASSB: 0\.2% at the first, not found at the second/);
+  // The one not found at the second sits on the lane below the axis.
+  const cy = (key) => Number(new RegExp(`cy="([\\d.]+)" r="[\\d.]+" data-key="${key}"`).exec(svg)[1]);
+  assert.ok(cy('c-2') > cy('c-3') && cy('c-3') > cy('c-1'));
+  assert.match(description, /3 clonotypes, 1 increased, 1 decreased; day -7 against day 14/);
 });

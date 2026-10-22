@@ -73,13 +73,24 @@ var remoteActions = []remoteAction{
 	{Name: "describe_subjects", Title: "Describe the subjects", Description: "Shows the Tracking view and answers the dataset's subjects as the program reads their annotation: each one's samples in time order with their time points read as days from the subject's reference event, its reference samples and the samples taken at one time (replicates), and the checks' findings (samples without a subject or a time point, time points not understood, subjects without a reference sample).", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
 	})},
-	{Name: "track_clonotypes", Title: "Follow clonotypes over time", Description: "Shows the Tracking view's Clonotypes part and follows clonotypes through each subject's samples in time order, under the dataset's clonotype definition and filter (a job; the result kept with the project): each subject's reference sample's largest clonotypes (the default; each sample's largest for a subject without one), each sample's largest, or a list. Answers each subject's time points and, for each clonotype followed, why it was chosen and its count, frequency and 95% interval (Wilson's) at each time point, the samples taken at one time pooled.", InputSchema: schema(map[string]any{
+	{Name: "track_clonotypes", Title: "Follow clonotypes over time", Description: "Shows the Tracking view's Clonotypes part and follows clonotypes through each subject's samples in time order, under the dataset's clonotype definition and filter (a job; the result kept with the project): each subject's reference sample's largest clonotypes (the default; each sample's largest for a subject without one), each sample's largest, a list, or those a test called. Answers each subject's time points and, for each clonotype followed, why it was chosen and its count, frequency and 95% interval (Wilson's) at each time point, the samples taken at one time pooled.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
-		"by":      textArg("reference (each reference sample's n largest; the default), largest (each sample's n largest) or list."),
-		"n":       numberArg("How many of each sample's largest: 10 of a reference sample and 5 of each sample by default, at most 100."),
+		"by":      textArg("reference (each reference sample's n largest; the default), largest (each sample's n largest), list, or test (the n clonotypes the dataset's comparison called, the most significant first: see test_expansion)."),
+		"n":       numberArg("How many: 10 of a reference sample, 5 of each sample and 20 of a test's calls by default, at most 100."),
 		"list":    map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "With by list: the clonotypes, by ID (c-…) or junction (CASSLAGGPEAFF; a paired clonotype's chains joined by \"; \")."},
 		"subject": textArg("The subject to show (the first by default)."),
 	})},
+	{Name: "test_expansion", Title: "Test clonotypes between two time points", Description: "Shows the Tracking view's Tests part and tests each clonotype between two time points of each subject (the samples at one time pooled), under the dataset's clonotype definition and filter (a job; the result kept with the project): the binomial test conditional on the clonotype's total (the default) or Fisher's exact test, two-sided or one-sided, the false discovery rate controlled within each subject by Benjamini–Hochberg (the default) or Storey's q-values; clonotypes with fewer than 5 cells or molecules in the two together are not tested. Answers each subject's clonotypes tested, left out, increased and decreased, and the most significant calls. The tests account for sampling alone, and refuse reads.", InputSchema: schema(map[string]any{
+		"dataset":     datasetArg,
+		"from":        textArg("The first time point, by its key as the subjects' samples give it (describe_subjects): day 0, day -7, baseline, reference (the reference sample), visit 2."),
+		"to":          textArg("The second time point."),
+		"test":        textArg("binomial (the default) or fisher."),
+		"alternative": textArg("two-sided (the default), increase (more at the second time point) or decrease."),
+		"correction":  textArg("bh (Benjamini–Hochberg; the default) or storey (Storey's q-values)."),
+		"alpha":       numberArg("The false discovery rate at which a clonotype is called: 0.01 by default."),
+		"subject":     textArg("The subject to show (the first by default)."),
+		"calls":       numberArg("How many of each subject's calls to answer (10 by default)."),
+	}, "from", "to")},
 	{Name: "select_clonotype", Title: "Choose a clonotype", Description: "Shows the Clonotypes view and chooses a clonotype, which the inspector describes: by its rank in the table (1 for the first) or its ID.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
 		"rank":    numberArg("Its rank in the table as sorted, from 1."),

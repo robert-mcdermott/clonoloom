@@ -22,13 +22,15 @@ type Sample struct {
 	Reference string `json:"reference,omitempty"`
 }
 
-// Placed is a subject's sample in its place: its time point, and what it is if it is a reference
-// sample (from the annotation's reference field, or its tissue).
+// Placed is a subject's sample in its place: its time point, what it is if it is a reference
+// sample (from the annotation's reference field, or its tissue), and its key, which names its time
+// point across subjects ("reference" for a reference sample; Time.Key for the others).
 type Placed struct {
 	Name          string `json:"name"`
 	Time          *Time  `json:"time,omitempty"`
 	Reference     string `json:"reference,omitempty"`
 	ReferenceFrom string `json:"referenceFrom,omitempty"` // annotation or tissue
+	Key           string `json:"key"`
 }
 
 // Subject is a subject's samples: those with a time point, or reference samples, in time order
@@ -112,6 +114,9 @@ func Describe(samples []Sample) Design {
 		}
 		if p.Reference != "" {
 			sub.References = append(sub.References, s.Name)
+			p.Key = "reference"
+		} else if p.Time != nil {
+			p.Key = p.Time.Key()
 		}
 		if p.Time == nil && p.Reference == "" {
 			sub.Untimed = append(sub.Untimed, s.Name)

@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); wave 2
-is merged and released as 0.2.0; wave 3 is planned, slices 1–5 done, slice 6 next.
+is merged and released as 0.2.0; wave 3 is planned, slices 1–6 done, slice 7 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -298,8 +298,8 @@ are written under that rule from the start.
 | 3. Subjects and time points | Done |
 | 4. Simulated longitudinal studies | Done |
 | 5. Tracking | Done |
-| 6. Two-sample tests | Next |
-| 7. Beta-binomial expansion | To come |
+| 6. Two-sample tests | Done |
+| 7. Beta-binomial expansion | Next |
 | 8. Classes and attribution; release 0.3.0 | To come |
 
 ### Decisions for wave 3
@@ -433,6 +433,31 @@ are written under that rule from the start.
    the share of the first sample's depth as its null; two-sided by default; Benjamini–Hochberg and
    Storey's q-values. Validated against R's `fisher.test` and `binom.test` and, on null
    simulations, false discoveries counted.
+   - *Done:* `internal/expansion` (the binomial test conditional on the clonotype's total, at the
+     share of the depth, and Fisher's exact test, each two-sided by R's rule or one-sided;
+     Benjamini–Hochberg; Storey's π₀ and q-values); `track.Test`, the comparison of two time points
+     in each subject, the samples at one time pooled (each placed sample now has a key, `day 28`
+     for week 4, `baseline`, `reference`, naming its time across subjects); `api_expansion.go`, an
+     analysis whose ID holds the comparison; the Tracking view's Tests part (`tracking-tests.js`):
+     each clonotype at its two frequencies with the calls colored, a table of the calls, and
+     Follow the calls, which the Clonotypes part follows as a new choice (`by: test`); CSV export,
+     the methods paragraph's sentence, `test_expansion`, the guide's page and capture scene.
+   - *Validation:* both tests against R on 215 cases, two-sided and one-sided, to 4 × 10⁻¹²; BH and
+     Storey against R; on the null series, no call of 6,634 clonotypes without variance between
+     samples beyond sampling, 13 of 6,599 (0.2%) with the series' variance (Rytlewski et al.: 0.28%
+     between blood samples two weeks apart); on the CAR-T example, all 66 calls in the true
+     direction without that variance, 6 of 73 against the truth with it; 48 of the 138 expanding
+     clones tested called (most are small).
+   - *Decided:* the binomial test is the default until slice 7 (Rytlewski et al.'s, and the one the
+     beta-binomial extends); Fisher's is offered, as DeWitt et al. used it. Storey's π₀ is estimated
+     at λ = 0.5 (Storey 2002), not by the qvalue package's spline, which is not reproduced; its
+     q-values are π₀ times BH's, as that package's are. False discoveries are controlled within each
+     subject. A comparison takes every subject with both time points, and names those without. The
+     tests refuse reads.
+   - *Found:* where one clonotype grows to a large share, every other one's share shrinks, so the
+     tests call some unchanged clonotypes decreased (DeWitt et al. assume the changed clonotypes'
+     total change is small); and the tests account for sampling alone, which the view, the export
+     and the methods paragraph say.
 7. **Beta-binomial expansion (T3).** Rytlewski et al. 2019: the variance model
    v(n) = 2 + (b ln n + a)² (the 2, which keeps the beta unimodal, is in their reference code and not
    their paper) fitted by maximum likelihood on the study's replicate pairs, and the

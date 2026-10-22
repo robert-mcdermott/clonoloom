@@ -76,7 +76,22 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
           </tbody>
         </table>
       </div>
-      <p>Wilson's interval is for sampling alone. When each clone's frequency in each blood sample also varies around its expectation, as in the simulated CAR-T study (by a factor of mean 1 and variance 0.1), the same intervals held the true frequency in only 76.9% of cases. The view and the methods paragraph say so, and the expansion tests account for that variance from replicate samples.</p>
+      <p>Wilson's interval is for sampling alone. When each clone's frequency in each blood sample also varies around its expectation, as in the simulated CAR-T study (by a factor of mean 1 and variance 0.1), the same intervals held the true frequency in only 76.9% of cases. The view and the methods paragraph say so; replicate samples, taken at one time, measure that variance.</p>
+
+      <h2 id="tests">Expanded and contracted clonotypes</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Source</th><th>Checked against</th><th>Agreement</th></tr></thead>
+          <tbody>
+            <tr><td>The binomial test of a clonotype's count at the first time point given its total, at the share of the depth; two-sided and one-sided</td><td>Rytlewski et al. 2019</td><td>R's <code>binom.test</code> on 215 cases, from a clonotype absent at one time to thousands in samples of a million</td><td class="agree">to 4 × 10⁻¹²</td></tr>
+            <tr><td>Fisher's exact test of the 2 × 2 table; two-sided and one-sided</td><td>DeWitt et al. 2015</td><td>R's <code>fisher.test</code> on the same cases</td><td class="agree">to 4 × 10⁻¹²</td></tr>
+            <tr><td>Benjamini and Hochberg's adjusted p-values; Storey's q-values at λ = 0.5</td><td>Benjamini and Hochberg 1995; Storey 2002</td><td>R's <code>p.adjust</code>; Storey's π₀ and q-values computed in R</td><td class="agree">to 10⁻⁹; π₀ equal</td></tr>
+            <tr><td>False discoveries where nothing changes</td><td></td><td>A simulated series, four subjects, day 0 against day 14, two samples each</td><td class="agree">none of 6,634 clonotypes called where samples differ by sampling alone</td></tr>
+            <tr><td>Calls where clonotypes change</td><td></td><td>The simulated CAR-T study, the week before the infusion against two weeks after</td><td class="agree">all 66 calls in the true direction where samples differ by sampling alone</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The tests account for sampling alone. When each clone's frequency in each blood sample also varies around its expectation (by a factor of mean 1 and variance 0.1), they called 13 of 6,599 clonotypes on the series where nothing changes (0.2%, as Rytlewski et al. found between blood samples two weeks apart), and 6 of their 73 calls on the CAR-T study were against the truth (8%, against the 1% asked for). The view, the export and the methods paragraph say so; replicate samples, taken at one time, measure that variance.</p>
 
       <h2 id="simulation">Simulated studies</h2>
       <p><code>clonoloom simulate</code> makes TRB rearrangements from GRCh38's gene segments at Ensembl's annotation (Dyer et al. 2025), with V and J usage from 10x Genomics' 10k PBMC data, deletions, palindromic and non-templated insertions (Murugan et al. 2012), and productive junctions selected on their length (Elhanati et al. 2014); each subject's repertoire a population of power-law clone sizes, sampled into templates and reads. Over 150,000 rearrangements, the productive junctions' mean length is within 0.1 amino acids of the 10x data's, its standard deviation within 0.15, and V usage within 0.03 of the model's in total variation. The same seed gives the same bytes on every computer.</p>
@@ -90,11 +105,13 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
 
       <h2 id="references">References</h2>
       <ul class="references">
+        <li>Benjamini Y, Hochberg Y. Controlling the false discovery rate: a practical and powerful approach to multiple testing. <em>J R Stat Soc B</em> 1995;57:289–300.</li>
         <li>Chao A. Nonparametric estimation of the number of classes in a population. <em>Scand J Stat</em> 1984;11:265–270.</li>
         <li>Chao A, Gotelli NJ, Hsieh TC, et al. Rarefaction and extrapolation with Hill numbers: a framework for sampling and estimation in species diversity studies. <em>Ecol Monogr</em> 2014;84:45–67.</li>
         <li>Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. <em>Ecology</em> 2012;93:2533–2547.</li>
         <li>Chao A, Lee SM. Estimating the number of classes via sample coverage. <em>J Am Stat Assoc</em> 1992;87:210–217.</li>
         <li>Chao A, Wang YT, Jost L. Entropy and the species accumulation curve: a novel entropy estimator via discovery rates of new species. <em>Methods Ecol Evol</em> 2013;4:1091–1100.</li>
+        <li>DeWitt WS, Emerson RO, Lindau P, et al. Dynamics of the cytotoxic T cell response to a model of acute viral infection. <em>J Virol</em> 2015;89:4517–4526.</li>
         <li>Dice LR. Measures of the amount of ecologic association between species. <em>Ecology</em> 1945;26:297–302.</li>
         <li>Dyer SC, Austine-Orimoloye O, Azov AG, et al. Ensembl 2025. <em>Nucleic Acids Res</em> 2025;53:D948–D957.</li>
         <li>Elhanati Y, Murugan A, Callan CG Jr, Mora T, Walczak AM. Quantifying selection in immune receptor repertoires. <em>Proc Natl Acad Sci USA</em> 2014;111:9875–9880.</li>
@@ -109,7 +126,9 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
         <li>Morisita M. Measuring of interspecific association and similarity between communities. <em>Mem Fac Sci Kyushu Univ Ser E Biol</em> 1959;3:65–80.</li>
         <li>Murugan A, Mora T, Walczak AM, Callan CG Jr. Statistical inference of the generation probability of T-cell receptors from sequence repertoires. <em>Proc Natl Acad Sci USA</em> 2012;109:16161–16166.</li>
         <li>Rubelt F, Busse CE, Bukhari SAC, et al. Adaptive Immune Receptor Repertoire Community recommendations for sharing immune-repertoire sequencing data. <em>Nat Immunol</em> 2017;18:1274–1278.</li>
+        <li>Rytlewski J, Deng S, Xie T, et al. Model to improve specificity for identification of clinically-relevant expanded T cells in peripheral blood. <em>PLoS One</em> 2019;14:e0213684.</li>
         <li>Seal RL, Braschi B, Gray K, et al. Genenames.org: the HGNC resources in 2023. <em>Nucleic Acids Res</em> 2023;51:D1003–D1009.</li>
+        <li>Storey JD. A direct approach to false discovery rates. <em>J R Stat Soc B</em> 2002;64:479–498.</li>
         <li>Sturm G, Szabo T, Fotakis G, et al. Scirpy: a Scanpy extension for analyzing single-cell T-cell receptor-sequencing data. <em>Bioinformatics</em> 2020;36:4817–4818.</li>
         <li>Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. <em>Front Immunol</em> 2018;9:2206.</li>
         <li>Wilson EB. Probable inference, the law of succession, and statistical inference. <em>J Am Stat Assoc</em> 1927;22:209–212.</li>
