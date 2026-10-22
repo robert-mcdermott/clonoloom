@@ -1,6 +1,7 @@
 package main
 
 import (
+	"clonoloom/internal/reads"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -259,5 +260,55 @@ func TestTheJobsAPI(t *testing.T) {
 	}
 	if rec := request(t, handler, http.MethodGet, "/api/artifacts", nil, nil); rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `"artifacts":[]`) {
 		t.Errorf("artifacts: %d %s", rec.Code, rec.Body)
+	}
+}
+
+// A table of another tool: inspected, its mapping checked column by column, opened through it;
+// opened again with the same mapping, the same dataset; with another, another.
+func TestOpenATableThroughAMapping(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "patient7.tsv")
+	os.WriteFile(path, []byte("count\tfreq\tcdr3nt\tcdr3aa\tv\td\tj\n120\t0.6\tTGTGCCAGCAGCTTAGCGGGAGGGCCTGAAGCTTTCTTT\tCASSLAGGPEAFF\tTRBV5-1\tTRBD2\tTRBJ2-7\n60\t0.3\tTGTGCC\tCASSER\tTRBV6-2\t.\tTRBJ1-1\n"), 0o644)
+	_, handler := testApp(t)
+	// Not a format ClonoLoom recognizes.
+	if rec := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`); rec.Code != http.StatusUnprocessableEntity || !strings.Contains(rec.Body.String(), `"code":"format"`) {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	rec := postJSON(t, handler, "/api/datasets/inspect", `{"path": `+jsonString(path)+`}`)
+	var inspected struct {
+		Inspection reads.Inspection `json:"inspection"`
+		Fields     []map[string]string
+	}
+	json.Unmarshal(rec.Body.Bytes(), &inspected)
+	if rec.Code != http.StatusOK || inspected.Inspection.Guess.Columns["junction_aa"] != "cdr3aa" || len(inspected.Fields) < 10 {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	mapping := `{"columns": {"junction_aa": "cdr3aa", "v_call": "v", "j_call": "j", "count": "count"}, "unit": "reads"}`
+	rec = postJSON(t, handler, "/api/datasets/check", `{"path": `+jsonString(path)+`, "mapping": `+mapping+`}`)
+	if rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `"rows":2`) {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	if rec := postJSON(t, handler, "/api/datasets/check", `{"path": `+jsonString(path)+`, "mapping": {"columns": {"v_call": "v"}}}`); rec.Code != http.StatusUnprocessableEntity || !strings.Contains(rec.Body.String(), "map a junction") {
+		t.Errorf("no junction: %d %s", rec.Code, rec.Body)
+	}
+	open := func(m string) datasetSummary {
+		t.Helper()
+		rec := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`], "mappings": {`+jsonString(path)+`: `+m+`}}`)
+		var s datasetSummary
+		json.Unmarshal(rec.Body.Bytes(), &s)
+		if rec.Code != http.StatusOK {
+			t.Fatalf("%d %s", rec.Code, rec.Body)
+		}
+		return s
+	}
+	a := open(mapping)
+	if a.Rows != 2 || a.Unit != "reads" || a.Sources[0].Format != reads.FormatTable || a.Sources[0].Mapping == nil || a.Samples[0].Name != "patient7" {
+		t.Errorf("%+v", a)
+	}
+	if b := open(mapping); b.ID != a.ID {
+		t.Errorf("the same mapping, another dataset: %s, %s", a.ID, b.ID)
+	}
+	if c := open(`{"columns": {"junction_aa": "cdr3aa"}}`); c.ID == a.ID || c.Unit != "sequences" {
+		t.Errorf("another mapping: %+v", c)
 	}
 }

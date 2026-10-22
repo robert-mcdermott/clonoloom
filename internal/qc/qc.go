@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"math"
 	"sort"
+	"strings"
 
 	"clonoloom/internal/genes"
 	"clonoloom/internal/rep"
@@ -555,4 +556,34 @@ func (n *Number) UnmarshalJSON(b []byte) error {
 	}
 	*n = Number(f)
 	return nil
+}
+
+// Describe is the filter in words ("none" when it keeps every row).
+func (f Filter) Describe() string {
+	var parts []string
+	if f.ProductiveOnly {
+		parts = append(parts, "productive only")
+	}
+	if f.MinCount > 0 {
+		parts = append(parts, fmt.Sprintf("counted at least %g times", f.MinCount))
+	}
+	if len(f.Loci) > 0 {
+		parts = append(parts, "loci "+strings.Join(f.Loci, ", "))
+	}
+	if f.CellsOnly {
+		parts = append(parts, "cells only")
+	}
+	if f.HighConfidenceOnly {
+		parts = append(parts, "high-confidence contigs only")
+	}
+	if f.MaxChains > 0 {
+		parts = append(parts, fmt.Sprintf("cells with at most %d productive chains of a locus", f.MaxChains))
+	}
+	if len(f.ExcludeSamples) > 0 {
+		parts = append(parts, "samples left out: "+strings.Join(f.ExcludeSamples, ", "))
+	}
+	if len(parts) == 0 {
+		return "none"
+	}
+	return strings.Join(parts, "; ")
 }

@@ -59,13 +59,23 @@ function setting(ctx) {
   };
 }
 
+// The view's figure saver and the conditions' legend, for the cards being drawn.
+let current = { save: null, items: [] };
+
+// card builds a plot card; its plot is saved as a figure (the view's save), captioned with the
+// card's notes, its legend the conditions' when the card shows it.
 function card(title, controls, plot, ...notes) {
-  return h('figure.plot-card', h('figcaption', h('span', title), h('span.plot-pickers', ...controls)),
+  const el = h('figure.plot-card', h('figcaption', h('span', title), h('span.plot-pickers', ...controls)),
     plot ? h('div.plot-holder', { html: plot.svg }) : null, ...notes);
+  if (!plot || !current.save) return el;
+  const note = notes.filter((n) => n?.tagName === 'P').map((n) => n.textContent).join(' ');
+  const legend = notes.some((n) => n?.classList?.contains('plot-legend')) ? current.items : [];
+  return current.save(el, { title, plot, note, legend });
 }
 
 export function renderGenes(ctx) {
   const { body, ui, colors } = ctx;
+  current = { save: ctx.save, items: colors.items ?? [] };
   const c = setting(ctx);
   ui.segment = ['V', 'D', 'J', 'C'].includes(ui.segment) ? ui.segment : 'V';
   ui.level = ui.level === 'family' ? 'family' : 'gene';
@@ -133,6 +143,7 @@ function pairsCard(ctx, c) {
 
 export function renderJunctions(ctx) {
   const { body, ui, colors } = ctx;
+  current = { save: ctx.save, items: colors.items ?? [] };
   const c = setting(ctx);
   const loci = c.units.map((u) => c.locusOf(u));
   // Spectratypes.

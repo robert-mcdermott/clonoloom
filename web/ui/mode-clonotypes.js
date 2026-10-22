@@ -6,7 +6,8 @@
 // cells it is made of.
 
 import { h, icon, clear, debounce } from './dom.js';
-import { showDialog, toast } from './overlays.js';
+import { showDialog, showMenu, toast } from './overlays.js';
+import { exportDataset } from './exports.js';
 import { clonotypeDetail, clonotypePage, clonotypePresets } from './storage.js';
 import { UNITS, datasetUnit } from '../lib/datasets.js';
 import { datasetFilter } from '../lib/filters.js';
@@ -32,7 +33,16 @@ export function mountClonotypes(app, container) {
     h('label.unit-confirm', h('span.muted', 'Dataset'), datasetSelect),
     h('label.unit-confirm', h('span.muted', 'Definition'), definitionSelect),
     h('button.btn.small', { type: 'button', onclick: () => editDefinition() }, icon('edit'), 'Edit…'),
-    search);
+    search,
+    h('button.btn.small', { type: 'button', title: 'Export the clonotypes or the rearrangements', onclick: (e) => {
+      const d = dataset();
+      if (!d) return;
+      showMenu(e.currentTarget, [
+        { section: 'Export, with a NOTICE of the data\'s source and license' },
+        { label: 'Clonotypes (CSV)', icon: 'download', onSelect: () => exportDataset(app, d, 'clonotypes') },
+        { label: 'Rearrangements (AIRR TSV)', icon: 'download', onSelect: () => exportDataset(app, d, 'rearrangements') },
+      ]);
+    } }, icon('download'), 'Export'));
   const info = h('div.clonotype-info');
   const header = h('div.ctable-head', { role: 'row' });
   const spacer = h('div.ctable-spacer');

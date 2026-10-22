@@ -81,6 +81,11 @@ func datasetID(sources []reads.Source, metadata []reads.MetadataFile) string {
 	fmt.Fprintf(h, "clonoloom-dataset/1 readers %d\n", reads.ReaderVersion)
 	for _, s := range sources {
 		fmt.Fprintf(h, "%s %d\n", s.SHA256, s.Size)
+		// A table read through a mapping of its columns is another dataset for each mapping.
+		if s.Mapping != nil {
+			raw, _ := json.Marshal(s.Mapping)
+			fmt.Fprintf(h, "mapping %s\n", raw)
+		}
 	}
 	// Metadata read with the tables make another dataset of them (one whose samples are
 	// described); the tables alone keep the ID they always had.
@@ -111,7 +116,7 @@ func (a *app) openDataset(ctx context.Context, paths []string, inputs []reads.In
 	ds := &dataset{ID: datasetID(res.Sources, res.Metadata), Result: res, Report: validate.Check(res), Opened: time.Now().UTC()}
 	var sums []string
 	for _, s := range res.Sources {
-		ds.Inputs = append(ds.Inputs, reads.Input{Path: s.Path, Name: s.Name})
+		ds.Inputs = append(ds.Inputs, reads.Input{Path: s.Path, Name: s.Name, Mapping: s.Mapping})
 		sums = append(sums, s.SHA256)
 	}
 	for _, m := range res.Metadata {
@@ -182,6 +187,7 @@ type sourceSummary struct {
 	Modified   string            `json:"modified,omitempty"`
 	SHA256     string            `json:"sha256"`
 	GeneNames  map[string]string `json:"geneNames,omitempty"`
+	Mapping    *reads.Mapping    `json:"mapping,omitempty"`
 }
 
 type datasetSummary struct {
@@ -222,7 +228,7 @@ func (ds *dataset) summary() datasetSummary {
 			s.Formats = append(s.Formats, name)
 		}
 		s.Sources = append(s.Sources, sourceSummary{Path: src.Path, Name: src.Name, Format: src.Format, FormatName: name, Gzipped: src.Gzipped,
-			Rows: src.Rows, Size: src.Size, Modified: src.Modified, SHA256: src.SHA256, GeneNames: src.GeneNames})
+			Rows: src.Rows, Size: src.Size, Modified: src.Modified, SHA256: src.SHA256, GeneNames: src.GeneNames, Mapping: src.Mapping})
 	}
 	repertoires := map[string]*airr.Repertoire{}
 	for i := range res.Repertoires {
@@ -273,6 +279,93 @@ func (a *app) registerDatasets(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/datasets/{id}", a.handleGetDataset)
 	mux.HandleFunc("DELETE /api/datasets/{id}", a.handleCloseDataset)
 	mux.HandleFunc("POST /api/datasets/locate", a.handleLocate)
+	mux.HandleFunc("POST /api/datasets/inspect", a.handleInspect)
+	mux.HandleFunc("POST /api/datasets/check", a.handleCheckMapping)
+}
+
+// handleInspect answers a table's separator, header, first rows and a guessed mapping of its
+// columns, and the fields a mapping can give: {"path"} or {"sha256"} (a file in the library).
+func (a *app) handleInspect(w http.ResponseWriter, r *http.Request) {
+	path, ok := a.mappedPath(w, r, nil)
+	if !ok {
+		return
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		writeError(w, http.StatusNotFound, err.Error())
+		return
+	}
+	defer f.Close()
+	in, err := reads.Inspect(f, 12)
+	if err != nil {
+		writeError(w, http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+	writeJSON(w, map[string]any{"inspection": in, "fields": reads.MappableFields})
+}
+
+// handleCheckMapping reads a whole table through a mapping and answers each mapped column checked:
+// {"path" or "sha256", "mapping"}.
+func (a *app) handleCheckMapping(w http.ResponseWriter, r *http.Request) {
+	var mapping reads.Mapping
+	path, ok := a.mappedPath(w, r, &mapping)
+	if !ok {
+		return
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		writeError(w, http.StatusNotFound, err.Error())
+		return
+	}
+	defer f.Close()
+	check, err := reads.Check(r.Context(), f, path, mapping)
+	if err != nil {
+		writeError(w, http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+	writeJSON(w, check)
+}
+
+// mappedPath reads a request naming one file on this computer ("path") or in the library
+// ("sha256"), and its mapping when asked for.
+func (a *app) mappedPath(w http.ResponseWriter, r *http.Request, mapping *reads.Mapping) (string, bool) {
+	if !isLoopbackRequest(r) {
+		writeError(w, http.StatusForbidden, "Only this computer may read files.")
+		return "", false
+	}
+	var body struct {
+		Path    string         `json:"path"`
+		SHA256  string         `json:"sha256"`
+		Mapping *reads.Mapping `json:"mapping"`
+	}
+	if err := json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(&body); err != nil {
+		writeError(w, http.StatusBadRequest, "Send {\"path\"} or {\"sha256\"}.")
+		return "", false
+	}
+	path := body.Path
+	if body.SHA256 != "" {
+		p, ok := a.store.filePath(body.SHA256)
+		if !ok || !isFile(p) {
+			writeError(w, http.StatusNotFound, "The file is not in the library.")
+			return "", false
+		}
+		path = p
+	} else {
+		abs, err := absPath(path)
+		if err != nil || strings.TrimSpace(path) == "" || !isFile(abs) {
+			writeError(w, http.StatusBadRequest, "Invalid path: "+path)
+			return "", false
+		}
+		path = abs
+	}
+	if mapping != nil {
+		if body.Mapping == nil {
+			writeError(w, http.StatusBadRequest, "Send the mapping.")
+			return "", false
+		}
+		*mapping = *body.Mapping
+	}
+	return path, true
 }
 
 // handleOpenDataset opens {"paths": [...]} (files and folders on this computer, as one dataset),
@@ -286,10 +379,13 @@ func (a *app) handleOpenDataset(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Paths   []string `json:"paths"`
 		Library []struct {
-			SHA256 string `json:"sha256"`
-			Name   string `json:"name"`
+			SHA256  string         `json:"sha256"`
+			Name    string         `json:"name"`
+			Mapping *reads.Mapping `json:"mapping"`
 		} `json:"library"`
 		Name string `json:"name"`
+		// Mappings: by path, how to read a table ClonoLoom does not recognize.
+		Mappings map[string]reads.Mapping `json:"mappings"`
 	}
 	if err := json.NewDecoder(io.LimitReader(r.Body, 4<<20)).Decode(&body); err != nil {
 		writeError(w, http.StatusBadRequest, "Send {\"paths\": [...]} or {\"library\": [...]}.")
@@ -306,7 +402,7 @@ func (a *app) handleOpenDataset(w http.ResponseWriter, r *http.Request) {
 			writeError(w, http.StatusNotFound, f.Name+" is not in the library.")
 			return
 		}
-		inputs = append(inputs, reads.Input{Path: path, Name: f.Name})
+		inputs = append(inputs, reads.Input{Path: path, Name: f.Name, Mapping: f.Mapping})
 	}
 	paths := make([]string, 0, len(body.Paths))
 	for _, p := range body.Paths {
@@ -316,6 +412,17 @@ func (a *app) handleOpenDataset(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		paths = append(paths, abs)
+	}
+	if len(body.Mappings) > 0 {
+		// Files named with mappings: each read through its own when it has one (the paths still name
+		// the dataset).
+		for i, p := range body.Paths {
+			in := reads.Input{Path: paths[i]}
+			if m, ok := body.Mappings[p]; ok {
+				in.Mapping = &m
+			}
+			inputs = append(inputs, in)
+		}
 	}
 	if len(paths) == 0 && len(inputs) == 0 {
 		writeError(w, http.StatusBadRequest, "Name the files to open.")

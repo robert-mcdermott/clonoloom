@@ -213,3 +213,29 @@ func TestOverlapIsMeasuredAndKept(t *testing.T) {
 		t.Errorf("public %+v", doc.Public)
 	}
 }
+
+// runAnalysisOn runs an analysis of a dataset open in a, waits for its job, and answers the result's
+// artifact.
+func runAnalysisOn(t *testing.T, a *app, handler http.Handler, datasetID, kind string) string {
+	t.Helper()
+	started := postJSON(t, handler, "/api/"+kind, `{"dataset": "`+datasetID+`", "definition": {"name": "AA", "junction": "aa", "v": "gene", "j": "gene"}, "options": {"replicates": 20}}`)
+	var job map[string]any
+	json.Unmarshal(started.Body.Bytes(), &job)
+	if job["job"] == nil {
+		t.Fatalf("started: %s", started.Body)
+	}
+	deadline := time.Now().Add(10 * time.Second)
+	for {
+		j, _ := a.jobs.Get(job["job"].(string))
+		if j.State.Finished() {
+			if j.Error != "" {
+				t.Fatal(j.Error)
+			}
+			return job["artifact"].(string)
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("the job did not finish")
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+}

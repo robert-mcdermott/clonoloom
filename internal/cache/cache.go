@@ -14,6 +14,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -73,6 +74,10 @@ func key(inputs []reads.Input) (string, []string, error) {
 		}
 		sums[i] = hex.EncodeToString(fh.Sum(nil))
 		fmt.Fprintf(h, "%s %d %s\n", sums[i], n, filepath.Base(name))
+		if in.Mapping != nil {
+			raw, _ := json.Marshal(in.Mapping)
+			fmt.Fprintf(h, "mapping %s\n", raw)
+		}
 	}
 	return hex.EncodeToString(h.Sum(nil)), sums, nil
 }

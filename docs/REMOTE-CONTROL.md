@@ -44,6 +44,12 @@ def act(action, **args):
 act("open_data", paths=["/data/study/airr_rearrangement.tsv", "/data/study/repertoires.airr.json"])
 act("set_definition", preset="Nucleotide junction")
 print(act("show_methods")["data"]["text"])
+
+# A VDJtools table, through a mapping of its columns.
+table = "/data/vdjtools/patient7_day0.txt"
+act("open_data", paths=[table], mappings={table: {
+    "columns": {"junction_aa": "cdr3aa", "junction": "cdr3nt", "v_call": "v", "j_call": "j", "count": "count"},
+    "unit": "reads"}})
 ```
 
 `GET /api/remote/tools` lists every action with its arguments as JSON Schema.
@@ -52,7 +58,7 @@ print(act("show_methods")["data"]["text"])
 | --- | --- |
 | `get_state` | The project: its datasets (format, unit, rows, samples, findings, filter, definition, license and citation of public data), the view shown, the example datasets. |
 | `new_project` | Starts a new project (`name`). |
-| `open_data` | Opens files or folders as one dataset (`paths`, `name`). Needs the token. |
+| `open_data` | Opens files or folders as one dataset (`paths`, `name`). Another tool's CSV or TSV opens through a mapping of its columns, by path in `mappings`: `{columns: {junction_aa, junction, v_call, d_call, j_call, c_call, count, sample, locus, productive, cell_id, clone_id, sequence_id: a column's name}, unit: reads, umis, templates or cells (with a count), sample: one name for every row}` ([FORMATS.md](FORMATS.md#tables-with-mapped-columns)). Needs the token. |
 | `open_example` | Opens an example dataset (`example`, `opening`); `download: true` downloads openly licensed data first. |
 | `show` | Shows a view: `start`, `data`, `qc`, `clonotypes`, `repertoire` or `jobs` (`view`, `dataset`). |
 | `set_definition` | Chooses a dataset's clonotype definition: a `preset` by name, or a `definition` in full. |

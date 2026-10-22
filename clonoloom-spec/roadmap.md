@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is done and merged, 0.1.0 not yet
-tagged; wave 2 has slices 1–7 done, slice 8 next.
+tagged; wave 2 is done, to be merged and tagged 0.2.0; wave 3 is next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -164,7 +164,8 @@ which drafts the release.
 
 ## 0.2.0: repertoire basics (wave 2)
 
-Built on the branch `wave2`, one commit per slice.
+Built on the branch `wave2`, one commit per slice. **Done**: every slice committed; release 0.2.0
+once merged and tagged.
 
 | Slice | Status |
 | --- | --- |
@@ -175,7 +176,7 @@ Built on the branch `wave2`, one commit per slice.
 | 5. Rarefaction and extrapolation | Done |
 | 6. Gene usage and spectratypes | Done |
 | 7. Overlap | Done |
-| 8. Figures, exports and methods; release 0.2.0 | Next |
+| 8. Figures, exports and methods; release 0.2.0 | Done |
 
 1. **Remote control and screenshots (A7).** SituCraft's hub and capture scenes.
    - *Done:* eleven actions (a twelfth, `measure_diversity`, came with slice 4). Reading files by
@@ -253,6 +254,27 @@ Built on the branch `wave2`, one commit per slice.
    import; the methods paragraph for each analysis; release 0.2.0.
    - Also: the capture scenes of the views wave 2 built, the README's pictures re-captured, and
      the first project fixture under `validation/projects/` (see "In every wave").
+   - *Done:* every plot of the QC and Repertoire views saved as SVG, PNG (300 dpi) or PDF, its
+     caption stating the definition, unit, samples, filter and version. The rearrangements exported
+     as AIRR TSV, the clonotypes and each result as CSV, each in a zip with a NOTICE of the data's
+     files, method, license and citation; rows under terms of use only once the terms are accepted.
+     A table no reader recognizes opened through a mapping of its columns, checked column by column
+     first, kept with the dataset and stated in its methods. The Repertoire view's five parts
+     captured. The first project fixture, `validation/projects/0.2.0`, made through remote control
+     and opened again by a test, its datasets under the same IDs and its five results made again.
+   - *Decided:* the fixture holds its data (the small simulated study, gzipped, and a VDJtools
+     table: 200 KB in all) rather than simulating them again, so a later simulator may change. A PDF
+     figure holds the 300-dpi PNG: a vector PDF would need a PDF writer for text and paths, and
+     the SVG is the vector form.
+   - *Found:* results are not yet the same on every processor, as `conventions.md` requires. The
+     arm64 build fuses 98 multiply-adds in diversity, rarefaction, usage, overlap, QC and the random
+     draws, and these call Go's `math.Log`, `Exp` and `Pow`, which differ between processors
+     (`internal/dmath` was never written). On amd64 the fixture's diversity, rarefaction and usage
+     documents differ from arm64's in their last digits (at most 0.1% of a relative 10⁻⁹), and its
+     overlap document is the same. So the fixture is compared value by value until results are made
+     the same, which wave 8's certificates (bit for bit) need.
+   - Plot axes leave room for their last tick's label, which was cut off at the right of line
+     and curve plots.
 
 ## 0.3.0: tracking (wave 3)
 

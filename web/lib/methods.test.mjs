@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { methodsParagraph, joinList } from './methods.js';
 
 const program = { version: '0.1.0', commit: '96a92f4c0ffee' };
@@ -120,4 +121,13 @@ test('an overlap result kept says what was measured, at what depth, citing each 
   for (const key of ['Jaccard P.', 'Dice LR.', 'Morisita M.', 'Horn HS.', 'Horvitz DG']) {
     assert.equal(references.filter((r) => r.includes(key)).length, 1, key);
   }
+});
+
+test('a table read through a mapping says which of its columns gave what (the 0.2.0 project)', () => {
+  const project = JSON.parse(readFileSync(new URL('../../validation/projects/0.2.0/project.json', import.meta.url), 'utf8'));
+  const dataset = project.datasets.find((d) => d.sources.some((s) => s.mapping));
+  const { text } = methodsParagraph({ dataset, results: project.artifacts.filter((a) => a.dataset === dataset.id), program });
+  assert.match(text, /The file \(a table with mapped columns\) was read/);
+  assert.match(text, /S02-1\.vdjtools\.txt's columns were mapped by the user: the junction's amino acids from "cdr3aa", the junction's nucleotides from "cdr3nt", the V gene from "v", the D gene from "d", the J gene from "j" and the count from "count", the count being of UMIs, every row of sample S02-1; a rearrangement was taken as productive when its junction is whole codons with no stop codon\./);
+  assert.match(text, /Each sample's diversity was measured over its clonotypes' abundances in UMIs/);
 });

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { curves, columns, heatmap, intervals, lines, scale, stackedBars, ticks } from './plot.js';
+import { curves, columns, figure, figureStyle, heatmap, intervals, lines, scale, stackedBars, ticks } from './plot.js';
 
 test('ticks are nice numbers covering the range', () => {
   assert.deepEqual(ticks(1), [0, 0.25, 0.5, 0.75, 1]);
@@ -98,4 +98,22 @@ test('a heatmap shades each cell by its value, leaves the missing blank and says
   assert.match(svg, /S&lt;2&gt;/);
   assert.match(svg, /rotate\(-60\)/);
   assert.equal(description, 'V genes: 2 rows by 3 columns; the largest 0.4, S1 and TRBV5-1.');
+});
+
+test('a figure stands alone: the plot on white with its title, legend, caption and colors written in', () => {
+  const plot = intervals([{ label: 'S1', value: 2, lower: 1, upper: 3, className: 'plot-s2' }], { label: 'Shannon diversity' });
+  const { svg, width, height } = figure(plot.svg, {
+    title: 'Shannon diversity of each sample', legend: [{ label: 'control', className: 'plot-s1' }, { label: 'expanded <x>', className: 'plot-s2' }],
+    caption: ['Clonotypes: amino-acid junction, V and J genes; abundance in templates; 12 samples.', 'ClonoLoom 0.2.0.'],
+  });
+  assert.match(svg, /^<svg xmlns="http:\/\/www.w3.org\/2000\/svg" width="\d+" height="\d+"/);
+  assert.match(svg, /<style>[^<]*\.plot-whisker\{stroke:#4b5468/);
+  assert.match(svg, /circle\.plot-s2,rect\.plot-s2\{fill:#e9a23b\}/);
+  assert.match(svg, /<text class="figure-title"[^>]*>Shannon diversity of each sample<\/text>/);
+  assert.match(svg, /expanded &lt;x&gt;/);
+  assert.match(svg, /<text class="figure-caption"[^>]*>ClonoLoom 0.2.0.<\/text>/);
+  assert.ok(!/var\(--/.test(svg), 'no theme variables');
+  assert.ok(width >= 360 && height > 100);
+  // With color vision, the status colors change.
+  assert.match(figureStyle({ colorVision: true }), /\.plot-warn\{fill:#9a6200\}/);
 });

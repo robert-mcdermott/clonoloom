@@ -16,6 +16,9 @@ export class ActionError extends Error {}
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// A count with its noun: 1 sample, 2 samples, 1,561 rows.
+const count = (n, noun) => `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`;
+
 // The views by the names scripts use.
 const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', jobs: 'jobs' };
 
@@ -104,11 +107,11 @@ export function installRemote(app) {
       return { message: `Started ${store.project.name}.`, data: { project: { id: store.project.id, name: store.project.name } } };
     },
 
-    async open_data({ paths, name }) {
+    async open_data({ paths, name, mappings }) {
       if (!Array.isArray(paths) || !paths.length) throw new ActionError('open_data needs {"paths": ["/path/to/airr_rearrangement.tsv", …]}.');
-      const summary = await app.openData(paths.map(String), { name: name ? String(name) : '', rethrow: true });
+      const summary = await app.openData(paths.map(String), { name: name ? String(name) : '', mappings: mappings && typeof mappings === 'object' ? mappings : null, rethrow: true });
       if (!summary) throw new ActionError('The project changed while the files were read.');
-      return { message: `Opened ${summary.name}: ${summary.samples.length} samples, ${summary.rows} rows.`, data: { dataset: summary.id, name: summary.name, unit: summary.unit || null, findings: { fatal: summary.report.fatal, warnings: summary.report.warnings, notes: summary.report.notes } } };
+      return { message: `Opened ${summary.name}: ${count(summary.samples.length, 'sample')}, ${count(summary.rows, 'row')}.`, data: { dataset: summary.id, name: summary.name, unit: summary.unit || null, findings: { fatal: summary.report.fatal, warnings: summary.report.warnings, notes: summary.report.notes } } };
     },
 
     async open_example({ example, opening, download }) {
@@ -190,7 +193,7 @@ export function installRemote(app) {
       if (done.status === 'failed') throw new ActionError(done.error);
       const keys = ['richness', 'chao1', 'hill1', 'hill1Estimated', 'hill2', 'hill2Estimated', 'clonality', 'simpsonClonality', 'gini', 'coverage'];
       return {
-        message: `The diversity of ${d.name}: ${done.result.samples.length} samples (${done.artifact}).`,
+        message: `The diversity of ${d.name}: ${count(done.result.samples.length, 'sample')} (${done.artifact}).`,
         data: {
           result: done.artifact, unit: done.result.unit, definition: done.result.describe,
           samples: done.result.samples.map((s) => ({ name: s.name, abundance: s.result.abundance, measures: Object.fromEntries(keys.map((k) => [k, s.result.measures[k] ?? null])) })),
@@ -214,7 +217,7 @@ export function installRemote(app) {
       const bySize = /size/i.test(key);
       const index = key.startsWith('extrapolated') ? 1 : 0;
       return {
-        message: `${d.name}'s ${r.samples.length} samples compared at ${bySize ? 'equal size' : 'equal coverage'} (${done.artifact}).`,
+        message: `${d.name}'s ${count(r.samples.length, 'sample')} compared at ${bySize ? 'equal size' : 'equal coverage'} (${done.artifact}).`,
         data: {
           result: done.artifact, unit: r.unit, definition: r.describe, levels: r.levels, comparedAt: key,
           samples: r.samples.map((s) => {
@@ -284,7 +287,7 @@ export function installRemote(app) {
       const key = id === 'abundance' ? 'abundanceOfA' : id;
       const top = [...r.pairs].sort((x, y) => (y.measures[key]?.estimate ?? -1) - (x.measures[key]?.estimate ?? -1)).slice(0, Math.max(1, Math.min(Number(pairs) || 10, 200)));
       return {
-        message: `${d.name}: the overlap of ${r.pairs.length} pairs of ${r.samples.length} samples (${done.artifact}).`,
+        message: `${d.name}: the overlap of ${count(r.pairs.length, 'pair')} of ${count(r.samples.length, 'sample')} (${done.artifact}).`,
         data: {
           result: done.artifact, unit: r.unit, definition: r.describe, measure: id, depth: r.depth,
           summaries: (r.summaries ?? []).map((s) => ({ kind: s.kind, pairs: s.pairs, mean: s.measures[key]?.mean ?? null, min: s.measures[key]?.min ?? null, max: s.measures[key]?.max ?? null })),

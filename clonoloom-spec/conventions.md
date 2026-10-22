@@ -28,7 +28,8 @@ internal/validate/   findings with stable codes
 internal/clonotype/  definitions, clonotype tables for bulk and single-cell data
 internal/qc/         per-sample and single-cell QC
 internal/stats/      distributions, tests, multiple testing (adapted from SituCraft)
-internal/dmath/      logarithm and exponential with the same bits on every processor
+internal/dmath/      logarithm and exponential with the same bits on every processor (not yet
+                     written: roadmap.md, wave 2, slice 8)
 internal/random/     seeded random streams
 internal/jobs/       durable background jobs (wave 2)
 internal/artifacts/  results kept with their lineage (wave 2)
@@ -37,12 +38,14 @@ internal/diversity/  diversity, rarefaction and extrapolation (wave 2)
 internal/usage/      gene usage, junction lengths and amino-acid composition (wave 2)
 internal/overlap/    overlap between samples and public clonotypes (wave 2)
 internal/simulate/   seeded simulated repertoires with their truth (wave 2)
+internal/export/     exports: AIRR TSV, CSV, and the notice of their data's source and license (wave 2)
 web/index.html, web/styles.css, web/app.js     app shell
 web/lib/*.js         pure modules: no DOM, no globals, importable by Node
 web/lib/*.test.mjs   node:test unit tests, one file per module
 web/ui/*.js          DOM components (only these touch document/window)
 validation/          checks against independent references and known truth
 validation/reference/  committed reference numbers, each with the script that made it
+validation/projects/   a project saved by each release, which every later one must open
 testdata/            small synthetic files made by scripts in the repository (no real data)
 docs/                installation, formats, MCP, network
 clonoloom-spec/      requirements, design, roadmap, research, these conventions

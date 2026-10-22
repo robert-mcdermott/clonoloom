@@ -1,5 +1,6 @@
 // Plots for the views, as SVG markup: horizontal bars (stacked or not), columns, estimates with
-// their intervals, lines, and rarefaction curves. Pure: each
+// their intervals, lines, rarefaction curves and heatmaps; and figures, a plot standing alone with
+// its title, legend and caption, for a paper. Pure: each
 // takes its data and options and returns { svg, description }, the description saying in words
 // what the plot shows (for screen readers, and as the plot's title). Colors are CSS classes the
 // page styles (web/styles.css, "Plots"), so plots follow the theme and color-vision setting.
@@ -131,7 +132,7 @@ export function intervals(rows, { label = 'Estimates', width = 520, labelWidth =
 export function lines(series, { label = 'Lines', width = 520, height = 220, xLabel = '', yLabel = '', log = false, format = defaultFormat, xFormat = format } = {}) {
   const left = 60;
   const bottom = 34;
-  const plotWidth = width - left - 14;
+  const plotWidth = width - left - 26;
   const plotHeight = height - bottom - 10;
   const pts = series.flatMap((s) => s.points).filter((p) => Number.isFinite(p.y) && (!log || p.y > 0));
   const xs = pts.map((p) => p.x);
@@ -173,7 +174,8 @@ export function curves(series, { label = 'Curves', width = 560, height = 260, xL
   const left = 62;
   const top = 12;
   const bottom = 36;
-  const plotWidth = width - left - 16;
+  // Room on the right for half the last tick's label (80,000), which is centered on the axis' end.
+  const plotWidth = width - left - 26;
   const plotHeight = height - top - bottom;
   const usable = (p) => Number.isFinite(p.x) && Number.isFinite(p.y) && (!logX || p.x > 0);
   const pts = series.flatMap((s) => s.points.filter(usable));
@@ -273,4 +275,94 @@ export function heatmap(values, { label = 'Heatmap', rowLabels = [], colLabels =
 function truncate(s, n) {
   const t = String(s);
   return t.length > n ? `${t.slice(0, n - 1)}…` : t;
+}
+
+// --- Figures --------------------------------------------------------------------------------------
+
+// The colors a figure is printed in: the light theme's (web/styles.css), with colorVision the
+// color-vision-friendly status colors. A figure stands alone, so its colors are written into it.
+const PRINT = {
+  text: '#171b26', text2: '#4b5468', text3: '#636c7e', line: '#e3e7ef', lineStrong: '#d0d6e2',
+  accent: '#5b4ce6', accent2: '#0fa88f', brandA: '#c8406f', brandB: '#e9a23b', ok: '#138a52', warn: '#c27a00', danger: '#d63b4a',
+};
+const PRINT_CVD = { ok: '#0068a8', warn: '#9a6200', danger: '#b0306f' };
+
+// The plot classes' colors for a figure (the rules of web/styles.css's plots, their tokens
+// resolved).
+export function figureStyle({ colorVision = false, font = 'Helvetica, Arial, sans-serif' } = {}) {
+  const c = { ...PRINT, ...(colorVision ? PRINT_CVD : {}) };
+  const series = [c.accent, c.brandB, c.accent2, c.brandA, c.ok, c.text3];
+  let css = `text{font-family:${font}}.plot-label{font-size:12px;fill:${c.text2}}.plot-tick{font-size:11px;fill:${c.text3}}`
+    + `.plot-axis{stroke:${c.lineStrong};stroke-width:1}.plot-gridline{stroke:${c.line};stroke-width:1}`
+    + `.plot-ok{fill:${c.ok}}.plot-warn{fill:${c.warn}}.plot-danger{fill:${c.danger}}.plot-muted{fill:${c.text3}}.plot-accent{fill:${c.accent}}.plot-c4{fill:${c.accent2}}.plot-c5{fill:${c.brandA}}`
+    + `.plot-whisker{stroke:${c.text2};stroke-width:1.4}.plot-line{fill:none;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}.plot-line-accent{stroke:${c.accent}}`
+    + `.plot-dashed{stroke-dasharray:5 4}.plot-heat{fill:${c.accent};stroke:none}.plot-guide{stroke:${c.text3};stroke-width:1;stroke-dasharray:3 3}.plot-band{stroke:none;fill-opacity:0.13}`
+    + `.figure-title{font-size:14px;font-weight:bold;fill:${c.text}}.figure-caption{font-size:10.5px;fill:${c.text2}}.figure-legend{font-size:11px;fill:${c.text2}}`;
+  series.forEach((color, i) => {
+    css += `.plot-band.plot-s${i + 1}{fill:${color}}.plot-line.plot-s${i + 1}{stroke:${color}}circle.plot-s${i + 1},rect.plot-s${i + 1}{fill:${color}}`;
+  });
+  return css;
+}
+
+// Words broken into lines of at most `width` characters.
+function wrapWords(text, width) {
+  const lines = [];
+  let line = '';
+  for (const word of String(text).split(/\s+/).filter(Boolean)) {
+    if (line && line.length + 1 + word.length > width) {
+      lines.push(line);
+      line = word;
+    } else line = line ? `${line} ${word}` : word;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+// A figure: a plot's SVG standing alone, on white, with its title above it, its legend
+// ([{ label, className }], a swatch of each series) and its caption (lines: what was measured, the
+// clonotype definition, the abundance unit, how many samples, by what) below it, and its colors
+// written in (figureStyle). Answers the SVG and its size in pixels.
+export function figure(plotSvg, { title = '', legend = [], caption = [], colorVision = false } = {}) {
+  const box = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(plotSvg);
+  const pw = box ? Number(box[1]) : 520;
+  const ph = box ? Number(box[2]) : 220;
+  const inner = plotSvg.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+  const pad = 16;
+  const width = Math.max(pw + 2 * pad, 360);
+  const chars = Math.floor((width - 2 * pad) / 5.6);
+  let y = pad;
+  let body = '';
+  if (title) {
+    for (const line of wrapWords(title, Math.floor((width - 2 * pad) / 7.6))) {
+      y += 16;
+      body += `<text class="figure-title" x="${pad}" y="${y}">${esc(line)}</text>`;
+    }
+    y += 8;
+  }
+  body += `<g transform="translate(${pad} ${y})">${inner}</g>`;
+  y += ph + 6;
+  // The legend: swatches and labels, as many to a row as fit.
+  let x = pad;
+  if (legend.length) {
+    y += 12;
+    for (const item of legend) {
+      const w = 16 + Math.ceil(String(item.label).length * 6.2) + 14;
+      if (x > pad && x + w > width - pad) {
+        x = pad;
+        y += 16;
+      }
+      body += `<rect class="${item.className ?? 'plot-s1'}" x="${x}" y="${y - 9}" width="10" height="10" rx="2"/><text class="figure-legend" x="${x + 15}" y="${y}">${esc(item.label)}</text>`;
+      x += w;
+    }
+    y += 8;
+  }
+  for (const text of caption) {
+    for (const line of wrapWords(text, chars)) {
+      y += 14;
+      body += `<text class="figure-caption" x="${pad}" y="${y}">${esc(line)}</text>`;
+    }
+  }
+  const height = Math.ceil(y + pad);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><style>${figureStyle({ colorVision })}</style><rect width="${width}" height="${height}" fill="#ffffff"/>${body}</svg>`;
+  return { svg, width, height };
 }

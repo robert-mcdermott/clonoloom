@@ -1,0 +1,96 @@
+{
+  "Info": {
+    "description": "A small simulated TRB study: two subjects, one sample each (simulated by ClonoLoom 0.2.0)",
+    "title": "AIRR Data File"
+  },
+  "Repertoire": [
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S01-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small",
+        "study_title": "A small simulated TRB study: two subjects, one sample each"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.2.0"
+        }
+      ],
+      "repertoire_id": "S02-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-small",
+        "study_title": "A small simulated TRB study: two subjects, one sample each"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "expanded"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    }
+  ]
+}

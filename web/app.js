@@ -9,6 +9,8 @@ import { pickPaths } from './ui/file-picker.js';
 import { createExamples } from './ui/examples.js';
 import { createJobs } from './ui/jobs.js';
 import { showMethods } from './ui/methods.js';
+import { exportDataset } from './ui/exports.js';
+import { mapColumns } from './ui/mapping.js';
 import { installRemote } from './ui/remote.js';
 import { mountSidebar } from './ui/sidebar.js';
 import { mountInspector } from './ui/inspector.js';
@@ -20,7 +22,7 @@ import { createProject, isEmptyProject, parseProject, rename, serializeProject }
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -273,12 +275,24 @@ async function start() {
 
   // Opens files as one dataset and records it in the project.
   // rethrow: an error is thrown to the caller (remote control) as well as shown.
-  app.openData = async (paths, { name = '', library = null, rethrow = false } = {}) => {
+  app.openData = async (paths, { name = '', library = null, mappings = null, rethrow = false } = {}) => {
     const sameProject = store.sameProject();
     const busy = `open-${Date.now()}`;
     store.setBusy(busy, `Reading ${library ? `${library.length} file${library.length === 1 ? '' : 's'}` : paths.length === 1 ? paths[0].split(/[\\/]/).pop() : `${paths.length} files`}…`);
     try {
-      const summary = await openDataset(library ? { library, name } : { paths, name });
+      let summary;
+      try {
+        summary = await openDataset(library ? { library, name } : { paths, name, ...(mappings ? { mappings } : {}) });
+      } catch (error) {
+        // One table ClonoLoom does not recognize: its columns mapped, if the user maps them.
+        const one = library ? library.length === 1 : paths.length === 1;
+        if (error.code !== 'format' || !one || rethrow) throw error;
+        store.setBusy(busy, null);
+        const mapping = await mapColumns(library ? { sha256: library[0].sha256, name: library[0].name } : { path: paths[0] });
+        if (!mapping) return null;
+        store.setBusy(busy, 'Reading through the mapping…');
+        summary = await openDataset(library ? { library: [{ ...library[0], mapping }], name } : { paths, name, mappings: { [paths[0]]: mapping } });
+      }
       if (!sameProject()) return null;
       app.datasetStates.set(summary.id, { status: 'open', summary });
       store.commit(addDataset(store.project, datasetRecord(summary)), `Open ${summary.name}`, ['datasets']);
@@ -306,7 +320,11 @@ async function start() {
     const promise = (async () => {
       try {
         let summary = await getDataset(record.id);
-        if (!summary) summary = await openDataset({ paths: datasetFiles(record).map((s) => s.path), name: record.name });
+        if (!summary) {
+          // Tables read through a mapping of their columns are read through it again.
+          const mappings = Object.fromEntries(record.sources.filter((s) => s.mapping).map((s) => [s.path, s.mapping]));
+          summary = await openDataset({ paths: datasetFiles(record).map((s) => s.path), name: record.name, ...(Object.keys(mappings).length ? { mappings } : {}) });
+        }
         if (summary.id !== record.id) {
           const state = { status: 'changed', summary, error: 'The files are not those the project recorded: their contents changed.' };
           setState(record.id, state);
@@ -532,10 +550,19 @@ async function start() {
       '-',
       { section: 'Export' },
       { label: 'Project document (JSON)', icon: 'download', onSelect: exportProjectJSON },
+      { label: 'Clonotypes of the dataset in focus (CSV)', icon: 'download', onSelect: () => exportFocused('clonotypes') },
+      { label: 'Its rearrangements (AIRR TSV)', icon: 'download', onSelect: () => exportFocused('rearrangements') },
       '-',
       { label: 'Start page', icon: 'grid', onSelect: () => app.setMode('welcome') },
     ]);
   });
+
+  // The dataset in focus's clonotypes or rearrangements, exported (ui/exports.js).
+  function exportFocused(what) {
+    const d = store.project.datasets.find((x) => store.ui.focus?.kind === 'dataset' && x.id === store.ui.focus.id) ?? store.project.datasets[0];
+    if (d) exportDataset(app, d, what);
+    else toast('Open data first.', { kind: 'error' });
+  }
 
   // --- Commands (palette) ------------------------------------------------------------------------
 
@@ -553,6 +580,8 @@ async function start() {
     { label: 'Open a saved project', icon: 'library', hint: `${modKey}⇧O`, run: openLibraryDialog },
     { label: 'Save project now', icon: 'save', hint: `${modKey}S`, run: saveNow },
     { label: 'Export the project document', icon: 'download', run: exportProjectJSON },
+    { label: 'Export the clonotypes of the dataset in focus (CSV)', icon: 'download', run: () => exportFocused('clonotypes'), keywords: 'csv table download' },
+    { label: 'Export the rearrangements of the dataset in focus (AIRR TSV)', icon: 'download', run: () => exportFocused('rearrangements'), keywords: 'airr tsv download' },
     { label: 'Show or hide the drawer (history, log)', icon: 'drawer', hint: `${modKey}J`, run: () => app.toggleDrawer(), keywords: 'history log undo' },
     { label: 'Toggle dark theme', icon: 'moon', run: () => toggleTheme() },
     { label: 'Color-vision-friendly colors (on or off)', icon: 'eye', run: () => toggleColorVision(), keywords: 'color blind accessibility deuteranopia protanopia palette' },

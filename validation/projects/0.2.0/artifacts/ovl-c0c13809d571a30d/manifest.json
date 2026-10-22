@@ -1,0 +1,106 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "ovl-c0c13809d571a30d",
+  "kind": "overlap",
+  "name": "Overlap · Small simulated study",
+  "dataset": "d-88d5b382e03bb966",
+  "state": "complete",
+  "created": "2026-10-22T03:09:46.977226Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-88d5b382e03bb966",
+        "name": "Small simulated study"
+      }
+    ],
+    "job": {
+      "id": "jmviyqa8r-4",
+      "kind": "overlap",
+      "spec": {
+        "dataset": "d-88d5b382e03bb966",
+        "definition": {
+          "name": "Amino-acid junction, V and J genes",
+          "chains": [],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "groups": {
+          "S01-1": "control",
+          "S02-1": "expanded"
+        },
+        "subjects": {
+          "S01-1": "S01",
+          "S02-1": "S02"
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Shared clonotypes, Jaccard, Sørensen–Dice and the overlap coefficient, observed and rarefied; Morisita–Horn and Morisita's index; public clonotypes",
+      "version": "1",
+      "citation": "Morisita M. Measuring of interspecific association and similarity between communities. Mem Fac Sci Kyushu Univ Ser E Biol. 1959;3:65–80"
+    },
+    "parameters": {
+      "dataset": "d-88d5b382e03bb966",
+      "definition": {
+        "name": "Amino-acid junction, V and J genes",
+        "chains": [],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "groups": {
+        "S01-1": "control",
+        "S02-1": "expanded"
+      },
+      "subjects": {
+        "S01-1": "S01",
+        "S02-1": "S02"
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.2.0"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "overlap.json",
+      "role": "overlap",
+      "size": 2964,
+      "sha256": "7abe508e90a09327f681d866a302b9b340435c9e36629f607dd14fa1d4005c9e"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "definition": "Amino-acid junction, V and J genes",
+    "depth": 1671,
+    "pairs": 1,
+    "samples": 2,
+    "unit": "umis"
+  }
+}

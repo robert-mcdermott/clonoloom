@@ -36,12 +36,22 @@ function picker(label, options, value, set) {
     ...options.map(([v, text]) => h('option', { value: v, selected: v === value }, text)));
 }
 
+// The view's figure saver and the conditions' legend, for the cards being drawn.
+let current = { save: null, items: [] };
+
+// card builds a plot card; its plot is saved as a figure (the view's save), captioned with the
+// card's notes, its legend the conditions' when the card shows it.
 function card(title, controls, plot, ...notes) {
-  return h('figure.plot-card', h('figcaption', h('span', title), h('span.plot-pickers', ...controls)),
+  const el = h('figure.plot-card', h('figcaption', h('span', title), h('span.plot-pickers', ...controls)),
     plot ? h('div.plot-holder', { html: plot.svg }) : null, ...notes);
+  if (!plot || !current.save) return el;
+  const note = notes.filter((n) => n?.tagName === 'P').map((n) => n.textContent).join(' ');
+  const legend = notes.some((n) => n?.classList?.contains('plot-legend')) ? current.items : [];
+  return current.save(el, { title, plot, note, legend });
 }
 
-export function renderOverlap({ body, state, ui, render, colors }) {
+export function renderOverlap({ body, state, ui, render, colors, save }) {
+  current = { save, items: colors.items ?? [] };
   const result = state.result;
   const samples = result.samples;
   const n = samples.length;
@@ -115,5 +125,4 @@ export function renderOverlap({ body, state, ui, render, colors }) {
           h('td', { title: c.id }, c.chains.map((ch) => [ch.locus, ch.junction, ch.v, ch.j].filter(Boolean).join(' ')).join(' / ')),
           h('td.r', String(c.units)), h('td.sample-name', { title: c.samples.join(', ') }, c.samples.join(', ')), h('td.r', Math.round(c.abundance).toLocaleString('en-US')))))))
       : h('p.muted', `No clonotype is found in more than one ${by.replace(/s$/, '')}.`));
-  void colors;
 }

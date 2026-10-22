@@ -34,6 +34,7 @@ var FormatNames = map[Format]string{
 	FormatCellRanger:  "Cell Ranger V(D)J contig annotations",
 	FormatImmunoSEQv3: "immunoSEQ export (v3)",
 	FormatImmunoSEQv2: "immunoSEQ export (v2)",
+	FormatTable:       "Table with mapped columns",
 }
 
 // ReaderVersion changes when a reader reads any file differently; cached tables and records name
@@ -55,6 +56,8 @@ type Source struct {
 	Header   []string `json:"header,omitempty"`
 	// GeneNames are a vendor\'s gene names and the IMGT names ClonoLoom read them as.
 	GeneNames map[string]string `json:"geneNames,omitempty"`
+	// Mapping: for a table read through a mapping of its columns (FormatTable), the mapping.
+	Mapping *Mapping `json:"mapping,omitempty"`
 }
 
 // Result is a dataset's sources read into one table.
@@ -79,6 +82,8 @@ var ErrUnknownFormat = errors.New("not a format ClonoLoom reads")
 type Input struct {
 	Path string `json:"path"`
 	Name string `json:"name,omitempty"`
+	// Mapping: for a table ClonoLoom does not recognize, which column holds which field.
+	Mapping *Mapping `json:"mapping,omitempty"`
 }
 
 // ReadFiles reads files into one table, each a source of the dataset, in the order given.
@@ -114,7 +119,13 @@ func ReadInputs(ctx context.Context, inputs []Input) (*Result, error) {
 			name = in.Path
 		}
 		hashed := &hashingReader{r: f, h: sha256.New()}
-		src, unit, err := readOne(ctx, hashed, name, i, &b, res.Problems)
+		var src Source
+		var unit rep.Unit
+		if in.Mapping != nil {
+			src, unit, err = readMapped(ctx, hashed, name, i, &b, res.Problems, *in.Mapping)
+		} else {
+			src, unit, err = readOne(ctx, hashed, name, i, &b, res.Problems)
+		}
 		if err == nil {
 			// The rest of the file (a reader may stop before its end) completes the fingerprint.
 			_, err = io.Copy(io.Discard, hashed)

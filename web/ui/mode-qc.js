@@ -10,6 +10,7 @@ import { datasetQC } from './storage.js';
 import { UNITS, datasetUnit } from '../lib/datasets.js';
 import { LOCI, RULES, cleanRules, datasetFilter, describeRules, saveFilter, useFilter } from '../lib/filters.js';
 import { columns, stackedBars } from '../lib/plot.js';
+import { exportable, madeBy } from './figures.js';
 
 const count = (n) => (Number.isFinite(n) ? Number(n).toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—');
 const pct = (v, digits = 1) => (Number.isFinite(v) ? `${(100 * v).toFixed(digits)}%` : '—');
@@ -189,8 +190,16 @@ export function mountQC(app, container) {
       h('tbody', ...rows)));
   }
 
-  function plotCard(title, plot, note) {
-    return h('figure.plot-card', h('figcaption', title), h('div.plot-holder', { html: plot.svg }), note ? h('p.muted.small', note) : null);
+  // A plot card, saved as a figure with its legend and a caption: what it shows, the samples and
+  // filter, QC's clonotypes and the unit.
+  function plotCard(title, plot, note, legend = []) {
+    const d = dataset();
+    const filter = datasetFilter(store.project, d);
+    const card = h('figure.plot-card', h('figcaption', title), h('div.plot-holder', { html: plot.svg }), note ? h('p.muted.small', note) : null);
+    return exportable(card, () => ({
+      name: `${d.name} ${title}`, title: `${title}, ${d.name}`, plot: plot.svg, legend,
+      caption: [typeof note === 'string' ? note : '', `${d.name}: ${answer.report.samples.length} samples${filter ? `, filter "${filter.name}" version ${filter.version}` : ''}. Clonotypes for QC: productive rearrangements by locus, amino-acid junction, V gene and J gene. Abundance in ${UNITS[datasetUnit(d)] ?? 'counts'}.`, madeBy(app.version)].filter(Boolean),
+    }));
   }
 
   function statusPlot(report) {
@@ -206,7 +215,7 @@ export function mountQC(app, container) {
     });
     const shown = keys.filter((k) => report.samples.some((s) => s[k.key] > 0));
     return plotCard(report.singleCell ? 'Contigs: productive, out of frame, stop codon' : 'Abundance: productive, out of frame, stop codon', plot,
-      h('span.plot-legend', ...shown.map((k) => h('span', h(`span.swatch.${k.className}`), k.label))));
+      h('span.plot-legend', ...shown.map((k) => h('span', h(`span.swatch.${k.className}`), k.label))), shown);
   }
 
   function lengthsPlot(report) {
@@ -216,7 +225,8 @@ export function mountQC(app, container) {
     const toggle = h('div.segmented', ...[['clonotypes', 'Clonotypes'], ['abundance', report.singleCell ? 'Contigs' : 'Abundance']].map(([id, label]) =>
       h(`button${lengthBy === id ? '.active' : ''}`, { type: 'button', onclick: () => { lengthBy = id; draw(); } }, label)));
     const card = plotCard(`Junction lengths · ${s?.name ?? ''}`, plot, 'Productive junctions, from the conserved cysteine to the phenylalanine or tryptophan. Choose a sample in the table.');
-    card.querySelector('figcaption').append(toggle);
+    const caption = card.querySelector('figcaption');
+    caption.insertBefore(toggle, caption.querySelector('.figure-export'));
     return card;
   }
 
@@ -233,7 +243,7 @@ export function mountQC(app, container) {
       for (const k of top) parts[k] = (s.chains?.configurations?.[k] ?? 0) / total;
       return { label: s.name, parts };
     }), keys, { label: 'Cells by their productive chains', share: true, labelWidth: 150 });
-    return plotCard('Cells by their productive chains', plot, h('span.plot-legend', ...keys.map((k) => h('span', h(`span.swatch.${k.className}`), k.label))));
+    return plotCard('Cells by their productive chains', plot, h('span.plot-legend', ...keys.map((k) => h('span', h(`span.swatch.${k.className}`), k.label))), keys);
   }
 
   function vendorChecks() {

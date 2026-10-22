@@ -132,6 +132,11 @@ func unquote(b []byte) string {
 // A quoted field may not span lines in the tables ClonoLoom reads; ok is false when quotes are
 // unbalanced.
 func splitCSV(line []byte, fields []string) ([]string, bool) {
+	return splitSep(line, ',', fields)
+}
+
+// splitSep splits a line separated by sep, with RFC 4180's quoting, into fields.
+func splitSep(line []byte, sep byte, fields []string) ([]string, bool) {
 	fields = fields[:0]
 	var field strings.Builder
 	for i := 0; ; {
@@ -154,11 +159,11 @@ func splitCSV(line []byte, fields []string) ([]string, bool) {
 				field.WriteByte(line[i])
 				i++
 			}
-			if i < len(line) && line[i] != ',' {
+			if i < len(line) && line[i] != sep {
 				return fields, false
 			}
 		} else {
-			j := bytes.IndexByte(line[i:], ',')
+			j := bytes.IndexByte(line[i:], sep)
 			if j < 0 {
 				j = len(line) - i
 			}
@@ -169,7 +174,7 @@ func splitCSV(line []byte, fields []string) ([]string, bool) {
 		if i >= len(line) {
 			return fields, true
 		}
-		i++ // the comma
+		i++ // the separator
 		if i == len(line) {
 			return append(fields, ""), true
 		}

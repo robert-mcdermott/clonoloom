@@ -150,6 +150,36 @@ const scenes = {
     await act('show_methods');
     await waitFor(`Boolean(document.querySelector('.methods-text'))`);
   },
+  // The diversity of the simulated study's twelve samples, each with its 95% interval.
+  async diversity() {
+    await act('open_example', { example: 'simulated-standard' });
+    await act('measure_diversity');
+    await waitFor(`document.querySelectorAll('.repertoire-view .plot-card svg').length >= 3`);
+  },
+  // Its samples compared at equal coverage, with their rarefaction and extrapolation curves.
+  async rarefaction() {
+    await act('open_example', { example: 'simulated-standard' });
+    await act('rarefy');
+    await waitFor(`document.querySelectorAll('.repertoire-view .plot-card svg').length >= 3`);
+  },
+  // Its samples' V genes, and one gene across the samples.
+  async genes() {
+    await act('open_example', { example: 'simulated-standard' });
+    await act('gene_usage');
+    await waitFor(`document.querySelectorAll('.repertoire-view .plot-card svg').length >= 2`);
+  },
+  // Its samples' junction lengths and amino acids.
+  async junctions() {
+    await act('open_example', { example: 'simulated-standard' });
+    await act('gene_usage', { part: 'junctions' });
+    await waitFor(`document.querySelectorAll('.repertoire-view .plot-card svg').length >= 3`);
+  },
+  // Every pair of its samples by Morisita's index; the pairs of one subject and of two.
+  async overlap() {
+    await act('open_example', { example: 'simulated-standard' });
+    await act('measure_overlap');
+    await waitFor(`document.querySelectorAll('.repertoire-view .plot-card svg').length >= 2`);
+  },
 };
 
 const names = wanted.length ? wanted : Object.keys(scenes);

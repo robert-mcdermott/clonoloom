@@ -17,6 +17,8 @@ import { datasetFilter } from '../lib/filters.js';
 import { addResult } from '../lib/results.js';
 import { renderGenes, renderJunctions, USAGE_WORDS } from './repertoire-usage.js';
 import { renderOverlap, OVERLAP_WORDS } from './repertoire-overlap.js';
+import { exportable, madeBy } from './figures.js';
+import { exportResult } from './exports.js';
 
 // The measures, as the view offers them: what each is, in words.
 export const MEASURES = [
@@ -108,8 +110,12 @@ export function mountRepertoire(app, container) {
   const datasetSelect = h('select.input.small', { 'aria-label': 'Dataset', onchange: (e) => { chosen = e.target.value; load(); } });
   const partSwitch = h('div.segmented', { role: 'tablist', 'aria-label': 'Part' });
   const measureButton = h('button.btn.primary.small', { type: 'button', onclick: () => measure(PARTS[part].kind) });
+  const exportButton = h('button.btn.small', { type: 'button', title: 'Export this result as CSV, with a NOTICE of the data\'s source and license', onclick: () => {
+    const state = states[PARTS[part].kind];
+    if (state.status === 'ready') exportResult(app, dataset(), state.artifact);
+  } }, icon('download'), 'Export');
   const head = h('div.workbench-head', h('h1', icon('repertoire'), 'Repertoire'), partSwitch, h('span.spacer'),
-    h('label.kv-inline', h('span.muted', 'Dataset'), datasetSelect), measureButton);
+    h('label.kv-inline', h('span.muted', 'Dataset'), datasetSelect), measureButton, exportButton);
   const body = h('div.view-body.repertoire-view');
   const root = h('div.view', head, h('div.workbench-scroll', body));
   container.append(root);
@@ -279,6 +285,7 @@ export function mountRepertoire(app, container) {
     clear(measureButton);
     measureButton.append(icon('play'), PARTS[part].start);
     measureButton.hidden = !d || state.status === 'ready' || state.status === 'running';
+    exportButton.hidden = !d || state.status !== 'ready';
     if (!d) {
       body.append(h('div.empty', icon('repertoire'), h('h3', 'No data yet'),
         h('p', 'Open data, define clonotypes, and measure each sample\'s diversity here, every measure with its interval, and compare samples at equal coverage.'),
@@ -316,8 +323,18 @@ export function mountRepertoire(app, container) {
     if (state.status !== 'ready') return;
     if (part === 'diversity') renderMeasures(d, state);
     else if (part === 'rarefaction') renderRarefaction(d, state);
-    else if (part === 'overlap') renderOverlap({ body, state, ui: overlapUI, render, colors: colors(d, state.result.samples.map((s) => s.name)) });
-    else (part === 'genes' ? renderGenes : renderJunctions)({ body, state, ui: usageUI, render, colors: colors(d, state.result.samples.map((s) => s.name)) });
+    else if (part === 'overlap') renderOverlap({ body, state, ui: overlapUI, render, colors: colors(d, state.result.samples.map((s) => s.name)), save: saver(d, state.result) });
+    else (part === 'genes' ? renderGenes : renderJunctions)({ body, state, ui: usageUI, render, colors: colors(d, state.result.samples.map((s) => s.name)), save: saver(d, state.result) });
+  }
+
+  // saver answers save(card, { title, plot, note, legend }): the card with a button that saves its
+  // plot as a figure, captioned with what it shows, the result's samples and filter, its clonotype
+  // definition and unit, and the program.
+  function saver(d, result) {
+    return (card, { title, plot, note = '', legend = [] }) => exportable(card, () => ({
+      name: `${d.name} ${title}`, title: `${title}, ${d.name}`, plot: plot.svg, legend,
+      caption: [note, `${d.name}: ${result.samples.length} samples${spec?.filterRecord ? `, filter "${spec.filterRecord.name}" version ${spec.filterRecord.version}` : ''}. Clonotypes: ${result.describe}. Abundance in ${UNITS[result.unit] ?? 'counts'}.`, madeBy(app.version)].filter(Boolean),
+    }));
   }
 
   // Colors by condition: the samples' annotation, else their metadata's; a group (a condition) its
@@ -329,14 +346,16 @@ export function mountRepertoire(app, container) {
       return c ? `plot-s${(conditions.indexOf(c) % 6) + 1}` : 'plot-s1';
     };
     const legend = () => (conditions.length ? h('div.plot-legend', ...conditions.map((c, i) => h('span', h(`span.swatch.plot-s${(i % 6) + 1}`), c))) : null);
-    return { classOf, legend };
+    const items = conditions.map((c, i) => ({ label: c, className: `plot-s${(i % 6) + 1}` }));
+    return { classOf, legend, items };
   }
 
   function renderMeasures(d, state) {
     const result = state.result;
     const samples = result.samples;
     const unit = UNITS[result.unit] ?? 'counts';
-    const { classOf, legend } = colors(d, samples.map((s) => s.name));
+    const { classOf, legend, items } = colors(d, samples.map((s) => s.name));
+    const save = saver(d, result);
     const low = samples.filter((s) => Number.isFinite(s.result.measures.coverage?.estimate) && s.result.measures.coverage.estimate < 0.9);
     const notes = [];
     if (low.length) notes.push(h('div.callout.warn', h('p', `${low.length === samples.length ? 'Every sample has' : `${low.length} of ${samples.length} samples have`} a sample coverage below 0.9 (${low.slice(0, 4).map((s) => `${s.name} ${s.result.measures.coverage.estimate.toFixed(2)}`).join(', ')}${low.length > 4 ? ', …' : ''}): there, Chao1 and the estimated Shannon diversity are lower bounds, and in ClonoLoom's simulations their intervals did not hold the truth. Compare such samples at equal coverage instead (Rarefaction).`)));
@@ -353,23 +372,26 @@ export function mountRepertoire(app, container) {
       return { label: s.name, value: v.estimate ?? NaN, lower: v.lower ?? NaN, upper: v.upper ?? NaN, className: classOf(s.name) };
     });
     const plot = intervals(rows, { label: info.label, width: 560, labelWidth: 140, format: (v) => fmt(v, SHARES.has(info.id)) });
-    body.append(h('figure.plot-card',
-      h('figcaption', h('span', 'Each sample'), picker),
+    const barsNote = 'Bars are 95% intervals (Chao1\'s from its variance, the others from 200 bootstrap replicates of each sample).';
+    body.append(save(h('figure.plot-card',
+      h('figcaption', h('span', 'Each sample'), h('span.plot-pickers', picker)),
       h('div.plot-holder', { html: plot.svg }),
       legend(),
-      h('p.muted.small', info.words, ' ', 'Bars are 95% intervals (Chao1\'s from its variance, the others from 200 bootstrap replicates of each sample).')));
+      h('p.muted.small', info.words, ' ', barsNote)), { title: info.label, plot, note: `${info.words} ${barsNote}`, legend: items }));
 
     // The Hill profile and homeostasis.
     const profileQs = [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5, 4];
     const profile = lines(samples.map((s) => ({ label: s.name, className: classOf(s.name), points: profileQs.map((q) => ({ x: q, y: s.result.measures[`hill@${q}`]?.estimate ?? NaN })) })),
       { label: 'Hill numbers by order', xLabel: 'Order q', yLabel: 'Effective clonotypes', log: true });
     const homeo = stackedBars(samples.map((s) => ({ label: s.name, parts: Object.fromEntries(HOMEOSTASIS.map((b) => [b.key, s.result.measures[`homeostasis.${b.key}`]?.estimate ?? 0])) })), HOMEOSTASIS, { label: 'Clonal space homeostasis', share: true });
+    const profileNote = 'Each sample\'s Hill numbers from order 0 (clonotypes seen) through 1 (Shannon) and 2 (Simpson) to 4: a profile that falls fast belongs to a repertoire dominated by a few clonotypes.';
+    const homeoNote = 'The share of each sample in clonotypes of each frequency (immunarch\'s bins).';
     body.append(h('div.plot-grid',
-      h('figure.plot-card', h('figcaption', 'The Hill profile'), h('div.plot-holder', { html: profile.svg }), legend(),
-        h('p.muted.small', 'Each sample\'s Hill numbers from order 0 (clonotypes seen) through 1 (Shannon) and 2 (Simpson) to 4: a profile that falls fast belongs to a repertoire dominated by a few clonotypes.')),
-      h('figure.plot-card', h('figcaption', 'Clonal space homeostasis'), h('div.plot-holder', { html: homeo.svg }),
+      save(h('figure.plot-card', h('figcaption', 'The Hill profile'), h('div.plot-holder', { html: profile.svg }), legend(),
+        h('p.muted.small', profileNote)), { title: 'The Hill profile', plot: profile, note: profileNote, legend: items }),
+      save(h('figure.plot-card', h('figcaption', 'Clonal space homeostasis'), h('div.plot-holder', { html: homeo.svg }),
         h('div.plot-legend', ...HOMEOSTASIS.map((b) => h('span', h(`span.swatch.${b.className}`), b.label))),
-        h('p.muted.small', 'The share of each sample in clonotypes of each frequency (immunarch\'s bins).'))));
+        h('p.muted.small', homeoNote)), { title: 'Clonal space homeostasis', plot: homeo, note: homeoNote, legend: HOMEOSTASIS.map((b) => ({ label: b.label, className: b.className })) })));
 
     // The table.
     const cols = [['Clonotypes', 'richness'], ['Chao1', 'chao1'], ['Shannon diversity', 'hill1'], ['Simpson diversity', 'hill2'], ['Clonality', 'clonality'], ['Simpson clonality', 'simpsonClonality'], ['Gini', 'gini'], ['Coverage', 'coverage']];
@@ -402,7 +424,8 @@ export function mountRepertoire(app, container) {
     const result = state.result;
     const samples = result.samples;
     const unit = UNITS[result.unit] ?? 'counts';
-    const { classOf, legend } = colors(d, samples.map((s) => s.name));
+    const { classOf, legend, items } = colors(d, samples.map((s) => s.name));
+    const save = saver(d, result);
     if (!result.levels) {
       body.append(h('div.callout', h('p', 'No sample can be rarefied: rarefaction needs abundances that are whole numbers (counts of cells, templates, UMIs or reads), and at least two of them.')));
       return;
@@ -426,11 +449,12 @@ export function mountRepertoire(app, container) {
     });
     const plot = intervals(rows, { label: `${ord.label} at ${words.label}`, width: 560, labelWidth: 170, format: (v) => fmt(v) });
     const extrapolatedHere = samples.filter((s) => at(s)?.method === 'extrapolated');
-    body.append(h('figure.plot-card',
+    const compareNote = `${ord.short} at ${words.words}. Bars are 95% intervals from ${result.options.replicates} bootstrap replicates of each sample. Comparing at equal coverage is fairer than at equal size: a sample twice as deep is not just more of the same repertoire (Chao and Jost 2012).`;
+    body.append(save(h('figure.plot-card',
       h('figcaption', h('span', 'Each sample at'), h('span.plot-pickers', levelPicker, orderPicker)),
       h('div.plot-holder', { html: plot.svg }),
       legend(),
-      h('p.muted.small', `${ord.short} at ${words.words}. Bars are 95% intervals from ${result.options.replicates} bootstrap replicates of each sample. Comparing at equal coverage is fairer than at equal size: a sample twice as deep is not just more of the same repertoire (Chao and Jost 2012).`)));
+      h('p.muted.small', compareNote)), { title: `${ord.short} at ${words.label}`, plot, note: compareNote, legend: items }));
     if (extrapolatedHere.length) {
       body.append(h('div.callout.warn', h('p', `${extrapolatedHere.length} sample${extrapolatedHere.length === 1 ? ' is' : 's are'} extrapolated at this level. In ClonoLoom's simulations of repertoires with many rare clonotypes, values extrapolated to twice a sample's size were within 1–3% of the truth on average, but their intervals were narrower than that and often missed it (the Simpson diversity's excepted). Prefer a rarefied level where it suffices.`)));
     }
@@ -461,7 +485,8 @@ export function mountRepertoire(app, container) {
       const own = s.curves.bySize.find((p) => p.method === 'observed');
       return { points, observed: own ? { x: own.size, y: own.coverage.estimate } : null };
     }), { label: 'Sample coverage by sample size', xLabel: `Sample size (${unit}${logX ? ', logarithmic' : ''})`, yLabel: 'Sample coverage', logX, bands, yFormat: (v) => String(Number(v.toFixed(2))) });
-    const card = (title, plotted, text) => h('figure.plot-card', h('figcaption', title), h('div.plot-holder', { html: plotted.svg }), legend(), h('p.muted.small', text));
+    const card = (title, plotted, text) => save(h('figure.plot-card', h('figcaption', title), h('div.plot-holder', { html: plotted.svg }), legend(), h('p.muted.small', text)),
+      { title, plot: plotted, note: text, legend: items });
     body.append(h('div.plot-grid',
       card(`${ord.short} by size`, bySize, `What each sample would show at each size: solid where rarefied, dashed where extrapolated (to twice its size), the dot the sample itself${bands ? ', the band its 95% interval' : ''}.`),
       card(`${ord.short} by coverage`, byCoverage, `The same against the sample coverage each size reaches: where the curves cross a coverage, the samples are equally complete there.`),

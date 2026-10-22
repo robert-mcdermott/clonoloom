@@ -1,7 +1,7 @@
 # Getting started
 
-A first study in ClonoLoom 0.1.0: open data, check them, look at each sample's quality, define
-clonotypes, and write down what was done. It takes a few minutes with the example data, and works
+A first study in ClonoLoom 0.2.0: open data, check them, look at each sample's quality, define
+clonotypes, measure the repertoires, save figures and exports, and write down what was done. It takes a few minutes with the example data, and works
 the same way with your own.
 
 ## Start ClonoLoom
@@ -35,7 +35,15 @@ or with Ctrl+C in the terminal that started it. The flags are in the [README](..
   download it. Data under a provider's terms of use (the immuneACCESS data) need you to read and
   accept the terms first. Every file is checked against the checksum recorded when ClonoLoom was
   released. **Open T cells** (or B cells) then opens it as a dataset, which carries its license
-  and citation from then on.
+  and citation from then on. Simulated studies whose truth is known are made on your computer in
+  a few seconds ([SIMULATION.md](SIMULATION.md)).
+- **Another tool's table.** A CSV or TSV that no reader recognizes (VDJtools', MiXCR's clone
+  table, a spreadsheet's) opens a dialog showing its first rows. Say which column holds the
+  junction, the genes, the count and the sample: ClonoLoom guesses from the columns' names, and
+  you say what the count counts. **Check** reads the whole file and reports, for each column, how
+  many values are valid and examples of those that are not. **Open** opens it through that mapping,
+  which the dataset keeps and its methods paragraph states. Where no column says whether a
+  rearrangement is productive, one whose junction is whole codons without a stop codon is.
 
 To follow along, download **Human PBMC from a healthy donor, 1k cells** (2.8 MB) and open its
 T cells.
@@ -118,6 +126,14 @@ abundance in each sample and the contigs or rearrangements it is made of.
 
 ## Measure diversity
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/diversity-dark.webp">
+  <img alt="The Repertoire view: the Shannon diversity of twelve simulated samples with their 95% intervals, the Hill profile and clonal space homeostasis" src="images/diversity-light.webp">
+</picture>
+
+To follow along, open **A simulated TRB study with known truth** from Example data: twelve samples
+of six subjects, three with expanded clones.
+
 **Repertoire** measures each sample's diversity under the dataset's clonotype definition and
 filter: **Measure diversity** runs it in the program (a job you can follow in **Jobs**) and keeps the
 result with the project. Each measure has a 95% interval:
@@ -134,6 +150,11 @@ where a sample's coverage is below about 0.9, its Chao1 and estimated Shannon di
 bounds, and the view says so.
 
 ## Compare samples at equal coverage
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/rarefaction-dark.webp">
+  <img alt="The Rarefaction part: each sample at the lowest coverage among them, and the curves by size and by coverage" src="images/rarefaction-light.webp">
+</picture>
 
 A deeper sample holds more clonotypes because it is deeper. **Repertoire › Rarefaction** computes
 what each sample would show at any size up to twice its own, and at any **sample coverage** (the
@@ -158,6 +179,11 @@ are seen once, every sample looks complete, and the view warns.
 
 ## See what the clonotypes are made of
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/junctions-dark.webp">
+  <img alt="The Junctions part: each sample's junction lengths, their mean with its interval, and the amino acids of the junctions" src="images/junctions-light.webp">
+</picture>
+
 **Repertoire › Genes** and **Junctions** show what each sample's clonotypes are made of; **Count
 genes and junctions** runs it in the program and keeps the result. Each share is of the clonotypes
 (each counted once) or of the abundance, with its 95% interval, for each sample or for each
@@ -171,6 +197,11 @@ condition (the mean of its samples, each counted once, with their range):
   position, from the conserved cysteine at 104 to the phenylalanine or tryptophan at 118.
 
 ## Compare samples with each other
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/overlap-dark.webp">
+  <img alt="The Overlap part: Morisita's index for every pair of samples, the pairs of one subject and of two, and every pair listed" src="images/overlap-light.webp">
+</picture>
 
 **Repertoire › Overlap** measures how much every pair of samples overlaps; **Measure overlap** runs
 it in the program and keeps the result. Each value has its 95% interval.
@@ -187,6 +218,23 @@ it in the program and keeps the result. Each value has its 95% interval.
   Subjects come from the samples' annotation (or their AIRR metadata): without them, each sample
   counts as its own subject, and the view says so.
 
+## Save figures and export data
+
+- **Figures.** Each plot's ⤓ button saves it as a figure on its own: **SVG** (vector, for editing),
+  **PNG** at 300 dpi, or **PDF**. The figure has the plot on white, its title and legend, and a
+  caption saying what was measured, the clonotype definition, the abundance unit, the samples, the
+  filter and the ClonoLoom version. With color-vision-friendly colors on, the figure uses them too.
+- **Exports.** **Export** (the Clonotypes view, the Repertoire view, or **File**) writes a zip:
+  - a dataset's rearrangements as an AIRR Rearrangement TSV, each with its clonotype as
+    `clone_id`;
+  - its clonotype table as CSV, one column of abundance per sample;
+  - a result kept (diversity, rarefaction, gene usage or overlap) as CSV.
+
+  Each zip holds a `NOTICE.txt`: the files and their SHA-256, the filter, the definition, the unit,
+  the method, ClonoLoom's version, and each public data set's license and citation. Rows of data
+  under a provider's terms of use are exported only after their terms are shown and accepted,
+  and the notice says not to share them.
+
 ## Write down what was done
 
 <picture>
@@ -202,10 +250,10 @@ it in the program and keeps the result. Each value has its 95% interval.
   from the project's record: the data's source and license, how ClonoLoom read and checked them,
   the unit, the filter with what it kept, the clonotype definition, the diversity measured, the
   rarefaction and the levels the samples were compared at, the genes and junctions counted, the
-  overlap measured, and ClonoLoom's version, with numbered references. Only what was done is said. **Copy** takes it with its references.
+  overlap measured, the columns of a table read through a mapping, and ClonoLoom's version, with
+  numbered references. Only what was done is said. **Copy** takes it with its references.
 
 ## Next
 
-ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): figures and AIRR
-exports complete 0.2.0; following
+ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): following
 clonotypes over time in 0.3.0; specificity, B-cell lineages, cells and cohorts after that.

@@ -198,7 +198,7 @@ export function confirmDialog({ title, message, confirm = 'OK', danger = false }
   return new Promise((resolve) => {
     showDialog({
       title,
-      content: h('p', message),
+      content: message instanceof Node ? message : h('p', message),
       buttons: [
         { label: 'Cancel', ghost: true, value: false },
         { label: confirm, primary: !danger, danger, value: true, onClick: () => true },

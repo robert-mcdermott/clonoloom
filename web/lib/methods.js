@@ -48,6 +48,17 @@ const FORMATS = {
   'cellranger-contigs': '10x Genomics Cell Ranger contig annotations',
   'immunoseq-v3': 'Adaptive Biotechnologies immunoSEQ exports (v3 columns)',
   'immunoseq-v2': 'Adaptive Biotechnologies immunoSEQ exports (v2 columns)',
+  table: 'a table with mapped columns',
+};
+
+// The fields a mapping names, as a methods section says them (internal/reads/mapped.go).
+const MAPPED_FIELDS = {
+  junction_aa: 'the junction\'s amino acids', junction: 'the junction\'s nucleotides', v_call: 'the V gene', d_call: 'the D gene', j_call: 'the J gene', c_call: 'the C gene',
+  count: 'the count', sample: 'the sample', locus: 'the locus', productive: 'productivity', cell_id: 'the cell', clone_id: 'the clone', sequence_id: 'the sequence\'s ID',
+};
+const order = (field) => {
+  const i = Object.keys(MAPPED_FIELDS).indexOf(field);
+  return i < 0 ? Infinity : i;
 };
 
 const day = (iso) => String(iso ?? '').slice(0, 10);
@@ -90,6 +101,15 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const program_ = `ClonoLoom ${program.version}${program.commit ? ` (commit ${program.commit.slice(0, 7)})` : ''} ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}`;
   sentences.push(`${files} (${joinList(formats)}) ${sources.length === 1 ? 'was' : 'were'} read with ${program_} by its own readers (reader version ${dataset.readerVersion}), which recorded ${sources.length === 1 ? 'its' : 'each file\'s'} SHA-256 checksum as ${sources.length === 1 ? 'it' : 'each'} was read.`);
   if (codes.includes('airr')) sentences.push(`AIRR files were read as the AIRR Community's Rearrangement schema defines them ${cite('airr')}.`);
+  // Tables of other tools, read through the columns the user mapped.
+  for (const s of sources.filter((x) => x.mapping)) {
+    const m = s.mapping;
+    const fields = Object.keys(m.columns ?? {}).sort((a, b) => order(a) - order(b));
+    const columns = fields.map((field) => `${MAPPED_FIELDS[field] ?? field} from "${m.columns[field]}"`);
+    const counts = m.columns?.count ? `, the count being of ${UNIT_WORDS[m.unit] ?? m.unit}` : ', each row one sequence (no count was mapped)';
+    const inferred = m.columns?.productive ? '' : '; a rearrangement was taken as productive when its junction is whole codons with no stop codon';
+    sentences.push(`${s.name}'s columns were mapped by the user: ${joinList(columns)}${counts}${m.sample ? `, every row of sample ${m.sample}` : ''}${inferred}.`);
+  }
   if (summary?.samples?.some((s) => s.repertoire)) {
     const matched = summary.samples.filter((s) => s.repertoire).length;
     sentences.push(`AIRR Repertoire metadata ${cite('miairr')} were matched to ${matched === summary.samples.length ? 'every sample' : `${plural(matched, 'sample')} of ${count(summary.samples.length)}`} by repertoire_id.`);

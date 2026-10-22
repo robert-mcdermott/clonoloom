@@ -1,0 +1,97 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "rar-c53cc6ef0a233639",
+  "kind": "rarefaction",
+  "name": "Rarefaction · Small simulated study",
+  "dataset": "d-88d5b382e03bb966",
+  "state": "complete",
+  "created": "2026-10-22T03:09:46.4152Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-88d5b382e03bb966",
+        "name": "Small simulated study"
+      }
+    ],
+    "job": {
+      "id": "jmviyq9qv-2",
+      "kind": "rarefaction",
+      "spec": {
+        "dataset": "d-88d5b382e03bb966",
+        "definition": {
+          "name": "Amino-acid junction, V and J genes",
+          "chains": [],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Rarefaction and extrapolation of the Hill numbers of order 0, 1 and 2 by size and by coverage, with bootstrap intervals",
+      "version": "1",
+      "citation": "Chao A, Gotelli NJ, Hsieh TC, et al. Rarefaction and extrapolation with Hill numbers. Ecol Monogr. 2014;84:45–67. doi:10.1890/13-0133.1"
+    },
+    "parameters": {
+      "dataset": "d-88d5b382e03bb966",
+      "definition": {
+        "name": "Amino-acid junction, V and J genes",
+        "chains": [],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.2.0"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "rarefaction.json",
+      "role": "rarefaction",
+      "size": 111089,
+      "sha256": "a6fd14cf5de1a5b962164d865c1b46ddb22c444dfb82b5eac5829500eb38a06c"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "definition": "Amino-acid junction, V and J genes",
+    "levels": {
+      "size": 1671,
+      "coverage": 0.6757407691930049,
+      "extrapolatedSize": 3342,
+      "extrapolatedCoverage": 0.8037335450001811,
+      "sizeOf": 0,
+      "coverageOf": 0,
+      "samples": 2
+    },
+    "samples": 2,
+    "unit": "umis"
+  }
+}

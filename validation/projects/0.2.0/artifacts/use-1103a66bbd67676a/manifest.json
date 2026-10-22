@@ -1,0 +1,97 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "use-1103a66bbd67676a",
+  "kind": "usage",
+  "name": "Gene usage · Small simulated study",
+  "dataset": "d-88d5b382e03bb966",
+  "state": "complete",
+  "created": "2026-10-22T03:09:46.669325Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-88d5b382e03bb966",
+        "name": "Small simulated study"
+      }
+    ],
+    "job": {
+      "id": "jmviyq9zr-3",
+      "kind": "usage",
+      "spec": {
+        "dataset": "d-88d5b382e03bb966",
+        "definition": {
+          "name": "Amino-acid junction, V and J genes",
+          "chains": [],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "groups": {
+          "S01-1": "control",
+          "S02-1": "expanded"
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "V, D, J and C gene usage, V–J pairs, junction lengths and amino-acid composition, with bootstrap intervals over clonotypes",
+      "version": "1",
+      "citation": "Lefranc MP, Pommié C, Ruiz M, et al. IMGT unique numbering for immunoglobulin and T cell receptor variable domains and Ig superfamily V-like domains. Dev Comp Immunol. 2003;27:55–77. doi:10.1016/S0145-305X(02)00039-3"
+    },
+    "parameters": {
+      "dataset": "d-88d5b382e03bb966",
+      "definition": {
+        "name": "Amino-acid junction, V and J genes",
+        "chains": [],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "groups": {
+        "S01-1": "control",
+        "S02-1": "expanded"
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.2.0"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "usage.json",
+      "role": "usage",
+      "size": 789819,
+      "sha256": "6d29707d3544a2170961fb8b9c5401a228166938f27bd93fb0c750a8873ff4f3"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "definition": "Amino-acid junction, V and J genes",
+    "groups": 2,
+    "samples": 2,
+    "unit": "umis"
+  }
+}

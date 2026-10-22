@@ -1,9 +1,11 @@
 # Changelog
 
-## 0.2.0 (unreleased)
+## 0.2.0 (2026-10-21)
 
-Wave 2 of the [roadmap](clonoloom-spec/roadmap.md): repertoire basics. Built slice by slice; this
-section grows with each.
+Wave 2 of the [roadmap](clonoloom-spec/roadmap.md): repertoire basics. Each sample's diversity,
+rarefaction and extrapolation, gene usage and junctions, and every pair's overlap, each with its
+uncertainty and checked against reference tools and simulated truth; figures and exports that
+carry their definition, unit and license; simulated studies, remote control and jobs.
 
 ### Added
 
@@ -122,6 +124,47 @@ section grows with each.
     public listed;
   - the methods paragraph says what was measured, with its references; remote control's
     `measure_overlap` measures it and answers the pairs and the public clonotypes.
+- **Figures (wave 2, slice 8).** Every plot of the QC and Repertoire views has a button that saves
+  it as a figure standing alone (`web/lib/plot.js`, `web/ui/figures.js`):
+  - **SVG** (vector), **PNG** at 300 dpi (recorded in its `pHYs` chunk) or **PDF** (one page of
+    the figure's size, written by ClonoLoom: `POST /api/figure/pdf`, `api_figures.go`);
+  - on white whatever the theme, with color-vision-friendly colors when they are on, its title and
+    legend, and a caption: what was measured, the clonotype definition, the abundance unit, the
+    samples, the filter, and the ClonoLoom version and day it was made.
+- **Exports (wave 2, slice 8).** `internal/export`, `api_export.go`, `web/ui/exports.js`:
+  - a dataset's rearrangements (those its filter keeps) as an **AIRR Rearrangement TSV**, each with
+    its clonotype under the definition as `clone_id`, which reads back into the same clonotypes;
+  - its **clonotype table** as CSV, one column of abundance per sample;
+  - each **result kept** (diversity, rarefaction, gene usage, overlap and public clonotypes) as CSV,
+    every value with its interval;
+  - each in a zip with a `NOTICE.txt`: the files and their SHA-256, the filter, the definition, the
+    unit, the method, ClonoLoom's version and commit, and each public data set's license and
+    citation;
+  - rows of data under a provider's terms of use (or no stated license) are written only after the
+    window shows the terms and they are accepted, and the notice says not to share them; results
+    computed from such data say to read the terms first;
+  - from the Clonotypes view's and the Repertoire view's **Export** buttons, the File menu and the
+    command palette.
+- **Tables of other tools, through a mapping of their columns (wave 2, slice 8).** A CSV or TSV
+  that no reader recognizes (`internal/reads/mapped.go`, `web/ui/mapping.js`):
+  - opens a dialog with its first rows and a column chosen for each field (junction, genes, count,
+    sample, locus, productivity, cell, clone, sequence ID), guessed from the columns' names
+    (VDJtools', MiXCR's, AIRR's and others'); the count's unit said, never guessed;
+  - **Check** reads the whole file through the mapping: each field's valid values, examples of
+    the others, and notes (junctions with IMGT's anchors, in frame, counts not whole); **Open**
+    checks, then opens;
+  - productivity, where no column gives it, inferred from the junction (whole codons, no stop);
+  - the mapping is kept with the dataset (reopened with it), is part of its ID and its cache key,
+    and is stated in its methods paragraph;
+  - `POST /api/datasets/inspect` and `/api/datasets/check`; remote control's `open_data` takes
+    `mappings` by path.
+- **Every release's project keeps opening.** `validation/projects/0.2.0` holds a project 0.2.0 saved
+  (the small simulated study and a VDJtools table, with diversity, rarefaction, gene usage and
+  overlap) with its data and results. A test opens it again with every later version, under the
+  same dataset and result IDs, and compares each result with the one 0.2.0 wrote
+  ([validation/projects/README.md](validation/projects/README.md)).
+- The capture scenes of the Repertoire view's five parts; the README's and the guide's pictures
+  captured again.
 - **immunoSEQ's own clonality, Simpson clonality, entropy and largest frequency** are recomputed in
   QC's vendor checks: from each productive rearrangement's reads, as Adaptive computes them.
 - `internal/random` (from the simulator) draws binomial and multinomial variates too.
@@ -131,6 +174,12 @@ section grows with each.
   (Ensembl, no restrictions), and usage and junction lengths computed from 10x Genomics' data
   (CC BY 4.0).
 
+### Known limitations
+
+- Results are not yet the same, bit for bit, on every processor: arm64 builds round some sums and
+  logarithms differently from amd64's, in their last digits. Nothing a result reports changes; certificates that compare bit for bit
+  (wave 8) need them the same.
+
 ### Fixed
 
 - A plot's axis could end below its largest value, so that the tallest column (QC's junction
@@ -138,6 +187,8 @@ section grows with each.
   its values.
 - A clonotype chosen before the Clonotypes table's first page arrived was not described in the
   inspector.
+- The last tick label of a line or curve plot's horizontal axis (80,000, say) was cut off.
+- Remote control's answers said "1 samples" and "1 pairs".
 
 ### Validation
 
@@ -217,6 +268,21 @@ section grows with each.
 - The rarefied shared clonotypes equal 200,000 random subsamples' mean; overlap by hand on a small
   table; the bootstrap the same with one processor or many; the frequencies the repertoire is
   estimated to hold sum to the sample coverage.
+- **Exports read back** (Go tests): the AIRR TSV of a dataset read again by ClonoLoom's AIRR reader
+  gives the same clonotypes with the same abundances; the clonotype CSV's columns and values, and a
+  diversity result's; the filter's rows kept; the notice of the user's own data and of data under
+  terms; such rows refused without `accept=1` (409, with the licenses) and written with it.
+- **Figures** (Go and Node tests): the PDF's page size and image, every object at the offset its
+  cross-reference table gives, its title in UTF-16 where it is not ASCII; a body that is not a PNG,
+  or no size, refused; the PNG's resolution chunk written once, after its header; the figure's SVG
+  with its title, legend, caption and colors written in.
+- **Mapped tables** (Go tests): VDJtools', MiXCR's and a semicolon-separated sheet's columns guessed;
+  the check's counts and notes; the rows read, their productivity inferred and their unit as said;
+  one file under two mappings two datasets; 2.8 million fuzzed tables read without a crash.
+- **The 0.2.0 project opened again** (`projects_test.go`): its two datasets under their IDs, its five
+  results under theirs, every value equal to the fixture's (the same bytes on arm64; on amd64, within
+  0.1% of a relative 10⁻⁹); the project parses and saves back to the same bytes
+  (`web/lib/project.test.mjs`).
 - **immunoSEQ's clonality reproduced**: Adaptive's productive clonality, Simpson clonality, entropy
   and largest frequency, from the rows' reads, on Emerson et al. 2017's three exports (to seven
   significant digits; templates give other values).
@@ -234,12 +300,11 @@ section grows with each.
   token and another computer are refused; remote control is off unless asked for; `remote.json` is
   private and removed only by the run that wrote it.
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-10-21)
 
 ClonoLoom's first release, wave 1 of the [roadmap](clonoloom-spec/roadmap.md): open the output of
 an annotation pipeline, check it, see each sample's quality, and define clonotypes explicitly,
-with a project that records where the data came from. Built slice by slice; this section grows
-with each.
+with a project that records where the data came from.
 
 ### Added
 

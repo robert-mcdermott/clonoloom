@@ -118,7 +118,34 @@ MiXCR clone tables (v3 `cloneCount`, v4 `readCount`; `aaSeqCDR3` is the junction
 calls, `*00` alleles), OAS and OTS data units (gzipped CSV whose first line is CSV-quoted JSON
 metadata; paired units with `_heavy`/`_light` or `_beta`/`_alpha` suffixes; integers written as
 `214.0`), VDJdb releases (re-packaged in 2026; parse by header name), TRUST4, IMGT/HighV-QUEST
-and VDJtools. Each is researched again when its wave is planned.
+and VDJtools. Each is researched again when its wave is planned. Until then, MiXCR's and VDJtools'
+tables are read through a mapping of their columns (§1.5).
+
+### 1.5 Tables with mapped columns (wave 2)
+
+Tools write clone tables of their own: VDJtools (`count`, `freq`, `cdr3nt`, `cdr3aa`, `v`, `d`,
+`j`; Shugay et al. 2015, *PLoS Comput Biol* 11:e1004503, doi:10.1371/journal.pcbi.1004503), MiXCR
+(`cloneCount` or `readCount`, `nSeqCDR3`, `aaSeqCDR3`, `allVHitsWithScore`), and the spreadsheets
+labs keep. immunarch reads such tables by naming each tool's columns (`repLoad`'s parsers);
+Immcantation's `ParseDb` renames columns to AIRR's. ClonoLoom reads them through a mapping the user
+confirms (requirement D7, `internal/reads/mapped.go`):
+
+- **The guess is a proposal.** Each field is guessed from the columns' names, compared without case
+  or punctuation, from the names those tools and the AIRR schema use. A bare `CDR3` is amino acids
+  or nucleotides by its values (letters outside ACGTN). The user sees the guess beside the file's
+  first rows and changes it.
+- **The unit is said, never read.** A count column says neither whether reads or molecules were
+  counted (§4), so the mapping states it. Its name only proposes one (`umi`, `template`, `read`).
+- **The whole file is checked first.** For each field: how many values are valid, examples of the
+  others, and notes (the share of junctions with IMGT's anchors, of nucleotide junctions in frame,
+  of counts that are not whole numbers, which diversity's estimators need). A table that does not
+  read as the user mapped it is refused before it becomes a dataset.
+- **Productivity**, where no column gives it, is inferred: a junction of whole codons without a stop
+  codon is productive. This is what a VDJtools or MiXCR table's own convention marks (`~` or `*` in
+  the amino acids of an out-of-frame junction).
+- **The mapping is part of the dataset**, as a format is: it is kept with the project, enters the
+  dataset's ID (one file under two mappings is two datasets) and its cache key, and is stated in the
+  methods paragraph.
 
 ## 2. Gene nomenclature
 
@@ -485,6 +512,38 @@ the dataset's definition calls their rearrangements the same:
   300 of two), the rarefied ones in 97.0%, and the populations' overlap in 93.9% for Morisita's
   index (30 of 30 of one subject) and 85.8% for the Morisita–Horn index (4 of 30 of one subject: its
   bias).
+
+### 5.7 Figures and exports (wave 2)
+
+**Figures** (requirement O1, `web/lib/plot.js`, `web/ui/figures.js`, `api_figures.go`). A plot
+saved from the window stands alone in a manuscript. It is drawn on white whatever the theme, with
+its title, legend and a caption. The caption states what was measured, the clonotype definition,
+the abundance unit, the samples (n), the filter and the program's version: what a reader needs to
+compare the figure with another study's, without the text.
+- **SVG** keeps every mark as a vector, with its colors written in rather than taken from the
+  page's style sheet, and common fonts named.
+- **PNG** is drawn at 300 dpi, the resolution journals commonly ask of figures. The resolution is
+  recorded in the file's `pHYs` chunk (the W3C PNG specification), so a layout program places it at
+  its size.
+- **PDF** is one page of the figure's size holding that PNG, written by ClonoLoom itself (ISO
+  32000-1: a catalog, a page, a Flate-compressed RGB image and its drawing operator, the
+  document's information with the program as Producer). Fonts are not embedded, because there is
+  no text to embed.
+
+**Exports** (requirements O3, O9, `internal/export`, `api_export.go`):
+- **Rearrangements** are written as an AIRR Rearrangement TSV (the schema's required fields,
+  §1.1), each row with its clonotype under the definition as `clone_id` and its sample's
+  `repertoire_id`. The sequence, alignment and CIGAR fields are empty: ClonoLoom does not keep
+  them, and the source files hold them. The file reads back into the same clonotypes.
+- **Clonotypes and results** are written as CSV (RFC 4180), one row per clonotype or value, each
+  value with its interval. Numbers are written in the shortest form that reads back to the same
+  value, and a missing value is left empty (never 0: `conventions.md`, "Missing is not zero").
+- **A notice travels with every export.** It names the files and their SHA-256, the filter, the
+  definition and its ID, the unit, the method and the program's version and commit, and each
+  public data set's license and citation. Data under a provider's terms of use (immuneACCESS:
+  research use, no redistribution, §7.1) or under no stated license are exported only after their
+  terms are shown and accepted, and the notice then says not to share the rows. Results computed
+  from such data say to read the terms before sharing them.
 
 ## 6. Datasets
 

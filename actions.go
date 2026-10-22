@@ -47,9 +47,10 @@ var remoteActions = []remoteAction{
 	{Name: "new_project", Title: "Start a new project", Description: "Starts a new, empty project (the open one is saved).", InputSchema: schema(map[string]any{
 		"name": textArg("The new project's name."),
 	})},
-	{Name: "open_data", Title: "Open data", Description: "Opens files or folders on this computer as one dataset of the project: AIRR rearrangement tables with their Repertoire metadata (.json), Cell Ranger V(D)J output folders or contig annotations, immunoSEQ exports. Needs the token.", InputSchema: schema(map[string]any{
-		"paths": map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "Absolute paths, read together as one dataset."},
-		"name":  textArg("The dataset's name (its files' otherwise)."),
+	{Name: "open_data", Title: "Open data", Description: "Opens files or folders on this computer as one dataset of the project: AIRR rearrangement tables with their Repertoire metadata (.json), Cell Ranger V(D)J output folders or contig annotations, immunoSEQ exports; another tool's CSV or TSV through a mapping of its columns. Needs the token.", InputSchema: schema(map[string]any{
+		"paths":    map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "Absolute paths, read together as one dataset."},
+		"name":     textArg("The dataset's name (its files' otherwise)."),
+		"mappings": map[string]any{"type": "object", "description": "For tables ClonoLoom does not recognize, by path: {columns: {junction_aa, junction, v_call, d_call, j_call, c_call, count, sample, locus, productive, cell_id, clone_id, sequence_id: the column's name}, unit: reads | umis | templates | cells (when a count is mapped), sample: the sample's name when no column holds it}."},
 	}, "paths"), reads: true},
 	{Name: "open_example", Title: "Open an example dataset", Description: "Opens one of the example datasets as a dataset of the project. One not yet downloaded is downloaded first when download is true and its data are openly licensed; data under a provider's terms of use are downloaded only by the person, who accepts the terms in the window.", InputSchema: schema(map[string]any{
 		"example":  textArg("The example's name, such as 10x-pbmc-1k (get_state lists them)."),
