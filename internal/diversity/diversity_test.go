@@ -164,3 +164,24 @@ func TestNumericalPieces(t *testing.T) {
 		}
 	}
 }
+
+// The clonotypes seen hold the sample coverage of the repertoire, a clonotype seen once tuned down
+// most.
+func TestDetectedFrequencies(t *testing.T) {
+	p := Detected(logged)
+	sum := 0.0
+	for _, v := range p {
+		sum += v
+	}
+	n := 0.0
+	for _, v := range logged {
+		n += v
+	}
+	st := statsOf(FreqOf(logged))
+	if math.Abs(sum-coverage(st)) > 1e-12 {
+		t.Errorf("detected frequencies sum to %v, coverage %v", sum, coverage(st))
+	}
+	if p[0] > 88/n || p[0] < 87/n || p[len(p)-1] >= 1/n {
+		t.Errorf("88 cells: %v (of %v); one: %v (of %v)", p[0]*n, n, p[len(p)-1]*n, n)
+	}
+}

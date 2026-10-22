@@ -16,6 +16,7 @@ import { datasetDefinition } from '../lib/definitions.js';
 import { datasetFilter } from '../lib/filters.js';
 import { addResult } from '../lib/results.js';
 import { renderGenes, renderJunctions, USAGE_WORDS } from './repertoire-usage.js';
+import { renderOverlap, OVERLAP_WORDS } from './repertoire-overlap.js';
 
 // The measures, as the view offers them: what each is, in words.
 export const MEASURES = [
@@ -74,11 +75,14 @@ const PARTS = {
   },
   genes: { kind: 'usage', label: 'Genes', start: 'Count genes and junctions', title: 'The genes each sample\'s clonotypes use', words: USAGE_WORDS },
   junctions: { kind: 'usage', label: 'Junctions', start: 'Count genes and junctions', title: 'Each sample\'s junction lengths and amino acids', words: USAGE_WORDS },
+  overlap: { kind: 'overlap', label: 'Overlap', start: 'Measure overlap', title: 'How much the samples\' repertoires overlap', words: OVERLAP_WORDS },
 };
 // The analyses, and the part each result opens in.
 const KINDS = [...new Set(Object.values(PARTS).map((p) => p.kind))];
-const PART_OF = { diversity: 'diversity', rarefaction: 'rarefaction', usage: 'genes' };
-const ACTIONS = { diversity: 'Measure the diversity', rarefaction: 'Rarefy the samples', usage: 'Count the genes and junctions' };
+const PART_OF = { diversity: 'diversity', rarefaction: 'rarefaction', usage: 'genes', overlap: 'overlap' };
+const ACTIONS = { diversity: 'Measure the diversity', rarefaction: 'Rarefy the samples', usage: 'Count the genes and junctions', overlap: 'Measure the overlap' };
+// What each analysis is told of the samples: their conditions, their subjects.
+const NEEDS = { usage: ['groups'], overlap: ['groups', 'subjects'] };
 
 const fmt = (v, share) => {
   if (!Number.isFinite(v)) return '—';
@@ -114,8 +118,9 @@ export function mountRepertoire(app, container) {
   let part = PART_OF[focusedResult?.kind] ?? 'diversity';
   // Each analysis's state: idle | looking | absent | running | ready | failed.
   const states = Object.fromEntries(KINDS.map((k) => [k, { status: 'idle' }]));
-  // The Genes and Junctions parts' choices (repertoire-usage.js).
+  // The Genes and Junctions parts' choices (repertoire-usage.js), and the Overlap part's.
   const usageUI = {};
+  const overlapUI = {};
   let spec = null;
   let shown = 'hill1';
   let order = 1;
@@ -124,34 +129,37 @@ export function mountRepertoire(app, container) {
 
   const dataset = () => store.project.datasets.find((d) => d.id === chosen) ?? store.project.datasets[0] ?? null;
 
-  // Each sample's condition: its annotation's, else its metadata's.
-  function conditionOf(d, name) {
+  // Each sample's annotation field (condition, subject): its annotation's, else its metadata's.
+  function fieldOf(d, name, field) {
     const summary = app.datasetStates.get(d.id)?.summary;
-    return annotation(store.project, d.id, name).fields.condition
-      ?? (summary ? fieldsFromMetadata(summary.samples.find((x) => x.name === name) ?? {}).condition : undefined);
+    return annotation(store.project, d.id, name).fields[field]
+      ?? (summary ? fieldsFromMetadata(summary.samples.find((x) => x.name === name) ?? {})[field] : undefined);
   }
+  const conditionOf = (d, name) => fieldOf(d, name, 'condition');
 
-  // The samples' groups, by condition, for the analyses that summarize groups (none when no sample
-  // has a condition).
-  function groupsOf(d) {
+  // The samples' conditions (groups) or subjects, by sample, for the analyses that use them (none
+  // when no sample has one).
+  function byField(d, field) {
     const summary = app.datasetStates.get(d.id)?.summary;
-    const groups = {};
+    const out = {};
     for (const s of summary?.samples ?? []) {
-      const c = conditionOf(d, s.name);
-      if (c) groups[s.name] = c;
+      const v = fieldOf(d, s.name, field);
+      if (v) out[s.name] = v;
     }
-    return Object.keys(groups).length ? groups : undefined;
+    return Object.keys(out).length ? out : undefined;
   }
+  const groupsOf = (d) => byField(d, 'condition');
 
   async function specOf(d) {
     const open = await app.ensureDataset(d);
     if (open.status !== 'open') throw new Error(open.error ?? `${d.name} could not be opened.`);
     const loci = Object.keys(open.summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
     const filter = datasetFilter(store.project, d);
-    return { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, groups: groupsOf(d) };
+    return { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, groups: groupsOf(d), subjects: byField(d, 'subject') };
   }
 
-  const request = (s, kind, extra = {}) => JSON.stringify({ dataset: s.dataset, definition: s.definition, filter: s.filter, ...(kind === 'usage' ? { groups: s.groups } : {}), ...extra });
+  const request = (s, kind, extra = {}) => JSON.stringify({ dataset: s.dataset, definition: s.definition, filter: s.filter,
+    ...Object.fromEntries((NEEDS[kind] ?? []).map((k) => [k, s[k]])), ...extra });
 
   // Looks for each part's result kept for the dataset as chosen; follows a job still running.
   async function load() {
@@ -208,6 +216,7 @@ export function mountRepertoire(app, container) {
       diversity: { ...common, name: `Diversity · ${d.name}`, method: `Hill numbers, Chao1, ACE; ${r.options.replicates} bootstrap replicates` },
       rarefaction: { ...common, name: `Rarefaction · ${d.name}`, method: `Rarefaction and extrapolation by size and coverage; ${r.options.replicates} bootstrap replicates`, levels: r.levels },
       usage: { ...common, name: `Gene usage · ${d.name}`, method: `V, D, J and C usage, junction lengths and amino-acid composition; ${r.replicates} bootstrap replicates of the clonotypes`, groups: (r.groups ?? []).length },
+      overlap: { ...common, name: `Overlap · ${d.name}`, method: `Shared clonotypes, Jaccard, Sørensen–Dice, overlap coefficient (as sampled and rarefied), Morisita and Morisita–Horn; ${r.replicates} bootstrap replicates`, depth: r.depth, publicBy: r.public?.by },
     }[kind];
     store.commit(addResult(store.project, record), `${ACTIONS[kind]} of ${d.name}`, ['project']);
   }
@@ -307,6 +316,7 @@ export function mountRepertoire(app, container) {
     if (state.status !== 'ready') return;
     if (part === 'diversity') renderMeasures(d, state);
     else if (part === 'rarefaction') renderRarefaction(d, state);
+    else if (part === 'overlap') renderOverlap({ body, state, ui: overlapUI, render, colors: colors(d, state.result.samples.map((s) => s.name)) });
     else (part === 'genes' ? renderGenes : renderJunctions)({ body, state, ui: usageUI, render, colors: colors(d, state.result.samples.map((s) => s.name)) });
   }
 
@@ -479,7 +489,7 @@ export function mountRepertoire(app, container) {
   // samples' conditions.
   const choices = () => {
     const d = dataset();
-    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d ? groupsOf(d) ?? null : null]);
+    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d ? groupsOf(d) ?? null : null, d ? byField(d, 'subject') ?? null : null]);
   };
   let shownChoices = choices();
 
@@ -512,6 +522,10 @@ export function mountRepertoire(app, container) {
     show,
     setUsage: (choices) => {
       Object.assign(usageUI, choices);
+      render();
+    },
+    setOverlap: (choices) => {
+      Object.assign(overlapUI, choices);
       render();
     },
     setLevel: (key, q) => {

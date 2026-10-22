@@ -274,6 +274,18 @@ func (c *curve) method(m float64) string {
 	return "observed"
 }
 
+// SeenChance is the chance that a subsample of m cells, drawn without replacement from a sample of
+// n, holds a clonotype of x cells: 1 − C(n−x, m)/C(n, m).
+func SeenChance(n, x, m float64) float64 {
+	if x <= 0 || m <= 0 {
+		return 0
+	}
+	if m >= n {
+		return 1
+	}
+	return -math.Expm1(logNone(n, x, m))
+}
+
 // logNone is ln P(none of a clonotype's x cells among m drawn without replacement from n),
 // ln[C(n−x, m)/C(n, m)]: −Inf where x + m > n. Symmetric in x and m; a product of the smaller's
 // terms where it is small, else by lgammaRatio, without subtracting large logarithms.

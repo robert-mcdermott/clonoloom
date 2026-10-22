@@ -35,6 +35,7 @@ internal/artifacts/  results kept with their lineage (wave 2)
 internal/cache/      the table cache (wave 2)
 internal/diversity/  diversity, rarefaction and extrapolation (wave 2)
 internal/usage/      gene usage, junction lengths and amino-acid composition (wave 2)
+internal/overlap/    overlap between samples and public clonotypes (wave 2)
 internal/simulate/   seeded simulated repertoires with their truth (wave 2)
 web/index.html, web/styles.css, web/app.js     app shell
 web/lib/*.js         pure modules: no DOM, no globals, importable by Node

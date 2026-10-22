@@ -170,6 +170,23 @@ condition (the mean of its samples, each counted once, with their range):
   acid's share of the junctions; and, for the commonest lengths, the amino acids at each IMGT
   position, from the conserved cysteine at 104 to the phenylalanine or tryptophan at 118.
 
+## Compare samples with each other
+
+**Repertoire › Overlap** measures how much every pair of samples overlaps; **Measure overlap** runs
+it in the program and keeps the result. Each value has its 95% interval.
+
+- **Morisita's index** weighs each clonotype by its abundance: 1 for one repertoire sampled twice,
+  0 for repertoires that share nothing, at any depth. The Morisita–Horn index, which immunarch and
+  vegan give, is offered too, but it reads two samples of one repertoire below 1 when they are
+  shallow.
+- **Jaccard's index**, **Sørensen–Dice's** and the **overlap coefficient** count clonotypes seen,
+  and grow with depth: take them **rarefied**, as expected with both samples brought down to the
+  smallest sample's size.
+- The pairs of one subject and of two (or of one condition and of two) are summarized, every pair
+  is listed, and the **public clonotypes** (found in more than one subject) are counted and listed.
+  Subjects come from the samples' annotation (or their AIRR metadata): without them, each sample
+  counts as its own subject, and the view says so.
+
 ## Write down what was done
 
 <picture>
@@ -184,11 +201,11 @@ condition (the mean of its samples, each counted once, with their range):
 - **Methods paragraph** (a dataset's menu or the inspector) writes a paragraph for a manuscript
   from the project's record: the data's source and license, how ClonoLoom read and checked them,
   the unit, the filter with what it kept, the clonotype definition, the diversity measured, the
-  rarefaction and the levels the samples were compared at, the genes and junctions counted, and
-  ClonoLoom's version, with numbered references. Only what was done is said. **Copy** takes it with its references.
+  rarefaction and the levels the samples were compared at, the genes and junctions counted, the
+  overlap measured, and ClonoLoom's version, with numbered references. Only what was done is said. **Copy** takes it with its references.
 
 ## Next
 
-ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): overlap, figures and
-AIRR exports complete 0.2.0; following
+ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): figures and AIRR
+exports complete 0.2.0; following
 clonotypes over time in 0.3.0; specificity, B-cell lineages, cells and cohorts after that.

@@ -85,6 +85,11 @@ var remoteActions = []remoteAction{
 		"weight":  textArg("clonotypes (each counted once; the default) or abundance."),
 		"rows":    textArg("samples (the default) or groups (the samples' conditions)."),
 	})},
+	{Name: "measure_overlap", Title: "Measure overlap", Description: "Shows the Repertoire view's Overlap part and measures every pair of samples' overlap under the dataset's clonotype definition and filter (a job; the result kept with the project, the samples' subjects and conditions from their annotation or metadata), answering the pairs of one subject and of two summarized, the most overlapping pairs by a measure with their 95% intervals, and how many clonotypes are found in one subject, two, and more.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"measure": textArg("morisita (the default), morisitaHorn, jaccard, jaccardRarefied, sorensen, sorensenRarefied, overlap, overlapRarefied, shared, sharedRarefied or abundance."),
+		"pairs":   numberArg("How many of the most overlapping pairs to answer (10 by default)."),
+	})},
 	{Name: "show_examples", Title: "Show the example data", Description: "Opens the Example data dialog.", InputSchema: schema(map[string]any{})},
 	{Name: "show_methods", Title: "Write the methods paragraph", Description: "Shows a dataset's methods paragraph and answers it with its references.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,

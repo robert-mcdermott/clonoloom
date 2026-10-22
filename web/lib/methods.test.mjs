@@ -111,3 +111,13 @@ test('a gene usage result kept says what was counted and how, citing IMGT once',
   assert.match(text, /Each condition was summarized by the mean of its samples' shares/);
   assert.equal(references.filter((r) => r.includes('IMGT unique numbering')).length, 1);
 });
+
+test('an overlap result kept says what was measured, at what depth, citing each index once', () => {
+  const results = [{ kind: 'overlap', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { replicates: 200, seed: 20140101 }, depth: 9438, publicBy: 'subject' }];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /both samples rarefied to 9,438 templates, the smallest sample's size/);
+  assert.match(text, /Clonotypes found in more than one of the subjects were counted as public/);
+  for (const key of ['Jaccard P.', 'Dice LR.', 'Morisita M.', 'Horn HS.', 'Horvitz DG']) {
+    assert.equal(references.filter((r) => r.includes(key)).length, 1, key);
+  }
+});

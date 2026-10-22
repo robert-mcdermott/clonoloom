@@ -267,6 +267,33 @@ export function installRemote(app) {
       };
     },
 
+    async measure_overlap({ dataset, measure, pairs }) {
+      const d = datasetOf(dataset);
+      const ids = ['morisita', 'morisitaHorn', 'jaccard', 'jaccardRarefied', 'sorensen', 'sorensenRarefied', 'overlap', 'overlapRarefied', 'shared', 'sharedRarefied', 'abundance'];
+      const id = measure === undefined || measure === '' ? 'morisita' : choose(measure, ids, 'measure');
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('repertoire');
+      const view = await waitFor(() => app.repertoireView, 5000, 'the Repertoire view');
+      view.show('overlap');
+      await waitFor(() => !['looking', 'idle'].includes(view.state('overlap').status), 60000, 'the view to look for a result');
+      if (view.state('overlap').status === 'absent') await view.measure('overlap');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state('overlap').status) && view.state('overlap'), 30 * 60 * 1000, 'the overlap');
+      if (done.status === 'failed') throw new ActionError(done.error);
+      view.setOverlap({ measure: id });
+      const r = done.result;
+      const key = id === 'abundance' ? 'abundanceOfA' : id;
+      const top = [...r.pairs].sort((x, y) => (y.measures[key]?.estimate ?? -1) - (x.measures[key]?.estimate ?? -1)).slice(0, Math.max(1, Math.min(Number(pairs) || 10, 200)));
+      return {
+        message: `${d.name}: the overlap of ${r.pairs.length} pairs of ${r.samples.length} samples (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, measure: id, depth: r.depth,
+          summaries: (r.summaries ?? []).map((s) => ({ kind: s.kind, pairs: s.pairs, mean: s.measures[key]?.mean ?? null, min: s.measures[key]?.min ?? null, max: s.measures[key]?.max ?? null })),
+          pairs: top.map((p) => ({ a: r.samples[p.a].name, b: r.samples[p.b].name, value: p.measures[key] ?? null, shared: p.measures.shared?.estimate ?? null })),
+          public: { by: r.public.by, units: r.public.units, incidence: r.public.incidence, top: (r.public.top ?? []).slice(0, 10) },
+        },
+      };
+    },
+
     async show_examples() {
       app.showExamples();
       return { message: 'Showing the example data.' };

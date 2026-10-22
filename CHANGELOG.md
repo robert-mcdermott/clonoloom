@@ -107,6 +107,21 @@ section grows with each.
     sample, the spectratypes, the mean lengths, and the amino acids by position;
   - the methods paragraph says what was counted and how; remote control's `gene_usage` counts it
     and answers each sample's most used genes, commonest lengths and mean length.
+- **Overlap (wave 2, slice 7).** The Repertoire view's **Overlap** part (`internal/overlap`,
+  `api_overlap.go`, `web/ui/repertoire-overlap.js`):
+  - every pair of samples: the clonotypes they share, Jaccard's index, Sørensen–Dice's and the
+    overlap coefficient, as sampled and as expected with both samples rarefied to the smallest
+    sample's size (exactly); Morisita's index and the Morisita–Horn index over their abundances;
+    each sample's share of its abundance in clonotypes the other holds too;
+  - 95% intervals from a bootstrap of the samples' cells, widened for the chance that decides which
+    clonotypes two samples share (Horvitz–Thompson), on the logarithmic scale;
+  - a heatmap of every pair by a measure, the pairs of one subject and of two (and of one condition
+    and of two) summarized, every pair listed;
+  - the public clonotypes: how many are found in one subject, two, and more (subjects from the
+    annotation or the AIRR metadata; without them each sample its own, said so), and the most
+    public listed;
+  - the methods paragraph says what was measured, with its references; remote control's
+    `measure_overlap` measures it and answers the pairs and the public clonotypes.
 - **immunoSEQ's own clonality, Simpson clonality, entropy and largest frequency** are recomputed in
   QC's vendor checks: from each productive rearrangement's reads, as Adaptive computes them.
 - `internal/random` (from the simulator) draws binomial and multinomial variates too.
@@ -186,6 +201,22 @@ section grows with each.
 - The IMGT positions of junctions of 5, 11, 13, 14, 15, 17 and 18 residues; shares, families, ties,
   pairs and conditions by hand on a small table; the bootstrap the same with one processor or many;
   diversity's and rarefaction's result ids unchanged by the shared analysis code.
+- **Overlap against immunarch, vegan, R and scirpy** (`validation/overlap_test.go`,
+  `validation/reference/overlap.R`, `validation/reference/scirpy_overlap.py`): on the simulated
+  study's 66 pairs and Emerson et al. 2017's three subjects' 3, every measure equals immunarch's
+  functions' (Jaccard, Sørensen–Dice, the overlap coefficient, Morisita–Horn), vegan's (Morisita–Horn
+  and Morisita's index; vegan stops the latter at 1) or R's (shared clonotypes, the rarefied
+  measures, the shares of abundance) to 10⁻⁹, and the clonotypes by number of subjects equal R's; on
+  four single-cell T-cell runs opened as one dataset, every pair's shared clonotypes and Jaccard index
+  equal scirpy 0.25.1's `repertoire_overlap`, by both chains and by the beta chain alone.
+- **Overlap against the simulator's truth** (five simulated studies, 330 pairs): the 95% intervals
+  held the expected shared clonotypes in 95.2% of pairs, the rarefied ones in 97.0%, and the
+  repertoires' overlap in 93.9% for Morisita's index (every pair of one subject) and 85.8% for the
+  Morisita–Horn index, which reads two samples of one repertoire about 0.98 (4 of 30 pairs of one
+  subject). A bootstrap of the cells alone had held the shared clonotypes in 64% of pairs.
+- The rarefied shared clonotypes equal 200,000 random subsamples' mean; overlap by hand on a small
+  table; the bootstrap the same with one processor or many; the frequencies the repertoire is
+  estimated to hold sum to the sample coverage.
 - **immunoSEQ's clonality reproduced**: Adaptive's productive clonality, Simpson clonality, entropy
   and largest frequency, from the rows' reads, on Emerson et al. 2017's three exports (to seven
   significant digits; templates give other values).

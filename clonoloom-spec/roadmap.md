@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is done and merged, 0.1.0 not yet
-tagged; wave 2 has slices 1–6 done, slice 7 next.
+tagged; wave 2 has slices 1–7 done, slice 8 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -174,8 +174,8 @@ Built on the branch `wave2`, one commit per slice.
 | 4. Diversity | Done |
 | 5. Rarefaction and extrapolation | Done |
 | 6. Gene usage and spectratypes | Done |
-| 7. Overlap | Next |
-| 8. Figures, exports and methods; release 0.2.0 | To come |
+| 7. Overlap | Done |
+| 8. Figures, exports and methods; release 0.2.0 | Next |
 
 1. **Remote control and screenshots (A7).** SituCraft's hub and capture scenes.
    - *Done:* eleven actions (a twelfth, `measure_diversity`, came with slice 4). Reading files by
@@ -236,6 +236,18 @@ Built on the branch `wave2`, one commit per slice.
    - *Moved to slice 8:* the Genes and Junctions parts' capture scenes.
 7. **Overlap (R4).** Shared clonotypes, Jaccard, overlap coefficient, Morisita–Horn, rarefied;
    public clonotypes within the project; validated against immunarch and scirpy.
+   - *Done:* the Repertoire view's Overlap part: every pair of samples by each measure, with
+     Sørensen–Dice and Morisita's own index besides, the rarefied forms as exact expectations, 95%
+     intervals; the pairs of one subject and of two summarized; the public clonotypes by subject.
+     Validated against immunarch, vegan and R (69 pairs) and scirpy (four single-cell runs), and on
+     five simulated studies against their truth.
+   - *Decided:* Morisita's own index is the measure shown first: the Morisita–Horn index (immunarch's
+     and vegan's) is biased low in shallow samples, and two samples of one simulated repertoire read
+     about 0.98 by it.
+   - *Found:* a bootstrap of the samples' cells alone gave intervals that held the expected shared
+     clonotypes in two pairs of three: which clonotypes two samples share is itself random. With
+     that variance added (Horvitz–Thompson) and the intervals on the logarithmic scale, 95%.
+   - *Moved to slice 8:* the Overlap part's capture scene.
 8. **Figures, exports and methods (O1, O2, O3, O9, D7).** SVG/PNG/PDF figures with the
    definition and unit in their legends; AIRR and CSV exports with license notes; generic CSV
    import; the methods paragraph for each analysis; release 0.2.0.

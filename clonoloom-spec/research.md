@@ -432,6 +432,60 @@ are made of, as a share of its clonotypes (each counted once) and of its abundan
   little wider than it need be.
 - 69,535 clonotypes (the largest development sample) are counted, with 200 replicates, in 0.7 s.
 
+### 5.6 Overlap (wave 2)
+
+`internal/overlap` measures every pair of samples of a dataset, two samples sharing a clonotype when
+the dataset's definition calls their rearrangements the same:
+
+- **Over the clonotypes seen**: those shared; Jaccard's index (1912, *New Phytol* 11:37,
+  doi:10.1111/j.1469-8137.1912.tb05611.x), |A∩B|/|A∪B|; Sørensen–Dice's (Dice 1945, *Ecology*
+  26:297, doi:10.2307/1932409), 2|A∩B|/(|A|+|B|); the overlap coefficient, |A∩B|/min(|A|, |B|).
+  Each grows with depth, so each is also given **rarefied**: as expected with both samples
+  subsampled without replacement to the smallest sample's size m, exactly (a clonotype of x cells
+  in a sample of n is in the subsample with chance 1 − C(n−x, m)/C(n, m), §5.4; the indices are
+  ratios of these expectations), where immunarch and VDJtools draw one random subsample.
+- **Over the abundances**: the Morisita–Horn index (Horn 1966, *Am Nat* 100:419,
+  doi:10.1086/282436), 2Σxy/((Σx²/X² + Σy²/Y²)XY), as immunarch and vegan compute it; and
+  **Morisita's own index** (1959, *Mem Fac Sci Kyushu Univ Ser E Biol* 3:65), with Σx(x−1)/(X(X−1))
+  in place of Σx²/X², which estimates Σp² without bias. Two samples of one repertoire read about
+  0.98 by Horn's form and 1.000 by Morisita's (the simulated study's six subjects); Morisita's can
+  exceed 1 a little by chance, and is given as it is (vegan sets its dissimilarity to zero there).
+  The share of each sample's abundance in the clonotypes the other holds too, which is not
+  symmetric.
+- **Intervals** (95%): from 200 bootstrap replicates of each sample's cells (a multinomial of its
+  size over its clonotypes' frequencies), every pair measured again. Alone, they were too narrow:
+  resampling keeps the clonotypes seen shared, while which clonotypes two samples share is itself
+  random, rare events between different subjects, so that on the simulated study the shared
+  clonotypes' intervals held the truth in 64% of pairs. Added: the variance of the sharing, a sum
+  over the shared clonotypes of Bernoulli events with chances π = (1 − (1 − p)^A)(1 − (1 − q)^B),
+  estimated without bias by Σ y²(1 − π) over those seen shared (Horvitz and Thompson 1952, *J Am
+  Stat Assoc* 47:663, doi:10.1080/01621459.1952.10483446), less the part the bootstrap already has,
+  through each measure's derivative; with p and q each clonotype's frequency in its repertoire as
+  the diversity bootstrap estimates it (§5.3: a clonotype seen once is rarer than 1/n). The
+  intervals are on the logarithmic scale, as fits counts and indices near zero, whose distributions
+  are skewed; where a pair shares nothing, from zero to what a count of none allows (Poisson's
+  −ln 0.025 ≈ 3.7 clonotypes).
+- **Public clonotypes**: each clonotype by the number of subjects whose samples hold it (from the
+  samples' annotation or AIRR metadata; without subjects, each sample its own, and the view warns
+  that two samples of one person would then look public), and the most public listed.
+- **Pairs summarized** by kind (one subject or two, one condition or two): each measure's mean,
+  lowest and highest; descriptive only, the pairs not being independent.
+- **Agreement** (`validation/overlap_test.go`, `validation/reference/overlap.R`,
+  `validation/reference/scirpy_overlap.py`): on the simulated study's 66 pairs and Emerson et al.
+  2017's three subjects' 3 (counted in reads, as a dataset of the three counts them), every measure
+  equals immunarch's functions' (Jaccard, Sørensen–Dice as Tversky's with a = b = ½, the overlap
+  coefficient, Morisita–Horn), vegan's (Morisita–Horn and Morisita's index) or R's (the rest, the
+  rarefied measures by lchoose) to 10⁻⁹, and the clonotypes by number of subjects equal R's; on
+  four single-cell T-cell runs (two human, two mouse) opened as one dataset, every pair's shared
+  clonotypes and Jaccard index, and each sample's clonotypes, equal scirpy 0.25.1's
+  `repertoire_overlap`, with clonotypes by both chains and by the beta chain alone.
+- **Against the simulator's truth** (five simulated studies, each its own seed, 330 pairs; the truth
+  from the subjects' populations, the templates drawn that gave reads, and the depth): the 95%
+  intervals held the expected shared clonotypes in 95.2% of pairs (30 of 30 of one subject, 284 of
+  300 of two), the rarefied ones in 97.0%, and the populations' overlap in 93.9% for Morisita's
+  index (30 of 30 of one subject) and 85.8% for the Morisita–Horn index (4 of 30 of one subject: its
+  bias).
+
 ## 6. Datasets
 
 All are listed in `validation/sources.json` with their URL, sizes and SHA-256, and fetched by

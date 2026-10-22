@@ -1,0 +1,129 @@
+{
+ "generated_by": "scirpy 0.25.1",
+ "definitions": {
+  "paired": [
+   {
+    "a": "10x-mouse-splenocytes-1k/sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_filtered_contig_annotations.csv",
+    "b": "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0,
+    "shared": 0,
+    "clonotypes": [
+     146,
+     1101
+    ]
+   },
+   {
+    "a": "10x-mouse-splenocytes-1k/sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0,
+    "shared": 0,
+    "clonotypes": [
+     146,
+     4310
+    ]
+   },
+   {
+    "a": "10x-mouse-splenocytes-1k/sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0,
+    "shared": 0,
+    "clonotypes": [
+     146,
+     403
+    ]
+   },
+   {
+    "a": "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0,
+    "shared": 0,
+    "clonotypes": [
+     1101,
+     4310
+    ]
+   },
+   {
+    "a": "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0,
+    "shared": 0,
+    "clonotypes": [
+     1101,
+     403
+    ]
+   },
+   {
+    "a": "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv",
+    "jaccard": 0.00021222410865873176,
+    "shared": 1,
+    "clonotypes": [
+     4310,
+     403
+    ]
+   }
+  ],
+  "beta": [
+   {
+    "a": "10x-mouse-splenocytes-1k/sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_filtered_contig_annotations.csv",
+    "b": "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0024650780608052036,
+    "shared": 3,
+    "clonotypes": [
+     142,
+     1078
+    ]
+   },
+   {
+    "a": "10x-mouse-splenocytes-1k/sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0,
+    "shared": 0,
+    "clonotypes": [
+     142,
+     4188
+    ]
+   },
+   {
+    "a": "10x-mouse-splenocytes-1k/sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0,
+    "shared": 0,
+    "clonotypes": [
+     142,
+     391
+    ]
+   },
+   {
+    "a": "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_filtered_contig_annotations.csv",
+    "jaccard": 0.00018993352326690527,
+    "shared": 1,
+    "clonotypes": [
+     1078,
+     4188
+    ]
+   },
+   {
+    "a": "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0,
+    "shared": 0,
+    "clonotypes": [
+     1078,
+     391
+    ]
+   },
+   {
+    "a": "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_filtered_contig_annotations.csv",
+    "b": "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv",
+    "jaccard": 0.0004369674459252515,
+    "shared": 2,
+    "clonotypes": [
+     4188,
+     391
+    ]
+   }
+  ]
+ }
+}

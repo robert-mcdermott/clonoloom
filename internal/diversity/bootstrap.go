@@ -191,6 +191,27 @@ func bootstrap(f Freq, st stats, opt Options, measure func(Freq) []float64) [][]
 	return out
 }
 
+// Detected is each clonotype's frequency in the repertoire a sample was drawn from, estimated from
+// its abundance as the bootstrap's community has it (Chao et al. 2014, Appendix G): the frequencies
+// seen tuned down so that the clonotypes seen hold the sample coverage, a clonotype seen once most.
+// Abundances must be whole numbers.
+func Detected(abundances []float64) []float64 {
+	f := FreqOf(abundances)
+	st := statsOf(f)
+	chances := community(f, st)
+	byValue := map[float64]float64{}
+	k := 0
+	for _, g := range f {
+		byValue[g.Abundance] = chances[k]
+		k += g.Count
+	}
+	out := make([]float64, len(abundances))
+	for i, a := range abundances {
+		out[i] = byValue[a]
+	}
+	return out
+}
+
 // community is the estimated repertoire the replicates are drawn from: each clonotype's chance.
 func community(f Freq, st stats) []float64 {
 	n := st.n

@@ -188,3 +188,28 @@ func TestUsageIsMeasuredAndKept(t *testing.T) {
 		}
 	}
 }
+
+// Overlap alike: every pair of samples, and the public clonotypes by subject.
+func TestOverlapIsMeasuredAndKept(t *testing.T) {
+	got := runAnalysis(t, "overlap")
+	var read struct {
+		Artifact struct {
+			ID string `json:"id"`
+		} `json:"artifact"`
+		Result overlapDocument `json:"result"`
+	}
+	if err := json.Unmarshal(got, &read); err != nil {
+		t.Fatalf("%v: %s", err, got)
+	}
+	doc := read.Result
+	// R1 and R2 share their one productive clonotype (CASSLAGGPEAFF, TRBV5-1, TRBJ2-7).
+	if !strings.HasPrefix(read.Artifact.ID, "ovl-") || len(doc.Samples) != 2 || len(doc.Pairs) != 1 || doc.Depth != 3 {
+		t.Fatalf("%+v", read)
+	}
+	if m := doc.Pairs[0].Measures; float64(m["shared"].Estimate) != 1 || float64(m["jaccard"].Estimate) != 1 {
+		t.Errorf("pair %+v", m)
+	}
+	if doc.Public.By != "sample" || len(doc.Public.Top) != 1 {
+		t.Errorf("public %+v", doc.Public)
+	}
+}

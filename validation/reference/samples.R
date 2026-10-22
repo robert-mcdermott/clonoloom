@@ -3,7 +3,8 @@
 # each file and groups each sample's productive rearrangements into clonotypes (locus, amino-acid
 # junction, V gene and J gene, alleles dropped, ties kept as sets). bulk_rows(cache) answers each
 # file's rows (by the file's path under the cache, its format the attribute "format"): sample,
-# locus, amino-acid and nucleotide junction, V, D, J and C calls as given, productive, count.
+# locus, amino-acid and nucleotide junction, V, D, J and C calls as given, productive, count (and
+# for immunoSEQ, reads).
 # bulk_samples(cache) answers each file's samples and each sample's clonotype abundances, for
 # samples of more than one clonotype, all whole numbers.
 suppressMessages(library(data.table))
@@ -76,7 +77,7 @@ immunoseq <- function(path) {
   nt <- ifelse(!is.na(start) & !is.na(len) & start >= 0 & len > 0 & start + len <= nchar(read), toupper(substr(read, start + 1, start + len)), "")
   if ("cdr3_rearrangement" %in% names(d)) { given <- toupper(clean(d$cdr3_rearrangement)); nt[given != ""] <- given[given != ""] }
   data.table(sample = sample, locus = unname(locus), junction_aa = aa, junction = nt, v = call("v"), d = call("d"), j = call("j"), c = "",
-    productive = productive, count = count)
+    productive = productive, count = count, reads = reads)
 }
 
 airr <- function(path) {

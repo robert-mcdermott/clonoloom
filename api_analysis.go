@@ -26,28 +26,30 @@ import (
 
 // analysis is a kind of analysis: its jobs' and artifacts' kind (and its routes, /api/{kind}, and
 // its result's file, {kind}.json), its artifact ids' prefix, its method's version (which changes
-// when what it answers changes), its name in words, whether it summarizes groups of samples (the
-// spec's Groups; ignored otherwise), and its work (given its own kind).
+// when what it answers changes), its name in words, whether it uses the samples' groups and
+// subjects (the spec's Groups and Subjects; ignored otherwise), and its work (given its own kind).
 type analysis struct {
-	kind    string
-	prefix  string
-	version int
-	title   string
-	grouped bool
-	work    func(a *app, k analysis, spec analysisSpec) jobs.Func
+	kind     string
+	prefix   string
+	version  int
+	title    string
+	grouped  bool
+	subjects bool
+	work     func(a *app, k analysis, spec analysisSpec) jobs.Func
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis}
 
-// analysisSpec is what an analysis measures, and how. Groups names each sample's group (by sample
-// name), for the analyses that summarize groups.
+// analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
+// (condition) and subject (by sample name), for the analyses that use them.
 type analysisSpec struct {
 	Dataset    string               `json:"dataset"`
 	Definition clonotype.Definition `json:"definition"`
 	Filter     qc.Filter            `json:"filter"`
 	Options    diversity.Options    `json:"options"`
 	Groups     map[string]string    `json:"groups,omitempty"`
+	Subjects   map[string]string    `json:"subjects,omitempty"`
 	Method     int                  `json:"method"`
 }
 
@@ -87,8 +89,9 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Filter     qc.Filter         `json:"filter"`
 		Options    diversity.Options `json:"options"`
 		Groups     map[string]string `json:"groups,omitempty"`
+		Subjects   map[string]string `json:"subjects,omitempty"`
 		Method     int               `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -114,6 +117,9 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 		}
 		if !k.grouped {
 			body.Groups = nil
+		}
+		if !k.subjects {
+			body.Subjects = nil
 		}
 		spec, err := body.analysisSpec.normalized(k.version)
 		if err != nil {

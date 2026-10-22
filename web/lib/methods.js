@@ -30,6 +30,11 @@ export const REFERENCES = {
   chaoLee: 'Chao A, Lee SM. Estimating the number of classes via sample coverage. J Am Stat Assoc. 1992;87:210–217. doi:10.1080/01621459.1992.10475194',
   chaoWangJost: 'Chao A, Wang YT, Jost L. Entropy and the species accumulation curve: a novel entropy estimator via discovery rates of new species. Methods Ecol Evol. 2013;4:1091–1100. doi:10.1111/2041-210X.12108',
   chao2014: 'Chao A, Gotelli NJ, Hsieh TC, Sander EL, Ma KH, Colwell RK, Ellison AM. Rarefaction and extrapolation with Hill numbers: a framework for sampling and estimation in species diversity studies. Ecol Monogr. 2014;84:45–67. doi:10.1890/13-0133.1',
+  jaccard: 'Jaccard P. The distribution of the flora in the alpine zone. New Phytol. 1912;11:37–50. doi:10.1111/j.1469-8137.1912.tb05611.x',
+  dice: 'Dice LR. Measures of the amount of ecologic association between species. Ecology. 1945;26:297–302. doi:10.2307/1932409',
+  morisita: 'Morisita M. Measuring of interspecific association and similarity between communities. Mem Fac Sci Kyushu Univ Ser E Biol. 1959;3:65–80',
+  horn: 'Horn HS. Measurement of "overlap" in comparative ecological studies. Am Nat. 1966;100:419–424. doi:10.1086/282436',
+  horvitzThompson: 'Horvitz DG, Thompson DJ. A generalization of sampling without replacement from a finite universe. J Am Stat Assoc. 1952;47:663–685. doi:10.1080/01621459.1952.10483446',
   chaoJost: 'Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. Ecology. 2012;93:2533–2547. doi:10.1890/11-1952.1',
 };
 
@@ -146,6 +151,16 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
     const groups = r.groups ? ` Each condition was summarized by the mean of its samples' shares, each sample counted once.` : '';
     sentences.push(`What each sample's clonotypes (${under}) are made of was counted by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: their V, D, J and C genes and V–J pairs, at the gene and the IMGT subgroup level ${cite('imgtNames')}, a call tied between several genes sharing its part equally among them; their junctions' lengths in amino acids; and their junctions' amino acids, overall and at each IMGT position ${cite('imgtJunction')}. Each is a share of the sample's clonotypes, each counted once, and of its abundance in ${unit}, with a 95% interval from ${opts.replicates ?? 200} bootstrap replicates of the sample's clonotypes (seed ${opts.seed ?? '—'}), the estimate ± 1.96 standard errors.${groups}`);
+  }
+
+  // Overlap, likewise.
+  for (const r of results.filter((x) => x.kind === 'overlap')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const opts = r.options ?? {};
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const depth = r.depth > 0 ? `, as sampled and with both samples rarefied to ${Math.round(r.depth).toLocaleString('en-US')} ${unit}, the smallest sample's size (the exact expectation)` : '';
+    const by = r.publicBy === 'subject' ? 'subjects' : 'samples';
+    sentences.push(`The overlap of every pair of samples (clonotypes ${under}) was measured by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: the clonotypes they share, Jaccard's index ${cite('jaccard')}, Sørensen–Dice's ${cite('dice')} and the overlap coefficient${depth}; and over their abundances in ${unit}, Morisita's index ${cite('morisita')} and the Morisita–Horn index ${cite('horn')}. Intervals are 95%: from ${opts.replicates ?? 200} bootstrap replicates of each sample's cells (seed ${opts.seed ?? '—'}), widened for the chance that decides which clonotypes two samples share ${cite('horvitzThompson')}, on the logarithmic scale. Clonotypes found in more than one of the ${by} were counted as public.`);
   }
 
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };
