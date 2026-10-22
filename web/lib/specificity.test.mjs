@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createProject } from './project.js';
 import { addDataset, datasetRecord } from './datasets.js';
-import { nearestHistogram, optionWords, radiusOf, regionWords, tcrdistOptions, tcrdistRequest, useTCRdist } from './specificity.js';
+import { log10Histogram, nearestHistogram, optionWords, pgenOptions, pgenOrder, pgenRequest, probabilityWords, radiusOf, regionWords, tcrdistOptions, tcrdistRequest, tenTo, usePgen, useTCRdist } from './specificity.js';
 
 const NOW = '2026-10-22T12:00:00.000Z';
 const summary = { id: 'd-1', name: 'Dash', unit: 'cells', formats: [], singleCell: true, rows: 10, readerVersion: 1, sources: [], samples: [{ name: 's' }], report: { fatal: 0, warnings: 0, notes: 0, findings: [] } };
@@ -36,4 +36,34 @@ test('the distances to the nearest, in bins', () => {
 test('two clonotypes\' distance loop by loop, the loops that differ', () => {
   assert.equal(regionWords([[0, 0, 0, 0], [0, 0, 0, 9]], ['TRA', 'TRB']), 'TRA alike · TRB: CDR3 9');
   assert.equal(regionWords([[4, 0, 3, 12]], ['TRB']), 'TRB: CDR1 4, CDR2.5 3, CDR3 12');
+});
+
+test('generation probabilities\' options are kept with the dataset', () => {
+  let project = addDataset(createProject('P', { now: NOW }), datasetRecord(summary, NOW), NOW);
+  assert.deepEqual(pgenOptions(project.datasets[0]), { models: '', organism: '', genes: false });
+  project = usePgen(project, 'd-1', { models: 'olga', genes: true }, NOW);
+  assert.deepEqual(project.datasets[0].pgen, { models: 'olga', genes: true });
+  assert.match(project.history.at(-1).detail, /Dash: each CDR3 with its V and J genes, under OLGA's default models/);
+  assert.equal(usePgen(project, 'd-1', { genes: true }, NOW), project);
+  assert.deepEqual(pgenOptions(usePgen(project, 'd-1', { models: 'other', organism: 'cat' }, NOW).datasets[0]), { models: '', organism: '', genes: true });
+});
+
+test('probabilities in words and in bins of their logarithm', () => {
+  assert.equal(probabilityWords(2.34e-9), '2.3 × 10⁻⁹');
+  assert.equal(probabilityWords(9.96e-9), '1.0 × 10⁻⁸');
+  assert.equal(probabilityWords(0), '0');
+  assert.equal(probabilityWords(-1), '—');
+  assert.equal(probabilityWords(null), '—');
+  assert.equal(probabilityWords(1), '1.0 × 10⁰');
+  assert.equal(tenTo(-12), '10⁻¹²');
+  assert.equal(tenTo(-8.5), '10^-8.5');
+  assert.deepEqual(pgenRequest({ models: 'olga', organism: '', genes: true }), { models: 'olga', organism: '', genes: true });
+  assert.deepEqual(log10Histogram([{ pgen: 1e-9 }, { pgen: 3e-9 }, { pgen: 2e-8 }, { pgen: 0 }, { pgen: -1 }], 0.5), [{ x: '-9.0', y: 2 }, { x: '-8.5', y: 0 }, { x: '-8.0', y: 1 }]);
+});
+
+test('clonotypes in order of their probability', () => {
+  const rows = [{ id: 'a', total: 5, pgen: 1e-9 }, { id: 'b', total: 9, pgen: -1 }, { id: 'c', total: 1, pgen: 1e-6 }, { id: 'd', total: 5, pgen: 0 }];
+  assert.deepEqual(pgenOrder(rows, 'abundant').map((r) => r.id), ['b', 'a', 'd', 'c']);
+  assert.deepEqual(pgenOrder(rows, 'probable').map((r) => r.id), ['c', 'a', 'd', 'b']);
+  assert.deepEqual(pgenOrder(rows, 'improbable').map((r) => r.id), ['d', 'a', 'c', 'b']);
 });

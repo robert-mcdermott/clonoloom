@@ -46,6 +46,8 @@ export const REFERENCES = {
   bh: 'Benjamini Y, Hochberg Y. Controlling the false discovery rate: a practical and powerful approach to multiple testing. J R Stat Soc B. 1995;57:289–300. doi:10.1111/j.2517-6161.1995.tb02031.x',
   storey: 'Storey JD. A direct approach to false discovery rates. J R Stat Soc B. 2002;64:479–498. doi:10.1111/1467-9868.00346',
   wilson: 'Wilson EB. Probable inference, the law of succession, and statistical inference. J Am Stat Assoc. 1927;22:209–212. doi:10.1080/01621459.1927.10502953',
+  sethna: 'Sethna Z, Elhanati Y, Callan CG Jr, Walczak AM, Mora T. OLGA: fast computation of generation probabilities of B- and T-cell receptor amino acid sequences and motifs. Bioinformatics. 2019;35:2974–2981. doi:10.1093/bioinformatics/btz035',
+  marcou: 'Marcou Q, Mora T, Walczak AM. High-throughput immune repertoire analysis with IGoR. Nat Commun. 2018;9:561. doi:10.1038/s41467-018-02832-w',
 };
 
 const coverageWords = (v) => (v > 0.99 && v < 1 ? v.toFixed(4) : v.toFixed(3));
@@ -275,6 +277,16 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
       ? 'their CDR3s alone (the IMGT junction less its first three and last two residues, weighted 3, each residue of difference in length costing 12)'
       : `their CDR3s (the IMGT junction less its first three and last two residues, weighted 3, each residue of difference in length costing 12) and their V genes' CDR1, CDR2 and CDR2.5 (each weighted 1), the loops of each ${r.organism} V allele taken from tcrdist3's database of genes (${r.loops?.file ?? 'combo_xcr_2024-03-05.tsv'}, SHA-256 ${r.loops?.sha256 ?? ''}), made from IMGT's germline genes ${cite('imgtNames')}`;
     sentences.push(`Each T-cell clonotype (${under}) was compared with every other of the same chains by TCRdist ${cite('dash')}, as tcrdist3 computes it ${cite('tcrdist3')}, by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: two residues differing by min(4, 4 − BLOSUM62), a pair of chains by the sum of its chains', each chain by ${loops}. Of ${plural(r.compared ?? 0, 'clonotype')} compared, ${count(r.withNeighbors ?? 0)} had another within ${r.radius} TCRdist units.`);
+  }
+
+  // Generation probabilities.
+  for (const r of results.filter((x) => x.kind === 'pgen')) {
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const loci = Object.entries(r.loci ?? {}).map(([locus, model]) => `${model} for ${locus}`).join(', ');
+    const models = r.models === 'clonoloom'
+      ? `ClonoLoom's own model of human TRB recombination (its simulator's: GRCh38's gene segments, version ${String(r.set?.checksum ?? '').split(' ').at(-1) || '1'})`
+      : `OLGA's default models ${cite('sethna')}${loci ? ` (${loci})` : ''}, inferred by IGoR ${cite('marcou')} (checksum ${r.set?.checksum ?? ''})`;
+    sentences.push(`Each clonotype's generation probability (${under}), the probability that V(D)J recombination alone makes its CDR3s${r.genes ? ' with their V and J genes' : ''}, summed over every gene choice, deletion and insertion that makes them, was computed by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} as OLGA computes it ${cite('sethna')}, under ${models}, ${r.organism ?? 'human'}; a pair's as the product of its chains'. Of ${plural(r.clonotypes ?? 0, 'clonotype')}, ${count(r.computed ?? 0)} had one.`);
   }
 
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

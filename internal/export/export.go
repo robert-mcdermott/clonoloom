@@ -600,3 +600,61 @@ func TCRdist(w io.Writer, radius int, rows []Neighbor) error {
 	}
 	return writeAll(w, out)
 }
+
+// Generated is a clonotype's generation probabilities: each chain's (−1 when its locus has no
+// model) and their product (−1 unless every chain has one).
+type Generated struct {
+	ID      string
+	Chains  []clonotype.Chain
+	Total   float64
+	Samples int
+	Chain   []float64
+	Pgen    float64
+}
+
+// Pgen writes each clonotype's generation probabilities (pgen.csv): its chains, abundance and
+// samples, the product, and each chain's (locus:probability, separated by spaces); a probability
+// missing is empty.
+func Pgen(w io.Writer, rows []Generated) error {
+	out := [][]string{{"clonotype_id", "chains", "total", "samples", "pgen", "chain_pgen"}}
+	text := func(p float64) string {
+		if p < 0 {
+			return ""
+		}
+		return strconv.FormatFloat(p, 'g', 10, 64)
+	}
+	for _, r := range rows {
+		var chains []string
+		for k, ch := range r.Chains {
+			if k < len(r.Chain) {
+				chains = append(chains, ch.Locus+":"+text(r.Chain[k]))
+			}
+		}
+		out = append(out, []string{r.ID, chainsText(r.Chains), number(r.Total), strconv.Itoa(r.Samples), text(r.Pgen), strings.Join(chains, " ")})
+	}
+	return writeAll(w, out)
+}
+
+// PgenSample is a sample's clonotypes' generation probabilities: how many have one, how many the
+// model cannot make, and the quartiles of the others' log₁₀.
+type PgenSample struct {
+	Name      string
+	With      int
+	Zero      int
+	Quartiles [3]float64
+}
+
+// PgenSamples writes each sample's distribution (samples.csv).
+func PgenSamples(w io.Writer, rows []PgenSample) error {
+	out := [][]string{{"sample", "clonotypes_with_pgen", "pgen_zero", "log10_pgen_q1", "log10_pgen_median", "log10_pgen_q3"}}
+	for _, r := range rows {
+		q := []string{"", "", ""}
+		if r.With > r.Zero {
+			for i, v := range r.Quartiles {
+				q[i] = strconv.FormatFloat(v, 'f', 4, 64)
+			}
+		}
+		out = append(out, append([]string{r.Name, strconv.Itoa(r.With), strconv.Itoa(r.Zero)}, q...))
+	}
+	return writeAll(w, out)
+}

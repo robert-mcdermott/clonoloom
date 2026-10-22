@@ -1,0 +1,53 @@
+{
+ "counts": {
+  "human_B_heavy aa": 6059,
+  "human_B_kappa aa": 2770,
+  "human_B_lambda aa": 2568,
+  "human_T_alpha aa": 23371,
+  "human_T_alpha nt": 438,
+  "human_T_beta aa": 50464,
+  "human_T_beta aa masked": 1000,
+  "human_T_beta nt": 1656,
+  "mouse_T_alpha aa": 5583,
+  "mouse_T_beta aa": 6040
+ },
+ "file": "pgen.tsv.gz",
+ "made": "olga 1.3.0, numpy 2.5.4",
+ "models": {
+  "human_B_heavy/J_gene_CDR3_anchors.csv": "7b068ed555497b8e0dd977ff1b37cd7292f837085c7aac73927a3122fba671cf",
+  "human_B_heavy/V_gene_CDR3_anchors.csv": "273a12ddcce9692c97a36e4fb68ae20ee32cbf9cdde2c3443b6ce1ffe6ee87c0",
+  "human_B_heavy/model_marginals.txt": "504cc674d5472ce19ba4e516a95e77989ae13a10eae479c26e7a285c0b3ec0cf",
+  "human_B_heavy/model_params.txt": "a9e5fe496cbf3618f32104c858e359933b627c7102a87364f47408d0baca1803",
+  "human_B_kappa/J_gene_CDR3_anchors.csv": "92432fb0a7a8c819dae8170547587b8c0aa1f6002cec9ce0483f069107a997e8",
+  "human_B_kappa/V_gene_CDR3_anchors.csv": "53ff0df050c9b9383c3dcef3eb5759fea9528f85793bd4fd18f838d7a4da4f56",
+  "human_B_kappa/model_marginals.txt": "c68e300715c6ea6d54d5d164c6c2ad02d02ee7c186784c720ab086406407b779",
+  "human_B_kappa/model_params.txt": "2500cb02307025835a4f0c6ad2dd0f46ed76bdde3abd23219d4b92c2becb5c0e",
+  "human_B_lambda/J_gene_CDR3_anchors.csv": "f3b80c8af4208b8a1f86a9b26d0a00a047bdd06bbdf1262dccb97e3944395601",
+  "human_B_lambda/V_gene_CDR3_anchors.csv": "b84b6140448fcc9a6d1cead1bef0293c971e4a7cc625ade88081d26cc29adf39",
+  "human_B_lambda/model_marginals.txt": "7a7d281b1da4e136f2c33959dd2e9adee59222f0e5bebac685cd2860cd596ec4",
+  "human_B_lambda/model_params.txt": "c9223d9624c753ce2f597e3620d93f42da919f479715c35056eb7990028c5f1d",
+  "human_T_alpha/J_gene_CDR3_anchors.csv": "47c85062965e602e94d56936154972cb6c7297c384b349e5f1440cd9b9c44e3c",
+  "human_T_alpha/V_gene_CDR3_anchors.csv": "41f57ceb357a9c8abb066e7cdf16e34b1e0e8f064ae9f2813c15a975e27b3888",
+  "human_T_alpha/model_marginals.txt": "bef8e7f1be1d15f540fd89c3066ccd62ff62a9226b0a9946e4b9a36465f1c336",
+  "human_T_alpha/model_params.txt": "b8c2203b3a1c5da8d3717c27076636e4f36d7391ff07c33aebaa697941238555",
+  "human_T_beta/J_gene_CDR3_anchors.csv": "38e06fb953be5d85d8cd5f0b4f6774e0654fa498d81184767f99d9287718ce49",
+  "human_T_beta/V_gene_CDR3_anchors.csv": "b1552be7927e6397e60fb8e5f0212914d3cfa1e3fc300e33204d372202619161",
+  "human_T_beta/model_marginals.txt": "2d8ee55020a0a538f7841883927eefa0bdb6653df9c6ca635b12a6e4a4d57460",
+  "human_T_beta/model_params.txt": "2ad3a5fd94a0554543c4835c9e91e31fbe973e7ce8c727b69f3125105b95c3e6",
+  "mouse_T_alpha/J_gene_CDR3_anchors.csv": "4298c047367f44933c0ea5729c88b967679e0c1cf4b6e86f6d05cb66320284ed",
+  "mouse_T_alpha/V_gene_CDR3_anchors.csv": "22b4f96ffad1e2b4c460290a6b0a99aea9bac6ee9d9b8c6b07da44d1ab37f7a5",
+  "mouse_T_alpha/model_marginals.txt": "212997257fb094a46d574476098563a9a2fa115533ecf61cca7ca0c3ea924089",
+  "mouse_T_alpha/model_params.txt": "13a9d2c974c84633178ad631e9ca0940af517541cedc4cd618a6059d172a8869",
+  "mouse_T_beta/J_gene_CDR3_anchors.csv": "8ebb09da9fc858df1a6951aae19353f305f94dd9b337a71219a4687ca8c04e53",
+  "mouse_T_beta/V_gene_CDR3_anchors.csv": "5b0a50685eeb0ed34c0d724c47f55198d3587d6916bc7f1617d65e80f856c27c",
+  "mouse_T_beta/model_marginals.txt": "fb0fe31186d818e94537d53358556bcdc2cad68b1e647eca35e0b42cde7305b3",
+  "mouse_T_beta/model_params.txt": "858560500c7303ee496c1c5e1d0c9f26f9c83f78e6287103f5e45ac279872050"
+ },
+ "padded": [
+  "human_B_lambda",
+  "mouse_T_alpha"
+ ],
+ "rows": 99949,
+ "sha256": "b363a21a1f70c5b273ecf3ff2a5d2309dcb544d7e50631b4086a33b22914855a",
+ "shipped differs": 4785
+}

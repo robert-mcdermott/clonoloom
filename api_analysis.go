@@ -32,7 +32,8 @@ import (
 // when what it answers changes), its name in words, whether it uses the samples' groups and
 // subjects (the spec's Groups and Subjects; ignored otherwise), what of a study over time it uses
 // (over: "track", the spec's Study and Track; "compare", its Study and Compare; "class", its Study
-// and Class; "attribute", its Study; "", none), and its work (given its own kind).
+// and Class; "attribute", its Study), or what else it takes ("tcrdist", the spec's TCRdist; "pgen",
+// its PGen; "", nothing), its work (given its own kind), and what completes its spec.
 type analysis struct {
 	kind     string
 	prefix   string
@@ -48,7 +49,7 @@ type analysis struct {
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis, pgenAnalysis}
 
 // analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
 // (condition) and subject (by sample name), for the analyses that use them; Study is the samples'
@@ -67,6 +68,7 @@ type analysisSpec struct {
 	Compare    *track.Comparison    `json:"compare,omitempty"`
 	Class      *track.Classing      `json:"class,omitempty"`
 	TCRdist    *tcrdistOptions      `json:"tcrdist,omitempty"`
+	PGen       *pgenOptions         `json:"pgen,omitempty"`
 	Method     int                  `json:"method"`
 }
 
@@ -133,8 +135,9 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Compare    *track.Comparison `json:"compare,omitempty"`
 		Class      *track.Classing   `json:"class,omitempty"`
 		TCRdist    *tcrdistOptions   `json:"tcrdist,omitempty"`
+		PGen       *pgenOptions      `json:"pgen,omitempty"`
 		Method     int               `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.PGen, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -189,11 +192,19 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 			if body.TCRdist == nil {
 				body.TCRdist = &tcrdistOptions{}
 			}
+		case "pgen":
+			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
+			if body.PGen == nil {
+				body.PGen = &pgenOptions{}
+			}
 		default:
 			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
 		}
 		if k.over != "tcrdist" {
 			body.TCRdist = nil
+		}
+		if k.over != "pgen" {
+			body.PGen = nil
 		}
 		spec, err := body.analysisSpec.normalized(k.version)
 		if err != nil {

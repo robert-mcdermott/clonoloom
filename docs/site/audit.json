@@ -35,6 +35,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/generation.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/genes.html",
   "theme": "light",
   "width": "desktop",
@@ -189,6 +196,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/generation.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/genes.html",
   "theme": "dark",
   "width": "desktop",
@@ -343,6 +357,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/generation.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/genes.html",
   "theme": "light",
   "width": "phone",
@@ -491,6 +512,13 @@
  },
  {
   "page": "docs/figures.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/generation.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

@@ -7,6 +7,30 @@ grows with each.
 
 ### Added
 
+- **Generation probability (wave 4, slice 3).** The Specificity view's second part, Generation
+  (`internal/pgen`, `api_pgen.go`):
+  - each clonotype's generation probability (Sethna et al. 2019): the probability that V(D)J
+    recombination alone makes its amino-acid or nucleotide CDR3, summed over every gene choice,
+    deletion, palindrome and insertion by dynamic programming over its codons, as OLGA computes it;
+    with the V and J genes, the CDR3 with its genes; a pair's the product of its chains';
+  - OLGA's seven default models (IGoR's format, Marcou et al. 2018: human TRA, TRB, IGH, IGK, IGL,
+    mouse TRA, TRB) downloaded on request in **Reference data**, checked against their recorded
+    SHA-256 and named by their checksum in every result; or ClonoLoom's own model of human TRB, the
+    simulator's, built in; the organism guessed from the V genes;
+  - each sample's median and middle half, the distribution of the clonotypes' probabilities, and
+    the clonotypes the most abundant, most probable or least probable first; the clonotype's
+    probability, and each chain's, in the Clonotypes view's inspector (`POST /api/pgen/chains`);
+  - receptors drawn from a model (`pgen.NewGenerator`), for the checks;
+  - kept as a result, exported as CSV, in the methods paragraph; remote control's
+    `measure_generation`; the guide's page, Generation probabilities, and its capture scene.
+  - Validated: 99,949 CDR3s under OLGA's seven models (the development data's T- and B-cell
+    chains, CDR3s OLGA draws, nucleotide junctions, CDR3s with their genes and with residues of any
+    amino acid) within a relative 3 × 10⁻¹⁵ of OLGA 1.3.0's (`validation/reference/olga_pgen.py`;
+    mouse TRA's against OLGA on a model that counts the longest insertions OLGA leaves out at one
+    codon position, which changes 4,660 of its 5,583 probabilities by up to 13%);
+    under ClonoLoom's model, 200 junctions as frequent in 20 million simulated rearrangements as
+    their probabilities say, and the generator's receptors as frequent as theirs; a million TRB
+    CDR3s in 32 s on 10 processors (budget: 2 minutes).
 - **TCRdist (wave 4, slice 2).** The **Specificity** view's first part, Neighbors
   (`internal/tcrdist`, `api_tcrdist.go`, `web/ui/mode-specificity.js`):
   - each T-cell clonotype compared with every other of the same chains by TCRdist (Dash et al.
@@ -62,6 +86,9 @@ grows with each.
 
 - In the clonotype table, a paired clonotype's long α junction no longer runs over its β chain:
   each junction is cut with an ellipsis (the inspector shows them whole).
+- The methods paragraph now says how the clonotypes were compared by TCRdist (the Methods dialog
+  left TCRdist results out), and a TCRdist result chosen in the project tree opens the Specificity
+  view.
 
 ## 0.3.0 (2026-10-22)
 

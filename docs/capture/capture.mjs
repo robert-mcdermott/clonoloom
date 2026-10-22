@@ -242,6 +242,16 @@ const scenes = {
     await waitFor(`Boolean(document.querySelector('.specificity-view .nearest table'))`);
     await js(`(() => { const el = document.querySelector('.specificity-view .plot-card'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
   },
+  // Dash et al.'s mouse TCRs' generation probabilities under OLGA's mouse models (the reference
+  // data put in the library, as a download leaves them): their distribution, and the clonotypes,
+  // the most abundant first.
+  async generation() {
+    cpSync(join(DATA, 'olga-models'), join(places.library, 'references', 'olga-models'), { recursive: true });
+    await act('open_example', { example: 'dash-2017-tcrdist3', download: true });
+    await act('measure_generation', {});
+    await waitFor(`document.querySelectorAll('.specificity-view .plot-card svg').length >= 2`);
+    await js(`(() => { const el = document.querySelectorAll('.specificity-view .plot-card')[1]; el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
+  },
 };
 
 const names = wanted.length ? wanted : Object.keys(scenes);

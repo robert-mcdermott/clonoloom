@@ -8,11 +8,12 @@
 import { h, icon, clear, debounce } from './dom.js';
 import { showDialog, showMenu, toast } from './overlays.js';
 import { exportDataset } from './exports.js';
-import { clonotypeDetail, clonotypePage, clonotypePresets } from './storage.js';
+import { chainsPgen, clonotypeDetail, clonotypePage, clonotypePresets } from './storage.js';
 import { UNITS, datasetUnit } from '../lib/datasets.js';
 import { datasetFilter } from '../lib/filters.js';
 import { JUNCTIONS, LEVELS, datasetDefinition, sameMeaning, saveDefinition, useDefinition } from '../lib/definitions.js';
 import { followAlso } from '../lib/tracking.js';
+import { pgenOptions, pgenRequest, probabilityWords } from '../lib/specificity.js';
 
 const ROW = 30;
 // The header row's height, above the rows inside the scrolling area.
@@ -352,6 +353,7 @@ export function mountClonotypes(app, container) {
         ch.v ? [h('dt', 'V'), h('dd', ch.v)] : null,
         ch.j ? [h('dt', 'J'), h('dd', ch.j)] : null)),
       c.vendor ? h('dl.kv', h('dt', 'Source\'s clonotype'), h('dd', c.vendor)) : null,
+      generationOf(c),
       h('div.section-title', { style: { marginTop: '10px' } }, `In ${detail.in.length} sample${detail.in.length === 1 ? '' : 's'}`),
       h('table.data', h('thead', h('tr', h('th', 'Sample'), h('th.r', unit), h('th.r', 'Frequency'))),
         h('tbody', ...detail.in.map((s) => h('tr', h('td.sample-name', { title: s.sample }, s.sample), h('td.r', count(s.abundance)), h('td.r', pct(s.frequency)))))),
@@ -365,6 +367,41 @@ export function mountClonotypes(app, container) {
       detail.memberCount > 100 ? h('p.muted.small', `The first 100 of ${count(detail.memberCount)}.`) : null,
       h('p.muted.small', { style: { marginTop: '8px' } }, `Defined as: ${detail.describe}.`));
   });
+
+  // The clonotype's generation probability (api_pgen.go), under the dataset's choices for them (the
+  // Specificity view's Generation part): each chain's, and a pair's product.
+  let chance = { key: null };
+  function generationOf(c) {
+    const ctx = app.clonotypeContext;
+    const d = store.project.datasets.find((x) => x.id === ctx?.dataset);
+    if (!d || ctx.request.definition?.vendor || !c.chains.length) return null;
+    const options = pgenOptions(d);
+    const definition = ctx.request.definition ?? {};
+    const genes = options.genes && !['family', 'none'].includes(definition.v) && !['family', 'none'].includes(definition.j);
+    const key = JSON.stringify([c.id, options, genes]);
+    if (chance.key !== key) {
+      chance = { key, status: 'loading' };
+      chainsPgen({ chains: c.chains, junction: definition.junction ?? 'aa', pgen: pgenRequest({ ...options, genes }) })
+        .then((answer) => { if (chance.key === key) chance = { key, status: 'ready', answer }; })
+        .catch((error) => { if (chance.key === key) chance = { key, status: 'failed', error, code: error.code }; })
+        .finally(() => { if (chance.key === key) app.inspector.render(); });
+    }
+    const title = 'The probability that V(D)J recombination alone makes this clonotype\'s CDR3s (a pair\'s: the product of its chains\'), as OLGA computes it';
+    let value;
+    if (chance.status === 'loading') value = h('dd.muted', 'Computing…');
+    else if (chance.status === 'failed') {
+      value = chance.code === 'no-models'
+        ? h('dd.muted', 'OLGA\'s models are not downloaded (', h('a', { href: '#', onclick: (e) => { e.preventDefault(); app.showReferences(); } }, 'Reference data'), ')')
+        : h('dd.muted', chance.error.message);
+    } else {
+      const a = chance.answer;
+      const parts = a.chains.map((ch) => (ch.pgen != null ? `${ch.locus} ${probabilityWords(ch.pgen)}` : `${ch.locus}: ${ch.why}`));
+      value = h('dd', { title: `${a.models}${a.organism ? `, ${a.organism}` : ''}${genes ? '; with the V and J genes' : ''}` },
+        a.pgen != null ? probabilityWords(a.pgen) : 'none',
+        a.chains.length > 1 || a.pgen == null ? h('span.muted.small', ` (${parts.join(' · ')})`) : null);
+    }
+    return h('dl.kv', h('dt', { title }, 'Generation probability'), value);
+  }
 
   // The clonotype added to the dataset's list of clonotypes followed, and followed in the Tracking
   // view.

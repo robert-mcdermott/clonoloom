@@ -12,6 +12,7 @@ import { datasetDefinition, sameMeaning, useDefinition } from '../lib/definition
 import { datasetFilter } from '../lib/filters.js';
 import { SAMPLE_FIELDS, annotate, datasetUnit } from '../lib/datasets.js';
 import { ALPHAS, MAX_LIST, timePoints, trackingChoice, useComparison, useTracking } from '../lib/tracking.js';
+import { PGEN_ORDERS, pgenOrder } from '../lib/specificity.js';
 
 export class ActionError extends Error {}
 
@@ -351,6 +352,7 @@ export function remoteActions(app) {
       app.focusItem({ kind: 'dataset', id: d.id });
       await app.setMode('specificity');
       const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('neighbors');
       const changes = {};
       if (radius !== undefined) changes.radius = Math.round(Number(radius));
       if (cdr3Only !== undefined) changes.cdr3Only = Boolean(cdr3Only);
@@ -379,6 +381,39 @@ export function remoteActions(app) {
         data.selected = row(chosen);
       }
       return { message: `${d.name}: ${count(r.compared, 'clonotype')} compared by TCRdist; ${r.withNeighbors} have a neighbor within ${r.radius} (${done.artifact}).`, data };
+    },
+
+    async measure_generation({ dataset, models, organism, genes, order = 'abundant', top = 10 }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('generation');
+      const by = choose(order, Object.keys(PGEN_ORDERS), 'order');
+      view.order(by);
+      const changes = {};
+      if (models !== undefined) changes.models = choose(String(models), ['', 'olga', 'clonoloom'], 'models');
+      if (organism !== undefined) changes.organism = choose(String(organism), ['', 'human', 'mouse'], 'organism');
+      if (genes !== undefined) changes.genes = Boolean(genes);
+      if (Object.keys(changes).length) await view.choosePgen(changes);
+      await view.load();
+      await view.settled();
+      const state = view.generation();
+      if (state.status === 'no-models') throw new ActionError('OLGA\'s models are not downloaded: download them in Reference data (olga-models), or ask with models "clonoloom".');
+      if (state.status === 'unsupported') throw new ActionError('Generation probabilities need clonotypes defined by their junctions: choose another definition.');
+      if (state.status === 'absent') await view.run('pgen');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.generation().status) && view.generation(), 30 * 60 * 1000, 'the probabilities');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const r = done.result;
+      const computed = r.clonotypes.filter((c) => c.pgen >= 0).length;
+      const data = {
+        result: done.artifact, models: r.models, set: { name: r.set.name, checksum: r.set.checksum }, organism: r.organism, genes: r.genes, loci: r.loci, definition: r.describe,
+        clonotypes: r.clonotypes.length, computed, without: r.without,
+        samples: r.samples.map((s) => ({ sample: s.name, clonotypes: s.with, zero: s.zero, log10Quartiles: s.with > s.zero ? s.quartiles : null })),
+        order: by,
+        top: pgenOrder(r.clonotypes, by).slice(0, Math.max(0, Math.round(top))).map((c) => ({ id: c.id, chains: c.chains, total: c.total, samples: c.samples, pgen: c.pgen >= 0 ? c.pgen : null, chain: c.chain.map((p) => (p >= 0 ? p : null)) })),
+      };
+      return { message: `${d.name}: ${count(computed, 'clonotype')} of ${r.clonotypes.length.toLocaleString('en-US')} with a generation probability, under ${r.set.name} (${done.artifact}).`, data };
     },
 
     async select_clonotype({ dataset, rank, id }) {

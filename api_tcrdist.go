@@ -73,10 +73,13 @@ func (a *app) tcrdistPrepare(spec *analysisSpec) error {
 }
 
 // prepareCode is a refused spec's error code: "no-loops" when the V genes' loops are not
-// downloaded (the page offers them).
+// downloaded, "no-models" when OLGA's models are not (the page offers them).
 func prepareCode(err error) string {
-	if errors.Is(err, errNoLoops) {
+	switch {
+	case errors.Is(err, errNoLoops):
 		return "no-loops"
+	case errors.Is(err, errNoModels):
+		return "no-models"
 	}
 	return ""
 }

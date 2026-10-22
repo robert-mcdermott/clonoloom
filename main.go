@@ -480,6 +480,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerCache(mux)
 	a.registerAnalyses(mux)
 	a.registerTCRdist(mux)
+	a.registerPgen(mux)
 	a.registerFigures(mux)
 	a.registerExports(mux)
 	a.registerStudy(mux)

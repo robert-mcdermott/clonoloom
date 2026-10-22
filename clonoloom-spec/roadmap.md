@@ -552,8 +552,8 @@ queries make a public cohort more than one example's files.
 | --- | --- |
 | 1. Readers of wave 4 | Done |
 | 2. TCRdist | Done |
-| 3. Generation probability | Next |
-| 4. Simulated antigen-specific responses | To come |
+| 3. Generation probability | Done |
+| 4. Simulated antigen-specific responses | Next |
 | 5. Neighborhoods and backgrounds | To come |
 | 6. Clonotype networks | To come |
 | 7. Specificity databases | To come |
@@ -565,7 +565,7 @@ queries make a public cohort more than one example's files.
 | --- | --- |
 | TCRdist | As tcrdist3 computes it (Mayer-Blackwell et al. 2021) where it differs from Dash et al. 2017's description: the CDR3's gap placed where it costs least, 12 for each residue of difference in the CDR3s' lengths (the paper says 8), and the gap character of the V gene's aligned loops costing nothing against a residue. Distances are integers, equal to tcrdist3's chain by chain; a pair's distance is the sum of its chains'. The paper's variant is not offered |
 | The V gene's loops | CDR1, CDR2 and CDR2.5 of each V allele as tcrdist3's database aligns them (`combo_xcr_2024-03-05.tsv`: MIT; human, mouse and rhesus; made from IMGT's germlines, CC BY 4.0 since July 2026), downloaded on request with its checksum, as an example is: germline data are not bundled until IMGT's terms are confirmed (`research.md` §7.1, §8). Without it, TCRdist is on the CDR3 alone, and every result says which. A V gene called without its allele takes its \*01 allele's loops, and says so |
-| Recombination models | The simulator's own human TRB model, built in (the one the simulated studies are made from), and OLGA's default models (human TRB, TRA, IGH, IGK and IGL; mouse TRB and TRA), downloaded on request from OLGA's repository at a pinned commit with their GPL-3.0 notice: their parameters are not bundled (`research.md` §7.1). Generation probability is computed as OLGA computes it, its limit on the longest insertions included, so that it agrees with OLGA to 10⁻⁹. Every result names its model and the model's checksum |
+| Recombination models | The simulator's own human TRB model, built in (the one the simulated studies are made from), and OLGA's default models (human TRB, TRA, IGH, IGK and IGL; mouse TRB and TRA), downloaded on request from OLGA's repository at a pinned commit with their GPL-3.0 notice: their parameters are not bundled (`research.md` §7.1). Generation probability is computed as OLGA 1.3.0 computes it, its choices included (every insertion length the model allows, the palindrome made from the gene's part of the CDR3, the genes its anchor files mark functional), so that it agrees with OLGA to 10⁻⁹; but not OLGA's omission of the longest insertion at one codon position (slice 3, *Found*). Every result names its model and the model's checksum |
 | Backgrounds | A neighborhood is compared with receptors drawn from a recombination model with the sample's V and J usage (each weighted by its V–J pair's share in the sample over its share in the draws, as Mayer-Blackwell et al.'s are), with the sample's own receptors with their CDR3s shuffled, or with a public repertoire the user opens (an OTS unit). A neighborhood's radius is the largest at which at most one background receptor in a million is a neighbor (Mayer-Blackwell et al.'s 10⁻⁶; tcrdist3's default is 10⁻⁵) |
 | Specificity databases | VDJdb, downloaded on request (its legacy release files) once its license (CC BY-NC-ND 4.0 since September 2026: non-commercial use) is shown and accepted, the release recorded; never bundled, and no fixture derived from it, so CI uses a simulated database. McPAS-TCR (no license published) and IEDB (CC BY 4.0) later, as their terms allow |
 | Units and definitions | Specificity works on clonotypes, whatever the unit: distances, generation probabilities and networks need no counts. TCRdist needs each clonotype's amino-acid junction and V gene: a definition without V gives TCRdist on the CDR3 alone, and a paired definition paired distances |
@@ -655,6 +655,39 @@ queries make a public cohort more than one example's files.
      samples, to a relative 10⁻⁹; the simulator model's probabilities against the frequencies of
      junctions among the 10⁸ rearrangements it draws; the budget (a million CDR3s in under 2
      minutes on 10 cores).
+   - *Done:* `internal/pgen` (IGoR's model files read, OLGA's anchors and gene rules; the
+     probability of an amino-acid or nucleotide CDR3 with V and J masks, forward from the V and
+     backward from the J over codon states, in parallel; receptors drawn from a model; the
+     simulator's model in the same terms, `pgen.Simulator`); the reference data `olga-models` (OLGA's
+     seven default models at a pinned commit); the analysis `pgen` (`api_pgen.go`) and `POST
+     /api/pgen/chains`; the Specificity view's Generation part (each sample's median and middle
+     half, the distribution, the clonotypes by abundance or probability) and the inspector's line;
+     CSV export, the methods paragraph's sentence, `measure_generation`, the guide's page and
+     capture scene.
+   - *Validation:* 99,949 CDR3s under OLGA's seven models (the OTS, Dash and OAS development
+     data's chains, CDR3s OLGA draws from each model, 2,094 nucleotide junctions, 1,000 with their
+     genes, 200 with residues of any amino acid) within a relative 3 × 10⁻¹⁵ of OLGA 1.3.0's;
+     under the simulator's model, 200 junctions' frequencies in 20 million rearrangements as their
+     probabilities say (mean squared z 0.96), and the generator's under its model and OLGA's human
+     TRB (1.08, 0.89); a million TRB CDR3s in 32 s on 10 processors.
+   - *Decided:* OLGA's models where downloaded, else ClonoLoom's model of human TRB, unless chosen;
+     the organism whose models name the most V genes, unless chosen; with the V and J genes as an
+     option (a gene without its allele stands for each allele), off for a definition by family or
+     without genes; a pair's probability the product of its chains', none unless each has one. The
+     clonotype table has no column of probabilities (each page would need a job): the Generation
+     part's table orders the clonotypes by it, and the inspector shows the one chosen. 20 million
+     simulated rearrangements rather than 10⁸ give each of the 200 junctions enough counts.
+   - *Found:* OLGA 1.3.0 sums every insertion length (no truncation, which `research.md` §5.9 had
+     assumed), builds a gene's palindrome from its part of the CDR3 (a V whose CDR3 part is three
+     nucleotides gets at most three), and reads the DJ insertion from its J end. It leaves out an
+     insertion of the longest length a model allows when that length is one more than a multiple
+     of three and the insertion starts a codon; its generator makes them. ClonoLoom counts them: of
+     the seven models, only mouse TRA's probabilities change by more than 10⁻¹⁵ (insertions up to 22
+     nucleotides): 4,660 of its 5,583 CDR3s, by up to 13% of a probability. The reference runs
+     OLGA on a copy of such a model that allows one nucleotide more with probability 10⁻³⁰, and
+     keeps OLGA's values on the model as shipped beside them. Making OLGA's sequence generator from a
+     model object changes that object in place, and probabilities computed with it after (by up to
+     6 × 10⁻⁷ for TRB): the reference gives the generator its own copy.
 4. **Simulated antigen-specific responses (E1).** `clonoloom simulate` presets in which some
    clonotypes recognize an epitope: families of receptors around a few founders, as close as Dash
    et al. found epitope-specific receptors to be; a vaccination series in which the families

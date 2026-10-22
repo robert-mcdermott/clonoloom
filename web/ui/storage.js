@@ -176,6 +176,14 @@ export async function clonotypeDetail(request) {
   return response.json();
 }
 
+// A clonotype's chains' generation probabilities (api_pgen.go): { chains, junction, pgen } answers
+// each chain's, their product, and the models.
+export async function chainsPgen(body) {
+  const response = await fetch('api/pgen/chains', { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } });
+  if (!response.ok) throw await programError(response, 'The generation probability could not be computed.');
+  return response.json();
+}
+
 // The clonotype definitions most studies use.
 export async function clonotypePresets() {
   const response = await fetch('api/clonotypes/presets', { cache: 'no-store' });

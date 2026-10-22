@@ -671,9 +671,12 @@ compare the figure with another study's, without the text.
   nucleotides, the first one drawn from the chain's stationary distribution; the DJ insertion read
   from its J end. What OLGA does, and an exact reimplementation must too: genes not marked
   functional (`F` or `(F)`) or without an anchor contribute nothing and keep their share (P(V) is
-  not made to sum to 1 again); only the Markov rows are normalized; the longest insertions are
-  cut by the codon phase at which the V ends (with 30 the longest TRB insertion, 29, 28 or 27 are
-  summed); a D deleted entirely only by left and right deletions that sum to its length; V and J
+  not made to sum to 1 again); only the Markov rows are normalized; every insertion length the
+  model allows is summed, except that OLGA 1.3.0 leaves out an insertion of the longest length
+  when that length is one more than a multiple of three and the insertion starts a codon (mouse
+  TRA's 22 nucleotides; its own generator makes them, and ClonoLoom counts them: roadmap, wave 4,
+  slice 3); a gene's palindrome is made from its part of the CDR3, at most as long as that part; a
+  D deleted entirely only by left and right deletions that sum to its length; V and J
   each keep at least one nucleotide in the CDR3; the probability is over all recombination events,
   not only productive ones; V and J masks give joint probabilities. The default models' files carry
   no data license apart from the GPL-3.0 of their repositories (§7.1), and their versions differ

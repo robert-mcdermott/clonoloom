@@ -90,6 +90,18 @@ test('a TCRdist result says how the clonotypes were compared, with the loops\' d
   assert.doesNotMatch(alone, /tcrdist3's database/);
 });
 
+test('a generation probabilities result names its models by their checksum', () => {
+  const result = { kind: 'pgen', definition: 'AA', filter: null, models: 'olga', set: { name: 'OLGA\'s default models', checksum: 'ab12cd34' }, organism: 'human', genes: true, loci: { TRB: 'human_T_beta', TRA: 'human_T_alpha' }, clonotypes: 1200, computed: 1180 };
+  const { text, references } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [result], program });
+  assert.match(text, /Each clonotype's generation probability \("AA"\), the probability that V\(D\)J recombination alone makes its CDR3s with their V and J genes/);
+  assert.match(text, /under OLGA's default models \[\d\] \(human_T_beta for TRB, human_T_alpha for TRA\), inferred by IGoR \[\d\] \(checksum ab12cd34\), human/);
+  assert.match(text, /Of 1,200 clonotypes, 1,180 had one\./);
+  assert.ok(references.some((r) => /Sethna Z/.test(r)) && references.some((r) => /Marcou Q/.test(r)));
+  const own = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [{ ...result, models: 'clonoloom', genes: false, set: { checksum: 'clonoloom_human_T_beta 1' }, loci: { TRB: 'clonoloom_human_T_beta' } }], program });
+  assert.match(own.text, /under ClonoLoom's own model of human TRB recombination \(its simulator's: GRCh38's gene segments, version 1\)/);
+  assert.ok(!own.references.some((r) => /Marcou Q/.test(r)));
+});
+
 test('the same inputs give the same text', () => {
   const inputs = { dataset: pbmc, program };
   assert.deepEqual(methodsParagraph(inputs), methodsParagraph(inputs));

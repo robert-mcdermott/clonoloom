@@ -232,6 +232,27 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 			rows[i] = export.Neighbor{ID: r.ID, Chains: r.Chains, Total: r.Total, Samples: r.Samples, Neighbors: r.Neighbors, Nearest: r.Nearest, Distance: r.Distance}
 		}
 		files["tcrdist.csv"] = func(f io.Writer) error { return export.TCRdist(f, doc.Radius, rows) }
+	case "pgen":
+		var doc pgenDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		with := "the CDR3 alone"
+		if doc.Genes {
+			with = "the CDR3 with its V and J genes"
+		}
+		notice.What = fmt.Sprintf("Each clonotype of %s's generation probability (pgen.csv: each chain's, %s, under %s, %s; a pair's the product of its chains'), and each sample's distribution of them (samples.csv). Models: %s (checksum %s); %s", ds.Name, with, doc.Set.Name, doc.Organism, doc.Set.Source, doc.Set.Checksum, doc.Set.Citation)
+		rows := make([]export.Generated, len(doc.Rows))
+		for i, r := range doc.Rows {
+			rows[i] = export.Generated{ID: r.ID, Chains: r.Chains, Total: r.Total, Samples: r.Samples, Chain: r.Chain, Pgen: r.Pgen}
+		}
+		samples := make([]export.PgenSample, len(doc.Samples))
+		for i, x := range doc.Samples {
+			samples[i] = export.PgenSample{Name: x.Name, With: x.With, Zero: x.Zero, Quartiles: x.Quartiles}
+		}
+		files["pgen.csv"] = func(f io.Writer) error { return export.Pgen(f, rows) }
+		files["samples.csv"] = func(f io.Writer) error { return export.PgenSamples(f, samples) }
 	default:
 		writeError(w, http.StatusBadRequest, "This result has nothing to export as a table.")
 		return

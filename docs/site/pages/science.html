@@ -16,6 +16,7 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
             <tr><td>Dash et al. 2017's epitope-specific TCRs (mouse and human), as tcrdist3 distributes them</td><td>MIT (tcrdist3)</td><td>The tcrdist3 reader, an example, CI</td></tr>
             <tr><td>OTS and OAS data units: three donors' paired TCRs, an antibody repertoire's paired and unpaired chains</td><td>CC BY 4.0 (Oxford Protein Informatics Group)</td><td>The units' reader, an example, CI</td></tr>
             <tr><td>tcrdist3's database of genes (the V genes' CDR1, CDR2 and CDR2.5), downloaded on request</td><td>MIT (tcrdist3); IMGT's germline genes, CC BY 4.0</td><td>TCRdist's loops, CI</td></tr>
+            <tr><td>OLGA's seven default recombination models (IGoR's format), downloaded on request</td><td>GPL-3.0 (OLGA's repository); the model files carry no license of their own</td><td>Generation probabilities, CI</td></tr>
             <tr><td>MiXCR 3 clone tables (PyClonal's sample inputs) and a MiXCR 4 single-cell table (MiLaboratories' benchmark)</td><td>MIT; no license stated</td><td>The MiXCR reader: CI, and the maintainer's computer only for MiXCR 4's</td></tr>
             <tr><td>Emerson et al. 2017, three subjects, in immunoSEQ's format and from the AIRR Data Commons</td><td>immuneACCESS Terms of Use: research only, no redistribution</td><td>Validation on the maintainer's computer only</td></tr>
             <tr><td>Simulated TRB studies</td><td>Made by <code>clonoloom simulate</code>, seeded</td><td>Accuracy against the truth; interval coverage; scale</td></tr>
@@ -124,6 +125,19 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
       </div>
       <p>Where tcrdist3 and Dash et al.'s description differ, ClonoLoom does as tcrdist3 does: the CDR3's gap placed where it costs least, 12 for each residue of difference in length, and the gap character of the V genes' aligned loops costing nothing against a residue. The loops are tcrdist3's database of genes (made from IMGT's germline genes), downloaded on request and named by its checksum in every result. The neighbors of 100,000 paired TCRs (real α and β chains of three OTS donors, paired at random) are found in 25 seconds on 10 processors, within 0.1 GB.</p>
 
+      <h2 id="generation">Generation probabilities</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Measure</th><th>Source</th><th>Checked against</th><th>Agreement</th></tr></thead>
+          <tbody>
+            <tr><td>The generation probability of an amino-acid or nucleotide CDR3, alone or with its V and J genes, under a V(D)J recombination model</td><td>Sethna et al. 2019 (OLGA), on IGoR's models (Marcou et al. 2018)</td><td>OLGA 1.3.0 under its seven default models: 99,949 CDR3s of the development data, drawn from each model, as nucleotides, with their genes, and with residues of any amino acid</td><td class="agree">within a relative 3 × 10<sup>−15</sup></td></tr>
+            <tr><td>The same, under ClonoLoom's own model of human TRB</td><td></td><td>The simulator: how often 200 junctions are made in 20 million rearrangements</td><td class="agree">mean squared z 0.96</td></tr>
+            <tr><td>Receptors drawn from a model</td><td></td><td>The probabilities, under ClonoLoom's model and OLGA's human TRB model</td><td class="agree">mean squared z 1.08 and 0.89</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>ClonoLoom computes a CDR3's probability as OLGA does, summed over every gene choice, deletion, palindrome and insertion by dynamic programming over its codons, and with OLGA's choices: every insertion length the model allows, a palindrome made from the gene's part of the CDR3, and only the genes OLGA's anchor files mark functional. OLGA leaves out an insertion of the longest length a model allows when that length is one more than a multiple of three and the insertion starts a codon, which its own generator makes; ClonoLoom counts them, and is checked against OLGA on a copy of each such model that allows one nucleotide more with probability 10<sup>−30</sup>. Of the seven models, only mouse TRA's probabilities change by it by more than 10<sup>−15</sup>: by up to 13% among the 5,583 mouse TRA CDR3s compared. A million TRB CDR3s' probabilities take 32 seconds on 10 processors.</p>
+
       <h2 id="simulation">Simulated studies</h2>
       <p><code>clonoloom simulate</code> makes TRB rearrangements from GRCh38's gene segments at Ensembl's annotation (Dyer et al. 2025), with V and J usage from 10x Genomics' 10k PBMC data, deletions, palindromic and non-templated insertions (Murugan et al. 2012), and productive junctions selected on their length (Elhanati et al. 2014); each subject's repertoire a population of power-law clone sizes, sampled into templates and reads. Over 150,000 rearrangements, the productive junctions' mean length is within 0.1 amino acids of the 10x data's, its standard deviation within 0.15, and V usage within 0.03 of the model's in total variation. The same seed gives the same bytes on every computer.</p>
 
@@ -155,6 +169,7 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
         <li>Jaccard P. The distribution of the flora in the alpine zone. <em>New Phytol</em> 1912;11:37–50.</li>
         <li>Lefranc MP. Immunoglobulin and T cell receptor genes: IMGT and the birth and rise of immunoinformatics. <em>Front Immunol</em> 2014;5:22.</li>
         <li>Lefranc MP, Pommié C, Ruiz M, et al. IMGT unique numbering for immunoglobulin and T cell receptor variable domains and Ig superfamily V-like domains. <em>Dev Comp Immunol</em> 2003;27:55–77.</li>
+        <li>Marcou Q, Mora T, Walczak AM. High-throughput immune repertoire analysis with IGoR. <em>Nat Commun</em> 2018;9:561.</li>
         <li>Mayer-Blackwell K, Schattgen S, Cohen-Lavi L, et al. TCR meta-clonotypes for biomarker discovery with tcrdist3 enabled identification of public, HLA-restricted clusters of SARS-CoV-2 TCRs. <em>eLife</em> 2021;10:e68605.</li>
         <li>Morisita M. Measuring of interspecific association and similarity between communities. <em>Mem Fac Sci Kyushu Univ Ser E Biol</em> 1959;3:65–80.</li>
         <li>Murugan A, Mora T, Walczak AM, Callan CG Jr. Statistical inference of the generation probability of T-cell receptors from sequence repertoires. <em>Proc Natl Acad Sci USA</em> 2012;109:16161–16166.</li>
@@ -163,6 +178,7 @@ lede: ClonoLoom implements each method itself, from its publication, and checks 
         <li>Rubelt F, Busse CE, Bukhari SAC, et al. Adaptive Immune Receptor Repertoire Community recommendations for sharing immune-repertoire sequencing data. <em>Nat Immunol</em> 2017;18:1274–1278.</li>
         <li>Rytlewski J, Deng S, Xie T, et al. Model to improve specificity for identification of clinically-relevant expanded T cells in peripheral blood. <em>PLoS One</em> 2019;14:e0213684.</li>
         <li>Seal RL, Braschi B, Gray K, et al. Genenames.org: the HGNC resources in 2023. <em>Nucleic Acids Res</em> 2023;51:D1003–D1009.</li>
+        <li>Sethna Z, Elhanati Y, Callan CG Jr, Walczak AM, Mora T. OLGA: fast computation of generation probabilities of B- and T-cell receptor amino acid sequences and motifs. <em>Bioinformatics</em> 2019;35:2974–2981.</li>
         <li>Storey JD. A direct approach to false discovery rates. <em>J R Stat Soc B</em> 2002;64:479–498.</li>
         <li>Sturm G, Szabo T, Fotakis G, et al. Scirpy: a Scanpy extension for analyzing single-cell T-cell receptor-sequencing data. <em>Bioinformatics</em> 2020;36:4817–4818.</li>
         <li>Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. <em>Front Immunol</em> 2018;9:2206.</li>

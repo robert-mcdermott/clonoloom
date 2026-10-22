@@ -111,6 +111,14 @@ var remoteActions = []remoteAction{
 		"top":      numberArg("How many of the clonotypes with the most neighbors to answer (default 10)."),
 		"select":   numberArg("A clonotype to show the nearest of, by its rank among those with the most neighbors (from 1)."),
 	})},
+	{Name: "measure_generation", Title: "Compute generation probabilities", Description: "Shows the Specificity view's Generation part and computes each clonotype's generation probability, the probability that V(D)J recombination alone makes its CDR3s, as OLGA computes it, under the dataset's clonotype definition and filter (a job; the result kept with the project): under OLGA's default models (the reference data olga-models, which must be downloaded) or ClonoLoom's own model of human TRB; a pair's is the product of its chains'. The options given are kept with the dataset. Answers the models and how many clonotypes have a probability, each sample's quartiles (log10), and the first clonotypes in the order asked for.", InputSchema: schema(map[string]any{
+		"dataset":  datasetArg,
+		"models":   textArg("Whose models: olga, clonoloom, or \"\" for OLGA's where downloaded, else ClonoLoom's (the default)."),
+		"organism": textArg("human or mouse, or \"\" to guess from the V genes (the default)."),
+		"genes":    flagArg("The probability of each CDR3 with its V and J genes, not of the CDR3 alone."),
+		"order":    textArg("Which clonotypes first: abundant (the default), probable or improbable."),
+		"top":      numberArg("How many clonotypes to answer (default 10)."),
+	})},
 	{Name: "select_clonotype", Title: "Choose a clonotype", Description: "Shows the Clonotypes view and chooses a clonotype, which the inspector describes: by its rank in the table (1 for the first) or its ID.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
 		"rank":    numberArg("Its rank in the table as sorted, from 1."),

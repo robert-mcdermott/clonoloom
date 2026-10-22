@@ -79,6 +79,10 @@ type Recombination struct {
 	SelectLengths bool `json:"selectLengths"`
 }
 
+// HumanTRB is the human TRB locus the simulator recombines (germline.go): its gene segments and
+// their usage. Its slices are shared: read them, do not change them.
+func HumanTRB() Locus { return humanTRB }
+
 // DefaultRecombination: deletion and insertion distributions chosen so that the productive
 // junctions' lengths are those of the 10x Genomics 10k PBMC data's TRB chains (mean 14.5 amino
 // acids; checked by TestJunctionLengthsMatchTheOpenData), and the palindromic nucleotides

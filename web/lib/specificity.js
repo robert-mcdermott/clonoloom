@@ -1,8 +1,9 @@
-// The Specificity view's choices and their words (clonoloom-spec/requirements.md, S1; roadmap.md,
-// wave 4): how TCRdist compares a dataset's clonotypes (the radius within which two are
-// neighbors, the CDR3s alone or with the V genes' loops, the organism whose loops are used), kept
-// with the dataset; the request the program is sent (api_tcrdist.go); and the distribution of
-// each clonotype's distance to its nearest. Every edit returns a new project.
+// The Specificity view's choices and their words (clonoloom-spec/requirements.md, S1 and R6;
+// roadmap.md, wave 4): how TCRdist compares a dataset's clonotypes (the radius within which two are
+// neighbors, the CDR3s alone or with the V genes' loops, the organism whose loops are used) and how
+// their generation probabilities are computed (the models, the organism, with the V and J genes or
+// not), kept with the dataset; the requests the program is sent (api_tcrdist.go, api_pgen.go);
+// and the distributions shown. Every edit returns a new project.
 
 import { touch } from './project.js';
 
@@ -76,3 +77,83 @@ export function regionWords(regions, loci) {
 // A clonotype's junctions and genes, in words.
 export const junctionsOf = (c) => c.chains.map((ch) => ch.junction).join('; ');
 export const genesOf = (c) => c.chains.map((ch) => [ch.v, ch.j].filter(Boolean).join(' ')).filter(Boolean).join('; ');
+
+// Generation probabilities' options, kept with the dataset: the models ('': OLGA's where
+// downloaded, else ClonoLoom's; 'olga'; 'clonoloom'), the organism ('' guessed from the V genes)
+// and whether each chain's V and J genes are part of the probability.
+export const MODELS = { '': 'OLGA\'s where downloaded', olga: 'OLGA\'s default models', clonoloom: 'ClonoLoom\'s (human TRB)' };
+export const PGEN_ORGANISMS = { '': 'From the V genes', human: 'Human', mouse: 'Mouse' };
+
+export function pgenOptions(dataset) {
+  const o = dataset?.pgen ?? {};
+  return { models: MODELS[o.models] ? o.models ?? '' : '', organism: PGEN_ORGANISMS[o.organism] ? o.organism ?? '' : '', genes: Boolean(o.genes) };
+}
+
+export function usePgen(project, datasetId, changes, now = new Date().toISOString()) {
+  const dataset = project.datasets.find((d) => d.id === datasetId);
+  if (!dataset) return project;
+  const before = pgenOptions(dataset);
+  const next = pgenOptions({ pgen: { ...before, ...changes } });
+  if (JSON.stringify(next) === JSON.stringify(before)) return project;
+  const pgen = { ...(next.models ? { models: next.models } : {}), ...(next.organism ? { organism: next.organism } : {}), ...(next.genes ? { genes: true } : {}) };
+  return touch({
+    ...project,
+    datasets: project.datasets.map((d) => (d.id === datasetId ? { ...d, pgen } : d)),
+    history: [...project.history, { time: now, action: 'Chose how generation probabilities are computed', detail: `${dataset.name}: ${pgenWords(next)}` }],
+  }, now);
+}
+
+// The request for a dataset's generation probabilities.
+export function pgenRequest(options) {
+  return { models: options.models, organism: options.organism, genes: options.genes };
+}
+
+export function pgenWords(o) {
+  return `${o.genes ? 'each CDR3 with its V and J genes' : 'each CDR3'}, under ${o.models === 'clonoloom' ? 'ClonoLoom\'s model of human TRB' : o.models === 'olga' ? 'OLGA\'s default models' : 'OLGA\'s models where downloaded, else ClonoLoom\'s'}${o.organism && o.models !== 'clonoloom' ? ` (${o.organism})` : ''}`;
+}
+
+const SUPERSCRIPT = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+
+// A power of ten in words: 10⁻⁹ (an exponent that is not whole, as 10^-8.5).
+export const tenTo = (e) => (Number.isInteger(e) ? `10${String(e).split('').map((c) => SUPERSCRIPT[c]).join('')}` : `10^${e}`);
+
+// A probability in words: 2.3 × 10⁻⁹ (two significant digits), 0 as 0, none as —.
+export function probabilityWords(p) {
+  if (p == null || p < 0 || !Number.isFinite(p)) return '—';
+  if (p === 0) return '0';
+  const e = Math.floor(Math.log10(p));
+  let m = p / 10 ** e;
+  let exp = e;
+  if (Number(m.toFixed(1)) >= 10) {
+    m /= 10;
+    exp += 1;
+  }
+  return `${m.toFixed(1)} × ${tenTo(exp)}`;
+}
+
+// The clonotypes' log₁₀ probabilities in bins of width: [{ x: the bin's start, y: clonotypes }],
+// from the least to the largest seen (those without one, or of 0, left out).
+export function log10Histogram(rows, width = 0.5) {
+  const values = rows.filter((r) => r.pgen > 0).map((r) => Math.log10(r.pgen));
+  if (!values.length) return [];
+  const lo = Math.floor(Math.min(...values) / width) * width;
+  const hi = Math.max(...values);
+  const bins = Array.from({ length: Math.floor((hi - lo) / width) + 1 }, (_, i) => ({ x: (lo + i * width).toFixed(1), y: 0 }));
+  for (const v of values) bins[Math.min(bins.length - 1, Math.floor((v - lo) / width))].y += 1;
+  return bins;
+}
+
+// The clonotypes in the order chosen: 'abundant' (the most abundant first), 'probable' (the most
+// probable first) or 'improbable' (the least first, 0 before any other); those without a
+// probability last, then by abundance and ID.
+export const PGEN_ORDERS = { abundant: 'Most abundant', probable: 'Most probable', improbable: 'Least probable' };
+export function pgenOrder(rows, by = 'abundant') {
+  const has = (r) => r.pgen >= 0;
+  const tie = (a, b) => b.total - a.total || (a.id < b.id ? -1 : 1);
+  return [...rows].sort((a, b) => {
+    if (by === 'abundant') return tie(a, b);
+    if (has(a) !== has(b)) return has(a) ? -1 : 1;
+    if (!has(a)) return tie(a, b);
+    return (by === 'probable' ? b.pgen - a.pgen : a.pgen - b.pgen) || tie(a, b);
+  });
+}
