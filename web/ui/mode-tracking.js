@@ -209,8 +209,9 @@ export function mountTracking(app, container) {
     const record = kind === 'tracking'
       ? { ...common, options: { confidence: r.confidence }, name: `Tracking · ${d.name}`, method: `Clonotypes followed over time, ${choiceShort({ ...r.choice, list: r.choice.list ?? [] })}; Wilson score intervals`,
         choice: r.choice, subjects: r.subjects.length, followed: r.subjects.reduce((n, s) => n + s.clonotypes.length, 0), intervals: r.intervals }
-      : { ...common, name: `Tests · ${d.name}`, method: `${TESTS[r.comparison.test]?.label ?? r.comparison.test} between ${r.comparison.from} and ${r.comparison.to}; ${CORRECTIONS[r.comparison.correction]?.label ?? r.comparison.correction} at ${r.comparison.alpha}`,
-        comparison: r.comparison, subjects: r.subjects.length, tested: sum('tested'), increased: sum('increased'), decreased: sum('decreased') };
+      : { ...common, name: `Tests · ${d.name}`, method: `${TESTS[r.test]?.label ?? r.test} between ${r.comparison.from} and ${r.comparison.to}; ${CORRECTIONS[r.comparison.correction]?.label ?? r.comparison.correction} at ${r.comparison.alpha}`,
+        comparison: r.comparison, used: r.test, subjects: r.subjects.length, tested: sum('tested'), increased: sum('increased'), decreased: sum('decreased'),
+        fit: r.fit ? { on: r.fit.on, pairs: r.fit.pairs.length, clonotypes: r.fit.clonotypes, a: r.fit.model.a, b: r.fit.model.b, calledBySampling: r.fit.calledBySampling, calledByModel: r.fit.calledByModel } : null };
     store.commit(addResult(store.project, record), kind === 'tracking' ? `Follow clonotypes of ${d.name}` : `Test the clonotypes of ${d.name}`, ['project']);
   }
 

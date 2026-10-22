@@ -94,7 +94,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | --- | --- | --- |
 | T1 | Chosen clonotypes (top N, a reference sample's, matched to a specificity, a list) followed across a subject's samples, with frequency intervals | partial (wave 3, slice 5: a reference sample's largest, each sample's largest or a list, with Wilson's intervals; slice 6: those a test called; matched to a specificity in wave 4) |
 | T2 | Two-sample differential abundance by Fisher's exact or binomial test (DeWitt et al. 2015), with false discovery rate | done (wave 3, slice 6: between two time points of each subject; Benjamini–Hochberg or Storey's q-values) |
-| T3 | Beta-binomial differential abundance with variance from replicates or a time-dependent model (Rytlewski et al. 2019); the default when a variance model exists | planned (wave 3) |
+| T3 | Beta-binomial differential abundance with variance from replicates or a time-dependent model (Rytlewski et al. 2019); the default when a variance model exists | done (wave 3, slice 7: fitted on replicate samples or two time points named as stable) |
 | T4 | Several timepoints: clonotypes classed as persistent, emerging or contracting; a negative-binomial model for designs with replicates | planned (wave 3: classes; wave 7: model) |
 | T5 | Source attribution: the share of a sample's repertoire found in a reference sample (infusion product, donor), with the definition stated | planned (wave 3) |
 | T6 | Alluvial plots and per-clonotype trajectories ("threads") linked to the clonotype table | done (wave 3, slice 5) |

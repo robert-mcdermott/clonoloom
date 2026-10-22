@@ -3,17 +3,19 @@ package export
 import (
 	"bytes"
 	"context"
-	"encoding/csv"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
 	"clonoloom/internal/airr"
 	"clonoloom/internal/clonotype"
+	"clonoloom/internal/expansion"
 	"clonoloom/internal/reads"
 	"clonoloom/internal/rep"
+	"clonoloom/internal/track"
+	"encoding/csv"
+	"path/filepath"
 )
 
 func table(t *testing.T) (*rep.Table, *clonotype.Table) {
@@ -134,5 +136,20 @@ func TestNotice(t *testing.T) {
 	n.Credits = []Credit{{Title: "Emerson et al. 2017", Source: "immuneACCESS", License: "immuneACCESS Terms of Use", LicenseClass: "terms", Citation: "Emerson RO, et al. Nat Genet. 2017"}}
 	if !n.Restricted() || !strings.Contains(n.Text(), "THESE DATA MAY NOT BE SHARED") || !strings.Contains(n.Text(), "Cite: Emerson RO") {
 		t.Errorf("%s", n.Text())
+	}
+}
+
+// The beta-binomial test's fit: the model, what a test at 0.05 calls between its pairs, and the
+// pairs.
+func TestExpansionFitCSV(t *testing.T) {
+	fit := &track.Fit{On: "replicates", Pairs: []track.FitPair{{Subject: "S1", A: []string{"S1-a"}, B: []string{"S1-b"}, Theta: 0.5, Clonotypes: 40}},
+		Fitted: expansion.Fitted{Model: expansion.Model{A: -4.5, B: 0.04}, LogLik: -120.5, Clonotypes: 40}, CalledBySampling: 0.1, CalledByModel: 0.05}
+	var b strings.Builder
+	if err := ExpansionFit(&b, fit); err != nil {
+		t.Fatal(err)
+	}
+	want := "fitted_on,a,b,log_likelihood,clonotypes,called_by_sampling_at_0.05,called_by_model_at_0.05\nreplicates,-4.5,0.04,-120.5,40,0.1,0.05\n\nsubject,samples_a,samples_b,theta,clonotypes\nS1,S1-a,S1-b,0.5,40\n"
+	if b.String() != want {
+		t.Errorf("%q", b.String())
 	}
 }

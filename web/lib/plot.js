@@ -478,6 +478,42 @@ export function changes(points, { label = 'Changes', width = 520, height = 440, 
   return { svg: wrap(left + side + 16, height, label, description, body), description };
 }
 
+// The variance between samples that should not differ (replicates): each clonotype of a pair at its
+// total n in the two (x, logarithmic) and its count in the first as a z-score of sampling,
+// (k − nθ)/√(nθ(1 − θ)) (y), points [{ n, z }]; sampling's 95% band (±1.96) dashed, and a variance
+// model's, ±1.96 √((v(n) + n)/(v(n) + 1)) for the scale v (a function of n), shaded.
+export function dispersion(points, v, { label = 'Variance between samples', width = 560, height = 280, xLabel = 'Clonotype\'s total in the two (logarithmic)', yLabel = 'Difference (sampling SDs)' } = {}) {
+  const left = 62;
+  const top = 10;
+  const bottom = 40;
+  const plotWidth = width - left - 28;
+  const plotHeight = height - top - bottom;
+  const ns = points.map((p) => p.n).filter((n) => n > 0);
+  const x0 = Math.floor(Math.log10(ns.length ? Math.min(...ns) : 5));
+  const x1 = Math.max(Math.ceil(Math.log10(ns.length ? Math.max(...ns) : 100)), x0 + 1);
+  const band = (n) => 1.96 * Math.sqrt((v(n) + n) / (v(n) + 1));
+  const reach = Math.min(12, Math.max(3, ...points.map((p) => Math.abs(p.z)), band(10 ** x1)));
+  const yt = ticks(reach, 3);
+  const hi = yt.at(-1) || 1;
+  const px = (n) => left + ((Math.log10(n) - x0) / (x1 - x0)) * plotWidth;
+  const py = (z) => top + plotHeight / 2 - (Math.max(-hi, Math.min(hi, z)) / hi) * (plotHeight / 2);
+  let body = '';
+  for (const t of [...yt.slice(1).map((x) => -x).reverse(), ...yt]) body += `<line class="plot-gridline" x1="${left}" x2="${left + plotWidth}" y1="${py(t).toFixed(1)}" y2="${py(t).toFixed(1)}"/><text class="plot-tick" x="${left - 6}" y="${(py(t) + 4).toFixed(1)}" text-anchor="end">${t}</text>`;
+  for (let t = x0; t <= x1; t += 1) body += `<text class="plot-tick" x="${px(10 ** t).toFixed(1)}" y="${top + plotHeight + 15}" text-anchor="middle">${defaultFormat(10 ** t)}</text>`;
+  // The model's band, then the points, then sampling's band over them.
+  const grid = Array.from({ length: 41 }, (_, i) => 10 ** (x0 + ((x1 - x0) * i) / 40));
+  const edge = (sign) => grid.map((n) => `${px(n).toFixed(1)},${py(sign * band(n)).toFixed(1)}`);
+  body += `<polygon class="plot-band plot-s1" points="${[...edge(1), ...edge(-1).reverse()].join(' ')}"><title>${esc('The model\'s 95% band')}</title></polygon>`;
+  for (const p of points) if (p.n > 0) body += `<circle class="plot-dim" cx="${px(p.n).toFixed(1)}" cy="${py(p.z).toFixed(1)}" r="1.6"/>`;
+  for (const z of [1.96, -1.96]) body += `<line class="plot-guide" x1="${left}" x2="${left + plotWidth}" y1="${py(z).toFixed(1)}" y2="${py(z).toFixed(1)}"/>`;
+  body += `<line class="plot-axis" x1="${left}" x2="${left + plotWidth}" y1="${top + plotHeight}" y2="${top + plotHeight}"/>`;
+  body += `<text class="plot-label" x="${left + plotWidth / 2}" y="${height - 4}" text-anchor="middle">${esc(xLabel)}</text>`;
+  body += `<text class="plot-label" transform="translate(13 ${top + plotHeight / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text>`;
+  const outside = (limit) => points.filter((p) => Math.abs(p.z) > limit(p.n)).length;
+  const description = `${label}: ${points.length} clonotypes; ${outside(() => 1.96)} outside sampling's 95% band, ${outside(band)} outside the model's.`;
+  return { svg: wrap(width, height, label, description, body), description };
+}
+
 // A heatmap: values[r][c] (not finite: left blank) for rowLabels × colLabels, each cell shaded from
 // none to max (the largest value when not given), titled by title(r, c, v), with a scale. Column
 // labels are turned to read upward.

@@ -9,6 +9,8 @@ import { touch } from './project.js';
 // The tests, the alternatives and the corrections for testing many clonotypes, as the view offers
 // them and the methods paragraph says them.
 export const TESTS = {
+  auto: { label: 'Beta-binomial where replicates allow', name: 'the beta-binomial test (the binomial test where its variance could not be fitted)', words: 'the beta-binomial test of its count at the first time point given its total, its variance fitted on samples that should not differ, or, without them, the binomial test' },
+  betabinomial: { label: 'Beta-binomial test', name: 'the beta-binomial test', words: 'the beta-binomial test of its count at the first time point given its total, its variance fitted on samples that should not differ' },
   binomial: { label: 'Binomial test', name: 'the binomial test', words: 'the binomial test of its count at the first time point given its total, at the share of the depth' },
   fisher: { label: 'Fisher\'s exact test', name: 'Fisher\'s exact test', words: 'Fisher\'s exact test of its count against the others\' at the two time points' },
 };
@@ -78,8 +80,9 @@ export function timePoints(design) {
 }
 
 // A dataset's comparison: its own where its time points are among those given (timePoints), else
-// the first two time points other than the reference sample's; the binomial test, two-sided,
-// Benjamini–Hochberg at 0.01.
+// the first two time points other than the reference sample's; the beta-binomial test where its
+// variance can be fitted (on replicate samples, or on two time points named as stable: stable),
+// two-sided, Benjamini–Hochberg at 0.01.
 export function comparisonChoice(dataset, points) {
   const c = dataset?.comparison ?? {};
   const keys = points.map((p) => p.key);
@@ -88,16 +91,20 @@ export function comparisonChoice(dataset, points) {
   const to = keys.includes(c.to) && c.to !== from ? c.to : (others.find((p) => p.key !== from) ?? points.find((p) => p.key !== from))?.key ?? null;
   return {
     from, to,
-    test: TESTS[c.test] ? c.test : 'binomial',
+    test: TESTS[c.test] ? c.test : 'auto',
     alternative: ALTERNATIVES[c.alternative] ? c.alternative : 'two-sided',
     correction: CORRECTIONS[c.correction] ? c.correction : 'bh',
     alpha: ALPHAS.includes(c.alpha) ? c.alpha : 0.01,
+    stable: c.stable && keys.includes(c.stable.from) && keys.includes(c.stable.to) && c.stable.from !== c.stable.to ? { from: c.stable.from, to: c.stable.to } : null,
   };
 }
 
+// Whether a comparison's test fits a variance (and so takes a stable pair).
+export const fits = (c) => c.test === 'auto' || c.test === 'betabinomial';
+
 // The comparison as the program is asked it (api_expansion.go).
 export function compareRequest(c) {
-  return { from: c.from, to: c.to, test: c.test, alternative: c.alternative, correction: c.correction, alpha: c.alpha };
+  return { from: c.from, to: c.to, test: c.test, alternative: c.alternative, correction: c.correction, alpha: c.alpha, ...(c.stable && fits(c) ? { stable: { from: c.stable.from, to: c.stable.to } } : {}) };
 }
 
 // The comparison in words, as the view and the methods paragraph say it.

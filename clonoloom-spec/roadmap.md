@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); wave 2
-is merged and released as 0.2.0; wave 3 is planned, slices 1–6 done, slice 7 next.
+is merged and released as 0.2.0; wave 3 is planned, slices 1–7 done, slice 8 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -299,8 +299,8 @@ are written under that rule from the start.
 | 4. Simulated longitudinal studies | Done |
 | 5. Tracking | Done |
 | 6. Two-sample tests | Done |
-| 7. Beta-binomial expansion | Next |
-| 8. Classes and attribution; release 0.3.0 | To come |
+| 7. Beta-binomial expansion | Done |
+| 8. Classes and attribution; release 0.3.0 | Next |
 
 ### Decisions for wave 3
 
@@ -465,6 +465,31 @@ are written under that rule from the start.
    the default where a variance model exists. Validated against an independent R
    implementation and, on simulated series with biological variance, false discoveries
    controlled where the binomial test's are not.
+   - *Done:* `internal/expansion/betabinomial.go`: the beta-binomial p-value (two-sided by R's rule,
+     or one-sided), its log-likelihood, and the fit (Nelder–Mead from (1, 1) with scipy's
+     coefficients and simplex, restarted from its best point until it no longer improves; b made
+     positive, as (a, b) and (−a, −b) are one model; v at most 10⁷, beyond which it is the
+     binomial). `track.Test` fits once for the study, on every pair of each subject's replicate
+     samples or on two time points named as stable (each subject's samples at them pooled), each
+     pair's θ the share of its clonotypes' total in the first, as Rytlewski et al.'s code takes it;
+     the test `auto`, the new default, is the beta-binomial where it can be fitted, else the
+     binomial, and says so. The Tests part's variance card; the fit exported, in the NOTICE and the
+     methods paragraph; `test_expansion`'s `stable`.
+   - *Validation:* p-values against an independent R implementation (150 cases) to 2 × 10⁻¹²; the
+     fit against R's `optim` (Nelder–Mead, then BFGS) on two sets of 3,000 clonotypes drawn from the
+     model with known (a, b): the same likelihood to 10⁻⁶, the same v(n) to 10⁻³. On the null
+     series with the variance 0.1 between samples, no call (the binomial test: 13); between its
+     replicates, a test at 0.05 called 8.2% by sampling alone, 2.7% with the model. On the CAR-T
+     example, none of the beta-binomial test's 20 calls against the truth (the binomial test's: 6
+     of 73), and 19 of the 133 expanding clones tested called (the binomial test: 45).
+   - *Decided:* one model for the study, from every subject's replicate pairs (all pairs of a group
+     of more than two), taken to hold at every time point and in every subject; the user may name
+     two time points as stable instead. Clonotypes with fewer than minTotal in a pair are left out
+     of the fit, as of the tests. The scale is capped at 10⁷.
+   - *Found:* on the null series, the simulator's variance (a gamma of variance 0.1 on each clone's
+     frequency) is fitted by v(n) near 20 at every n (b close to 0); without it, v is large (10³ to
+     10⁵ over the counts seen), and the beta-binomial test calls what the binomial does. Allowing for the variance costs power: the
+     beta-binomial test calls fewer of the clones that did expand.
 8. **Classes and attribution (T4, T5).** Across several time points, each clonotype classed as
    persistent, emerging, contracting or transient from the tests' calls; the share of a sample's
    repertoire found in a reference sample (an infusion product, a donor), with its interval and

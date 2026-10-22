@@ -495,6 +495,21 @@ func Expansion(w io.Writer, res track.Tests) error {
 	return writeAll(w, rows)
 }
 
+// ExpansionFit writes the beta-binomial test's variance model and the pairs of samples it was
+// fitted on (fit.csv).
+func ExpansionFit(w io.Writer, fit *track.Fit) error {
+	rows := [][]string{
+		{"fitted_on", "a", "b", "log_likelihood", "clonotypes", "called_by_sampling_at_0.05", "called_by_model_at_0.05"},
+		{fit.On, number(fit.Model.A), number(fit.Model.B), number(fit.LogLik), strconv.Itoa(fit.Clonotypes), number(fit.CalledBySampling), number(fit.CalledByModel)},
+		{},
+		{"subject", "samples_a", "samples_b", "theta", "clonotypes"},
+	}
+	for _, p := range fit.Pairs {
+		rows = append(rows, []string{p.Subject, strings.Join(p.A, " "), strings.Join(p.B, " "), number(p.Theta), strconv.Itoa(p.Clonotypes)})
+	}
+	return writeAll(w, rows)
+}
+
 // ExpansionSubjects writes each subject's comparison in sum (subjects.csv): its two time points
 // and their samples, the clonotypes tested and left out, and those called each way.
 func ExpansionSubjects(w io.Writer, res track.Tests) error {

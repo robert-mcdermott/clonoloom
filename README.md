@@ -46,7 +46,8 @@ comparisons come in later releases.
   or metadata, checked before anything is followed; an infusion product's or each sample's largest
   clonotypes, or a list, followed through the time points as threads, alluvial plots and a table,
   each frequency with its interval, a clonotype not found shown as not found. Each clonotype tested
-  between two time points (the binomial test or Fisher's exact test), the false discovery rate
+  between two time points by the beta-binomial test, its variance between samples fitted on
+  replicate samples (or the binomial test, or Fisher's exact test), the false discovery rate
   controlled, and the calls followed.
 - **Write results others can check.** Figures (SVG, PNG, PDF) whose captions state the clonotype
   definition, unit and samples; AIRR and CSV exports with a notice of each data set's license and

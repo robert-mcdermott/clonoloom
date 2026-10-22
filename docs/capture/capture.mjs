@@ -201,8 +201,9 @@ const scenes = {
     })()`);
     await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 2 && Boolean(document.querySelector('.plot-chosen'))`);
   },
-  // Its second patient's clonotypes tested between the week before the infusion and two weeks
-  // after: those called colored, the most significant increase chosen.
+  // Its clonotypes tested between the week before the infusion and two weeks after by the
+  // beta-binomial test: its variance, fitted on the samples taken twice before the infusion, at the
+  // top; below, the second patient's calls, the most significant increase chosen.
   async tests() {
     await act('open_example', { example: 'simulated-car-t', download: true });
     await act('test_expansion', { from: 'day -7', to: 'day 14', subject: 'S02' });

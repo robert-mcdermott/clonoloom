@@ -17,6 +17,7 @@ import (
 
 	"clonoloom/internal/clonotype"
 	"clonoloom/internal/diversity"
+	"clonoloom/internal/expansion"
 	"clonoloom/internal/rep"
 	"clonoloom/internal/study"
 )
@@ -207,13 +208,19 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 	case rep.UnitUnknown:
 		res.Caveat = "The files do not say whether the counts are of reads or of cells or molecules: the intervals assume cells or molecules, and are far too narrow if they are reads."
 	}
-	index := map[string]uint32{}
-	for i, n := range names {
-		index[n] = uint32(i)
-	}
+	index := indexOf(names)
 	var listed map[int][]string
 	if choice.By == ByList {
 		listed, res.Unmatched = match(t, choice.List)
+	}
+	var model *expansion.Model
+	if choice.By == ByTest {
+		if t.Unit == rep.Reads {
+			return Result{}, ErrReads
+		}
+		if model, _, _, err = prepare(t, index, design, *choice.Test); err != nil {
+			return Result{}, err
+		}
 	}
 
 	// Each subject's samples, and the samples of every subject followed, to read the table once.
@@ -233,7 +240,7 @@ func Follow(t *clonotype.Table, names []string, design study.Design, choice Choi
 			continue
 		}
 		if choice.By == ByTest {
-			tested, ok, err := compare(t, index, s, p.sub.Points, *choice.Test)
+			tested, ok, err := compare(t, index, s, p.sub.Points, *choice.Test, model)
 			if err != nil {
 				return Result{}, err
 			}

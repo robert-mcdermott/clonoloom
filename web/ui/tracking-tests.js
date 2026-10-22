@@ -3,11 +3,14 @@
 // internal/expansion), the false discovery rate controlled within each subject; the clonotypes at
 // their two frequencies, those called increased or decreased marked; and the calls in a table,
 // linked to the plot, to the Clonotypes view, and to the Clonotypes part, which follows them.
+// The beta-binomial test (slice 7: T3) is the default where its variance can be fitted, on
+// replicate samples or two time points named as stable; the fit is shown with the variance
+// between those samples.
 
 import { h, icon } from './dom.js';
-import { changes, percent } from '../lib/plot.js';
+import { changes, dispersion, percent } from '../lib/plot.js';
 import { UNITS } from '../lib/datasets.js';
-import { ALPHAS, ALTERNATIVES, CORRECTIONS, TESTS, comparisonWords } from '../lib/tracking.js';
+import { ALPHAS, ALTERNATIVES, CORRECTIONS, TESTS, comparisonWords, fits } from '../lib/tracking.js';
 import { exportable, madeBy } from './figures.js';
 
 const count = (n) => Number(n ?? 0).toLocaleString('en-US');
@@ -26,7 +29,11 @@ const MAX_DRAWN = 4000;
 const MAX_LISTED = 200;
 
 // What the part says before its result is there.
-export const TESTS_WORDS = 'The program tests each clonotype between the two time points in each subject, the samples at one time pooled: by default the binomial test of its count at the first given its total in the two (Rytlewski et al. 2019; Fisher\'s exact test, as DeWitt et al. 2015 used it, is offered), two-sided, the false discovery rate controlled within each subject by Benjamini and Hochberg\'s procedure at 0.01. Clonotypes with fewer than 5 cells or molecules in the two together are not tested. The tests account for sampling alone: two blood samples taken at one time differ by more. The result is kept with the project.';
+export const TESTS_WORDS = 'The program tests each clonotype between the two time points in each subject, the samples at one time pooled: by default the beta-binomial test of its count at the first given its total in the two (Rytlewski et al. 2019), its variance between samples fitted on the study\'s replicate samples, or on two time points named as stable; without them, the binomial test, which accounts for sampling alone (Fisher\'s exact test, as DeWitt et al. 2015 used it, is offered too). Two-sided, the false discovery rate controlled within each subject by Benjamini and Hochberg\'s procedure at 0.01. Clonotypes with fewer than 5 cells or molecules in the two together are not tested. The result is kept with the project.';
+
+// The words of the variance model, v(n) = 2 + (b ln n + a)².
+const modelWords = (m) => `v(n) = 2 + (${m.b.toPrecision(3)} ln n ${m.a < 0 ? '−' : '+'} ${Math.abs(m.a).toPrecision(3)})²`;
+const scaleOf = (m) => (n) => Math.min(2 + (m.b * Math.log(n) + m.a) ** 2, 1e7);
 
 // ctx: { app, body, d, points (timePoints), comparison, state (the result: idle | looking | absent
 // | running | ready | failed | unavailable), spec, ui ({ subject, selected }), compareWith(changes),
@@ -44,6 +51,10 @@ export function renderTests(ctx) {
     h('label.kv-inline', h('span.muted', 'to'), pick(c.to, pointOptions, 'To', (v) => ctx.compareWith({ to: v }))),
     pick(c.test, Object.entries(TESTS).map(([k, t]) => [k, t.label]), 'Test', (v) => ctx.compareWith({ test: v })),
     pick(c.alternative, Object.entries(ALTERNATIVES).map(([k, a]) => [k, a.label]), 'Direction', (v) => ctx.compareWith({ alternative: v })),
+    fits(c) ? h('label.kv-inline', h('span.muted', 'Variance from'), pick(c.stable ? 'stable' : 'replicates', [['replicates', 'replicate samples'], ['stable', 'two time points named stable']], 'Variance fitted on',
+      (v) => ctx.compareWith({ stable: v === 'stable' ? defaultStable(points) : null }))) : null,
+    fits(c) && c.stable ? h('span.kv-inline', pick(c.stable.from, pointOptions, 'Stable from', (v) => ctx.compareWith({ stable: { ...c.stable, from: v } })), h('span.muted', 'and'),
+      pick(c.stable.to, pointOptions, 'Stable to', (v) => ctx.compareWith({ stable: { ...c.stable, to: v } }))) : null,
     h('label.kv-inline', h('span.muted', 'False discoveries'), pick(c.correction, Object.entries(CORRECTIONS).map(([k, x]) => [k, x.label]), 'Correction', (v) => ctx.compareWith({ correction: v })),
       pick(c.alpha, ALPHAS.map((a) => [a, `at ${a}`]), 'False discovery rate', (v) => ctx.compareWith({ alpha: Number(v) }))),
     subjects.length ? h('label.kv-inline', h('span.muted', 'Subject'), pick(ui.subject, subjects.map((s) => [s.subject, s.subject]), 'Subject', (v) => { ui.subject = v; ui.selected = null; ctx.render(); })) : null));
@@ -72,7 +83,8 @@ export function renderTests(ctx) {
         : h('div.btn-row', h('button.btn.primary', { type: 'button', onclick: () => ctx.run() }, icon('play'), 'Test the clonotypes'))));
     return;
   }
-  body.append(h('div.callout.warn', h('p', result.caveat)));
+  body.append(h(`div.callout${result.test === 'betabinomial' ? '' : '.warn'}`, h('p', result.caveat)));
+  if (result.fit) body.append(fitCard(ctx, result));
   if (result.without?.length) body.append(h('p.muted.small', `Not tested, without samples at both time points: ${result.without.join(', ')}.`));
   const s = subjects.find((x) => x.subject === ui.subject) ?? subjects[0];
   if (!s) {
@@ -80,6 +92,35 @@ export function renderTests(ctx) {
     return;
   }
   renderSubject(ctx, result, s);
+}
+
+// Two time points to fit the variance on, until the user chooses: the first two other than the
+// reference sample's.
+function defaultStable(points) {
+  const others = points.filter((p) => p.key !== 'reference');
+  const [a, b] = others.length >= 2 ? others : points;
+  return a && b ? { from: a.key, to: b.key } : null;
+}
+
+// The variance model fitted, and the variance between the samples it was fitted on.
+function fitCard(ctx, result) {
+  const { app, d } = ctx;
+  const f = result.fit;
+  const m = f.model;
+  const pairs = f.on === 'stable'
+    ? `two time points named stable (${result.comparison.stable?.from} and ${result.comparison.stable?.to}), in ${plural(f.pairs.length, 'subject')}`
+    : `${plural(f.pairs.length, 'pair')} of replicate samples (${f.pairs.slice(0, 3).map((p) => `${p.a.join('+')} and ${p.b.join('+')}`).join('; ')}${f.pairs.length > 3 ? '; …' : ''})`;
+  const plot = dispersion(f.points, scaleOf(m), { label: 'The variance between the samples fitted on' });
+  const note = `Each clonotype of the samples the variance was fitted on, at its total in the pair and its difference between them in sampling's standard deviations: sampling's 95% band dashed, the fitted model's shaded. Between them, a test at 0.05 calls ${percent(f.calledBySampling)} of the clonotypes changed by sampling alone, ${percent(f.calledByModel)} with the model (at most 5% where the model holds).`;
+  return exportable(h('figure.plot-card',
+    h('figcaption', h('span', 'The variance between samples')),
+    h('p.small', `Fitted by maximum likelihood on ${pairs}: ${plural(f.clonotypes, 'clonotype')} with at least ${result.comparison.minTotal} in the two. `, h('b', modelWords(m)), ` (Rytlewski et al. 2019).`),
+    h('div.plot-holder', { html: plot.svg }),
+    h('p.muted.small', note)), () => ({
+    name: `${d.name} variance`, title: `The variance between samples, ${d.name}`, plot: plot.svg,
+    legend: [{ label: 'the model\'s 95% band', className: 'plot-s1' }, { label: 'clonotype', className: 'plot-dim' }],
+    caption: [note, `${d.name}: fitted on ${pairs}; ${modelWords(m)}. Clonotypes: ${result.describe}.`, madeBy(app.version)],
+  }));
 }
 
 function renderSubject(ctx, result, s) {
@@ -90,7 +131,7 @@ function renderSubject(ctx, result, s) {
   const to = s.to.label;
   const pooled = (p) => (p.samples.length > 1 ? `${p.samples.length} samples, ` : '');
   body.append(h('p.tracking-summary',
-    `${s.subject}: ${from} (${pooled(s.from)}${count(s.totalA)} ${unit}) against ${to} (${pooled(s.to)}${count(s.totalB)} ${unit}). ${plural(s.tested, 'clonotype')} tested, ${count(s.leftOut)} with fewer than ${c.minTotal} in the two left out. `,
+    `${s.subject}: ${from} (${pooled(s.from)}${count(s.totalA)} ${unit}) against ${to} (${pooled(s.to)}${count(s.totalB)} ${unit}). ${plural(s.tested, 'clonotype')} tested by ${TESTS[s.test]?.name ?? s.test}, ${count(s.leftOut)} with fewer than ${c.minTotal} in the two left out. `,
     h('b', `${plural(s.increased, 'clonotype')} increased and ${count(s.decreased)} decreased`),
     ` at a false discovery rate of ${c.alpha} (${CORRECTIONS[c.correction]?.label ?? c.correction}${Number.isFinite(s.pi0) ? `, π₀ ${s.pi0.toFixed(3)}` : ''}).`));
   // The plot: the calls drawn over the rest; of those not called, the largest.

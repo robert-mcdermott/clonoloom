@@ -56,8 +56,12 @@ test('the time points subjects can be compared at, and the comparison chosen', (
   assert.deepEqual(points.map((p) => [p.key, p.label, p.subjects]), [['reference', 'infusion product', 1], ['baseline', 'baseline', 2], ['day 7', 'day 7', 1], ['day 28', 'week 4', 2]]);
   let p = project();
   const c = comparisonChoice(p.datasets[0], points);
-  assert.deepEqual(c, { from: 'baseline', to: 'day 7', test: 'binomial', alternative: 'two-sided', correction: 'bh', alpha: 0.01 });
-  assert.match(comparisonWords(c), /^the binomial test of its count at the first time point given its total, at the share of the depth, two-sided, the false discovery rate controlled within each subject by Benjamini and Hochberg's procedure at 0\.01$/);
+  assert.deepEqual(c, { from: 'baseline', to: 'day 7', test: 'auto', alternative: 'two-sided', correction: 'bh', alpha: 0.01, stable: null });
+  assert.match(comparisonWords(c), /^the beta-binomial test of its count at the first time point given its total, its variance fitted on samples that should not differ, or, without them, the binomial test, two-sided, the false discovery rate controlled within each subject by Benjamini and Hochberg's procedure at 0\.01$/);
+  // Two time points named as stable go with the beta-binomial test only.
+  assert.deepEqual(compareRequest({ ...c, stable: { from: 'baseline', to: 'day 7' } }).stable, { from: 'baseline', to: 'day 7' });
+  assert.equal(compareRequest({ ...c, test: 'fisher', stable: { from: 'baseline', to: 'day 7' } }).stable, undefined);
+  assert.equal(comparisonChoice({ comparison: { stable: { from: 'day 99', to: 'baseline' } } }, points).stable, null);
   p = useComparison(p, 'd-1', { to: 'day 28', correction: 'storey' }, NOW);
   assert.match(p.history.at(-1).detail, /CAR-T: — against day 28/);
   const d = comparisonChoice(p.datasets[0], points);
@@ -70,5 +74,5 @@ test('the time points subjects can be compared at, and the comparison chosen', (
   const choice = trackingChoice(p.datasets[0], d);
   assert.deepEqual(trackRequest(choice), { by: 'test', n: 20, test: compareRequest(d) });
   assert.equal(choiceShort(choice), 'the 20 most significant calls between baseline and day 28');
-  assert.match(choiceWords(choice), /the 20 clonotypes the binomial test called changed most significantly between baseline and day 28/);
+  assert.match(choiceWords(choice), /the 20 clonotypes the beta-binomial test \(the binomial test where its variance could not be fitted\) called changed most significantly between baseline and day 28/);
 });

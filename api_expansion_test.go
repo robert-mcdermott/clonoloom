@@ -60,7 +60,9 @@ func TestExpansionIsTestedKeptAndExported(t *testing.T) {
 	}
 	// R1 and R2's one productive clonotype, the whole of each: 3 and 5, as their depths expect.
 	doc := read.Result
-	if len(doc.Subjects) != 1 || len(doc.Samples) != 2 || doc.Comparison.Test != "binomial" || doc.Comparison.MinTotal != 5 {
+	// Without replicate samples, the beta-binomial test's variance cannot be fitted: the binomial
+	// test, and the caveat says why.
+	if len(doc.Subjects) != 1 || len(doc.Samples) != 2 || doc.Comparison.Test != "auto" || doc.Test != "binomial" || doc.Fit != nil || !strings.HasPrefix(doc.Caveat, "No replicate samples") || doc.Comparison.MinTotal != 5 {
 		t.Fatalf("%+v", doc)
 	}
 	s := doc.Subjects[0]

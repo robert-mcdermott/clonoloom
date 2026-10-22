@@ -3,6 +3,7 @@ package track
 import (
 	"errors"
 	"math"
+	"strings"
 	"testing"
 
 	"clonoloom/internal/clonotype"
@@ -174,8 +175,13 @@ func TestCompareTwoTimePoints(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(res.Subjects) != 1 || len(res.Without) != 1 || res.Without[0] != "P2" || res.Caveat == "" || res.Comparison.Test != expansion.Binomial {
+	// The beta-binomial test, its variance fitted on the two samples taken a week before: CASSC and
+	// CASSD have 5 or more in the two.
+	if len(res.Subjects) != 1 || len(res.Without) != 1 || res.Without[0] != "P2" || res.Caveat == "" || res.Comparison.Test != expansion.Auto || res.Test != expansion.BetaBinomial {
 		t.Fatalf("%+v", res)
+	}
+	if f := res.Fit; f == nil || f.On != "replicates" || len(f.Pairs) != 1 || f.Pairs[0].Clonotypes != 2 || f.Clonotypes != 2 || len(f.Points) != 2 || math.Abs(f.Pairs[0].Theta-99.0/197) > 1e-15 {
+		t.Fatalf("fit %+v", res.Fit)
 	}
 	s := res.Subjects[0]
 	// Before: 200 templates in two samples; day 7: 100. CASSB, 2 in all, is not tested.
@@ -196,6 +202,25 @@ func TestCompareTwoTimePoints(t *testing.T) {
 	got := f.Subjects[0].Clonotypes
 	if len(got) != 2 || got[0].Why[0] != (Reason{Called: expansion.Increase, Rank: 1}) && got[1].Why[0] != (Reason{Called: expansion.Increase, Rank: 1}) {
 		t.Errorf("%+v", got)
+	}
+	// Without replicates, automatically the binomial test, and said why; the beta-binomial test
+	// asked for, refused; fitted on two time points named as stable instead.
+	var plain []study.Sample
+	for _, x := range samples {
+		if x.Name != "P1-pre-b" {
+			plain = append(plain, x)
+		}
+	}
+	res, _ = Test(ct, names, study.Describe(plain), c)
+	if res.Test != expansion.Binomial || res.Fit != nil || !strings.HasPrefix(res.Caveat, "No replicate samples") {
+		t.Errorf("without replicates: %+v", res)
+	}
+	if _, err := Test(ct, names, study.Describe(plain), Comparison{From: "day -7", To: "day 7", Options: expansion.Options{Test: expansion.BetaBinomial}}); !errors.Is(err, expansion.ErrNoObservations) {
+		t.Errorf("beta-binomial without replicates: %v", err)
+	}
+	res, err = Test(ct, names, study.Describe(plain), Comparison{From: "day -7", To: "day 7", Stable: &Stable{From: "day 7", To: "day 28"}})
+	if err != nil || res.Test != expansion.BetaBinomial || res.Fit.On != "stable" || res.Fit.Pairs[0].A[0] != "P1-d7" {
+		t.Errorf("stable: %v %+v", err, res.Fit)
 	}
 	// Against the infusion product; in reads, refused; a comparison of one time with itself.
 	if res, _ := Test(ct, names, design, Comparison{From: "reference", To: "day 28"}); len(res.Subjects) != 1 || res.Subjects[0].From.Label != "infusion product" {

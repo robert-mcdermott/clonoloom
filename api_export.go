@@ -187,7 +187,13 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		}
 		c := doc.Comparison
 		correction := map[string]string{"bh": "Benjamini and Hochberg's adjusted p-values", "storey": "Storey's q-values"}[c.Correction]
-		notice.What = fmt.Sprintf("Each clonotype of %s tested between two time points of each subject (%s and %s; the samples at one time pooled) by the %s test, %s, with %s and the calls at %g (tests.csv); each subject's comparison in sum (subjects.csv). %s", ds.Name, c.From, c.To, c.Test, c.Alternative, correction, c.Alpha, doc.Caveat)
+		test := map[string]string{"betabinomial": "beta-binomial", "binomial": "binomial", "fisher": "Fisher's exact"}[doc.Test]
+		fitted := ""
+		if doc.Fit != nil {
+			fitted = fmt.Sprintf(", its variance v(n) = 2 + (b ln n + a)² fitted on %d clonotypes of %d pairs of samples (a = %.6g, b = %.6g; fit.csv)", doc.Fit.Clonotypes, len(doc.Fit.Pairs), doc.Fit.Model.A, doc.Fit.Model.B)
+			files["fit.csv"] = func(f io.Writer) error { return export.ExpansionFit(f, doc.Fit) }
+		}
+		notice.What = fmt.Sprintf("Each clonotype of %s tested between two time points of each subject (%s and %s; the samples at one time pooled) by the %s test%s, %s, with %s and the calls at %g (tests.csv); each subject's comparison in sum (subjects.csv). %s", ds.Name, c.From, c.To, test, fitted, c.Alternative, correction, c.Alpha, doc.Caveat)
 		files["tests.csv"] = func(f io.Writer) error { return export.Expansion(f, doc.Tests) }
 		files["subjects.csv"] = func(f io.Writer) error { return export.ExpansionSubjects(f, doc.Tests) }
 	default:

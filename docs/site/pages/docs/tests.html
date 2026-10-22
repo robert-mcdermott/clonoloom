@@ -1,14 +1,15 @@
 ---
 title: Expanded and contracted clonotypes
-description: Test each clonotype between two time points of each subject in ClonoLoom, by the binomial test or Fisher's exact test, with the false discovery rate controlled, and follow the clonotypes called.
+description: Test each clonotype between two time points of each subject in ClonoLoom, by the beta-binomial test with its variance fitted on replicate samples, the binomial test or Fisher's exact test, with the false discovery rate controlled, and follow the clonotypes called.
 lede: The Tracking view's Tests part tests each clonotype between two time points of each subject, calls those that increased or decreased with the false discovery rate controlled, and shows them at their two frequencies.
 ---
       <h2 id="compare">Choose what to compare</h2>
-      <shot name="tests" alt="The Tracking view's Tests part on the simulated CAR-T study: one patient's clonotypes at their frequency a week before the infusion and two weeks after, on logarithmic axes, those called increased and decreased colored, one of them ringed, and a table of the calls below">The simulated CAR-T study's second patient, the week before the infusion against two weeks after.</shot>
+      <shot name="tests" alt="The Tracking view's Tests part on the simulated CAR-T study: the week before the infusion against two weeks after by the beta-binomial test, its variance fitted on three pairs of replicate samples, shown as each replicate clonotype's difference against its total, with sampling's narrow band and the fitted model's wider one">The simulated CAR-T study, the week before the infusion against two weeks after: the beta-binomial test's variance, fitted on the samples taken twice before the infusion.</shot>
       <p>Give the samples their subjects and time points first (<a href="subjects.html">Subjects and time points</a>). Then open <strong>Tracking › Tests</strong> and choose:</p>
       <ul>
         <li><strong>From</strong> and <strong>to</strong>: two time points. Every subject with samples at both is compared, and the view names those without. Samples taken at one time are pooled. The reference sample (an infusion product, a donor) can be one of the two.</li>
-        <li><strong>The test</strong>: the <strong>binomial test</strong> (the default; Rytlewski et al. 2019), or <strong>Fisher's exact test</strong> (DeWitt et al. 2015). Both ask whether a clonotype's count at the first time point, given its total at the two, is what the two samples' depths would make it. They give nearly the same p-values when the clonotype is a small part of the samples.</li>
+        <li><strong>The test</strong>: the <strong>beta-binomial test</strong> where the study has samples to fit its variance on (the default; Rytlewski et al. 2019), else the binomial test; or, chosen, the <strong>beta-binomial test</strong>, the <strong>binomial test</strong> or <strong>Fisher's exact test</strong> (DeWitt et al. 2015). All ask whether a clonotype's count at the first time point, given its total at the two, is what the two samples' depths would make it. The binomial and Fisher's tests allow for sampling alone; the beta-binomial test also for the variation between samples of one repertoire.</li>
+        <li><strong>Variance from</strong> (the beta-binomial test): the study's <strong>replicate samples</strong>, two of one subject taken at one time (the default), or <strong>two time points named stable</strong>, between which nothing is taken to change.</li>
         <li><strong>The direction</strong>: either way (two-sided, the default), or only increases or only decreases.</li>
         <li><strong>False discoveries</strong>: controlled within each subject by <strong>Benjamini and Hochberg's</strong> procedure (the default) or <strong>Storey's q-values</strong> (π₀ estimated at λ = 0.5), at 0.01 (the default), 0.05 or 0.1.</li>
       </ul>
@@ -22,13 +23,21 @@ lede: The Tracking view's Tests part tests each clonotype between two time point
         <li><strong>Follow the calls</strong> follows each subject's 20 most significant calls through every time point, in the Clonotypes part (<a href="tracking.html">Following clonotypes</a>).</li>
       </ul>
 
-      <h2 id="caution">What the tests account for</h2>
-      <p>These tests account for <strong>sampling alone</strong>. Two blood samples taken at one time differ by more, so between two time points the tests call some clonotypes changed that only varied:</p>
+      <h2 id="variance">The variance between samples</h2>
+      <p>Two blood samples taken at one time differ by more than sampling. The beta-binomial test allows for that, as Rytlewski et al. 2019 proposed: a clonotype's count at the first time point, given its total n at the two, varies around its expectation with a scale v(n) = 2 + (b ln n + a)², fitted by maximum likelihood on clonotypes of samples that should not differ.</p>
       <ul>
-        <li>On a simulated series in which nothing changes, they called none of 6,634 clonotypes when samples differed only by sampling. With variation between blood samples, they called 13 of 6,599 (0.2%), as Rytlewski et al. found between blood samples two weeks apart.</li>
-        <li>On the simulated CAR-T study, all 66 calls were in the true direction when samples differed only by sampling. With the study's variation between blood samples, 6 of 73 were not (8%), against the 1% asked for.</li>
+        <li><strong>The variance card</strong> shows the fit: each clonotype of those samples at its total and its difference between them, in sampling's standard deviations, with sampling's 95% band and the model's. It says how many of them a test at 0.05 calls changed by sampling alone, and with the model: about 5% or fewer where the model holds.</li>
+        <li>The model is fitted once for the study, on every subject's replicate samples, and taken to hold at every time point and in every subject. Fitted on two time points named stable, it takes nothing to have changed between them.</li>
+        <li>Without replicate samples or a stable pair, the binomial test is used, and the view says so.</li>
       </ul>
-      <p>Replicate samples, taken at one time, measure that variation. The tests refuse counts of reads, which count each cell or molecule many times over.</p>
+
+      <h2 id="caution">What the tests account for</h2>
+      <p>On simulated studies whose truth is known:</p>
+      <ul>
+        <li>On a series in which nothing changes, no test called any of 6,634 clonotypes when samples differed only by sampling. With variation between blood samples, the binomial and Fisher's tests called 13 of 6,599 (0.2%, as Rytlewski et al. found between blood samples two weeks apart); the beta-binomial test, none.</li>
+        <li>On the CAR-T study, with its variation between blood samples, 6 of the binomial test's 73 calls were against the truth (8%, against the 1% asked for); none of the beta-binomial test's 20. Allowing for the variation, it calls fewer of the clonotypes that did change.</li>
+      </ul>
+      <p>The tests refuse counts of reads, which count each cell or molecule many times over.</p>
 
       <h2 id="use">Using the result</h2>
       <p>The plot saves as a figure. <strong>Export</strong> writes every clonotype tested, with its counts, p-value, adjusted p-value and call, and each subject's comparison in sum, as CSV. The methods paragraph says what was compared, how, and what was called. Scripts use <code>test_expansion</code> (<a href="remote-control.html">Remote control</a>).</p>

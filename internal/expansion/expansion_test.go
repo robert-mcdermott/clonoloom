@@ -37,7 +37,7 @@ func TestCompareCallsWhatChanged(t *testing.T) {
 		{5000, 5000, 5000},
 		{1, 0, 2},
 	})
-	res, err := Compare(ct, []uint32{0, 1}, []uint32{2}, Options{})
+	res, err := Compare(ct, []uint32{0, 1}, []uint32{2}, Options{}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func TestCompareCallsWhatChanged(t *testing.T) {
 		}
 	}
 	// One-sided: only the increase is called; Storey's π₀ estimated.
-	res, _ = Compare(ct, []uint32{0, 1}, []uint32{2}, Options{Alternative: Increase, Correction: Storey, Test: Fisher})
+	res, _ = Compare(ct, []uint32{0, 1}, []uint32{2}, Options{Alternative: Increase, Correction: Storey, Test: Fisher}, nil)
 	if res.Increased != 1 || res.Decreased != 0 || math.IsNaN(float64(res.Pi0)) {
 		t.Errorf("one-sided: %+v", res)
 	}
@@ -65,7 +65,7 @@ func TestCompareCallsWhatChanged(t *testing.T) {
 
 func TestCompareNeedsCounts(t *testing.T) {
 	ct := table([]string{"A"}, [][]float64{{2.5, 3}})
-	if _, err := Compare(ct, []uint32{0}, []uint32{1}, Options{}); !errors.Is(err, ErrNotCounts) {
+	if _, err := Compare(ct, []uint32{0}, []uint32{1}, Options{}, nil); !errors.Is(err, ErrNotCounts) {
 		t.Errorf("%v", err)
 	}
 	for _, o := range []Options{{Test: "t"}, {Alternative: "up"}, {Correction: "holm"}, {Alpha: 2}, {MinTotal: -1}} {

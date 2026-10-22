@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { alluvial, changes, curves, columns, figure, figureStyle, heatmap, intervals, lines, percent, scale, stackedBars, threads, ticks, timeline } from './plot.js';
+import { alluvial, changes, curves, columns, dispersion, figure, figureStyle, heatmap, intervals, lines, percent, scale, stackedBars, threads, ticks, timeline } from './plot.js';
 
 test('ticks are nice numbers covering the range', () => {
   assert.deepEqual(ticks(1), [0, 0.25, 0.5, 0.75, 1]);
@@ -210,4 +210,14 @@ test('changes place each clonotype at its two frequencies, one not found on its 
   const cy = (key) => Number(new RegExp(`cy="([\\d.]+)" r="[\\d.]+" data-key="${key}"`).exec(svg)[1]);
   assert.ok(cy('c-2') > cy('c-3') && cy('c-3') > cy('c-1'));
   assert.match(description, /3 clonotypes, 1 increased, 1 decreased; day -7 against day 14/);
+});
+
+test('the variance between replicates: each clonotype as a z-score of sampling, sampling\'s band and the model\'s', () => {
+  const points = [{ n: 5, z: 0.4 }, { n: 50, z: -2.5 }, { n: 800, z: 3.1 }, { n: 800, z: 9 }];
+  // A scale of 20 at every n: the band at n = 800 is 1.96 √(820/21), about 12.2.
+  const { svg, description } = dispersion(points, () => 20, { label: 'Replicates' });
+  assert.equal((svg.match(/<circle class="plot-dim"/g) ?? []).length, 4);
+  assert.equal((svg.match(/<line class="plot-guide"/g) ?? []).length, 2);
+  assert.match(svg, /<polygon class="plot-band plot-s1"/);
+  assert.match(description, /4 clonotypes; 3 outside sampling's 95% band, 0 outside the model's\./);
 });

@@ -147,6 +147,11 @@ test('a test result kept says what was tested between which time points, and how
   assert.match(fisher.text, /Fisher's exact test of its count against the others' at the two time points \[\d\], one-sided, for an increase/);
   assert.match(fisher.text, /Storey's q-values, π₀ estimated at λ = 0\.5 \[\d\]/);
   assert.ok(fisher.references.some((r) => r.includes('Storey JD')));
+  assert.match(text, /The test accounts for sampling alone, not for the variation between samples taken at one time\./);
+  // The beta-binomial test, its variance fitted on replicates.
+  const bb = methodsParagraph({ dataset: pbmc, results: [{ ...binomial, comparison: { ...binomial.comparison, test: 'auto' }, used: 'betabinomial', fit: { on: 'replicates', pairs: 3, clonotypes: 2345, a: -4.512, b: 0.04103, calledBySampling: 0.082, calledByModel: 0.027 } }], program });
+  assert.match(bb.text, /the beta-binomial test of its count at the first time point given its total in the two, at the first's share of their templates, its scale v\(n\) = 2 \+ \(b ln n \+ a\)² of Rytlewski et al\. \[\d\] \(the 2, which keeps the beta unimodal, as in their reference code\) fitted by maximum likelihood on the clonotypes of 3 pairs of replicate samples, taken at one time \(2,345 clonotypes with at least 5 in the two; a = -4\.512, b = 0\.04103\), two-sided/);
+  assert.match(bb.text, /a two-sided test at 0\.05 called 8\.2% of the clonotypes changed by sampling alone, and 2\.7% with the fitted variance/);
 });
 
 test('a table read through a mapping says which of its columns gave what (the 0.2.0 project)', () => {

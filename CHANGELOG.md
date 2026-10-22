@@ -18,6 +18,27 @@ grows with each.
     references (formats, remote control, simulated studies, installing) stay in `docs/`;
   - a link-preview image made from a screenshot (`docs/site/og-image.mjs`);
   - axe-core listed in `validation/sources.json` as a tool, fetched for the audit only.
+- **The beta-binomial test (wave 3, slice 7).** Rytlewski et al. 2019's test of each clonotype
+  between two time points (`internal/expansion/betabinomial.go`, `internal/track/test.go`), now the
+  Tests part's default where it can be fitted:
+  - a clonotype's count at the first time point, given its total n at the two, beta-binomial
+    around the share of the depth, with the scale v(n) = 2 + (b ln n + a)² (the 2, which keeps the
+    beta unimodal, as in their reference code); two-sided by the outcomes no more likely than the
+    one seen, or one-sided;
+  - a and b fitted by maximum likelihood (Nelder–Mead from (1, 1), restarted from its best point)
+    once for the study: on every pair of each subject's replicate samples, or on two time points
+    the user names as stable; without them, the binomial test, and the view says why;
+  - the Tests part's variance card: each clonotype of the samples fitted on, at its total and its
+    difference in sampling's standard deviations, with sampling's 95% band and the model's, and how
+    many of them a test at 0.05 calls changed by sampling alone and with the model;
+  - the fit in the export (`fit.csv`), the NOTICE and the methods paragraph; remote control's
+    `test_expansion` answers it and takes `stable`; the Clonotypes part follows the
+    beta-binomial test's calls.
+  - Validated: p-values against an independent R implementation on 150 cases, to 2 × 10⁻¹²; the fit
+    against R's `optim` on two sets of 3,000 clonotypes drawn from the model, the same likelihood
+    to 10⁻⁶ and the same scale to 10⁻³ (`validation/reference/betabinomial.R`); on the simulated
+    series where nothing changes, with variance between blood samples, no call (the binomial test,
+    13); on the CAR-T study, none of its 20 calls against the truth (the binomial test, 6 of 73).
 - **Expanded and contracted clonotypes (wave 3, slice 6).** The **Tracking** view's Tests part
   (`internal/expansion`, `internal/track/test.go`, `api_expansion.go`, `web/ui/tracking-tests.js`):
   - each clonotype tested between two time points of each subject, the samples at one time

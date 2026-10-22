@@ -135,34 +135,44 @@ func openSeries(t *testing.T, name string, variance float64) (*clonotype.Table, 
 }
 
 // Where nothing changes (the null series, day 0 against day 14, two samples each), every call is a
-// false discovery: without variance between samples beyond sampling, the tests call (almost)
-// nothing at a false discovery rate of 0.01; with the series' variance, they call some (about 0.2%
-// of those tested, as Rytlewski et al. found between blood samples two weeks apart), which the
-// beta-binomial test is for.
+// false discovery. Without variance between samples beyond sampling, no test calls anything at a
+// false discovery rate of 0.01. With the series' variance, the binomial and Fisher's tests call some
+// (about 0.2% of those tested, as Rytlewski et al. found between blood samples two weeks apart);
+// the beta-binomial test, its variance fitted on the replicate samples, (almost) none.
 func TestExpansionTestsOnANullSeries(t *testing.T) {
 	for _, c := range []struct {
 		variance float64
+		test     string
 		check    func(calls int) bool
 		want     string
 	}{
-		{0, func(n int) bool { return n <= 2 }, "at most 2"},
-		{0.1, func(n int) bool { return n >= 5 }, "some, the tests accounting for sampling alone"},
+		{0, expansion.Binomial, func(n int) bool { return n <= 2 }, "at most 2"},
+		{0, expansion.Fisher, func(n int) bool { return n <= 2 }, "at most 2"},
+		{0, expansion.Auto, func(n int) bool { return n <= 2 }, "at most 2"},
+		{0.1, expansion.Binomial, func(n int) bool { return n >= 5 }, "some, the test accounting for sampling alone"},
+		{0.1, expansion.Fisher, func(n int) bool { return n >= 5 }, "some, the test accounting for sampling alone"},
+		{0.1, expansion.Auto, func(n int) bool { return n <= 2 }, "at most 2, the beta-binomial test allowing for the variance"},
 	} {
 		table, names, design, _, _ := openSeries(t, "null-series", c.variance)
-		for _, test := range []string{expansion.Binomial, expansion.Fisher} {
-			res, err := track.Test(table, names, design, track.Comparison{From: "day 0", To: "day 14", Options: expansion.Options{Test: test}})
-			if err != nil {
-				t.Fatal(err)
-			}
-			calls, tested := 0, 0
-			for _, s := range res.Subjects {
-				calls += s.Increased + s.Decreased
-				tested += s.Tested
-			}
-			t.Logf("variance %.1f, %s test: %d of %d clonotypes in %d subjects called at a false discovery rate of 0.01 (%.4f of those tested)", c.variance, test, calls, tested, len(res.Subjects), float64(calls)/float64(tested))
-			if len(res.Subjects) != 4 || !c.check(calls) {
-				t.Errorf("variance %.1f, %s: %d subjects, %d calls, expected %s", c.variance, test, len(res.Subjects), calls, c.want)
-			}
+		res, err := track.Test(table, names, design, track.Comparison{From: "day 0", To: "day 14", Options: expansion.Options{Test: c.test}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		calls, tested := 0, 0
+		for _, s := range res.Subjects {
+			calls += s.Increased + s.Decreased
+			tested += s.Tested
+		}
+		t.Logf("variance %.1f, %s (%s): %d of %d clonotypes in %d subjects called at a false discovery rate of 0.01 (%.4f of those tested)", c.variance, c.test, res.Test, calls, tested, len(res.Subjects), float64(calls)/float64(tested))
+		if res.Fit != nil {
+			t.Logf("  fitted on %d pairs, %d clonotypes: %+v; between them, a test at 0.05 calls %.3f by sampling alone, %.3f by the model", len(res.Fit.Pairs), res.Fit.Clonotypes, res.Fit.Model, res.Fit.CalledBySampling, res.Fit.CalledByModel)
+		}
+		if len(res.Subjects) != 4 || !c.check(calls) || (c.test == expansion.Auto) != (res.Test == expansion.BetaBinomial) {
+			t.Errorf("variance %.1f, %s: %d subjects, %d calls, expected %s", c.variance, c.test, len(res.Subjects), calls, c.want)
+		}
+		// Between the replicate samples, the model calls about the 5% a test at 0.05 should.
+		if res.Fit != nil && (res.Fit.CalledByModel < 0.02 || res.Fit.CalledByModel > 0.08 || len(res.Fit.Pairs) != 12) {
+			t.Errorf("variance %.1f: %d pairs; the model calls %.3f between replicates", c.variance, len(res.Fit.Pairs), res.Fit.CalledByModel)
 		}
 	}
 }
@@ -170,19 +180,24 @@ func TestExpansionTestsOnANullSeries(t *testing.T) {
 // The CAR-T series between the week before the infusion and two weeks after, when the infusion
 // product is a large share of the blood and a few of its clones have grown 20 times: a call is
 // right where the truth's expected frequency moved the way it was called. Without variance between
-// samples beyond sampling, nearly every call is right; with the series' variance, fewer are. How
-// many of the expanding clones tested are called is said too: most are small.
+// samples beyond sampling, nearly every call is right. With the series' variance, the binomial
+// test's calls are wrong more often than the false discovery rate asked; the beta-binomial test's,
+// its variance fitted on the samples taken twice before the infusion, not, at the cost of calling
+// fewer of the clones that did change. How many of the expanding clones tested are called is said
+// too: most are small.
 func TestExpansionTestsOnACARTSeries(t *testing.T) {
 	for _, c := range []struct {
 		variance float64
+		test     string
 		check    func(wrong float64) bool
 		want     string
 	}{
-		{0, func(w float64) bool { return w <= 0.02 }, "at most 0.02 of the calls against the truth"},
-		{0.1, func(w float64) bool { return w > 0.02 }, "more than 0.02 against the truth, the tests accounting for sampling alone"},
+		{0, expansion.Binomial, func(w float64) bool { return w <= 0.02 }, "at most 0.02 of the calls against the truth"},
+		{0.1, expansion.Binomial, func(w float64) bool { return w > 0.02 }, "more than 0.02 against the truth, the test accounting for sampling alone"},
+		{0.1, expansion.Auto, func(w float64) bool { return w <= 0.02 }, "at most 0.02 against the truth, the beta-binomial test allowing for the variance"},
 	} {
 		table, names, design, truth, dir := openSeries(t, "car-t", c.variance)
-		res, err := track.Test(table, names, design, track.Comparison{From: "day -7", To: "day 14"})
+		res, err := track.Test(table, names, design, track.Comparison{From: "day -7", To: "day 14", Options: expansion.Options{Test: c.test}})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -214,9 +229,9 @@ func TestExpansionTestsOnACARTSeries(t *testing.T) {
 			}
 		}
 		share := float64(wrong) / float64(calls)
-		t.Logf("variance %.1f: %d calls, %d against the truth (%.3f); %d of %d expanding clones tested called increased", c.variance, calls, wrong, share, found, expanding)
-		if calls < 50 || !c.check(share) || found == 0 {
-			t.Errorf("variance %.1f: %d calls, %d against the truth, %d of %d expanding clones; expected %s", c.variance, calls, wrong, found, expanding, c.want)
+		t.Logf("variance %.1f, %s (%s): %d calls, %d against the truth (%.3f); %d of %d expanding clones tested called increased", c.variance, c.test, res.Test, calls, wrong, share, found, expanding)
+		if calls < 10 || !c.check(share) || found == 0 {
+			t.Errorf("variance %.1f, %s: %d calls, %d against the truth, %d of %d expanding clones; expected %s", c.variance, c.test, calls, wrong, found, expanding, c.want)
 		}
 	}
 }

@@ -10,8 +10,9 @@
 // Two-sided p-values sum the probabilities of every outcome no more likely than the one seen (with
 // R's relative tolerance of 10⁻⁷); one-sided ones a tail. Clonotypes with fewer than minTotal in
 // the two samples together are not tested, nor counted in the false discovery rate, which is
-// controlled by Benjamini and Hochberg's procedure or Storey's q-values. Every sum is of terms
-// rounded on their own, so the results are the same on every processor.
+// controlled by Benjamini and Hochberg's procedure or Storey's q-values. The beta-binomial test,
+// which allows for variation between samples beyond sampling, is in betabinomial.go. Every sum is
+// of terms rounded on their own, so the results are the same on every processor.
 package expansion
 
 import (
@@ -48,8 +49,9 @@ const (
 // over 1 − λ (Storey 2002).
 const StoreyLambda = 0.5
 
-// Options are how the clonotypes are tested: the test, the alternative, the correction and the
-// false discovery rate at which a clonotype is called, and the least total of the two samples a
+// Options are how the clonotypes are tested: the test (auto: the beta-binomial test where a
+// variance model is given, else the binomial test), the alternative, the correction and the false
+// discovery rate at which a clonotype is called, and the least total of the two samples a
 // clonotype needs to be tested.
 type Options struct {
 	Test        string  `json:"test"`
@@ -59,11 +61,12 @@ type Options struct {
 	MinTotal    int     `json:"minTotal"`
 }
 
-// Normalize completes options with the defaults (Rytlewski et al. 2019's: the binomial test,
-// two-sided, Benjamini–Hochberg at 0.01, at least 5 in the two samples together) and checks them.
+// Normalize completes options with the defaults (Rytlewski et al. 2019's: the beta-binomial test
+// where its variance can be fitted, else the binomial test; two-sided, Benjamini–Hochberg at 0.01,
+// at least 5 in the two samples together) and checks them.
 func (o Options) Normalize() (Options, error) {
 	if o.Test == "" {
-		o.Test = Binomial
+		o.Test = Auto
 	}
 	if o.Alternative == "" {
 		o.Alternative = TwoSided
@@ -78,8 +81,8 @@ func (o Options) Normalize() (Options, error) {
 		o.MinTotal = 5
 	}
 	switch {
-	case o.Test != Binomial && o.Test != Fisher:
-		return o, fmt.Errorf("test %q: binomial or fisher", o.Test)
+	case o.Test != Auto && o.Test != BetaBinomial && o.Test != Binomial && o.Test != Fisher:
+		return o, fmt.Errorf("test %q: auto, betabinomial, binomial or fisher", o.Test)
 	case o.Alternative != TwoSided && o.Alternative != Increase && o.Alternative != Decrease:
 		return o, fmt.Errorf("alternative %q: two-sided, increase or decrease", o.Alternative)
 	case o.Correction != BH && o.Correction != Storey:
@@ -108,11 +111,12 @@ type Clonotype struct {
 	Call     string            `json:"call,omitempty"`
 }
 
-// Result is the comparison of two samples (or two groups of samples, pooled): their totals, the
-// clonotypes tested (those called first, by adjusted p-value; then the rest by p-value), how many
-// were not tested for having fewer than minTotal, how many were called each way, and Storey's π₀
-// where it was used.
+// Result is the comparison of two samples (or two groups of samples, pooled): the test used, their
+// totals, the clonotypes tested (those called first, by adjusted p-value; then the rest by
+// p-value), how many were not tested for having fewer than minTotal, how many were called each
+// way, and Storey's π₀ where it was used.
 type Result struct {
+	Test       string           `json:"test"`
 	TotalA     float64          `json:"totalA"`
 	TotalB     float64          `json:"totalB"`
 	Tested     int              `json:"tested"`
@@ -126,15 +130,27 @@ type Result struct {
 // ErrNotCounts: the tests need whole counts of cells or molecules.
 var ErrNotCounts = errors.New("the tests need whole counts of cells or molecules: these abundances are not whole numbers")
 
+// ErrNoModel: the beta-binomial test needs a variance model.
+var ErrNoModel = errors.New("the beta-binomial test needs its variance fitted on samples that should not differ: replicate samples, or two time points named as stable")
+
 // Compare tests every clonotype of t found in either group of samples (a, b; each group's samples
-// pooled) as the options say.
-func Compare(t *clonotype.Table, a, b []uint32, opt Options) (Result, error) {
+// pooled) as the options say, the beta-binomial test with the variance model given.
+func Compare(t *clonotype.Table, a, b []uint32, opt Options, model *Model) (Result, error) {
 	opt, err := opt.Normalize()
 	if err != nil {
 		return Result{}, err
 	}
+	if opt.Test == Auto {
+		opt.Test = Binomial
+		if model != nil {
+			opt.Test = BetaBinomial
+		}
+	}
+	if opt.Test == BetaBinomial && model == nil {
+		return Result{}, ErrNoModel
+	}
 	inA, inB := map[uint32]bool{}, map[uint32]bool{}
-	var res Result
+	res := Result{Test: opt.Test}
 	for _, s := range a {
 		inA[s] = true
 		res.TotalA += t.SampleTotals[s]
@@ -178,10 +194,14 @@ func Compare(t *clonotype.Table, a, b []uint32, opt Options) (Result, error) {
 		if ka > 0 && kb > 0 {
 			x.Log2Fold = diversity.Number(dmath.Log(x.FreqB/x.FreqA) / math.Ln2)
 		}
-		if opt.Test == Fisher {
+		theta := res.TotalA / (res.TotalA + res.TotalB)
+		switch opt.Test {
+		case Fisher:
 			x.P = FisherP(int64(ka), int64(kb), int64(res.TotalA), int64(res.TotalB), opt.Alternative)
-		} else {
-			x.P = BinomialP(int64(ka), int64(ka+kb), res.TotalA/(res.TotalA+res.TotalB), opt.Alternative)
+		case BetaBinomial:
+			x.P = BetaBinomialP(int64(ka), int64(ka+kb), theta, model.V(ka+kb), opt.Alternative)
+		default:
+			x.P = BinomialP(int64(ka), int64(ka+kb), theta, opt.Alternative)
 		}
 		res.Clonotypes = append(res.Clonotypes, x)
 		ps = append(ps, x.P)

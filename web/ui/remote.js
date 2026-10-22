@@ -238,7 +238,7 @@ export function installRemote(app) {
       };
     },
 
-    async test_expansion({ dataset, from, to, test, alternative, correction, alpha, subject, calls }) {
+    async test_expansion({ dataset, from, to, test, alternative, correction, alpha, stable, subject, calls }) {
       const d = datasetOf(dataset);
       app.focusItem({ kind: 'dataset', id: d.id });
       await app.setMode('tracking');
@@ -248,7 +248,11 @@ export function installRemote(app) {
       if (view.state().status !== 'ready') throw new ActionError(view.state().error ?? `The subjects of ${d.name} could not be read.`);
       const keys = timePoints(view.state().design).map((p) => p.key);
       const changes = { from: choose(from, keys, 'time point'), to: choose(to, keys, 'time point') };
-      if (test !== undefined && test !== '') changes.test = choose(test, ['binomial', 'fisher'], 'test');
+      if (test !== undefined && test !== '') changes.test = choose(test, ['auto', 'betabinomial', 'binomial', 'fisher'], 'test');
+      if (stable !== undefined && stable !== null) {
+        if (!Array.isArray(stable) || (stable.length !== 0 && stable.length !== 2)) throw new ActionError('stable is two time points, or [] for the replicate samples.');
+        changes.stable = stable.length ? { from: choose(stable[0], keys, 'time point'), to: choose(stable[1], keys, 'time point') } : null;
+      }
       if (alternative !== undefined && alternative !== '') changes.alternative = choose(alternative, ['two-sided', 'increase', 'decrease'], 'alternative');
       if (correction !== undefined && correction !== '') changes.correction = choose(correction, ['bh', 'storey'], 'correction');
       if (alpha !== undefined && alpha !== null) {
@@ -268,7 +272,8 @@ export function installRemote(app) {
       return {
         message: `${d.name}: ${count(called, 'clonotype')} called between ${r.comparison.from} and ${r.comparison.to} in ${count(r.subjects.length, 'subject')} (${done.artifact}).`,
         data: {
-          result: done.artifact, unit: r.unit, definition: r.describe, comparison: r.comparison, caveat: r.caveat, without: r.without ?? [],
+          result: done.artifact, unit: r.unit, definition: r.describe, comparison: r.comparison, test: r.test, caveat: r.caveat, without: r.without ?? [],
+          fit: r.fit ? { on: r.fit.on, model: r.fit.model, logLik: r.fit.logLik, clonotypes: r.fit.clonotypes, pairs: r.fit.pairs, calledBySampling: r.fit.calledBySampling, calledByModel: r.fit.calledByModel } : null,
           subjects: r.subjects.map((s) => ({
             subject: s.subject, from: { label: s.from.label, samples: s.from.samples, total: s.totalA }, to: { label: s.to.label, samples: s.to.samples, total: s.totalB },
             tested: s.tested, leftOut: s.leftOut, increased: s.increased, decreased: s.decreased, pi0: s.pi0,
