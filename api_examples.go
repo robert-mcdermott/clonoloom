@@ -39,17 +39,51 @@ func newExamples(dir string, offline bool) *examples.Library {
 // this computer in seconds.
 func simulatedExamples() []examples.Generated {
 	return []examples.Generated{
-		simulatedExample("standard", "A simulated TRB study with known truth",
+		simulatedExample("standard", nil, "A simulated TRB study with known truth",
 			"Bulk T-cell receptor β repertoires simulated by ClonoLoom: three control subjects and three whose repertoires hold a few expanded clones, two blood samples of each at different depths. Every clonotype of every subject is known (truth/), so diversity, rarefaction and overlap can be checked against the truth. Made on this computer in a few seconds.",
 			"The twelve samples, with their subjects and conditions, in templates.", 33<<20),
-		simulatedExample("null", "A simulated TRB study with no difference between its groups",
+		simulatedExample("null", nil, "A simulated TRB study with no difference between its groups",
 			"Six subjects of one kind in two groups (control and treated), two samples each: whatever a comparison of the groups finds is chance. Made on this computer in a few seconds, its truth beside it.",
 			"The twelve samples, with their subjects and groups, in templates.", 38<<20),
+		simulatedExample("car-t", carTSteps, "A simulated CAR-T study with known truth",
+			"Three patients' T-cell receptor β repertoires (two who respond, one who does not) sampled a week before infusion (twice), then 7, 14, 28 and 90 days after it, with their infusion products, made from each patient's own T cells. Some of the product's clones expand after infusion and some contract, and the product's share of the blood rises and falls; every clone's trajectory, and the product's share of every sample, is known (truth/). Made on this computer in a few seconds.",
+			"The 21 samples, with their subjects, time points and infusion products, in templates.", 33<<20),
+		simulatedExample("transplant", transplantSteps, "A simulated transplant study with known truth",
+			"Three recipients' T-cell receptor β repertoires sampled before an allogeneic transplant and 30, 100 and 365 days after it (twice), with their donors' blood. The donor's share of the recipient's blood grows from 60% to 97%, and in the recipient with graft-versus-host disease a few donor clones expand; every clone's trajectory, and the donor's share of every sample, is known (truth/). Made on this computer in a few seconds.",
+			"The 18 samples, with their subjects, time points and donors, in templates.", 35<<20),
 	}
 }
 
-// simulatedExample is a preset's study as an example.
-func simulatedExample(preset, title, description, opening string, size int64) examples.Generated {
+// The guided steps of the studies over time.
+var (
+	carTSteps = []examples.Step{
+		{Title: "See each patient's samples in time", Action: "describe_subjects",
+			Words: "Three patients, sampled twice a week before the infusion and four times after it, each with the infusion product as its reference sample."},
+		{Title: "Follow the infusion product's largest clonotypes", Action: "track_clonotypes", Args: map[string]any{"by": "reference", "n": 10},
+			Words: "Each one's frequency in the blood through the time points, with its interval: the product's largest clonotypes are the blood's largest too, as the product was made from it."},
+		{Title: "Test the week before against two weeks after", Action: "test_expansion", Args: map[string]any{"from": "day -7", "to": "day 14"},
+			Words: "The beta-binomial test, its variance fitted on the two samples taken before the infusion: the clonotypes that expanded two weeks after it, in the two patients who respond."},
+		{Title: "Class every clonotype against the week before", Action: "class_clonotypes", Args: map[string]any{"base": "day -7", "class": "transient"},
+			Words: "Tested at every later time point: the product's expanding clones are transient, up at day 14 and back down by day 90."},
+		{Title: "Follow the transient clonotypes", Action: "track_clonotypes", Args: map[string]any{"by": "class", "class": "transient"},
+			Words: "Their threads rise to day 14 and fall back; most were not found before the infusion."},
+		{Title: "Attribute each sample to the product", Action: "attribute_samples",
+			Words: "About 60% of the blood is in the product's clonotypes before the infusion already: a product made from the patient's own blood cannot be told apart from it by clonotype."},
+	}
+	transplantSteps = []examples.Step{
+		{Title: "See each recipient's samples in time", Action: "describe_subjects",
+			Words: "Three recipients, sampled before the transplant and 30, 100 and 365 days after it (twice), each with the donor's blood as its reference sample."},
+		{Title: "Attribute each sample to the donor", Action: "attribute_samples",
+			Words: "The donor's share of the recipient's blood, from the clonotypes found in only one of the donor's blood and the recipient's before the transplant: about 60% at day 30, 85% at day 100 and 97% at day 365, as simulated."},
+		{Title: "Test day 30 against day 100", Action: "test_expansion", Args: map[string]any{"from": "day 30", "to": "day 100"},
+			Words: "The beta-binomial test, its variance fitted on the two samples taken at day 365: in the recipient with graft-versus-host disease, a few donor clones expand."},
+		{Title: "Class every clonotype against day 30", Action: "class_clonotypes", Args: map[string]any{"base": "day 30", "class": "transient"},
+			Words: "The alloreactive clones peak at day 100: transient."},
+	}
+)
+
+// simulatedExample is a preset's study as an example, with its guided steps.
+func simulatedExample(preset string, steps []examples.Step, title, description, opening string, size int64) examples.Generated {
 	study := simulate.Presets[preset]
 	return examples.Generated{
 		Source: examples.Source{
@@ -57,7 +91,7 @@ func simulatedExample(preset, title, description, opening string, size int64) ex
 			Source: fmt.Sprintf("Made on this computer: clonoloom simulate --preset %s (seed %d)", preset, study.Seed), Publisher: "ClonoLoom",
 			License: "Simulated data: no restrictions", LicenseClass: "open",
 			Citation: "McDermott R. ClonoLoom, version " + version + ". https://github.com/robert-mcdermott/clonoloom",
-			Opens:    []examples.Opening{{Title: "the study", Name: "Simulated study (" + preset + ")", Summary: opening}},
+			Opens:    []examples.Opening{{Title: "the study", Name: "Simulated study (" + preset + ")", Summary: opening, Steps: steps}},
 		},
 		Size: size, Marker: "truth/truth.json",
 		Make: func(ctx context.Context, dir string, progress examples.Progress) error {

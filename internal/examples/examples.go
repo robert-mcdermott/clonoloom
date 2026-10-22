@@ -38,12 +38,24 @@ type File struct {
 	SHA256 string `json:"sha256"`
 }
 
-// Opening is a dataset an example opens: some of its files together, and the dataset's name.
+// Opening is a dataset an example opens: some of its files together, the dataset's name, and the
+// steps that guide a first look at it.
 type Opening struct {
 	Title   string   `json:"title"`
 	Name    string   `json:"name"`
 	Summary string   `json:"summary"`
 	Files   []string `json:"files"`
+	Steps   []Step   `json:"steps,omitempty"`
+}
+
+// Step is a guided step of an example: what it does and what to look for, in words, and the
+// remote control action (actions.go) that does it, with its arguments; the page performs it on the
+// dataset the example opened.
+type Step struct {
+	Title  string         `json:"title"`
+	Words  string         `json:"words"`
+	Action string         `json:"action"`
+	Args   map[string]any `json:"args,omitempty"`
 }
 
 // Source is one data set of sources.json.

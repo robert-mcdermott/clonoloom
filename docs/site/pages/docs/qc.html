@@ -1,0 +1,26 @@
+---
+title: Quality control
+description: ClonoLoom's QC view: each sample's productive share, clonotypes, singletons, sample coverage and gene calls, single cells' chains, the vendor's own numbers recomputed, and filters kept as versions with their reasons.
+lede: The QC view measures every sample from its rows, beside the numbers the vendor's software reported, so that you can see whether the data support analysis before you analyze them. Filters leave rows out for a stated reason, and never change the data.
+---
+      <h2 id="metrics">Each sample's numbers</h2>
+      <shot name="qc" alt="The QC view of 10x Genomics' 10k PBMC T cells: a table of cells by their productive chains, and plots of the contigs' status, the cells' chains and the junction lengths">10k PBMC T cells: cells by their productive chains, the contigs' status and the junctions' lengths.</shot>
+      <p><strong>QC</strong> measures every sample, every number computed by ClonoLoom from the rows:</p>
+      <ul>
+        <li><strong>Bulk samples</strong>: abundance; the productive, out-of-frame and stop-codon shares; clonotypes and singletons; the <strong>sample coverage</strong> (Chao and Jost 2012, as iNEXT computes it), the share of the repertoire's cells whose clonotype the sample holds; the largest clonotype's share; how often V and J calls name one gene; and reads per template or UMI.</li>
+        <li><strong>Single cells</strong>: cells by their productive chains (a pair, one arm, none, more than two of a locus), cells with each locus, and UMIs per contig.</li>
+        <li><strong>The vendor's numbers, recomputed</strong>: Cell Ranger's metrics summary and immunoSEQ's sample columns, each beside the number ClonoLoom counts from the rows, with whether they agree.</li>
+      </ul>
+      <p><strong>What these numbers mean</strong> explains each in plain words. Plots can be saved as figures (<a href="figures.html">Figures and exports</a>).</p>
+
+      <h2 id="coverage">Reading the coverage</h2>
+      <p>Sample coverage says how complete a sample is: at 0.99, almost every cell of the repertoire belongs to a clonotype the sample holds; at 0.6, four cells in ten belong to clonotypes it missed. It decides how far richness can be estimated (<a href="diversity.html">Diversity</a>) and the level at which samples are best compared (<a href="rarefaction.html">Rarefaction</a>). It needs counts of cells or molecules: counted in reads, each cell is counted many times over, few clonotypes are seen once, and every sample looks complete.</p>
+
+      <h2 id="filters">Filters</h2>
+      <p>To leave rows out, make a <strong>filter</strong>: <strong>New filter…</strong>, choose its rules, and say why:</p>
+      <ul>
+        <li>productive rearrangements only; a minimum count; some loci;</li>
+        <li>for single cells: cells only, high-confidence contigs, at most so many chains of a locus in a cell;</li>
+        <li>samples left out.</li>
+      </ul>
+      <p>A filter is never deleted: editing it saves a new version, and the rows each rule leaves out are counted. The dataset's analyses use the version you choose, and every result, figure, export and methods paragraph names it; the data themselves are never changed.</p>

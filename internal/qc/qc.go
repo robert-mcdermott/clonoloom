@@ -523,12 +523,12 @@ func quartiles(values []float64) *Quartiles {
 	v := append([]float64(nil), values...)
 	sort.Float64s(v)
 	at := func(p float64) float64 {
-		h := p * float64(len(v)-1)
+		h := float64(p * float64(len(v)-1))
 		lo := math.Floor(h)
 		if int(lo) >= len(v)-1 {
 			return v[len(v)-1]
 		}
-		return v[int(lo)] + float64(h-lo)*(v[int(lo)+1]-v[int(lo)])
+		return v[int(lo)] + float64(float64(h-lo)*(v[int(lo)+1]-v[int(lo)]))
 	}
 	return &Quartiles{Q1: at(0.25), Median: at(0.5), Q3: at(0.75)}
 }

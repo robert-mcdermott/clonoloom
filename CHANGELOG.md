@@ -1,5 +1,208 @@
 # Changelog
 
+## 0.3.0 (2026-10-22)
+
+Wave 3 of the [roadmap](clonoloom-spec/roadmap.md): tracking. Each subject's samples placed in time
+from their annotation; its clonotypes followed through the time points with their intervals,
+tested between two time points by the beta-binomial test (its variance between blood samples fitted
+on replicate samples) with false discoveries controlled, classed across several, and each sample
+measured against an infusion product or a donor; simulated studies over time to check it all
+against; results the same, bit for bit, on every processor; and the website.
+
+### Added
+
+- **Classes, attribution and guided steps (wave 3, slice 8).** The **Tracking** view's last two
+  parts (`internal/track/classes.go`, `attribution.go`, `api_classes.go`,
+  `web/ui/tracking-classes.js`, `tracking-attribution.js`):
+  - **Classes:** in each subject, each clonotype tested between a base time point and every later
+    one by the Tests part's test, the false discovery rate controlled within each comparison, and
+    classed by its calls: emerging (called increased at the last time point), transient (called
+    changed between, not at the last), contracting (called decreased at the last) or persistent
+    (never called, found at every time point); each subject's clonotypes by class, a class's
+    clonotypes as threads and in a table of their calls, and **Follow this class** (the
+    Clonotypes part follows a class: `by: class`);
+  - **Attribution:** each sample's share in the clonotypes its reference sample holds, and, where the
+    subject has samples before the reference event and the reference shares few clonotypes with
+    them (a donor), the share derived from the reference, from the clonotypes found on one side
+    only, each with Wilson's interval; the share before the event, and how much of the reference
+    the samples before it hold. An infusion product made from the patient's own blood cannot be told
+    apart from it by clonotype, and the view says so;
+  - each kept as a result, exported as CSV, in the methods paragraph; remote control's
+    `class_clonotypes` and `attribute_samples`; the guide's pages, Classes across time points and
+    Attribution to a reference;
+  - **guided steps** for the simulated CAR-T and transplant examples: listed on their cards, and
+    shown in the Tracking view, each saying what to look at and done by **Do it** with the actions
+    scripts use (`app.actions`, `web/ui/remote.js`);
+  - the 0.3.0 project fixture (`validation/projects/0.3.0`): a small simulated CAR-T series and its
+    diversity, tracking, tests, classes and attribution, compared byte for byte by every later
+    release; every picture re-captured.
+- **The website (wave 3, slice 1).** <https://robert-mcdermott.github.io/clonoloom/>, built from
+  `docs/site/` and published on GitHub Pages from a `gh-pages` branch holding only the built site
+  ([docs/site/README.md](docs/site/README.md)); its generator, audit and styles adapted from
+  SituCraft 0.9.0's:
+  - a home page, install, the methods with their validation and citation, and the user guide a
+    page a subject (thirteen pages, from opening data to the record), with the screenshots in both
+    themes;
+  - `docs/GETTING-STARTED.md` now points to the guide, so that it is written once; the
+    references (formats, remote control, simulated studies, installing) stay in `docs/`;
+  - a link-preview image made from a screenshot (`docs/site/og-image.mjs`);
+  - axe-core listed in `validation/sources.json` as a tool, fetched for the audit only.
+- **The beta-binomial test (wave 3, slice 7).** Rytlewski et al. 2019's test of each clonotype
+  between two time points (`internal/expansion/betabinomial.go`, `internal/track/test.go`), now the
+  Tests part's default where it can be fitted:
+  - a clonotype's count at the first time point, given its total n at the two, beta-binomial
+    around the share of the depth, with the scale v(n) = 2 + (b ln n + a)² (the 2, which keeps the
+    beta unimodal, as in their reference code); two-sided by the outcomes no more likely than the
+    one seen, or one-sided;
+  - a and b fitted by maximum likelihood (Nelder–Mead from (1, 1), restarted from its best point)
+    once for the study: on every pair of each subject's replicate samples, or on two time points
+    the user names as stable; without them, the binomial test, and the view says why;
+  - the Tests part's variance card: each clonotype of the samples fitted on, at its total and its
+    difference in sampling's standard deviations, with sampling's 95% band and the model's, and how
+    many of them a test at 0.05 calls changed by sampling alone and with the model;
+  - the fit in the export (`fit.csv`), the NOTICE and the methods paragraph; remote control's
+    `test_expansion` answers it and takes `stable`; the Clonotypes part follows the
+    beta-binomial test's calls.
+  - Validated: p-values against an independent R implementation on 150 cases, to 2 × 10⁻¹²; the fit
+    against R's `optim` on two sets of 3,000 clonotypes drawn from the model, the same likelihood
+    to 10⁻⁶ and the same scale to 10⁻³ (`validation/reference/betabinomial.R`); on the simulated
+    series where nothing changes, with variance between blood samples, no call (the binomial test,
+    13); on the CAR-T study, none of its 20 calls against the truth (the binomial test, 6 of 73).
+- **Expanded and contracted clonotypes (wave 3, slice 6).** The **Tracking** view's Tests part
+  (`internal/expansion`, `internal/track/test.go`, `api_expansion.go`, `web/ui/tracking-tests.js`):
+  - each clonotype tested between two time points of each subject, the samples at one time
+    pooled: the binomial test of its count at the first given its total (Rytlewski et al. 2019;
+    the default) or Fisher's exact test (DeWitt et al. 2015); two-sided, or one-sided for an
+    increase or a decrease; clonotypes with fewer than 5 in the two together not tested;
+  - the false discovery rate controlled within each subject by Benjamini and Hochberg's procedure
+    (the default) or Storey's q-values (π₀ at λ = 0.5), at 0.01, 0.05 or 0.1; the calls increased
+    or decreased;
+  - each clonotype at its two frequencies, the calls colored, and a table of the calls, linked to
+    the plot and the Clonotypes view; **Follow the calls** follows each subject's most significant
+    calls in the Clonotypes part, which can follow a test's calls (`by: test`);
+  - the tests refuse reads, and say they account for sampling alone; each time point has a key
+    (`day 28` for week 4) that names it across subjects;
+  - a job whose result is kept with the project; its export as CSV (every clonotype tested, and
+    each subject in sum); the methods paragraph's sentence, citing DeWitt et al., Rytlewski et al.,
+    Benjamini and Hochberg, and Storey; remote control's `test_expansion`; the guide's page,
+    Expanded and contracted clonotypes; the Science page's section.
+  - Validated: both tests' p-values against R's `binom.test` and `fisher.test`, two-sided and
+    one-sided, on 215 cases, to 4 × 10⁻¹²; BH's and Storey's adjusted p-values against R; on a
+    simulated series where nothing changes, no false call where samples differ by sampling alone,
+    13 of 6,599 (0.2%) with variance between blood samples; on the simulated CAR-T study, all 66
+    calls in the true direction without that variance, 6 of 73 against the truth with it
+    (`validation/expansion_test.go`, `validation/reference/expansion.R`).
+- **Following clonotypes (wave 3, slice 5).** The **Tracking** view's Clonotypes part
+  (`internal/track`, `api_tracking.go`, `web/ui/mode-tracking.js`):
+  - the clonotypes chosen followed through each subject's samples in time order: each reference
+    sample's 10 largest (the default; each sample's largest for a subject without one), each
+    sample's largest (5 by default), or a list by ID or junction, kept with the dataset; the
+    Clonotypes view's inspector adds a clonotype to the list with **Follow over time**;
+  - each clonotype's count and frequency in every sample and at every time point (the samples taken
+    at one time pooled), with its 95% interval (Wilson's score interval) where the counts are of
+    cells or molecules; a clonotype not found is shown as not found, with what the depth could
+    have missed, never as zero; in reads, no intervals, and the view says why;
+  - threads (each clonotype's frequency through the time points, on a logarithmic axis, the one
+    chosen drawn with its intervals), an alluvial plot of their shares, and a table, linked to each
+    other and to the Clonotypes view; the plots save as figures;
+  - a job whose result is kept with the project (its ID made from the samples' annotation and the
+    choice); its export as CSV (each sample, and each time point); the methods paragraph's sentence,
+    citing Wilson 1927;
+  - remote control's `track_clonotypes`; the guide's page, Following clonotypes; the Science page's
+    Tracking section.
+  - Validated: Wilson's interval against R's `prop.test` to 10⁻¹⁴; on the simulated CAR-T study,
+    the intervals held the true frequency in 95.2% of 2,700 checks where samples differ by sampling
+    alone, and in 76.9% with the study's biological variance between samples, which the view and
+    the methods paragraph say (`validation/tracking_test.go`).
+- **Simulated studies over time (wave 3, slice 4).** `clonoloom simulate --preset car-t`,
+  `transplant` and `null-series` ([docs/SIMULATION.md](docs/SIMULATION.md)), the first two in the
+  Example data dialog:
+  - each subject sampled at time points in days from its event (an infusion, a transplant), with
+    replicates; classes of clones on known trajectories (CAR-T: a few of the product's clones expand,
+    many contract; transplant: alloreactive donor clones in the recipient with graft-versus-host
+    disease);
+  - a reference population mixed into the blood in a known share at each time: an infusion product
+    made from the subject's own blood and expanded ex vivo, or a donor's repertoire, sampled once as
+    the subject's reference sample;
+  - biological variance between samples, replicates at one time included;
+  - time points and the reference's tissue in the AIRR Repertoire metadata, which the Tracking view
+    reads without annotation;
+  - the truth: each sample's day, the reference's share of it and the expected share in the
+    reference's clonotypes; each clonotype's expected frequency at every time point;
+  - the methods paragraph says how a simulated series was made.
+- **Subjects and time points (wave 3, slice 3).** The **Tracking** view's first part, Subjects
+  (`internal/study`, `api_study.go`, `web/ui/mode-tracking.js`):
+  - each sample's time point read as days from its subject's reference event: `day 28`, `d28`,
+    `D+28`, `28 days`, `week 4`, `wk4`, `month 3`, `M3`, `year 1`, `6h`, AIRR's
+    `14 day (vaccination)`, `28 days post-infusion`, a number of days; `baseline` and `pre` before,
+    `post` after; visits (`T1`, `visit 2`) in their order;
+  - a **Reference** field in the samples' annotation, marking a subject's reference sample and what
+    it is (an infusion product, a donor); a tissue such as infusion product, apheresis, graft or
+    donor marks it too;
+  - each subject's samples in time order, on a timeline of days (a figure: references as diamonds,
+    baseline in a column of its own, samples at one time one above the other, subjects colored by
+    condition) and in a table, with the samples taken at one time (replicates) and those left out;
+  - the checks before tracking, as findings with stable codes: samples without a subject or a time
+    point, time points not understood, numbers read as days, replicates, subjects with one time
+    point or without a reference sample, times that cannot be ordered against each other;
+  - remote control's `annotate_samples` (any annotation field) and `describe_subjects`; the guide's
+    page, Subjects and time points.
+- **`internal/dmath` (wave 3, slice 2):** logarithms, exponentials, powers, `log1p`, `expm1`,
+  log-gamma and `erfc` whose bits are the same on every processor: fdlibm 5.3's, adapted from
+  SituCraft 0.9.0 (`expm1` ported from fdlibm), every product rounded on its own.
+
+### Fixed
+
+- **Results the same on every processor (wave 3, slice 2).** Diversity, rarefaction, gene usage,
+  overlap, QC's coverage and vendor checks, the bootstrap's random draws and the simulator's truth
+  differed in their last digits between Apple silicon (arm64) and Intel and AMD processors
+  (amd64): the compiler fused 102 multiplications with the additions after them on arm64 only, and
+  Go's own logarithm and exponential differ between processors. Each product added to something
+  is now rounded on its own, and the logarithms and exponentials are ClonoLoom's (`internal/dmath`).
+  Results now differ from 0.2.0's in their last digits (at most 0.1% of the project test's
+  tolerance, a relative 10⁻⁹), on both processors alike; no method's version changed. The simulator writes the same studies as before,
+  byte for byte, but for its truth's expectations, in their thirteenth digit.
+
+### Validation
+
+- **The website:** the build checks every local link, anchor and screenshot, and every link into
+  the repository's files (CI runs it on every commit); every page passes axe-core 4.13.0's WCAG 2.1
+  A and AA rules in both themes at a desktop's and a phone's width, none wider than a phone's
+  screen (`node docs/site/audit.mjs`: 16 pages, 64 checks, no problem).
+- **Simulated series against their truth** (`validation/series_test.go`): each preset read with no
+  finding, its subjects, days, references and replicates placed as made; attribution within 0.016 of
+  the truth in each of 33 samples (mean 0.005); the CAR-T product's expanding and contracting
+  clonotypes, pooled, within 6% of their expected share at every time point, and the transplant's
+  80 alloreactive ones within 16%; replicates' log ratios varying by 0.218 beyond sampling
+  over 298 clonotypes, the model's 0.210; the null series' expectations unchanged over time. A small
+  series pinned by its digest on arm64 and amd64; its parameters' eleven ways of being wrong refused.
+- **Subjects and time points** (Go and Node tests): 29 spellings of time points read to their days
+  and labels, and text that is not one refused; a design of three subjects ordered (a product without
+  a time point first, then baseline, then days; week 4 and day 28 one time, and replicates), its
+  eight findings counted; the time reader fuzzed (700,000 inputs, no fault); the samples' study read
+  from their annotation over their metadata; the timeline's marks, columns and stacking.
+- **The same results on every processor:** `validation/fused_test.go` searches the arm64 assembly
+  of every function of the module (1,360) for fused multiply-adds, and finds none; it fails, naming
+  the line, when one is added. The 0.2.0 project's five results made again, and the small simulated
+  study, are pinned by digests that the arm64 and amd64 builds both give (CI tests on amd64; the
+  pins were made on arm64). `internal/dmath` gives SituCraft's fingerprint of its log, exp and pow
+  over 30,000 arguments bit for bit; its functions are within 3 ulps of Go's and `expm1` within an
+  ulp of 256-bit values; its digest is the same on both processors.
+- **Classes** (`validation/classes_test.go`): on the simulated CAR-T study with its variance between
+  blood samples, against the week before the infusion, all 20 clonotypes classed by their calls
+  classed the way the truth's frequencies moved (the product's expanding clones, transient).
+- **Attribution** (`validation/classes_test.go`): on the simulated CAR-T and transplant studies, the
+  share in the reference sample's clonotypes within 0.023 of the share the truth expects in them at
+  every sample (its sampling interval held that truth in about half the samples, the studies varying
+  beyond sampling), and 0.17 to 0.28 below the share in all the reference population's clonotypes;
+  the share derived from the donor within 0.065 of the donor's true share at every sample, and
+  withheld for the CAR-T products (74–79% of their cells in clonotypes found before the infusion).
+- **The guided steps** are actions remote control knows, with arguments it takes (Go test).
+- Every reference comparison (iNEXT, immunarch, vegan, scirpy, R, the simulator's truth) and the
+  0.2.0 project still agree; the 0.2.0 project's documents are compared by value (their largest
+  difference 0.1% of the tolerance), and later projects' by checksum: the 0.3.0 project's five
+  results are made again byte for byte.
+
 ## 0.2.0 (2026-10-21)
 
 Wave 2 of the [roadmap](clonoloom-spec/roadmap.md): repertoire basics. Each sample's diversity,

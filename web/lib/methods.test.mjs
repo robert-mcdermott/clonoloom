@@ -123,6 +123,50 @@ test('an overlap result kept says what was measured, at what depth, citing each 
   }
 });
 
+test('a tracking result kept says what was followed and how, citing Wilson once; in reads, without intervals', () => {
+  const results = [
+    { kind: 'tracking', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { confidence: 0.95 }, choice: { by: 'reference', n: 10, list: [] }, subjects: 3, followed: 30, intervals: true },
+    { kind: 'tracking', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { confidence: 0.95 }, choice: { by: 'list', list: ['c-1', 'CASSA'] }, subjects: 3, followed: 4, intervals: true },
+  ];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /Clonotypes \("Amino-acid junction, V and J genes"\) were followed through each subject's samples in time order by ClonoLoom \[\d\]: each reference sample's 10 largest clonotypes \(each sample's 10 largest for a subject without one\), 30 clonotypes in 3 subjects; each one's frequency at each time point is its count of the templates there, the samples taken at one time pooled, with Wilson's 95% score interval \[\d\]/);
+  assert.match(text, /: 2 clonotypes listed by ID or junction, 4 clonotypes in 3 subjects;/);
+  assert.equal(references.filter((r) => r.includes('Wilson EB.')).length, 1);
+  const reads = methodsParagraph({ dataset: pbmc, results: [{ ...results[0], unit: 'reads', intervals: false }], program });
+  assert.match(reads.text, /its share of the reads there, the samples taken at one time pooled, without an interval \(reads count each molecule many times over\)\./);
+  assert.ok(!reads.references.some((r) => r.includes('Wilson EB.')));
+});
+
+test('a test result kept says what was tested between which time points, and how false discoveries were controlled', () => {
+  const binomial = { kind: 'expansion', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, comparison: { from: 'day -7', to: 'day 14', test: 'binomial', alternative: 'two-sided', correction: 'bh', alpha: 0.01, minTotal: 5 }, subjects: 3, tested: 9000, increased: 40, decreased: 12 };
+  const { text, references } = methodsParagraph({ dataset: pbmc, results: [binomial], program });
+  assert.match(text, /Each clonotype \("Amino-acid junction, V and J genes"\) was tested between day -7 and day 14 in each subject by ClonoLoom \[\d\], the samples at one time pooled: the binomial test of its count at the first time point given its total in the two, at the first's share of their templates \[\d\]/);
+  assert.match(text, /Clonotypes with fewer than 5 templates in the two together were not tested \[\d\]\. The false discovery rate was controlled within each subject by Benjamini and Hochberg's procedure \[\d\], and clonotypes with an adjusted p-value of at most 0\.01 called increased or decreased: 40 clonotypes increased and 12 clonotypes decreased of 9,000 clonotypes tested in 3 subjects\. The test accounts for sampling alone/);
+  for (const key of ['Rytlewski J', 'DeWitt WS', 'Benjamini Y']) assert.equal(references.filter((r) => r.includes(key)).length, 1, key);
+  const fisher = methodsParagraph({ dataset: pbmc, results: [{ ...binomial, comparison: { ...binomial.comparison, test: 'fisher', correction: 'storey', alternative: 'increase' } }], program });
+  assert.match(fisher.text, /Fisher's exact test of its count against the others' at the two time points \[\d\], one-sided, for an increase/);
+  assert.match(fisher.text, /Storey's q-values, π₀ estimated at λ = 0\.5 \[\d\]/);
+  assert.ok(fisher.references.some((r) => r.includes('Storey JD')));
+  assert.match(text, /The test accounts for sampling alone, not for the variation between samples taken at one time\./);
+  // The beta-binomial test, its variance fitted on replicates.
+  const bb = methodsParagraph({ dataset: pbmc, results: [{ ...binomial, comparison: { ...binomial.comparison, test: 'auto' }, used: 'betabinomial', fit: { on: 'replicates', pairs: 3, clonotypes: 2345, a: -4.512, b: 0.04103, calledBySampling: 0.082, calledByModel: 0.027 } }], program });
+  assert.match(bb.text, /the beta-binomial test of its count at the first time point given its total in the two, at the first's share of their templates, its scale v\(n\) = 2 \+ \(b ln n \+ a\)² of Rytlewski et al\. \[\d\] \(the 2, which keeps the beta unimodal, as in their reference code\) fitted by maximum likelihood on the clonotypes of 3 pairs of replicate samples, taken at one time \(2,345 clonotypes with at least 5 in the two; a = -4\.512, b = 0\.04103\), two-sided/);
+  assert.match(bb.text, /a two-sided test at 0\.05 called 8\.2% of the clonotypes changed by sampling alone, and 2\.7% with the fitted variance/);
+});
+
+test('classes and attribution kept say how they were made', () => {
+  const results = [
+    { kind: 'classes', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, classing: { base: 'day -7', test: 'auto', correction: 'bh', alpha: 0.01, minTotal: 5 }, used: 'betabinomial', fit: { on: 'replicates', pairs: 3, clonotypes: 2142, a: 3.631, b: 0.2349 }, subjects: 3, counts: { emerging: 0, transient: 20, contracting: 0, persistent: 1800 } },
+    { kind: 'attribution', unit: 'templates', definition: 'Amino-acid junction, V and J genes', filter: null, options: { confidence: 0.95 }, subjects: 3, derived: 3, references: ['donor blood'], intervals: true },
+  ];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /tested between day -7 and every later time point of each subject by ClonoLoom \[\d\], by the beta-binomial test \[\d\], its variance fitted on the replicate samples \(a = 3\.631, b = 0\.2349\), two-sided/);
+  assert.match(text, /In 3 subjects, 0 clonotypes were emerging, 20 transient, 0 contracting and 1,800 persistent\./);
+  assert.match(text, /Each sample's share of templates in the clonotypes \("Amino-acid junction, V and J genes"\) its subject's reference sample \(donor blood\) holds was measured by ClonoLoom \[\d\], with Wilson's 95% score interval for sampling \[\d\]/);
+  assert.match(text, /For the 3 subjects whose reference shared few clonotypes with the samples before the reference event/);
+  assert.equal(references.filter((r) => r.includes('Wilson EB.')).length, 1);
+});
+
 test('a table read through a mapping says which of its columns gave what (the 0.2.0 project)', () => {
   const project = JSON.parse(readFileSync(new URL('../../validation/projects/0.2.0/project.json', import.meta.url), 'utf8'));
   const dataset = project.datasets.find((d) => d.sources.some((s) => s.mapping));
@@ -130,4 +174,18 @@ test('a table read through a mapping says which of its columns gave what (the 0.
   assert.match(text, /The file \(a table with mapped columns\) was read/);
   assert.match(text, /S02-1\.vdjtools\.txt's columns were mapped by the user: the junction's amino acids from "cdr3aa", the junction's nucleotides from "cdr3nt", the V gene from "v", the D gene from "d", the J gene from "j" and the count from "count", the count being of UMIs, every row of sample S02-1; a rearrangement was taken as productive when its junction is whole codons with no stop codon\./);
   assert.match(text, /Each sample's diversity was measured over its clonotypes' abundances in UMIs/);
+});
+
+test('a simulated series says it was sampled over time, and how its reference was mixed in', () => {
+  const dataset = { ...pbmc, credits: [], formats: ['AIRR Rearrangement TSV'], sources: [{ ...pbmc.sources[0], format: 'airr' }], singleCell: false, unit: 'umis' };
+  const summary = { samples: [
+    { name: 'S01-d7', repertoire: { repertoireId: 'S01-d7', studyId: 'clonoloom-simulated-car-t', studyTitle: 'A simulated CAR-T study', timePoint: '7 day (infusion)', tissue: 'blood' } },
+    { name: 'S01-product', repertoire: { repertoireId: 'S01-product', studyId: 'clonoloom-simulated-car-t', studyTitle: 'A simulated CAR-T study', tissue: 'infusion product' } },
+  ], sources: [{}] };
+  const { text, references } = methodsParagraph({ dataset, summary, program });
+  assert.match(text, /Each subject was sampled at several time points, in days from the infusion, its clones' frequencies following known trajectories and varying between samples beyond sampling, as between blood samples \[4\]\. An infusion product, made from each subject's own T cells and expanded ex vivo, was mixed into its blood in known shares after the infusion, and sampled as its reference sample\./);
+  assert.match(references[3], /^\[4\] Rytlewski J/);
+  // A study at one time says nothing of it.
+  const standard = { samples: [{ name: 'S01-1', repertoire: { repertoireId: 'S01-1', studyId: 'clonoloom-simulated-standard', studyTitle: 'A simulated TRB study' } }], sources: [{}] };
+  assert.doesNotMatch(methodsParagraph({ dataset, summary: standard, program }).text, /time points/);
 });

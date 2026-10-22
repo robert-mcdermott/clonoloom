@@ -6,6 +6,7 @@ import (
 	"sort"
 	"sync"
 
+	"clonoloom/internal/dmath"
 	"clonoloom/internal/random"
 )
 
@@ -87,7 +88,7 @@ func Measure(abundances []float64, opt Options) Result {
 	if opt.Confidence <= 0 || opt.Confidence >= 1 {
 		opt.Confidence = 0.95
 	}
-	z := normalQuantile(0.5 + opt.Confidence/2)
+	z := normalQuantile(0.5 + float64(opt.Confidence/2))
 	replicates := [][]float64(nil)
 	if st.whole && opt.Replicates > 1 && st.n > 0 {
 		replicates = bootstrap(f, st, opt, func(rf Freq) []float64 {
@@ -121,8 +122,8 @@ func Measure(abundances []float64, opt Options) Result {
 					lo = max(lo, point["hill1"])
 				}
 				v.SE = Number(se)
-				v.Lower = Number(min(max(point[id]-z*se, lo), hi))
-				v.Upper = Number(max(min(point[id]+z*se, hi), lo))
+				v.Lower = Number(min(max(point[id]-float64(z*se), lo), hi))
+				v.Upper = Number(max(min(point[id]+float64(z*se), hi), lo))
 			}
 		}
 		if math.IsNaN(point[id]) {
@@ -226,7 +227,7 @@ func community(f Freq, st stats) []float64 {
 	denominator := 0.0
 	for _, g := range f {
 		x := g.Abundance / n
-		denominator += float64(g.Count) * x * math.Exp(n*math.Log1p(-x))
+		denominator += float64(float64(g.Count) * x * dmath.Exp(n*dmath.Log1p(-x)))
 	}
 	lambda := 0.0
 	if denominator > 0 && cHat < 1 {
@@ -235,7 +236,7 @@ func community(f Freq, st stats) []float64 {
 	chances := make([]float64, 0, st.s+unseen)
 	for _, g := range f {
 		x := g.Abundance / n
-		p := x * (1 - lambda*math.Exp(n*math.Log1p(-x)))
+		p := x * (1 - float64(lambda*dmath.Exp(n*dmath.Log1p(-x))))
 		for range g.Count {
 			chances = append(chances, max(p, 0))
 		}
@@ -263,7 +264,7 @@ func spread(replicates [][]float64, k int) float64 {
 	var ss float64
 	for _, r := range replicates {
 		if x := r[k]; !math.IsNaN(x) && !math.IsInf(x, 0) {
-			ss += (x - mean) * (x - mean)
+			ss += float64((x - mean) * (x - mean))
 		}
 	}
 	return math.Sqrt(ss / (n - 1))
@@ -287,18 +288,28 @@ func normalQuantile(p float64) float64 {
 	var x float64
 	switch {
 	case p < low:
-		q := math.Sqrt(-2 * math.Log(p))
-		x = (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q + c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q + 1)
+		q := math.Sqrt(-2 * dmath.Log(p))
+		x = poly(q, c) / (float64(poly(q, d)*q) + 1)
 	case p > 1-low:
-		q := math.Sqrt(-2 * math.Log(1-p))
-		x = -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q + c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q + 1)
+		q := math.Sqrt(-2 * dmath.Log(1-p))
+		x = -poly(q, c) / (float64(poly(q, d)*q) + 1)
 	default:
 		q := p - 0.5
 		r := q * q
-		x = (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r + a[5]) * q / (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r + 1)
+		x = poly(r, a) * q / (float64(poly(r, b)*r) + 1)
 	}
-	// One Halley step against the normal CDF (from math.Erfc).
-	e := 0.5*math.Erfc(-x/math.Sqrt2) - p
-	u := e * math.Sqrt(2*math.Pi) * math.Exp(x*x/2)
-	return x - u/(1+x*u/2)
+	// One Halley step against the normal CDF (from dmath.Erfc).
+	e := float64(0.5*dmath.Erfc(-x/math.Sqrt2)) - p
+	u := e * math.Sqrt(2*math.Pi) * dmath.Exp(x*x/2)
+	return x - u/(1+float64(x*u/2))
+}
+
+// poly is c[0]·x^(k−1) + c[1]·x^(k−2) + … + c[k−1] by Horner's rule, each product rounded on its
+// own (never fused with the addition after it: conventions.md).
+func poly(x float64, c []float64) float64 {
+	h := c[0]
+	for _, ci := range c[1:] {
+		h = float64(h*x) + ci
+	}
+	return h
 }

@@ -1,0 +1,26 @@
+---
+title: Diversity
+description: Measure each sample's diversity in ClonoLoom: Hill numbers, Chao1, ACE, the estimated Shannon and Simpson diversity, clonality, Gini and clonal space homeostasis, each with a 95% interval.
+lede: The Repertoire view measures each sample's diversity under the dataset's clonotype definition and filter, each measure with its 95% interval, and says when a sample is too incomplete for an estimate to be more than a lower bound.
+---
+      <h2 id="measure">Measure it</h2>
+      <shot name="diversity" alt="The Repertoire view: the Shannon diversity of twelve simulated samples with their 95% intervals and colored by condition, the Hill profile and clonal space homeostasis, under a warning that the samples' coverage makes the richness estimates lower bounds">The simulated study's twelve samples: the Shannon diversity seen, the Hill profile and homeostasis.</shot>
+      <p>Open <strong>Repertoire</strong> and choose <strong>Measure diversity</strong>. It runs in the program as a job you can follow in <strong>Jobs</strong>, and the result is kept with the project: asked again with the same data, definition, filter and settings, the kept result answers at once.</p>
+
+      <h2 id="measures">The measures</h2>
+      <ul>
+        <li><strong>The Hill numbers</strong> (Hill 1973): the clonotypes seen (order 0), the Shannon diversity (order 1, the exponential of Shannon's entropy) and the Simpson diversity (order 2, the inverse of Simpson's index), and their profile up to order 4. Each is a number of equally common clonotypes, so they can be compared directly.</li>
+        <li><strong>Clonality</strong> (Adaptive's, 1 − Pielou's evenness) and <strong>Simpson clonality</strong> (√Σp²), evenness, Gini's coefficient, the 10, 100 and 1,000 largest clonotypes' shares, the largest frequency, and <strong>clonal space homeostasis</strong>: the share of the repertoire in rare, small, medium, large and hyperexpanded clonotypes.</li>
+        <li><strong>Estimates of the whole repertoire</strong> each sample was drawn from: its richness by <strong>Chao1</strong> (bias-corrected) and <strong>ACE</strong>, its Shannon diversity (Chao, Wang and Jost 2013) and its Simpson diversity (Chao et al. 2014); and the <strong>sample coverage</strong>.</li>
+      </ul>
+      <p>Choose a measure to see it across the samples, colored by condition; the table below lists every measure of every sample.</p>
+
+      <h2 id="intervals">The intervals</h2>
+      <p>Each interval is 95%. Chao1's comes from its variance, log-transformed; the others from 200 bootstrap replicates of each sample drawn from its estimated repertoire (Chao et al. 2014), the same on every run with the same seed. On simulated repertoires, how often the intervals held the truth is measured and stated on the <a href="../science.html#diversity">Science</a> page.</p>
+
+      <h2 id="coverage">When a sample is incomplete</h2>
+      <p>Read the coverage first. Where a sample's coverage is below about 0.9, Chao1 and the estimated Shannon diversity are lower bounds, not estimates: the repertoire's rare clonotypes have left too little trace. The view says so above the plots. To compare such samples, compare them at equal coverage (<a href="rarefaction.html">Rarefaction</a>), not by their asymptotic estimates.</p>
+      <p>Diversity needs counts of cells or molecules. In <strong>reads</strong>, each cell is counted many times over, so few clonotypes are seen once and every sample looks complete; the view warns.</p>
+
+      <h2 id="use">Using the result</h2>
+      <p>Each plot's ⤓ button saves it as a figure; <strong>Export</strong> writes every measure of every sample as CSV; the methods paragraph says how diversity was measured, with its references (<a href="figures.html">Figures and exports</a>, <a href="record.html">The record</a>). Scripts ask for it with <code>measure_diversity</code> (<a href="remote-control.html">Remote control</a>).</p>

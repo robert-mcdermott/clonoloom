@@ -879,6 +879,9 @@ button.link { background: none; border: 0; padding: 0; color: var(--accent-text)
 .plot-heat { fill: var(--accent); stroke: none; }
 .plot-guide { stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 3 3; }
 .plot-band { stroke: none; fill-opacity: 0.13; }
+/* A reference sample on a timeline (an infusion product, a donor): a diamond. */
+.plot-reference { fill: var(--brand-a); }
+.swatch.plot-reference { background: var(--brand-a); transform: rotate(45deg) scale(0.85); }
 .plot-band.plot-s1 { fill: var(--accent); }
 .plot-band.plot-s2 { fill: var(--brand-b); }
 .plot-band.plot-s3 { fill: var(--accent-2); }
@@ -891,5 +894,45 @@ button.link { background: none; border: 0; padding: 0; color: var(--accent-text)
 .plot-line.plot-s4 { stroke: var(--brand-a); } circle.plot-s4, .swatch.plot-s4 { fill: var(--brand-a); background: var(--brand-a); }
 .plot-line.plot-s5 { stroke: var(--ok); } circle.plot-s5, .swatch.plot-s5 { fill: var(--ok); background: var(--ok); }
 .plot-line.plot-s6 { stroke: var(--text-3); } circle.plot-s6, .swatch.plot-s6 { fill: var(--text-3); background: var(--text-3); }
+/* Threads and alluvial plots (lib/plot.js): a clonotype not found as an open circle, ribbons, bars;
+   the clonotype chosen drawn over the others, which fade. */
+rect.plot-s1, path.plot-ribbon.plot-s1 { fill: var(--accent); } circle.plot-absent.plot-s1 { stroke: var(--accent); }
+rect.plot-s2, path.plot-ribbon.plot-s2 { fill: var(--brand-b); } circle.plot-absent.plot-s2 { stroke: var(--brand-b); }
+rect.plot-s3, path.plot-ribbon.plot-s3 { fill: var(--accent-2); } circle.plot-absent.plot-s3 { stroke: var(--accent-2); }
+rect.plot-s4, path.plot-ribbon.plot-s4 { fill: var(--brand-a); } circle.plot-absent.plot-s4 { stroke: var(--brand-a); }
+rect.plot-s5, path.plot-ribbon.plot-s5 { fill: var(--ok); } circle.plot-absent.plot-s5 { stroke: var(--ok); }
+rect.plot-s6, path.plot-ribbon.plot-s6 { fill: var(--text-3); } circle.plot-absent.plot-s6 { stroke: var(--text-3); }
+circle.plot-absent { fill: var(--panel); stroke-width: 1.4; }
+path.plot-ribbon { fill-opacity: 0.3; stroke: none; }
+.plot-thread { stroke-width: 1.3; }
+.plot-thread.plot-chosen { stroke-width: 2.6; }
+.plot-faded { opacity: 0.16; }
+.tracking-plot [data-key] { cursor: pointer; }
+circle.plot-dim { fill: var(--text-3); opacity: 0.45; }
+.swatch.plot-dim { background: var(--text-3); opacity: 0.45; }
+.plot-ring { fill: none; stroke: var(--text); stroke-width: 1.6; }
 .repertoire-spec { margin: 0 0 10px; } .mapping-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 14px; margin: 12px 0; } .mapping-field { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; } .mapping-field select.input, .mapping-field input.input { width: 120px; } .mapping-preview td, .mapping-preview th { white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; } .mapping-check { margin-top: 8px; }
 .repertoire-controls { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0 0 10px; } .repertoire-controls select.input { width: auto; max-width: 100%; } .repertoire-start { max-width: 760px; } .repertoire-start p { margin: 6px 0 10px; } .repertoire-table td .muted { margin-left: 4px; }
+
+/* The Tracking view (mode-tracking.js). */
+.tracking-view { display: flex; flex-direction: column; gap: 12px; }
+.tracking-summary { margin: 0; color: var(--text-2); }
+.subject-samples { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.subject-sample { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.subjects-table td { vertical-align: top; }
+.tracking-table tbody tr { cursor: pointer; }
+.tracking-table td { vertical-align: top; }
+.tracking-table td .swatch { margin-top: 3px; }
+.tracking-interval { display: block; white-space: nowrap; }
+.tracking-calls-title { display: flex; align-items: center; gap: 10px; }
+.tracking-class-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+.tracking-call { color: var(--accent-text); font-weight: 650; }
+.tracking-guide { padding: 10px 14px; }
+.tracking-guide summary { cursor: pointer; }
+.tracking-steps { margin: 8px 0 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.tracking-step { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.tracking-step p { margin: 2px 0 0; }
+.example-steps { font-size: 12.5px; margin: 6px 0; }
+.example-steps summary { cursor: pointer; color: var(--accent-text); }
+.example-steps ol { margin: 6px 0 0; padding-left: 20px; }
+textarea.tracking-list { width: 100%; font-family: var(--mono); font-size: 12px; resize: vertical; }

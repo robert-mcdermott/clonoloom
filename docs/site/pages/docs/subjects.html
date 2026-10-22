@@ -1,0 +1,61 @@
+---
+title: Subjects and time points
+description: Give a study's samples their subjects, time points and reference samples in ClonoLoom, and read how the Tracking view orders and checks them before any clonotype is followed.
+lede: Clonotypes are followed and tested within a subject, from one time to another. Before anything is tracked, ClonoLoom reads each sample's subject, time point and role from its annotation, orders each subject's samples in time, and says what it cannot place.
+---
+      <h2 id="annotate">Annotate the samples</h2>
+      <p>In the Data view's samples table, give each sample:</p>
+      <ul>
+        <li><strong>Subject</strong>: the person (or animal) the sample comes from. Every comparison over time is within a subject, and between groups the subject is the unit.</li>
+        <li><strong>Time point</strong>: when the sample was taken, as days, weeks, months or years from the subject's reference event: an infusion, a transplant, a vaccination, the start of treatment (day 0).</li>
+        <li><strong>Reference</strong>: for a subject's reference sample, what it is: <em>infusion product</em>, <em>donor</em>, <em>baseline</em>. Tracking can follow its clonotypes, and attribution measures each sample against it. A tissue such as <em>infusion product</em>, <em>apheresis</em>, <em>graft</em> or <em>donor</em> marks the sample as its subject's reference too.</li>
+      </ul>
+      <p><strong>Suggest from file names</strong> reads subjects and time points from the parts of the samples' names (<code>P07_d28</code>), and <strong>Fill from metadata</strong> from AIRR Repertoire metadata (<code>subject_id</code>, <code>collection_time_point_relative</code> with its unit and reference event). Scripts set them with <code>annotate_samples</code> (<a href="remote-control.html">Remote control</a>).</p>
+
+      <h2 id="times">Time points ClonoLoom reads</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Written</th><th>Read as</th></tr></thead>
+          <tbody>
+            <tr><td><code>day 28</code>, <code>d28</code>, <code>D+28</code>, <code>28d</code>, <code>28 days</code></td><td>day 28</td></tr>
+            <tr><td><code>day -7</code>, <code>D-7</code></td><td>7 days before the event</td></tr>
+            <tr><td><code>week 4</code>, <code>wk4</code>, <code>W4</code>, <code>4 weeks</code></td><td>day 28 (labeled week 4)</td></tr>
+            <tr><td><code>month 3</code>, <code>M3</code>, <code>3mo</code></td><td>day 91.3 (a month is a twelfth of 365.25 days)</td></tr>
+            <tr><td><code>year 1</code>, <code>1y</code></td><td>day 365.25</td></tr>
+            <tr><td><code>6h</code>, <code>24 hours</code></td><td>day 0.25, day 1</td></tr>
+            <tr><td><code>14 day (vaccination)</code>, <code>28 days post-infusion</code></td><td>day 14, day 28, with the event named</td></tr>
+            <tr><td><code>21</code></td><td>day 21 (a number alone is days, and the check says so)</td></tr>
+            <tr><td><code>baseline</code>, <code>pre</code>, <code>pre-infusion</code>, <code>screening</code></td><td>before the event, first</td></tr>
+            <tr><td><code>post</code>, <code>post-vaccination</code>, <code>follow-up</code></td><td>after the event, its day unknown: last</td></tr>
+            <tr><td><code>T1</code>, <code>tp2</code>, <code>visit 3</code></td><td>a numbered visit, ordered by its number</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Samples at the same time (<code>day 28</code> and <code>week 4</code> are) are <strong>replicates</strong>: two samples of one subject at one time. Their differences measure the biological and sampling variance that the expansion tests account for, so keep them.</p>
+
+      <h2 id="subjects">The Subjects part</h2>
+      <shot name="subjects" alt="The Tracking view's Subjects part on the simulated CAR-T study: three patients' samples on an axis of days from the infusion, their infusion products as diamonds, the two samples before the infusion one above the other, and a table of each patient's samples in time order">The simulated CAR-T study, its subjects and time points read from its metadata.</shot>
+      <p><strong>Tracking › Subjects</strong> shows what ClonoLoom made of the annotation:</p>
+      <ul>
+        <li>each subject's samples on one axis of days from its reference event, reference samples as diamonds, baseline samples in a column before the axis, replicates one above the other, and the subjects colored by condition; the plot saves as a figure;</li>
+        <li>a table of each subject's samples in time order, with their time points, references and replicates, and the samples left out;</li>
+        <li>the checks' findings, warnings first, each with its code.</li>
+      </ul>
+
+      <h2 id="checks">What is checked</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Code</th><th>Severity</th><th>What it says</th></tr></thead>
+          <tbody>
+            <tr><td><code>study-no-subject</code></td><td>warning</td><td>Samples without a subject: left out.</td></tr>
+            <tr><td><code>study-time-unread</code></td><td>warning</td><td>Time points not understood: left out, with the forms ClonoLoom reads.</td></tr>
+            <tr><td><code>study-no-time</code></td><td>warning</td><td>Samples without a time point: left out (a reference sample needs none).</td></tr>
+            <tr><td><code>study-bare-number</code></td><td>note</td><td>Numbers without a unit, read as days.</td></tr>
+            <tr><td><code>study-replicates</code></td><td>note</td><td>Samples of one subject taken at one time.</td></tr>
+            <tr><td><code>study-one-sample</code></td><td>note</td><td>Subjects with one time point: nothing to follow or test.</td></tr>
+            <tr><td><code>study-no-reference</code></td><td>note</td><td>Subjects without a reference sample: nothing to attribute to.</td></tr>
+            <tr><td><code>study-mixed-times</code></td><td>note</td><td>Days with visits, or "after" without a day: their order assumed.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Scripts read the same with <code>describe_subjects</code>. Then follow the subjects' clonotypes through their samples (<a href="tracking.html">Following clonotypes</a>). Testing them between two samples, and attributing a sample to its reference, come with the next parts of the Tracking view.</p>

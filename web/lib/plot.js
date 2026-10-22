@@ -236,6 +236,284 @@ export function curves(series, { label = 'Curves', width = 560, height = 260, xL
   return { svg: wrap(width, height, label, description, body), description };
 }
 
+// A timeline of subjects' samples (a swimmer plot): rows [{ label, className, marks: [{ x, column,
+// label, reference }] }], each mark a sample at x (days, or visits) on the axis, or in a column of
+// its own where it has no day: 'reference' (a reference sample without a time point) and
+// 'baseline' left of the axis, 'after' right of it. Reference samples are diamonds, others dots;
+// marks at one place in a row are set one above the other.
+export function timeline(rows, { label = 'Timeline', width = 640, labelWidth = 90, rowHeight = 26, xLabel = 'Days', format = defaultFormat } = {}) {
+  const marks = rows.flatMap((r) => r.marks);
+  const xs = marks.filter((m) => !m.column && Number.isFinite(m.x)).map((m) => m.x);
+  const columns = ['reference', 'baseline', 'after'].filter((c) => marks.some((m) => m.column === c));
+  const colWidth = 58;
+  const left = columns.filter((c) => c !== 'after');
+  const plotLeft = labelWidth + 12 + left.length * colWidth;
+  const plotRight = width - 24 - (columns.includes('after') ? colWidth : 0);
+  const top = 22;
+  const height = top + rows.length * rowHeight + 40;
+  // The axis: nice ticks over the days, holding day 0.
+  let lo = Math.min(0, ...xs);
+  let hi = Math.max(lo + 1, ...xs);
+  const step = ticks(hi - lo, 5)[1] ?? 1;
+  lo = Math.floor(lo / step) * step;
+  hi = Math.ceil(hi / step) * step;
+  const t = [];
+  for (let v = lo; v <= hi + step * 1e-9; v += step) t.push(Number(v.toPrecision(12)));
+  const x = (v) => plotLeft + ((v - lo) / (hi - lo)) * (plotRight - plotLeft);
+  const colX = (c) => (c === 'after' ? plotRight + colWidth / 2 + 6 : labelWidth + 12 + left.indexOf(c) * colWidth + colWidth / 2);
+  let body = '';
+  for (const c of columns) body += `<text class="plot-tick" x="${colX(c)}" y="${top - 8}" text-anchor="middle">${c === 'reference' ? 'reference' : c}</text>`;
+  if (lo < 0) body += `<line class="plot-guide" x1="${x(0)}" x2="${x(0)}" y1="${top - 4}" y2="${top + rows.length * rowHeight}"/>`;
+  rows.forEach((row, i) => {
+    const y = top + i * rowHeight + rowHeight / 2;
+    body += `<text class="plot-label" x="${labelWidth}" y="${y + 4}" text-anchor="end">${esc(truncate(row.label, Math.max(8, Math.floor(labelWidth / 7.5))))}</text>`;
+    body += `<line class="plot-gridline" x1="${plotLeft}" x2="${plotRight}" y1="${y}" y2="${y}"/>`;
+    const at = new Map();
+    for (const m of row.marks) {
+      const key = m.column ?? String(m.x);
+      at.set(key, [...(at.get(key) ?? []), m]);
+    }
+    for (const group of at.values()) {
+      group.forEach((m, k) => {
+        const cx = m.column ? colX(m.column) : x(m.x);
+        const cy = y + (k - (group.length - 1) / 2) * 7;
+        const title = `<title>${esc(`${row.label}, ${m.label}`)}</title>`;
+        if (m.reference) body += `<path class="plot-reference" d="M${cx.toFixed(2)} ${(cy - 5).toFixed(2)}l5 5-5 5-5-5z">${title}</path>`;
+        else body += `<circle class="${row.className ?? 'plot-accent'}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="4">${title}</circle>`;
+      });
+    }
+  });
+  const axisY = top + rows.length * rowHeight + 4;
+  body += `<line class="plot-axis" x1="${plotLeft}" x2="${plotRight}" y1="${axisY}" y2="${axisY}"/>`;
+  for (const v of t) body += `<line class="plot-axis" x1="${x(v)}" x2="${x(v)}" y1="${axisY}" y2="${axisY + 4}"/><text class="plot-tick" x="${x(v)}" y="${axisY + 16}" text-anchor="middle">${format(v)}</text>`;
+  body += `<text class="plot-label" x="${(plotLeft + plotRight) / 2}" y="${height - 4}" text-anchor="middle">${esc(xLabel)}</text>`;
+  const description = `${label}: ${rows.length} subject${rows.length === 1 ? '' : 's'}; ${rows.map((r) => `${r.label}: ${r.marks.map((m) => m.label).join(', ')}`).join('; ')}.`;
+  return { svg: wrap(width, height, label, description, body), description };
+}
+
+// A frequency as a percentage, to three significant digits: 0.1234 is 12.3%, 1e-5 is 0.001%.
+export const percent = (v) => (Number.isFinite(v) ? `${Number((100 * v).toPrecision(3))}%` : '—');
+
+// The x axis of a subject's time points, equally spaced in time order: their labels below, each
+// truncated to its place.
+function pointAxis(points, left, plotWidth, y) {
+  const step = plotWidth / Math.max(points.length, 1);
+  const px = (i) => left + (i + 0.5) * step;
+  let body = '';
+  points.forEach((p, i) => {
+    body += `<text class="plot-tick" x="${px(i).toFixed(1)}" y="${y}" text-anchor="middle">${esc(truncate(p.label, Math.max(6, Math.floor(step / 6.4))))}<title>${esc(p.title ?? p.label)}</title></text>`;
+  });
+  return { px, step, body };
+}
+
+// Threads: clonotypes' frequencies through a subject's time points (points [{ label, title }],
+// equally spaced in time order), on a logarithmic axis: series [{ key, label, className, values:
+// [{ y, lower, upper, absent }] }], one value a point (y a frequency; not finite where the point
+// has no abundance). A clonotype not found at a point is drawn on the lane below the axis as an
+// open circle, never as zero, the lines to it dashed. With selected (a series' key), that series is
+// drawn over the others with its intervals (at a point it was not found, up to what the point
+// could have missed), and the others faded. Every series' marks carry data-key for the page.
+export function threads(points, series, { label = 'Threads', width = 680, height = 300, selected = null, format = percent } = {}) {
+  const left = 64;
+  const top = 10;
+  const lane = 30;
+  const bottom = 30;
+  const plotWidth = width - left - 16;
+  const plotHeight = height - top - lane - bottom;
+  const finite = (v) => Number.isFinite(v) && v > 0;
+  const seen = series.flatMap((s) => s.values.filter((v) => !v.absent && finite(v.y)).flatMap((v) => [v.y, ...(finite(v.lower) ? [v.lower] : []), ...(finite(v.upper) ? [v.upper] : [])]));
+  const limits = series.flatMap((s) => s.values.filter((v) => v.absent && finite(v.upper)).map((v) => v.upper));
+  let y0 = Math.floor(Math.log10(seen.length || limits.length ? Math.min(...seen, ...limits) : 0.001));
+  const y1 = Math.max(Math.ceil(Math.log10(seen.length ? Math.max(...seen) : 0.01)), y0 + 1);
+  y0 = Math.max(y0, y1 - 7);
+  const py = (v) => top + plotHeight - ((Math.min(Math.max(Math.log10(v), y0), y1) - y0) / (y1 - y0)) * plotHeight;
+  const laneY = top + plotHeight + lane / 2 + 4;
+  const axis = pointAxis(points, left, plotWidth, top + plotHeight + lane + 16);
+  const at = (v) => (v.absent ? laneY : finite(v.y) ? py(v.y) : null);
+  let body = '';
+  for (let t = y0; t <= y1; t += 1) body += `<line class="plot-gridline" x1="${left}" x2="${left + plotWidth}" y1="${py(10 ** t).toFixed(1)}" y2="${py(10 ** t).toFixed(1)}"/><text class="plot-tick" x="${left - 6}" y="${(py(10 ** t) + 4).toFixed(1)}" text-anchor="end">${format(10 ** t)}</text>`;
+  body += `<line class="plot-axis" x1="${left}" x2="${left + plotWidth}" y1="${top + plotHeight}" y2="${top + plotHeight}"/>`;
+  body += `<text class="plot-tick" x="${left - 6}" y="${laneY + 4}" text-anchor="end">not found</text><line class="plot-gridline plot-dashed" x1="${left}" x2="${left + plotWidth}" y1="${laneY}" y2="${laneY}"/>`;
+  body += axis.body;
+  const draw = (s, chosen) => {
+    const cls = `${s.className ?? 'plot-s1'}${selected !== null && !chosen ? ' plot-faded' : ''}${chosen ? ' plot-chosen' : ''}`;
+    const key = esc(s.key ?? s.label);
+    let out = `<g data-key="${key}"><title>${esc(s.label)}</title>`;
+    for (let i = 0; i + 1 < s.values.length; i += 1) {
+      const a = at(s.values[i]);
+      const b = at(s.values[i + 1]);
+      if (a === null || b === null || (s.values[i].absent && s.values[i + 1].absent)) continue;
+      const dashed = s.values[i].absent || s.values[i + 1].absent ? ' plot-dashed' : '';
+      out += `<path class="plot-line plot-thread ${cls}${dashed}" d="M${axis.px(i).toFixed(1)} ${a.toFixed(1)}L${axis.px(i + 1).toFixed(1)} ${b.toFixed(1)}"/>`;
+    }
+    s.values.forEach((v, i) => {
+      const y = at(v);
+      if (y === null) return;
+      const x = axis.px(i).toFixed(1);
+      if (chosen && finite(v.upper)) {
+        const lo = v.absent ? laneY : py(finite(v.lower) ? v.lower : 10 ** y0);
+        out += `<line class="plot-whisker${v.absent ? ' plot-dashed' : ''}" x1="${x}" x2="${x}" y1="${lo.toFixed(1)}" y2="${py(v.upper).toFixed(1)}"/>`;
+      }
+      const words = `${s.label} at ${points[i]?.title ?? points[i]?.label}: ${v.absent ? `not found${finite(v.upper) ? ` (up to ${format(v.upper)})` : ''}` : `${format(v.y)}${finite(v.lower) ? ` (${format(v.lower)}–${format(v.upper)})` : ''}`}`;
+      out += v.absent
+        ? `<circle class="plot-absent ${cls}" cx="${x}" cy="${y.toFixed(1)}" r="${chosen ? 4 : 3}"><title>${esc(words)}</title></circle>`
+        : `<circle class="${cls}" cx="${x}" cy="${y.toFixed(1)}" r="${chosen ? 4 : 2.6}"><title>${esc(words)}</title></circle>`;
+    });
+    return `${out}</g>`;
+  };
+  const picked = series.find((s) => selected !== null && (s.key ?? s.label) === selected);
+  for (const s of series) if (s !== picked) body += draw(s, false);
+  if (picked) body += draw(picked, true);
+  body += `<text class="plot-label" transform="translate(13 ${top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Frequency (logarithmic)</text>`;
+  const peaks = series.slice(0, 3).map((s) => {
+    let best = -1;
+    s.values.forEach((v, i) => { if (!v.absent && finite(v.y) && (best < 0 || v.y > s.values[best].y)) best = i; });
+    return best < 0 ? `${s.label} not found` : `${s.label} highest at ${points[best].label} (${format(s.values[best].y)})`;
+  });
+  const description = `${label}: ${series.length} clonotype${series.length === 1 ? '' : 's'} through ${points.length} time points (${points.map((p) => p.label).join(', ')})${peaks.length ? `; ${peaks.join('; ')}` : ''}.`;
+  return { svg: wrap(width, height, label, description, body), description };
+}
+
+// An alluvial plot: at each of a subject's time points (points [{ label, title }], equally spaced
+// in time order), the clonotypes' frequencies stacked (series [{ key, label, className, values:
+// [frequency] }], the first at the bottom, in one order at every point), each joined to the next
+// point by a ribbon; the axis is the share of the sample, from 0 to the largest stack. With
+// selected, the others are faded. Every series' marks carry data-key for the page.
+export function alluvial(points, series, { label = 'Alluvial plot', width = 680, height = 300, selected = null, format = percent } = {}) {
+  const left = 64;
+  const top = 10;
+  const bottom = 30;
+  const plotWidth = width - left - 16;
+  const plotHeight = height - top - bottom;
+  const value = (v) => (Number.isFinite(v) && v > 0 ? v : 0);
+  const totals = points.map((_, i) => series.reduce((sum, s) => sum + value(s.values[i]), 0));
+  const yt = scale(Math.max(...totals, 0), 4);
+  const hi = yt.at(-1) || 1;
+  const py = (v) => top + plotHeight - (v / hi) * plotHeight;
+  const axis = pointAxis(points, left, plotWidth, top + plotHeight + 16);
+  const barW = Math.max(6, Math.min(26, axis.step * 0.28));
+  // Each series' band at each point: [bottom, top] in shares, stacked in the series' order.
+  const bands = series.map(() => []);
+  points.forEach((_, i) => {
+    let at = 0;
+    series.forEach((s, k) => {
+      const v = value(s.values[i]);
+      bands[k][i] = [at, at + v];
+      at += v;
+    });
+  });
+  let body = '';
+  for (const t of yt) body += `<line class="plot-gridline" x1="${left}" x2="${left + plotWidth}" y1="${py(t).toFixed(1)}" y2="${py(t).toFixed(1)}"/><text class="plot-tick" x="${left - 6}" y="${(py(t) + 4).toFixed(1)}" text-anchor="end">${format(t)}</text>`;
+  body += `<line class="plot-axis" x1="${left}" x2="${left + plotWidth}" y1="${top + plotHeight}" y2="${top + plotHeight}"/>`;
+  body += axis.body;
+  series.forEach((s, k) => {
+    const chosen = selected !== null && (s.key ?? s.label) === selected;
+    const cls = `${s.className ?? 'plot-s1'}${selected !== null && !chosen ? ' plot-faded' : ''}`;
+    let out = `<g data-key="${esc(s.key ?? s.label)}"><title>${esc(s.label)}</title>`;
+    for (let i = 0; i + 1 < points.length; i += 1) {
+      const [b1, t1] = bands[k][i];
+      const [b2, t2] = bands[k][i + 1];
+      if (t1 - b1 <= 0 && t2 - b2 <= 0) continue;
+      const x1 = axis.px(i) + barW / 2;
+      const x2 = axis.px(i + 1) - barW / 2;
+      const mx = (x1 + x2) / 2;
+      const f = (v) => v.toFixed(1);
+      out += `<path class="plot-ribbon ${cls}" d="M${f(x1)} ${f(py(t1))}C${f(mx)} ${f(py(t1))} ${f(mx)} ${f(py(t2))} ${f(x2)} ${f(py(t2))}L${f(x2)} ${f(py(b2))}C${f(mx)} ${f(py(b2))} ${f(mx)} ${f(py(b1))} ${f(x1)} ${f(py(b1))}Z"/>`;
+    }
+    points.forEach((p, i) => {
+      const [b, t] = bands[k][i];
+      if (t - b <= 0) return;
+      out += `<rect class="${cls}" x="${(axis.px(i) - barW / 2).toFixed(1)}" y="${py(t).toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(0.6, py(b) - py(t)).toFixed(1)}"><title>${esc(`${s.label} at ${p.title ?? p.label}: ${format(t - b)}`)}</title></rect>`;
+    });
+    body += `${out}</g>`;
+  });
+  body += `<text class="plot-label" transform="translate(13 ${top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Share of the sample</text>`;
+  const description = `${label}: ${series.length} clonotype${series.length === 1 ? '' : 's'} stacked at ${points.length} time points, holding ${points.map((p, i) => `${format(totals[i])} at ${p.label}`).join(', ')}.`;
+  return { svg: wrap(width, height, label, description, body), description };
+}
+
+// Changes between two time points: each clonotype at its frequency at the first (x) and at the
+// second (y), on logarithmic axes of one range, the line of no change dashed; a clonotype not found
+// at one of them on that axis's own lane, never at zero. points [{ key, x, y, className, label }]
+// are drawn in order (the calls last, over the others); with selected (a point's key), that point
+// is ringed. Every point carries data-key for the page.
+export function changes(points, { label = 'Changes', width = 520, height = 440, xLabel = 'First', yLabel = 'Second', selected = null, format = percent } = {}) {
+  const left = 78;
+  const bottom = 58;
+  const top = 10;
+  const lane = 28;
+  const side = Math.min(width - left - 16, height - top - bottom);
+  const seen = points.flatMap((p) => [p.x, p.y]).filter((v) => Number.isFinite(v) && v > 0);
+  const lo = Math.floor(Math.log10(seen.length ? Math.min(...seen) : 1e-4));
+  const hi = Math.max(Math.ceil(Math.log10(seen.length ? Math.max(...seen) : 0.1)), lo + 1);
+  const x0 = left + lane;
+  const y0 = top + side;
+  const span = side - lane;
+  const px = (v) => (v > 0 ? x0 + ((Math.log10(v) - lo) / (hi - lo)) * span : left + lane / 2 - 2);
+  const py = (v) => (v > 0 ? y0 - lane - ((Math.log10(v) - lo) / (hi - lo)) * span : y0 - lane / 2 + 2);
+  let body = '';
+  for (let t = lo; t <= hi; t += 1) {
+    const v = 10 ** t;
+    body += `<line class="plot-gridline" x1="${x0}" x2="${x0 + span}" y1="${py(v).toFixed(1)}" y2="${py(v).toFixed(1)}"/><text class="plot-tick" x="${left - 4}" y="${(py(v) + 4).toFixed(1)}" text-anchor="end">${format(v)}</text>`;
+    body += `<line class="plot-gridline" x1="${px(v).toFixed(1)}" x2="${px(v).toFixed(1)}" y1="${y0 - lane - span}" y2="${y0 - lane}"/><text class="plot-tick" x="${px(v).toFixed(1)}" y="${y0 + 14}" text-anchor="middle">${format(v)}</text>`;
+  }
+  // The lanes of clonotypes not found at one time point, and the line of no change.
+  body += `<line class="plot-gridline plot-dashed" x1="${px(0)}" x2="${px(0)}" y1="${y0 - lane - span}" y2="${y0 - lane}"/><line class="plot-gridline plot-dashed" x1="${x0}" x2="${x0 + span}" y1="${py(0)}" y2="${py(0)}"/>`;
+  body += `<text class="plot-tick" x="${left - 4}" y="${py(0) + 4}" text-anchor="end">not found</text><text class="plot-tick" x="${px(0)}" y="${y0 + 28}" text-anchor="middle">not found</text>`;
+  body += `<line class="plot-guide" x1="${x0}" y1="${y0 - lane}" x2="${x0 + span}" y2="${y0 - lane - span}"/>`;
+  body += `<line class="plot-axis" x1="${x0}" x2="${x0 + span}" y1="${y0 - lane}" y2="${y0 - lane}"/><line class="plot-axis" x1="${x0}" x2="${x0}" y1="${y0 - lane - span}" y2="${y0 - lane}"/>`;
+  let ring = '';
+  for (const p of points) {
+    const title = `<title>${esc(`${p.label}: ${p.x > 0 ? format(p.x) : 'not found'} at the first, ${p.y > 0 ? format(p.y) : 'not found'} at the second`)}</title>`;
+    const at = `cx="${px(p.x).toFixed(1)}" cy="${py(p.y).toFixed(1)}"`;
+    body += `<circle class="${p.className ?? 'plot-s1'}" ${at} r="${p.r ?? 2.6}" data-key="${esc(p.key ?? p.label)}">${title}</circle>`;
+    if (selected !== null && (p.key ?? p.label) === selected) ring = `<circle class="plot-ring" ${at} r="7"/>`;
+  }
+  body += ring;
+  body += `<text class="plot-label" x="${x0 + span / 2}" y="${y0 + 44}" text-anchor="middle">${esc(xLabel)}</text>`;
+  body += `<text class="plot-label" transform="translate(13 ${y0 - lane - span / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text>`;
+  const kinds = new Map();
+  for (const p of points) kinds.set(p.kind ?? '', (kinds.get(p.kind ?? '') ?? 0) + 1);
+  const description = `${label}: ${points.length} clonotype${points.length === 1 ? '' : 's'}${[...kinds].filter(([k]) => k).map(([k, n]) => `, ${n} ${k}`).join('')}; ${xLabel} against ${yLabel}, on logarithmic axes.`;
+  return { svg: wrap(left + side + 16, height, label, description, body), description };
+}
+
+// The variance between samples that should not differ (replicates): each clonotype of a pair at its
+// total n in the two (x, logarithmic) and its count in the first as a z-score of sampling,
+// (k − nθ)/√(nθ(1 − θ)) (y), points [{ n, z }]; sampling's 95% band (±1.96) dashed, and a variance
+// model's, ±1.96 √((v(n) + n)/(v(n) + 1)) for the scale v (a function of n), shaded.
+export function dispersion(points, v, { label = 'Variance between samples', width = 560, height = 280, xLabel = 'Clonotype\'s total in the two (logarithmic)', yLabel = 'Difference (sampling SDs)' } = {}) {
+  const left = 62;
+  const top = 10;
+  const bottom = 40;
+  const plotWidth = width - left - 28;
+  const plotHeight = height - top - bottom;
+  const ns = points.map((p) => p.n).filter((n) => n > 0);
+  const x0 = Math.floor(Math.log10(ns.length ? Math.min(...ns) : 5));
+  const x1 = Math.max(Math.ceil(Math.log10(ns.length ? Math.max(...ns) : 100)), x0 + 1);
+  const band = (n) => 1.96 * Math.sqrt((v(n) + n) / (v(n) + 1));
+  const reach = Math.min(12, Math.max(3, ...points.map((p) => Math.abs(p.z)), band(10 ** x1)));
+  const yt = ticks(reach, 3);
+  const hi = yt.at(-1) || 1;
+  const px = (n) => left + ((Math.log10(n) - x0) / (x1 - x0)) * plotWidth;
+  const py = (z) => top + plotHeight / 2 - (Math.max(-hi, Math.min(hi, z)) / hi) * (plotHeight / 2);
+  let body = '';
+  for (const t of [...yt.slice(1).map((x) => -x).reverse(), ...yt]) body += `<line class="plot-gridline" x1="${left}" x2="${left + plotWidth}" y1="${py(t).toFixed(1)}" y2="${py(t).toFixed(1)}"/><text class="plot-tick" x="${left - 6}" y="${(py(t) + 4).toFixed(1)}" text-anchor="end">${t}</text>`;
+  for (let t = x0; t <= x1; t += 1) body += `<text class="plot-tick" x="${px(10 ** t).toFixed(1)}" y="${top + plotHeight + 15}" text-anchor="middle">${defaultFormat(10 ** t)}</text>`;
+  // The model's band, then the points, then sampling's band over them.
+  const grid = Array.from({ length: 41 }, (_, i) => 10 ** (x0 + ((x1 - x0) * i) / 40));
+  const edge = (sign) => grid.map((n) => `${px(n).toFixed(1)},${py(sign * band(n)).toFixed(1)}`);
+  body += `<polygon class="plot-band plot-s1" points="${[...edge(1), ...edge(-1).reverse()].join(' ')}"><title>${esc('The model\'s 95% band')}</title></polygon>`;
+  for (const p of points) if (p.n > 0) body += `<circle class="plot-dim" cx="${px(p.n).toFixed(1)}" cy="${py(p.z).toFixed(1)}" r="1.6"/>`;
+  for (const z of [1.96, -1.96]) body += `<line class="plot-guide" x1="${left}" x2="${left + plotWidth}" y1="${py(z).toFixed(1)}" y2="${py(z).toFixed(1)}"/>`;
+  body += `<line class="plot-axis" x1="${left}" x2="${left + plotWidth}" y1="${top + plotHeight}" y2="${top + plotHeight}"/>`;
+  body += `<text class="plot-label" x="${left + plotWidth / 2}" y="${height - 4}" text-anchor="middle">${esc(xLabel)}</text>`;
+  body += `<text class="plot-label" transform="translate(13 ${top + plotHeight / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text>`;
+  const outside = (limit) => points.filter((p) => Math.abs(p.z) > limit(p.n)).length;
+  const description = `${label}: ${points.length} clonotypes; ${outside(() => 1.96)} outside sampling's 95% band, ${outside(band)} outside the model's.`;
+  return { svg: wrap(width, height, label, description, body), description };
+}
+
 // A heatmap: values[r][c] (not finite: left blank) for rowLabels × colLabels, each cell shaded from
 // none to max (the largest value when not given), titled by title(r, c, v), with a scale. Column
 // labels are turned to read upward.
@@ -294,12 +572,14 @@ export function figureStyle({ colorVision = false, font = 'Helvetica, Arial, san
   const series = [c.accent, c.brandB, c.accent2, c.brandA, c.ok, c.text3];
   let css = `text{font-family:${font}}.plot-label{font-size:12px;fill:${c.text2}}.plot-tick{font-size:11px;fill:${c.text3}}`
     + `.plot-axis{stroke:${c.lineStrong};stroke-width:1}.plot-gridline{stroke:${c.line};stroke-width:1}`
-    + `.plot-ok{fill:${c.ok}}.plot-warn{fill:${c.warn}}.plot-danger{fill:${c.danger}}.plot-muted{fill:${c.text3}}.plot-accent{fill:${c.accent}}.plot-c4{fill:${c.accent2}}.plot-c5{fill:${c.brandA}}`
+    + `.plot-ok{fill:${c.ok}}.plot-warn{fill:${c.warn}}.plot-danger{fill:${c.danger}}.plot-muted{fill:${c.text3}}.plot-accent{fill:${c.accent}}.plot-c4{fill:${c.accent2}}.plot-c5{fill:${c.brandA}}.plot-reference{fill:${c.brandA}}`
     + `.plot-whisker{stroke:${c.text2};stroke-width:1.4}.plot-line{fill:none;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}.plot-line-accent{stroke:${c.accent}}`
     + `.plot-dashed{stroke-dasharray:5 4}.plot-heat{fill:${c.accent};stroke:none}.plot-guide{stroke:${c.text3};stroke-width:1;stroke-dasharray:3 3}.plot-band{stroke:none;fill-opacity:0.13}`
-    + `.figure-title{font-size:14px;font-weight:bold;fill:${c.text}}.figure-caption{font-size:10.5px;fill:${c.text2}}.figure-legend{font-size:11px;fill:${c.text2}}`;
+    + `.figure-title{font-size:14px;font-weight:bold;fill:${c.text}}.figure-caption{font-size:10.5px;fill:${c.text2}}.figure-legend{font-size:11px;fill:${c.text2}}`
+    + `circle.plot-absent{fill:#ffffff;stroke-width:1.4}path.plot-ribbon{fill-opacity:0.3;stroke:none}.plot-thread{stroke-width:1.3}.plot-thread.plot-chosen{stroke-width:2.6}.plot-faded{opacity:0.16}`
+    + `circle.plot-dim,rect.plot-dim{fill:${c.text3};opacity:0.45}.plot-ring{fill:none;stroke:${c.text};stroke-width:1.6}`;
   series.forEach((color, i) => {
-    css += `.plot-band.plot-s${i + 1}{fill:${color}}.plot-line.plot-s${i + 1}{stroke:${color}}circle.plot-s${i + 1},rect.plot-s${i + 1}{fill:${color}}`;
+    css += `.plot-band.plot-s${i + 1}{fill:${color}}.plot-line.plot-s${i + 1}{stroke:${color}}circle.plot-s${i + 1},rect.plot-s${i + 1},path.plot-ribbon.plot-s${i + 1}{fill:${color}}circle.plot-absent.plot-s${i + 1}{fill:#ffffff;stroke:${color}}`;
   });
   return css;
 }

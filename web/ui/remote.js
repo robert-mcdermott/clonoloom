@@ -10,7 +10,8 @@ import { clonotypePresets } from './storage.js';
 import { showMethods } from './methods.js';
 import { datasetDefinition, sameMeaning, useDefinition } from '../lib/definitions.js';
 import { datasetFilter } from '../lib/filters.js';
-import { datasetUnit } from '../lib/datasets.js';
+import { SAMPLE_FIELDS, annotate, datasetUnit } from '../lib/datasets.js';
+import { ALPHAS, MAX_LIST, timePoints, trackingChoice, useComparison, useTracking } from '../lib/tracking.js';
 
 export class ActionError extends Error {}
 
@@ -20,7 +21,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const count = (n, noun) => `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`;
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', jobs: 'jobs' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.
@@ -54,7 +55,9 @@ async function getJSON(url, options = {}) {
   return body;
 }
 
-export function installRemote(app) {
+// The actions, as the window performs them: for scripts through remote control (installRemote),
+// and for the examples' guided steps (app.actions).
+export function remoteActions(app) {
   const { store } = app;
 
   // A dataset of the project by id or name; the one in focus, else the first.
@@ -161,6 +164,186 @@ export function installRemote(app) {
       const before = datasetDefinition(d, lociOf(await openDataset(d)));
       if (!(sameMeaning(before, chosen) && before.name === chosen.name)) store.commit(useDefinition(store.project, d.id, chosen, describe), `Define clonotypes of ${d.name}`);
       return { message: `${d.name}: clonotypes by ${chosen.name}${describe ? ` (${describe})` : ''}.`, data: { definition: chosen } };
+    },
+
+    async annotate_samples({ dataset, samples }) {
+      const d = datasetOf(dataset);
+      if (!samples || typeof samples !== 'object' || Array.isArray(samples)) throw new ActionError('annotate_samples needs samples: {name: {field: value}}.');
+      const names = new Set((await openDataset(d)).samples.map((s) => s.name));
+      const fields = SAMPLE_FIELDS.map((f) => f.id);
+      const edits = [];
+      for (const [name, values] of Object.entries(samples)) {
+        if (!names.has(name)) throw new ActionError(`${d.name} has no sample ${name}. Its samples: ${[...names].slice(0, 10).join(', ')}${names.size > 10 ? ', …' : ''}.`);
+        for (const [field, value] of Object.entries(values ?? {})) {
+          if (!fields.includes(field)) throw new ActionError(`No field ${field}: the fields are ${fields.join(', ')}.`);
+          edits.push({ dataset: d.id, sample: name, field, value: value ?? '' });
+        }
+      }
+      const next = annotate(store.project, edits, 'Annotated by a program');
+      if (next !== store.project) store.commit(next, `Annotate samples of ${d.name}`);
+      return { message: `${d.name}: ${count(edits.length, 'value')} set on ${count(Object.keys(samples).length, 'sample')}.`, data: { dataset: d.id, values: edits.length } };
+    },
+
+    async describe_subjects({ dataset }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('tracking');
+      const view = await waitFor(() => app.trackingView, 5000, 'the Tracking view');
+      await view.choose(d.id);
+      const state = view.state();
+      if (state.status !== 'ready') throw new ActionError(state.error ?? `The subjects of ${d.name} could not be read.`);
+      const { design } = state;
+      return { message: `${d.name}: ${count(design.subjects.length, 'subject')}, ${count(design.findings.length, 'finding')}.`, data: design };
+    },
+
+    async track_clonotypes({ dataset, by, n, list, subject, class: cls }) {
+      const d = datasetOf(dataset);
+      const choice = {};
+      if (by !== undefined && by !== '') choice.by = choose(by, ['reference', 'largest', 'list', 'test', 'class'], 'way of choosing');
+      if (cls !== undefined && cls !== '') {
+        choice.class = choose(cls, ['emerging', 'transient', 'contracting', 'persistent'], 'class');
+        choice.by ??= 'class';
+      }
+      if (n !== undefined && n !== null) {
+        const k = Number(n);
+        if (!Number.isInteger(k) || k < 1 || k > 100) throw new ActionError('n is a whole number from 1 to 100.');
+        choice.n = k;
+      }
+      if (list !== undefined) {
+        if (!Array.isArray(list) || list.some((e) => typeof e !== 'string')) throw new ActionError('list is an array of clonotype IDs or junctions.');
+        if (list.length > MAX_LIST) throw new ActionError(`list holds at most ${MAX_LIST} clonotypes.`);
+        choice.list = list;
+        choice.by ??= 'list';
+      }
+      if (choice.by === 'list' && !(choice.list ?? trackingChoice(d).list).length) throw new ActionError('Following a list needs one: list the clonotypes by ID or junction.');
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('tracking');
+      const view = await waitFor(() => app.trackingView, 5000, 'the Tracking view');
+      view.show('clonotypes');
+      const next = useTracking(store.project, d.id, choice);
+      if (next !== store.project) store.commit(next, `Choose the clonotypes followed in ${d.name}`);
+      await view.choose(d.id);
+      if (view.state().status === 'failed') throw new ActionError(view.state().error);
+      if (view.followed().status === 'absent') await view.follow();
+      const done = await waitFor(() => ['ready', 'failed', 'unavailable'].includes(view.followed().status) && view.followed(), 30 * 60 * 1000, 'the clonotypes to be followed');
+      if (done.status !== 'ready') throw new ActionError(done.error ?? `${d.name}'s subjects have no two time points for a test to call clonotypes between.`);
+      const r = done.result;
+      if (subject !== undefined && subject !== '') view.showSubject(choose(subject, r.subjects.map((s) => s.id), 'subject'));
+      const followed = r.subjects.reduce((k, s) => k + s.clonotypes.length, 0);
+      const value = (v) => ({ count: v.count, total: v.total, frequency: v.frequency, lower: v.lower, upper: v.upper });
+      return {
+        message: `${d.name}: ${count(followed, 'clonotype')} followed in ${count(r.subjects.length, 'subject')} (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, choice: r.choice, intervals: r.intervals, caveat: r.caveat ?? null, unmatched: r.unmatched ?? [], without: r.without ?? [],
+          subjects: r.subjects.map((s) => ({
+            id: s.id, by: s.by,
+            points: s.points.map((p) => ({ label: p.label, kind: p.kind, days: p.days ?? null, samples: p.samples, followed: p.followed })),
+            clonotypes: s.clonotypes.map((c) => ({ id: c.id, chains: c.chains, why: c.why, peak: s.points[c.peak]?.label ?? null, points: c.points.map(value) })),
+          })),
+        },
+      };
+    },
+
+    async test_expansion({ dataset, from, to, test, alternative, correction, alpha, stable, subject, calls }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('tracking');
+      const view = await waitFor(() => app.trackingView, 5000, 'the Tracking view');
+      view.show('tests');
+      await view.choose(d.id);
+      if (view.state().status !== 'ready') throw new ActionError(view.state().error ?? `The subjects of ${d.name} could not be read.`);
+      const keys = timePoints(view.state().design).map((p) => p.key);
+      const changes = { from: choose(from, keys, 'time point'), to: choose(to, keys, 'time point') };
+      if (test !== undefined && test !== '') changes.test = choose(test, ['auto', 'betabinomial', 'binomial', 'fisher'], 'test');
+      if (stable !== undefined && stable !== null) {
+        if (!Array.isArray(stable) || (stable.length !== 0 && stable.length !== 2)) throw new ActionError('stable is two time points, or [] for the replicate samples.');
+        changes.stable = stable.length ? { from: choose(stable[0], keys, 'time point'), to: choose(stable[1], keys, 'time point') } : null;
+      }
+      if (alternative !== undefined && alternative !== '') changes.alternative = choose(alternative, ['two-sided', 'increase', 'decrease'], 'alternative');
+      if (correction !== undefined && correction !== '') changes.correction = choose(correction, ['bh', 'storey'], 'correction');
+      if (alpha !== undefined && alpha !== null) {
+        if (!ALPHAS.includes(Number(alpha))) throw new ActionError(`alpha is one of ${ALPHAS.join(', ')}.`);
+        changes.alpha = Number(alpha);
+      }
+      const next = useComparison(store.project, d.id, changes);
+      if (next !== store.project) store.commit(next, `Choose the time points compared in ${d.name}`);
+      await view.choose(d.id);
+      if (view.tested().status === 'absent') await view.test();
+      const done = await waitFor(() => ['ready', 'failed', 'unavailable'].includes(view.tested().status) && view.tested(), 30 * 60 * 1000, 'the tests');
+      if (done.status !== 'ready') throw new ActionError(done.error ?? `${d.name}'s subjects have no two time points to compare.`);
+      const r = done.result;
+      if (subject !== undefined && subject !== '') view.showTested(choose(subject, r.subjects.map((s) => s.subject), 'subject'));
+      const most = Math.max(1, Math.min(Number(calls) || 10, 200));
+      const called = r.subjects.reduce((k, s) => k + s.increased + s.decreased, 0);
+      return {
+        message: `${d.name}: ${count(called, 'clonotype')} called between ${r.comparison.from} and ${r.comparison.to} in ${count(r.subjects.length, 'subject')} (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, comparison: r.comparison, test: r.test, caveat: r.caveat, without: r.without ?? [],
+          fit: r.fit ? { on: r.fit.on, model: r.fit.model, logLik: r.fit.logLik, clonotypes: r.fit.clonotypes, pairs: r.fit.pairs, calledBySampling: r.fit.calledBySampling, calledByModel: r.fit.calledByModel } : null,
+          subjects: r.subjects.map((s) => ({
+            subject: s.subject, from: { label: s.from.label, samples: s.from.samples, total: s.totalA }, to: { label: s.to.label, samples: s.to.samples, total: s.totalB },
+            tested: s.tested, leftOut: s.leftOut, increased: s.increased, decreased: s.decreased, pi0: s.pi0,
+            calls: s.clonotypes.filter((c) => c.call).slice(0, most).map((c) => ({ id: c.id, chains: c.chains, call: c.call, a: c.a, b: c.b, freqA: c.freqA, freqB: c.freqB, log2Fold: c.log2Fold, p: c.p, q: c.q })),
+          })),
+        },
+      };
+    },
+
+    async class_clonotypes({ dataset, base, subject, class: cls, count: most }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('tracking');
+      const view = await waitFor(() => app.trackingView, 5000, 'the Tracking view');
+      view.show('classes');
+      await view.choose(d.id);
+      if (view.state().status !== 'ready') throw new ActionError(view.state().error ?? `The subjects of ${d.name} could not be read.`);
+      if (base !== undefined && base !== '') {
+        const keys = timePoints(view.state().design).map((p) => p.key).filter((k) => k !== 'reference');
+        const next = useComparison(store.project, d.id, { base: choose(base, keys, 'time point') });
+        if (next !== store.project) store.commit(next, `Choose the base time point in ${d.name}`);
+        await view.choose(d.id);
+      }
+      if (view.classed().status === 'absent') await view.run('classes');
+      const done = await waitFor(() => ['ready', 'failed', 'unavailable'].includes(view.classed().status) && view.classed(), 30 * 60 * 1000, 'the classes');
+      if (done.status !== 'ready') throw new ActionError(done.error ?? `${d.name}'s subjects have no two time points to class clonotypes between.`);
+      const r = done.result;
+      const shown = cls !== undefined && cls !== '' ? choose(cls, ['emerging', 'transient', 'contracting', 'persistent'], 'class') : 'emerging';
+      view.showClassed(subject !== undefined && subject !== '' ? choose(subject, r.subjects.map((s) => s.subject), 'subject') : null, shown);
+      const k = Math.max(1, Math.min(Number(most) || 10, 200));
+      return {
+        message: `${d.name}: the clonotypes of ${count(r.subjects.length, 'subject')} classed against ${r.classing.base} (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, classing: r.classing, test: r.test, caveat: r.caveat, without: r.without ?? [],
+          subjects: r.subjects.map((s) => ({
+            subject: s.subject, base: s.base.label, later: s.later.map((p) => p.label), counts: s.counts,
+            [shown]: s.clonotypes.filter((c) => c.class === shown).slice(0, k).map((c) => ({ id: c.id, chains: c.chains, frequencies: c.frequencies, calls: c.calls, q: c.q })),
+          })),
+        },
+      };
+    },
+
+    async attribute_samples({ dataset }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('tracking');
+      const view = await waitFor(() => app.trackingView, 5000, 'the Tracking view');
+      view.show('attribution');
+      await view.choose(d.id);
+      if (view.attributed().status === 'absent') await view.run('attribution');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.attributed().status) && view.attributed(), 30 * 60 * 1000, 'the attribution');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const r = done.result;
+      const value = (v) => (v ? { count: v.count, total: v.total, share: v.frequency, lower: v.lower, upper: v.upper } : null);
+      return {
+        message: `${d.name}: the samples of ${count(r.subjects.length, 'subject')} attributed to their reference samples (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, caveat: r.caveat, without: r.without ?? [],
+          subjects: r.subjects.map((s) => ({
+            subject: s.subject, reference: s.reference, label: s.label, clonotypes: s.clonotypes, before: value(s.before), overlap: s.overlap ?? null, derived: s.derived, why: s.why ?? null,
+            points: s.points.map((p) => ({ label: p.point.label, days: p.days ?? null, inReference: value(p.value), derived: value(p.from) })),
+          })),
+        },
+      };
     },
 
     async select_clonotype({ dataset, rank, id }) {
@@ -321,6 +504,11 @@ export function installRemote(app) {
       return { message: 'Closed.' };
     },
   };
+  return actions;
+}
+
+export function installRemote(app) {
+  const actions = app.actions ?? remoteActions(app);
 
   async function perform(event) {
     let outcome;

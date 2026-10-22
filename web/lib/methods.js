@@ -7,6 +7,7 @@
 
 import { UNITS, datasetUnit } from './datasets.js';
 import { describeRules } from './filters.js';
+import { choiceWords } from './tracking.js';
 
 const count = (n) => Number(n).toLocaleString('en-US');
 const plural = (n, word, words = `${word}s`) => `${count(n)} ${n === 1 ? word : words}`;
@@ -36,6 +37,11 @@ export const REFERENCES = {
   horn: 'Horn HS. Measurement of "overlap" in comparative ecological studies. Am Nat. 1966;100:419–424. doi:10.1086/282436',
   horvitzThompson: 'Horvitz DG, Thompson DJ. A generalization of sampling without replacement from a finite universe. J Am Stat Assoc. 1952;47:663–685. doi:10.1080/01621459.1952.10483446',
   chaoJost: 'Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. Ecology. 2012;93:2533–2547. doi:10.1890/11-1952.1',
+  rytlewski: 'Rytlewski J, Deng S, Xie T, et al. Model to improve specificity for identification of clinically-relevant expanded T cells in peripheral blood. PLoS One. 2019;14:e0213684. doi:10.1371/journal.pone.0213684',
+  dewitt: 'DeWitt WS, Emerson RO, Lindau P, et al. Dynamics of the cytotoxic T cell response to a model of acute viral infection. J Virol. 2015;89:4517–4526. doi:10.1128/JVI.03474-14',
+  bh: 'Benjamini Y, Hochberg Y. Controlling the false discovery rate: a practical and powerful approach to multiple testing. J R Stat Soc B. 1995;57:289–300. doi:10.1111/j.2517-6161.1995.tb02031.x',
+  storey: 'Storey JD. A direct approach to false discovery rates. J R Stat Soc B. 2002;64:479–498. doi:10.1111/1467-9868.00346',
+  wilson: 'Wilson EB. Probable inference, the law of succession, and statistical inference. J Am Stat Assoc. 1927;22:209–212. doi:10.1080/01621459.1927.10502953',
 };
 
 const coverageWords = (v) => (v > 0.99 && v < 1 ? v.toFixed(4) : v.toFixed(3));
@@ -93,6 +99,18 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const simulated = (summary?.samples ?? []).map((s) => s.repertoire).find((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
   if (simulated) {
     sentences.push(`The data are simulated (${simulated.studyTitle || simulated.studyId}): T-cell receptor β rearrangements made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} from GRCh38's gene segments at Ensembl's annotation ${cite('ensembl')}, with the V and J usage of 10x Genomics' 10k PBMC data, deletions and non-templated insertions at the junctions, and selection on junction length to that data's ${cite('selection')}; each subject's clones of power-law sizes, each sample templates drawn from them and sequenced into reads. Their truth is recorded beside them.`);
+    // A study over time: its samples' time points and reference samples say so.
+    const repertoires = (summary?.samples ?? []).map((x) => x.repertoire).filter(Boolean);
+    const event = repertoires.map((r) => /\(([^()]+)\)$/.exec(r.timePoint ?? '')?.[1]).find(Boolean);
+    if (event) {
+      const tissues = repertoires.map((r) => r.tissue ?? '');
+      const reference = tissues.includes('infusion product')
+        ? ' An infusion product, made from each subject\'s own T cells and expanded ex vivo, was mixed into its blood in known shares after the infusion, and sampled as its reference sample.'
+        : tissues.includes('donor blood')
+          ? ' A donor\'s repertoire was mixed into each recipient\'s blood in known shares after the transplant, and sampled as its reference sample.'
+          : '';
+      sentences.push(`Each subject was sampled at several time points, in days from the ${event}, its clones' frequencies following known trajectories and varying between samples beyond sampling, as between blood samples ${cite('rytlewski')}.${reference}`);
+    }
   }
 
   // How they were read: the formats by the readers' codes, in the order of the files.
@@ -181,6 +199,54 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     const depth = r.depth > 0 ? `, as sampled and with both samples rarefied to ${Math.round(r.depth).toLocaleString('en-US')} ${unit}, the smallest sample's size (the exact expectation)` : '';
     const by = r.publicBy === 'subject' ? 'subjects' : 'samples';
     sentences.push(`The overlap of every pair of samples (clonotypes ${under}) was measured by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: the clonotypes they share, Jaccard's index ${cite('jaccard')}, Sørensen–Dice's ${cite('dice')} and the overlap coefficient${depth}; and over their abundances in ${unit}, Morisita's index ${cite('morisita')} and the Morisita–Horn index ${cite('horn')}. Intervals are 95%: from ${opts.replicates ?? 200} bootstrap replicates of each sample's cells (seed ${opts.seed ?? '—'}), widened for the chance that decides which clonotypes two samples share ${cite('horvitzThompson')}, on the logarithmic scale. Clonotypes found in more than one of the ${by} were counted as public.`);
+  }
+
+  // Clonotypes followed over time, likewise.
+  for (const r of results.filter((x) => x.kind === 'tracking')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const choice = r.choice ?? { by: 'reference', n: 10, list: [] };
+    const how = r.intervals
+      ? `each one's frequency at each time point is its count of the ${unit} there, the samples taken at one time pooled, with Wilson's ${Math.round(100 * (r.options?.confidence ?? 0.95))}% score interval ${cite('wilson')}, which accounts for sampling alone; a clonotype not found at a time point is reported as not found, the interval's upper end being what that depth could have missed`
+      : `each one's frequency at each time point is its share of the ${unit} there, the samples taken at one time pooled, without an interval (${r.unit === 'reads' ? 'reads count each molecule many times over' : 'the abundances are not whole counts'})`;
+    sentences.push(`Clonotypes (${under}) were followed through each subject's samples in time order by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: ${choiceWords(choice)}, ${plural(r.followed ?? 0, 'clonotype')} in ${plural(r.subjects ?? 0, 'subject')}; ${how}.`);
+  }
+
+  // Clonotypes tested between two time points, likewise.
+  for (const r of results.filter((x) => x.kind === 'expansion')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const c = r.comparison ?? {};
+    const used = r.used ?? c.test;
+    const f = r.fit;
+    const on = f?.on === 'stable' ? `the clonotypes of each subject's samples at ${c.stable?.from} and ${c.stable?.to}, two time points taken to be stable` : `the clonotypes of ${plural(f?.pairs ?? 0, 'pair')} of replicate samples, taken at one time`;
+    const test = used === 'betabinomial' ? `the beta-binomial test of its count at the first time point given its total in the two, at the first's share of their ${unit}, its scale v(n) = 2 + (b ln n + a)² of Rytlewski et al. ${cite('rytlewski')} (the 2, which keeps the beta unimodal, as in their reference code) fitted by maximum likelihood on ${on} (${plural(f?.clonotypes ?? 0, 'clonotype')} with at least ${c.minTotal ?? 5} in the two; a = ${Number(f?.a).toPrecision(4)}, b = ${Number(f?.b).toPrecision(4)})` : used === 'fisher' ? `Fisher's exact test of its count against the others' at the two time points ${cite('dewitt')}` : `the binomial test of its count at the first time point given its total in the two, at the first's share of their ${unit} ${cite('rytlewski')}, which approximates Fisher's exact test, as DeWitt et al. used it ${cite('dewitt')}, when the clonotype is a small part of the samples`;
+    const correction = c.correction === 'storey' ? `Storey's q-values, π₀ estimated at λ = 0.5 ${cite('storey')}` : `Benjamini and Hochberg's procedure ${cite('bh')}`;
+    const side = c.alternative === 'increase' ? 'one-sided, for an increase' : c.alternative === 'decrease' ? 'one-sided, for a decrease' : 'two-sided, summing the outcomes no more likely than the one seen';
+    const caution = used === 'betabinomial'
+      ? ` Between the samples it was fitted on, a two-sided test at 0.05 called ${(100 * (f?.calledBySampling ?? 0)).toFixed(1)}% of the clonotypes changed by sampling alone, and ${(100 * (f?.calledByModel ?? 0)).toFixed(1)}% with the fitted variance; the variance was taken to be the same at every time point and in every subject.`
+      : ` The test accounts for sampling alone, not for the variation between samples taken at one time${c.test === 'auto' ? ' (the study had no samples to fit that variance on)' : ''}.`;
+    sentences.push(`Each clonotype (${under}) was tested between ${c.from} and ${c.to} in each subject by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}, the samples at one time pooled: ${test}, ${side}. Clonotypes with fewer than ${c.minTotal ?? 5} ${unit} in the two together were not tested ${cite('rytlewski')}. The false discovery rate was controlled within each subject by ${correction}, and clonotypes with an adjusted p-value of at most ${c.alpha ?? 0.01} called increased or decreased: ${plural(r.increased ?? 0, 'clonotype')} increased and ${plural(r.decreased ?? 0, 'clonotype')} decreased of ${plural(r.tested ?? 0, 'clonotype')} tested in ${plural(r.subjects ?? 0, 'subject')}.${caution}`);
+  }
+
+  // Clonotypes classed across time points, likewise.
+  for (const r of results.filter((x) => x.kind === 'classes')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const c = r.classing ?? {};
+    const test = r.used === 'betabinomial' ? `the beta-binomial test ${cite('rytlewski')}, its variance fitted on ${r.fit?.on === 'stable' ? 'two time points taken to be stable' : 'the replicate samples'} (a = ${Number(r.fit?.a).toPrecision(4)}, b = ${Number(r.fit?.b).toPrecision(4)})` : r.used === 'fisher' ? `Fisher's exact test ${cite('dewitt')}` : `the binomial test ${cite('rytlewski')}`;
+    const correction = c.correction === 'storey' ? `Storey's q-values ${cite('storey')}` : `Benjamini and Hochberg's procedure ${cite('bh')}`;
+    const n = r.counts ?? {};
+    sentences.push(`Each clonotype (${under}) was tested between ${c.base} and every later time point of each subject by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}, by ${test}, two-sided, over its ${unit}, the false discovery rate controlled within each comparison by ${correction} at ${c.alpha ?? 0.01}, and classed by its calls: emerging where called increased at the last time point, contracting where called decreased at it, transient where called changed at a time point between but not at the last, and persistent where never called and found at every time point. In ${plural(r.subjects ?? 0, 'subject')}, ${plural(n.emerging ?? 0, 'clonotype')} were emerging, ${count(n.transient ?? 0)} transient, ${count(n.contracting ?? 0)} contracting and ${count(n.persistent ?? 0)} persistent.`);
+  }
+
+  // Attribution, likewise.
+  for (const r of results.filter((x) => x.kind === 'attribution')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const interval = r.intervals ? `, with Wilson's ${Math.round(100 * (r.options?.confidence ?? 0.95))}% score interval for sampling ${cite('wilson')}` : '';
+    const derived = r.derived ? ` For the ${plural(r.derived, 'subject')} whose reference shared few clonotypes with the samples before the reference event (at most 25% of its ${unit}), the share derived from the reference was estimated as the share, of a sample's ${unit} in clonotypes found in the reference or in the samples before but not in both, in the reference's${interval}.` : '';
+    sentences.push(`Each sample's share of ${unit} in the clonotypes (${under}) its subject's reference sample (${(r.references ?? []).join(', ') || 'reference'}) holds was measured by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}${interval}; it counts the subject's own cells where the reference holds their clonotypes, and not the clonotypes the reference sample missed.${derived}`);
   }
 
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

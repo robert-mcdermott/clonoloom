@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"clonoloom/internal/dmath"
 	"clonoloom/internal/rep"
 )
 
@@ -158,7 +159,10 @@ func CompareCellRanger(metrics map[string]string, ch *Chains, loci []string) []C
 		}
 		d := decimals(v)
 		mine := 100 * float64(count) / estimated
-		scale := math.Pow(10, float64(d))
+		scale := 1.0 // 10^d, exactly
+		for range d {
+			scale *= 10
+		}
 		rounded := math.Round(mine*scale) / scale
 		checks = append(checks, Check{Metric: metric, Reported: v, Recomputed: strconv.FormatFloat(rounded, 'f', d, 64) + "%",
 			Agrees: agree(math.Abs(rounded-reported) < 0.5/scale+1e-9), Note: fmt.Sprintf("%d cells of the %s Cell Ranger estimated", count, strconv.FormatFloat(estimated, 'f', -1, 64))})
@@ -267,12 +271,12 @@ func adaptiveClonality(t *rep.Table, sample int, meta map[string]string) []Check
 	var h, simpson, top float64
 	for _, r := range reads {
 		p := r / total
-		h -= p * math.Log2(p)
-		simpson += p * p
+		h -= float64(p * dmath.Log(p) / math.Ln2)
+		simpson += float64(p * p)
 		top = max(top, p)
 	}
 	mine := map[string]float64{
-		"productive_entropy": h, "productive_clonality": 1 - h/math.Log2(float64(len(reads))),
+		"productive_entropy": h, "productive_clonality": 1 - h/(dmath.Log(float64(len(reads)))/math.Ln2),
 		"productive_simpson_clonality": math.Sqrt(simpson), "max_productive_frequency": top,
 	}
 	var checks []Check

@@ -1,0 +1,24 @@
+---
+title: Rarefaction
+description: Compare samples at equal coverage or size in ClonoLoom: each sample's clonotypes, Shannon and Simpson diversity rarefied and extrapolated, with 95% intervals, at a level every sample reaches.
+lede: A deeper sample holds more clonotypes because it is deeper. The Rarefaction part computes what each sample would show at any size up to twice its own, and at any sample coverage, so that samples are compared at a level they all reach.
+---
+      <h2 id="levels">Compare at a level</h2>
+      <shot name="rarefaction" alt="The Rarefaction part: each sample's Shannon diversity at the lowest coverage among them, with 95% intervals, and the curves by size and by coverage, solid where rarefied and dashed where extrapolated">Twelve samples at the lowest coverage among them, and their curves by size and by coverage.</shot>
+      <p>Open <strong>Repertoire › Rarefaction</strong> and choose <strong>Rarefy and extrapolate</strong>; the result is kept with the project. <strong>Each sample at</strong> a level shows the clonotypes, Shannon diversity and Simpson diversity there, each with its 95% interval:</p>
+      <ul>
+        <li><strong>The lowest coverage</strong> among the samples (the default): every sample rarefied to it, none extrapolated.</li>
+        <li><strong>The smallest sample's size</strong>: every sample rarefied to it.</li>
+        <li><strong>Extrapolated</strong> levels, as iNEXT gives by default: the coverage, or the size, that the samples reach when each is extrapolated to twice its own size.</li>
+      </ul>
+      <p>Comparing at equal coverage is better than at equal size (Chao and Jost 2012): a sample twice as deep is not just more of the same repertoire, and equal coverage compares samples equally complete.</p>
+
+      <h2 id="curves">The curves</h2>
+      <p>Each sample's curves, by size and by coverage: solid where rarefied, dashed where extrapolated, a dot at the sample itself, and bands for the intervals; and how each sample's coverage rises with its size. Sizes are on a logarithmic axis where the samples' sizes differ more than tenfold. The curves and their intervals come from the same 200 bootstrap replicates as the <a href="diversity.html">diversity</a> measures.</p>
+
+      <h2 id="extrapolation">How far to trust extrapolation</h2>
+      <p>In ClonoLoom's simulations of repertoires with many rare clonotypes, values extrapolated to twice a sample's size were within 3% of the truth on average, but their intervals were narrower than that, and held the truth less often than they say (only the Simpson diversity's held it as often). That is why ClonoLoom suggests levels reached by rarefaction alone first, and says so when a sample is extrapolated.</p>
+      <p>Like diversity, the curves need counts of cells or molecules: in reads, every sample looks complete, and the view warns.</p>
+
+      <h2 id="use">Using the result</h2>
+      <p>The plots save as figures, <strong>Export</strong> writes every point of every curve and the levels compared as CSV, and the methods paragraph says how the samples were compared and at which level. Scripts use <code>rarefy</code>, choosing the level (<a href="remote-control.html">Remote control</a>).</p>

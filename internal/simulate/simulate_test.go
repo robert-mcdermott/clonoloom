@@ -313,3 +313,86 @@ func digest(t *testing.T, dir string) string {
 	}
 	return hex.EncodeToString(h.Sum(nil))
 }
+
+// The same study on every processor (clonoloom-spec/conventions.md): the small preset's files,
+// tables and truth, pinned by their digest, made on arm64 and checked on amd64 (CI) alike.
+func TestTheSameStudyOnEveryProcessor(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "small")
+	if _, err := Run(context.Background(), Presets["small"], dir, "test", nil); err != nil {
+		t.Fatal(err)
+	}
+	if got := digest(t, dir); got != pinnedSmallStudy {
+		t.Fatalf("the small study's digest is %s, pinned %s: if the simulator was meant to change, pin the new one, made on both arm64 and amd64", got, pinnedSmallStudy)
+	}
+}
+
+const pinnedSmallStudy = "d630e11e9337a0eed71232535807e03926cfe7d5dd19a4a1ccb4510e4b201c60"
+
+// A small series: two subjects, a product, three time points with replicates at the first.
+func smallSeries() Study {
+	s := Presets["small"]
+	s.Name, s.Title = "small-series", "A small simulated series"
+	s.Series = &Series{
+		Event: "infusion", Variance: 0.1,
+		Times: []TimePoint{{Day: -7, Replicates: 2}, {Day: 14, Replicates: 1}, {Day: 28, Replicates: 1}},
+		Reference: &Reference{Kind: "product", Label: "infusion product", Cells: 2000, Expansion: 1, Templates: 2000,
+			Shares:       map[string][]float64{"control": {0, 0.3, 0.1}, "expanded": {0, 0.05, 0.01}},
+			Trajectories: []Trajectory{{Name: "expanding", Share: 0.05, Folds: []float64{1, 10, 3}}}},
+	}
+	return s
+}
+
+// The same series on every processor, and the same bytes for the same seed: pinned by its digest.
+func TestTheSameSeriesOnEveryProcessor(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "series")
+	summary, err := Run(context.Background(), smallSeries(), dir, "test", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Each subject's four blood samples and its product.
+	if summary.Samples != 10 {
+		t.Fatalf("%d samples", summary.Samples)
+	}
+	for _, name := range []string{"S01-pre-1.tsv", "S01-pre-2.tsv", "S01-d14.tsv", "S01-d28.tsv", "S01-product.tsv", "truth/S01.series.tsv.gz"} {
+		if _, err := os.Stat(filepath.Join(dir, name)); err != nil {
+			t.Errorf("%s: %v", name, err)
+		}
+	}
+	if got := digest(t, dir); got != pinnedSmallSeries {
+		t.Fatalf("the small series' digest is %s, pinned %s: if the simulator was meant to change, pin the new one, made on both arm64 and amd64", got, pinnedSmallSeries)
+	}
+}
+
+const pinnedSmallSeries = "e31f941127dc5b62adc76476a5bbee5d39435934e57b462f62d68895801e2e9e"
+
+func TestSeriesParametersAreChecked(t *testing.T) {
+	for name, change := range map[string]func(s *Series){
+		"no time points":      func(s *Series) { s.Times = nil },
+		"times out of order":  func(s *Series) { s.Times[1].Day = -10 },
+		"no replicate":        func(s *Series) { s.Times[0].Replicates = 0 },
+		"negative variance":   func(s *Series) { s.Variance = -1 },
+		"folds missing":       func(s *Series) { s.Reference.Trajectories[0].Folds = []float64{1} },
+		"shares above one":    func(s *Series) { s.Reference.Trajectories[0].Share = 2 },
+		"a share missing":     func(s *Series) { delete(s.Reference.Shares, "expanded") },
+		"a share out of 0..1": func(s *Series) { s.Reference.Shares["control"][1] = 1.5 },
+		"no cells collected":  func(s *Series) { s.Reference.Cells = 0 },
+		"a donor without one": func(s *Series) { s.Reference.Kind = "donor" },
+		"another kind":        func(s *Series) { s.Reference.Kind = "graft" },
+	} {
+		s := smallSeries()
+		ser := *s.Series
+		ref := *ser.Reference
+		ref.Shares = map[string][]float64{"control": {0, 0.3, 0.1}, "expanded": {0, 0.05, 0.01}}
+		ref.Trajectories = []Trajectory{{Name: "expanding", Share: 0.05, Folds: []float64{1, 10, 3}}}
+		ser.Reference = &ref
+		ser.Times = append([]TimePoint(nil), ser.Times...)
+		s.Series = &ser
+		change(s.Series)
+		if err := s.Check(); err == nil {
+			t.Errorf("%s: accepted", name)
+		}
+	}
+	if err := smallSeries().Check(); err != nil {
+		t.Errorf("the small series: %v", err)
+	}
+}

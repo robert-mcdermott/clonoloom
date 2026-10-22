@@ -166,6 +166,56 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = "Every pair of samples' overlap in " + ds.Name + ", with their 95% intervals (overlap.csv), and the public clonotypes (public.csv)."
 		files["overlap.csv"] = func(f io.Writer) error { return export.Overlap(f, res) }
 		files["public.csv"] = func(f io.Writer) error { return export.Public(f, res) }
+	case "tracking":
+		var doc trackingDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		intervals := fmt.Sprintf("with their %g%% intervals (Wilson's)", 100*doc.Confidence)
+		if !doc.Intervals {
+			intervals = "without intervals (" + doc.Caveat + ")"
+		}
+		notice.What = "The clonotypes followed through each subject's samples of " + ds.Name + ": each one's count, frequency and its interval in each sample (tracking.csv) and at each time point, the samples taken at one time pooled (time-points.csv), " + intervals + "."
+		files["tracking.csv"] = func(f io.Writer) error { return export.Tracking(f, doc.Result) }
+		files["time-points.csv"] = func(f io.Writer) error { return export.TrackingPoints(f, doc.Result) }
+	case "expansion":
+		var doc expansionDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		c := doc.Comparison
+		correction := map[string]string{"bh": "Benjamini and Hochberg's adjusted p-values", "storey": "Storey's q-values"}[c.Correction]
+		test := map[string]string{"betabinomial": "beta-binomial", "binomial": "binomial", "fisher": "Fisher's exact"}[doc.Test]
+		fitted := ""
+		if doc.Fit != nil {
+			fitted = fmt.Sprintf(", its variance v(n) = 2 + (b ln n + a)² fitted on %d clonotypes of %d pairs of samples (a = %.6g, b = %.6g; fit.csv)", doc.Fit.Clonotypes, len(doc.Fit.Pairs), doc.Fit.Model.A, doc.Fit.Model.B)
+			files["fit.csv"] = func(f io.Writer) error { return export.ExpansionFit(f, doc.Fit) }
+		}
+		notice.What = fmt.Sprintf("Each clonotype of %s tested between two time points of each subject (%s and %s; the samples at one time pooled) by the %s test%s, %s, with %s and the calls at %g (tests.csv); each subject's comparison in sum (subjects.csv). %s", ds.Name, c.From, c.To, test, fitted, c.Alternative, correction, c.Alpha, doc.Caveat)
+		files["tests.csv"] = func(f io.Writer) error { return export.Expansion(f, doc.Tests) }
+		files["subjects.csv"] = func(f io.Writer) error { return export.ExpansionSubjects(f, doc.Tests) }
+	case "classes":
+		var doc classesDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		notice.What = fmt.Sprintf("The clonotypes of %s classed across time points in each subject by their calls against %s, the base (by the %s test): each classed clonotype at each time point, with its frequency and call (classes.csv), and each subject's clonotypes by class (class-counts.csv). %s", ds.Name, doc.Classing.Base, doc.Test, doc.Caveat)
+		files["classes.csv"] = func(f io.Writer) error { return export.Classes(f, doc.ClassResult) }
+		files["class-counts.csv"] = func(f io.Writer) error { return export.ClassCounts(f, doc.ClassResult) }
+		if doc.Fit != nil {
+			files["fit.csv"] = func(f io.Writer) error { return export.ExpansionFit(f, doc.Fit) }
+		}
+	case "attribution":
+		var doc attributionDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		notice.What = fmt.Sprintf("Each sample and time point of %s attributed to its subject's reference sample: its share in the reference's clonotypes and, where it can be told, the share derived from the reference, each with its %g%% interval (Wilson's) (attribution.csv). %s", ds.Name, 100*doc.Confidence, doc.Caveat)
+		files["attribution.csv"] = func(f io.Writer) error { return export.Attribution(f, doc.Attribution) }
 	default:
 		writeError(w, http.StatusBadRequest, "This result has nothing to export as a table.")
 		return

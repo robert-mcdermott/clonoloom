@@ -49,7 +49,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | D7 | Generic CSV/TSV import with a column mapping, checked column by column | done (wave 2, slice 8: a table no reader recognizes opens a dialog with its first rows and a column for each field, guessed from the columns' names (VDJtools', MiXCR's and others'); the count's unit said, never guessed; the whole file checked column by column before it opens; the mapping kept with the dataset, part of its ID, and stated in the methods) |
 | D8 | Validator: findings (fatal, warning, note) with stable codes, counts, examples and remedies | done (wave 1, slices 2 and 3: 28 codes, each planted fault found once; the report in the Data view; grows in every wave) |
 | D9 | Query and download public data from AIRR Data Commons repositories (ADC API v1, unauthenticated), recorded with repository, query, date and checksums | planned (wave 9) |
-| D10 | Sample annotation: subject, timepoint, tissue, cell subset, condition, batch, HLA typing; suggested from file names; MiAIRR metadata mapped when present | done (wave 1, slice 3: typed, suggested from names (after CytoWeave), or filled from AIRR Repertoire metadata and immunoSEQ sample tags, each value's origin kept) |
+| D10 | Sample annotation: subject, timepoint, tissue, cell subset, condition, batch, HLA typing; suggested from file names; MiAIRR metadata mapped when present | done (wave 1, slice 3: typed, suggested from names (after CytoWeave), or filled from AIRR Repertoire metadata and immunoSEQ sample tags, each value's origin kept; wave 3, slice 3: a reference field (an infusion product, a donor), and time points read as days from the subject's reference event, ordered and checked by the program) |
 | D11 | Sources read in place, never modified; fingerprints (size and SHA-256) recorded; a moved source found again and checked | done (wave 1, slice 3: SHA-256 taken while reading, equal to the recorded checksums of every development file; a moved file found by its size and SHA-256 near where it was, or chosen and checked; a changed file said) |
 | D12 | A library of projects; project archives (`.clz`) bundling the project and, where licenses allow, its data | partial (wave 1: the library, saved automatically; wave 8: archives) |
 | D13 | Public dataset catalog: license, size and citation shown before a download the user confirms; checksums verified; license status carried into exports and methods | partial (wave 1, slice 6: the catalog of six datasets, downloads confirmed, checked by SHA-256 and put in place whole, terms of use accepted first, `--offline`; a dataset whose files are an example's carries its license and citation; methods in slice 7; exports in wave 2, slice 8; every wave adds datasets) |
@@ -92,12 +92,12 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| T1 | Chosen clonotypes (top N, a reference sample's, matched to a specificity, a list) followed across a subject's samples, with frequency intervals | planned (wave 3) |
-| T2 | Two-sample differential abundance by Fisher's exact or binomial test (DeWitt et al. 2015), with false discovery rate | planned (wave 3) |
-| T3 | Beta-binomial differential abundance with variance from replicates or a time-dependent model (Rytlewski et al. 2019); the default when a variance model exists | planned (wave 3) |
-| T4 | Several timepoints: clonotypes classed as persistent, emerging or contracting; a negative-binomial model for designs with replicates | planned (wave 3: classes; wave 7: model) |
-| T5 | Source attribution: the share of a sample's repertoire found in a reference sample (infusion product, donor), with the definition stated | planned (wave 3) |
-| T6 | Alluvial plots and per-clonotype trajectories ("threads") linked to the clonotype table | planned (wave 3) |
+| T1 | Chosen clonotypes (top N, a reference sample's, matched to a specificity, a list) followed across a subject's samples, with frequency intervals | partial (wave 3, slice 5: a reference sample's largest, each sample's largest or a list, with Wilson's intervals; slice 6: those a test called; matched to a specificity in wave 4) |
+| T2 | Two-sample differential abundance by Fisher's exact or binomial test (DeWitt et al. 2015), with false discovery rate | done (wave 3, slice 6: between two time points of each subject; Benjamini–Hochberg or Storey's q-values) |
+| T3 | Beta-binomial differential abundance with variance from replicates or a time-dependent model (Rytlewski et al. 2019); the default when a variance model exists | done (wave 3, slice 7: fitted on replicate samples or two time points named as stable) |
+| T4 | Several timepoints: clonotypes classed as persistent, emerging or contracting; a negative-binomial model for designs with replicates | partial (wave 3, slice 8: emerging, transient, contracting or persistent from the tests' calls against a base time point; wave 7: model) |
+| T5 | Source attribution: the share of a sample's repertoire found in a reference sample (infusion product, donor), with the definition stated | done (wave 3, slice 8: the share in the reference sample's clonotypes, and, for a reference sharing few clonotypes with the samples before the event, the share derived from it, each with its interval) |
+| T6 | Alluvial plots and per-clonotype trajectories ("threads") linked to the clonotype table | done (wave 3, slice 5) |
 
 ## Specificity
 
@@ -138,7 +138,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | --- | --- | --- |
 | G1 | Study design: subjects, groups, timepoints, pairing; checked to support the requested test | planned (wave 7) |
 | G2 | Group comparisons of per-sample metrics with the test chosen from the design; nonparametric counterparts; effect sizes and intervals; Benjamini–Hochberg | planned (wave 7) |
-| G3 | The subject is the unit; cells and sequences are never replicates | planned (wave 2, every wave) |
+| G3 | The subject is the unit; cells and sequences are never replicates | partial (wave 2: overlap's pairs of one subject and of two, and public clonotypes by subject; wave 3, slice 3: every sample's subject checked before tracking, which is within a subject; every wave) |
 | G4 | Feature tables (receptor, sample, cohort) exported for external modeling | planned (wave 7) |
 
 ## Output, record and reproducibility
@@ -172,9 +172,9 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| E1 | Simulated studies with their truth (`clonoloom simulate`) | partial (wave 2, slice 2: bulk TRB studies from ClonoLoom's own recombination model, with each population's truth; presets standard, null and small; offered as examples; wave 3: longitudinal; wave 4: specificity; wave 5: BCR lineages; wave 6: single cell with expression) |
+| E1 | Simulated studies with their truth (`clonoloom simulate`) | partial (wave 2, slice 2: bulk TRB studies from ClonoLoom's own recombination model, with each population's truth; presets standard, null and small; offered as examples; wave 3, slice 4: studies over time, CAR-T and transplant with an infusion product or a donor mixed into the blood in known shares, clones on known trajectories and biological variance between samples, offered as examples, and a null series; wave 4: specificity; wave 5: BCR lineages; wave 6: single cell with expression) |
 | E2 | Public example datasets downloaded on request with license and citation shown | done (wave 1, slice 6: six datasets of 10x Genomics, the AIRR Community and immuneACCESS; every wave adds its own) |
-| E3 | Guided tours and worked examples per view | planned (wave 2, every wave) |
+| E3 | Guided tours and worked examples per view | partial (wave 3, slice 8: the simulated CAR-T and transplant studies' guided steps in the Tracking view, each done by its remote control action; every wave adds its own) |
 | E4 | Exercises graded against simulated truth, with class codes | parked |
 
 ## Cross-suite
@@ -195,5 +195,6 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | N2 | Every reader fuzzed; hostile files refused with a message, never a crash; sizes checked before allocation | partial (wave 1, slice 2: every reader of wave 1 fuzzed; later readers as they arrive) |
 | N3 | Performance budgets checked automatically (`design.md`, "Budgets") | planned (wave 1, every wave) |
 | N4 | Stable, versioned project and export formats; later versions open earlier projects and reproduce their artifacts | planned (every wave; promised at 1.0) |
-| N5 | Documentation and site: installing, a guide per view, formats, network, MCP, the methods with their validation | partial (wave 1: `docs/INSTALLING.md`, `docs/FORMATS.md`, `docs/GETTING-STARTED.md` with pictures made by `docs/capture/capture.mjs`, the validation in the changelog; the site later) |
+| N5 | Documentation and site: installing, a guide per view, formats, network, MCP, the methods with their validation | partial (wave 1: `docs/INSTALLING.md`, `docs/FORMATS.md`, `docs/GETTING-STARTED.md` with pictures made by `docs/capture/capture.mjs`, the validation in the changelog; wave 3, slice 1: the website (`docs/site/`), with a home page, install, the methods with their validation, and the guide a page a subject, its links checked in CI and its pages by axe-core; network and MCP pages with their waves) |
 | N6 | Research use only: not a medical device, no diagnostic claims; wording fixed in `conventions.md` | done (wave 1: on the start page, in the status bar and the inspector, the README and the guide) |
+| N7 | Results the same, bit for bit, on every processor and operating system: the same data, settings and seed give the same bytes (`conventions.md`) | done (wave 3, slice 2: `internal/dmath` and every product rounded on its own; a test fails on any fused multiply-add in the arm64 assembly; every analysis's results and a simulated study pinned on arm64 and amd64; project fixtures compared by checksum from 0.3.0) |

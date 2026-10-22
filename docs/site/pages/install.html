@@ -1,0 +1,79 @@
+---
+title: Install
+layout: page
+heading: Install ClonoLoom
+description: Install ClonoLoom on macOS, Linux or Windows with one command. One self-contained program, checked against its SHA-256 checksum, with no administrator rights needed.
+lede: ClonoLoom is one executable. The browser application is inside it, so nothing else needs to be installed; example data are downloaded only when you ask. One command downloads the release for your computer, checks it and installs it.
+---
+      <div class="install-card" style="max-width:none">
+        <div class="tablist" role="tablist" aria-label="Operating system" data-os>
+          <button class="tab" role="tab" id="tab-unix" aria-controls="panel-unix" aria-selected="true" data-os="macos linux">macOS and Linux</button>
+          <button class="tab" role="tab" id="tab-win" aria-controls="panel-win" aria-selected="false" tabindex="-1" data-os="windows">Windows</button>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="panel-unix" aria-labelledby="tab-unix">
+          <div class="code wrap"><pre><code><span class="prompt">$ </span>curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.sh | sh</code></pre></div>
+          <p class="note">Installs the latest release as <code>~/.local/bin/clonoloom</code>. No <code>sudo</code>, and your <code>PATH</code> is left as it is; if <code>~/.local/bin</code> is not on it, the installer prints the full path to run.</p>
+        </div>
+        <div class="tabpanel" role="tabpanel" id="panel-win" aria-labelledby="tab-win" hidden>
+          <div class="code wrap"><pre><code><span class="prompt">PS&gt; </span>irm https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.ps1 | iex</code></pre></div>
+          <p class="note">Run in PowerShell. Installs to <code>%LocalAppData%\Programs\ClonoLoom</code> and adds it to your user <code>PATH</code>. No administrator rights and no change to the execution policy needed.</p>
+        </div>
+      </div>
+
+      <h2 id="start">Start it</h2>
+      <div class="code"><pre><code><span class="prompt">$ </span>clonoloom</code></pre></div>
+      <p>ClonoLoom starts a local server on <code>http://127.0.0.1:8860</code> (or the next free port up to 8879) and opens its window. If Chrome, Edge, Brave or Chromium is installed, the window is a desktop app window with its own profile; otherwise your default browser is used. Closing the window stops the program. On Windows, open a new terminal after installing so that it sees the updated <code>PATH</code>.</p>
+      <p>Files and folders named on the command line (AIRR tables, Cell Ranger output folders, immunoSEQ exports, or folders of them) open directly as one dataset, and running <code>clonoloom &lt;paths&gt;</code> again while it is open hands them to the open window:</p>
+      <div class="code"><pre><code><span class="prompt">$ </span>clonoloom /path/to/airr_rearrangement.tsv</code></pre></div>
+      <p>Then continue with <a href="docs/getting-started.html">Getting started</a>.</p>
+
+      <h2 id="requirements">Requirements</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Operating system</th><th>Architecture</th><th>Release file</th></tr></thead>
+          <tbody>
+            <tr><td><strong>macOS</strong></td><td>Apple silicon (ARM64)</td><td><code>clonoloom-darwin-arm64</code></td></tr>
+            <tr><td><strong>macOS</strong></td><td>Intel (x64)</td><td><code>clonoloom-darwin-amd64</code></td></tr>
+            <tr><td><strong>Linux</strong></td><td>x64</td><td><code>clonoloom-linux-amd64</code></td></tr>
+            <tr><td><strong>Linux</strong></td><td>ARM64</td><td><code>clonoloom-linux-arm64</code></td></tr>
+            <tr><td><strong>Windows</strong></td><td>x64</td><td><code>clonoloom-windows-amd64.exe</code></td></tr>
+            <tr><td><strong>Windows</strong></td><td>ARM64</td><td><code>clonoloom-windows-arm64.exe</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The window is a page in a current browser; ClonoLoom is tested in Chrome and the browsers built on Chromium. Each release has <code>SHA256SUMS</code>, the checksum of every file; the installers require exactly one matching checksum and run the downloaded program's <code>--version</code> before moving it into place, so a failed download never replaces a working copy.</p>
+      <p>Memory follows the data: a million rearrangements take about 130 MB once read (58 bytes a row and their junctions), and a cohort's tables are kept in a cache on disk so that it reopens in a fraction of a second.</p>
+
+      <h2 id="options">Options</h2>
+      <p>To install a particular release, or somewhere else:</p>
+      <div class="code wrap"><pre><code><span class="prompt">$ </span>curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.sh | CLONOLOOM_VERSION=v{{version}} CLONOLOOM_INSTALL_DIR="$HOME/bin" sh</code></pre></div>
+      <p>In PowerShell, set <code>$env:CLONOLOOM_VERSION</code> and <code>$env:CLONOLOOM_INSTALL_DIR</code> before the same command. To read an installer before running it, download it first; <a href="{{github}}/blob/main/docs/INSTALLING.md">INSTALLING.md</a> describes every option, and how to install by hand.</p>
+      <p>The program's own options:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Flag</th><th>Default</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>--port</code></td><td>8860</td><td>Preferred port; the next free one up to 8879 is used if it is taken</td></tr>
+            <tr><td><code>--window</code></td><td><code>app</code></td><td><code>app</code> (a desktop window), <code>browser</code> (the default browser) or <code>none</code></td></tr>
+            <tr><td><code>--keep-running</code></td><td>off</td><td>Keep serving after the window is closed</td></tr>
+            <tr><td><code>--data-dir</code></td><td>your configuration folder's <code>ClonoLoom</code></td><td>Where the project library is kept</td></tr>
+            <tr><td><code>--examples-dir</code></td><td><code>&lt;data dir&gt;/examples</code></td><td>Where example data are downloaded, when you ask</td></tr>
+            <tr><td><code>--cache-dir</code></td><td>your cache folder's <code>clonoloom</code></td><td>Where tables read once are kept, to reopen datasets quickly; can be deleted at any time</td></tr>
+            <tr><td><code>--cache-limit</code></td><td><code>10GB</code></td><td>The size the cache is kept within, removing what was used least recently (<code>0</code> for no limit)</td></tr>
+            <tr><td><code>--offline</code></td><td>off</td><td>Download nothing: ClonoLoom then reaches no other computer</td></tr>
+            <tr><td><code>--remote-control</code></td><td>off</td><td>Let programs on this computer drive the window (<a href="docs/remote-control.html">remote control</a>)</td></tr>
+            <tr><td><code>--host</code></td><td>127.0.0.1</td><td>Interface to bind</td></tr>
+            <tr><td><code>--version</code></td><td></td><td>Print <code>clonoloom X.Y.Z</code> and exit</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="upgrade">Upgrading and uninstalling</h2>
+      <p>Run the installer again to upgrade; it replaces the program only after every check passes. On Windows, stop ClonoLoom first. To go back, install the release you want by its tag. Each release opens the projects earlier releases saved.</p>
+      <p>To uninstall, delete the program (<code>~/.local/bin/clonoloom</code>, or <code>%LocalAppData%\Programs\ClonoLoom</code> and its <code>PATH</code> entry). Your projects and the cache stay where they are (<a href="docs/record.html#where">where things are kept</a>) until you delete them.</p>
+
+      <h2 id="source">Building from source</h2>
+      <p>With Go (the version in <code>go.mod</code> or newer), and nothing else:</p>
+      <div class="code"><pre><code><span class="prompt">$ </span>git clone https://github.com/robert-mcdermott/clonoloom.git
+<span class="prompt">$ </span>cd clonoloom
+<span class="prompt">$ </span>go build -o clonoloom .</code></pre></div>

@@ -22,6 +22,7 @@ import (
 	"clonoloom/internal/diversity"
 	"clonoloom/internal/overlap"
 	"clonoloom/internal/rep"
+	"clonoloom/internal/track"
 	"clonoloom/internal/usage"
 )
 
@@ -413,6 +414,163 @@ func Public(w io.Writer, res overlap.Result) error {
 	rows = append(rows, []string{}, []string{res.Public.By + "s", "clonotypes"})
 	for _, x := range res.Public.Incidence {
 		rows = append(rows, []string{strconv.Itoa(x.Units), strconv.Itoa(x.Clonotypes)})
+	}
+	return writeAll(w, rows)
+}
+
+// chainsText is a clonotype's chains as one cell: each chain's locus, junction, V and J, chains
+// joined by " / ".
+func chainsText(chains []clonotype.Chain) string {
+	var out []string
+	for _, ch := range chains {
+		out = append(out, strings.TrimSpace(strings.Join([]string{ch.Locus, ch.Junction, ch.V, ch.J}, " ")))
+	}
+	return strings.Join(out, " / ")
+}
+
+// whyText is why a clonotype was followed, as one cell: "rank 2 in P1-product; listed as CASS…".
+func whyText(why []track.Reason) string {
+	var out []string
+	for _, r := range why {
+		if r.Listed != "" {
+			out = append(out, "listed as "+r.Listed)
+		} else {
+			out = append(out, fmt.Sprintf("rank %d in %s", r.Rank, r.Sample))
+		}
+	}
+	return strings.Join(out, "; ")
+}
+
+func trackValue(prefix []string, v track.Value) []string {
+	return append(prefix, number(v.Count), number(v.Total), number(float64(v.Frequency)), number(float64(v.Lower)), number(float64(v.Upper)))
+}
+
+// Tracking writes each clonotype followed, in each of its subject's samples (tracking.csv): its
+// count of the sample's total, its frequency and the frequency's interval.
+func Tracking(w io.Writer, res track.Result) error {
+	rows := [][]string{{"subject", "clonotype_id", "chains", "why", "sample", "time_point", "days", "reference", "count", "total", "frequency", "lower", "upper"}}
+	for _, s := range res.Subjects {
+		for _, c := range s.Clonotypes {
+			for k, v := range c.Samples {
+				p := s.Points[s.Samples[k].Point]
+				rows = append(rows, trackValue([]string{s.ID, c.ID, chainsText(c.Chains), whyText(c.Why), s.Samples[k].Name, p.Label, daysText(p.Days), p.Reference}, v))
+			}
+		}
+	}
+	return writeAll(w, rows)
+}
+
+// TrackingPoints writes each clonotype followed at each of its subject's time points
+// (time-points.csv), the samples taken at one time pooled.
+func TrackingPoints(w io.Writer, res track.Result) error {
+	rows := [][]string{{"subject", "clonotype_id", "chains", "time_point", "days", "reference", "samples", "count", "total", "frequency", "lower", "upper"}}
+	for _, s := range res.Subjects {
+		for _, c := range s.Clonotypes {
+			for k, v := range c.Points {
+				p := s.Points[k]
+				rows = append(rows, trackValue([]string{s.ID, c.ID, chainsText(c.Chains), p.Label, daysText(p.Days), p.Reference, strings.Join(p.Samples, " ")}, v))
+			}
+		}
+	}
+	return writeAll(w, rows)
+}
+
+func daysText(days *float64) string {
+	if days == nil {
+		return ""
+	}
+	return number(*days)
+}
+
+// Expansion writes each clonotype tested in each subject (tests.csv): its counts and frequencies at
+// the two time points, the log₂ of their ratio, its p-value, adjusted p-value and call.
+func Expansion(w io.Writer, res track.Tests) error {
+	rows := [][]string{{"subject", "from", "to", "clonotype_id", "chains", "count_from", "count_to", "total_from", "total_to", "frequency_from", "frequency_to", "log2_fold", "p", "q", "call"}}
+	for _, s := range res.Subjects {
+		for _, c := range s.Clonotypes {
+			rows = append(rows, []string{s.Subject, s.From.Label, s.To.Label, c.ID, chainsText(c.Chains), number(c.A), number(c.B), number(s.TotalA), number(s.TotalB),
+				number(c.FreqA), number(c.FreqB), number(float64(c.Log2Fold)), number(c.P), number(c.Q), c.Call})
+		}
+	}
+	return writeAll(w, rows)
+}
+
+// ExpansionFit writes the beta-binomial test's variance model and the pairs of samples it was
+// fitted on (fit.csv).
+func ExpansionFit(w io.Writer, fit *track.Fit) error {
+	rows := [][]string{
+		{"fitted_on", "a", "b", "log_likelihood", "clonotypes", "called_by_sampling_at_0.05", "called_by_model_at_0.05"},
+		{fit.On, number(fit.Model.A), number(fit.Model.B), number(fit.LogLik), strconv.Itoa(fit.Clonotypes), number(fit.CalledBySampling), number(fit.CalledByModel)},
+		{},
+		{"subject", "samples_a", "samples_b", "theta", "clonotypes"},
+	}
+	for _, p := range fit.Pairs {
+		rows = append(rows, []string{p.Subject, strings.Join(p.A, " "), strings.Join(p.B, " "), number(p.Theta), strconv.Itoa(p.Clonotypes)})
+	}
+	return writeAll(w, rows)
+}
+
+// ExpansionSubjects writes each subject's comparison in sum (subjects.csv): its two time points
+// and their samples, the clonotypes tested and left out, and those called each way.
+func ExpansionSubjects(w io.Writer, res track.Tests) error {
+	rows := [][]string{{"subject", "from", "to", "samples_from", "samples_to", "total_from", "total_to", "tested", "left_out", "increased", "decreased", "pi0"}}
+	for _, s := range res.Subjects {
+		rows = append(rows, []string{s.Subject, s.From.Label, s.To.Label, strings.Join(s.From.Samples, " "), strings.Join(s.To.Samples, " "), number(s.TotalA), number(s.TotalB),
+			strconv.Itoa(s.Tested), strconv.Itoa(s.LeftOut), strconv.Itoa(s.Increased), strconv.Itoa(s.Decreased), number(float64(s.Pi0))})
+	}
+	return writeAll(w, rows)
+}
+
+// Classes writes each clonotype classed in each subject (classes.csv), one row a time point: its
+// class, its frequency there, and its call against the base.
+func Classes(w io.Writer, res track.ClassResult) error {
+	rows := [][]string{{"subject", "clonotype_id", "chains", "class", "q", "time_point", "days", "frequency", "call"}}
+	for _, s := range res.Subjects {
+		for _, c := range s.Clonotypes {
+			rows = append(rows, []string{s.Subject, c.ID, chainsText(c.Chains), c.Class, number(c.Q), s.Base.Label, daysText(s.Base.Days), number(c.Frequencies[0]), "base"})
+			for k, p := range s.Later {
+				rows = append(rows, []string{s.Subject, c.ID, chainsText(c.Chains), c.Class, number(c.Q), p.Label, daysText(p.Days), number(c.Frequencies[k+1]), c.Calls[k]})
+			}
+		}
+	}
+	return writeAll(w, rows)
+}
+
+// ClassCounts writes each subject's clonotypes by class (class-counts.csv).
+func ClassCounts(w io.Writer, res track.ClassResult) error {
+	rows := [][]string{{"subject", "base", "later", "emerging", "transient", "contracting", "persistent", "unclassed"}}
+	for _, s := range res.Subjects {
+		var later []string
+		for _, p := range s.Later {
+			later = append(later, p.Label)
+		}
+		n := s.Counts
+		rows = append(rows, []string{s.Subject, s.Base.Label, strings.Join(later, " "), strconv.Itoa(n.Emerging), strconv.Itoa(n.Transient), strconv.Itoa(n.Contracting), strconv.Itoa(n.Persistent), strconv.Itoa(n.Unclassed)})
+	}
+	return writeAll(w, rows)
+}
+
+func attributedRow(prefix []string, x track.AttributedValue) []string {
+	row := append(prefix, x.Point.Label, daysText(x.Days), number(x.Value.Count), number(x.Value.Total), number(float64(x.Value.Frequency)), number(float64(x.Value.Lower)), number(float64(x.Value.Upper)))
+	if x.From == nil {
+		return append(row, "", "", "", "", "")
+	}
+	return append(row, number(x.From.Count), number(x.From.Total), number(float64(x.From.Frequency)), number(float64(x.From.Lower)), number(float64(x.From.Upper)))
+}
+
+// Attribution writes each sample's and time point's measures (attribution.csv): its cells in the
+// reference's clonotypes of its total, the share and its interval; and, where told, its cells in
+// the reference's clonotypes of one side only, of those in either side's, the share derived from
+// the reference and its interval.
+func Attribution(w io.Writer, res track.Attribution) error {
+	rows := [][]string{{"subject", "reference", "sample", "time_point", "days", "in_reference", "total", "share", "lower", "upper", "from_reference", "informative", "derived_share", "derived_lower", "derived_upper"}}
+	for _, s := range res.Subjects {
+		for _, x := range s.Samples {
+			rows = append(rows, attributedRow([]string{s.Subject, strings.Join(s.Reference, " "), x.Name}, x))
+		}
+		for _, x := range s.Points {
+			rows = append(rows, attributedRow([]string{s.Subject, strings.Join(s.Reference, " "), strings.Join(x.Point.Samples, " ")}, x))
+		}
 	}
 	return writeAll(w, rows)
 }

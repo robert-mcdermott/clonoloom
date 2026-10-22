@@ -11,7 +11,7 @@ import { createJobs } from './ui/jobs.js';
 import { showMethods } from './ui/methods.js';
 import { exportDataset } from './ui/exports.js';
 import { mapColumns } from './ui/mapping.js';
-import { installRemote } from './ui/remote.js';
+import { installRemote, remoteActions } from './ui/remote.js';
 import { mountSidebar } from './ui/sidebar.js';
 import { mountInspector } from './ui/inspector.js';
 import { mountDrawer } from './ui/drawer.js';
@@ -22,7 +22,7 @@ import { createProject, isEmptyProject, parseProject, rename, serializeProject }
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -35,14 +35,7 @@ const MODES = [
   { id: 'qc', label: 'QC', icon: 'qc', load: () => import('./ui/mode-qc.js').then((m) => m.mountQC) },
   { id: 'clonotypes', label: 'Clonotypes', icon: 'clonotypes', load: () => import('./ui/mode-clonotypes.js').then((m) => m.mountClonotypes) },
   { id: 'repertoire', label: 'Repertoire', icon: 'repertoire', load: () => import('./ui/mode-repertoire.js').then((m) => m.mountRepertoire) },
-  {
-    id: 'tracking', label: 'Tracking', icon: 'threads',
-    load: async () => plannedMode({
-      title: 'Tracking', icon: 'threads',
-      purpose: 'Clonotypes followed across a subject\'s samples, each drawn as a thread through time: which persist, expand or contract, tested with methods that account for sampling and biological variance, and how much of each sample comes from a reference such as an infusion product or a donor.',
-      steps: ['Annotate subjects and timepoints.', 'Choose the clonotypes to follow.', 'Test expansion with the false discovery rate stated.'],
-    }),
-  },
+  { id: 'tracking', label: 'Tracking', icon: 'threads', load: () => import('./ui/mode-tracking.js').then((m) => m.mountTracking) },
   {
     id: 'specificity', label: 'Specificity', icon: 'receptor',
     load: async () => plannedMode({
@@ -208,6 +201,7 @@ async function start() {
     // A result opens in its view.
     const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
     if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
+    if (['tracking', 'expansion', 'classes', 'attribution'].includes(result?.kind) && store.ui.mode !== 'tracking') app.setMode('tracking');
   };
 
   app.toggleDrawer = (open = !store.ui.drawer.open, tab = store.ui.drawer.tab) => {
@@ -877,6 +871,8 @@ async function start() {
   setInterval(check, 30000);
   window.clonoloom = app;
   // Programs on this computer may drive the window (clonoloom --remote-control).
+  // The actions scripts take, which the examples' guided steps take too.
+  app.actions = remoteActions(app);
   if (info.remoteControl) app.remote = installRemote(app);
 }
 

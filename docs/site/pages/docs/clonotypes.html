@@ -1,0 +1,18 @@
+---
+title: Clonotypes
+description: Choose what a clonotype is in ClonoLoom: the junction, V and J levels, chains and single-cell rules, as a named definition stated with every table, figure and export; browse a million clonotypes and inspect any one.
+lede: A clonotype is whatever its definition says it is, so ClonoLoom makes you choose one and states it everywhere clonotypes are counted: above every table, in the status bar, in every figure's caption, every export's notice and the methods paragraph.
+---
+      <h2 id="definitions">Definitions</h2>
+      <shot name="clonotypes" alt="The Clonotypes view: the definition stated in words above a table of clonotypes with their junctions, genes, abundance and frequency, and one clonotype's chains and cells in the inspector">10k PBMC T cells as paired αβ clonotypes by amino-acid junction, V and J genes; the largest in the inspector.</shot>
+      <ul>
+        <li><strong>Presets</strong>: the amino-acid junction with V and J genes (the default for bulk data); the nucleotide junction with V and J genes; the amino-acid junction alone; paired αβ chains, and paired heavy and light chains (the defaults for single cells); or the source's own clonotypes (Cell Ranger's, or an AIRR file's <code>clone_id</code>).</li>
+        <li><strong>Edit…</strong> to choose the junction (nucleotides or amino acids), V and J at allele, gene or family level or not at all, and which chains. For single cells, choose whether a cell's primary chain of each locus counts or every chain, and what to do with cells missing a chain. Save it under a name to use it for the project's other datasets.</li>
+      </ul>
+      <p>A junction is the IMGT junction, from the conserved cysteine at position 104 to the phenylalanine or tryptophan at 118 (the CDR3 with its two anchors). A call that names several genes is kept as the set it names.</p>
+
+      <h2 id="table">The table</h2>
+      <p>Each clonotype has an ID made from the definition and its chains, the same in every run, and the definition has an ID of its own, made from its meaning rather than its name. Sort by any column, and search by junction, gene or ID: a million clonotypes are sorted and searched as they scroll. Choose a clonotype to see its chains, its abundance in each sample, and the contigs or rearrangements it is made of.</p>
+
+      <h2 id="export">Exporting clonotypes</h2>
+      <p><strong>Export</strong> writes the clonotype table as CSV, one column of abundance per sample, or the rearrangements as an AIRR Rearrangement TSV with each one's clonotype as <code>clone_id</code>, each with a notice of where they came from (<a href="figures.html#exports">Exports</a>).</p>

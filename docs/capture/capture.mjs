@@ -180,6 +180,58 @@ const scenes = {
     await act('measure_overlap');
     await waitFor(`document.querySelectorAll('.repertoire-view .plot-card svg').length >= 2`);
   },
+  // The simulated CAR-T study's subjects: each patient's samples in days from the infusion, its
+  // infusion product as its reference sample, and the two samples taken before it (replicates).
+  async subjects() {
+    await act('open_example', { example: 'simulated-car-t', download: true });
+    await act('describe_subjects');
+    await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 1`);
+  },
+  // Its second patient's clonotypes followed through time: each sample's five largest, the one
+  // that rises most after the infusion chosen and drawn with its intervals.
+  async tracking() {
+    await act('open_example', { example: 'simulated-car-t', download: true });
+    await act('track_clonotypes', { by: 'largest', n: 5, subject: 'S02' });
+    await js(`(() => {
+      const view = window.clonoloom.trackingView;
+      const s = view.followed().result.subjects.find((x) => x.id === 'S02');
+      const rise = (c) => Math.max(...c.points.slice(2).map((v) => v.frequency ?? 0)) / Math.max(c.points[1].frequency ?? 0, 1e-6);
+      view.select([...s.clonotypes].sort((a, b) => rise(b) - rise(a))[0].id);
+      return true;
+    })()`);
+    await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 2 && Boolean(document.querySelector('.plot-chosen'))`);
+  },
+  // Its clonotypes tested between the week before the infusion and two weeks after by the
+  // beta-binomial test: its variance, fitted on the samples taken twice before the infusion, at the
+  // top; below, the second patient's calls, the most significant increase chosen.
+  async tests() {
+    await act('open_example', { example: 'simulated-car-t', download: true });
+    await act('test_expansion', { from: 'day -7', to: 'day 14', subject: 'S02' });
+    await js(`(() => {
+      const view = window.clonoloom.trackingView;
+      const s = view.tested().result.subjects.find((x) => x.subject === 'S02');
+      view.showTested('S02', s.clonotypes.find((c) => c.call === 'increase').id);
+      return true;
+    })()`);
+    await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 1 && Boolean(document.querySelector('.plot-ring'))`);
+  },
+  // Its clonotypes classed against the week before the infusion: the guided steps folded away, the
+  // classes by subject, then the second patient's transient clonotypes rising to day 14.
+  async classes() {
+    await act('open_example', { example: 'simulated-car-t', download: true });
+    await act('class_clonotypes', { base: 'day -7', class: 'transient', subject: 'S02' });
+    await js(`(() => { const g = document.querySelector('.tracking-guide'); if (g) g.open = false; return true; })()`);
+    await waitFor(`Boolean(document.querySelector('.tracking-class-head'))`);
+    await js(`(() => { const el = document.querySelector('.tracking-class-head'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 160; return true; })()`);
+  },
+  // The transplant study's samples attributed to the donors: the share derived from each donor.
+  async attribution() {
+    await act('open_example', { example: 'simulated-transplant', download: true });
+    await act('attribute_samples');
+    await js(`(() => { const g = document.querySelector('.tracking-guide'); if (g) g.open = false; return true; })()`);
+    await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 2`);
+    await js(`(() => { const el = document.querySelectorAll('.tracking-view .plot-card')[1]; el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
+  },
 };
 
 const names = wanted.length ? wanted : Object.keys(scenes);

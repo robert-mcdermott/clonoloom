@@ -1,5 +1,5 @@
 {
-  "about": "Public data the validation suites use, and ClonoLoom's example datasets: downloaded and checked by node validation/fetch.mjs into validation/cache/<name>/ (or $CLONOLOOM_DATA/<name>/). Nothing here is stored in the repository or the ClonoLoom program. licenseClass is open (CC0, CC BY: may be used in per-commit CI), terms (a provider's terms of use: maintainer validation only, never redistributed) or unknown (no license stated: maintainer validation only). ci marks the data sets per-commit CI fetches (node validation/fetch.mjs --ci).",
+  "about": "Public data the validation suites use, and ClonoLoom's example datasets: downloaded and checked by node validation/fetch.mjs into validation/cache/<name>/ (or $CLONOLOOM_DATA/<name>/). Nothing here is stored in the repository or the ClonoLoom program. licenseClass is open (CC0, CC BY: may be used in per-commit CI), terms (a provider's terms of use: maintainer validation only, never redistributed) or unknown (no license stated: maintainer validation only). ci marks the data sets per-commit CI fetches (node validation/fetch.mjs --ci). tools are what the checks use, never part of ClonoLoom (axe-core, for the website's accessibility audit, node docs/site/audit.mjs).",
   "datasets": {
     "10x-pbmc-1k": {
       "title": "Human PBMC from a healthy donor, 1k cells, 5′ V(D)J (Cell Ranger 4.0.0)",
@@ -458,6 +458,22 @@
             "P00441.tsv",
             "P00572.tsv"
           ]
+        }
+      ]
+    }
+  },
+  "tools": {
+    "axe-core": {
+      "title": "axe-core 4.13.0 (Deque Systems)",
+      "description": "The accessibility rule engine: every page of the website audited with the WCAG 2.1 A and AA rules by node docs/site/audit.mjs.",
+      "source": "https://github.com/dequelabs/axe-core (npm package axe-core, served by jsDelivr)",
+      "license": "MPL-2.0. ClonoLoom downloads it for testing and does not ship or redistribute it.",
+      "base": "https://cdn.jsdelivr.net/npm/axe-core@4.13.0/",
+      "files": [
+        {
+          "path": "axe.min.js",
+          "size": 580491,
+          "sha256": "c24f097bd2f451d4f933e8bc7d8d539f8672a2ebcb5cc9f9f3eec8ca9470a0c1"
         }
       ]
     }

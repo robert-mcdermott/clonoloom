@@ -57,14 +57,51 @@ var remoteActions = []remoteAction{
 		"opening":  textArg("What of it to open, such as \"T cells\" (its first if not given)."),
 		"download": flagArg("Download it first if it is not downloaded (openly licensed data only)."),
 	}, "example")},
-	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
-		"view":    textArg("start, data, qc, clonotypes, repertoire or jobs."),
+	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, tracking, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
+		"view":    textArg("start, data, qc, clonotypes, repertoire, tracking or jobs."),
 		"dataset": datasetArg,
 	}, "view")},
 	{Name: "set_definition", Title: "Define clonotypes", Description: "Chooses a dataset's clonotype definition: a preset by name, or one stated in full.", InputSchema: schema(map[string]any{
 		"dataset":    datasetArg,
 		"preset":     textArg("A preset's name (or part of it), such as \"Paired αβ\" or \"Nucleotide junction\"."),
 		"definition": map[string]any{"type": "object", "description": "A definition in full: {name, chains: [] | [locus] | [locus, locus|\"light\"], junction: aa|nt, v: allele|gene|family|none, j: …, cells: primary|all, requireAll, productiveOnly, vendor}."},
+	})},
+	{Name: "annotate_samples", Title: "Annotate samples", Description: "Sets samples' annotation, as the Data view's samples table holds it: each one's subject, time point (day 28, week 4, baseline), reference role (infusion product, donor), tissue, cell subset, condition, batch and HLA. An empty value removes a field; fields not named are left as they are.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"samples": map[string]any{"type": "object", "description": "By sample name: {subject, timepoint, reference, tissue, cellSubset, condition, batch, hla: a value, or \"\" to remove it}."},
+	}, "samples")},
+	{Name: "describe_subjects", Title: "Describe the subjects", Description: "Shows the Tracking view and answers the dataset's subjects as the program reads their annotation: each one's samples in time order with their time points read as days from the subject's reference event, its reference samples and the samples taken at one time (replicates), and the checks' findings (samples without a subject or a time point, time points not understood, subjects without a reference sample).", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+	})},
+	{Name: "track_clonotypes", Title: "Follow clonotypes over time", Description: "Shows the Tracking view's Clonotypes part and follows clonotypes through each subject's samples in time order, under the dataset's clonotype definition and filter (a job; the result kept with the project): each subject's reference sample's largest clonotypes (the default; each sample's largest for a subject without one), each sample's largest, a list, or those a test called. Answers each subject's time points and, for each clonotype followed, why it was chosen and its count, frequency and 95% interval (Wilson's) at each time point, the samples taken at one time pooled.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"by":      textArg("reference (each reference sample's n largest; the default), largest (each sample's n largest), list, test (the n clonotypes the dataset's comparison called, the most significant first: see test_expansion), or class (the n clonotypes of a class against the dataset's base time point: see class_clonotypes)."),
+		"class":   textArg("With by class: emerging (the default), transient, contracting or persistent."),
+		"n":       numberArg("How many: 10 of a reference sample, 5 of each sample and 20 of a test's calls by default, at most 100."),
+		"list":    map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "With by list: the clonotypes, by ID (c-…) or junction (CASSLAGGPEAFF; a paired clonotype's chains joined by \"; \")."},
+		"subject": textArg("The subject to show (the first by default)."),
+	})},
+	{Name: "test_expansion", Title: "Test clonotypes between two time points", Description: "Shows the Tracking view's Tests part and tests each clonotype between two time points of each subject (the samples at one time pooled), under the dataset's clonotype definition and filter (a job; the result kept with the project): the beta-binomial test conditional on the clonotype's total, its variance fitted on the study's replicate samples or two time points named as stable (the default where it can be fitted; else the binomial test), the binomial test, or Fisher's exact test, two-sided or one-sided, the false discovery rate controlled within each subject by Benjamini–Hochberg (the default) or Storey's q-values; clonotypes with fewer than 5 cells or molecules in the two together are not tested. Answers the test used and the variance model fitted, each subject's clonotypes tested, left out, increased and decreased, and the most significant calls. The tests refuse reads.", InputSchema: schema(map[string]any{
+		"dataset":     datasetArg,
+		"from":        textArg("The first time point, by its key as the subjects' samples give it (describe_subjects): day 0, day -7, baseline, reference (the reference sample), visit 2."),
+		"to":          textArg("The second time point."),
+		"test":        textArg("auto (the beta-binomial test where its variance can be fitted, else the binomial test; the default), betabinomial, binomial or fisher."),
+		"stable":      map[string]any{"type": "array", "items": map[string]any{"type": "string"}, "description": "Two time points between which the clonotypes are taken not to change, to fit the beta-binomial test's variance on instead of the replicate samples: [\"day -7\", \"day 0\"]; [] for the replicate samples."},
+		"alternative": textArg("two-sided (the default), increase (more at the second time point) or decrease."),
+		"correction":  textArg("bh (Benjamini–Hochberg; the default) or storey (Storey's q-values)."),
+		"alpha":       numberArg("The false discovery rate at which a clonotype is called: 0.01 by default."),
+		"subject":     textArg("The subject to show (the first by default)."),
+		"calls":       numberArg("How many of each subject's calls to answer (10 by default)."),
+	}, "from", "to")},
+	{Name: "class_clonotypes", Title: "Class clonotypes across time points", Description: "Shows the Tracking view's Classes part and, in each subject, tests each clonotype between a base time point and every later one by the dataset's test (as test_expansion chose it; the beta-binomial test where its variance can be fitted), and classes it by its calls: emerging (called increased at the last time point), transient (called changed at a time point between, not at the last), contracting (called decreased at the last) or persistent (never called, found at every time point). A job; the result kept with the project. Answers each subject's clonotypes by class and the most significant of a class.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"base":    textArg("The base time point, by its key (day -7, baseline): the first other than the reference sample's by default."),
+		"subject": textArg("The subject to show (the first by default)."),
+		"class":   textArg("The class to show and answer: emerging (the default), transient, contracting or persistent."),
+		"count":   numberArg("How many of the class to answer in each subject (10 by default)."),
+	})},
+	{Name: "attribute_samples", Title: "Attribute samples to the reference", Description: "Shows the Tracking view's Attribution part and measures each sample of each subject with a reference sample (an infusion product, a donor) under the dataset's clonotype definition and filter (a job; the result kept with the project): its share in the clonotypes the reference sample holds, and, where the subject has samples before the reference event and the reference shares few clonotypes with them (a donor), the share derived from the reference, each with its 95% interval (Wilson's). Answers each subject's time points, the share before the event and the reference's overlap with it.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
 	})},
 	{Name: "select_clonotype", Title: "Choose a clonotype", Description: "Shows the Clonotypes view and chooses a clonotype, which the inspector describes: by its rank in the table (1 for the first) or its ID.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,

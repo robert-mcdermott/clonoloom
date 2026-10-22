@@ -157,6 +157,9 @@ export function createExamples(app) {
           : h(`span.badge.${LICENSE_BADGE[e.licenseClass] ?? 'accent'}`, { title: e.license }, e.licenseClass === 'open' ? e.license.replace(/\s*\(.*\)$/, '') : 'Terms of use')),
       h('p', e.description),
       h('ul.example-opens', ...e.opens.map((o) => h('li', h('b', o.title), ': ', o.summary))),
+      e.opens.some((o) => o.steps?.length)
+        ? h('details.example-steps', h('summary', 'Guided steps, in the Tracking view'), h('ol', ...e.opens.flatMap((o) => o.steps ?? []).map((step) => h('li', step.title))))
+        : null,
       h('dl.kv.small',
         h('dt', 'Source'), h('dd', e.page ? external(e.page, e.source) : e.source),
         h('dt', 'License'), h('dd', e.licenseUrl ? external(e.licenseUrl, e.license) : e.license),

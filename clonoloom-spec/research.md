@@ -272,6 +272,19 @@ implementations.
   coefficient, top-ten share and homeostasis bins; for each sample, the clonotypes and coverage a
   sample of its depth shows on average (Σ 1−(1−p)^m and 1 − Σ p(1−p)^m); for each pair of
   subjects, the clonotypes their populations share.
+- **Over time (wave 3, slice 4; `internal/simulate/series.go`).** A subject's blood at a time point
+  is its own population, each clone's cells multiplied by its trajectory's fold there (a class of
+  clones chosen at random), mixed with a reference population in a given share: an infusion
+  product (cells collected from the subject's own blood by a multinomial draw, each clone then
+  expanded ex vivo by a log-normal fold) or a donor's population. In each sample, each clone's
+  cells are then multiplied by a gamma of mean 1 and variance v (0.1 in the presets), drawn anew
+  for every sample: the biological variance between blood samples, which a binomial test of two
+  samples ignores (Rytlewski et al. 2019 found it between samples two weeks apart). The log of such
+  a gamma has variance ψ′(1/v) (0.105 for v = 0.1), so two samples' log ratio for a large clone
+  varies by 2ψ′(1/v) beyond sampling. Templates are drawn from each sample's blood by a multinomial.
+  The truth gives each productive clonotype's expected share of the productive cells at each time
+  point (the variance left out), the reference's share of each sample, and the expected share of
+  each sample's productive cells in clonotypes the reference population holds.
 
 ### 5.3 Diversity (wave 2)
 
@@ -544,6 +557,42 @@ compare the figure with another study's, without the text.
   research use, no redistribution, §7.1) or under no stated license are exported only after their
   terms are shown and accepted, and the notice then says not to share the rows. Results computed
   from such data say to read the terms before sharing them.
+
+### 5.8 Tracking and expansion (wave 3, planned)
+
+- **Two samples, one clonotype at a time** (DeWitt et al. 2015, *J Virol* 89:4517,
+  doi:10.1128/JVI.03474-14): with k₁ and k₂ the clonotype's cells or molecules in samples of
+  N₁ and N₂, Fisher's exact test of the 2×2 table [[k₁, k₂], [N₁ − k₁, N₂ − k₂]], each clonotype
+  tested on its own (the total change of the changed clonotypes assumed small). Conditional on
+  the clonotype's total n = k₁ + k₂, this is the binomial test of k₁ ~ Binomial(n, θ) with
+  θ = N₁/(N₁ + N₂), the share of the depth (Rytlewski et al. 2019's code uses this θ, though
+  their text suggests the clonotype's pooled frequency; the depth's share is the conditional
+  null, and the one that matches Fisher's test). DeWitt et al. controlled false discoveries by
+  Storey's positive FDR (q ≤ 0.01 for induced clonotypes, 0.05 for putatively reactive ones;
+  Storey 2002, *J R Stat Soc B* 64:479; Storey and Tibshirani 2003, *PNAS* 100:9440), on
+  productive rearrangements, in templates.
+- **Biological variance** (Rytlewski et al. 2019, *PLoS One* 14:e0213684,
+  doi:10.1371/journal.pone.0213684): k₁ given n is beta-binomial, with mean θ and a scale
+  v(n) = 2 + (b ln n + a)², β₁ = θv, β₂ = (1 − θ)v; the 2, which keeps the beta unimodal, is in
+  their reference code and not in the paper's equation, and a reimplementation without it does
+  not match. a and b are fitted by maximum likelihood (Nelder–Mead from (1, 1) in their code) on
+  the joint counts of two replicate samples, or two samples two weeks apart; they publish no
+  values to reuse. The two-sided p-value sums the beta-binomial probabilities of every outcome no
+  more likely than the one seen; one-sided tests sum a tail. Their defaults: clonotypes by
+  amino-acid junction, productive only, at least 5 in the two samples together (fewer are not
+  tested, nor counted in the false discovery rate), two-sided, Benjamini–Hochberg at 0.01. Between
+  technical replicates, the binomial test called about 1.2 clonotypes changed per pair, and 16 to
+  19 over two to four weeks; the beta-binomial test, far fewer.
+- **Time points** (built in slice 3, `internal/study`): read as days from the subject's reference
+  event, as AIRR Repertoire metadata state them (`collection_time_point_relative`, its unit, and
+  `collection_time_point_reference`, the event) and as studies write them (day 28, D+28, week 4,
+  month 3, baseline); a month is a twelfth of 365.25 days. Samples of one subject at one time are
+  replicates, which Rytlewski et al.'s variance model is fitted on.
+- **Trajectories**: a clonotype's frequency in each sample with its 95% interval (Wilson's, for a
+  count out of the sample's depth), the samples ordered by their time point; a clonotype absent
+  from a sample is shown as below that sample's detection (one in its depth), never as zero.
+- **Attribution**: the share of a sample's cells or molecules in clonotypes its subject's
+  reference sample holds, under the definition, with an interval from a bootstrap of the sample.
 
 ## 6. Datasets
 

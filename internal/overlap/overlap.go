@@ -19,6 +19,7 @@ import (
 
 	"clonoloom/internal/clonotype"
 	"clonoloom/internal/diversity"
+	"clonoloom/internal/dmath"
 	"clonoloom/internal/random"
 )
 
@@ -142,7 +143,7 @@ func Measure(t *clonotype.Table, names []string, subjects, groups map[string]str
 	if opt.Confidence <= 0 || opt.Confidence >= 1 {
 		opt.Confidence = 0.95
 	}
-	z := diversity.NormalQuantile(0.5 + opt.Confidence/2)
+	z := diversity.NormalQuantile(0.5 + float64(opt.Confidence/2))
 	ns := len(names)
 	data := make([]sampleData, ns)
 	for s := range data {
@@ -234,7 +235,7 @@ func Measure(t *clonotype.Table, names []string, subjects, groups map[string]str
 					for _, r := range replicates {
 						column = append(column, r[k][m])
 					}
-					if se := math.Sqrt(spread(column)*spread(column) + unseen[k][m]); !math.IsNaN(se) {
+					if se := math.Sqrt(float64(spread(column)*spread(column)) + unseen[k][m]); !math.IsNaN(se) {
 						hi := 1.0
 						if id == Shared || id == Shared+Rarefied || id == Morisita {
 							hi = math.Inf(1)
@@ -244,7 +245,7 @@ func Measure(t *clonotype.Table, names []string, subjects, groups map[string]str
 						// of none allows.
 						v.SE = Number(se)
 						if est > 0 {
-							f := math.Exp(z * se / est)
+							f := dmath.Exp(z * se / est)
 							v.Lower = Number(min(est/f, hi))
 							v.Upper = Number(min(est*f, hi))
 						} else {
@@ -277,7 +278,7 @@ func Measure(t *clonotype.Table, names []string, subjects, groups map[string]str
 // subjects), it is most of the uncertainty.
 func sharingVariance(data []sampleData, sharedOf map[int][]shared, depth float64, pairIndex func(a, b int) int, point [][]float64, confidence float64) (variance, zeroUpper [][]float64) {
 	ns := len(data)
-	none := -math.Log((1 - confidence) / 2)
+	none := -dmath.Log((1 - confidence) / 2)
 	detected := make([][]float64, ns)
 	for s, d := range data {
 		if d.whole {
@@ -305,13 +306,13 @@ func sharingVariance(data []sampleData, sharedOf map[int][]shared, depth float64
 			var sa, sb, sq, sqb, sq1, sq1b float64
 			for _, m := range da.members {
 				sa++
-				sq += m.abundance * m.abundance
-				sq1 += m.abundance * (m.abundance - 1)
+				sq += float64(m.abundance * m.abundance)
+				sq1 += float64(m.abundance * (m.abundance - 1))
 			}
 			for _, m := range db.members {
 				sb++
-				sqb += m.abundance * m.abundance
-				sq1b += m.abundance * (m.abundance - 1)
+				sqb += float64(m.abundance * m.abundance)
+				sq1b += float64(m.abundance * (m.abundance - 1))
 			}
 			var ea, eb float64
 			if depth > 0 {
@@ -324,18 +325,18 @@ func sharingVariance(data []sampleData, sharedOf map[int][]shared, depth float64
 			}
 			for _, sh := range sharedOf[pairIndex(a, b)] {
 				x, y := da.members[sh.a].abundance, db.members[sh.b].abundance
-				seenAgain := -math.Expm1(A*math.Log1p(-x/A)) * -math.Expm1(B*math.Log1p(-y/B))
+				seenAgain := float64(-dmath.Expm1(A*dmath.Log1p(-x/A)) * -dmath.Expm1(B*dmath.Log1p(-y/B)))
 				pa, pb := min(detected[a][sh.a], 1), min(detected[b][sh.b], 1)
-				pi := -math.Expm1(A*math.Log1p(-pa)) * -math.Expm1(B*math.Log1p(-pb))
-				miss := max((1-pi)-seenAgain*(1-seenAgain), 0)
+				pi := float64(-dmath.Expm1(A*dmath.Log1p(-pa)) * -dmath.Expm1(B*dmath.Log1p(-pb)))
+				miss := max((1-pi)-float64(seenAgain*(1-seenAgain)), 0)
 				vs += miss
 				if depth > 0 {
 					rho := diversity.SeenChance(A, x, depth) * diversity.SeenChance(B, y, depth)
-					vr += rho * rho * miss
+					vr += float64(rho * rho * miss)
 				}
-				vab += x * y * x * y * miss
-				va += x * x * miss
-				vb += y * y * miss
+				vab += float64(x * y * x * y * miss)
+				va += float64(x * x * miss)
+				vb += float64(y * y * miss)
 			}
 			S, R := point[k][0], point[k][4]
 			row[0] = vs
@@ -368,10 +369,10 @@ func sharingVariance(data []sampleData, sharedOf map[int][]shared, depth float64
 			up[2] = 2 * none / (sa + sb)
 			up[3] = none / min(sa, sb)
 			if depth > 0 && sa > 0 && sb > 0 {
-				r := none * (ea / sa) * (eb / sb)
+				r := float64(none * (ea / sa) * (eb / sb))
 				up[4], up[5], up[6], up[7] = r, r/(ea+eb-r), 2*r/(ea+eb), r/min(ea, eb)
 			}
-			up[8] = 2 * none / ((sq/(A*A) + sqb/(B*B)) * A * B)
+			up[8] = 2 * none / ((float64(sq/(A*A)) + float64(sqb/(B*B))) * A * B)
 			if A > 1 && B > 1 {
 				up[9] = 2 * none / ((sq1/(A*(A-1)) + sq1b/(B*(B-1))) * A * B)
 			}
@@ -409,8 +410,8 @@ func measureAll(data []sampleData, counts [][]float64, sharedOf map[int][]shared
 			}
 			t.s++
 			t.sum += x
-			t.sq += x * x
-			t.sq1 += x * (x - 1)
+			t.sq += float64(x * x)
+			t.sq1 += float64(x * (x - 1))
 			if d.whole && depth > 0 {
 				t.rarefied += seen[s](x)
 			}
@@ -428,11 +429,11 @@ func measureAll(data []sampleData, counts [][]float64, sharedOf map[int][]shared
 					continue
 				}
 				n++
-				ab += x * y
+				ab += float64(x * y)
 				inA += x
 				inB += y
 				if rarefiable {
-					rarefied += seen[a](x) * seen[b](y)
+					rarefied += float64(seen[a](x) * seen[b](y))
 				}
 			}
 			ta, tb := tot[a], tot[b]
@@ -529,7 +530,7 @@ func spread(xs []float64) float64 {
 	var ss float64
 	for _, x := range xs {
 		if !math.IsNaN(x) && !math.IsInf(x, 0) {
-			ss += (x - mean) * (x - mean)
+			ss += float64((x - mean) * (x - mean))
 		}
 	}
 	return math.Sqrt(ss / (n - 1))
