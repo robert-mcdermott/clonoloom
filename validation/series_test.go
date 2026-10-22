@@ -106,6 +106,9 @@ func sampleClonotypes(t *testing.T, path string) (map[string]float64, float64) {
 }
 
 func TestSimulatedSeriesAgainstTheirTruth(t *testing.T) {
+	if raceDetector {
+		t.Skip("measured without the race detector (CI's data job), which slows its simulations tenfold")
+	}
 	for _, preset := range []string{"car-t", "transplant", "null-series"} {
 		t.Run(preset, func(t *testing.T) { checkSeries(t, preset) })
 	}

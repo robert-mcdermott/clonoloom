@@ -19,6 +19,9 @@ import (
 )
 
 func TestClassesOfACARTSeries(t *testing.T) {
+	if raceDetector {
+		t.Skip("measured without the race detector (CI's data job), which slows its simulations tenfold")
+	}
 	table, names, design, truth, dir := openSeries(t, "car-t", 0.1)
 	res, err := track.Classify(table, names, design, track.Classing{Base: "day -7"})
 	if err != nil {
@@ -83,6 +86,9 @@ func TestClassesOfACARTSeries(t *testing.T) {
 // the reference, against the reference's true share of the blood: told for the transplant's donors,
 // withheld for the CAR-T products, made from each patient's blood.
 func TestAttributionAgainstTheTruth(t *testing.T) {
+	if raceDetector {
+		t.Skip("measured without the race detector (CI's data job), which slows its simulations tenfold")
+	}
 	for _, preset := range []string{"car-t", "transplant"} {
 		table, names, design, truth, dir := openSeries(t, preset, 0.1)
 		res, err := track.Attribute(table, names, design, 0.95)

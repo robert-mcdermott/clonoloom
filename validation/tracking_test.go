@@ -23,6 +23,9 @@ import (
 )
 
 func TestTrackingIntervalsAgainstTheTruth(t *testing.T) {
+	if raceDetector {
+		t.Skip("measured without the race detector (CI's data job), which slows its simulations tenfold")
+	}
 	for _, c := range []struct {
 		name     string
 		variance float64
