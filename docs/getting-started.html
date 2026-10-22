@@ -67,6 +67,14 @@
           <li><a href="genes.html">Genes and junctions</a></li>
           <li><a href="overlap.html">Overlap</a></li>
         </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
         <h4>Results</h4>
         <ul>
           <li><a href="figures.html">Figures and exports</a></li>
@@ -112,14 +120,16 @@
             <tr><td>Emerson et al. 2017, three small samples (immunoSEQ export)</td><td>46 MB</td><td>immuneACCESS Terms of Use: research only, no redistribution</td><td>three subjects</td></tr>
             <tr><td>A simulated TRB study with known truth</td><td>none: made here in seconds</td><td>none (simulated)</td><td>twelve samples of six subjects</td></tr>
             <tr><td>A simulated TRB study with no difference between its groups</td><td>none: made here in seconds</td><td>none (simulated)</td><td>twelve samples of six subjects</td></tr>
+            <tr><td>A simulated CAR-T study with known truth</td><td>none: made here in seconds</td><td>none (simulated)</td><td>three patients before and after infusion, with their infusion products</td></tr>
+            <tr><td>A simulated transplant study with known truth</td><td>none: made here in seconds</td><td>none (simulated)</td><td>three recipients before and after a transplant, with their donors</td></tr>
           </tbody>
         </table>
       </div>
       <p>Every downloaded file is checked against the checksum recorded when ClonoLoom was released. Data under a provider's terms of use (the immuneACCESS data) need you to read and accept the terms first. <strong>Open T cells</strong> (or B cells) then opens an example as a dataset, which carries its license and citation from then on. The simulated studies are labeled simulated wherever they are shown; see <a href="simulation.html">Simulated studies</a>.</p>
-      <p>To follow the guide, download <strong>Human PBMC from a healthy donor, 1k cells</strong> and open its T cells; for the Repertoire pages, open <strong>A simulated TRB study with known truth</strong>.</p>
+      <p>To follow the guide, download <strong>Human PBMC from a healthy donor, 1k cells</strong> and open its T cells; for the Repertoire pages, open <strong>A simulated TRB study with known truth</strong>; for the Tracking pages, the simulated CAR-T or transplant study. Those two come with <strong>guided steps</strong>, shown in the Tracking view: each step says what to look at, and <strong>Do it</strong> does it, as a script would (<a href="remote-control.html">Remote control</a>).</p>
 
       <h2 id="views">The window</h2>
-      <p>The rail on the left holds the views, in the order an analysis goes: <strong>Data</strong>, <strong>QC</strong>, <strong>Clonotypes</strong>, <strong>Repertoire</strong> and <strong>Jobs</strong>, and the views later releases fill (each says what it will do). The project tree beside them lists the datasets and the results kept; the inspector on the right describes what is chosen; the status bar shows the library, the datasets and the clonotype definition in use. <strong>Search or run a command</strong> (⌘K or Ctrl+K) finds any command, and undo and redo cover every change. The theme button in the header chooses a light or dark theme (or the system's), and turns on color-vision-friendly colors.</p>
+      <p>The rail on the left holds the views, in the order an analysis goes: <strong>Data</strong>, <strong>QC</strong>, <strong>Clonotypes</strong>, <strong>Repertoire</strong>, <strong>Tracking</strong> and <strong>Jobs</strong>, and the views later releases fill (each says what it will do). The project tree beside them lists the datasets and the results kept; the inspector on the right describes what is chosen; the status bar shows the library, the datasets and the clonotype definition in use. <strong>Search or run a command</strong> (⌘K or Ctrl+K) finds any command, and undo and redo cover every change. The theme button in the header chooses a light or dark theme (or the system's), and turns on color-vision-friendly colors.</p>
 
       <h2 id="next">Next</h2>
       <p><a href="opening-data.html">Opening data</a> covers your own files and other tools' tables, and how ClonoLoom checks them.</p>

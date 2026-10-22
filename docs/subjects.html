@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subjects and time points · ClonoLoom</title>
+  <meta name="description" content="Give a study's samples their subjects, time points and reference samples in ClonoLoom, and read how the Tracking view orders and checks them before any clonotype is followed." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/subjects.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Subjects and time points" />
+  <meta property="og:description" content="Give a study's samples their subjects, time points and reference samples in ClonoLoom, and read how the Tracking view orders and checks them before any clonotype is followed." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/subjects.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html" aria-current="page">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Subjects and time points</h1>
+      <p class="doc-lede">Clonotypes are followed and tested within a subject, from one time to another. Before anything is tracked, ClonoLoom reads each sample's subject, time point and role from its annotation, orders each subject's samples in time, and says what it cannot place.</p>
+
+      <h2 id="annotate">Annotate the samples</h2>
+      <p>In the Data view's samples table, give each sample:</p>
+      <ul>
+        <li><strong>Subject</strong>: the person (or animal) the sample comes from. Every comparison over time is within a subject, and between groups the subject is the unit.</li>
+        <li><strong>Time point</strong>: when the sample was taken, as days, weeks, months or years from the subject's reference event: an infusion, a transplant, a vaccination, the start of treatment (day 0).</li>
+        <li><strong>Reference</strong>: for a subject's reference sample, what it is: <em>infusion product</em>, <em>donor</em>, <em>baseline</em>. Tracking can follow its clonotypes, and attribution measures each sample against it. A tissue such as <em>infusion product</em>, <em>apheresis</em>, <em>graft</em> or <em>donor</em> marks the sample as its subject's reference too.</li>
+      </ul>
+      <p><strong>Suggest from file names</strong> reads subjects and time points from the parts of the samples' names (<code>P07_d28</code>), and <strong>Fill from metadata</strong> from AIRR Repertoire metadata (<code>subject_id</code>, <code>collection_time_point_relative</code> with its unit and reference event). Scripts set them with <code>annotate_samples</code> (<a href="remote-control.html">Remote control</a>).</p>
+
+      <h2 id="times">Time points ClonoLoom reads</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Written</th><th>Read as</th></tr></thead>
+          <tbody>
+            <tr><td><code>day 28</code>, <code>d28</code>, <code>D+28</code>, <code>28d</code>, <code>28 days</code></td><td>day 28</td></tr>
+            <tr><td><code>day -7</code>, <code>D-7</code></td><td>7 days before the event</td></tr>
+            <tr><td><code>week 4</code>, <code>wk4</code>, <code>W4</code>, <code>4 weeks</code></td><td>day 28 (labeled week 4)</td></tr>
+            <tr><td><code>month 3</code>, <code>M3</code>, <code>3mo</code></td><td>day 91.3 (a month is a twelfth of 365.25 days)</td></tr>
+            <tr><td><code>year 1</code>, <code>1y</code></td><td>day 365.25</td></tr>
+            <tr><td><code>6h</code>, <code>24 hours</code></td><td>day 0.25, day 1</td></tr>
+            <tr><td><code>14 day (vaccination)</code>, <code>28 days post-infusion</code></td><td>day 14, day 28, with the event named</td></tr>
+            <tr><td><code>21</code></td><td>day 21 (a number alone is days, and the check says so)</td></tr>
+            <tr><td><code>baseline</code>, <code>pre</code>, <code>pre-infusion</code>, <code>screening</code></td><td>before the event, first</td></tr>
+            <tr><td><code>post</code>, <code>post-vaccination</code>, <code>follow-up</code></td><td>after the event, its day unknown: last</td></tr>
+            <tr><td><code>T1</code>, <code>tp2</code>, <code>visit 3</code></td><td>a numbered visit, ordered by its number</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Samples at the same time (<code>day 28</code> and <code>week 4</code> are) are <strong>replicates</strong>: two samples of one subject at one time. Their differences measure the biological and sampling variance that the expansion tests account for, so keep them.</p>
+
+      <h2 id="subjects">The Subjects part</h2>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/subjects-dark.webp" width="2000" height="1250" loading="lazy" alt="The Tracking view's Subjects part on the simulated CAR-T study: three patients' samples on an axis of days from the infusion, their infusion products as diamonds, the two samples before the infusion one above the other, and a table of each patient's samples in time order" /><img class="shot-light" src="../assets/img/subjects-light.webp" width="2000" height="1250" loading="lazy" alt="The Tracking view's Subjects part on the simulated CAR-T study: three patients' samples on an axis of days from the infusion, their infusion products as diamonds, the two samples before the infusion one above the other, and a table of each patient's samples in time order" /></div>
+        <figcaption>The simulated CAR-T study, its subjects and time points read from its metadata.</figcaption>
+      </figure>
+      <p><strong>Tracking › Subjects</strong> shows what ClonoLoom made of the annotation:</p>
+      <ul>
+        <li>each subject's samples on one axis of days from its reference event, reference samples as diamonds, baseline samples in a column before the axis, replicates one above the other, and the subjects colored by condition; the plot saves as a figure;</li>
+        <li>a table of each subject's samples in time order, with their time points, references and replicates, and the samples left out;</li>
+        <li>the checks' findings, warnings first, each with its code.</li>
+      </ul>
+
+      <h2 id="checks">What is checked</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Code</th><th>Severity</th><th>What it says</th></tr></thead>
+          <tbody>
+            <tr><td><code>study-no-subject</code></td><td>warning</td><td>Samples without a subject: left out.</td></tr>
+            <tr><td><code>study-time-unread</code></td><td>warning</td><td>Time points not understood: left out, with the forms ClonoLoom reads.</td></tr>
+            <tr><td><code>study-no-time</code></td><td>warning</td><td>Samples without a time point: left out (a reference sample needs none).</td></tr>
+            <tr><td><code>study-bare-number</code></td><td>note</td><td>Numbers without a unit, read as days.</td></tr>
+            <tr><td><code>study-replicates</code></td><td>note</td><td>Samples of one subject taken at one time.</td></tr>
+            <tr><td><code>study-one-sample</code></td><td>note</td><td>Subjects with one time point: nothing to follow or test.</td></tr>
+            <tr><td><code>study-no-reference</code></td><td>note</td><td>Subjects without a reference sample: nothing to attribute to.</td></tr>
+            <tr><td><code>study-mixed-times</code></td><td>note</td><td>Days with visits, or "after" without a day: their order assumed.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Scripts read the same with <code>describe_subjects</code>. Then follow the subjects' clonotypes through their samples (<a href="tracking.html">Following clonotypes</a>). Testing them between two samples, and attributing a sample to its reference, come with the next parts of the Tracking view.</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="overlap.html"><span>Previous</span>Overlap</a>
+        <a class="next" href="tracking.html"><span>Next</span>Following clonotypes</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

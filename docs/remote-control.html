@@ -67,6 +67,14 @@
           <li><a href="genes.html">Genes and junctions</a></li>
           <li><a href="overlap.html">Overlap</a></li>
         </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
         <h4>Results</h4>
         <ul>
           <li><a href="figures.html">Figures and exports</a></li>
@@ -101,6 +109,7 @@ def act(action, **args):
     return json.load(urllib.request.urlopen(request))
 
 act("open_example", example="simulated-standard")
+act("annotate_samples", samples={"S01-1": {"timepoint": "day 0"}, "S01-2": {"timepoint": "day 0"}})  # replicates
 diversity = act("measure_diversity")["data"]
 print(act("show_methods")["data"]["text"])</code></pre></div>
 
@@ -115,6 +124,12 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
             <tr><td><code>open_example</code></td><td>Opens an example dataset, downloading openly licensed data first when asked</td></tr>
             <tr><td><code>show</code></td><td>Shows a view, with a dataset in focus</td></tr>
             <tr><td><code>set_definition</code></td><td>Chooses a dataset's clonotype definition: a preset by name, or one stated in full</td></tr>
+            <tr><td><code>annotate_samples</code></td><td>Sets samples' subject, time point, reference role, tissue, cell subset, condition, batch and HLA</td></tr>
+            <tr><td><code>describe_subjects</code></td><td>Answers each subject's samples in time order, its reference samples and replicates, and the checks' findings</td></tr>
+            <tr><td><code>track_clonotypes</code></td><td>Follows a reference sample's largest clonotypes, each sample's largest, a list, a test's calls or a class through each subject's time points, and answers each one's frequency with its interval</td></tr>
+            <tr><td><code>class_clonotypes</code></td><td>Classes each clonotype of each subject across time points against a base, and answers each subject's clonotypes by class</td></tr>
+            <tr><td><code>attribute_samples</code></td><td>Measures each sample against its subject's reference sample, and answers the shares with their intervals</td></tr>
+            <tr><td><code>test_expansion</code></td><td>Tests each clonotype between two time points of each subject (the beta-binomial test where replicates allow), and answers the fit and each subject's calls with their p-values</td></tr>
             <tr><td><code>select_clonotype</code></td><td>Chooses a clonotype by its rank in the table or its ID</td></tr>
             <tr><td><code>measure_diversity</code></td><td>Measures each sample's diversity and answers the main measures with their intervals</td></tr>
             <tr><td><code>rarefy</code></td><td>Rarefies and extrapolates each sample and answers each at a chosen level</td></tr>

@@ -48,7 +48,7 @@
   <main id="main">
     <section class="hero">
       <div class="container hero-grid">
-        <a class="eyebrow" href="https://github.com/robert-mcdermott/clonoloom/releases/tag/v0.2.0"><span class="pill">v0.2.0</span> Repertoire basics: diversity, rarefaction, gene usage and overlap, each with its uncertainty</a>
+        <a class="eyebrow" href="https://github.com/robert-mcdermott/clonoloom/releases/tag/v0.3.0"><span class="pill">v0.3.0</span> Repertoire basics: diversity, rarefaction, gene usage and overlap, each with its uncertainty</a>
         <h1>Immune repertoires <span class="accent">you can check</span></h1>
         <p class="lede">ClonoLoom opens the output of your annotation pipeline (AIRR Community files, Cell Ranger V(D)J, immunoSEQ exports, or another tool's table), checks it, and groups it into clonotypes by a definition you can see. It measures each repertoire's diversity, compares samples at equal coverage, counts their genes and junctions, and measures how much they overlap, each number with its interval, and writes figures, exports and a methods paragraph others can check, keeping every step on record. It runs on your own computer as one self-contained program, installed with a single command: no account, Python or R, and your data never leave your machine.</p>
         <figure class="hero-shot">
@@ -223,6 +223,24 @@
 
         <article class="feature">
           <div class="feature-text">
+            <span class="kicker">Tracking</span>
+            <h3>Clonotypes followed through time, and tested</h3>
+            <p>Each subject's samples placed in time from their annotation or metadata. Its clonotypes followed through the time points with their intervals, as threads and alluvial plots; tested between two time points by the beta-binomial test, its variance between blood samples fitted on replicate samples, with false discoveries controlled; classed across several; and each sample measured against an infusion product or a donor.</p>
+            <ul class="checklist">
+              <li>Every p-value equal to R's, or an independent R implementation's, to 4 × 10⁻¹²</li>
+              <li>No false call where nothing changes, where the binomial test makes some</li>
+              <li>A donor's share of the blood within 0.065 of the truth</li>
+            </ul>
+            <a class="more-link" href="docs/tests.html">Expanded and contracted clonotypes</a>
+          </div>
+          <figure>
+        <div class="shot"><img class="shot-dark" src="assets/img/tracking-dark.webp" width="2000" height="1250" loading="lazy" alt="The Tracking view's Clonotypes part on the simulated CAR-T study: each sample's five largest clonotypes of one patient as threads through the infusion product and six time points, the one that peaks at day 14 chosen and drawn with its intervals, and an alluvial plot of their shares below" /><img class="shot-light" src="assets/img/tracking-light.webp" width="2000" height="1250" loading="lazy" alt="The Tracking view's Clonotypes part on the simulated CAR-T study: each sample's five largest clonotypes of one patient as threads through the infusion product and six time points, the one that peaks at day 14 chosen and drawn with its intervals, and an alluvial plot of their shares below" /></div>
+        <figcaption>A simulated CAR-T patient's largest clonotypes through time, one drawn with its intervals.</figcaption>
+      </figure>
+        </article>
+
+        <article class="feature reverse">
+          <div class="feature-text">
             <span class="kicker">Figures, exports and the record</span>
             <h3>Results others can check</h3>
             <p>Every plot is saved as a figure whose caption states the clonotype definition, the unit and the samples. Rearrangements, clonotypes and results are exported with a notice of where they came from and under what license. A methods paragraph is written from the project's record, with numbered references, saying only what was done.</p>
@@ -285,6 +303,8 @@
               <tr><td><strong>Rarefaction and extrapolation</strong></td><td>iNEXT 3.0.2 at 40 sizes along each of 18 samples' curves</td><td class="agree">to 10⁻⁹ (the extrapolated Shannon diversity within 8 × 10⁻⁸)</td></tr>
               <tr><td><strong>Gene usage</strong></td><td>An independent R implementation on 15 samples</td><td class="agree">8,277 shares to 10⁻¹²</td></tr>
               <tr><td><strong>Overlap</strong></td><td>immunarch, vegan and R on 69 pairs; scirpy 0.25.1 on four single-cell runs</td><td class="agree">to 10⁻⁹; the same shared clonotypes</td></tr>
+              <tr><td><strong>Tests over time</strong></td><td>R's <code>binom.test</code> and <code>fisher.test</code> on 215 cases; an independent R implementation of the beta-binomial test and its fit</td><td class="agree">to 4 × 10⁻¹²; the same fit</td></tr>
+              <tr><td><strong>Tracking, classes and attribution</strong></td><td>Simulated CAR-T, transplant and null series whose truth is known</td><td class="agree">no false call where nothing changes; every class right; a donor's share within 0.065</td></tr>
               <tr><td><strong>Intervals</strong></td><td>Simulated repertoires whose truth is known: 200 samples of each, 330 pairs</td><td class="agree">diversity 91.5–99.5% where well sampled; usage 97.4–100%; overlap 95.2%</td></tr>
               <tr><td><strong>The simulator</strong></td><td>10x Genomics' 10k PBMC data's junction lengths and V usage</td><td class="agree">mean length within 0.1 amino acids</td></tr>
               <tr><td><strong>Scale</strong></td><td>A million rearrangements; a cohort of 100 samples; a million clonotypes</td><td class="agree">read and checked in 1.5 s; reopened in 118 ms; a page in 37 ms</td></tr>
@@ -308,7 +328,8 @@
             <tbody>
               <tr><td><strong>0.1.0</strong></td><td>Trust the data: AIRR, Cell Ranger and immunoSEQ data read and checked, each sample's quality, clonotypes by an explicit definition, and a project that records where the data came from</td></tr>
               <tr><td><strong>0.2.0</strong></td><td>Repertoire basics: diversity, rarefaction and extrapolation, gene usage and junctions, and overlap, each with its uncertainty; figures, exports and other tools' tables; simulated studies and remote control</td></tr>
-              <tr><td><strong>0.3.0</strong> (coming)</td><td>Tracking: subjects and time points, clonotypes followed through a subject's samples, and the clonotypes that expand or contract, tested with false discoveries controlled</td></tr>
+              <tr><td><strong>0.3.0</strong></td><td>Tracking: subjects and time points, clonotypes followed through a subject's samples, the clonotypes that expand or contract tested with false discoveries controlled (the beta-binomial test, its variance fitted on replicate samples), classes across time points, and attribution to an infusion product or a donor; the website</td></tr>
+              <tr><td><strong>0.4.0</strong> (coming)</td><td>Specificity: TCRdist and neighborhoods, generation probability, clonotype networks, and matching to known epitopes</td></tr>
             </tbody>
           </table>
         </div>

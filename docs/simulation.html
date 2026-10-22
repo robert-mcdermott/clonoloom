@@ -67,6 +67,14 @@
           <li><a href="genes.html">Genes and junctions</a></li>
           <li><a href="overlap.html">Overlap</a></li>
         </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
         <h4>Results</h4>
         <ul>
           <li><a href="figures.html">Figures and exports</a></li>
@@ -100,9 +108,20 @@
             <tr><td><code>standard</code></td><td>3 control, 3 with expanded clones (fewer clonotypes, a heavier tail, five clones holding 22% of the cells)</td><td>2 of each subject, 12,000 to 45,000 templates</td><td>Diversity, rarefaction and overlap, with a real difference between the groups</td></tr>
             <tr><td><code>null</code></td><td>6 of one kind, in two groups</td><td>2 of each</td><td>A comparison of the groups should find nothing</td></tr>
             <tr><td><code>small</code></td><td>2</td><td>1 of each</td><td>Tests</td></tr>
+            <tr><td><code>car-t</code></td><td>2 responders, 1 non-responder</td><td>A week before infusion (twice), days 7, 14, 28 and 90, and the infusion product</td><td>Tracking, expansion tests and attribution after a CAR-T infusion</td></tr>
+            <tr><td><code>transplant</code></td><td>3 recipients, 1 with graft-versus-host disease</td><td>Before the transplant, days 30, 100 and 365 (twice), and the donor's blood</td><td>Tracking and attribution to a donor</td></tr>
+            <tr><td><code>null-series</code></td><td>4 of one kind</td><td>Days 0, 14 and 28, twice each</td><td>Expansion tests should find nothing</td></tr>
           </tbody>
         </table>
       </div>
+
+      <h2 id="series">Studies over time</h2>
+      <p>The <code>car-t</code>, <code>transplant</code> and <code>null-series</code> presets sample each subject at several time points, in days from its reference event, and the Example data dialog offers the first two. Between time points, classes of clones follow known trajectories: in the CAR-T study, 2% of the product's clones expand after the infusion and 20% contract. A reference population is mixed into the blood in a known share at each time point: an <strong>infusion product</strong>, made from cells collected from the subject's own blood and expanded ex vivo, or a <strong>donor's repertoire</strong>. It is sampled once as the subject's reference sample, whose tissue (infusion product, donor blood) marks it as the reference in the Tracking view. Every sample, replicates at one time included, draws each clone around its expected frequency with biological variance, so that two samples of one subject differ by more than sampling, as blood samples do; the replicates measure it.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/subjects-dark.webp" width="2000" height="1250" loading="lazy" alt="The Tracking view's Subjects part on the simulated CAR-T study: three patients' samples on an axis of days from the infusion, their infusion products as diamonds, the two samples before the infusion one above the other, and a table of each patient's samples in time order" /><img class="shot-light" src="../assets/img/subjects-light.webp" width="2000" height="1250" loading="lazy" alt="The Tracking view's Subjects part on the simulated CAR-T study: three patients' samples on an axis of days from the infusion, their infusion products as diamonds, the two samples before the infusion one above the other, and a table of each patient's samples in time order" /></div>
+        <figcaption>The simulated CAR-T study's subjects, as the Tracking view reads them from its metadata.</figcaption>
+      </figure>
+      <p>The truth adds each sample's day, the reference's expected share of its cells, and the expected share of its cells in the reference's clonotypes. Because a product is made from the subject's own cells, about three quarters of the blood is in its clonotypes even before the infusion. For each subject, a file gives every clonotype's trajectory and expected frequency at each time point.</p>
 
       <h2 id="truth">The truth</h2>
       <p>Beside the samples (AIRR rearrangement tables, templates as <code>umi_count</code> and reads as <code>duplicate_count</code>, with their Repertoire metadata), the <code>truth</code> folder holds every clone of every subject's population, and for each population its clonotypes, Hill numbers, Shannon and Simpson indices, evenness, clonality, Gini, largest clones' share and homeostasis; for each sample, the clonotypes and coverage a sample of its depth shows on average; and for each pair of subjects, the clonotypes they share. ClonoLoom's own interval coverage is measured against it (<a href="../science.html">Science</a>).</p>
