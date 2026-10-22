@@ -111,6 +111,7 @@ func TestRarefactionAgreesWithINEXT(t *testing.T) {
 	}
 	sort.Strings(files)
 	samples := map[string][]float64{} // by name, for the cohorts
+	fetched := map[string]bool{}      // the data sets whose files were found
 	var ratios []float64
 	ratio := func(where string, ours, theirs float64) {
 		if opt.Replicates == 0 || !(theirs > 1e-9) || math.IsNaN(ours) {
@@ -123,13 +124,15 @@ func TestRarefactionAgreesWithINEXT(t *testing.T) {
 	}
 	compared, flat := 0, 0
 	for _, rel := range files {
+		dataset := strings.Split(rel, "/")[0]
 		path, ok := referencePath(t, rel)
 		if !ok {
-			if required(strings.Split(rel, "/")[0]) {
+			if required(dataset) {
 				t.Errorf("%s is required and missing", rel)
 			}
 			continue
 		}
+		fetched[dataset] = true
 		abundances := sampleAbundances(t, path)
 		for name, want := range ref.Files[rel] {
 			x, ok := abundances[name]
@@ -228,8 +231,18 @@ func TestRarefactionAgreesWithINEXT(t *testing.T) {
 	if compared == 0 {
 		t.Skip("no development data: node validation/fetch.mjs --ci")
 	}
-	// The cohorts: the same levels suggested, the same values there.
+	// The cohorts: the same levels suggested, the same values there. A cohort is named for its data
+	// set, and left out with it when its files are not fetched (Emerson et al. 2017's are maintainer
+	// validation only).
 	for name, levels := range ref.Cohorts {
+		if !fetched[name] {
+			if required(name) {
+				t.Errorf("cohort %s is required and missing", name)
+			} else {
+				t.Logf("cohort %s: not fetched, left out", name)
+			}
+			continue
+		}
 		var names []string
 		for _, s := range levels.Size.Assemblage {
 			if len(names) == 0 || names[len(names)-1] != s {
