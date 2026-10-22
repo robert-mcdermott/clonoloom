@@ -42,7 +42,7 @@ func TestTheRecordedExamples(t *testing.T) {
 			t.Errorf("%s: license class %q is not offered", s.Name, s.LicenseClass)
 		}
 	}
-	for _, want := range []string{"10x-pbmc-1k", "10x-mouse-splenocytes-1k", "10x-pbmc-10k-v2", "10x-mouse-splenocytes-5k-gemx", "airr-standards-tests", "emerson-2017-immunoseq"} {
+	for _, want := range []string{"10x-pbmc-1k", "10x-mouse-splenocytes-1k", "10x-pbmc-10k-v2", "10x-mouse-splenocytes-5k-gemx", "airr-standards-tests", "dash-2017-tcrdist3", "ots-healthy-pbmc", "emerson-2017-immunoseq"} {
 		if _, ok := names[want]; !ok {
 			t.Errorf("%s is not offered", want)
 		}
@@ -54,12 +54,13 @@ func TestTheRecordedExamples(t *testing.T) {
 	if sources[0].Name != "10x-pbmc-1k" || sources[len(sources)-1].LicenseClass != "terms" {
 		t.Errorf("listed first %s, last %s", sources[0].Name, sources[len(sources)-1].Name)
 	}
-	// Every recorded data set identifies its files, offered or not.
+	// Every recorded data set identifies its files, offered or not: the two ADC queries, and
+	// three kept for the readers' validation.
 	all, err := ParseAll(raw)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(all) != len(sources)+2 {
+	if len(all) != len(sources)+5 {
 		t.Errorf("%d recorded, %d offered", len(all), len(sources))
 	}
 	adc := all[0]
@@ -72,7 +73,7 @@ func TestTheRecordedExamples(t *testing.T) {
 		t.Errorf("identified %v", ids)
 	}
 	lib := &Library{Sources: sources}
-	if hosts := strings.Join(lib.Hosts(), " "); hosts != "adaptivepublic.blob.core.windows.net cf.10xgenomics.com raw.githubusercontent.com" {
+	if hosts := strings.Join(lib.Hosts(), " "); hosts != "adaptivepublic.blob.core.windows.net cf.10xgenomics.com opig.stats.ox.ac.uk raw.githubusercontent.com" {
 		t.Errorf("hosts %s", hosts)
 	}
 }

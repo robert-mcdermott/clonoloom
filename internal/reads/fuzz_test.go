@@ -18,6 +18,11 @@ func FuzzRead(f *testing.F) {
 	f.Add([]byte("nucleotide\taminoAcid\tcount (templates/reads)\tvMaxResolved\tvIndex\tcdr3Length\tsequenceStatus\nACGT\t\t4\tTCRBV09-01*1\t0\t4\tOut\n"))
 	f.Add([]byte("\x1f\x8b\x08\x00"))
 	f.Add([]byte("clonotype_id,frequency,proportion,cdr3s_aa\n"))
+	f.Add([]byte(mixcr3Header + "\n0\t5\t0.5\tTRBV9*00(100),TRBV2*00(100)\t\tTRBJ2-7*00(90)\t\tTGTGCCAGCAGCGTAGGG\tCASS_G\t:::\n"))
+	f.Add([]byte("cloneId\treadCount\tuniqueMoleculeCount\tbestVHit\taaSeqCDR3\n1\t9\t\tTRAV1*00\tCA*F\n"))
+	f.Add([]byte("\"{\"\"Run\"\": 1}\"\n" + otsHeader + "\nA-1_contig_1,B,T,TRBV2*01,,TRBJ2-7*01,TGT,C,1.0,A-1_contig_2,A,T,TRAV1*01,,TRAJ33*01,TGT,C\n"))
+	f.Add([]byte("\"{\"\"Run\"\": \"\"x\"\"}\"\nlocus,v_call,junction_aa,Redundancy\nH,IGHV1-2*02,CARW,2.0\n"))
+	f.Add([]byte("subject,epitope,count,v_a_gene,cdr3_a_aa,v_b_gene,cdr3_b_aa,clone_id\ns,PA,3,TRAV7-3*01,CAVF,TRBV29*01,CASSF,c1\ns,NP,1e9,,,TRBV1*01,CTSF,c2\n"))
 	f.Fuzz(func(t *testing.T, data []byte) {
 		res, err := ReadReader(context.Background(), strings.NewReader(string(data)), "fuzz.tsv")
 		if err != nil {

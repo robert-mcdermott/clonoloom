@@ -114,12 +114,11 @@ as an AIRR call lists them.
 
 ### 1.4 Formats of later waves
 
-MiXCR clone tables (v3 `cloneCount`, v4 `readCount`; `aaSeqCDR3` is the junction; scores in
-calls, `*00` alleles), OAS and OTS data units (gzipped CSV whose first line is CSV-quoted JSON
-metadata; paired units with `_heavy`/`_light` or `_beta`/`_alpha` suffixes; integers written as
-`214.0`), VDJdb releases (re-packaged in 2026; parse by header name), TRUST4, IMGT/HighV-QUEST
-and VDJtools. Each is researched again when its wave is planned. Until then, MiXCR's and VDJtools'
-tables are read through a mapping of their columns (§1.5).
+VDJdb releases (re-packaged in 2026: a normalized primary zip, the legacy files `vdjdb.txt`,
+`vdjdb.slim.txt` and `vdjdb_full.txt` in a zip of their own, and an AIRR zip; tab-separated, parsed
+by header name), TRUST4, IMGT/HighV-QUEST and VDJtools. Each is researched again when its wave is
+planned. Until then, VDJtools' tables are read through a mapping of their columns (§1.5). MiXCR's
+clone tables, OAS and OTS data units and tcrdist3's clone tables are read from wave 4 (§1.6).
 
 ### 1.5 Tables with mapped columns (wave 2)
 
@@ -146,6 +145,39 @@ confirms (requirement D7, `internal/reads/mapped.go`):
 - **The mapping is part of the dataset**, as a format is: it is kept with the project, enters the
   dataset's ID (one file under two mappings is two datasets) and its cache key, and is stated in the
   methods paragraph.
+
+### 1.6 MiXCR, OAS and OTS, and tcrdist3's tables (wave 4)
+
+Checked against the files themselves (PyClonal's MiXCR 3 tables, MiLaboratories' benchmark tables
+of MiXCR 4, OTS and OAS units of five studies, tcrdist3's `dash.csv` and `dash_human.csv`) and the
+tools' documentation; how each is read is in `docs/FORMATS.md`.
+
+- **MiXCR** (`mixcr exportClones`): MiXCR 3 names counts `cloneCount`, MiXCR 4 `readCount`, with
+  `uniqueMoleculeCount` where molecules were tagged; MiXCR 2 writes readable names (`Clone count`,
+  `All V hits`, `AA. Seq. CDR3`). `nSeqCDR3` and `aaSeqCDR3` are the IMGT junction; `_` marks a
+  frameshift, `*` a stop, lower case an imputed residue. Hits are listed best first with their
+  scores; `*00` is MiXCR's allele for a library without alleles. MiXCR 4 splits files by chain
+  (`<sample>.clones_TRB.tsv`) and, for single cells, writes each clone's chain in each cell
+  (`tagValueCELL`), MiXCR's clonotype of cells as `cellGroup`, and the chain as `topChains`.
+  **ClonoLoom's choice:** the call is every hit with the best score (a tie kept as a set, as AIRR
+  calls list ties), without its score and without `*00`; a table is counted in molecules only when
+  every clone has them.
+- **OAS and OTS** (Olsen et al. 2022, *Protein Sci* 31:141, doi:10.1002/pro.4205; Raybould et al.
+  2024, *Cell Rep* 43:114704, doi:10.1016/j.celrep.2024.114704; both CC BY 4.0): gzipped CSV,
+  the first line the unit's metadata as JSON in one CSV field (a link may hold a zero-width
+  space), then IgBLAST's AIRR columns; OAS's unpaired units have no `sequence_id` and count each
+  sequence by `Redundancy`; paired units hold each AIRR column once per chain (`_heavy`, `_light`;
+  `_beta`, `_alpha`, the β block first), one row per cell, with 10x Genomics' contig names
+  (`<barcode>_contig_1`), each barcode once a unit. Loci are one letter, booleans `T`/`F`,
+  integers decimals. **ClonoLoom's choice:** `Redundancy` counts sightings of a sequence, reads or
+  molecules as the study tagged them, so the user confirms the unit.
+- **tcrdist3's clone tables** (Mayer-Blackwell et al. 2021; tcrdist3 is MIT): a row per clone,
+  each chain's `v_b_gene`, `j_b_gene`, `cdr3_b_aa` (the IMGT junction) and `cdr3_b_nucseq` (chain
+  letters `a`, `b`, `g`, `d`), the clone's `count`, and `subject`, `epitope` and `clone_id` where
+  given. tcrdist3 itself counts cells, templates or reads alike in `count`. **ClonoLoom's choice:**
+  a table of paired chains is single-cell data, so a clone of n cells is read as n cells (the
+  clonotype tables count cells, not counts); a table of one chain is bulk, its unit for the user
+  to confirm.
 
 ## 2. Gene nomenclature
 
@@ -594,6 +626,60 @@ compare the figure with another study's, without the text.
 - **Attribution**: the share of a sample's cells or molecules in clonotypes its subject's
   reference sample holds, under the definition, with an interval from a bootstrap of the sample.
 
+### 5.9 Specificity (wave 4, planned)
+
+- **TCRdist** (Dash et al. 2017, *Nature* 547:89, doi:10.1038/nature22383; as tcrdist3 computes
+  it, Mayer-Blackwell et al. 2021, *eLife* 10:e68605, doi:10.7554/eLife.68605; tcrdist3 and its
+  distance library are MIT, so their parameters may be read and matched). Two residues differ by
+  min(4, 4 − BLOSUM62(a, b)), and a residue by 0 from itself; the only differences under 4 are
+  AS 3, DE 2, DN 3, EK 3, EQ 2, FW 3, FY 1, HN 3, HY 2, IL 2, IM 3, IV 1, KQ 3, KR 2, LM 2, LV 3,
+  MV 3, NS 3, QR 3, ST 3 and WY 2. A chain's distance sums four loops: CDR1, CDR2 and CDR2.5 (the
+  loop between CDR2 and CDR3 that faces the peptide–MHC), each weight 1, and the CDR3, weight 3.
+  - The V gene's three loops are strings of one length within an organism and chain, aligned
+    with the gap character `.`, compared position by position. tcrdist3 encodes `.` (and `X`,
+    `*`) outside its alphabet, and its matrix gives them 0 against anything: a gap opposite a
+    residue costs nothing, not the gap penalty Dash et al. describe. Human loops are IMGT columns
+    27–38, 56–65 and 81–86; tcrdist3's mouse α and β alignments place them at 28–39, 57–66 and
+    82–88, so the loops are taken from its database as written, not recomputed.
+  - The CDR3 (the IMGT junction) leaves out its first three and last two residues. Of equal
+    length, its distance is the sum of the residues' differences. Of different lengths, the
+    shorter is aligned to the longer's two ends with the Δ extra residues of the longer left out
+    at one place, chosen where the sum of differences is least among positions 5 to (shorter
+    length − 5), widened until there is one; each left-out residue costs 4. tcrdist3 multiplies the
+    whole CDR3 term by 3 (3·differences + 12·Δ), its distance library's own default does not (4 per
+    gap and a fixed gap position), and Dash et al. say 8: three numbers, and tcrdist3's is the
+    one ClonoLoom matches.
+  - Distances are integers (tcrdist3 sums them in 16-bit integers); a pair's is the sum of its
+    chains'. tcrdist3 takes the single allele given; the original tcr-dist took the least
+    distance over a gene's alleles.
+- **Neighborhoods** (Mayer-Blackwell et al. 2021): a centroid's radius is the largest of
+  0, 2, …, 48 at which its weighted background neighbors are at most a share 10⁻⁶ of the
+  background (the paper's; tcrdist3's function defaults to 10⁻⁵); the background is 100,000
+  receptors drawn from a recombination model with the antigen-enriched set's V and J genes,
+  weighted by w = p(V, J) / q(V, J), the pair's share in the sample over its share in the draws,
+  plus 100,000 cord-blood receptors of weight 1. Each centroid's report: its neighbors in the
+  sample and the background, the weighted background rate, the relative rate
+  ((n + 1)/(N + 2) over the background's), an odds ratio with one added to each count, and a χ²
+  test; a motif from the neighbors aligned to the centroid (ambiguity up to 3 residues in
+  tcrdist3's code, 5 in the paper).
+- **Generation probability** (Sethna et al. 2019, *Bioinformatics* 35:2974,
+  doi:10.1093/bioinformatics/btz035; models in IGoR's format, Marcou et al. 2018, *Nat Commun*
+  9:561). The probability of an amino-acid CDR3 (the junction, both conserved residues included)
+  summed over every recombination event that makes it, by dynamic programming over its codons:
+  P(V) P(D, J) (P(D | J) for T cells) and each segment's deletions (palindromic nucleotides as
+  negative deletions), the insertions' lengths and a dinucleotide Markov chain for their
+  nucleotides, the first one drawn from the chain's stationary distribution; the DJ insertion read
+  from its J end. What OLGA does, and an exact reimplementation must too: genes not marked
+  functional (`F` or `(F)`) or without an anchor contribute nothing and keep their share (P(V) is
+  not made to sum to 1 again); only the Markov rows are normalized; the longest insertions are
+  cut by the codon phase at which the V ends (with 30 the longest TRB insertion, 29, 28 or 27 are
+  summed); a D deleted entirely only by left and right deletions that sum to its length; V and J
+  each keep at least one nucleotide in the CDR3; the probability is over all recombination events,
+  not only productive ones; V and J masks give joint probabilities. The default models' files carry
+  no data license apart from the GPL-3.0 of their repositories (§7.1), and their versions differ
+  (OLGA 1.2.4 and 1.3.0 give different IGH, IGK and IGL probabilities), so the model's version and
+  checksum are part of every result.
+
 ## 6. Datasets
 
 All are listed in `validation/sources.json` with their URL, sizes and SHA-256, and fetched by
@@ -609,10 +695,14 @@ All are listed in `validation/sources.json` with their URL, sizes and SHA-256, a
 | `emerson-2017-immunoseq` | Three small samples of Emerson et al. 2017 (*Nat Genet* 49:659, doi:10.1038/ng.3822) in immunoSEQ v3 format, taken by HTTP range from the published 19.9 GB archive | immuneACCESS Terms of Use (research use, no redistribution) | maintainer validation only |
 | `emerson-2017-adc` | The same cohort through VDJServer's ADC API as AIRR TSV | immuneACCESS Terms of Use | maintainer validation only |
 | `vdjserver-ramos-libra` | One single-cell BCR repertoire of the LIBRA-seq study (Setliff et al. 2019, *Cell* 179:1636) through the ADC API | not stated | maintainer validation only |
+| `dash-2017-tcrdist3` | Dash et al. 2017's epitope-specific paired TCRs as tcrdist3 distributes them: 1,924 mouse clones (3,405 cells) for seven epitopes, 415 human clones for three; tcrdist3 at a pinned commit | MIT (tcrdist3) | per-commit CI; the tcrdist3 reader; TCRdist against tcrdist3 (wave 4); an example |
+| `ots-healthy-pbmc` | Three OTS paired units of healthy donors' blood (Sureshchandra et al. 2023, 4,424 cells; Bai et al. 2023; Poon et al. 2023) | CC BY 4.0 (OTS) | per-commit CI; the units' reader; an example |
+| `oas-units` | Two OAS units: unpaired IgG heavy chains (Bashford-Rogers et al. 2013) and paired heavy and light chains (Eccles et al. 2020) | CC BY 4.0 (OAS) | per-commit CI; the units' reader |
+| `pyclonal-mixcr` | Two bulk TCR clone tables of MiXCR 3, PyClonal's sample inputs | MIT (PyClonal) | per-commit CI; the MiXCR reader |
+| `mixcr-benchmark-v4` | A single-cell B-cell clone table of MiXCR 4 (MiLaboratories' benchmark of 10x Genomics' 10k PBMC data) | not stated | maintainer validation only |
 
-Later waves add: Dash et al. 2017's epitope-specific TCRs as tcrdist3 distributes them (MIT),
-OAS and OTS subsets (CC BY 4.0), DeWitt et al. 2015's longitudinal TRB repertoires (ADC), scirpy's
-example datasets (Wu et al. 2020, Maynard et al. 2020), and VDJdb (on request only).
+Later waves add: DeWitt et al. 2015's longitudinal TRB repertoires (ADC), scirpy's example
+datasets (Wu et al. 2020, Maynard et al. 2020), and VDJdb (on request only).
 
 ## 7. Licenses
 

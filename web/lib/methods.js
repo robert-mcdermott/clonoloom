@@ -36,6 +36,9 @@ export const REFERENCES = {
   morisita: 'Morisita M. Measuring of interspecific association and similarity between communities. Mem Fac Sci Kyushu Univ Ser E Biol. 1959;3:65–80',
   horn: 'Horn HS. Measurement of "overlap" in comparative ecological studies. Am Nat. 1966;100:419–424. doi:10.1086/282436',
   horvitzThompson: 'Horvitz DG, Thompson DJ. A generalization of sampling without replacement from a finite universe. J Am Stat Assoc. 1952;47:663–685. doi:10.1080/01621459.1952.10483446',
+  oas: 'Olsen TH, Boyles F, Deane CM. Observed Antibody Space: a diverse database of cleaned, annotated, and translated unpaired and paired antibody sequences. Protein Sci. 2022;31:141–146. doi:10.1002/pro.4205',
+  ots: 'Raybould MIJ, Greenshields-Watson A, Agarwal P, et al. The Observed T cell receptor Space database enables paired-chain repertoire mining, coherence analysis, and language modeling. Cell Rep. 2024;43:114704. doi:10.1016/j.celrep.2024.114704',
+  tcrdist3: 'Mayer-Blackwell K, Schattgen S, Cohen-Lavi L, et al. TCR meta-clonotypes for biomarker discovery with tcrdist3 enabled identification of public, HLA-restricted clusters of SARS-CoV-2 TCRs. eLife. 2021;10:e68605. doi:10.7554/eLife.68605',
   chaoJost: 'Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. Ecology. 2012;93:2533–2547. doi:10.1890/11-1952.1',
   rytlewski: 'Rytlewski J, Deng S, Xie T, et al. Model to improve specificity for identification of clinically-relevant expanded T cells in peripheral blood. PLoS One. 2019;14:e0213684. doi:10.1371/journal.pone.0213684',
   dewitt: 'DeWitt WS, Emerson RO, Lindau P, et al. Dynamics of the cytotoxic T cell response to a model of acute viral infection. J Virol. 2015;89:4517–4526. doi:10.1128/JVI.03474-14',
@@ -54,6 +57,9 @@ const FORMATS = {
   'cellranger-contigs': '10x Genomics Cell Ranger contig annotations',
   'immunoseq-v3': 'Adaptive Biotechnologies immunoSEQ exports (v3 columns)',
   'immunoseq-v2': 'Adaptive Biotechnologies immunoSEQ exports (v2 columns)',
+  'mixcr-clones': 'MiXCR clone tables',
+  'oas-unit': 'Observed Antibody Space or Observed T cell receptor Space data units',
+  'tcrdist3-clones': 'tcrdist3 clone tables',
   table: 'a table with mapped columns',
 };
 
@@ -119,6 +125,18 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const program_ = `ClonoLoom ${program.version}${program.commit ? ` (commit ${program.commit.slice(0, 7)})` : ''} ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}`;
   sentences.push(`${files} (${joinList(formats)}) ${sources.length === 1 ? 'was' : 'were'} read with ${program_} by its own readers (reader version ${dataset.readerVersion}), which recorded ${sources.length === 1 ? 'its' : 'each file\'s'} SHA-256 checksum as ${sources.length === 1 ? 'it' : 'each'} was read.`);
   if (codes.includes('airr')) sentences.push(`AIRR files were read as the AIRR Community's Rearrangement schema defines them ${cite('airr')}.`);
+  if (codes.includes('mixcr-clones')) sentences.push('MiXCR clone tables were read with each segment\'s best-scoring hits as its call, MiXCR\'s allele *00 (no allele resolved) dropped, and MiXCR\'s CDR3 (from the conserved cysteine to the phenylalanine or tryptophan, both included) as the junction.');
+  if (codes.includes('oas-unit')) {
+    // The database the units come from, as their loci say: OAS holds antibodies, OTS T-cell receptors.
+    const loci = (summary?.samples ?? []).flatMap((x) => Object.keys(x.loci ?? {}));
+    const t = loci.some((l) => l.startsWith('TR'));
+    const b = loci.some((l) => l.startsWith('IG'));
+    const oas = () => `the Observed Antibody Space ${cite('oas')}`;
+    const ots = () => `the Observed T cell receptor Space ${cite('ots')}`;
+    const from = t && !b ? ots() : b && !t ? oas() : `${oas()} and ${ots()}`;
+    sentences.push(`Data units of ${from} were read with their metadata as their samples'; a paired unit's rows as single cells, each with its two chains, named by their contigs' barcode.`);
+  }
+  if (codes.includes('tcrdist3-clones')) sentences.push(`tcrdist3's clone tables ${cite('tcrdist3')} were read with each clone of n cells as n cells with its chains, a sample for each subject and epitope.`);
   // Tables of other tools, read through the columns the user mapped.
   for (const s of sources.filter((x) => x.mapping)) {
     const m = s.mapping;

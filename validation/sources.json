@@ -351,6 +351,139 @@
         }
       ]
     },
+    "dash-2017-tcrdist3": {
+      "title": "Epitope-specific TCRs of Dash et al. 2017 (tcrdist3's clone tables)",
+      "description": "Paired αβ TCRs of CD8+ T cells sorted with peptide–MHC tetramers, as tcrdist3 distributes them: 1,924 clones (3,405 cells) of mice infected with influenza or cytomegalovirus, for seven epitopes, and 415 human clones for three epitopes of influenza, Epstein–Barr virus and cytomegalovirus. Each clone's epitope is known: the data TCRdist was made on.",
+      "source": "tcrdist3, dash.csv and dash_human.csv (https://github.com/kmayerb/tcrdist3), from Dash et al. 2017",
+      "page": "https://github.com/kmayerb/tcrdist3",
+      "publisher": "tcrdist3 (Mayer-Blackwell, Fiore-Gartland, Bradley and colleagues)",
+      "license": "MIT (tcrdist3)",
+      "licenseUrl": "https://github.com/kmayerb/tcrdist3/blob/master/LICENSE",
+      "licenseClass": "open",
+      "citation": "Dash P, Fiore-Gartland AJ, Hertz T, et al. Quantifiable predictive features define epitope-specific T cell receptor repertoires. Nature 2017;547:89–93. doi:10.1038/nature22383",
+      "ci": true,
+      "base": "https://raw.githubusercontent.com/kmayerb/tcrdist3/0e6efa39092e2c64c9c0b52a72c2f5961c161ebb/",
+      "files": [
+        {
+          "path": "dash.csv",
+          "size": 384362,
+          "sha256": "2d7f56f3a5790920996d3347ea0189017d8bafd0a085c8842e177b6570bd44d7"
+        },
+        {
+          "path": "dash_human.csv",
+          "size": 43445,
+          "sha256": "ee89099763f3c5d97eb564f0fe3a0e7edcc443cfff76e92e70acb2d61fd21c71"
+        }
+      ],
+      "opens": [
+        {
+          "title": "Mouse epitope-specific TCRs",
+          "name": "Dash 2017 mouse TCRs",
+          "summary": "1,924 paired αβ TCR clones (3,405 cells) of mice, a sample for each mouse and the epitope its cells were sorted for: influenza's PA, PB1, PB1-F2 and NP, and cytomegalovirus's M38, M45 and m139.",
+          "files": [
+            "dash.csv"
+          ]
+        },
+        {
+          "title": "Human epitope-specific TCRs",
+          "name": "Dash 2017 human TCRs",
+          "summary": "415 paired αβ TCRs of people's CD8+ T cells, a sample for each donor and epitope: influenza's M1, Epstein–Barr virus's BMLF1 and cytomegalovirus's pp65.",
+          "files": [
+            "dash_human.csv"
+          ]
+        }
+      ]
+    },
+    "ots-healthy-pbmc": {
+      "title": "Paired TCRs of healthy donors' blood (Observed T cell receptor Space)",
+      "description": "Three data units of the Observed T cell receptor Space (OTS), each one donor's T cells with their paired α and β chains as IgBLAST annotated them, and the unit's metadata: a healthy adult's PBMC (4,424 cells), and two smaller ones of other studies.",
+      "source": "Observed T cell receptor Space (OTS), Oxford Protein Informatics Group; data units of Sureshchandra et al. 2023, Bai et al. 2023 and Poon et al. 2023",
+      "page": "https://opig.stats.ox.ac.uk/webapps/ots/",
+      "publisher": "Oxford Protein Informatics Group",
+      "license": "CC BY 4.0 (OTS)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "licenseClass": "open",
+      "citation": "Raybould MIJ, Greenshields-Watson A, Agarwal P, et al. The Observed T cell receptor Space database enables paired-chain repertoire mining, coherence analysis, and language modeling. Cell Rep 2024;43:114704. doi:10.1016/j.celrep.2024.114704. Data of Sureshchandra S, et al. Cell Rep 2023;42:112769, doi:10.1016/j.celrep.2023.112769; Bai H, et al. Int Immunopharmacol 2023;124:110983, doi:10.1016/j.intimp.2023.110983; Poon MML, et al. Nat Immunol 2023;24:309–319, doi:10.1038/s41590-022-01395-9.",
+      "ci": true,
+      "base": "https://opig.stats.ox.ac.uk/webapps/ots-ngsdb/",
+      "files": [
+        {
+          "path": "Sureshchandra_2023/csv_paired/SRR18365371_1_Paired_All.csv.gz",
+          "size": 5435854,
+          "sha256": "584ad56267a82ad139f42976f4ddf9c2e3f9f865107fca27957f78b733b67ef6"
+        },
+        {
+          "path": "Bai_2023/csv_paired/SRR14045264_1_Paired_All.csv.gz",
+          "size": 528405,
+          "sha256": "e22b713c0dda2fca929df320c77df4642b539f71268c12ac432cd1939bbfa84e"
+        },
+        {
+          "path": "Poon_2023/csv_paired/SRR19760479_1_Paired_All.csv.gz",
+          "size": 437586,
+          "sha256": "e15503502b17f31842a74eacb764b80e971972806a006501aa90b13a1cf31c70"
+        }
+      ],
+      "opens": [
+        {
+          "title": "A healthy donor's paired TCRs",
+          "name": "OTS healthy donor SRR18365371",
+          "summary": "4,424 T cells of a healthy adult's blood, each with its α and β chains, the unit's metadata (tissue, cells sorted, disease) as the sample's annotation.",
+          "files": [
+            "Sureshchandra_2023/csv_paired/SRR18365371_1_Paired_All.csv.gz"
+          ]
+        }
+      ]
+    },
+    "oas-units": {
+      "title": "Antibody data units of the Observed Antibody Space",
+      "description": "Two small data units of the Observed Antibody Space (OAS): a bulk repertoire's IgG heavy chains (unpaired) and a single-cell repertoire's paired heavy and light chains, each with its metadata. For the reader's validation; B-cell examples come with wave 5.",
+      "source": "Observed Antibody Space (OAS), Oxford Protein Informatics Group; data units of Bashford-Rogers et al. 2013 and Eccles et al. 2020",
+      "page": "https://opig.stats.ox.ac.uk/webapps/oas/",
+      "publisher": "Oxford Protein Informatics Group",
+      "license": "CC BY 4.0 (OAS)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "licenseClass": "open",
+      "citation": "Olsen TH, Boyles F, Deane CM. Observed Antibody Space: a diverse database of cleaned, annotated, and translated unpaired and paired antibody sequences. Protein Sci 2022;31:141–146. doi:10.1002/pro.4205. Data of Bashford-Rogers RJM, et al. Genome Res 2013;23:1874–1884, doi:10.1101/gr.154815.113; Eccles JD, et al. Cell Rep 2020;30:351–366, doi:10.1016/j.celrep.2019.12.027.",
+      "ci": true,
+      "base": "https://opig.stats.ox.ac.uk/webapps/ngsdb/",
+      "files": [
+        {
+          "path": "unpaired/Bashford_2013/csv/ERR220445_Heavy_IGHG.csv.gz",
+          "size": 9432,
+          "sha256": "6ab21ce6b22655ade152d3e322ee0b58841dedad4fdad94ea156639938fbf9d3"
+        },
+        {
+          "path": "paired/Eccles_2020/csv/SRR10358524_paired.csv.gz",
+          "size": 57326,
+          "sha256": "8360eb53ca2ff03bd4b8818dff12631a72eb78620c1b3b92ce339ef503f7b405"
+        }
+      ]
+    },
+    "pyclonal-mixcr": {
+      "title": "MiXCR 3 clone tables (PyClonal's sample inputs)",
+      "description": "Two bulk TCR clone tables exported by MiXCR 3, as the PyClonal project (an NCBI hackathon) distributes them: the reader of MiXCR's tables checked on files MiXCR wrote.",
+      "source": "PyClonal, sample_input_files/Mixcr (https://github.com/NCBI-Hackathons/PyClonal)",
+      "page": "https://github.com/NCBI-Hackathons/PyClonal",
+      "publisher": "NCBI-Hackathons",
+      "license": "MIT (PyClonal)",
+      "licenseUrl": "https://github.com/NCBI-Hackathons/PyClonal/blob/master/LICENSE",
+      "licenseClass": "open",
+      "citation": "PyClonal (NCBI-Hackathons), https://github.com/NCBI-Hackathons/PyClonal, commit 3cf4fd5.",
+      "ci": true,
+      "base": "https://raw.githubusercontent.com/NCBI-Hackathons/PyClonal/3cf4fd5ada694bb6cb197f1f0d8ee3a25e329fed/sample_input_files/Mixcr/",
+      "files": [
+        {
+          "path": "p1s2.txt",
+          "size": 90133,
+          "sha256": "aaa11e1fb4b824ba832eb8b1631c4682d2fc419833dc0ba02020ef5802ab4f83"
+        },
+        {
+          "path": "p2s2.txt",
+          "size": 97877,
+          "sha256": "1c7420c9d8d949e61d58897fb17d59bd655a4a99bc869f8f850e21acf1343cd6"
+        }
+      ]
+    },
     "vdjserver-ramos-libra": {
       "title": "Ramos B-cell line, LIBRA-seq (VDJServer, AIRR Data Commons)",
       "description": "One repertoire of the LIBRA-seq study (Setliff et al. 2019, PRJNA578389): 1,857 single-cell IGH, IGK and IGL rearrangements of the Ramos cell line, queried from VDJServer's ADC API as AIRR TSV with its Repertoire metadata.",
@@ -458,6 +591,26 @@
             "P00441.tsv",
             "P00572.tsv"
           ]
+        }
+      ]
+    },
+    "mixcr-benchmark-v4": {
+      "title": "MiXCR 4 single-cell clone table (MiLaboratories' benchmark)",
+      "description": "A single-cell B-cell clone table exported by MiXCR 4 from 10x Genomics' 10k PBMC data (downsampled), as MiLaboratories' benchmark repository holds it: MiXCR 4's columns, with cells and molecules. The repository states no license, so it is for the maintainer's validation only.",
+      "source": "milaboratory/mixcr-benchmark, downsampled_data/B_cells/mixcr (https://github.com/milaboratory/mixcr-benchmark)",
+      "page": "https://github.com/milaboratory/mixcr-benchmark",
+      "publisher": "MiLaboratories",
+      "license": "Not stated by the repository",
+      "licenseUrl": "",
+      "licenseClass": "unknown",
+      "citation": "MiLaboratories, mixcr-benchmark, https://github.com/milaboratory/mixcr-benchmark, commit 4c75a82.",
+      "ci": false,
+      "base": "https://raw.githubusercontent.com/milaboratory/mixcr-benchmark/4c75a82297e0032b9de308f895c4ef3430d9f27a/downsampled_data/",
+      "files": [
+        {
+          "path": "B_cells/mixcr/10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_b_1_d01.tsv",
+          "size": 1243653,
+          "sha256": "601e03f276f9139e7bd6407df23cf21eda2b3ffacf7f9354fff0908daadc2aae"
         }
       ]
     }

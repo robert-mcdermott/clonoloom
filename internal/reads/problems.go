@@ -8,8 +8,9 @@ import (
 
 // ProblemCodes are every code a reader reports (the validator gives each a title and remedy).
 var ProblemCodes = []string{
-	"airr-missing-required", "bad-csv", "field-count", "gene-name-unmapped", "integer-as-decimal", "mixed-units",
-	"negative-templates", "no-junction", "not-boolean", "not-integer", "not-number", "templates-missing",
+	"airr-missing-required", "bad-csv", "cell-count", "field-count", "gene-name-unmapped", "integer-as-decimal", "mixed-units",
+	"molecules-missing", "negative-templates", "no-junction", "not-boolean", "not-integer", "not-number", "templates-missing",
+	"unit-metadata",
 }
 
 // Problem is something a reader could not read as its format says, kept with where it was. The

@@ -825,6 +825,7 @@ button.ctable-th:hover { color: var(--text); }
 .ctable-row.selected { background: var(--active); }
 .ctable-row .junctions { display: flex; gap: 10px; }
 .ctable-row .chain { display: inline-flex; gap: 5px; align-items: center; min-width: 0; }
+.ctable-row .chain .mono { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .ctable-row .locus { font-size: 10px; font-weight: 700; color: var(--text-3); border: 1px solid var(--line); border-radius: 4px; padding: 0 3px; }
 .ctable-row .genes { color: var(--text-2); }
 .members td { font-size: 11.5px; }

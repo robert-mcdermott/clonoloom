@@ -1,7 +1,8 @@
 // ClonoLoom's readers on the development files, against independent readers: AIRR files as the
-// AIRR Community's own library (airr) reads them, Cell Ranger contig annotations and immunoSEQ
-// exports as pandas reads them, every column ClonoLoom reads compared by its digest
-// (validation/reference/readers.json, made by read_repertoires.py).
+// AIRR Community's own library (airr) reads them; Cell Ranger contig annotations, immunoSEQ
+// exports, MiXCR clone tables, OAS and OTS data units and tcrdist3 clone tables as pandas reads
+// them; every column ClonoLoom reads compared by its digest (validation/reference/readers.json,
+// made by read_repertoires.py).
 //
 // The files are fetched by node validation/fetch.mjs into validation/cache/ (or $CLONOLOOM_DATA);
 // a missing one is skipped, unless CLONOLOOM_REQUIRE_DATA names its data set (a comma-separated
@@ -32,6 +33,7 @@ type readerReference struct {
 		Unit      string                    `json:"unit"`
 		Columns   map[string]string         `json:"columns"`
 		GeneNames map[string]map[string]int `json:"gene_names"`
+		Metadata  map[string]string         `json:"metadata"`
 	} `json:"files"`
 }
 
@@ -227,6 +229,12 @@ func TestReadersAgreeWithIndependentReaders(t *testing.T) {
 				}
 				if digest(values) != sha {
 					t.Errorf("column %s differs from the independent reader's", name)
+				}
+			}
+			// A data unit's metadata, as given.
+			for key, value := range want.Metadata {
+				if got := table.Samples[0].Metadata[key]; got != value {
+					t.Errorf("metadata %s %q, the reference %q", key, got, value)
 				}
 			}
 			// immunoSEQ gene names: each Adaptive name the reference counts maps, through the

@@ -7,7 +7,7 @@ description: A local-first workbench for T- and B-cell receptor repertoires: AIR
       <div class="container hero-grid">
         <a class="eyebrow" href="{{github}}/releases/tag/v{{version}}"><span class="pill">v{{version}}</span> Repertoire basics: diversity, rarefaction, gene usage and overlap, each with its uncertainty</a>
         <h1>Immune repertoires <span class="accent">you can check</span></h1>
-        <p class="lede">ClonoLoom opens the output of your annotation pipeline (AIRR Community files, Cell Ranger V(D)J, immunoSEQ exports, or another tool's table), checks it, and groups it into clonotypes by a definition you can see. It measures each repertoire's diversity, compares samples at equal coverage, counts their genes and junctions, and measures how much they overlap, each number with its interval, and writes figures, exports and a methods paragraph others can check, keeping every step on record. It runs on your own computer as one self-contained program, installed with a single command: no account, Python or R, and your data never leave your machine.</p>
+        <p class="lede">ClonoLoom opens the output of your annotation pipeline (AIRR Community files, Cell Ranger V(D)J, immunoSEQ exports, MiXCR clone tables, OAS and OTS data units, tcrdist3 clone tables, or another tool's table), checks it, and groups it into clonotypes by a definition you can see. It measures each repertoire's diversity, compares samples at equal coverage, counts their genes and junctions, and measures how much they overlap, each number with its interval, and writes figures, exports and a methods paragraph others can check, keeping every step on record. It runs on your own computer as one self-contained program, installed with a single command: no account, Python or R, and your data never leave your machine.</p>
         <shot name="diversity" alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis" window eager>A simulated TRB study of twelve samples, one of the examples: each sample's Shannon diversity with its 95% interval, the Hill profile and clonal space homeostasis.</shot>
         <div class="btn-row">
           <a class="btn btn-primary" href="install.html">
@@ -71,7 +71,7 @@ description: A local-first workbench for T- and B-cell receptor repertoires: AIR
           <div class="feature-text">
             <span class="kicker">Open and check</span>
             <h3>Data checked before they are used</h3>
-            <p>ClonoLoom reads AIRR Rearrangement tables with their Repertoire metadata, Cell Ranger V(D)J outputs and immunoSEQ exports with its own readers, fingerprints every file by its SHA-256, and checks it: each finding fatal, a warning or a note, with how many rows it concerns, examples, and what to do. The abundance unit is stated, never guessed.</p>
+            <p>ClonoLoom reads AIRR Rearrangement tables with their Repertoire metadata, Cell Ranger V(D)J outputs, immunoSEQ exports, MiXCR clone tables, OAS and OTS data units and tcrdist3 clone tables with its own readers, fingerprints every file by its SHA-256, and checks it: each finding fatal, a warning or a note, with how many rows it concerns, examples, and what to do. The abundance unit is stated, never guessed.</p>
             <ul class="checklist">
               <li>Every column of 25 development files as the <code>airr</code> library and pandas read it</li>
               <li>Another tool's CSV or TSV through a mapping of its columns, checked column by column</li>
@@ -209,7 +209,7 @@ description: A local-first workbench for T- and B-cell receptor repertoires: AIR
           <a class="card" href="docs/opening-data.html#mapping">
             <span class="icon-badge pink"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg></span>
             <h3>Any tool's table</h3>
-            <p>VDJtools', MiXCR's or a spreadsheet's table, opened through a mapping of its columns that ClonoLoom guesses from their names and checks over the whole file before it opens.</p>
+            <p>VDJtools' or a spreadsheet's table, opened through a mapping of its columns that ClonoLoom guesses from their names and checks over the whole file before it opens.</p>
           </a>
         </div>
       </div>
@@ -226,7 +226,7 @@ description: A local-first workbench for T- and B-cell receptor repertoires: AIR
           <table>
             <thead><tr><th>Area</th><th>Checked against</th><th>Agreement</th></tr></thead>
             <tbody>
-              <tr><td><strong>Readers</strong></td><td>Every column of 25 AIRR, Cell Ranger and immunoSEQ files as the <code>airr</code> library 2.0.0 and pandas 3.0.6 read it</td><td class="agree">every value</td></tr>
+              <tr><td><strong>Readers</strong></td><td>Every column of 35 AIRR, Cell Ranger, immunoSEQ, MiXCR, OAS, OTS and tcrdist3 files as the <code>airr</code> library 2.0.0 and pandas 3.1.0 read it</td><td class="agree">every value</td></tr>
               <tr><td><strong>Quality control</strong></td><td>An R implementation and iNEXT 3.0.2 on six bulk samples; Cell Ranger 4.0, 6.1 and 9.0's metrics for six runs; immunoSEQ's own clonality</td><td class="agree">to 10⁻¹²; exactly; to seven digits</td></tr>
               <tr><td><strong>Clonotypes</strong></td><td>scirpy 0.25.1 on eight Cell Ranger runs, by four definitions</td><td class="agree">the same partitions of cells</td></tr>
               <tr><td><strong>Diversity</strong></td><td>iNEXT 3.0.2, immunarch and vegan 2.7.6 on 18 samples</td><td class="agree">the measures seen to 10⁻⁹; the estimates to iNEXT's printed digits</td></tr>

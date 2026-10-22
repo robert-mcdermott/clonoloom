@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.4.0 (unreleased)
+
+Wave 4 of the [roadmap](clonoloom-spec/roadmap.md): specificity. Built slice by slice; this section
+grows with each.
+
+### Added
+
+- **Readers of wave 4 (wave 4, slice 1).** ClonoLoom's own readers of three more formats
+  (`internal/reads/mixcr.go`, `oas.go`, `tcrdist3.go`; [docs/FORMATS.md](docs/FORMATS.md)):
+  - **MiXCR clone tables** (MiXCR 2, 3 and 4; a file per chain or all chains): each segment's
+    best-scoring hits as its call (ties kept, MiXCR's allele `*00` dropped), MiXCR's CDR3 as the
+    junction (`_` out of frame, `*` a stop), molecules as the count where every clone has them,
+    else reads; MiXCR 4's single-cell exports as cells (their barcodes, and MiXCR's clonotypes of
+    cells as the clones); a sample's per-chain files as one sample;
+  - **OAS and OTS data units** (the Observed Antibody Space's and the Observed T cell receptor
+    Space's `.csv.gz` units): the metadata line kept as the sample's, unpaired units as bulk
+    repertoires counted by `Redundancy` (the unit for the user to confirm), paired units
+    (`_heavy`/`_light`, `_beta`/`_alpha`) as cells, each with its two chains and its contigs'
+    barcode;
+  - **tcrdist3 clone tables** (`dash.csv`'s columns): paired chains as single cells, a clone of n
+    cells read as n cells; one chain as a bulk repertoire; a sample for each subject and epitope;
+  - **Fill from metadata** offers an OAS or OTS unit's subject, tissue, cells sorted and disease,
+    and a tcrdist3 table's subjects and epitopes (as the condition); the methods paragraph says how
+    each format was read, citing OAS, OTS and tcrdist3;
+  - two examples: Dash et al. 2017's epitope-specific TCRs of mice and people (tcrdist3's files,
+    MIT), and a healthy donor's paired TCRs from OTS (CC BY 4.0);
+  - three findings: clones without molecules in a MiXCR table counted in molecules, clone counts
+    that are not whole numbers of cells, and a data unit whose metadata line is not JSON.
+  - Validated: every column read equal to pandas' reading of ten more files (PyClonal's MiXCR 3
+    tables, three OTS and two OAS units, Dash et al.'s two tables, and, on the maintainer's
+    computer, a MiXCR 4 single-cell table), each unit's metadata as given; the readers fuzzed with
+    21 million inputs without a fault.
+
+### Fixed
+
+- In the clonotype table, a paired clonotype's long α junction no longer runs over its β chain:
+  each junction is cut with an ellipsis (the inspector shows them whole).
+
 ## 0.3.0 (2026-10-22)
 
 Wave 3 of the [roadmap](clonoloom-spec/roadmap.md): tracking. Each subject's samples placed in time

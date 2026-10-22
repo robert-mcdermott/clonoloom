@@ -194,11 +194,25 @@ export function suggestFromNames(names) {
   return out.sort((a, b) => a.position - b.position).map(({ field, values }) => ({ field, values }));
 }
 
+// A data unit's value that says nothing ("no", "none"), as OAS and OTS write a field they lack.
+const NOTHING = /^(no|none|null|unknown|unclear|na|n\/a|)$/i;
+
 // Fields a sample's own metadata gives: AIRR Repertoire metadata (subject, tissue, cell subset,
-// time point, diagnosis or study group as the condition, HLA) and immunoSEQ's sample tags (HLA
-// alleles, and a CMV serostatus as the condition).
+// time point, diagnosis or study group as the condition, HLA); immunoSEQ's sample tags (HLA
+// alleles, and a CMV serostatus as the condition); an OAS or OTS data unit's metadata (Subject,
+// BSource or TSource as the tissue, BType or TType with TSubtype as the cell subset, Disease with
+// CancerType as the condition); and a tcrdist3 clone table's subject and epitope (the condition).
 export function fieldsFromMetadata(sample) {
   const out = {};
+  const m = sample.metadata ?? {};
+  const given = (key) => (m[key] != null && !NOTHING.test(String(m[key]).trim()) ? String(m[key]).trim() : '');
+  if (given('Subject')) out.subject = given('Subject');
+  if (given('BSource') || given('TSource')) out.tissue = given('BSource') || given('TSource');
+  const type = given('BType') || given('TType');
+  if (type) out.cellSubset = given('TSubtype') ? `${type} (${given('TSubtype')})` : type;
+  if (given('Disease')) out.condition = given('CancerType') ? `${given('Disease')} (${given('CancerType')})` : given('Disease');
+  if (given('subject')) out.subject = given('subject');
+  if (given('epitope')) out.condition = given('epitope');
   const r = sample.repertoire;
   if (r) {
     if (r.subjectId) out.subject = r.subjectId;

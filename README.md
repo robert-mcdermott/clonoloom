@@ -17,13 +17,14 @@ It is one self-contained program for macOS, Linux and Windows. It opens as a des
 no Python, R or account, and keeps your data on your computer.
 
 **Current release:** 0.3.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-Following clonotypes over time, specificity, B-cell lineages, single-cell phenotypes and cohort
-comparisons come in later releases.
+Specificity, B-cell lineages, single-cell phenotypes and cohort comparisons come in later
+releases.
 
 ## Features
 
-- **Open and check your data.** AIRR Rearrangement TSV, Cell Ranger V(D)J outputs and immunoSEQ
-  exports are read by ClonoLoom's own readers. Any other tool's CSV or TSV is read through a
+- **Open and check your data.** AIRR Rearrangement TSV, Cell Ranger V(D)J outputs, immunoSEQ
+  exports, MiXCR clone tables, OAS and OTS data units and tcrdist3 clone tables are read by
+  ClonoLoom's own readers. Any other tool's CSV or TSV is read through a
   mapping of its columns, checked column by column. Each file is fingerprinted by its SHA-256. A
   validator's findings say how many rows they concern, show examples and say what to do. The
   abundance unit (cells, templates, reads, UMIs) is stated, never guessed.

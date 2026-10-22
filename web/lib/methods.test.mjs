@@ -62,6 +62,22 @@ test('mapped Adaptive names cite HGNC; a unit the user confirmed is said so; dat
   assert.match(text, /2 Adaptive Biotechnologies gene names were mapped to IMGT's by ClonoLoom's rules and the HGNC list of human TR and IG genes \[\d\]/);
 });
 
+test('the readers of MiXCR\'s tables, OAS and OTS units and tcrdist3\'s tables say how they read', () => {
+  const sources = [{ ...pbmc.sources[0], format: 'mixcr-clones' }, { ...pbmc.sources[0], format: 'oas-unit' }, { ...pbmc.sources[0], format: 'tcrdist3-clones' }];
+  const { text, references } = methodsParagraph({ dataset: { ...pbmc, credits: [], sources }, program });
+  assert.match(text, /\(MiXCR clone tables, Observed Antibody Space or Observed T cell receptor Space data units and tcrdist3 clone tables\) were read/);
+  assert.match(text, /MiXCR clone tables were read with each segment's best-scoring hits as its call, MiXCR's allele \*00 \(no allele resolved\) dropped/);
+  assert.match(text, /Data units of the Observed Antibody Space \[2\] and the Observed T cell receptor Space \[3\] were read with their metadata as their samples'; a paired unit's rows as single cells/);
+  assert.match(text, /tcrdist3's clone tables \[4\] were read with each clone of n cells as n cells with its chains/);
+  assert.match(references[1], /Olsen TH/);
+  assert.match(references[3], /Mayer-Blackwell K/);
+  // One format alone says only its own; a unit of T-cell receptors cites OTS alone.
+  const alone = methodsParagraph({ dataset: { ...pbmc, credits: [], sources: [sources[0]] }, program }).text;
+  assert.doesNotMatch(alone, /Observed|tcrdist3/);
+  const ots = methodsParagraph({ dataset: { ...pbmc, credits: [], sources: [sources[1]] }, summary: { samples: [{ name: 'u', loci: { TRA: 2, TRB: 2 } }], sources: [{}] }, program }).text;
+  assert.match(ots, /Data units of the Observed T cell receptor Space \[2\] were read/);
+});
+
 test('the same inputs give the same text', () => {
   const inputs = { dataset: pbmc, program };
   assert.deepEqual(methodsParagraph(inputs), methodsParagraph(inputs));

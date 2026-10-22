@@ -40,7 +40,7 @@
     "v_call": "0b4c994dc3627590cab4e390610e2c52c5c2ce3efb42398fdb82a174abf86d97"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 1847
   },
   "10x-mouse-splenocytes-1k/sc5p_v1p1_mm_c57bl6_splenocyte_1k_t_airr_rearrangement.tsv": {
@@ -83,7 +83,7 @@
     "v_call": "8f27818fa1c8762140b0fe5d9ee6cfc594aba45296daa1b6c909ebe3546713e9"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 435
   },
   "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_b_airr_rearrangement.tsv": {
@@ -127,7 +127,7 @@
     "v_call": "4aa1115402129a6cf66f0178480f28b5469b0210761c297f8bcfb6936e7fba7b"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 5387
   },
   "10x-mouse-splenocytes-5k-gemx/5k_Mouse_Splenocytes_5p_gem-x_5k_Mouse_Splenocytes_5p_gem-x_vdj_t_airr_rearrangement.tsv": {
@@ -171,7 +171,7 @@
     "v_call": "7332d14fe75aee90b277eef9204cdb7bb4a1b5e1753a62faa7d48487d32d836f"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 2312
   },
   "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_b_airr_rearrangement.tsv": {
@@ -214,7 +214,7 @@
     "v_call": "125ba82a37f53d5ef0b5c8168566ad2a3a747d440e082a43745e3a008f983cad"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 913
   },
   "10x-pbmc-10k-v2/10k_PBMC_5pv2_nextgem_Chromium_Controller_10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_t_airr_rearrangement.tsv": {
@@ -257,7 +257,7 @@
     "v_call": "b03455fc7d36125fff42cd93f60eee559479923626dc8b108a9ac4bc14872fb5"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 9131
   },
   "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_b_airr_rearrangement.tsv": {
@@ -300,7 +300,7 @@
     "v_call": "4122fcfcfceb2d3b0ffea7b94971f3e977077b75192dc497563e968ccd8b7b98"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 1240
   },
   "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_b_filtered_contig_annotations.csv": {
@@ -323,7 +323,7 @@
     "v_call": "d87f39efce9056b47132e843889670429df71af1b60b924a31aa748507112161"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 156
   },
   "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_t_airr_rearrangement.tsv": {
@@ -366,7 +366,7 @@
     "v_call": "a7aeabde5188c2fae2ec66699a95205b6dfb10e638f67f140f04c9b42894cb2d"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 1835
   },
   "10x-pbmc-1k/sc5p_v1p1_hs_PBMC_1k_t_filtered_contig_annotations.csv": {
@@ -389,7 +389,7 @@
     "v_call": "93a30dd44541673c56722fdba54ff3ce0f34609964340d41cebc31740888fc85"
    },
    "format": "cellranger-contigs",
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 968
   },
   "airr-standards-tests/lang/python/tests/data/bad_rearrangement.tsv": {
@@ -431,6 +431,46 @@
    "format": "airr",
    "reader": "airr 2.0.0",
    "rows": 9
+  },
+  "dash-2017-tcrdist3/dash.csv": {
+   "columns": {
+    "cell": "00d2c076986ed247af42845b00c985703f71880b5f1fa968fa27601b598a9ad5",
+    "clone": "ed96aea2d0ceef776244240cc99186a2d341cb7f3b0b93c8cb62deba1271492b",
+    "count": "2a3fd13f593d92eac6a4b319fabd08c806afffe1a48d25c09343190640e4d9ee",
+    "is_cell": "a36338c054b5faa4ade06f642fc93df3ea362f81f61d3bd170d44c35400b7aba",
+    "j_call": "01170984b608407f6662ce84bb67883f26055a3e59dafbe08f1236fb3ba4764e",
+    "junction": "582657d69c42a4f605dede517d43e9af0252eeb3d1ce40cf56749079e5919b59",
+    "junction_aa": "667b48d0e87f31fc944d67d7d4273de0357b7ddcb48221214179e3b16b25ca07",
+    "locus": "c7e366ba9ba3f9ffcd94ec531bc21fc4f5182b396d0e3955df4ba623e7919061",
+    "productive": "a36338c054b5faa4ade06f642fc93df3ea362f81f61d3bd170d44c35400b7aba",
+    "sample": "2cd4a8bf49a5b03d46d26e7f1024ccdf7a0314f140e518b22cabc81c063f356b",
+    "sequence_id": "36a68bfad27adc9beed05c06f0ae5c87af04f7c1eb034fff75012542712acc8a",
+    "v_call": "2a2b94f681c894ec539dd4d624dbca1ba14231d8ff1849cf9415be0333c41346"
+   },
+   "format": "tcrdist3-clones",
+   "reader": "pandas 3.1.0",
+   "rows": 6810,
+   "unit": "cells"
+  },
+  "dash-2017-tcrdist3/dash_human.csv": {
+   "columns": {
+    "cell": "8a782cc9db757e6b2b301dd85e36822c03274710211338d1f18e898de2520106",
+    "clone": "8a782cc9db757e6b2b301dd85e36822c03274710211338d1f18e898de2520106",
+    "count": "f35e68ddd490da0fd18d3bb2473b1752dbc80166fbb42fb8ed12caab730723d5",
+    "is_cell": "7603ae6a07d5c67d686e801830fdc1f945e87805467860dc8972954a0ce8fc7f",
+    "j_call": "e5cb4cc7d18cfb334ca9405936d1f90d333ee34a5712d46eafce7cbd8b8b9aa8",
+    "junction": "60e00b1cb0c48ae595fc0e108c0688de4a24c5527c283ee86951f1b041f8875e",
+    "junction_aa": "a7cfa9f2e0e40b87a025c5ff69b59263f3d576a949bdf0457b3fd15ebc591848",
+    "locus": "afd9f627053f55d2b757ab38656c6492f1620cea4c20bdf5ad1452712becff04",
+    "productive": "7603ae6a07d5c67d686e801830fdc1f945e87805467860dc8972954a0ce8fc7f",
+    "sample": "e092037c52a180f047f1fbea754e20fd03cd268ade3bd5c074ed0dbdc76b2263",
+    "sequence_id": "f5c3708a1633b08b5414cb45da3cd2c1ddb7485c0b257110332fd73ffc213c77",
+    "v_call": "e5f1627c89cc3251d69a2a324d68ec32a74ad9cdeb10b0514afcdf7ac4d02e7d"
+   },
+   "format": "tcrdist3-clones",
+   "reader": "pandas 3.1.0",
+   "rows": 830,
+   "unit": "cells"
   },
   "emerson-2017-adc/2667862095380484586-242ac113-0001-012.tsv": {
    "columns": {
@@ -554,7 +594,7 @@
      "TCRBV30-01*02": 1
     }
    },
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 1492,
    "unit": "templates"
   },
@@ -659,7 +699,7 @@
      "TCRBV30-01*01": 1929
     }
    },
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 7613,
    "unit": "templates"
   },
@@ -771,8 +811,252 @@
      "TCRBV30-01*02": 1
     }
    },
-   "reader": "pandas 3.0.6",
+   "reader": "pandas 3.1.0",
    "rows": 12937,
+   "unit": "reads"
+  },
+  "mixcr-benchmark-v4/B_cells/mixcr/10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_b_1_d01.tsv": {
+   "columns": {
+    "c_call": "7bba6d5af5321e40e1784aee7de71b274511e7bcbccabac9f45b8784e8cb545e",
+    "cell": "0811d26eccf2af4b561bd42f18e46dec63331b9029d8b84850123672e9ed3012",
+    "clone": "99cf82cce82468b5a2e3ac28b7eddb5119f908baf667d130abe070e976111031",
+    "count": "2d16a793d300d08bbc7dc71b74bb294d402a8ac791038f287b6c16f545c5e828",
+    "d_call": "4e68dae27de38dee7d28f5e8029c028543d79a37bf099c0f904ba59ac0acc8b1",
+    "is_cell": "5e284ebb60d1f0bba783e5350e9933ea51517bc4a869027443df9bf3c6cb9b8d",
+    "j_call": "c197bbe347f62d338c78a6eae93c7a69428d38811c9507d2693c90b8d789e40a",
+    "junction": "c7a71168cde5b27ac7a10d8fda71c0be8c1840b3b99a0b8cbf60a3219ce34346",
+    "junction_aa": "b8ff56f929198e156981d343a6733a26723db504658ce1eb5250eca37d20b18c",
+    "locus": "9e8e71920057f0a60833e1615c7a461eee2d0df274eec1110ff458254c8371ee",
+    "productive": "0bb19187acaf83027bf2de30e453ce465073265417042ac5ee5eae9381dacd22",
+    "reads": "a95b494fde1e837734d42db1918af6f7876ab0a17a67fe219bd9994ed8d02bf4",
+    "sample": "1b8f9646eb5f29c38dabac912a1891397d3ec116893ce96f4a439839ce3978c4",
+    "sequence_id": "d2f8535bcd017607b592946cbc0043aa6ee06e7952c1cc57952c82ea48424bd2",
+    "v_call": "04a35d18117621ac5fe14371f45a3c6de626c08d2df80ac0b3fcc1e7eb757442"
+   },
+   "format": "mixcr-clones",
+   "reader": "pandas 3.1.0",
+   "rows": 741,
+   "unit": "cells"
+  },
+  "oas-units/paired/Eccles_2020/csv/SRR10358524_paired.csv.gz": {
+   "columns": {
+    "cell": "bfb006281af929594578eb18ca59af219988d0e43f327e5c63356a0816de065e",
+    "count": "397de804f3dd30e36f21ece80cf78b70f559cd5c585c859cc3bb14ae18d6d0fd",
+    "d_call": "2ac122b6161921d4252226db85bf99bd839d9b0c0f07247c7617125f0277ff7f",
+    "is_cell": "bdb2c9316a5cfd12271f1823565a36ce54bfddd0364c80e33176a2c65fbb858c",
+    "j_call": "5766fef1b7bcb60833ac1025bccbe3a226243f21ef67fbce6315851de27ef938",
+    "junction": "f3bf2d6093d61c20b920f505abcc69cb8399b1bb70028fcd0893c133cdfef8d5",
+    "junction_aa": "034349e686edb0b36db88d3356a0a2cca2b9697ed0b36903dfac352cc0410741",
+    "locus": "ff96f52ec8bfef4f6ce756630aed0dcf1a94f0bb8c0451e5a880afe1c7590c8f",
+    "productive": "bdb2c9316a5cfd12271f1823565a36ce54bfddd0364c80e33176a2c65fbb858c",
+    "sample": "e7568f2221e0a8f72dd52f5d6dafc52961978b53f1c57f4e2fce2634d752533c",
+    "sequence_id": "b2342656f11d579302790469bb7b49292b908785ad6fc7bac039be3cd2274ed0",
+    "v_call": "02d08054447b59c1db04934e7734bb11b5bb8ad29092d1b4bfc20632b8e353aa"
+   },
+   "format": "oas-unit",
+   "metadata": {
+    "Age": "33",
+    "Author": "Eccles et al., 2020",
+    "BSource": "PBMC",
+    "BType": "RV+B-Cells",
+    "Chain": "Paired",
+    "Disease": "None",
+    "Isotype": "All",
+    "Link": "https://doi.org/10.1016/j.celrep.2019.12.027",
+    "Longitudinal": "no",
+    "Run": "SRR10358524",
+    "Species": "human",
+    "Subject": "Healthy-1",
+    "Unique sequences": "47",
+    "Vaccine": "None"
+   },
+   "reader": "pandas 3.1.0",
+   "rows": 94,
+   "unit": "cells"
+  },
+  "oas-units/unpaired/Bashford_2013/csv/ERR220445_Heavy_IGHG.csv.gz": {
+   "columns": {
+    "count": "d9c4c63afb2f1eca91672f6225cc7211d09ed9ce4438ac1df45cf4ebf1c2030b",
+    "d_call": "446d85595d7aafbc1a30cb8127369d11d7d1906807067c19b3aa65baae30ee21",
+    "j_call": "484bf02fdd03f10a8f77778c2fe6260255a308aca917b33f0ae60223297144e3",
+    "junction": "72efa8eb357af930c93f2ec064aa3846f741b8c537dbda2dba658dcb4ca27f59",
+    "junction_aa": "4d516c7e9f69c6409f92f62a2aaa9db48909745a5c9997d6be733705cebeb0b1",
+    "locus": "26bacff0467b156f445319fe91e398f1dfeef25fdd13fb9d52d1585d7a22d407",
+    "productive": "40dac464e0ea375c9aa75cb9b235d628ace7cef1308244592bb9e2b2f2cd3ca9",
+    "sample": "2c83859a57627ec6a9b27a746e93ce23ce755d07574f74cd4d155847113602d5",
+    "sequence_id": "e601c7221bba4798b66b4ca09eb3bb05ab488a0bbe592d0a227aef7350dca85e",
+    "v_call": "f1dc21aefe86f6b7a1a3fe88eba353f79a415c3dc279b640b4d10542f55fd927"
+   },
+   "format": "oas-unit",
+   "metadata": {
+    "Age": "24",
+    "Author": "Bashford et al., 2013",
+    "BSource": "PBMC",
+    "BType": "Unsorted-B-Cells",
+    "Chain": "Heavy",
+    "Disease": "None",
+    "Isotype": "IGHG",
+    "Link": "http://www.genome.org/cgi/doi/10.1101/gr.154815.113",
+    "Longitudinal": "no",
+    "Run": "ERR220445",
+    "Species": "human",
+    "Subject": "Subject-Healthy-10",
+    "Total sequences": "20",
+    "Unique sequences": "19",
+    "Vaccine": "None"
+   },
+   "reader": "pandas 3.1.0",
+   "rows": 19
+  },
+  "ots-healthy-pbmc/Bai_2023/csv_paired/SRR14045264_1_Paired_All.csv.gz": {
+   "columns": {
+    "cell": "dca0d0fe2e64acdc9cce6ed9f0430eaee30b24ee9fe12933da2c3165bab04952",
+    "count": "c1fff1deb8b4ce88031d78b4141b32c957ed3e9e44346203c35a8ad6a532bfd3",
+    "d_call": "710d353bc9ff3c83f5ddbf216d6b4d8bfc04f1dc0d9d43130bd9da0aad333000",
+    "is_cell": "878b4da1f2ada2df88fb618fcb079d4165f8dec58bfc0a4dbf6e803cd31da122",
+    "j_call": "8cb496a1d621c92df8ea6c993dbfc860641cecb11c9af9dfe7328a531839a851",
+    "junction": "ed205e51dae35763fb410186bc56a35dfce45d10ad4921f6fa93e5dc9c451f45",
+    "junction_aa": "3e88c325dd1bef112945375ea69a0c8a454b54556155e9c58ca6bcfbc8745a70",
+    "locus": "9556b44577650d0bbd33456aaae9f880d703f850c7b65dd4f6749043897f0cd8",
+    "productive": "878b4da1f2ada2df88fb618fcb079d4165f8dec58bfc0a4dbf6e803cd31da122",
+    "sample": "92aab60ef0ff0cbc0786948e6b39eb18a8196ae7a164f09e4b9f5d424c795127",
+    "sequence_id": "84025950813e48800466138e1f6edcf89640bdddf42c4f02429645f0f24067da",
+    "v_call": "3ea636e8a1e11bfe29d2742c34c5fa458699c3877b652e005c73880bc3c8b811"
+   },
+   "format": "oas-unit",
+   "metadata": {
+    "Age": "51",
+    "Author": "Bai et al.",
+    "CancerType": "none",
+    "Disease": "healthy",
+    "Link": "https://pubmed.ncbi.nlm.nih.gov/37769533/",
+    "Longitudinal": "no",
+    "Run": "SRR14045264",
+    "Sequences": "424",
+    "Species": "human",
+    "Strain": "none",
+    "Subject": "no",
+    "TSource": "pbmc",
+    "TSubtype": "none",
+    "TType": "cd3+",
+    "Treatment": "untreated"
+   },
+   "reader": "pandas 3.1.0",
+   "rows": 848,
+   "unit": "cells"
+  },
+  "ots-healthy-pbmc/Poon_2023/csv_paired/SRR19760479_1_Paired_All.csv.gz": {
+   "columns": {
+    "cell": "7ccb41c807344dafc95af35dddade585f519e4f65edb06aa2b27a2a7d1baaf57",
+    "count": "6936618f4a700c3db55db825821fb8afa3f91a005db54e011491cf9a88956cd7",
+    "d_call": "6f4066aac8f9faca56be5b586a353b95eb4b369ef65a25b97d7a7b285cc1b741",
+    "is_cell": "fdea6d3b5e371f025e79a7df83913f2b86127dbf3e4fe54bf8b7acab14e1e5c7",
+    "j_call": "ed6a9ef930825da0ddd575c4be1ee7f003494460925af02a7c942016b2434fe7",
+    "junction": "ce576b273b2d710ad48d8db89665ccd4070b5b43a8c979eb2cbeba93de86ccdc",
+    "junction_aa": "f0339e18f75009221f6b46fcae9f03ce2ee2fa24df29e461bfde90b4de166d73",
+    "locus": "8ad575c28313028fcc4e06eb9865733c51ec41cc67ce0069fcaeba69bd960bb9",
+    "productive": "fdea6d3b5e371f025e79a7df83913f2b86127dbf3e4fe54bf8b7acab14e1e5c7",
+    "sample": "d1dba58d1879315145f2235095fa566b2a5b1cb9bc8cc69e532d422e2c792e06",
+    "sequence_id": "6ee7620fa12d383fea6b433b6f5f319a1879b03a7467e76afad8299006e7a56d",
+    "v_call": "302876cdc524a1f124558bb937f0abb46062942e5a13b28f791d90672e5b8fe0"
+   },
+   "format": "oas-unit",
+   "metadata": {
+    "Age": "37",
+    "Author": "Poon et al., 2023",
+    "CancerType": "none",
+    "Disease": "healthy",
+    "Link": "https://pubmed.ncbi.nlm.nih.gov/36658238/",
+    "Longitudinal": "no",
+    "Run": "SRR19760479",
+    "Sequences": "356",
+    "Species": "human",
+    "Strain": "none",
+    "Subject": "no",
+    "TSource": "pbmc",
+    "TSubtype": "none",
+    "TType": "cd3+",
+    "Treatment": "untreated"
+   },
+   "reader": "pandas 3.1.0",
+   "rows": 712,
+   "unit": "cells"
+  },
+  "ots-healthy-pbmc/Sureshchandra_2023/csv_paired/SRR18365371_1_Paired_All.csv.gz": {
+   "columns": {
+    "cell": "78b0c1e18d84486933d4b31f7ae42882a8ec186523c2e10cd6d302208b87341f",
+    "count": "b96ec64885af5743de55fdd33f706d31234454b44716ecce4dfefe6c64a074bf",
+    "d_call": "43a812a475cd10403afe6033cd3a664afdcba09328da241cdaeecbd35016a5ed",
+    "is_cell": "e3d3bedd285a363fb6ad8b7fae2718f1c76ee04aedf4d16859335698ba92b80a",
+    "j_call": "a8c3f2123b2b850ee01c71c642f850153fe85d15740746ae7f957ce55819be15",
+    "junction": "43b8f1c83f2111cea09c721709958c4f17b2c6551c7796a58aca45419bbd4501",
+    "junction_aa": "c319206cb3a3ad4fc98b10daeefcc5059f9d2ee897711bcf970f51613f40ce7d",
+    "locus": "23ea47400236d565e7f7de3d0dd7324451caa5d88adba1b2587afddb8c800786",
+    "productive": "e3d3bedd285a363fb6ad8b7fae2718f1c76ee04aedf4d16859335698ba92b80a",
+    "sample": "c29420a47c370ebacbf3b06f368dc48dfadcde8dbfdc244e81c7f27def3d76ef",
+    "sequence_id": "aff7a5451092567531768e31cec3c695a4c67ed55d03fa458cc2485887d091a8",
+    "v_call": "eb86c1bbf139d6fd96ea90b2bda703b64f1d2a7b48b2b8871e3ee2ab35c9e7bb"
+   },
+   "format": "oas-unit",
+   "metadata": {
+    "Age": "adult",
+    "Author": "Sureshchandra et al. 2023",
+    "CancerType": "none",
+    "Disease": "healthy",
+    "Link": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10528932/",
+    "Longitudinal": "no",
+    "Run": "SRR18365371",
+    "Sequences": "4424",
+    "Species": "human",
+    "Strain": "none",
+    "Subject": "healthy",
+    "TSource": "pbmc",
+    "TSubtype": "none",
+    "TType": "cd45+",
+    "Treatment": "untreated"
+   },
+   "reader": "pandas 3.1.0",
+   "rows": 8848,
+   "unit": "cells"
+  },
+  "pyclonal-mixcr/p1s2.txt": {
+   "columns": {
+    "c_call": "9788bc66003eb9e8fdd0cb8818351254eb0b194d758a3766ff352fa4c4e3fda3",
+    "count": "dec458ed90fd2aad013fbc7a6279f1a02cd3ff0e79f1bf8a59c36efb699644ff",
+    "d_call": "c5a123d2d21e24ecd45123857f8892a59808fa1ea5457c51978875973f9fe2b1",
+    "j_call": "39c4bd30791ac1bc8d74c703a9580c644bc2af6dffd0c775f48eb3b80793e914",
+    "junction": "2a2d26f180260bcc7629a7193d45f99e6f1837a97096a251d39c69d2046411e8",
+    "junction_aa": "00fca2a341545a0156b6cf2b746a932026be514ef5139b9b3c210f96f78d791a",
+    "locus": "fa99fb72a56ed696f28d814449ad94059279bca311cda2d41aea7408187a27bd",
+    "productive": "0fe51267e22d302d5483230feda4ee0c071794b1c763f94250c31fd5dbfad564",
+    "reads": "dec458ed90fd2aad013fbc7a6279f1a02cd3ff0e79f1bf8a59c36efb699644ff",
+    "sample": "317f55f06832e6383ba7c1b657a557bc2aedea86f225eb6bc9d6868ab4e2e5be",
+    "sequence_id": "f718f3a5c520fd0199dcad9e5b2d2b5e76b6f1a7be6e2933cc73d446bf1e1c84",
+    "v_call": "9c3d5189e0d56cd968a1af1282cf5a1fe6c0681de05fde5c81dc017e63a8dc56"
+   },
+   "format": "mixcr-clones",
+   "reader": "pandas 3.1.0",
+   "rows": 257,
+   "unit": "reads"
+  },
+  "pyclonal-mixcr/p2s2.txt": {
+   "columns": {
+    "c_call": "1f28508cde91f4dde15574d403019a8ce9666fdb0131d6fb4072596f603818b2",
+    "count": "4a4574756a7cf266d3e105467220aaae882b160fd2182f9709850668eb9c05c8",
+    "d_call": "21e0f2593939eb0488dc762296af0b1a34fec664250d41ba3f02b4228fc2cdde",
+    "j_call": "a74cd505086d16a112b19bc35b13979c804ae02d994b9cfb46bebd8027386abc",
+    "junction": "50fd1102218f5f415b3a26bd49a2632417a1faa9c137d6518a21af0c6160654a",
+    "junction_aa": "6251aa7237a7265365b7fd9f5aec67164c2afffa1c7d7784ef0dc17208c1c496",
+    "locus": "74e30dfde27105ce37f7be86b89202df7fd9f55471d7188ea5fcf1043aad3ca4",
+    "productive": "dd1078cbd8abcbed7f5f83c7df45ea3a2a51a94e36ad73f1d330b19c6067affd",
+    "reads": "4a4574756a7cf266d3e105467220aaae882b160fd2182f9709850668eb9c05c8",
+    "sample": "7e61f1488adf038d1959b9b1551af1d4892beec72ab077e9a8cbf8ffc7fcbc1b",
+    "sequence_id": "509e56b5b7b7b56b25be86cc078d8ea1d8b4045df768899cf2b8bf0845f51eb2",
+    "v_call": "02b869167002da6b8e223c97433289137954760cd755efbb98eae61265773445"
+   },
+   "format": "mixcr-clones",
+   "reader": "pandas 3.1.0",
+   "rows": 279,
    "unit": "reads"
   },
   "vdjserver-ramos-libra/1159043095574277653-242ac114-0001-012.tsv": {
@@ -796,5 +1080,5 @@
    "rows": 1857
   }
  },
- "generated_by": "airr 2.0.0, pandas 3.0.6"
+ "generated_by": "airr 2.0.0, pandas 3.1.0"
 }
