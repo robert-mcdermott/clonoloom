@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createProject } from './project.js';
-import { addDataset, annotate, annotation, confirmUnit, datasetFiles, datasetRecord, datasetUnit, fieldsFromMetadata, relocate, removeDataset, suggestFromNames } from './datasets.js';
+import { addDataset, annotate, annotation, confirmUnit, datasetFiles, datasetRecord, datasetUnit, fieldValue, fieldsFromMetadata, relocate, removeDataset, studySamples, suggestFromNames } from './datasets.js';
 
 const NOW = '2026-10-21T12:00:00.000Z';
 const summary = {
@@ -84,4 +84,24 @@ test('metadata gives fields: AIRR repertoires and immunoSEQ sample tags', () => 
   const tags = 'Age:41 Years,Biological Sex:Male,HLA MHC class I:HLA-A*24,HLA MHC class I:HLA-B*07,Inferred HLA type:Inferred HLA-A*03,Virus Diseases:Cytomegalovirus -';
   assert.deepEqual(fieldsFromMetadata({ metadata: { sample_tags: tags } }), { hla: 'HLA-A*24, HLA-B*07', condition: 'CMV-' });
   assert.deepEqual(fieldsFromMetadata({}), {});
+});
+
+test('the study is read from each sample\'s annotation, else its metadata', () => {
+  let project = createProject('Study', { now: '2026-10-21T00:00:00Z' });
+  const summary = { samples: [
+    { name: 'P1_d0', repertoire: { subjectId: 'P1', timePoint: '0 day (infusion)', tissue: 'blood' } },
+    { name: 'P1_IP', repertoire: { subjectId: 'P1' } },
+    { name: 'other' },
+  ] };
+  project = annotate(project, [
+    { dataset: 'd-1', sample: 'P1_IP', field: 'reference', value: 'infusion product' },
+    { dataset: 'd-1', sample: 'P1_d0', field: 'timepoint', value: 'day 0' },
+  ]);
+  assert.deepEqual(studySamples(project, 'd-1', summary), [
+    { name: 'P1_d0', subject: 'P1', timepoint: 'day 0', tissue: 'blood' },
+    { name: 'P1_IP', subject: 'P1', reference: 'infusion product' },
+    { name: 'other' },
+  ]);
+  assert.equal(fieldValue(project, 'd-1', summary.samples[0], 'subject'), 'P1');
+  assert.deepEqual(studySamples(project, 'd-1', null), []);
 });

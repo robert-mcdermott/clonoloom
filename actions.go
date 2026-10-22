@@ -57,14 +57,21 @@ var remoteActions = []remoteAction{
 		"opening":  textArg("What of it to open, such as \"T cells\" (its first if not given)."),
 		"download": flagArg("Download it first if it is not downloaded (openly licensed data only)."),
 	}, "example")},
-	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
-		"view":    textArg("start, data, qc, clonotypes, repertoire or jobs."),
+	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, tracking, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
+		"view":    textArg("start, data, qc, clonotypes, repertoire, tracking or jobs."),
 		"dataset": datasetArg,
 	}, "view")},
 	{Name: "set_definition", Title: "Define clonotypes", Description: "Chooses a dataset's clonotype definition: a preset by name, or one stated in full.", InputSchema: schema(map[string]any{
 		"dataset":    datasetArg,
 		"preset":     textArg("A preset's name (or part of it), such as \"Paired αβ\" or \"Nucleotide junction\"."),
 		"definition": map[string]any{"type": "object", "description": "A definition in full: {name, chains: [] | [locus] | [locus, locus|\"light\"], junction: aa|nt, v: allele|gene|family|none, j: …, cells: primary|all, requireAll, productiveOnly, vendor}."},
+	})},
+	{Name: "annotate_samples", Title: "Annotate samples", Description: "Sets samples' annotation, as the Data view's samples table holds it: each one's subject, time point (day 28, week 4, baseline), reference role (infusion product, donor), tissue, cell subset, condition, batch and HLA. An empty value removes a field; fields not named are left as they are.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"samples": map[string]any{"type": "object", "description": "By sample name: {subject, timepoint, reference, tissue, cellSubset, condition, batch, hla: a value, or \"\" to remove it}."},
+	}, "samples")},
+	{Name: "describe_subjects", Title: "Describe the subjects", Description: "Shows the Tracking view and answers the dataset's subjects as the program reads their annotation: each one's samples in time order with their time points read as days from the subject's reference event, its reference samples and the samples taken at one time (replicates), and the checks' findings (samples without a subject or a time point, time points not understood, subjects without a reference sample).", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
 	})},
 	{Name: "select_clonotype", Title: "Choose a clonotype", Description: "Shows the Clonotypes view and chooses a clonotype, which the inspector describes: by its rank in the table (1 for the first) or its ID.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,

@@ -570,6 +570,11 @@ compare the figure with another study's, without the text.
   tested, nor counted in the false discovery rate), two-sided, Benjamini–Hochberg at 0.01. Between
   technical replicates, the binomial test called about 1.2 clonotypes changed per pair, and 16 to
   19 over two to four weeks; the beta-binomial test, far fewer.
+- **Time points** (built in slice 3, `internal/study`): read as days from the subject's reference
+  event, as AIRR Repertoire metadata state them (`collection_time_point_relative`, its unit, and
+  `collection_time_point_reference`, the event) and as studies write them (day 28, D+28, week 4,
+  month 3, baseline); a month is a twelfth of 365.25 days. Samples of one subject at one time are
+  replicates, which Rytlewski et al.'s variance model is fitted on.
 - **Trajectories**: a clonotype's frequency in each sample with its 95% interval (Wilson's, for a
   count out of the sample's depth), the samples ordered by their time point; a clonotype absent
   from a sample is shown as below that sample's detection (one in its depth), never as zero.

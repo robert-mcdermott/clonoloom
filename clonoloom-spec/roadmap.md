@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); wave 2
-is merged and released as 0.2.0; wave 3 is planned, slices 1–2 done, slice 3 next.
+is merged and released as 0.2.0; wave 3 is planned, slices 1–3 done, slice 4 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -295,8 +295,8 @@ are written under that rule from the start.
 | --- | --- |
 | 1. The website | Done |
 | 2. Results the same on every processor | Done |
-| 3. Subjects and time points | Next |
-| 4. Simulated longitudinal studies | To come |
+| 3. Subjects and time points | Done |
+| 4. Simulated longitudinal studies | Next |
 | 5. Tracking | To come |
 | 6. Two-sample tests | To come |
 | 7. Beta-binomial expansion | To come |
@@ -360,6 +360,20 @@ are written under that rule from the start.
    from the annotation (`Time`, above); a subject's samples in order, checked before tracking:
    samples without a time point, two samples of one subject at one time (replicates, offered for
    the variance), subjects without a reference sample. Remote control sets the annotation.
+   - *Done:* `internal/study` reads time points (days, weeks, months, years and hours in their
+     common spellings, AIRR's "14 day (vaccination)", baseline and pre, post, visits) into days from
+     the subject's reference event, orders each subject's samples, finds its reference samples (the
+     annotation's new Reference field, else a tissue such as infusion product or donor) and its
+     replicates, and checks the design (eight finding codes); `POST /api/study`; the **Tracking**
+     view's first part, Subjects, with a timeline of each subject's samples (a figure) and a table;
+     remote control's `annotate_samples` and `describe_subjects`; the guide's page.
+   - *Decided:* the design is read by the program from the annotation each time, and not kept: the
+     annotation, in the project, is the record. A month is a twelfth of 365.25 days. A number
+     without a unit is days, and the check says so. Baseline comes before every dated sample, and
+     a time after the event without its day after every one. Visits are ordered among themselves,
+     not placed among days.
+   - *Moved to slice 4:* the Subjects part's capture scene, on a simulated longitudinal study (no
+     example has time points yet).
 4. **Simulated longitudinal studies (E1).** `clonoloom simulate` presets with each clone's
    trajectory known: CAR-T kinetics (an infusion product and post-infusion samples, some of its
    clones expanding, persisting or contracting), transplant (a donor and a recipient's

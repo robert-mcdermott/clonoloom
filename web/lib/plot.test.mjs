@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { curves, columns, figure, figureStyle, heatmap, intervals, lines, scale, stackedBars, ticks } from './plot.js';
+import { curves, columns, figure, figureStyle, heatmap, intervals, lines, scale, stackedBars, ticks, timeline } from './plot.js';
 
 test('ticks are nice numbers covering the range', () => {
   assert.deepEqual(ticks(1), [0, 0.25, 0.5, 0.75, 1]);
@@ -116,4 +116,25 @@ test('a figure stands alone: the plot on white with its title, legend, caption a
   assert.ok(width >= 360 && height > 100);
   // With color vision, the status colors change.
   assert.match(figureStyle({ colorVision: true }), /\.plot-warn\{fill:#9a6200\}/);
+});
+
+test('a timeline places each subject\'s samples by day, references and baselines in columns, replicates stacked', () => {
+  const { svg, description } = timeline([
+    { label: 'P1', marks: [{ column: 'reference', label: 'infusion product', reference: true }, { column: 'baseline', label: 'baseline' }, { x: 7, label: 'day 7' }, { x: 28, label: 'day 28' }, { x: 28, label: 'week 4' }] },
+    { label: 'P2 <x>', className: 'plot-s2', marks: [{ x: -7, label: 'day -7' }, { x: 90, label: 'month 3' }] },
+  ], { label: 'Subjects', xLabel: 'Days from infusion' });
+  assert.match(svg, /^<svg class="plot"/);
+  assert.match(svg, />reference<\/text>/);
+  assert.match(svg, />baseline<\/text>/);
+  assert.equal((svg.match(/<path class="plot-reference"/g) ?? []).length, 1);
+  assert.equal((svg.match(/<circle /g) ?? []).length, 6);
+  // Day 0 marked when the axis reaches before it; the two day-28 samples one above the other.
+  assert.match(svg, /class="plot-guide"/);
+  const ys = [...svg.matchAll(/<circle class="plot-accent" cx="([\d.]+)" cy="([\d.]+)"/g)].map((m) => [Number(m[1]), Number(m[2])]);
+  const at28 = ys.filter(([cx]) => Math.abs(cx - ys.at(-1)[0]) < 0.01);
+  assert.equal(at28.length, 2);
+  assert.ok(Math.abs(at28[0][1] - at28[1][1]) >= 6);
+  assert.match(svg, /P2 &lt;x&gt;/);
+  assert.match(svg, />Days from infusion</);
+  assert.match(description, /2 subjects; P1: infusion product, baseline, day 7, day 28, week 4; P2 <x>: day -7, month 3\./);
 });

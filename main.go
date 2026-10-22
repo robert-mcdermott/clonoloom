@@ -475,6 +475,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerAnalyses(mux)
 	a.registerFigures(mux)
 	a.registerExports(mux)
+	a.registerStudy(mux)
 	if a.remote != nil {
 		a.remote.register(mux)
 	}

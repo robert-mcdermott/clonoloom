@@ -60,8 +60,10 @@ act("open_data", paths=[table], mappings={table: {
 | `new_project` | Starts a new project (`name`). |
 | `open_data` | Opens files or folders as one dataset (`paths`, `name`). Another tool's CSV or TSV opens through a mapping of its columns, by path in `mappings`: `{columns: {junction_aa, junction, v_call, d_call, j_call, c_call, count, sample, locus, productive, cell_id, clone_id, sequence_id: a column's name}, unit: reads, umis, templates or cells (with a count), sample: one name for every row}` ([FORMATS.md](FORMATS.md#tables-with-mapped-columns)). Needs the token. |
 | `open_example` | Opens an example dataset (`example`, `opening`); `download: true` downloads openly licensed data first. |
-| `show` | Shows a view: `start`, `data`, `qc`, `clonotypes`, `repertoire` or `jobs` (`view`, `dataset`). |
+| `show` | Shows a view: `start`, `data`, `qc`, `clonotypes`, `repertoire`, `tracking` or `jobs` (`view`, `dataset`). |
 | `set_definition` | Chooses a dataset's clonotype definition: a `preset` by name, or a `definition` in full. |
+| `annotate_samples` | Sets samples' annotation (`dataset`; `samples`: by name, `{subject, timepoint, reference, tissue, cellSubset, condition, batch, hla}`, `""` to remove a field), as the Data view's samples table holds it. |
+| `describe_subjects` | Shows the Tracking view and answers the dataset's subjects (`dataset`): each one's samples in time order with their time points read as days, its reference samples and replicates, and the checks' findings with their codes. |
 | `select_clonotype` | Chooses a clonotype by its `rank` in the table or its `id`. |
 | `measure_diversity` | Measures each sample's diversity (a job; the result kept) and answers the main measures with their 95% intervals (`dataset`). |
 | `gene_usage` | Counts each sample's genes, junction lengths and amino acids (a job; the result kept, the samples grouped by condition) and answers, for each sample or condition, the most used genes of a segment, the commonest lengths and the mean length, with their 95% intervals (`dataset`; `part`: `genes` or `junctions`; `segment`: `V`, `D`, `J` or `C`; `level`: `gene` or `family`; `weight`: `clonotypes` or `abundance`; `rows`: `samples` or `groups`). |

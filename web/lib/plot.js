@@ -236,6 +236,61 @@ export function curves(series, { label = 'Curves', width = 560, height = 260, xL
   return { svg: wrap(width, height, label, description, body), description };
 }
 
+// A timeline of subjects' samples (a swimmer plot): rows [{ label, className, marks: [{ x, column,
+// label, reference }] }], each mark a sample at x (days, or visits) on the axis, or in a column of
+// its own where it has no day: 'reference' (a reference sample without a time point) and
+// 'baseline' left of the axis, 'after' right of it. Reference samples are diamonds, others dots;
+// marks at one place in a row are set one above the other.
+export function timeline(rows, { label = 'Timeline', width = 640, labelWidth = 90, rowHeight = 26, xLabel = 'Days', format = defaultFormat } = {}) {
+  const marks = rows.flatMap((r) => r.marks);
+  const xs = marks.filter((m) => !m.column && Number.isFinite(m.x)).map((m) => m.x);
+  const columns = ['reference', 'baseline', 'after'].filter((c) => marks.some((m) => m.column === c));
+  const colWidth = 58;
+  const left = columns.filter((c) => c !== 'after');
+  const plotLeft = labelWidth + 12 + left.length * colWidth;
+  const plotRight = width - 24 - (columns.includes('after') ? colWidth : 0);
+  const top = 22;
+  const height = top + rows.length * rowHeight + 40;
+  // The axis: nice ticks over the days, holding day 0.
+  let lo = Math.min(0, ...xs);
+  let hi = Math.max(lo + 1, ...xs);
+  const step = ticks(hi - lo, 5)[1] ?? 1;
+  lo = Math.floor(lo / step) * step;
+  hi = Math.ceil(hi / step) * step;
+  const t = [];
+  for (let v = lo; v <= hi + step * 1e-9; v += step) t.push(Number(v.toPrecision(12)));
+  const x = (v) => plotLeft + ((v - lo) / (hi - lo)) * (plotRight - plotLeft);
+  const colX = (c) => (c === 'after' ? plotRight + colWidth / 2 + 6 : labelWidth + 12 + left.indexOf(c) * colWidth + colWidth / 2);
+  let body = '';
+  for (const c of columns) body += `<text class="plot-tick" x="${colX(c)}" y="${top - 8}" text-anchor="middle">${c === 'reference' ? 'reference' : c}</text>`;
+  if (lo < 0) body += `<line class="plot-guide" x1="${x(0)}" x2="${x(0)}" y1="${top - 4}" y2="${top + rows.length * rowHeight}"/>`;
+  rows.forEach((row, i) => {
+    const y = top + i * rowHeight + rowHeight / 2;
+    body += `<text class="plot-label" x="${labelWidth}" y="${y + 4}" text-anchor="end">${esc(truncate(row.label, Math.max(8, Math.floor(labelWidth / 7.5))))}</text>`;
+    body += `<line class="plot-gridline" x1="${plotLeft}" x2="${plotRight}" y1="${y}" y2="${y}"/>`;
+    const at = new Map();
+    for (const m of row.marks) {
+      const key = m.column ?? String(m.x);
+      at.set(key, [...(at.get(key) ?? []), m]);
+    }
+    for (const group of at.values()) {
+      group.forEach((m, k) => {
+        const cx = m.column ? colX(m.column) : x(m.x);
+        const cy = y + (k - (group.length - 1) / 2) * 7;
+        const title = `<title>${esc(`${row.label}, ${m.label}`)}</title>`;
+        if (m.reference) body += `<path class="plot-reference" d="M${cx.toFixed(2)} ${(cy - 5).toFixed(2)}l5 5-5 5-5-5z">${title}</path>`;
+        else body += `<circle class="${row.className ?? 'plot-accent'}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="4">${title}</circle>`;
+      });
+    }
+  });
+  const axisY = top + rows.length * rowHeight + 4;
+  body += `<line class="plot-axis" x1="${plotLeft}" x2="${plotRight}" y1="${axisY}" y2="${axisY}"/>`;
+  for (const v of t) body += `<line class="plot-axis" x1="${x(v)}" x2="${x(v)}" y1="${axisY}" y2="${axisY + 4}"/><text class="plot-tick" x="${x(v)}" y="${axisY + 16}" text-anchor="middle">${format(v)}</text>`;
+  body += `<text class="plot-label" x="${(plotLeft + plotRight) / 2}" y="${height - 4}" text-anchor="middle">${esc(xLabel)}</text>`;
+  const description = `${label}: ${rows.length} subject${rows.length === 1 ? '' : 's'}; ${rows.map((r) => `${r.label}: ${r.marks.map((m) => m.label).join(', ')}`).join('; ')}.`;
+  return { svg: wrap(width, height, label, description, body), description };
+}
+
 // A heatmap: values[r][c] (not finite: left blank) for rowLabels × colLabels, each cell shaded from
 // none to max (the largest value when not given), titled by title(r, c, v), with a scale. Column
 // labels are turned to read upward.
@@ -294,7 +349,7 @@ export function figureStyle({ colorVision = false, font = 'Helvetica, Arial, san
   const series = [c.accent, c.brandB, c.accent2, c.brandA, c.ok, c.text3];
   let css = `text{font-family:${font}}.plot-label{font-size:12px;fill:${c.text2}}.plot-tick{font-size:11px;fill:${c.text3}}`
     + `.plot-axis{stroke:${c.lineStrong};stroke-width:1}.plot-gridline{stroke:${c.line};stroke-width:1}`
-    + `.plot-ok{fill:${c.ok}}.plot-warn{fill:${c.warn}}.plot-danger{fill:${c.danger}}.plot-muted{fill:${c.text3}}.plot-accent{fill:${c.accent}}.plot-c4{fill:${c.accent2}}.plot-c5{fill:${c.brandA}}`
+    + `.plot-ok{fill:${c.ok}}.plot-warn{fill:${c.warn}}.plot-danger{fill:${c.danger}}.plot-muted{fill:${c.text3}}.plot-accent{fill:${c.accent}}.plot-c4{fill:${c.accent2}}.plot-c5{fill:${c.brandA}}.plot-reference{fill:${c.brandA}}`
     + `.plot-whisker{stroke:${c.text2};stroke-width:1.4}.plot-line{fill:none;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}.plot-line-accent{stroke:${c.accent}}`
     + `.plot-dashed{stroke-dasharray:5 4}.plot-heat{fill:${c.accent};stroke:none}.plot-guide{stroke:${c.text3};stroke-width:1;stroke-dasharray:3 3}.plot-band{stroke:none;fill-opacity:0.13}`
     + `.figure-title{font-size:14px;font-weight:bold;fill:${c.text}}.figure-caption{font-size:10.5px;fill:${c.text2}}.figure-legend{font-size:11px;fill:${c.text2}}`;

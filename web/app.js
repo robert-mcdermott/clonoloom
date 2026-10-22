@@ -35,14 +35,7 @@ const MODES = [
   { id: 'qc', label: 'QC', icon: 'qc', load: () => import('./ui/mode-qc.js').then((m) => m.mountQC) },
   { id: 'clonotypes', label: 'Clonotypes', icon: 'clonotypes', load: () => import('./ui/mode-clonotypes.js').then((m) => m.mountClonotypes) },
   { id: 'repertoire', label: 'Repertoire', icon: 'repertoire', load: () => import('./ui/mode-repertoire.js').then((m) => m.mountRepertoire) },
-  {
-    id: 'tracking', label: 'Tracking', icon: 'threads',
-    load: async () => plannedMode({
-      title: 'Tracking', icon: 'threads',
-      purpose: 'Clonotypes followed across a subject\'s samples, each drawn as a thread through time: which persist, expand or contract, tested with methods that account for sampling and biological variance, and how much of each sample comes from a reference such as an infusion product or a donor.',
-      steps: ['Annotate subjects and timepoints.', 'Choose the clonotypes to follow.', 'Test expansion with the false discovery rate stated.'],
-    }),
-  },
+  { id: 'tracking', label: 'Tracking', icon: 'threads', load: () => import('./ui/mode-tracking.js').then((m) => m.mountTracking) },
   {
     id: 'specificity', label: 'Specificity', icon: 'receptor',
     load: async () => plannedMode({

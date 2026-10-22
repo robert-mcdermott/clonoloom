@@ -50,6 +50,7 @@ const DOCS = [
   { group: 'Start', pages: [['index', 'Overview'], ['getting-started', 'Getting started'], ['opening-data', 'Opening data']] },
   { group: 'Quality and clonotypes', pages: [['qc', 'Quality control'], ['clonotypes', 'Clonotypes']] },
   { group: 'Repertoires', pages: [['diversity', 'Diversity'], ['rarefaction', 'Rarefaction'], ['genes', 'Genes and junctions'], ['overlap', 'Overlap']] },
+  { group: 'Tracking', pages: [['subjects', 'Subjects and time points']] },
   { group: 'Results', pages: [['figures', 'Figures and exports'], ['record', 'The record']] },
   { group: 'Reference', pages: [['simulation', 'Simulated studies'], ['remote-control', 'Remote control']] },
 ];

@@ -18,6 +18,23 @@ grows with each.
     references (formats, remote control, simulated studies, installing) stay in `docs/`;
   - a link-preview image made from a screenshot (`docs/site/og-image.mjs`);
   - axe-core listed in `validation/sources.json` as a tool, fetched for the audit only.
+- **Subjects and time points (wave 3, slice 3).** The **Tracking** view's first part, Subjects
+  (`internal/study`, `api_study.go`, `web/ui/mode-tracking.js`):
+  - each sample's time point read as days from its subject's reference event: `day 28`, `d28`,
+    `D+28`, `28 days`, `week 4`, `wk4`, `month 3`, `M3`, `year 1`, `6h`, AIRR's
+    `14 day (vaccination)`, `28 days post-infusion`, a number of days; `baseline` and `pre` before,
+    `post` after; visits (`T1`, `visit 2`) in their order;
+  - a **Reference** field in the samples' annotation, marking a subject's reference sample and what
+    it is (an infusion product, a donor); a tissue such as infusion product, apheresis, graft or
+    donor marks it too;
+  - each subject's samples in time order, on a timeline of days (a figure: references as diamonds,
+    baseline in a column of its own, samples at one time one above the other, subjects colored by
+    condition) and in a table, with the samples taken at one time (replicates) and those left out;
+  - the checks before tracking, as findings with stable codes: samples without a subject or a time
+    point, time points not understood, numbers read as days, replicates, subjects with one time
+    point or without a reference sample, times that cannot be ordered against each other;
+  - remote control's `annotate_samples` (any annotation field) and `describe_subjects`; the guide's
+    page, Subjects and time points.
 - **`internal/dmath` (wave 3, slice 2):** logarithms, exponentials, powers, `log1p`, `expm1`,
   log-gamma and `erfc` whose bits are the same on every processor: fdlibm 5.3's, adapted from
   SituCraft 0.9.0 (`expm1` ported from fdlibm), every product rounded on its own.
@@ -40,6 +57,11 @@ grows with each.
   the repository's files (CI runs it on every commit); every page passes axe-core 4.13.0's WCAG 2.1
   A and AA rules in both themes at a desktop's and a phone's width, none wider than a phone's
   screen (`node docs/site/audit.mjs`: 16 pages, 64 checks, no problem).
+- **Subjects and time points** (Go and Node tests): 29 spellings of time points read to their days
+  and labels, and text that is not one refused; a design of three subjects ordered (a product without
+  a time point first, then baseline, then days; week 4 and day 28 one time, and replicates), its
+  eight findings counted; the time reader fuzzed (700,000 inputs, no fault); the samples' study read
+  from their annotation over their metadata; the timeline's marks, columns and stacking.
 - **The same results on every processor:** `validation/fused_test.go` searches the arm64 assembly
   of every function of the module (1,360) for fused multiply-adds, and finds none; it fails, naming
   the line, when one is added. The 0.2.0 project's five results made again, and the small simulated

@@ -10,6 +10,7 @@ export const SAMPLE_FIELDS = [
   { id: 'subject', label: 'Subject', hint: 'The individual the sample comes from: the unit of every comparison between groups.' },
   { id: 'timepoint', label: 'Time point', hint: 'When the sample was taken (day 28, week 4, baseline).' },
   { id: 'tissue', label: 'Tissue', hint: 'Blood, tumor, lymph node, an infusion product…' },
+  { id: 'reference', label: 'Reference', hint: 'Marks the subject\'s reference sample and says what it is: infusion product, donor, baseline. Tracking follows its clonotypes; attribution measures each sample against it. A tissue such as infusion product or donor marks it too.' },
   { id: 'cellSubset', label: 'Cell subset', hint: 'CD4, CD8, naive, memory, sorted antigen-specific cells…' },
   { id: 'condition', label: 'Condition', hint: 'The group compared: responder, CMV+, vaccinated…' },
   { id: 'batch', label: 'Batch', hint: 'Library, run or plate, to look for batch effects.' },
@@ -222,6 +223,25 @@ export function fieldsFromMetadata(sample) {
     if (hla.length && !out.hla) out.hla = [...new Set(hla)].join(', ');
   }
   return out;
+}
+
+// A sample's field as the analyses use it: its annotation's, else its metadata's (sample: the
+// program's summary of the sample, with its repertoire and metadata).
+export function fieldValue(project, datasetId, sample, field) {
+  return annotation(project, datasetId, sample.name).fields[field] ?? fieldsFromMetadata(sample)[field];
+}
+
+// The samples of a dataset as the study's design is read from them (api_study.go): each one's
+// subject, time point, tissue and reference.
+export function studySamples(project, datasetId, summary) {
+  return (summary?.samples ?? []).map((s) => {
+    const out = { name: s.name };
+    for (const field of ['subject', 'timepoint', 'tissue', 'reference']) {
+      const v = fieldValue(project, datasetId, s, field);
+      if (v) out[field] = v;
+    }
+    return out;
+  });
 }
 
 // Whether a recorded file is the one the program found: same size and SHA-256.

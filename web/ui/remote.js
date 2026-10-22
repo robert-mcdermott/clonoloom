@@ -10,7 +10,7 @@ import { clonotypePresets } from './storage.js';
 import { showMethods } from './methods.js';
 import { datasetDefinition, sameMeaning, useDefinition } from '../lib/definitions.js';
 import { datasetFilter } from '../lib/filters.js';
-import { datasetUnit } from '../lib/datasets.js';
+import { SAMPLE_FIELDS, annotate, datasetUnit } from '../lib/datasets.js';
 
 export class ActionError extends Error {}
 
@@ -20,7 +20,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const count = (n, noun) => `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`;
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', jobs: 'jobs' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.
@@ -161,6 +161,36 @@ export function installRemote(app) {
       const before = datasetDefinition(d, lociOf(await openDataset(d)));
       if (!(sameMeaning(before, chosen) && before.name === chosen.name)) store.commit(useDefinition(store.project, d.id, chosen, describe), `Define clonotypes of ${d.name}`);
       return { message: `${d.name}: clonotypes by ${chosen.name}${describe ? ` (${describe})` : ''}.`, data: { definition: chosen } };
+    },
+
+    async annotate_samples({ dataset, samples }) {
+      const d = datasetOf(dataset);
+      if (!samples || typeof samples !== 'object' || Array.isArray(samples)) throw new ActionError('annotate_samples needs samples: {name: {field: value}}.');
+      const names = new Set((await openDataset(d)).samples.map((s) => s.name));
+      const fields = SAMPLE_FIELDS.map((f) => f.id);
+      const edits = [];
+      for (const [name, values] of Object.entries(samples)) {
+        if (!names.has(name)) throw new ActionError(`${d.name} has no sample ${name}. Its samples: ${[...names].slice(0, 10).join(', ')}${names.size > 10 ? ', …' : ''}.`);
+        for (const [field, value] of Object.entries(values ?? {})) {
+          if (!fields.includes(field)) throw new ActionError(`No field ${field}: the fields are ${fields.join(', ')}.`);
+          edits.push({ dataset: d.id, sample: name, field, value: value ?? '' });
+        }
+      }
+      const next = annotate(store.project, edits, 'Annotated by a program');
+      if (next !== store.project) store.commit(next, `Annotate samples of ${d.name}`);
+      return { message: `${d.name}: ${count(edits.length, 'value')} set on ${count(Object.keys(samples).length, 'sample')}.`, data: { dataset: d.id, values: edits.length } };
+    },
+
+    async describe_subjects({ dataset }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('tracking');
+      const view = await waitFor(() => app.trackingView, 5000, 'the Tracking view');
+      await view.choose(d.id);
+      const state = view.state();
+      if (state.status !== 'ready') throw new ActionError(state.error ?? `The subjects of ${d.name} could not be read.`);
+      const { design } = state;
+      return { message: `${d.name}: ${count(design.subjects.length, 'subject')}, ${count(design.findings.length, 'finding')}.`, data: design };
     },
 
     async select_clonotype({ dataset, rank, id }) {

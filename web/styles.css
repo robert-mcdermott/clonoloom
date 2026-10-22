@@ -879,6 +879,9 @@ button.link { background: none; border: 0; padding: 0; color: var(--accent-text)
 .plot-heat { fill: var(--accent); stroke: none; }
 .plot-guide { stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 3 3; }
 .plot-band { stroke: none; fill-opacity: 0.13; }
+/* A reference sample on a timeline (an infusion product, a donor): a diamond. */
+.plot-reference { fill: var(--brand-a); }
+.swatch.plot-reference { background: var(--brand-a); transform: rotate(45deg) scale(0.85); }
 .plot-band.plot-s1 { fill: var(--accent); }
 .plot-band.plot-s2 { fill: var(--brand-b); }
 .plot-band.plot-s3 { fill: var(--accent-2); }
@@ -893,3 +896,10 @@ button.link { background: none; border: 0; padding: 0; color: var(--accent-text)
 .plot-line.plot-s6 { stroke: var(--text-3); } circle.plot-s6, .swatch.plot-s6 { fill: var(--text-3); background: var(--text-3); }
 .repertoire-spec { margin: 0 0 10px; } .mapping-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 14px; margin: 12px 0; } .mapping-field { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; } .mapping-field select.input, .mapping-field input.input { width: 120px; } .mapping-preview td, .mapping-preview th { white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; } .mapping-check { margin-top: 8px; }
 .repertoire-controls { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0 0 10px; } .repertoire-controls select.input { width: auto; max-width: 100%; } .repertoire-start { max-width: 760px; } .repertoire-start p { margin: 6px 0 10px; } .repertoire-table td .muted { margin-left: 4px; }
+
+/* The Tracking view (mode-tracking.js). */
+.tracking-view { display: flex; flex-direction: column; gap: 12px; }
+.tracking-summary { margin: 0; color: var(--text-2); }
+.subject-samples { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.subject-sample { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.subjects-table td { vertical-align: top; }
