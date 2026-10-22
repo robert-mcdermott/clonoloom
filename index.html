@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ClonoLoom: immune repertoires you can check</title>
+  <meta name="description" content="A local-first workbench for T- and B-cell receptor repertoires: AIRR, Cell Ranger and immunoSEQ data checked, clonotypes defined explicitly, diversity, rarefaction, gene usage and overlap measured with their uncertainty, and figures, exports and methods others can check, in one program on your own computer." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ClonoLoom" />
+  <meta property="og:description" content="A local-first workbench for T- and B-cell receptor repertoires: AIRR, Cell Ranger and immunoSEQ data checked, clonotypes defined explicitly, diversity, rarefaction, gene usage and overlap measured with their uncertainty, and figures, exports and methods others can check, in one program on your own computer." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="./"><img src="assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="./#features">Features</a>
+        <a href="docs/">Documentation</a>
+        <a href="install.html">Install</a>
+        <a href="science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container hero-grid">
+        <a class="eyebrow" href="https://github.com/robert-mcdermott/clonoloom/releases/tag/v0.2.0"><span class="pill">v0.2.0</span> Repertoire basics: diversity, rarefaction, gene usage and overlap, each with its uncertainty</a>
+        <h1>Immune repertoires <span class="accent">you can check</span></h1>
+        <p class="lede">ClonoLoom opens the output of your annotation pipeline (AIRR Community files, Cell Ranger V(D)J, immunoSEQ exports, or another tool's table), checks it, and groups it into clonotypes by a definition you can see. It measures each repertoire's diversity, compares samples at equal coverage, counts their genes and junctions, and measures how much they overlap, each number with its interval, and writes figures, exports and a methods paragraph others can check, keeping every step on record. It runs on your own computer as one self-contained program, installed with a single command: no account, Python or R, and your data never leave your machine.</p>
+        <figure class="hero-shot">
+        <div class="shot shot-window" data-url="127.0.0.1:8860"><img class="shot-dark" src="assets/img/diversity-dark.webp" width="2000" height="1250" fetchpriority="high" alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis" /><img class="shot-light" src="assets/img/diversity-light.webp" width="2000" height="1250" fetchpriority="high" alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis" /></div>
+        <figcaption>A simulated TRB study of twelve samples, one of the examples: each sample's Shannon diversity with its 95% interval, the Hill profile and clonal space homeostasis.</figcaption>
+      </figure>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="install.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+            Install ClonoLoom
+          </a>
+          <a class="btn" href="docs/">Read the guide</a>
+        </div>
+
+        <div class="install-card">
+          <div class="tablist" role="tablist" aria-label="Operating system" data-os>
+            <button class="tab" role="tab" id="hero-tab-unix" aria-controls="hero-panel-unix" aria-selected="true" data-os="macos linux">macOS and Linux</button>
+            <button class="tab" role="tab" id="hero-tab-win" aria-controls="hero-panel-win" aria-selected="false" tabindex="-1" data-os="windows">Windows</button>
+          </div>
+          <div class="tabpanel" role="tabpanel" id="hero-panel-unix" aria-labelledby="hero-tab-unix">
+            <div class="code wrap"><pre><code><span class="prompt">$ </span>curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.sh | sh</code></pre></div>
+            <p class="note">Installs the latest release in <code>~/.local/bin</code> after checking its SHA-256 checksum, then prints how to start it. <a href="install.html">Other options</a></p>
+          </div>
+          <div class="tabpanel" role="tabpanel" id="hero-panel-win" aria-labelledby="hero-tab-win" hidden>
+            <div class="code wrap"><pre><code><span class="prompt">PS&gt; </span>irm https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.ps1 | iex</code></pre></div>
+            <p class="note">Run in PowerShell. No administrator rights needed. Then open a new terminal and run <code>clonoloom</code>. <a href="install.html">Other options</a></p>
+          </div>
+        </div>
+        <p class="hero-meta">Free and open source (Apache 2.0) · macOS, Linux and Windows · x64 and ARM64 · for research use</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="why-title">
+      <div class="container">
+        <h2 id="why-title" class="visually-hidden" hidden>Why ClonoLoom</h2>
+        <div class="pillars">
+          <div class="pillar">
+            <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6Z"/></svg>Checked from the file up</h3>
+            <p>Every file read by ClonoLoom's own readers and checked against independent ones; a validator that says what is wrong, in how many rows, and what to do; Cell Ranger's and immunoSEQ's own numbers recomputed from the rows.</p>
+          </div>
+          <div class="pillar">
+            <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h13"/><circle cx="19" cy="15.5" r="2.5"/></svg>Clonotypes by definition</h3>
+            <p>A clonotype is whatever its definition says. The junction, the genes, the chains and the rules for single cells are a named choice, stated in words with every table, figure, export and methods paragraph.</p>
+          </div>
+          <div class="pillar">
+            <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Every number with its uncertainty</h3>
+            <p>Diversity, gene usage and overlap each with a 95% interval, how often those intervals hold the truth measured on simulated repertoires; samples compared at equal coverage rather than as deep as they happened to be sequenced.</p>
+          </div>
+          <div class="pillar">
+            <h3><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Private and on the record</h3>
+            <p>One program for macOS, Linux and Windows. Your files are read where they are and never changed; nothing is uploaded. Every result is kept with what it was made from, and a methods paragraph is written from that record.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">What it does</span>
+          <h2 id="features-title">From the annotation pipeline to results others can check</h2>
+          <p>Open a study's receptor data, check them, look at each sample's quality, define clonotypes, measure the repertoires and compare them, and write it up so that others can check it, each step kept on record.</p>
+        </div>
+
+        <article class="feature">
+          <div class="feature-text">
+            <span class="kicker">Open and check</span>
+            <h3>Data checked before they are used</h3>
+            <p>ClonoLoom reads AIRR Rearrangement tables with their Repertoire metadata, Cell Ranger V(D)J outputs and immunoSEQ exports with its own readers, fingerprints every file by its SHA-256, and checks it: each finding fatal, a warning or a note, with how many rows it concerns, examples, and what to do. The abundance unit is stated, never guessed.</p>
+            <ul class="checklist">
+              <li>Every column of 25 development files as the <code>airr</code> library and pandas read it</li>
+              <li>Another tool's CSV or TSV through a mapping of its columns, checked column by column</li>
+              <li>A moved file found again by its fingerprint; a changed one never read in its place</li>
+            </ul>
+            <a class="more-link" href="docs/opening-data.html">Opening data</a>
+          </div>
+          <figure>
+        <div class="shot"><img class="shot-dark" src="assets/img/data-dark.webp" width="2000" height="1250" loading="lazy" alt="The Data view of 10x Genomics' PBMC 1k T cells: the dataset with its format, unit and the public data's license, the validator's note, the sample, and the file's SHA-256, source and license in the inspector" /><img class="shot-light" src="assets/img/data-light.webp" width="2000" height="1250" loading="lazy" alt="The Data view of 10x Genomics' PBMC 1k T cells: the dataset with its format, unit and the public data's license, the validator's note, the sample, and the file's SHA-256, source and license in the inspector" /></div>
+        <figcaption>10x Genomics' PBMC 1k T cells checked: the format, the unit, the license, and one note.</figcaption>
+      </figure>
+        </article>
+
+        <article class="feature reverse">
+          <div class="feature-text">
+            <span class="kicker">Quality control</span>
+            <h3>Each sample's quality, the vendor's numbers recomputed</h3>
+            <p>The QC view measures every sample from its rows: the productive share, clonotypes, singletons, sample coverage, the largest clonotype's share and how well genes were called; for single cells, each cell's chains. Cell Ranger's and immunoSEQ's own numbers are recomputed beside them. Filters are saved as versions, each with its reason, and never change the data.</p>
+            <ul class="checklist">
+              <li>Cell Ranger's cell metrics reproduced exactly for six runs</li>
+              <li>immunoSEQ's clonality, entropy and largest frequency reproduced from its reads</li>
+              <li>Sample coverage equal to iNEXT's to 10⁻¹²</li>
+            </ul>
+            <a class="more-link" href="docs/qc.html">Quality control</a>
+          </div>
+          <figure>
+        <div class="shot"><img class="shot-dark" src="assets/img/qc-dark.webp" width="2000" height="1250" loading="lazy" alt="QC of 10x Genomics' 10k PBMC T cells: cells by their productive chains, the share of productive contigs and the junction lengths of the clonotypes" /><img class="shot-light" src="assets/img/qc-light.webp" width="2000" height="1250" loading="lazy" alt="QC of 10x Genomics' 10k PBMC T cells: cells by their productive chains, the share of productive contigs and the junction lengths of the clonotypes" /></div>
+        <figcaption>10k PBMC T cells: cells by their productive chains, and the junctions' lengths.</figcaption>
+      </figure>
+        </article>
+
+        <article class="feature">
+          <div class="feature-text">
+            <span class="kicker">Clonotypes</span>
+            <h3>Clonotypes by a definition you can see</h3>
+            <p>Choose a preset or edit a definition: the junction in nucleotides or amino acids, V and J by allele, gene, family or not at all, one chain or paired chains, and what to do with cells that have extra or missing chains. The definition is stated above every table and in the status bar, and each clonotype has an ID made from it, the same in every run.</p>
+            <ul class="checklist">
+              <li>Paired definitions equal to scirpy's partitions of cells on eight Cell Ranger runs</li>
+              <li>Cell Ranger's own clonotypes, or an AIRR file's <code>clone_id</code>, kept as a definition</li>
+              <li>A million clonotypes sorted and searched as they scroll</li>
+            </ul>
+            <a class="more-link" href="docs/clonotypes.html">Clonotypes</a>
+          </div>
+          <figure>
+        <div class="shot"><img class="shot-dark" src="assets/img/clonotypes-dark.webp" width="2000" height="1250" loading="lazy" alt="The Clonotypes view: 10k PBMC T cells grouped into paired αβ clonotypes by amino-acid junction, V and J genes, the definition stated above the table, and the largest clonotype's chains and cells in the inspector" /><img class="shot-light" src="assets/img/clonotypes-light.webp" width="2000" height="1250" loading="lazy" alt="The Clonotypes view: 10k PBMC T cells grouped into paired αβ clonotypes by amino-acid junction, V and J genes, the definition stated above the table, and the largest clonotype's chains and cells in the inspector" /></div>
+        <figcaption>10k T cells as paired αβ clonotypes, the largest one's chains and cells in the inspector.</figcaption>
+      </figure>
+        </article>
+
+        <article class="feature reverse">
+          <div class="feature-text">
+            <span class="kicker">Diversity and rarefaction</span>
+            <h3>Diversity with its uncertainty, compared fairly</h3>
+            <p>Hill numbers, Chao1, ACE, the Shannon and Simpson diversity of the repertoire a sample was drawn from, clonality, Gini and clonal space homeostasis, each with a 95% interval. Rarefaction and extrapolation show what each sample would hold at any size or coverage, and compare the samples at a level every one of them reaches.</p>
+            <ul class="checklist">
+              <li>Equal to iNEXT, immunarch and vegan on 18 samples</li>
+              <li>Curves within 10⁻⁹ of iNEXT's at its 40 sizes along each</li>
+              <li>How often the intervals hold a simulated truth, measured and stated</li>
+            </ul>
+            <a class="more-link" href="docs/diversity.html">Diversity</a>
+          </div>
+          <figure>
+        <div class="shot"><img class="shot-dark" src="assets/img/rarefaction-dark.webp" width="2000" height="1250" loading="lazy" alt="The Rarefaction part: each sample's Shannon diversity at the lowest coverage among them, with 95% intervals, and the curves by size and by coverage, solid where rarefied and dashed where extrapolated" /><img class="shot-light" src="assets/img/rarefaction-light.webp" width="2000" height="1250" loading="lazy" alt="The Rarefaction part: each sample's Shannon diversity at the lowest coverage among them, with 95% intervals, and the curves by size and by coverage, solid where rarefied and dashed where extrapolated" /></div>
+        <figcaption>Twelve samples compared at the lowest coverage among them, with their curves by size and coverage.</figcaption>
+      </figure>
+        </article>
+
+        <article class="feature">
+          <div class="feature-text">
+            <span class="kicker">Genes and junctions</span>
+            <h3>What the clonotypes are made of</h3>
+            <p>Each sample's V, D, J and C genes and their families, V–J pairs, junction lengths and amino acids, overall and at each IMGT position; by clonotypes or by abundance, for each sample or each condition, with intervals from a bootstrap of the clonotypes.</p>
+            <ul class="checklist">
+              <li>8,277 shares equal to an independent R implementation to 10⁻¹²</li>
+              <li>A call tied between genes shared between them, what was not called said</li>
+              <li>Intervals that held the simulator's truth in 97.4% to 100% of cases</li>
+            </ul>
+            <a class="more-link" href="docs/genes.html">Genes and junctions</a>
+          </div>
+          <figure>
+        <div class="shot"><img class="shot-dark" src="assets/img/genes-dark.webp" width="2000" height="1250" loading="lazy" alt="The Genes part: a heatmap of each sample's TRBV gene usage by clonotypes, and one gene's share across the samples with 95% intervals" /><img class="shot-light" src="assets/img/genes-light.webp" width="2000" height="1250" loading="lazy" alt="The Genes part: a heatmap of each sample's TRBV gene usage by clonotypes, and one gene's share across the samples with 95% intervals" /></div>
+        <figcaption>Each sample's V genes, and one gene across the samples.</figcaption>
+      </figure>
+        </article>
+
+        <article class="feature reverse">
+          <div class="feature-text">
+            <span class="kicker">Overlap</span>
+            <h3>Samples compared with each other</h3>
+            <p>For every pair of samples: the clonotypes they share, Jaccard's and Sørensen–Dice's indices and the overlap coefficient, as sampled and rarefied to the same depth, and Morisita's index over their abundances. The pairs of one subject and of two are summarized, and the clonotypes found in more than one subject are counted.</p>
+            <ul class="checklist">
+              <li>Equal to immunarch, vegan and R on 69 pairs, and to scirpy on four single-cell runs</li>
+              <li>Intervals widened for the chance that decides which clonotypes two samples share</li>
+              <li>Those intervals held the truth in 95.2% of 330 simulated pairs</li>
+            </ul>
+            <a class="more-link" href="docs/overlap.html">Overlap</a>
+          </div>
+          <figure>
+        <div class="shot"><img class="shot-dark" src="assets/img/overlap-dark.webp" width="2000" height="1250" loading="lazy" alt="The Overlap part: Morisita's index for every pair of samples as a heatmap, the pairs of one subject and of two summarized, and every pair listed with its intervals" /><img class="shot-light" src="assets/img/overlap-light.webp" width="2000" height="1250" loading="lazy" alt="The Overlap part: Morisita's index for every pair of samples as a heatmap, the pairs of one subject and of two summarized, and every pair listed with its intervals" /></div>
+        <figcaption>Every pair of twelve samples by Morisita's index; the two samples of each subject stand out.</figcaption>
+      </figure>
+        </article>
+
+        <article class="feature">
+          <div class="feature-text">
+            <span class="kicker">Figures, exports and the record</span>
+            <h3>Results others can check</h3>
+            <p>Every plot is saved as a figure whose caption states the clonotype definition, the unit and the samples. Rearrangements, clonotypes and results are exported with a notice of where they came from and under what license. A methods paragraph is written from the project's record, with numbered references, saying only what was done.</p>
+            <ul class="checklist">
+              <li>Figures as SVG, PNG at 300 dpi or PDF</li>
+              <li>AIRR Rearrangement TSV and CSV, each with its data's license and citation</li>
+              <li>Every release's project opened again, and its results made again, by the next</li>
+            </ul>
+            <a class="more-link" href="docs/figures.html">Figures and exports</a>
+          </div>
+          <figure>
+        <div class="shot"><img class="shot-dark" src="assets/img/methods-dark.webp" width="2000" height="1250" loading="lazy" alt="A dataset's methods paragraph: the data's source and license, how ClonoLoom read and checked them, and the clonotype definition, with numbered references" /><img class="shot-light" src="assets/img/methods-light.webp" width="2000" height="1250" loading="lazy" alt="A dataset's methods paragraph: the data's source and license, how ClonoLoom read and checked them, and the clonotype definition, with numbered references" /></div>
+        <figcaption>A methods paragraph, written from the record, with its references.</figcaption>
+      </figure>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="more-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">And</span>
+          <h2 id="more-title">Built to be checked, taught and scripted</h2>
+        </div>
+        <div class="card-grid">
+          <a class="card" href="docs/simulation.html">
+            <span class="icon-badge mint"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4 19a1 1 0 0 0 .9 1.5h14.2A1 1 0 0 0 20 19l-6-10V3"/></svg></span>
+            <h3>Examples with known answers</h3>
+            <p>Public 10x Genomics, AIRR Community and immuneACCESS data, each with its license and citation, and simulated TRB studies made on your computer in seconds, whose every clonotype is known.</p>
+          </a>
+          <a class="card" href="docs/remote-control.html">
+            <span class="icon-badge"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M13 6l-2 12"/></svg></span>
+            <h3>Scripts and notebooks</h3>
+            <p>Programs on your computer drive the open window through remote control: open data, choose a definition, measure, and read the answers as JSON, each action in the project's history.</p>
+          </a>
+          <a class="card" href="docs/opening-data.html#mapping">
+            <span class="icon-badge pink"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg></span>
+            <h3>Any tool's table</h3>
+            <p>VDJtools', MiXCR's or a spreadsheet's table, opened through a mapping of its columns that ClonoLoom guesses from their names and checks over the whole file before it opens.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="validation" aria-labelledby="validation-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Validated</span>
+          <h2 id="validation-title">The same answers as the reference tools, and the truth</h2>
+          <p>A validation suite checks each method against an independent implementation, the vendor's own numbers, or a simulated repertoire whose answers are known.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Area</th><th>Checked against</th><th>Agreement</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Readers</strong></td><td>Every column of 25 AIRR, Cell Ranger and immunoSEQ files as the <code>airr</code> library 2.0.0 and pandas 3.0.6 read it</td><td class="agree">every value</td></tr>
+              <tr><td><strong>Quality control</strong></td><td>An R implementation and iNEXT 3.0.2 on six bulk samples; Cell Ranger 4.0, 6.1 and 9.0's metrics for six runs; immunoSEQ's own clonality</td><td class="agree">to 10⁻¹²; exactly; to seven digits</td></tr>
+              <tr><td><strong>Clonotypes</strong></td><td>scirpy 0.25.1 on eight Cell Ranger runs, by four definitions</td><td class="agree">the same partitions of cells</td></tr>
+              <tr><td><strong>Diversity</strong></td><td>iNEXT 3.0.2, immunarch and vegan 2.7.6 on 18 samples</td><td class="agree">the measures seen to 10⁻⁹; the estimates to iNEXT's printed digits</td></tr>
+              <tr><td><strong>Rarefaction and extrapolation</strong></td><td>iNEXT 3.0.2 at 40 sizes along each of 18 samples' curves</td><td class="agree">to 10⁻⁹ (the extrapolated Shannon diversity within 8 × 10⁻⁸)</td></tr>
+              <tr><td><strong>Gene usage</strong></td><td>An independent R implementation on 15 samples</td><td class="agree">8,277 shares to 10⁻¹²</td></tr>
+              <tr><td><strong>Overlap</strong></td><td>immunarch, vegan and R on 69 pairs; scirpy 0.25.1 on four single-cell runs</td><td class="agree">to 10⁻⁹; the same shared clonotypes</td></tr>
+              <tr><td><strong>Intervals</strong></td><td>Simulated repertoires whose truth is known: 200 samples of each, 330 pairs</td><td class="agree">diversity 91.5–99.5% where well sampled; usage 97.4–100%; overlap 95.2%</td></tr>
+              <tr><td><strong>The simulator</strong></td><td>10x Genomics' 10k PBMC data's junction lengths and V usage</td><td class="agree">mean length within 0.1 amino acids</td></tr>
+              <tr><td><strong>Scale</strong></td><td>A million rearrangements; a cohort of 100 samples; a million clonotypes</td><td class="agree">read and checked in 1.5 s; reopened in 118 ms; a page in 37 ms</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="text-align:center"><a class="more-link" href="science.html">Methods, validation and citation</a></p>
+      </div>
+    </section>
+
+    <section class="section" id="releases" aria-labelledby="releases-title">
+      <div class="container">
+        <div class="section-head">
+          <span class="kicker">Releases</span>
+          <h2 id="releases-title">One wave at a time</h2>
+          <p>Each release adds one part of the work, validated before it ships. The <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">changelog</a> has the details, and the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/clonoloom-spec/roadmap.md">roadmap</a> what comes next.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Release</th><th>What it brought</th></tr></thead>
+            <tbody>
+              <tr><td><strong>0.1.0</strong></td><td>Trust the data: AIRR, Cell Ranger and immunoSEQ data read and checked, each sample's quality, clonotypes by an explicit definition, and a project that records where the data came from</td></tr>
+              <tr><td><strong>0.2.0</strong></td><td>Repertoire basics: diversity, rarefaction and extrapolation, gene usage and junctions, and overlap, each with its uncertainty; figures, exports and other tools' tables; simulated studies and remote control</td></tr>
+              <tr><td><strong>0.3.0</strong> (coming)</td><td>Tracking: subjects and time points, clonotypes followed through a subject's samples, and the clonotypes that expand or contract, tested with false discoveries controlled</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="get" aria-labelledby="get-title">
+      <div class="container">
+        <div class="cta">
+          <div>
+            <h2 id="get-title">Get started in a minute</h2>
+            <p>Install with one command, then run <code>clonoloom</code>. It opens its own window, with public single-cell and bulk datasets and simulated studies ready to explore.</p>
+            <div class="btn-row">
+              <a class="btn btn-primary" href="docs/getting-started.html">Getting started</a>
+              <a class="btn" href="https://github.com/robert-mcdermott/clonoloom/releases/latest">All downloads</a>
+            </div>
+          </div>
+          <div class="install-card">
+            <div class="tablist" role="tablist" aria-label="Operating system" data-os>
+              <button class="tab" role="tab" id="cta-tab-unix" aria-controls="cta-panel-unix" aria-selected="true" data-os="macos linux">macOS and Linux</button>
+              <button class="tab" role="tab" id="cta-tab-win" aria-controls="cta-panel-win" aria-selected="false" tabindex="-1" data-os="windows">Windows</button>
+            </div>
+            <div class="tabpanel" role="tabpanel" id="cta-panel-unix" aria-labelledby="cta-tab-unix">
+              <div class="code wrap"><pre><code><span class="prompt">$ </span>curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.sh | sh</code></pre></div>
+              <div class="code"><pre><code><span class="prompt">$ </span>clonoloom</code></pre></div>
+            </div>
+            <div class="tabpanel" role="tabpanel" id="cta-panel-win" aria-labelledby="cta-tab-win" hidden>
+              <div class="code wrap"><pre><code><span class="prompt">PS&gt; </span>irm https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.ps1 | iex</code></pre></div>
+              <div class="code"><pre><code><span class="prompt">PS&gt; </span>clonoloom</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="./"><img src="assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="./#features">Features</a></li>
+            <li><a href="install.html">Install</a></li>
+            <li><a href="science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="docs/getting-started.html">Getting started</a></li>
+            <li><a href="docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="docs/diversity.html">Diversity</a></li>
+            <li><a href="docs/overlap.html">Overlap</a></li>
+            <li><a href="docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- ClonoLoom: threads (clonotypes) woven across the warp (samples over time); the rose thread
+       swells as its clonotype expands, the teal one thins as its clonotype contracts. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1c1431"/>
+      <stop offset="1" stop-color="#2d1a43"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <g stroke="#cdbfe6" stroke-opacity=".45" stroke-width="1.6" stroke-linecap="round">
+    <path d="M16 9v46M27 9v46M38 9v46M49 9v46"/>
+  </g>
+  <path d="M7 22c6 0 8-1.2 14-1.6s11-3.4 19-3.4 12-1.4 17-1.6v12c-6-.4-10-1.4-17-1.4s-13-2.6-19-2.8-8-.4-14-.4z" fill="#f0567f"/>
+  <path d="M7 31.5c10 0 13 2.5 25 2.5s16-2.5 25-2.5v4.2c-9 0-13 2.5-25 2.5s-15-2.5-25-2.5z" fill="#f2b04a"/>
+  <path d="M7 41c7 0 10 2 17 3s12 2.5 18 2.6 10 .4 15 .4v2.4c-5 0-9 .4-15 .4s-12-1-18-1.6-10-2.2-17-2.2z" fill="#3cc8b4"/>
+  <g stroke="#cdbfe6" stroke-opacity=".9" stroke-width="1.6" stroke-linecap="round">
+    <path d="M27 17v12M49 30.5v7.5M16 39v8M38 43v6"/>
+  </g>
+</svg>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulated studies · ClonoLoom</title>
+  <meta name="description" content="Make simulated TRB studies whose truth is known with ClonoLoom, from the Example data dialog or clonoloom simulate, to check methods against the truth and learn ClonoLoom without data of your own." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/simulation.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Simulated studies" />
+  <meta property="og:description" content="Make simulated TRB studies whose truth is known with ClonoLoom, from the Example data dialog or clonoloom simulate, to check methods against the truth and learn ClonoLoom without data of your own." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/simulation.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html" aria-current="page">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Simulated studies</h1>
+      <p class="doc-lede">ClonoLoom makes bulk T-cell receptor β studies whose truth is known: every clonotype of every subject, and the numbers an analysis estimates. They are for checking methods, ClonoLoom's or anyone's, against the truth, and for learning ClonoLoom without data of your own.</p>
+
+      <h2 id="make">Make one</h2>
+      <p>The <strong>Example data</strong> dialog offers two studies, made on your computer in a few seconds (offline too), each labeled simulated wherever it is shown. From the terminal:</p>
+      <div class="code"><pre><code><span class="prompt">$ </span>clonoloom simulate                                <span class="comment"># the standard study, into clonoloom-simulated-standard</span>
+<span class="prompt">$ </span>clonoloom simulate --preset null --seed 7         <span class="comment"># another study, another seed</span>
+<span class="prompt">$ </span>clonoloom simulate --print-params &gt; study.json   <span class="comment"># the parameters, to edit</span>
+<span class="prompt">$ </span>clonoloom simulate --params study.json --out my-study</code></pre></div>
+      <p>The same parameters and seed give the same study, byte for byte, on every computer. Open its folder in ClonoLoom as one dataset: its <code>truth</code> folder is left out.</p>
+
+      <h2 id="presets">Presets</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Preset</th><th>Subjects</th><th>Samples</th><th>What it is for</th></tr></thead>
+          <tbody>
+            <tr><td><code>standard</code></td><td>3 control, 3 with expanded clones (fewer clonotypes, a heavier tail, five clones holding 22% of the cells)</td><td>2 of each subject, 12,000 to 45,000 templates</td><td>Diversity, rarefaction and overlap, with a real difference between the groups</td></tr>
+            <tr><td><code>null</code></td><td>6 of one kind, in two groups</td><td>2 of each</td><td>A comparison of the groups should find nothing</td></tr>
+            <tr><td><code>small</code></td><td>2</td><td>1 of each</td><td>Tests</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="truth">The truth</h2>
+      <p>Beside the samples (AIRR rearrangement tables, templates as <code>umi_count</code> and reads as <code>duplicate_count</code>, with their Repertoire metadata), the <code>truth</code> folder holds every clone of every subject's population, and for each population its clonotypes, Hill numbers, Shannon and Simpson indices, evenness, clonality, Gini, largest clones' share and homeostasis; for each sample, the clonotypes and coverage a sample of its depth shows on average; and for each pair of subjects, the clonotypes they share. ClonoLoom's own interval coverage is measured against it (<a href="../science.html">Science</a>).</p>
+
+      <h2 id="model">The model</h2>
+      <p>Rearrangements are made from GRCh38's TRB gene segments at Ensembl's annotation, with the V and J usage of 10x Genomics' 10k PBMC data, deletions, palindromic and non-templated insertions, and productive junctions selected on their length so that their lengths are the data's. Each subject's clones have power-law sizes; each sample draws templates from them and sequences them into reads. It is a simple, documented model for testing methods against a known truth, not a model inferred from data: its junctions look like real ones, but they are not a substitute for real repertoires. <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/SIMULATION.md">SIMULATION.md</a> gives every file, field and parameter. Simulated data describe no person, and may be used and shared without restriction.</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="record.html"><span>Previous</span>The record</a>
+        <a class="next" href="remote-control.html"><span>Next</span>Remote control</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

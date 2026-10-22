@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The record · ClonoLoom</title>
+  <meta name="description" content="How ClonoLoom keeps a project: saved automatically, every change undoable and logged, results kept with their lineage, a methods paragraph written from the record, and where everything is stored." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/record.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="The record" />
+  <meta property="og:description" content="How ClonoLoom keeps a project: saved automatically, every change undoable and logged, results kept with their lineage, a methods paragraph written from the record, and where everything is stored." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/record.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html" aria-current="page">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>The record</h1>
+      <p class="doc-lede">A project records where its data came from and how every result was made, so that a methods section can be written from it and the results made again. This page says what is kept, and where.</p>
+
+      <h2 id="project">The project</h2>
+      <p>The project saves itself to the library as you work; <strong>Open a saved project</strong> (⇧⌘O) lists them. Undo and redo cover every change. <strong>History and log</strong> (the status bar, or ⌘J) lists what was done to the project, and the session's messages. A project records its datasets by their files' paths and fingerprints, never the data themselves; their annotation, filters and definitions; and the results kept.</p>
+
+      <h2 id="results">Results and jobs</h2>
+      <p>Each analysis runs as a <strong>job</strong> in the program, shown in the <strong>Jobs</strong> view with its progress and log; a job that a stop interrupted can be resumed. Its result is kept as an artifact with its lineage: the dataset it was made from, the definition, filter and settings (with their defaults written out), the method and its version, the seed, ClonoLoom's version, and the SHA-256 of every file. The artifact's ID is made from what it measured, so asking again answers the kept result, and changing anything makes another.</p>
+      <p>Every release saves a project with its data and results, and every later release must open it and make its results again, with the same IDs and values. Results are the same bit for bit on one kind of processor, but not yet between arm64 and amd64, which differ in the last digits of some sums and logarithms.</p>
+
+      <h2 id="methods">The methods paragraph</h2>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/methods-dark.webp" width="2000" height="1250" loading="lazy" alt="A methods paragraph with numbered references, ready to copy" /><img class="shot-light" src="../assets/img/methods-light.webp" width="2000" height="1250" loading="lazy" alt="A methods paragraph with numbered references, ready to copy" /></div>
+        <figcaption>A dataset's methods paragraph, with its references.</figcaption>
+      </figure>
+      <p><strong>Methods paragraph</strong> (a dataset's menu or the inspector) writes a paragraph for a manuscript from the project's record: the data's source and license, how ClonoLoom read and checked them, the unit, a table's mapped columns, the filter with what it kept, the clonotype definition, the diversity measured, the rarefaction and the levels the samples were compared at, the genes and junctions counted, the overlap measured, and ClonoLoom's version, with numbered references. Only what was done is said, and the same record gives the same text. <strong>Copy</strong> takes it with its references.</p>
+
+      <h2 id="where">Where things are kept</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>What</th><th>macOS</th><th>Linux</th><th>Windows</th></tr></thead>
+          <tbody>
+            <tr><td>The library: projects, results, jobs, example data</td><td><code>~/Library/Application Support/ClonoLoom</code></td><td><code>~/.config/ClonoLoom</code></td><td><code>%AppData%\ClonoLoom</code></td></tr>
+            <tr><td>The cache of tables read</td><td><code>~/Library/Caches/clonoloom</code></td><td><code>~/.cache/clonoloom</code></td><td><code>%LocalAppData%\clonoloom</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><code>--data-dir</code>, <code>--examples-dir</code> and <code>--cache-dir</code> put them elsewhere. Your repertoire files are never copied into the library, moved or changed: projects refer to them where they are. Deleted projects are first moved to the library's <code>trash</code> folder. The cache stays within 10 GB (<code>--cache-limit</code>), removing what was used least recently, and can be deleted at any time; the Jobs view shows it and clears it.</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="figures.html"><span>Previous</span>Figures and exports</a>
+        <a class="next" href="simulation.html"><span>Next</span>Simulated studies</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

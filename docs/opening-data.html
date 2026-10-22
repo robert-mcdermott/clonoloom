@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Opening data · ClonoLoom</title>
+  <meta name="description" content="Open AIRR rearrangement tables, Cell Ranger V(D)J outputs, immunoSEQ exports or another tool's table in ClonoLoom, and read how it checks them before analysis." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/opening-data.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Opening data" />
+  <meta property="og:description" content="Open AIRR rearrangement tables, Cell Ranger V(D)J outputs, immunoSEQ exports or another tool's table in ClonoLoom, and read how it checks them before analysis." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/opening-data.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html" aria-current="page">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Opening data</h1>
+      <p class="doc-lede">ClonoLoom reads the output of your annotation pipeline where it lies, fingerprints every file, and checks it before anything is computed from it. A table it does not recognize is read through a mapping of its columns that you confirm.</p>
+
+      <h2 id="formats">What it reads</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Format</th><th>What to open</th></tr></thead>
+          <tbody>
+            <tr><td>AIRR Rearrangement TSV (schema 1.3 to 2.0)</td><td>The tables, with their AIRR Repertoire metadata (<code>.json</code>) beside them: written by IgBLAST and Change-O, MiXCR, TRUST4, Cell Ranger, the AIRR Data Commons and ClonoLoom's simulator</td></tr>
+            <tr><td>Cell Ranger V(D)J</td><td>A <code>vdj</code> run's folder or its <code>outs/</code>, a <code>multi</code> run's per-sample folders, or the contig annotations alone</td></tr>
+            <tr><td>immunoSEQ exports (v2 and v3 columns)</td><td>Bulk TCR or BCR exports from the immunoSEQ Analyzer and immuneACCESS, templates and reads kept apart</td></tr>
+            <tr><td>Another tool's CSV or TSV</td><td>VDJtools' or MiXCR's clone tables, a spreadsheet: read through a <a href="#mapping">mapping of its columns</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Every table may be gzipped. A file's format is decided from its header, whatever its name. <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/FORMATS.md">FORMATS.md</a> says how each is read, field by field.</p>
+
+      <h2 id="open">Open your data</h2>
+      <p><strong>Open data</strong> shows the folders of this computer: choose the files, a Cell Ranger output folder, or a folder holding a cohort's files. What you choose together opens as <strong>one dataset</strong>: a cohort's exports, say, or a run's T cells. You can also name them on the command line. ClonoLoom reads each file where it is and never changes, copies or moves it; files dropped on the window are copied into the library instead, since a browser does not say where a dropped file lies.</p>
+      <p>Each file is fingerprinted by its SHA-256 as it is read. If a file later moves, <strong>Locate the files</strong> finds it again by its fingerprint near where it was, or lets you choose it and checks it. If a file's contents change, the project says so instead of reading other data under the same name. Tables read once are kept in a cache, so that a cohort of a hundred samples reopens in about a tenth of a second.</p>
+
+      <h2 id="mapping">Another tool's table</h2>
+      <p>A CSV or TSV that no reader recognizes opens a dialog showing its first rows, with a column chosen for each field ClonoLoom uses: the junction (amino acids or nucleotides; one is needed), the V, D, J and C genes, the count, the sample, the locus, whether a rearrangement is productive, the cell, the clone and the sequence ID. ClonoLoom guesses them from the columns' names (VDJtools', MiXCR's, AIRR's and others'); change any that it guessed wrong.</p>
+      <ul>
+        <li><strong>The count's unit</strong> is yours to say: reads, UMIs, templates or cells. A column called <code>count</code> does not say what it counted, so ClonoLoom never guesses it.</li>
+        <li><strong>Check</strong> reads the whole file through the mapping and reports, for each field, how many values are valid, examples of those that are not, and notes: how many junctions begin with a cysteine and end with a phenylalanine or tryptophan, how many counts are not whole numbers.</li>
+        <li><strong>Open</strong> checks, then opens the table through the mapping. Where no column says whether a rearrangement is productive, one whose junction is whole codons without a stop codon is.</li>
+      </ul>
+      <p>The mapping is part of the dataset: the project keeps it, the dataset reopens through it, one file under two mappings is two datasets, and the methods paragraph states which column gave what. Scripts give it to <code>open_data</code> (<a href="remote-control.html">remote control</a>).</p>
+
+      <h2 id="check">Check the data</h2>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/data-dark.webp" width="2000" height="1250" loading="lazy" alt="The Data view of 10x Genomics' PBMC 1k T cells: the dataset with its format, unit and the public data's license, the validator's note on junctions without their anchors, the sample, and the file's SHA-256, source and license in the inspector" /><img class="shot-light" src="../assets/img/data-light.webp" width="2000" height="1250" loading="lazy" alt="The Data view of 10x Genomics' PBMC 1k T cells: the dataset with its format, unit and the public data's license, the validator's note on junctions without their anchors, the sample, and the file's SHA-256, source and license in the inspector" /></div>
+        <figcaption>The Data view: the dataset card, the validator's note, the samples, and the file in the inspector.</figcaption>
+      </figure>
+      <p>The <strong>Data</strong> view shows each dataset of the project:</p>
+      <ul>
+        <li><strong>The card</strong>: its format, rows, samples, whether it is single-cell or bulk, and its <strong>unit</strong>: cells, templates, reads or UMIs. When the files do not say whether reads or molecules were counted (an AIRR file with <code>duplicate_count</code> alone), ClonoLoom does not guess: choose the unit, and until you do, results say "counts".</li>
+        <li><strong>Validation</strong>: each finding with its severity, how many rows it concerns, examples (file, line, value) and what to do. A <strong>fatal</strong> finding stops analysis; a <strong>warning</strong> is shown with every result that uses the dataset; a <strong>note</strong> informs. Each has a stable code (<code>junction-anchors</code>, <code>locus-mismatch</code>, …) you can cite.</li>
+        <li><strong>Samples</strong>: rows, productive share, abundance and loci, and their annotation: subject, time point, tissue, cell subset, condition, batch and HLA. <strong>Suggest from file names</strong> and <strong>Fill from metadata</strong> (AIRR Repertoire metadata, immunoSEQ's sample tags) propose values, and each keeps where it came from. The Repertoire view colors samples by condition and pairs them by subject.</li>
+        <li><strong>The inspector</strong> (right): the files with their SHA-256 fingerprints, what was read beside them (Cell Ranger's clonotypes and metrics), and the data's source and license.</li>
+      </ul>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="getting-started.html"><span>Previous</span>Getting started</a>
+        <a class="next" href="qc.html"><span>Next</span>Quality control</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>
