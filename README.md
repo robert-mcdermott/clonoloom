@@ -1,5 +1,10 @@
 # ClonoLoom
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/diversity-dark.webp">
+  <img alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis, under a warning that the samples' coverage makes the richness estimates lower bounds" src="docs/images/diversity-light.webp">
+</picture>
+
 ClonoLoom is an open-source, local-first workbench for adaptive immune receptor repertoires: T- and
 B-cell receptor sequencing, bulk and single-cell. It takes the output of an annotation pipeline
 (Cell Ranger, immunoSEQ, MiXCR, IgBLAST through Change-O, TRUST4, or any AIRR Community file) to
@@ -11,128 +16,109 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Status:** in development. 0.2.0 measures repertoires with their uncertainty: diversity,
-rarefaction, gene usage and overlap ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+**Current release:** 0.2.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+Following clonotypes over time, specificity, B-cell lineages, single-cell phenotypes and cohort
+comparisons come in later releases.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/diversity-dark.webp">
-  <img alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis, under a warning that the samples' coverage makes the richness estimates lower bounds" src="docs/images/diversity-light.webp">
-</picture>
+## Features
 
-## In 0.2.0
+- **Open and check your data.** AIRR Rearrangement TSV, Cell Ranger V(D)J outputs and immunoSEQ
+  exports are read by ClonoLoom's own readers. Any other tool's CSV or TSV is read through a
+  mapping of its columns, checked column by column. Each file is fingerprinted by its SHA-256. A
+  validator's findings say how many rows they concern, show examples and say what to do. The
+  abundance unit (cells, templates, reads, UMIs) is stated, never guessed.
+- **See each sample's quality.** Productive share, clonotypes, singletons, sample coverage, the
+  largest clonotype's share and gene-call resolution; for single cells, the chains of each cell.
+  The vendor's own numbers are recomputed from the rows, and filters are saved as versions, each
+  with its reason.
+- **Define clonotypes explicitly.** Named definitions (junction, V and J levels, chains,
+  single-cell rules) stated in words with every table and figure; a million clonotypes sorted and
+  searched as they scroll.
+- **Measure repertoires with their uncertainty.** Hill numbers, Chao1, ACE, the estimated Shannon
+  and Simpson diversity, clonality, Gini and clonal space homeostasis, each with a 95% interval.
+  Rarefaction and extrapolation compare samples at equal coverage or size.
+- **See what the clonotypes are made of.** V, D, J and C genes and families, V–J pairs, junction
+  lengths and amino acids by IMGT position; by clonotypes or abundance, by sample or condition.
+- **Compare samples.** Every pair's shared clonotypes, Jaccard, Sørensen–Dice and the overlap
+  coefficient (as sampled and rarefied) and Morisita's index, with intervals; the public
+  clonotypes by subject.
+- **Write results others can check.** Figures (SVG, PNG, PDF) whose captions state the clonotype
+  definition, unit and samples; AIRR and CSV exports with a notice of each data set's license and
+  citation; a methods paragraph with numbered references, written from the record. Every result is
+  kept with its lineage.
+- **Simulations and scripts.** `clonoloom simulate` writes studies whose truth is known, and
+  programs on this computer can drive the window through remote control.
 
-The second release measures the repertoires themselves, each number with its uncertainty, and
-writes results others can use:
+Every method is checked against an independent implementation or a known truth (the `airr`
+library, pandas, scirpy, iNEXT, immunarch, vegan and simulated studies among them): see the
+[changelog](CHANGELOG.md)'s Validation sections and [research](clonoloom-spec/research.md).
 
-- **Diversity.** Hill numbers, Chao1, ACE, the Shannon and Simpson diversity of the repertoire a
-  sample was drawn from, clonality, Gini and clonal space homeostasis, each with a 95% bootstrap
-  interval.
-- **Rarefaction and extrapolation.** Each sample's curves by size and by coverage, and the samples
-  compared at a level reached by rarefaction alone.
-- **Gene usage and junctions.** V, D, J and C genes and families, V–J pairs, junction lengths and
-  amino acids by IMGT position; by clonotypes or abundance, by sample or condition.
-- **Overlap.** For every pair of samples: shared clonotypes, Jaccard, Sørensen–Dice and the overlap
-  coefficient (as sampled and rarefied), and Morisita's index. Also the public clonotypes by
-  subject.
-- **Figures and exports.** Every plot saved as SVG, PNG (300 dpi) or PDF, its caption stating the
-  clonotype definition, unit and samples. Rearrangements exported as AIRR TSV, clonotypes and
-  results as CSV, each with a notice of its data's license and citation.
-- **Any tool's table.** A CSV or TSV no reader recognizes, opened through a mapping of its columns
-  that is checked column by column.
-- **Simulated studies and scripts.** `clonoloom simulate` writes studies whose truth is known;
-  programs on this computer can drive the window; long work runs as jobs; results are kept with
-  their lineage.
-
-Each method is checked against iNEXT, immunarch, vegan, scirpy or R, and against simulated truth
-(the [changelog](CHANGELOG.md)'s Validation section).
+## A look around
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/rarefaction-dark.webp">
   <img alt="The Rarefaction part: each sample's Shannon diversity at the lowest coverage among them, with 95% intervals, and the curves by size and by coverage, solid where rarefied and dashed where extrapolated" src="docs/images/rarefaction-light.webp">
 </picture>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/genes-dark.webp">
-  <img alt="The Genes part: a heatmap of each sample's TRBV gene usage by clonotypes, and one gene's share across the samples with 95% intervals" src="docs/images/genes-light.webp">
-</picture>
+Rarefaction and extrapolation: the samples compared at the lowest coverage among them, and their
+curves by size and by coverage.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/overlap-dark.webp">
   <img alt="The Overlap part: Morisita's index for every pair of samples as a heatmap, the pairs of one subject and of two summarized, and every pair listed with its intervals" src="docs/images/overlap-light.webp">
 </picture>
 
-<sub>Pictures: a simulated TRB study (`clonoloom simulate`, the standard preset: six subjects, two
-samples each), opened from ClonoLoom's Example data.</sub>
+Overlap: every pair of samples by Morisita's index, the pairs of one subject and of two
+summarized, and every pair listed with its intervals.
 
-## In 0.1.0
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/genes-dark.webp">
+  <img alt="The Genes part: a heatmap of each sample's TRBV gene usage by clonotypes, and one gene's share across the samples with 95% intervals" src="docs/images/genes-light.webp">
+</picture>
 
-The first release opens a study's receptor data, checks them and defines clonotypes explicitly,
-with a project that records where every number came from:
-
-- **Data.** AIRR Rearrangement TSV, Cell Ranger V(D)J outputs and immunoSEQ exports, read by
-  ClonoLoom's own readers, each file fingerprinted by its SHA-256; a validator whose findings say
-  how many rows, show examples and say what to do; the abundance unit (cells, templates, reads,
-  UMIs) stated, never guessed; samples annotated by hand, from file names or from metadata.
-- **QC.** Each sample's productive share, clonotypes, singletons, sample coverage, the largest
-  clonotype's share and gene-call resolution; for single cells, the chains of each cell; the
-  vendor's own numbers recomputed from the rows; filters saved as versions, each with its reason.
-- **Clonotypes.** Named definitions (junction, V and J levels, chains, single-cell rules) stated
-  in words with every table; a million clonotypes sorted and searched as they scroll.
-- **The record.** Example data with their licenses and citations, and a methods paragraph per
-  dataset with numbered references, written from what was done.
+Gene usage: each sample's V genes, and one gene across the samples.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/clonotypes-dark.webp">
   <img alt="ClonoLoom's Clonotypes view: 10x Genomics' 10k PBMC T cells grouped into paired αβ clonotypes by amino-acid junction, V and J genes, the definition stated above the table, and the largest clonotype's chains and cells in the inspector" src="docs/images/clonotypes-light.webp">
 </picture>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/data-dark.webp">
-  <img alt="The Data view of 10x Genomics' PBMC 1k T cells: the dataset with its format, unit and the public data's license, the validator's note on junctions without their anchors, the sample, and the file's SHA-256, source and license in the inspector" src="docs/images/data-light.webp">
-</picture>
+The Clonotypes view: 10k T cells grouped into paired αβ clonotypes, the definition stated above the
+table, and the largest clonotype's chains and cells in the inspector.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/qc-dark.webp">
   <img alt="QC of 10x Genomics' 10k PBMC T cells: cells by their productive chains, the share of productive contigs and the junction lengths of the clonotypes" src="docs/images/qc-light.webp">
 </picture>
 
+The QC view: cells by their productive chains, the share of productive contigs, and the
+clonotypes' junction lengths.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/methods-dark.webp">
   <img alt="A dataset's methods paragraph: the data's source and license, how ClonoLoom read and checked them, and the clonotype definition, with numbered references" src="docs/images/methods-light.webp">
 </picture>
 
-<sub>Pictures: 10x Genomics' Human PBMC 1k (v1.1) and 10k PBMC (5′ v2.0) datasets, CC BY 4.0,
-opened from ClonoLoom's Example data. Made by `node docs/capture/capture.mjs`.</sub>
+A methods paragraph, written from the project's record, with numbered references.
 
-## What it is for
-
-- **Trust the data.** AIRR-C, Cell Ranger and immunoSEQ files read by ClonoLoom's own readers,
-  checked by a validator that says what is wrong, where, and what to do about it.
-- **State the clonotype definition.** Nucleotide or amino-acid junction, V and J genes or not, one
-  chain or paired chains: a named choice shown with every table and figure.
-- **Measure repertoires with their uncertainty.** Hill numbers, richness estimators, clonality
-  and overlap with intervals; rarefaction and extrapolation to compare at equal depth or coverage.
-- **Follow clonotypes.** Each clonotype a thread through a subject's samples, with expansion tests
-  that account for sampling and biological variance.
-- **Find likely specificities.** TCRdist neighborhoods, specificity groups and database matches,
-  with their evidence and backgrounds.
-- **Trace B-cell families.** Clonal families, germlines, somatic hypermutation and lineage trees.
-- **Compare cohorts.** The subject, never the cell or the sequence, as the unit.
-- **Write results others can check.** Figures with the definition and unit in their legends, a
-  methods section written from the record, AIRR-compliant exports, and certificates.
-
-Every method is implemented in ClonoLoom, cites its publication, and is checked against an
-independent reference implementation or a simulated truth.
+More pictures, one for each step, are in the [getting started guide](docs/GETTING-STARTED.md).
 
 ## Install
 
-Each [release](https://github.com/robert-mcdermott/clonoloom/releases) is one file per platform,
-installed by a one-line installer that checks its checksum ([docs/INSTALLING.md](docs/INSTALLING.md)).
-Or build from source with Go (the version in `go.mod` or newer):
+One file per platform, installed by a one-line installer that checks its checksum
+([docs/INSTALLING.md](docs/INSTALLING.md)). On macOS and Linux:
 
 ```sh
-go build -o clonoloom .
+curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.sh | sh
 ```
+
+On Windows, in PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.ps1 | iex
+```
+
+Or build from source with Go (the version in `go.mod` or newer): `go build -o clonoloom .`
 
 ## Getting started
 
@@ -152,8 +138,7 @@ hands them to the ClonoLoom already running.
 To try it without your own data, choose **Example data**: public 10x Genomics, AIRR Community and
 immuneACCESS datasets, each shown with its source, size, license and citation and downloaded from
 its publisher only when you ask, and simulated studies whose truth is known, made on your
-computer. `clonoloom simulate` writes those from the command line
-([docs/SIMULATION.md](docs/SIMULATION.md)).
+computer.
 
 <details>
 <summary>Options</summary>
@@ -174,6 +159,14 @@ computer. `clonoloom simulate` writes those from the command line
 | `--version` | | Print `clonoloom X.Y.Z` and exit |
 
 </details>
+
+## Command-line tools
+
+- `clonoloom simulate --out <new folder>` writes a simulated TRB study whose truth is known: AIRR
+  rearrangement tables, their Repertoire metadata, and the truth beside them; presets `standard`,
+  `null` and `small` ([simulated studies](docs/SIMULATION.md)).
+
+It takes `-h` for its settings.
 
 ## Documentation
 
@@ -203,6 +196,19 @@ node docs/capture/capture.mjs            # the documentation's pictures (docs/im
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
 once. A release is a tag (`v0.2.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
+
+## Example data
+
+The public example datasets are downloaded from their publishers only when asked; they are not
+part of ClonoLoom or this repository:
+- 10x Genomics' single-cell V(D)J runs, under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/);
+- the AIRR Community's test files, under CC BY 4.0;
+- three subjects of Emerson et al. 2017 from immuneACCESS, under its terms of use (research only,
+  no redistribution), which you accept in the window before they are downloaded.
+
+The simulated studies are made by ClonoLoom on your computer when asked. The screenshots in this
+documentation show 10x Genomics' Human PBMC 1k (v1.1) and 10k PBMC (5′ v2.0) datasets and the
+standard simulated study.
 
 ## Siblings
 
