@@ -33,7 +33,7 @@ type rarefactionSample struct {
 
 func (a *app) rarefactionWork(k analysis, spec analysisSpec) jobs.Func {
 	return func(ctx context.Context, run *jobs.Run) error {
-		ds, head, abundances, err := a.samplesOf(k, spec, run)
+		ds, head, _, abundances, err := a.samplesOf(k, spec, run)
 		if err != nil {
 			return err
 		}

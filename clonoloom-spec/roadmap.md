@@ -15,7 +15,7 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is done and merged, 0.1.0 not yet
-tagged; wave 2 has slices 1–5 done, slice 6 next.
+tagged; wave 2 has slices 1–6 done, slice 7 next.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -173,8 +173,8 @@ Built on the branch `wave2`, one commit per slice.
 | 3. Artifacts, jobs and the cache | Done |
 | 4. Diversity | Done |
 | 5. Rarefaction and extrapolation | Done |
-| 6. Gene usage and spectratypes | Next |
-| 7. Overlap | To come |
+| 6. Gene usage and spectratypes | Done |
+| 7. Overlap | Next |
 | 8. Figures, exports and methods; release 0.2.0 | To come |
 
 1. **Remote control and screenshots (A7).** SituCraft's hub and capture scenes.
@@ -223,6 +223,17 @@ Built on the branch `wave2`, one commit per slice.
    - *Moved to slice 8:* the Rarefaction part's capture scene, with the Repertoire view's.
 6. **Gene usage and spectratypes (R3).** V, D, J, C and V–J usage; junction lengths; amino-acid
    composition.
+   - *Done:* the Repertoire view's Genes and Junctions parts, from one analysis: each segment's
+     genes and families, V–J pairs, junction lengths and their mean, amino acids overall and at
+     each IMGT position of the commonest lengths; by clonotypes or by abundance, with intervals
+     from a bootstrap of each sample's clonotypes; conditions as the mean of their samples, each
+     counted once. Validated against an independent R implementation (15 samples) and the
+     simulator's truth.
+   - *Decided:* a call tied between genes gives each an equal part (immunarch counts the tie as a
+     gene of its own); a clonotype's genes are its rearrangements', in proportion to their counts.
+   - *Found:* plot axes could end below their largest value, clipping the tallest column, line or
+     interval (QC's junction lengths since wave 1): every axis now holds its values.
+   - *Moved to slice 8:* the Genes and Junctions parts' capture scenes.
 7. **Overlap (R4).** Shared clonotypes, Jaccard, overlap coefficient, Morisita–Horn, rarefied;
    public clonotypes within the project; validated against immunarch and scirpy.
 8. **Figures, exports and methods (O1, O2, O3, O9, D7).** SVG/PNG/PDF figures with the

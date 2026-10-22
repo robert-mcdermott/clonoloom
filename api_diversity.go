@@ -27,7 +27,7 @@ type diversitySample struct {
 // diversityWork measures each sample of the dataset and keeps the result as an artifact.
 func (a *app) diversityWork(k analysis, spec analysisSpec) jobs.Func {
 	return func(ctx context.Context, run *jobs.Run) error {
-		ds, head, abundances, err := a.samplesOf(k, spec, run)
+		ds, head, _, abundances, err := a.samplesOf(k, spec, run)
 		if err != nil {
 			return err
 		}

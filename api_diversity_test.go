@@ -8,6 +8,9 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"clonoloom/internal/clonotype"
+	"clonoloom/internal/qc"
 )
 
 // runAnalysis opens a dataset of two samples, looks for the kind's result (there is none), starts
@@ -117,4 +120,71 @@ func request2(t *testing.T, handler http.Handler, path string) []byte {
 		t.Fatalf("%s: %d %s", path, rec.Code, rec.Body)
 	}
 	return rec.Body.Bytes()
+}
+
+// A kept result is found again by what it measured: its id stays what it was, groups count only
+// for the analyses that summarize them.
+func TestAnalysisIDsAreStable(t *testing.T) {
+	s := analysisSpec{Dataset: "d-0123456789abcdef", Definition: clonotype.Definition{Name: "AA", Junction: "aa", V: "gene", J: "gene"}, Filter: qc.Filter{ProductiveOnly: true}}
+	n, err := s.normalized(1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// As 0.2.0's slices 4 and 5 made them.
+	if n.artifactID("div-") != "div-5dc08fda095c5496" || n.artifactID("rar-") != "rar-5dc08fda095c5496" {
+		t.Errorf("ids %s %s", n.artifactID("div-"), n.artifactID("rar-"))
+	}
+	g := n
+	g.Groups = map[string]string{"R1": "control"}
+	if g.artifactID("use-") == n.artifactID("use-") {
+		t.Error("groups do not change the id")
+	}
+	// Sent to an analysis that does not group, groups are ignored.
+	dir := t.TempDir()
+	path := filepath.Join(dir, "study.tsv")
+	os.WriteFile(path, []byte(datasetTSV), 0o644)
+	_, handler := testApp(t)
+	open := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`)
+	var sum datasetSummary
+	json.Unmarshal(open.Body.Bytes(), &sum)
+	ids := map[string]string{}
+	for _, body := range []string{`"start": false`, `"start": false, "groups": {"R1": "a", "R2": "b"}`} {
+		for _, kind := range []string{"diversity", "usage"} {
+			rec := postJSON(t, handler, "/api/"+kind, `{`+body+`, "dataset": "`+sum.ID+`", "definition": {"junction": "aa", "v": "gene", "j": "gene"}}`)
+			var answer map[string]any
+			json.Unmarshal(rec.Body.Bytes(), &answer)
+			ids[kind+" "+body] = answer["artifact"].(string)
+		}
+	}
+	if ids[`diversity "start": false`] != ids[`diversity "start": false, "groups": {"R1": "a", "R2": "b"}`] || ids[`usage "start": false`] == ids[`usage "start": false, "groups": {"R1": "a", "R2": "b"}`] {
+		t.Errorf("%v", ids)
+	}
+}
+
+// Usage alike: every sample's genes, lengths and amino acids.
+func TestUsageIsMeasuredAndKept(t *testing.T) {
+	got := runAnalysis(t, "usage")
+	var read struct {
+		Artifact struct {
+			ID string `json:"id"`
+		} `json:"artifact"`
+		Result usageDocument `json:"result"`
+	}
+	if err := json.Unmarshal(got, &read); err != nil {
+		t.Fatalf("%v: %s", err, got)
+	}
+	doc := read.Result
+	if !strings.HasPrefix(read.Artifact.ID, "use-") || len(doc.Samples) != 2 || doc.Replicates != 50 {
+		t.Fatalf("%+v", read)
+	}
+	// R1: one productive clonotype, TRBV5-1 and TRBJ2-7, CASSLAGGPEAFF.
+	l := doc.Samples[0].Loci[0]
+	if l.Locus != "TRB" || l.Clonotypes != 1 || l.Lengths[0].Name != "13" || float64(l.MeanLength.Abundance) != 13 {
+		t.Errorf("R1: %+v", l)
+	}
+	for _, g := range l.Genes {
+		if g.Segment == "V" && g.Level == "gene" && (len(g.Shares) != 1 || g.Shares[0].Name != "TRBV5-1" || float64(g.Shares[0].Clonotypes) != 1) {
+			t.Errorf("R1 V: %+v", g)
+		}
+	}
 }

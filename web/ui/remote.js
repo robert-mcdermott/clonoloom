@@ -225,6 +225,48 @@ export function installRemote(app) {
       };
     },
 
+    async gene_usage({ dataset, part, segment, level, weight, rows }) {
+      const d = datasetOf(dataset);
+      const given = (v) => v !== undefined && v !== '';
+      const shown = given(part) ? choose(part, ['genes', 'junctions'], 'part') : 'genes';
+      const choices = {
+        segment: given(segment) ? choose(segment, ['V', 'D', 'J', 'C'], 'segment') : 'V',
+        level: given(level) ? choose(level, ['gene', 'family'], 'level') : 'gene',
+        weight: given(weight) ? choose(weight, ['clonotypes', 'abundance'], 'weight') : 'clonotypes',
+        rows: given(rows) ? choose(rows, ['samples', 'groups'], 'rows') : 'samples',
+      };
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('repertoire');
+      const view = await waitFor(() => app.repertoireView, 5000, 'the Repertoire view');
+      view.show(shown);
+      await waitFor(() => !['looking', 'idle'].includes(view.state('usage').status), 60000, 'the view to look for a result');
+      if (view.state('usage').status === 'absent') await view.measure('usage');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state('usage').status) && view.state('usage'), 30 * 60 * 1000, 'the counts');
+      if (done.status === 'failed') throw new ActionError(done.error);
+      view.setUsage(choices);
+      const r = done.result;
+      const units = choices.rows === 'groups' ? r.groups ?? [] : r.samples;
+      const w = choices.weight;
+      const top = (shares, n) => [...(shares ?? [])].filter((s) => s.name).sort((a, b) => (b[w] ?? 0) - (a[w] ?? 0)).slice(0, n)
+        .map((s) => ({ name: s.name, share: s[w], interval: s[`${w}Interval`] ?? null }));
+      return {
+        message: `${d.name}: the ${choices.segment} ${choices.level === 'gene' ? 'genes' : 'families'} and junctions of ${units.length} ${choices.rows === 'groups' ? 'conditions' : 'samples'} by ${w} (${done.artifact}).`,
+        data: {
+          result: done.artifact, unit: r.unit, definition: r.describe, ...choices,
+          groups: (r.groups ?? []).map((g) => ({ name: g.name, samples: g.samples })),
+          rows: units.map((u) => ({
+            name: u.name,
+            loci: u.loci.map((l) => ({
+              locus: l.locus, clonotypes: l.clonotypes,
+              genes: top(l.genes.find((g) => g.segment === choices.segment && g.level === choices.level)?.shares, 10),
+              lengths: top(l.lengths, 5),
+              meanLength: { value: l.meanLength?.[w] ?? null, interval: l.meanLength?.[`${w}Interval`] ?? null },
+            })),
+          })),
+        },
+      };
+    },
+
     async show_examples() {
       app.showExamples();
       return { message: 'Showing the example data.' };

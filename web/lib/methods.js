@@ -139,5 +139,14 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     sentences.push(`Each sample's clonotypes, Shannon diversity and Simpson diversity (the Hill numbers of order 0, 1 and 2 ${cite('hill')}) were rarefied and extrapolated, over its clonotypes' abundances in ${unit} (${under}), by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: at sample sizes up to twice its own ${cite('chao2014')}, and at equal sample coverage ${cite('chaoJost')}, with 95% intervals from ${opts.replicates ?? 200} bootstrap replicates of each sample drawn from its estimated repertoire (seed ${opts.seed ?? '—'}), the estimate ± 1.96 standard errors.${levels}`);
   }
 
+  // Gene usage, junction lengths and composition, likewise.
+  for (const r of results.filter((x) => x.kind === 'usage')) {
+    const unit = UNIT_WORDS[r.unit] ?? 'counts';
+    const opts = r.options ?? {};
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const groups = r.groups ? ` Each condition was summarized by the mean of its samples' shares, each sample counted once.` : '';
+    sentences.push(`What each sample's clonotypes (${under}) are made of was counted by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: their V, D, J and C genes and V–J pairs, at the gene and the IMGT subgroup level ${cite('imgtNames')}, a call tied between several genes sharing its part equally among them; their junctions' lengths in amino acids; and their junctions' amino acids, overall and at each IMGT position ${cite('imgtJunction')}. Each is a share of the sample's clonotypes, each counted once, and of its abundance in ${unit}, with a 95% interval from ${opts.replicates ?? 200} bootstrap replicates of the sample's clonotypes (seed ${opts.seed ?? '—'}), the estimate ± 1.96 standard errors.${groups}`);
+  }
+
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };
 }

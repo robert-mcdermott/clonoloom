@@ -1,10 +1,12 @@
-// The Repertoire view (clonoloom-spec/requirements.md, R1, R2, R5 and Q3): each sample's diversity
-// under its dataset's clonotype definition and filter, in two parts, each measured by the program
-// as a job and kept as a result (api_analysis.go). Measures: a measure for every sample with its
-// interval, the Hill numbers' profile, clonal space homeostasis and a table. Rarefaction: the
-// samples compared at equal coverage or equal size, their curves by size and by coverage, and how
-// complete each sample is. Every measure explained in words; where a value cannot be trusted as
-// far as its interval says, said so.
+// The Repertoire view (clonoloom-spec/requirements.md, R1, R2, R3, R5 and Q3): each sample's
+// clonotypes under its dataset's definition and filter, in four parts, each from an analysis the
+// program runs as a job and keeps as a result (api_analysis.go). Measures: a measure for every
+// sample with its interval, the Hill numbers' profile, clonal space homeostasis and a table.
+// Rarefaction: the samples compared at equal coverage or equal size, their curves by size and by
+// coverage, and how complete each sample is. Genes and Junctions (one analysis, gene usage;
+// repertoire-usage.js): the genes the clonotypes use, their junctions' lengths and amino acids.
+// Every measure explained in words; where a value cannot be trusted as far as its interval says,
+// said so.
 
 import { h, icon, clear } from './dom.js';
 import { toast } from './overlays.js';
@@ -13,6 +15,7 @@ import { UNITS, annotation, datasetUnit, fieldsFromMetadata } from '../lib/datas
 import { datasetDefinition } from '../lib/definitions.js';
 import { datasetFilter } from '../lib/filters.js';
 import { addResult } from '../lib/results.js';
+import { renderGenes, renderJunctions, USAGE_WORDS } from './repertoire-usage.js';
 
 // The measures, as the view offers them: what each is, in words.
 export const MEASURES = [
@@ -59,17 +62,23 @@ export const LEVELS = [
   { key: 'extrapolatedSize', base: 'size', index: 1, extrapolated: true },
 ];
 
-// The two parts and what each says before its result is there.
+// The parts, the analysis each shows, and what each says before its result is there.
 const PARTS = {
   diversity: {
-    label: 'Measures', start: 'Measure diversity', title: 'Each sample\'s diversity',
+    kind: 'diversity', label: 'Measures', start: 'Measure diversity', title: 'Each sample\'s diversity',
     words: 'Measured by the program over every sample\'s clonotypes under this definition and filter: the Hill numbers and their profile, Shannon\'s entropy, Simpson\'s index, evenness, clonality, Gini\'s coefficient, the largest clonotypes\' shares, clonal space homeostasis, and the whole repertoire\'s richness (Chao1, ACE) and Shannon and Simpson diversity, each with a 95% interval from 200 bootstrap replicates. The result is kept with the project, with how it was made.',
   },
   rarefaction: {
-    label: 'Rarefaction', start: 'Rarefy and extrapolate', title: 'Samples compared at equal coverage',
+    kind: 'rarefaction', label: 'Rarefaction', start: 'Rarefy and extrapolate', title: 'Samples compared at equal coverage',
     words: 'A deeper sample holds more clonotypes because it is deeper. The program computes what each sample would show at any size up to twice its own, and at any sample coverage (Chao et al. 2014; Chao and Jost 2012): the clonotypes, the Shannon diversity and the Simpson diversity, each with a 95% interval from 200 bootstrap replicates (the same replicates as the measures). The samples are then compared at the same completeness, or the same size. The result is kept with the project.',
   },
+  genes: { kind: 'usage', label: 'Genes', start: 'Count genes and junctions', title: 'The genes each sample\'s clonotypes use', words: USAGE_WORDS },
+  junctions: { kind: 'usage', label: 'Junctions', start: 'Count genes and junctions', title: 'Each sample\'s junction lengths and amino acids', words: USAGE_WORDS },
 };
+// The analyses, and the part each result opens in.
+const KINDS = [...new Set(Object.values(PARTS).map((p) => p.kind))];
+const PART_OF = { diversity: 'diversity', rarefaction: 'rarefaction', usage: 'genes' };
+const ACTIONS = { diversity: 'Measure the diversity', rarefaction: 'Rarefy the samples', usage: 'Count the genes and junctions' };
 
 const fmt = (v, share) => {
   if (!Number.isFinite(v)) return '—';
@@ -94,7 +103,7 @@ export function mountRepertoire(app, container) {
   const { store } = app;
   const datasetSelect = h('select.input.small', { 'aria-label': 'Dataset', onchange: (e) => { chosen = e.target.value; load(); } });
   const partSwitch = h('div.segmented', { role: 'tablist', 'aria-label': 'Part' });
-  const measureButton = h('button.btn.primary.small', { type: 'button', onclick: () => measure(part) });
+  const measureButton = h('button.btn.primary.small', { type: 'button', onclick: () => measure(PARTS[part].kind) });
   const head = h('div.workbench-head', h('h1', icon('repertoire'), 'Repertoire'), partSwitch, h('span.spacer'),
     h('label.kv-inline', h('span.muted', 'Dataset'), datasetSelect), measureButton);
   const body = h('div.view-body.repertoire-view');
@@ -102,9 +111,11 @@ export function mountRepertoire(app, container) {
   container.append(root);
   const focusedResult = store.ui.focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === store.ui.focus.id) : null;
   let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : focusedResult?.dataset ?? store.project.datasets[0]?.id ?? null;
-  let part = focusedResult?.kind === 'rarefaction' ? 'rarefaction' : 'diversity';
-  // Each part's state: idle | looking | absent | running | ready | failed.
-  const states = { diversity: { status: 'idle' }, rarefaction: { status: 'idle' } };
+  let part = PART_OF[focusedResult?.kind] ?? 'diversity';
+  // Each analysis's state: idle | looking | absent | running | ready | failed.
+  const states = Object.fromEntries(KINDS.map((k) => [k, { status: 'idle' }]));
+  // The Genes and Junctions parts' choices (repertoire-usage.js).
+  const usageUI = {};
   let spec = null;
   let shown = 'hill1';
   let order = 1;
@@ -113,15 +124,34 @@ export function mountRepertoire(app, container) {
 
   const dataset = () => store.project.datasets.find((d) => d.id === chosen) ?? store.project.datasets[0] ?? null;
 
+  // Each sample's condition: its annotation's, else its metadata's.
+  function conditionOf(d, name) {
+    const summary = app.datasetStates.get(d.id)?.summary;
+    return annotation(store.project, d.id, name).fields.condition
+      ?? (summary ? fieldsFromMetadata(summary.samples.find((x) => x.name === name) ?? {}).condition : undefined);
+  }
+
+  // The samples' groups, by condition, for the analyses that summarize groups (none when no sample
+  // has a condition).
+  function groupsOf(d) {
+    const summary = app.datasetStates.get(d.id)?.summary;
+    const groups = {};
+    for (const s of summary?.samples ?? []) {
+      const c = conditionOf(d, s.name);
+      if (c) groups[s.name] = c;
+    }
+    return Object.keys(groups).length ? groups : undefined;
+  }
+
   async function specOf(d) {
     const open = await app.ensureDataset(d);
     if (open.status !== 'open') throw new Error(open.error ?? `${d.name} could not be opened.`);
     const loci = Object.keys(open.summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
     const filter = datasetFilter(store.project, d);
-    return { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter };
+    return { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, groups: groupsOf(d) };
   }
 
-  const request = (s, extra = {}) => JSON.stringify({ dataset: s.dataset, definition: s.definition, filter: s.filter, ...extra });
+  const request = (s, kind, extra = {}) => JSON.stringify({ dataset: s.dataset, definition: s.definition, filter: s.filter, ...(kind === 'usage' ? { groups: s.groups } : {}), ...extra });
 
   // Looks for each part's result kept for the dataset as chosen; follows a job still running.
   async function load() {
@@ -130,23 +160,23 @@ export function mountRepertoire(app, container) {
     renderHead();
     spec = null;
     if (!d) {
-      for (const kind of Object.keys(PARTS)) states[kind] = { status: 'idle' };
+      for (const kind of KINDS) states[kind] = { status: 'idle' };
       render();
       return;
     }
-    for (const kind of Object.keys(PARTS)) states[kind] = { status: 'looking' };
+    for (const kind of KINDS) states[kind] = { status: 'looking' };
     render();
     try {
       spec = await specOf(d);
     } catch (error) {
       if (mine !== generation) return;
-      for (const kind of Object.keys(PARTS)) states[kind] = { status: 'failed', error: error.message };
+      for (const kind of KINDS) states[kind] = { status: 'failed', error: error.message };
       render();
       return;
     }
-    await Promise.all(Object.keys(PARTS).map(async (kind) => {
+    await Promise.all(KINDS.map(async (kind) => {
       try {
-        const answer = await getJSON(`api/${kind}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request(spec, { start: false }) });
+        const answer = await getJSON(`api/${kind}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request(spec, kind, { start: false }) });
         if (mine !== generation) return;
         if (answer.ready) {
           const read = await getJSON(`api/${kind}/${encodeURIComponent(answer.artifact)}`);
@@ -174,10 +204,12 @@ export function mountRepertoire(app, container) {
       filter: spec.filterRecord ? `${spec.filterRecord.name} v${spec.filterRecord.version}` : null,
       made: read.artifact.created, options: r.options, unit: r.unit, describe: r.describe,
     };
-    const record = kind === 'diversity'
-      ? { ...common, name: `Diversity · ${d.name}`, method: `Hill numbers, Chao1, ACE; ${r.options.replicates} bootstrap replicates` }
-      : { ...common, name: `Rarefaction · ${d.name}`, method: `Rarefaction and extrapolation by size and coverage; ${r.options.replicates} bootstrap replicates`, levels: r.levels };
-    store.commit(addResult(store.project, record), `${kind === 'diversity' ? 'Measure the diversity' : 'Rarefy the samples'} of ${d.name}`, ['project']);
+    const record = {
+      diversity: { ...common, name: `Diversity · ${d.name}`, method: `Hill numbers, Chao1, ACE; ${r.options.replicates} bootstrap replicates` },
+      rarefaction: { ...common, name: `Rarefaction · ${d.name}`, method: `Rarefaction and extrapolation by size and coverage; ${r.options.replicates} bootstrap replicates`, levels: r.levels },
+      usage: { ...common, name: `Gene usage · ${d.name}`, method: `V, D, J and C usage, junction lengths and amino-acid composition; ${r.replicates} bootstrap replicates of the clonotypes`, groups: (r.groups ?? []).length },
+    }[kind];
+    store.commit(addResult(store.project, record), `${ACTIONS[kind]} of ${d.name}`, ['project']);
   }
 
   // When a part's job ends: its result read, or what went wrong said. Each job followed once.
@@ -202,13 +234,13 @@ export function mountRepertoire(app, container) {
     if (!d) return;
     try {
       spec = spec ?? await specOf(d);
-      const answer = await getJSON(`api/${kind}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request(spec) });
+      const answer = await getJSON(`api/${kind}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request(spec, kind) });
       if (answer.ready) {
         load();
         return;
       }
       states[kind] = { status: 'running', artifact: answer.artifact, job: answer.job };
-      app.log(`${kind === 'diversity' ? 'Measuring the diversity' : 'Rarefying the samples'} of ${d.name} (${spec.definition.name ?? 'its definition'}).`);
+      app.log(`${ACTIONS[kind]} of ${d.name} (${spec.definition.name ?? 'its definition'}).`);
       render();
       follow(kind, answer.job);
     } catch (error) {
@@ -216,8 +248,8 @@ export function mountRepertoire(app, container) {
     }
   }
 
-  function show(kind) {
-    part = kind;
+  function show(name) {
+    part = PARTS[name] ? name : PART_OF[name] ?? part;
     render();
   }
 
@@ -234,7 +266,7 @@ export function mountRepertoire(app, container) {
     }
     clear(body);
     const d = dataset();
-    const state = states[part];
+    const state = states[PARTS[part].kind];
     clear(measureButton);
     measureButton.append(icon('play'), PARTS[part].start);
     measureButton.hidden = !d || state.status === 'ready' || state.status === 'running';
@@ -269,22 +301,21 @@ export function mountRepertoire(app, container) {
         h('p', PARTS[part].words),
         state.status === 'running'
           ? h('div.example-progress', h('div.progress', h('div', { style: { width: `${Math.round((job?.progress ?? 0) * 100)}%` } })), h('span.muted.small', job?.message ?? 'Waiting'))
-          : h('div.btn-row', h('button.btn.primary', { type: 'button', onclick: () => measure(part) }, icon('play'), PARTS[part].start))));
+          : h('div.btn-row', h('button.btn.primary', { type: 'button', onclick: () => measure(PARTS[part].kind) }, icon('play'), PARTS[part].start))));
       return;
     }
     if (state.status !== 'ready') return;
     if (part === 'diversity') renderMeasures(d, state);
-    else renderRarefaction(d, state);
+    else if (part === 'rarefaction') renderRarefaction(d, state);
+    else (part === 'genes' ? renderGenes : renderJunctions)({ body, state, ui: usageUI, render, colors: colors(d, state.result.samples.map((s) => s.name)) });
   }
 
-  // Groups by condition: the samples' annotation, else their metadata's.
+  // Colors by condition: the samples' annotation, else their metadata's; a group (a condition) its
+  // condition's color.
   function colors(d, names) {
-    const summary = app.datasetStates.get(d.id)?.summary;
-    const conditionOf = (name) => annotation(store.project, d.id, name).fields.condition
-      ?? (summary ? fieldsFromMetadata(summary.samples.find((x) => x.name === name) ?? {}).condition : undefined);
-    const conditions = [...new Set(names.map((n) => conditionOf(n)).filter(Boolean))];
+    const conditions = [...new Set(names.map((n) => conditionOf(d, n)).filter(Boolean))];
     const classOf = (name) => {
-      const c = conditionOf(name);
+      const c = conditionOf(d, name) ?? (conditions.includes(name) ? name : undefined);
       return c ? `plot-s${(conditions.indexOf(c) % 6) + 1}` : 'plot-s1';
     };
     const legend = () => (conditions.length ? h('div.plot-legend', ...conditions.map((c, i) => h('span', h(`span.swatch.plot-s${(i % 6) + 1}`), c))) : null);
@@ -444,21 +475,22 @@ export function mountRepertoire(app, container) {
       h('p.muted.small', `Computed ${new Date(state.manifest.created).toLocaleString()} by ClonoLoom ${state.manifest.lineage?.software?.[0]?.version ?? ''}: ${result.knots} sizes along each curve, ${result.options.replicates} bootstrap replicates (seed ${result.options.seed}, the measures' replicates); kept as ${state.artifact}. Clonotypes: ${result.describe}.`));
   }
 
-  // What the shown result depends on: the dataset, its definition and its filter as chosen.
+  // What the shown results depend on: the dataset, its definition and its filter as chosen, and its
+  // samples' conditions.
   const choices = () => {
     const d = dataset();
-    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null]);
+    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d ? groupsOf(d) ?? null : null]);
   };
   let shownChoices = choices();
 
   // A running job's progress, as the program reports it; a new definition or filter, measured again
   // or looked up; a result chosen elsewhere, shown in its part.
   function update(topics) {
-    if (topics.has('jobs') && states[part].status === 'running') render();
+    if (topics.has('jobs') && states[PARTS[part].kind].status === 'running') render();
     if (topics.has('focus')) {
       const r = store.ui.focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === store.ui.focus.id) : null;
-      if (r && PARTS[r.kind] && (r.kind !== part || r.dataset !== chosen)) {
-        part = r.kind;
+      if (r && PART_OF[r.kind] && (PARTS[part].kind !== r.kind || r.dataset !== chosen)) {
+        part = PART_OF[r.kind];
         if (r.dataset !== chosen) {
           chosen = r.dataset;
           shownChoices = choices();
@@ -478,6 +510,10 @@ export function mountRepertoire(app, container) {
   app.repertoireView = {
     measure: (kind = 'diversity') => measure(kind),
     show,
+    setUsage: (choices) => {
+      Object.assign(usageUI, choices);
+      render();
+    },
     setLevel: (key, q) => {
       if (key && LEVELS.some((l) => l.key === key)) level = key;
       if (q !== undefined && ORDERS[q]) order = q;

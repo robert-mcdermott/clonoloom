@@ -1,9 +1,11 @@
 # The development files' bulk samples and the simulated standard study, read and grouped into
 # clonotypes as validation/reference/qc.R does, for diversity.R and rarefaction.R: data.table reads
 # each file and groups each sample's productive rearrangements into clonotypes (locus, amino-acid
-# junction, V gene and J gene, alleles dropped, ties kept as sets). bulk_samples(cache) answers
-# each file's samples (by the file's path under the cache) and each sample's clonotype abundances,
-# for samples of more than one clonotype, all whole numbers.
+# junction, V gene and J gene, alleles dropped, ties kept as sets). bulk_rows(cache) answers each
+# file's rows (by the file's path under the cache, its format the attribute "format"): sample,
+# locus, amino-acid and nucleotide junction, V, D, J and C calls as given, productive, count.
+# bulk_samples(cache) answers each file's samples and each sample's clonotype abundances, for
+# samples of more than one clonotype, all whole numbers.
 suppressMessages(library(data.table))
 loci <- c("IGH", "IGK", "IGL", "TRA", "TRB", "TRD", "TRG")
 
@@ -28,15 +30,21 @@ locus_of <- function(given, j, v) {
 nulls <- c("", "null", "NULL", "na", "NA", "unresolved", "unknown")
 clean <- function(x) { x <- as.character(x); x[is.na(x) | x %in% nulls] <- ""; x }
 
-tally <- function(sample, locus, junction_aa, v, j, productive, count, junction_nt) {
+# A row's clonotype: its locus, amino-acid junction and V and J genes ("" for a row in none:
+# not productive, without a junction or a count).
+clonotype_key <- function(rows) {
+  w <- rows$count
+  w[is.na(w)] <- 0
+  ifelse(rows$productive & rows$junction_aa != "" & w > 0,
+    paste(rows$locus, rows$junction_aa, gene_key(rows$v), gene_key(rows$j), sep = "\r"), "")
+}
+
+tally <- function(rows) {
   out <- list()
-  for (s in unique(sample)) {
-    at <- sample == s
-    w <- count[at]
-    w[is.na(w)] <- 0
-    p <- productive[at] & junction_aa[at] != "" & w > 0
-    keys <- paste(locus[at], junction_aa[at], gene_key(v[at]), gene_key(j[at]), sep = "\r")[p]
-    x <- as.numeric(tapply(w[p], keys, sum))
+  keys <- clonotype_key(rows)
+  for (s in unique(rows$sample)) {
+    at <- rows$sample == s & keys != ""
+    x <- as.numeric(tapply(rows$count[at], keys[at], sum))
     if (length(x) > 1 && all(x == round(x))) out[[s]] <- x
   }
   out
@@ -67,7 +75,8 @@ immunoseq <- function(path) {
   len <- suppressWarnings(as.integer(clean(d[[col("cdr3_length", "cdr3Length")]])))
   nt <- ifelse(!is.na(start) & !is.na(len) & start >= 0 & len > 0 & start + len <= nchar(read), toupper(substr(read, start + 1, start + len)), "")
   if ("cdr3_rearrangement" %in% names(d)) { given <- toupper(clean(d$cdr3_rearrangement)); nt[given != ""] <- given[given != ""] }
-  tally(sample, unname(locus), aa, call("v"), call("j"), productive, count, nt)
+  data.table(sample = sample, locus = unname(locus), junction_aa = aa, junction = nt, v = call("v"), d = call("d"), j = call("j"), c = "",
+    productive = productive, count = count)
 }
 
 airr <- function(path) {
@@ -84,21 +93,34 @@ airr <- function(path) {
   get <- function(c) if (c %in% names(d)) clean(d[[c]]) else rep("", nrow(d))
   locus <- locus_of(get("locus"), get("j_call"), get("v_call"))
   productive <- get("productive") %in% c("T", "TRUE", "True", "true", "t", "1")
-  tally(sample, locus, toupper(get("junction_aa")), get("v_call"), get("j_call"), productive, count, toupper(get("junction")))
+  data.table(sample = sample, locus = locus, junction_aa = toupper(get("junction_aa")), junction = toupper(get("junction")),
+    v = get("v_call"), d = get("d_call"), j = get("j_call"), c = get("c_call"), productive = productive, count = count)
 }
 
-bulk_samples <- function(cache) {
+bulk_rows <- function(cache) {
   out <- list()
   for (dataset in sort(list.dirs(cache, recursive = FALSE, full.names = FALSE))) {
     for (path in sort(list.files(file.path(cache, dataset), recursive = TRUE, full.names = TRUE))) {
       if (grepl("[.](gz|part|json|yaml|csv|md)$", path) || grepl("/truth/", path)) next
       header <- strsplit(readLines(path, n = 1, warn = FALSE), "\t")[[1]]
-      res <- if (any(c("rearrangement", "aminoAcid") %in% header)) immunoseq(path) else if ("sequence_id" %in% header) airr(path) else NULL
-      if (is.null(res) || !length(res)) next
-      rel <- substring(normalizePath(path), nchar(normalizePath(cache)) + 2)
-      message(rel)
-      out[[rel]] <- res
+      format <- if (any(c("rearrangement", "aminoAcid") %in% header)) "immunoseq" else if ("sequence_id" %in% header) "airr" else ""
+      rows <- switch(format, immunoseq = immunoseq(path), airr = airr(path), NULL)
+      if (is.null(rows) || !nrow(rows)) next
+      setattr(rows, "format", format)
+      out[[substring(normalizePath(path), nchar(normalizePath(cache)) + 2)]] <- rows
     }
+  }
+  out
+}
+
+bulk_samples <- function(cache) {
+  out <- list()
+  all <- bulk_rows(cache)
+  for (rel in names(all)) {
+    res <- tally(all[[rel]])
+    if (!length(res)) next
+    message(rel)
+    out[[rel]] <- res
   }
   out
 }

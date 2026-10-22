@@ -92,6 +92,21 @@ section grows with each.
   over, so few clonotypes are seen once and every sample looks complete.
 - Diversity and rarefaction are asked for, computed, kept and read back alike (`api_analysis.go`);
   diversity results kept before keep their ids.
+- **Gene usage, spectratypes and composition (wave 2, slice 6).** The Repertoire view's **Genes**
+  and **Junctions** parts (`internal/usage`, `api_usage.go`, `web/ui/repertoire-usage.js`):
+  - each sample's V, D, J and C genes and their families (IMGT's subgroups), V–J pairs, junction
+    lengths and their mean, and amino acids, overall and at each IMGT position of the commonest
+    lengths (Lefranc et al. 2003); each as a share of its clonotypes (each counted once) and of its
+    abundance;
+  - a clonotype's genes are its rearrangements', in proportion to their counts; a call tied between
+    genes gives each an equal part; what was not called is said;
+  - 95% intervals from 200 bootstrap replicates of each sample's clonotypes, the same in every run;
+  - each condition (from the annotation or the metadata) summarized by the mean of its samples, each
+    counted once, with their range;
+  - heatmaps of the genes and of the amino acids, one gene across the samples, the V–J pairs of one
+    sample, the spectratypes, the mean lengths, and the amino acids by position;
+  - the methods paragraph says what was counted and how; remote control's `gene_usage` counts it
+    and answers each sample's most used genes, commonest lengths and mean length.
 - **immunoSEQ's own clonality, Simpson clonality, entropy and largest frequency** are recomputed in
   QC's vendor checks: from each productive rearrangement's reads, as Adaptive computes them.
 - `internal/random` (from the simulator) draws binomial and multinomial variates too.
@@ -103,6 +118,9 @@ section grows with each.
 
 ### Fixed
 
+- A plot's axis could end below its largest value, so that the tallest column (QC's junction
+  lengths), the top of a line or curve, or the end of an interval was cut off: every axis now holds
+  its values.
 - A clonotype chosen before the Clonotypes table's first page arrived was not described in the
   inspector.
 
@@ -156,6 +174,18 @@ section grows with each.
   hypergeometric summed in 256-bit arithmetic (to 10⁻¹³); the extrapolation approaching the
   asymptotes and equal to Chao et al. 2014's Eq. 9 for clonotypes; size and coverage inverting each
   other; the curves the same with one processor or many.
+- **Gene usage against R** (`validation/usage_test.go`, `validation/reference/usage.R`): on the 15
+  development samples in AIRR format (the ADC copy of Emerson et al. 2017's subject, the AIRR
+  Community's test files, the simulated study's twelve), all 8,277 shares (genes and families of
+  each segment, V–J pairs, lengths, the mean length, amino acids; by clonotypes and by abundance)
+  equal an independent R implementation's to 10⁻¹², with no name either lacks.
+- **Gene usage against the simulator's truth**: each sample's expected shares from its subject's
+  clones and the templates drawn; of 2,308 intervals (V, D and J genes, lengths, amino acids, both
+  weightings), 97.4–100% held them. The largest development sample (69,535 clonotypes) is counted,
+  with its bootstrap, in 0.7 s.
+- The IMGT positions of junctions of 5, 11, 13, 14, 15, 17 and 18 residues; shares, families, ties,
+  pairs and conditions by hand on a small table; the bootstrap the same with one processor or many;
+  diversity's and rarefaction's result ids unchanged by the shared analysis code.
 - **immunoSEQ's clonality reproduced**: Adaptive's productive clonality, Simpson clonality, entropy
   and largest frequency, from the rows' reads, on Emerson et al. 2017's three exports (to seven
   significant digits; templates give other values).

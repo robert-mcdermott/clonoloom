@@ -26,24 +26,28 @@ import (
 
 // analysis is a kind of analysis: its jobs' and artifacts' kind (and its routes, /api/{kind}, and
 // its result's file, {kind}.json), its artifact ids' prefix, its method's version (which changes
-// when what it answers changes), its name in words, and its work (given its own kind).
+// when what it answers changes), its name in words, whether it summarizes groups of samples (the
+// spec's Groups; ignored otherwise), and its work (given its own kind).
 type analysis struct {
 	kind    string
 	prefix  string
 	version int
 	title   string
+	grouped bool
 	work    func(a *app, k analysis, spec analysisSpec) jobs.Func
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis}
 
-// analysisSpec is what an analysis measures, and how.
+// analysisSpec is what an analysis measures, and how. Groups names each sample's group (by sample
+// name), for the analyses that summarize groups.
 type analysisSpec struct {
 	Dataset    string               `json:"dataset"`
 	Definition clonotype.Definition `json:"definition"`
 	Filter     qc.Filter            `json:"filter"`
 	Options    diversity.Options    `json:"options"`
+	Groups     map[string]string    `json:"groups,omitempty"`
 	Method     int                  `json:"method"`
 }
 
@@ -82,8 +86,9 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Definition string            `json:"definition"`
 		Filter     qc.Filter         `json:"filter"`
 		Options    diversity.Options `json:"options"`
+		Groups     map[string]string `json:"groups,omitempty"`
 		Method     int               `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -106,6 +111,9 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 		if err := json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(&body); err != nil {
 			writeError(w, http.StatusBadRequest, "Send {\"dataset\", \"definition\", \"filter\", \"options\"}.")
 			return
+		}
+		if !k.grouped {
+			body.Groups = nil
 		}
 		spec, err := body.analysisSpec.normalized(k.version)
 		if err != nil {
@@ -181,16 +189,16 @@ type analysisHead struct {
 }
 
 // samplesOf groups the dataset's clonotypes as the spec says, answering the dataset, the
-// document's head and each sample's clonotype abundances, by sample.
-func (a *app) samplesOf(k analysis, spec analysisSpec, run *jobs.Run) (*dataset, analysisHead, [][]float64, error) {
+// document's head, the clonotype table and each sample's clonotype abundances, by sample.
+func (a *app) samplesOf(k analysis, spec analysisSpec, run *jobs.Run) (*dataset, analysisHead, *clonotype.Table, [][]float64, error) {
 	ds, ok := a.datasets.get(spec.Dataset)
 	if !ok {
-		return nil, analysisHead{}, nil, errors.New("the dataset is not open: open it again from its files, then measure again")
+		return nil, analysisHead{}, nil, nil, errors.New("the dataset is not open: open it again from its files, then measure again")
 	}
 	run.Progress(0, "Grouping clonotypes")
 	_, entry, _, err := a.clonotypeTable(clonotypeRequest{Dataset: spec.Dataset, Definition: spec.Definition, Filter: spec.Filter})
 	if err != nil {
-		return nil, analysisHead{}, nil, err
+		return nil, analysisHead{}, nil, nil, err
 	}
 	t := entry.table
 	abundances := make([][]float64, len(ds.Result.Table.Samples))
@@ -202,7 +210,7 @@ func (a *app) samplesOf(k analysis, spec analysisSpec, run *jobs.Run) (*dataset,
 	}
 	head := analysisHead{Format: "clonoloom-" + k.kind, Version: 1, Dataset: ds.ID, DatasetName: ds.Name, Definition: spec.Definition, DefinitionID: t.DefinitionID,
 		Describe: spec.Definition.Describe(), Filter: spec.Filter, Unit: string(t.Unit), Options: spec.Options}
-	return ds, head, abundances, nil
+	return ds, head, t, abundances, nil
 }
 
 // keepAnalysis writes the document as the artifact's {kind}.json and promotes the artifact, once
@@ -215,7 +223,7 @@ func (a *app) keepAnalysis(k analysis, spec analysisSpec, ds *dataset, run *jobs
 	if err != nil {
 		return err
 	}
-	raw, err := json.MarshalIndent(doc, "", " ")
+	raw, err := json.Marshal(doc)
 	if err != nil {
 		return err
 	}

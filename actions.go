@@ -77,6 +77,14 @@ var remoteActions = []remoteAction{
 		"dataset": datasetArg,
 		"level":   textArg("Where the samples are compared: coverage (the lowest sample coverage among them; the default), size (the smallest sample's), extrapolatedCoverage or extrapolatedSize (iNEXT's defaults, reached by extrapolating to twice a sample's size)."),
 	})},
+	{Name: "gene_usage", Title: "Count genes and junctions", Description: "Shows the Repertoire view's Genes or Junctions part and counts each sample's V, D, J and C genes, junction lengths and amino acids under the dataset's clonotype definition and filter (a job; the result kept with the project, the samples grouped by condition), answering for each sample (or condition) the most used genes of a segment, the commonest junction lengths and the mean length, with their 95% intervals (for a condition, its samples' range).", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"part":    textArg("genes (the default) or junctions."),
+		"segment": textArg("V (the default), D, J or C."),
+		"level":   textArg("gene (the default) or family."),
+		"weight":  textArg("clonotypes (each counted once; the default) or abundance."),
+		"rows":    textArg("samples (the default) or groups (the samples' conditions)."),
+	})},
 	{Name: "show_examples", Title: "Show the example data", Description: "Opens the Example data dialog.", InputSchema: schema(map[string]any{})},
 	{Name: "show_methods", Title: "Write the methods paragraph", Description: "Shows a dataset's methods paragraph and answers it with its references.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,

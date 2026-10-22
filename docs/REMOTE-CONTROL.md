@@ -58,6 +58,7 @@ print(act("show_methods")["data"]["text"])
 | `set_definition` | Chooses a dataset's clonotype definition: a `preset` by name, or a `definition` in full. |
 | `select_clonotype` | Chooses a clonotype by its `rank` in the table or its `id`. |
 | `measure_diversity` | Measures each sample's diversity (a job; the result kept) and answers the main measures with their 95% intervals (`dataset`). |
+| `gene_usage` | Counts each sample's genes, junction lengths and amino acids (a job; the result kept, the samples grouped by condition) and answers, for each sample or condition, the most used genes of a segment, the commonest lengths and the mean length, with their 95% intervals (`dataset`; `part`: `genes` or `junctions`; `segment`: `V`, `D`, `J` or `C`; `level`: `gene` or `family`; `weight`: `clonotypes` or `abundance`; `rows`: `samples` or `groups`). |
 | `rarefy` | Rarefies and extrapolates each sample (a job; the result kept) and answers the levels the samples are best compared at and each sample's clonotypes, Shannon and Simpson diversity at one of them, with their 95% intervals (`dataset`; `level`: `coverage`, the default, `size`, `extrapolatedCoverage` or `extrapolatedSize`). |
 | `show_examples` | Opens the Example data dialog. |
 | `show_methods` | Shows a dataset's methods paragraph and answers it with its references. |

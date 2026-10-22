@@ -149,12 +149,26 @@ it in the program and keeps the result. Then:
   sample itself; and how each sample's coverage rises with size.
 - Two more levels extrapolate to twice a sample's size, as iNEXT does by default. In ClonoLoom's
   simulations of repertoires with many rare clonotypes, values extrapolated that far were within
-  1–3% of the truth, but their intervals were narrower than that; the view says so when a sample is
+  3% of the truth, but their intervals were narrower than that; the view says so when a sample is
   extrapolated.
 
 The curves and their intervals come from the same bootstrap replicates as the measures. They need
 counts of cells or molecules: in **reads**, each cell is counted many times over, so few clonotypes
 are seen once, every sample looks complete, and the view warns.
+
+## See what the clonotypes are made of
+
+**Repertoire › Genes** and **Junctions** show what each sample's clonotypes are made of; **Count
+genes and junctions** runs it in the program and keeps the result. Each share is of the clonotypes
+(each counted once) or of the abundance, with its 95% interval, for each sample or for each
+condition (the mean of its samples, each counted once, with their range):
+
+- **Genes**: the V, D, J or C genes, or their families, as a heatmap of every sample; one gene
+  across the samples; and the V–J pairs of one sample. A call between several genes gives each an
+  equal part, and what was not called is said.
+- **Junctions**: the spectratype (each junction length's share) and the mean length; each amino
+  acid's share of the junctions; and, for the commonest lengths, the amino acids at each IMGT
+  position, from the conserved cysteine at 104 to the phenylalanine or tryptophan at 118.
 
 ## Write down what was done
 
@@ -170,11 +184,11 @@ are seen once, every sample looks complete, and the view warns.
 - **Methods paragraph** (a dataset's menu or the inspector) writes a paragraph for a manuscript
   from the project's record: the data's source and license, how ClonoLoom read and checked them,
   the unit, the filter with what it kept, the clonotype definition, the diversity measured, the
-  rarefaction and the levels the samples were compared at, and ClonoLoom's version, with numbered
-  references. Only what was done is said. **Copy** takes it with its references.
+  rarefaction and the levels the samples were compared at, the genes and junctions counted, and
+  ClonoLoom's version, with numbered references. Only what was done is said. **Copy** takes it with its references.
 
 ## Next
 
-ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): gene usage, overlap,
-figures and AIRR exports complete 0.2.0; following
+ClonoLoom grows release by release ([roadmap](../clonoloom-spec/roadmap.md)): overlap, figures and
+AIRR exports complete 0.2.0; following
 clonotypes over time in 0.3.0; specificity, B-cell lineages, cells and cohorts after that.

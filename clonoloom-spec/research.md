@@ -390,6 +390,48 @@ Chao & Jost 2012, *Ecology* 93:2533, doi:10.1890/11-1952.1), as iNEXT 3.0 comput
   one dataset in reads, each have a coverage of 1). The Repertoire view warns where a dataset's
   unit is reads; rarefying to equal reads compares equal sequencing depth, not equal cells.
 
+### 5.5 Gene usage, junction lengths and composition (wave 2)
+
+`internal/usage` counts what each sample's clonotypes (under the dataset's definition and filter)
+are made of, as a share of its clonotypes (each counted once) and of its abundance:
+
+- **Genes**: V, D, J and C, at the gene and the family level (IMGT's subgroup: the name to its
+  first "-" or "/", without the "D" of a duplicated gene; a constant gene its own family), and V–J
+  pairs. A clonotype's genes are those of its rearrangements in the sample, in proportion to their
+  counts (a clonotype grouped without its V gene, or by family, may hold several). A call tied
+  between several genes gives each an equal part, so that the shares sum to one and no clonotype is
+  counted twice; immunarch's `geneUsage` instead counts the tie as a gene of its own, drops it, or
+  takes its first gene. A rearrangement without a call counts as not called, reported apart.
+- **Junction lengths** in amino acids of the IMGT junction (positions 104 to 118, the CDR3 and its
+  two conserved residues), the spectratype, and the mean length; a junction given only in
+  nucleotides is translated where it is in frame.
+- **Composition**: each amino acid's share of the junctions' residues (X for any but the twenty),
+  and, for the lengths of at least 5% of the clonotypes over the samples (at most six), its share at
+  each IMGT position (Lefranc et al. 2003, *Dev Comp Immunol* 27:55,
+  doi:10.1016/S0145-305X(02)00039-3): the CDR3 numbered from 105 and from 117 toward its middle,
+  positions missing from the middle when it is shorter than 13 (111, 112, 110, 113, …) and
+  insertions there when longer (111.1, 112.1, 111.2, …).
+- **Intervals**: 95%, from 200 bootstrap replicates of each sample's clonotypes (each replicate the
+  sample's S clonotypes drawn with replacement, every share computed again; the estimate ± 1.96
+  SE), for the genes, lengths, amino acids and the mean length (not the pairs and positions, which
+  are many). Each replicate has its own random stream: the same in every run.
+- **Conditions**: each summarized by the mean of its samples' shares, each sample counted once, and
+  their lowest and highest (requirements G3: the subject is the unit; tests between conditions come
+  with cohorts, wave 7).
+- **Agreement** (`validation/usage_test.go`, `validation/reference/usage.R`): on the 15 samples of
+  §5.3 in AIRR format (the ADC copy of Emerson et al. 2017's subject, the AIRR Community's two test
+  files and the simulated study's twelve; immunoSEQ's own files name genes Adaptive's way, mapped
+  to IMGT's by the readers), all 8,277 shares (genes and families of each segment, V–J pairs,
+  lengths, the mean length, amino acids) equal an independent R implementation's to 10⁻¹², and
+  neither has a name the other lacks.
+- **Against the simulator's truth** (`validation/usage_test.go`): each simulated sample's expected
+  shares follow from its subject's clones and the templates drawn: by abundance, a gene's clones'
+  share of the productive cells; by clonotypes, of the productive clones each weighted by its chance
+  to be seen, 1 − (1 − q)^T. Of 2,308 intervals (V, D and J genes, lengths and amino acids, both
+  weightings, twelve samples), 97.4–100% held the expected share: the clonotype bootstrap is a
+  little wider than it need be.
+- 69,535 clonotypes (the largest development sample) are counted, with 200 replicates, in 0.7 s.
+
 ## 6. Datasets
 
 All are listed in `validation/sources.json` with their URL, sizes and SHA-256, and fetched by

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { curves, columns, intervals, lines, stackedBars, ticks } from './plot.js';
+import { curves, columns, heatmap, intervals, lines, scale, stackedBars, ticks } from './plot.js';
 
 test('ticks are nice numbers covering the range', () => {
   assert.deepEqual(ticks(1), [0, 0.25, 0.5, 0.75, 1]);
@@ -8,6 +8,18 @@ test('ticks are nice numbers covering the range', () => {
   assert.deepEqual(ticks(0), [0]);
   const t = ticks(9131);
   assert.ok(t[0] === 0 && t.at(-1) <= 9131 && t.length >= 3);
+});
+
+test('an axis holds its largest value', () => {
+  assert.deepEqual(scale(870), [0, 250, 500, 750, 1000]);
+  assert.deepEqual(scale(0.22), [0, 0.1, 0.2, 0.3]);
+  assert.deepEqual(scale(1), [0, 0.25, 0.5, 0.75, 1]);
+  assert.deepEqual(scale(0), [0]);
+  // A column, a line and an interval at the top stay inside the plot.
+  const col = columns([{ x: 1, y: 870 }], {});
+  assert.match(col.svg, />1,000</);
+  const iv = intervals([{ label: 'a', value: 1.55, lower: 1.5, upper: 1.6 }], { from: 0 });
+  assert.match(iv.svg, />2</);
 });
 
 test('stacked bars draw each part and say what they show', () => {
@@ -76,4 +88,14 @@ test('curves draw interpolation solid, extrapolation dashed, the sample as a dot
   const log = curves([{ label: 'a', points }], { logX: true, bands: false });
   assert.doesNotMatch(log.svg, /plot-band/);
   assert.match(log.svg, />1,000</);
+});
+
+test('a heatmap shades each cell by its value, leaves the missing blank and says the largest', () => {
+  const { svg, description } = heatmap([[0.1, 0.4, NaN], [0, 0.2, 0.05]], { label: 'V genes', rowLabels: ['S1', 'S<2>'], colLabels: ['TRBV2', 'TRBV5-1', 'TRBV10-3'] });
+  // Five cells and the ten steps of the scale.
+  assert.equal((svg.match(/<rect class="plot-heat"/g) ?? []).length, 15);
+  assert.match(svg, /fill-opacity="1.000"><title>S1, TRBV5-1: 0.4<\/title>/);
+  assert.match(svg, /S&lt;2&gt;/);
+  assert.match(svg, /rotate\(-60\)/);
+  assert.equal(description, 'V genes: 2 rows by 3 columns; the largest 0.4, S1 and TRBV5-1.');
 });

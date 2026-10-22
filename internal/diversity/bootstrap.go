@@ -248,6 +248,10 @@ func spread(replicates [][]float64, k int) float64 {
 	return math.Sqrt(ss / (n - 1))
 }
 
+// NormalQuantile is the standard normal distribution's quantile function, for the intervals of
+// other packages' bootstraps.
+func NormalQuantile(p float64) float64 { return normalQuantile(p) }
+
 // normalQuantile is the standard normal distribution's quantile function (Acklam's rational
 // approximation, refined by one step of Halley's method: accurate to about 1e-15).
 func normalQuantile(p float64) float64 {

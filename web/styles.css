@@ -876,6 +876,7 @@ button.link { background: none; border: 0; padding: 0; color: var(--accent-text)
 .plot-whisker { stroke: var(--text-2); stroke-width: 1.4; }
 .plot-line { fill: none; stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
 .plot-dashed { stroke-dasharray: 5 4; }
+.plot-heat { fill: var(--accent); stroke: none; }
 .plot-guide { stroke: var(--text-3); stroke-width: 1; stroke-dasharray: 3 3; }
 .plot-band { stroke: none; fill-opacity: 0.13; }
 .plot-band.plot-s1 { fill: var(--accent); }
@@ -890,4 +891,4 @@ button.link { background: none; border: 0; padding: 0; color: var(--accent-text)
 .plot-line.plot-s4 { stroke: var(--brand-a); } circle.plot-s4, .swatch.plot-s4 { fill: var(--brand-a); background: var(--brand-a); }
 .plot-line.plot-s5 { stroke: var(--ok); } circle.plot-s5, .swatch.plot-s5 { fill: var(--ok); background: var(--ok); }
 .plot-line.plot-s6 { stroke: var(--text-3); } circle.plot-s6, .swatch.plot-s6 { fill: var(--text-3); background: var(--text-3); }
-.repertoire-spec { margin: 0 0 10px; } .repertoire-start { max-width: 760px; } .repertoire-start p { margin: 6px 0 10px; } .repertoire-table td .muted { margin-left: 4px; }
+.repertoire-spec { margin: 0 0 10px; } .repertoire-controls { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0 0 10px; } .repertoire-start { max-width: 760px; } .repertoire-start p { margin: 6px 0 10px; } .repertoire-table td .muted { margin-left: 4px; }

@@ -17,6 +17,14 @@ export function ticks(hi, n = 4) {
   return out;
 }
 
+// Ticks for an axis from 0 that must hold hi: ticks(hi), with one more step when the last falls
+// short of it.
+export function scale(hi, n = 4) {
+  const t = ticks(hi, n);
+  if (t.length > 1 && t.at(-1) < hi) t.push(Number((t.at(-1) + (t[1] - t[0])).toPrecision(12)));
+  return t;
+}
+
 const defaultFormat = (v) => (Math.abs(v) >= 1000 ? v.toLocaleString('en-US', { maximumFractionDigits: 0 }) : String(Number(v.toPrecision(4))));
 
 function wrap(width, height, label, description, body) {
@@ -64,7 +72,7 @@ export function columns(bins, { label = 'Columns', xLabel = '', yLabel = '', wid
   const plotWidth = width - left - 10;
   const plotHeight = height - bottom - 10;
   const max = Math.max(0, ...bins.map((b) => b.y));
-  const ys = ticks(max, 4);
+  const ys = scale(max, 4);
   const top = ys.at(-1) || 1;
   const step = bins.length ? plotWidth / bins.length : plotWidth;
   const y = (v) => 10 + plotHeight - (v / top) * plotHeight;
@@ -94,7 +102,7 @@ export function intervals(rows, { label = 'Estimates', width = 520, labelWidth =
   const height = top + rows.length * rowHeight + 30;
   const values = rows.flatMap((r) => [r.value, r.upper]).filter(Number.isFinite);
   const hi = Math.max(from, ...values);
-  const t = ticks(hi - from, 4).map((v) => v + from);
+  const t = scale(hi - from, 4).map((v) => v + from);
   const span = (t.at(-1) - from) || 1;
   const x = (v) => plotLeft + ((Math.min(Math.max(v, from), t.at(-1)) - from) / span) * plotWidth;
   let body = '';
@@ -119,8 +127,8 @@ export function intervals(rows, { label = 'Estimates', width = 520, labelWidth =
 }
 
 // Lines through points: series [{ label, points: [{ x, y }], className }], on a logarithmic y axis
-// when log.
-export function lines(series, { label = 'Lines', width = 520, height = 220, xLabel = '', yLabel = '', log = false, format = defaultFormat } = {}) {
+// when log; format writes the y axis's values, xFormat the x axis's.
+export function lines(series, { label = 'Lines', width = 520, height = 220, xLabel = '', yLabel = '', log = false, format = defaultFormat, xFormat = format } = {}) {
   const left = 60;
   const bottom = 34;
   const plotWidth = width - left - 14;
@@ -133,7 +141,7 @@ export function lines(series, { label = 'Lines', width = 520, height = 220, xLab
   const ys = pts.map((p) => ty(p.y));
   let y0 = log ? Math.floor(Math.min(...ys, 0)) : 0;
   let y1 = log ? Math.ceil(Math.max(...ys, 1)) : Math.max(...ys, 0);
-  const yt = log ? Array.from({ length: y1 - y0 + 1 }, (_, k) => y0 + k) : ticks(y1, 4);
+  const yt = log ? Array.from({ length: y1 - y0 + 1 }, (_, k) => y0 + k) : scale(y1, 4);
   if (!log) y1 = yt.at(-1) || 1;
   if (y1 === y0) y1 = y0 + 1;
   const px = (v) => left + ((v - x0) / (x1 - x0 || 1)) * plotWidth;
@@ -143,7 +151,7 @@ export function lines(series, { label = 'Lines', width = 520, height = 220, xLab
     const y = 10 + plotHeight - ((t - y0) / (y1 - y0)) * plotHeight;
     body += `<line class="plot-gridline" x1="${left}" x2="${left + plotWidth}" y1="${y}" y2="${y}"/><text class="plot-tick" x="${left - 6}" y="${y + 4}" text-anchor="end">${format(log ? 10 ** t : t)}</text>`;
   }
-  for (const v of ticks(x1 - x0, 4).map((v) => v + x0)) body += `<text class="plot-tick" x="${px(v)}" y="${10 + plotHeight + 14}" text-anchor="middle">${format(v)}</text>`;
+  for (const v of ticks(x1 - x0, 4).map((v) => v + x0)) body += `<text class="plot-tick" x="${px(v)}" y="${10 + plotHeight + 14}" text-anchor="middle">${xFormat(v)}</text>`;
   body += `<line class="plot-axis" x1="${left}" x2="${left + plotWidth}" y1="${10 + plotHeight}" y2="${10 + plotHeight}"/>`;
   for (const s of series) {
     const ok = s.points.filter((p) => Number.isFinite(p.y) && (!log || p.y > 0));
@@ -178,11 +186,11 @@ export function curves(series, { label = 'Curves', width = 560, height = 260, xL
     x1 = Math.max(Math.ceil(Math.log10(Math.max(...xs, 10))), x0 + 1);
     xt = Array.from({ length: x1 - x0 + 1 }, (_, k) => x0 + k);
   } else {
-    xt = ticks(xMax ?? Math.max(...xs, 1), 4);
+    xt = xMax ? ticks(xMax, 4) : scale(Math.max(...xs, 1), 4);
     x1 = xMax ?? (xt.at(-1) || 1);
   }
   const yHi = Math.max(1, ...pts.map((p) => (bands && Number.isFinite(p.upper) ? Math.max(p.y, p.upper) : p.y)));
-  const yt = ticks(yHi, 4);
+  const yt = scale(yHi, 4);
   const y1 = yt.at(-1) || 1;
   const px = (v) => left + (((logX ? Math.log10(v) : v) - x0) / (x1 - x0 || 1)) * plotWidth;
   const py = (v) => top + plotHeight - (Math.min(Math.max(v, 0), y1) / y1) * plotHeight;
@@ -224,6 +232,42 @@ export function curves(series, { label = 'Curves', width = 560, height = 260, xL
   });
   const description = `${label}: ${series.length} curve${series.length === 1 ? '' : 's'}, solid where interpolated and dashed where extrapolated, ending at ${ends.join('; ')}.`;
   return { svg: wrap(width, height, label, description, body), description };
+}
+
+// A heatmap: values[r][c] (not finite: left blank) for rowLabels × colLabels, each cell shaded from
+// none to max (the largest value when not given), titled by title(r, c, v), with a scale. Column
+// labels are turned to read upward.
+export function heatmap(values, { label = 'Heatmap', rowLabels = [], colLabels = [], width = 640, labelWidth = 120, cellHeight = 16, colLabelHeight = 70, max = null, format = defaultFormat, title = null } = {}) {
+  const rows = values.length;
+  const cols = colLabels.length;
+  const top = colLabelHeight;
+  const cellWidth = Math.max(4, Math.min(28, (width - labelWidth - 10) / Math.max(cols, 1)));
+  const plotWidth = cellWidth * cols;
+  const height = top + rows * cellHeight + 34;
+  const hi = max ?? Math.max(0, ...values.flat().filter(Number.isFinite));
+  let body = '';
+  colLabels.forEach((c, j) => {
+    const x = labelWidth + (j + 0.5) * cellWidth;
+    body += `<text class="plot-tick" transform="translate(${x.toFixed(1)} ${top - 4}) rotate(-60)" text-anchor="start">${esc(truncate(c, 14))}</text>`;
+  });
+  values.forEach((row, i) => {
+    const y = top + i * cellHeight;
+    body += `<text class="plot-label" x="${labelWidth - 6}" y="${y + cellHeight / 2 + 4}" text-anchor="end">${esc(truncate(rowLabels[i] ?? '', Math.max(8, Math.floor(labelWidth / 7))))}</text>`;
+    row.forEach((v, j) => {
+      if (!Number.isFinite(v)) return;
+      const shade = hi > 0 ? Math.min(1, v / hi) : 0;
+      const t = title ? title(i, j, v) : `${rowLabels[i]}, ${colLabels[j]}: ${format(v)}`;
+      body += `<rect class="plot-heat" x="${(labelWidth + j * cellWidth).toFixed(1)}" y="${y}" width="${(cellWidth - 1).toFixed(1)}" height="${cellHeight - 1}" fill-opacity="${(0.06 + 0.94 * shade).toFixed(3)}"><title>${esc(t)}</title></rect>`;
+    });
+  });
+  // The scale: from none to the largest.
+  const sy = top + rows * cellHeight + 12;
+  for (let k = 0; k < 10; k += 1) body += `<rect class="plot-heat" x="${labelWidth + k * 12}" y="${sy}" width="12" height="8" fill-opacity="${(0.06 + 0.94 * (k / 9)).toFixed(3)}"/>`;
+  body += `<text class="plot-tick" x="${labelWidth - 4}" y="${sy + 8}" text-anchor="end">0</text><text class="plot-tick" x="${labelWidth + 124}" y="${sy + 8}">${format(hi)}</text>`;
+  let best = { v: -Infinity };
+  values.forEach((row, i) => row.forEach((v, j) => { if (Number.isFinite(v) && v > best.v) best = { v, i, j }; }));
+  const description = `${label}: ${rows} row${rows === 1 ? '' : 's'} by ${cols} column${cols === 1 ? '' : 's'}${Number.isFinite(best.v) ? `; the largest ${format(best.v)}, ${rowLabels[best.i]} and ${colLabels[best.j]}` : ''}.`;
+  return { svg: wrap(Math.max(width, labelWidth + plotWidth + 10), height, label, description, body), description };
 }
 
 function truncate(s, n) {

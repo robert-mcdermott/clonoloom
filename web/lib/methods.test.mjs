@@ -102,3 +102,12 @@ test('a rarefaction result kept says how the samples were compared, citing each 
     assert.equal(references.filter((r) => r.includes(key)).length, 1, key);
   }
 });
+
+test('a gene usage result kept says what was counted and how, citing IMGT once', () => {
+  const results = [{ kind: 'usage', unit: 'umis', definition: 'Amino-acid junction, V and J genes', filter: null, options: { replicates: 200, seed: 20140101 }, groups: 2 }];
+  const { text, references } = methodsParagraph({ dataset: pbmc, results, program });
+  assert.match(text, /What each sample's clonotypes \("Amino-acid junction, V and J genes"\) are made of was counted by ClonoLoom/);
+  assert.match(text, /of its abundance in UMIs, with a 95% interval from 200 bootstrap replicates of the sample's clonotypes \(seed 20140101\)/);
+  assert.match(text, /Each condition was summarized by the mean of its samples' shares/);
+  assert.equal(references.filter((r) => r.includes('IMGT unique numbering')).length, 1);
+});
