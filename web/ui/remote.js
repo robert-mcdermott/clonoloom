@@ -467,6 +467,19 @@ export function remoteActions(app) {
       return { message: `${done.page.result.built} family/locus trees built.`, data: { artifact: done.artifact, built: done.page.result.built, rows: done.page.rowCount, excluded: done.page.result.excluded, options: done.page.result.lineageOptions } };
     },
 
+    async summarize_bcell_isotypes({ dataset, families } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('isotypes');
+      const view = app.isotypesView;
+      await view.show(d.id, { families });
+      if (view.state().status === 'idle') throw new ActionError('Save a thresholded family result first.');
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'Isotypes');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.result.assigned} assigned observations summarized.`, data: { artifact: done.artifact, assigned: done.page.result.assigned, resolvedClass: done.page.result.resolvedClass, resolvedGene: done.page.result.resolvedGene, families: done.page.familyCount, excluded: done.page.result.excluded, issues: done.page.result.issues, options: done.page.result.isotypeOptions } };
+    },
+
     async inspect_bcell_inputs({ dataset, select } = {}) {
       const d = datasetOf(dataset);
       app.focusItem({ kind: 'dataset', id: d.id });

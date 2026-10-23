@@ -286,3 +286,19 @@ optimal-topology count: 1,093 changes in total, with ties in 71 searches. The kn
 tree supplies an upper bound, not a uniquely recoverable topology. Unobserved states, reversals
 and the masked junction prevent that claim. Observed isotype, timepoint and tissue labels are
 retained without inferring switching or migration. The simulator and its v2 truth are unchanged.
+
+### Isotype validation (wave 5, slice 8)
+
+The observed-isotype analysis uses the saved thresholded families directly; alignments and
+inferred trees are not required. The default v2 study has 2,160 assigned cells in 36 families.
+Every heavy C call resolves to IGHM, IGHG1 or IGHA1. Sample/class usage has 18 nonempty rows:
+pre samples contain IgM; day 14 contains IgM/IgG; day 28 contains all three classes. There are
+466 rows across both resolutions and sample/family-sample groups. Each of the three unordered
+gene pairs occurs in all 36 families. Sample observation and abundance denominators are 240.
+
+`validation/reference/isotypes.py` independently reads raw AIRR rows and generating-family
+truth, checks C labels against sampled nodes, and tallies cells and pairs. The Go test checks
+all counts and shares using source hashes and heavy-member digests. A separate serialization
+hash checks processor repeatability. These checks validate descriptive bookkeeping. The analysis
+does not reconstruct the truth's historical switches; incomplete sampling, unresolved calls
+and family-threshold uncertainty require separate interpretation in biological data.

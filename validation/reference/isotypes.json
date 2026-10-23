@@ -1,0 +1,3325 @@
+{
+  "python": "3.13.3",
+  "method": "Direct cell tallies and unordered gene pairs in generating families",
+  "sources": [
+    {
+      "file": "S01-d14.tsv",
+      "sha256": "bac435131364d95a646179b04434cfeb359a005e6f8d7fb6cc07dacf6a344241"
+    },
+    {
+      "file": "S01-d28.tsv",
+      "sha256": "657db76bf60be2cc0e0330287a4b4312716ef2c02abbedc000248913393f7739"
+    },
+    {
+      "file": "S01-pre.tsv",
+      "sha256": "a19725c5a4b2395c324442db74b3c935defe7f26980f7c0f1e45337d8c0b6f40"
+    },
+    {
+      "file": "S02-d14.tsv",
+      "sha256": "fab4dae86c4c88205d734bda27501363d206853343f1d18442ab39f7c953f505"
+    },
+    {
+      "file": "S02-d28.tsv",
+      "sha256": "28dc5fea53f3bee6a27a1e137271a76757e6109996eb0e6a108564d379d21c9b"
+    },
+    {
+      "file": "S02-pre.tsv",
+      "sha256": "233aab9e25ca1441458c6635a1faa96d6c24663133610c920935d933476a1395"
+    },
+    {
+      "file": "S03-d14.tsv",
+      "sha256": "3dd1685118155e326b7b801e08411d45c394faa5ef6ae4754b24b03c2833bdbc"
+    },
+    {
+      "file": "S03-d28.tsv",
+      "sha256": "45281dc14de49970335f9598753eb65329b38c2c3a1c30e3bb012c0fd595d8cb"
+    },
+    {
+      "file": "S03-pre.tsv",
+      "sha256": "c01a68dba00647a6cfec4f47c7137bf395444b94b90f9139101adfffa9708922"
+    }
+  ],
+  "observations": 2160,
+  "families": 36,
+  "usage": [
+    {
+      "membersSHA256": "",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 117
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 123
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 117
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 123
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 51
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 112
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 77
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 51
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 112
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 77
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 240
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 240
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 113
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 127
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 113
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 127
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 46
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 109
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 85
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 46
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 109
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 85
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 240
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 240
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 108
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 132
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 108
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 132
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 52
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 116
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 72
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 52
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 116
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 72
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 240
+    },
+    {
+      "membersSHA256": "",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 240
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 24
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 29
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 24
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 29
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 13
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 25
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 11
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 13
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 25
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 11
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 32
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 29
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 32
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 29
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 7
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 11
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 13
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 7
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 11
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 13
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 28
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 43
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 28
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 43
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 20
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 20
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 13
+    },
+    {
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 13
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 7
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 7
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 3
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 9
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 9
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 23
+    },
+    {
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 23
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 1
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 5
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 15
+    },
+    {
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 15
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 7
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 7
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 23
+    },
+    {
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 23
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 1
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 2
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 33
+    },
+    {
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 33
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 6
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 6
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 3
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 1
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 1
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 4
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 10
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 10
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 8
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 8
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 23
+    },
+    {
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 23
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 6
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 6
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 1
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 8
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 8
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 1
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 6
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 7
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 6
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 7
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "sample": "S01-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 25
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 37
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 25
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 37
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 9
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 16
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 9
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 9
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 16
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 9
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 25
+    },
+    {
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 25
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 29
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 31
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 29
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 31
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 7
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 18
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 7
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 18
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 25
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 32
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 25
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 32
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 4
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 17
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 17
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 1
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 2
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 5
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 2
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 5
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 2
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 2
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 10
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 10
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 3
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 8
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 8
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 15
+    },
+    {
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 15
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 4
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 25
+    },
+    {
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 25
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 3
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 6
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 10
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 6
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 10
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 3
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 2
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 5
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 7
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 7
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 1
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 6
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 6
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 4
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 5
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 8
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 8
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "sample": "S02-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 24
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 30
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 24
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 30
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 5
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 11
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 14
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 11
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 14
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 35
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 35
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 35
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 35
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 11
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 25
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 14
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 11
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 25
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 14
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 18
+    },
+    {
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 18
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 24
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 35
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 24
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 35
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 12
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 16
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 12
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 16
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 21
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 22
+    },
+    {
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 22
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 2
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 5
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 10
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 10
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 26
+    },
+    {
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 26
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 1
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 7
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 7
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 25
+    },
+    {
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 25
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 5
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 3
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 8
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 8
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 1
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 4
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 4
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 4
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 1
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 19
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 3
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 2
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 5
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 15
+    },
+    {
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 15
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 2
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 2
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 7
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 2
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 7
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 16
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 3
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 6
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 1
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 7
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 7
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 27
+    },
+    {
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 27
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 3
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 3
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 1
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 9
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 1
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 9
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 4
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 20
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgG",
+      "count": 3
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d14",
+      "level": "class",
+      "state": "IgM",
+      "count": 7
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 3
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d14",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 7
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgA",
+      "count": 5
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgG",
+      "count": 7
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d28",
+      "level": "class",
+      "state": "IgM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHA1",
+      "count": 5
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHG1",
+      "count": 7
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-d28",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 2
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-pre",
+      "level": "class",
+      "state": "IgM",
+      "count": 15
+    },
+    {
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "sample": "S03-pre",
+      "level": "gene",
+      "state": "IGHM",
+      "count": 15
+    }
+  ],
+  "pairs": [
+    {
+      "left": "IGHA1",
+      "right": "IGHG1",
+      "families": 36
+    },
+    {
+      "left": "IGHA1",
+      "right": "IGHM",
+      "families": 36
+    },
+    {
+      "left": "IGHG1",
+      "right": "IGHM",
+      "families": 36
+    }
+  ]
+}

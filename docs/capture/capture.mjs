@@ -116,6 +116,42 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async isotypes() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families', { threshold: 0.1 });
+    await js(`(() => { window.clonoloom.bcellsMode.show('isotypes'); return true; })()`);
+    await waitFor(`window.clonoloom.isotypesView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Summarize isotypes').click(); return true; })()`);
+    await waitFor(`window.clonoloom.isotypesView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.isotypesView.state()');
+    if (result.page.result.assigned !== 2160 || result.page.result.resolvedGene !== 2160 || result.page.familyCount !== 36 || result.page.count !== 18) throw new Error('Wrong isotype totals');
+    if (!result.page.rows.every((r) => r.total === 240 && r.timepoint && r.tissue)) throw new Error('Missing denominator or metadata');
+    await js(`window.clonoloom.isotypesView.showPage('pairs')`);
+    const pairs = await js('window.clonoloom.isotypesView.state().page.rows');
+    if (pairs.length !== 3 || pairs.some((p) => p.families !== 36)) throw new Error('Wrong co-occurrence');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'IGHA1 + IGHG1').click(); return true; })()`);
+    await waitFor(`window.clonoloom.isotypesView.state().page?.kind === 'families'`);
+    if ((await js('window.clonoloom.isotypesView.state().page.count')) !== 36) throw new Error('Pair filter lost families');
+    const family = await js('window.clonoloom.isotypesView.state().page.rows[0].id');
+    await js(`window.clonoloom.isotypesView.showPage('usage', {family:${JSON.stringify(family)},level:'gene'})`);
+    if (!(await js('window.clonoloom.isotypesView.state().page.rows.every((r) => r.family && r.level === "gene")'))) throw new Error('Missing family usage');
+    await js(`window.clonoloom.isotypesView.showPage('observations')`);
+    const first = await js('window.clonoloom.isotypesView.state().page.rows[0].id');
+    await js(`window.clonoloom.isotypesView.showPage('observations', {offset:50})`);
+    if ((await js('window.clonoloom.isotypesView.state().page.rows[0].id')) === first) throw new Error('Observation page did not advance');
+    await js(`(() => { const v=window.clonoloom.isotypesView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('Raw C call:')`);
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('eLife.16578') || !methods.includes(result.page.result.isotypeOptions.familySha256) || !methods.includes('unordered')) throw new Error('Missing isotype methods');
+    await act('close_dialogs');
+    await js(`(() => { window.clonoloom.isotypesView.showPage('usage'); window.clonoloom.bcellsMode.show('inputs'); return true; })()`);
+    await waitFor(`Boolean(window.clonoloom.bcellsView)`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.isotypesView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.isotypesView.state().artifact')) !== result.artifact) throw new Error('Saved isotypes did not reopen');
+  },
   async lineages() {
     await act('open_example', { example: 'simulated-bcell-immunization', download: true });
     await act('find_bcell_families', { threshold: 0.1 });

@@ -139,6 +139,12 @@ func TestGermlinePublicReferenceAndAIRRCoverage(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		isotypes, err := bcell.Isotypes(context.Background(), res.Table, sources, f, nil)
+		if err != nil || isotypes.Assigned != f.Eligible {
+			t.Fatal("isotype coverage differs", err, isotypes.Assigned, f.Eligible)
+		}
+		t.Logf("Isotype coverage: %d assigned observations; %d resolved classes, %d resolved genes; issues %v", isotypes.Assigned, isotypes.ResolvedClass, isotypes.ResolvedGene, isotypes.Issues)
+
 		r, err := bcell.Germlines(context.Background(), res.Table, sources, f, ref)
 		if err != nil {
 			t.Fatal(err)

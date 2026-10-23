@@ -361,3 +361,10 @@ test('lineage methods cite parsimony and retain parent/reference identity and un
   for (const word of ['parent-hash', 'family-hash', 'ref-hash', 'Conditional IUPAC', 'not proven global minima', 'No class-switching']) assert.ok(out.text.includes(word), word);
   for (const doi of ['10.1093/sysbio/20.4.406', '10.1137/0128004', '10.1371/journal.pcbi.1009885']) assert.ok(out.references.join('\n').includes(doi), doi);
 });
+
+test('isotype methods retain counting unit, ambiguity, parent identity and inference limits', () => {
+  const r = { id: 'iso-one', kind: 'isotypes', unit: 'heavy-chain rows', abundanceUnit: 'reads', assigned: 12, resolvedClass: 10, resolvedGene: 8, describe: 'Each assigned cell contributes once. Unresolved calls remain in the denominator. Pairs do not count switching events.', isotypes: { families: 'fam-one', familySha256: 'parent-hash' } };
+  const out = methodsParagraph({ dataset: pbmc, results: [r], program });
+  for (const word of ['12 assigned observations', 'class resolved for 10', 'constant gene resolved for 8', 'parent-hash', 'observation unit heavy-chain rows', 'abundance unit reads', 'Unresolved', 'once', 'no ancestral-trait or switching statistic']) assert.ok(out.text.includes(word), word);
+  for (const doi of ['10.3389/fimmu.2014.00022', '10.7554/eLife.16578', '10.1371/journal.pcbi.1009885']) assert.ok(out.references.join('\n').includes(doi), doi);
+});

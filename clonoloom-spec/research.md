@@ -1355,3 +1355,86 @@ implemented objective, not biological phylogeny accuracy.
 The public Ramos AIRR row produces one supported tree; the 56/437 gene-only heavy rows in the
 10x PBMC 1k/10k-v2 fixtures retain upstream reconstruction exclusions. This checks format and
 evidence coverage, not reference suitability or biological lineage accuracy.
+
+
+### 5.20 Isotypes: observed usage and family co-occurrence (wave 5, slice 8)
+
+**Sources and boundary.** AIRR Rearrangement schema 2.0 defines `c_call` as the constant-region
+gene call, including its allele when available ([schema](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)).
+IMGT nomenclature supplies the gene labels (Lefranc 2014, *Front Immunol* 5:22,
+[doi:10.3389/fimmu.2014.00022](https://doi.org/10.3389/fimmu.2014.00022)); the
+[IMGT mouse IGHC table](https://www.imgt.org/IMGTrepertoire/LocusGenes/genetable/autotable.php?group=IGHC&species=Mus+musculus)
+provides context for labels such as IGHG2A/B/C. No reference sequences are required or copied.
+Horns et al. (2016), “Lineage tracing of human B cells reveals the in vivo landscape of human
+antibody class switching,” *eLife* 5:e16578,
+[doi:10.7554/eLife.16578](https://doi.org/10.7554/eLife.16578), supplies biological context.
+Hoehn, Pybus and Kleinstein (2022), “Phylogenetic analysis of migration, differentiation, and
+class switching in B cells,” *PLoS Comput Biol* 18:e1009885,
+[doi:10.1371/journal.pcbi.1009885](https://doi.org/10.1371/journal.pcbi.1009885), distinguishes
+observed labels from phylogenetic trait inference. Neither paper's inference algorithm or
+statistic is reproduced. The following counting and ambiguity rules are ClonoLoom policies.
+
+**Parent and unit.** A saved, thresholded family result fixes the observation identity,
+assignment, QC exclusions, subject boundaries and abundance. Isotypes do not require alignments,
+germline reconstruction or a tree: usable C calls can exist without that evidence. Each
+assigned observation contributes once: a sample-scoped cell for single-cell inputs, or a heavy
+source row for bulk inputs. All parent-retained source rows and raw C calls remain inspectable. Light
+calls never determine isotype. Multiple retained heavy contigs do not multiply cell counts.
+
+**Resolution.** Use the existing gene parser, remove alleles and normalize case. Supported
+heavy constant labels are IGHM, IGHD, IGHE, IGHG, IGHG1–4, IGHG2A/B/C, IGHA and IGHA1/2.
+The output has separate class and constant-gene resolutions. A gene label does not establish
+species, ploidy, genomic order or a functional protein. Pseudogenes, other loci/segments and
+unrecognized tokens are unsupported. Calls over 4,096 bytes are unsupported, with raw evidence
+retained. The parser's documented separators and missing-token handling remain unchanged. A stricter
+constant-call suffix check accepts numeric alleles and optional finite parenthesized scores;
+malformed suffixes cannot conceal a second candidate (for example `IGHM*01/IGHD*01`).
+
+All retained heavy rows must agree at the reported resolution. Alleles of one gene collapse;
+ties between IGHG subclasses retain IgG class but no gene. Broad IGHG/IGHA labels retain class
+only. A missing heavy call alongside a resolved call remains unresolved. An unsupported token
+makes the observation unresolved even if another token is valid. Multi-class candidates,
+including IGHM/IGHD, remain unresolved; a call tie is not evidence of coexpression. One primary
+issue is reported in order: unsupported, missing, conflicting classes, conflicting subclasses,
+class-only call. Full raw calls permit inspection of any additional limitations.
+
+**Usage and missingness.** Calculate counts and shares separately per sample and per
+family/sample at both resolutions. The denominator is all assigned observations in that group,
+including unresolved calls. Parent-excluded observations are retained but outside the denominator.
+Only observed buckets are emitted; an absent sample/group is not a measured zero. Observation units (cells or heavy-chain rows) are separate from the parent's abundance unit
+(for example reads). In single-cell
+parents abundance is one per cell; in bulk it is the parent's count or missing. Any missing count
+makes that bucket's abundance and the group's abundance denominator unavailable, rather than
+summing just known values. Other fully observed bucket totals remain available but have no
+abundance share when the denominator is missing. A known zero denominator is zero with missing
+share. Negative, non-finite or overflowing assigned abundance fails explicitly. Observation
+shares remain defined independently of abundance. Sorted observation IDs fix floating-point
+summation order. Labels use pinned sample timepoint/tissue annotations; no inferential comparison
+or pooling of timepoints, tissues or subjects as independent replicates is performed.
+
+**Families and co-occurrence.** Report observations, resolved-class/gene coverage, samples and
+sorted observed labels per family. Count each unordered pair of resolved constant genes once
+per family, regardless of cell abundance. Report all families and those with at least one
+resolved gene alongside pair counts; the latter is coverage, not proof of complete sampling.
+Pairs overlap and are not additive. IgM/IgD-only co-occurrence is explicitly not switching
+evidence. No pair establishes a transition, its direction, timing, ancestor, rate or significance.
+The slice does not reconstruct class-switch events, assign ancestral traits, impose genomic
+ordering or apply the lineage search's chosen topology to C calls. Results depend on input
+annotation accuracy, sampling and the selected family threshold.
+
+**Independent validation.** `validation/reference/isotypes.py` uses only Python's standard
+library, raw AIRR rows and the simulation's generating-family truth. It checks one heavy row per
+sample/cell, compares each C label with its sampled truth node, then directly tallies classes,
+genes and unordered family pairs. It does not call the Go parser, family or isotype implementation.
+Source hashes and heavy-member digests connect the independent reference to the production
+pipeline. All 2,160 default-v2 cells, 36 families and 466 sample/family usage rows agree, including
+counts, denominators and observation/abundance shares. Each of the three gene pairs occurs in
+36 families. A separate complete-result digest checks arm64/amd64 serialization. The simulated
+calls are unambiguous; hand-calculated tests separately cover ambiguous, missing, unsupported,
+duplicate-contig and bulk missing/zero-count cases. This checks bookkeeping, not biological
+accuracy or recovery of the simulator's historical switching events.
+
+Public-data coverage checks also resolve the Ramos observation and all 56/437 assigned
+observations in the two pinned 10x PBMC fixtures. These C calls remain usable even where
+V/J allele evidence is insufficient for germline reconstruction. This tests evidence
+availability, not known biological class-switching truth.

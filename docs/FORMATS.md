@@ -449,3 +449,44 @@ unknown tie counts are blank. FASTA gives the consistent chosen panel assignment
 the coordinate map and possible states, also in node CSV. Newick uses stable node IDs and
 integer change lengths, one tree per line; its root ID joins to nodes.csv and that tree's ID.
 No class-switching, migration, event-date, selection or likelihood inference is encoded.
+
+### Isotypes (wave 5, slice 8)
+
+`isotypes.json` is version 1 of `clonoloom-isotypes`, derived from a checksum-verified,
+thresholded `families.json`. `isotypeOptions` pins the family artifact and SHA-256;
+`familiesOptions` and `familyFilter` record its choices. `annotations` pins sample timepoint
+and tissue labels; observation subject/scope comes from the parent. Parent-retained C calls come
+from the source dataset, without requiring germline alignments or a reference download.
+
+`observations` retains each parent observation, its retained source rows, raw C calls,
+class, constant gene, issue, exclusion and abundance. Class and gene can resolve differently:
+IGHG1/IGHG2 ties give IgG with an unresolved gene. IGHG/IGHA without a subclass resolve only
+class. All retained heavy calls must agree at the reported resolution; missing, unsupported
+or conflicting calls remain explicit. Light calls are provenance only. Alleles collapse;
+pseudogenes and unsupported labels do not become functional isotypes. See research §5.20
+for supported labels, the 4,096-byte call bound, numeric-allele/finite-score suffix checks
+and issue precedence.
+
+`usage` has sample totals (`family` empty) and family/sample totals at `class` and `gene`
+resolution. `observations`, `total` and `share` count assigned observations, including unresolved
+calls. Parent exclusions are outside this denominator. Single-cell parents count one per
+sample-scoped cell; bulk parents count one per heavy row. Only observed buckets are emitted.
+`unit` describes observations (cells or heavy-chain rows); `abundanceUnit` separately retains
+the parent count unit (for example reads; empty means unspecified). CSV usage includes both units.
+`abundance`, `totalAbundance` and `abundanceShare` are separate: missing counts propagate to
+bucket and group totals; a known zero denominator has a null share. Missing-count coverage
+is retained. No metadata group is treated as a biological replicate.
+
+`families` lists coverage, samples and resolved labels. `pairs` contains unordered constant-gene
+pairs, counted once per family, alongside all-family and any-resolved-gene coverage counts.
+These overlapping pair counts are not additive, switching events or transition estimates.
+IgM/IgD-only co-occurrence is explicitly not switching evidence. Missing/ambiguous observations
+cannot establish which events occurred or did not occur.
+
+Exports include `usage.csv`, `families.csv`, `cooccurrence.csv`, `observations.csv`, `sources.csv`,
+full `isotypes.json`, `manifest.json` and `NOTICE.txt`. They contain the complete artifact,
+independent of displayed filters or pages. CSV missing numeric values are blank; measured zero
+is `0`. `sources.csv` retains every parent-retained chain without duplicating observation abundance.
+Saved inspection does not require the input or parent files; exporting follows normal source
+access and data-use terms. Versioned isotype choices and normalized annotations travel in the
+analysis identity; unrelated active QC, clonotype and diversity settings do not.

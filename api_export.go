@@ -278,6 +278,18 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = fmt.Sprintf("Chain specificity evidence for %s. Database %s, SHA-256 %s, source %s, license %s, citation %s. Matches are evidence, not proof of receptor specificity. Epitope shares count each clonotype once per group and can overlap.", ds.Name, doc.Database.Reference, doc.Database.SHA256, doc.Database.Source, doc.Database.License, doc.Database.Citation)
 		files["matches.csv"] = func(f io.Writer) error { return export.SpecificityMatches(f, doc.Clonotypes, doc.Result) }
 		files["epitopes.csv"] = func(f io.Writer) error { return export.SpecificityShares(f, doc.Samples, doc.Result) }
+	case "isotypes":
+		var doc isotypeDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " usage.csv contains sample and family/sample totals at class and gene resolution; empty family_id denotes sample totals. Missing abundance is blank, measured zero is 0. observations.csv retains parent exclusions; sources.csv retains all raw C calls without duplicating observation abundance. cooccurrence.csv contains unordered gene pairs, not switching events. isotypes.json includes the family checksum and pinned annotations."
+		files["isotypes.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		for _, kind := range []string{"usage", "families", "cooccurrence", "observations", "sources"} {
+			files[kind+".csv"] = func(f io.Writer) error { return export.Isotypes(f, doc.IsotypeResult, kind) }
+		}
 	case "lineages":
 		var doc lineageDocument
 		if err := json.Unmarshal(raw, &doc); err != nil {

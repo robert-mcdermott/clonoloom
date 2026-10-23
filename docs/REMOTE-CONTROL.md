@@ -161,3 +161,28 @@ cache without starting work. The server pins parent SHA-256 and fixed search lim
 pages summaries or members (limit 1–200); row filters are `family`, `locus`, `tree`, `node`.
 `/page?kind=detail&tree=ID` returns one bounded tree with panel and nodes. Saved pages require
 neither original input nor parent availability. Export uses the standard result endpoint.
+
+### Isotypes (wave 5, slice 8)
+
+`summarize_bcell_isotypes({dataset, families})` opens B cells → Isotypes and computes or
+reuses the result. Omit `families` to use the latest saved thresholded family result for the
+dataset. It returns artifact ID, assigned observations, resolved class/gene counts, family
+count, exclusions, issues and pinned options. It does not infer class-switching events.
+
+`POST /api/isotypes` takes `{dataset, isotypes:{families}, study?, start?}`. The family parent
+fixes membership, QC and subject scope. Omitted `study` uses imported timepoint/tissue metadata;
+explicit project annotations override it, including explicit missing values. Duplicate/unknown
+sample annotations are refused. Normalized labels and the verified family checksum determine
+identity. `start:false` probes the cache. The default starts a cancellable job when needed.
+
+`GET /api/isotypes/{id}` returns the complete saved result.
+`/api/isotypes/{id}/page?kind=usage|families|pairs|observations&offset=0&limit=50` pages through
+it (limit 1–200). Usage defaults to sample-wide totals; `family` selects family/sample totals,
+`sample` selects a sample, and `level=class|gene` selects resolution. Observations accept
+`family` and `sample`. Families accept `family` and `left`/`right` constant-gene membership
+filters, allowing an unordered pair's supporting families to be inspected. Pairs are paged
+without filters. Page summaries omit full arrays; rows and count describe the selected view.
+Saved inspection uses pinned labels and requires neither parent nor source files.
+
+`GET /api/export?what=result&artifact={id}` exports all tables, full JSON, manifest and notice,
+independent of page filters, under the normal source-access and data-use conditions.

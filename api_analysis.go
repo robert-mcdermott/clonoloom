@@ -50,7 +50,7 @@ type analysis struct {
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis, pgenAnalysis, neighborhoodAnalysis, networkAnalysis, specificityAnalysis, familyAnalysis, germlineAnalysis, shmAnalysis, lineageAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis, pgenAnalysis, neighborhoodAnalysis, networkAnalysis, specificityAnalysis, familyAnalysis, germlineAnalysis, shmAnalysis, lineageAnalysis, isotypeAnalysis}
 
 // analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
 // (condition) and subject (by sample name), for the analyses that use them; Study is the samples'
@@ -78,6 +78,7 @@ type analysisSpec struct {
 	Germlines     *germlineOptions     `json:"germlines,omitempty"`
 	SHM           *shmOptions          `json:"shm,omitempty"`
 	Lineages      *lineageOptions      `json:"lineages,omitempty"`
+	Isotypes      *isotypeOptions      `json:"isotypes,omitempty"`
 	Method        int                  `json:"method"`
 }
 
@@ -153,8 +154,9 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Germlines     *germlineOptions     `json:"germlines,omitempty"`
 		SHM           *shmOptions          `json:"shm,omitempty"`
 		Lineages      *lineageOptions      `json:"lineages,omitempty"`
+		Isotypes      *isotypeOptions      `json:"isotypes,omitempty"`
 		Method        int                  `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.PGen, s.Specificity, s.Networks, s.Neighborhoods, s.Families, s.Germlines, s.SHM, s.Lineages, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.PGen, s.Specificity, s.Networks, s.Neighborhoods, s.Families, s.Germlines, s.SHM, s.Lineages, s.Isotypes, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -224,6 +226,13 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 			if body.Networks == nil {
 				body.Networks = &networkOptions{}
 			}
+		case "isotypes":
+			body.Track, body.Compare, body.Class = nil, nil, nil
+			if body.Isotypes == nil {
+				body.Isotypes = &isotypeOptions{}
+			}
+			body.Definition = clonotype.Definition{}
+			body.Options = diversity.Options{}
 		case "lineages":
 			body.Track, body.Compare, body.Class = nil, nil, nil
 			if body.Lineages == nil {
@@ -260,6 +269,9 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 			}
 		default:
 			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
+		}
+		if k.over != "isotypes" {
+			body.Isotypes = nil
 		}
 		if k.over != "lineages" {
 			body.Lineages = nil
@@ -420,6 +432,9 @@ func (a *app) keepAnalysis(k analysis, spec analysisSpec, ds *dataset, run *jobs
 			Software:   []artifacts.Software{{Name: "clonoloom", Version: version, Commit: buildCommit()}},
 		},
 		Files: []artifacts.File{{Path: file, Role: k.kind}},
+	}
+	if spec.Isotypes != nil {
+		m.Lineage.Parents = append(m.Lineage.Parents, artifacts.Parent{Kind: "families", ID: spec.Isotypes.Families, SHA256: spec.Isotypes.FamilySHA256})
 	}
 	if spec.Lineages != nil {
 		m.Lineage.Parents = append(m.Lineage.Parents, artifacts.Parent{Kind: "germlines", ID: spec.Lineages.Germlines, SHA256: spec.Lineages.GermlineSHA256})

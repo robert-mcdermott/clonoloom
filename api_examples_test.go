@@ -183,7 +183,7 @@ func TestGuidedStepsAreActions(t *testing.T) {
 			}
 		}
 	}
-	if steps != 31 {
+	if steps != 32 {
 		t.Errorf("%d steps", steps)
 	}
 }

@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Isotypes and family co-occurrence (wave 5, slice 8).** Summarize heavy constant calls
+  by sample and family/sample from saved, checksum-pinned families. Count each cell or bulk
+  heavy observation once, distinguish class from gene/subclass resolution, and retain ambiguous
+  and malformed calls, parent exclusions and missing abundance. Keep observation and abundance
+  units distinct. Show unordered gene pairs with family coverage,
+  inspect original source calls, and export complete CSV/JSON tables with provenance. Add cited
+  methods, remote control and the guided artificial study. Independent truth-file tallies agree
+  for 2,160 cells, 36 families and 466 usage rows. Co-occurrence does not infer switching events,
+  direction, timing, ancestral traits, rates or significance.
+
 - **Lineage trees (wave 5, slice 7).** Build separate family/locus trees from saved
   germlines on shared evaluable V/J panels. Collapse identical states while retaining
   source rows and observed metadata. Search exactly through eight taxa and with bounded,

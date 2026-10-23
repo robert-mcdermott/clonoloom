@@ -48,6 +48,11 @@ func (a *app) lineagePrepare(s *analysisSpec) error {
 	s.Lineages.GermlineSHA256 = hash
 	s.Lineages.ExactTaxa, s.Lineages.MaxTaxa, s.Lineages.SearchBudget, s.Lineages.WorkBudget = bcell.LineageExactTaxa, bcell.LineageMaxTaxa, bcell.LineageSearchBudget, bcell.LineageWorkBudget
 	s.Filter = qc.Filter{}
+	return a.prepareObservationAnnotations(s)
+}
+
+// Pin timepoint/tissue metadata for derived B-cell results.
+func (a *app) prepareObservationAnnotations(s *analysisSpec) error {
 	ds, ok := a.datasets.get(s.Dataset)
 	if !ok {
 		return errors.New("open the dataset again from its files")

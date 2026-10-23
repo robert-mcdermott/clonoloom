@@ -103,7 +103,7 @@ func (a *app) germlineReference(name string) (bcell.GermlineReference, []loopsFi
 	return ref, records, nil
 }
 
-func (a *app) germlineParent(id, dataset string) (familyDocument, string, error) {
+func (a *app) checkedFamilyParent(id, dataset string) (familyDocument, string, error) {
 	var doc familyDocument
 	m, err := a.artifacts.Get(id)
 	if err != nil || m.Kind != "families" || m.State != artifacts.Complete || m.Dataset != dataset {
@@ -132,7 +132,7 @@ func (a *app) germlineParent(id, dataset string) (familyDocument, string, error)
 		return doc, "", err
 	}
 	if doc.Format != "clonoloom-families" || doc.Version != bcell.FamilyVersion || doc.Dataset != dataset || doc.Options.Threshold == nil {
-		return doc, "", errors.New("germlines need a supported, thresholded families result")
+		return doc, "", errors.New("a supported, thresholded families result is required")
 	}
 	return doc, hash, nil
 }
@@ -141,7 +141,7 @@ func (a *app) germlinePrepare(s *analysisSpec) error {
 	if o.Reference == "" {
 		o.Reference = humanGermlines
 	}
-	_, hash, err := a.germlineParent(o.Families, s.Dataset)
+	_, hash, err := a.checkedFamilyParent(o.Families, s.Dataset)
 	if err != nil {
 		return err
 	}
@@ -161,7 +161,7 @@ func (a *app) germlineWork(k analysis, s analysisSpec) jobs.Func {
 			return errors.New("open the dataset again from its files")
 		}
 		o := *s.Germlines
-		parent, hash, err := a.germlineParent(o.Families, s.Dataset)
+		parent, hash, err := a.checkedFamilyParent(o.Families, s.Dataset)
 		if err != nil {
 			return err
 		}

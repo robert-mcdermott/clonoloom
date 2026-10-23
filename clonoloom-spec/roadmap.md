@@ -878,8 +878,8 @@ threshold-dependent result, not a replacement for those identifiers.
 Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slices 1–6 are
-committed and slice 7 is implemented; later slices need their methods, data and acceptance
+puts a simulation with known families before the analyses it validates. Slices 1–7 are
+committed and slice 8 is implemented; later slices need their methods, data and acceptance
 criteria settled in detail before implementation.
 
 | Slice | Status | Scope |
@@ -890,8 +890,8 @@ criteria settled in detail before implementation.
 | 4. Clonal families | Committed | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
 | 5. Germlines | Committed | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
 | 6. Somatic hypermutation | Committed | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
-| 7. Lineage trees | Implemented; awaiting commit | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
-| 8. Isotypes and class switching | To come | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
+| 7. Lineage trees | Committed | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
+| 8. Isotypes and class switching | Implemented; awaiting commit | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
 | 9. Examples and release 0.5.0 | To come | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
 
 ### Slice 1: B-cell sequence evidence
@@ -1338,7 +1338,58 @@ pass. Seven B-cell browser workflows pass in both themes, including keyboard nod
 observed annotations, source paging, methods, disposal and saved reopening. The site builds
 32 pages with 30 screenshot sets; 124 audit checks across 31 pages find no problems.
 Isolated million-row budgets pass: read/validate 1.503 s, cached reopen 125 ms and searched
-page 47.415 ms. Version remains 0.4.0. Awaiting maintainer commit; slice 8 has not started.
+page 47.415 ms. Version remains 0.4.0. Committed by the maintainer.
+
+### Slice 8: Isotypes and family co-occurrence
+
+**Serves B5's observational scope.** Summarize constant-region usage and family-level
+co-occurrence from a checksum-pinned, thresholded family result. Scientific choices and
+citations are in research §5.20. Version remains 0.4.0; release preparation is slice 9.
+
+- Count each assigned sample-scoped cell once in single-cell data, or each assigned heavy
+  source row once in bulk data. Retain original heavy and light C calls and source identities;
+  only heavy calls define isotype. Inherit membership, QC and subject scope from the parent.
+- Collapse allele ties. Resolve class separately from constant gene/subclass. All retained
+  heavy calls must agree at that resolution; missing, unsupported and conflicting calls remain
+  explicit. Do not choose the first candidate or treat IgM/IgD ambiguity as coexpression.
+- Show class and gene usage by sample and family/sample, with all assigned observations in
+  denominators, including unresolved calls. Keep parent exclusions outside the denominator.
+  Preserve missing abundance, measured zero and cell-versus-row counting; never multiply cell
+  abundance by contig count. Pin timepoint/tissue labels without pooling biological replicates.
+- Show family coverage and unordered pairs of resolved constant genes, counting each family
+  once per pair. Distinguish observations from switching inference: no event counts, direction,
+  timing, ancestral states, rates, significance or species-specific genomic ordering.
+- Add B cells → Isotypes, bounded pages, pair-to-family and family-to-observation navigation,
+  raw-call inspection, complete CSV/JSON exports, cited methods, remote action and guided study.
+
+**Acceptance.** Hand-calculated ambiguity, missing/zero abundance, duplicated contig, IgM/IgD,
+source-identity, scope and denominator checks; independent truth-file counts for the default
+artificial study; immutable parent/annotation identity and complete exports; browser workflow
+in both themes; Go race/vet, processor/released-project compatibility, six builds, JavaScript,
+fuzz, contrast/site and isolated performance checks.
+
+**Implemented.** The Go counting, saved jobs, usage/family/pair/observation pages, source inspector,
+exports, cited methods and remote/guided workflow are in place. Independent direct tallies agree
+for all 2,160 cells, 36 families and 466 usage rows. Each of the three unordered IGHM/IGHG1/IGHA1
+pairs occurs in all 36 families. This validates descriptive bookkeeping, not switching inference.
+
+**Checked.** Hand-calculated ambiguity, missing/zero abundance, duplicate contigs, IgM/IgD,
+subject/sample boundaries, empty evidence, cancellation and source identity pass. Observation
+units are distinct from abundance units, including unspecified bulk units. Malformed allele
+suffixes cannot conceal another candidate. API identity, annotations, bounded/filterable pages,
+parent tampering and complete exports pass. Public coverage resolves the Ramos observation and
+all 56/437 assigned observations in the pinned 10x PBMC fixtures, without requiring V/J alleles.
+These are coverage checks, not known biological switching truth.
+
+The application/internal race suite and complete scientific race run pass (scientific validation:
+501.008 s), with focused reruns for the final constant-call suffix guard. Vet, arm64/amd64
+serialization and released-project compatibility, six platform builds, 94 JavaScript tests,
+378,725 final fuzz cases and 14 contrast checks pass. Eight B-cell browser workflows pass in
+both themes; the isotype scene checks visible run controls, pair/family navigation, source
+paging and inspection, pinned metadata, cited methods, disposal and saved reopening. The site
+builds 33 pages with 31 screenshot sets; 128 audit checks across 32 pages find no problems.
+Isolated million-row budgets pass: read/validate 1.630 s, cached reopen 135 ms and searched page
+38.099 ms. Version remains 0.4.0. Awaiting maintainer commit; slice 9 has not started.
 
 ## Later waves (outlined)
 

@@ -190,3 +190,34 @@ The full selected-tree serialization (panels, graph, chosen/possible states, spl
 observed annotations) is separately pinned for arm64/amd64 repeatability. Public AIRR coverage
 also checks that the Ramos row builds a tree while all 56/437 gene-only heavy rows in the 10x
 PBMC fixtures preserve their reconstruction exclusions. Neither is a biological accuracy test.
+
+### Observed isotypes and family co-occurrence
+
+`TestIsotypesAgainstIndependentCellTallies` regenerates the default v2 study and compares all
+2,160 cells, 36 families and 466 sample/family usage rows against `reference/isotypes.json`.
+The reference script uses only Python stdlib, raw AIRR rows and generating-family truth:
+
+```sh
+uv run --no-project validation/reference/isotypes.py /tmp/clonoloom-germline-study
+```
+
+It checks one heavy row per sample/cell and C labels against truth nodes, without importing
+production family or isotype logic. Source hashes and membership digests pin the input. Tests
+check every count, denominator, observation/abundance share and unordered pair; each of the
+three pairs appears in all 36 families. A separate full-result digest pins processor stability.
+This validates bookkeeping, not switching inference or biological accuracy.
+
+Core tests cover allele/subclass ties, IgM/IgD ambiguity, unsupported and oversized calls,
+malformed allele suffixes, duplicate heavy contigs, light-chain exclusion, bulk missing versus
+zero abundance, distinct observation/abundance units, unspecified units, overflow,
+parent/source identity and cancellation. `FuzzIsotypeCalls` checks permutation invariance and
+class/gene consistency. API tests check parent checksums, annotation identity, unrelated-setting
+normalization, bounded/filterable pages, saved inspection and complete CSV/JSON exports. The
+`isotypes` browser scene checks visible run controls, pair-to-family navigation, family usage,
+observation paging, raw-call inspection, methods, disposal and saved reopening in both themes;
+the immunization guide exercises the remote action.
+
+Public-data coverage checks also resolve the Ramos observation and all 56/437 assigned
+observations in the two pinned 10x PBMC fixtures. These C calls remain usable even where
+V/J allele evidence is insufficient for germline reconstruction. This tests evidence
+availability, not known biological class-switching truth.
