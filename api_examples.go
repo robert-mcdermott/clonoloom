@@ -82,6 +82,10 @@ var (
 			Words: "The response peaks at day 14 and falls back: its clonotypes called are transient."},
 		{Title: "Follow the transient clonotypes", Action: "track_clonotypes", Args: map[string]any{"by": "class", "class": "transient"},
 			Words: "Their threads rise from a few templates, or none, before the vaccination to a peak at day 14, and fall back."},
+		{Title: "Match the simulated specificity database", Action: "match_specificity", Args: map[string]any{"database": "simulated-vaccine", "metric": "exact", "genes": true, "species": "HomoSapiens", "minScore": 0},
+			Words: "Compare exact CDR3 and V/J calls with the simulated evidence. Each sample's epitope shares count a clonotype once. Other donors' receptors leave much of the true response unmatched; an exact match alone does not prove specificity."},
+		{Title: "Follow one matched epitope", Action: "match_specificity", Args: map[string]any{"database": "simulated-vaccine", "metric": "exact", "genes": true, "species": "HomoSapiens", "minScore": 0, "follow": 2},
+			Words: "Follow the second evidence group, a vaccine epitope, through each subject's samples. The selection records its source result. Compare vaccinated subjects with placebo; these matched receptors represent only part of the response."},
 	}
 	transplantSteps = []examples.Step{
 		{Title: "See each recipient's samples in time", Action: "describe_subjects",

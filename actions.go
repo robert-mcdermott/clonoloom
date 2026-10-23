@@ -122,6 +122,9 @@ var remoteActions = []remoteAction{
 		"cdr3Only": flagArg("Compare CDR3s alone for TCRdist"),
 		"follow":   numberArg("Epitope/antigen group to follow, from 1"),
 	})},
+	{Name: "flag_invariant", Title: "Flag invariant populations", Description: "Evaluate published MAIT, iNKT and GEM sequence rules for an explicit species. Shows Clonotypes, optionally narrowed to a matched population, and answers sample totals, evaluable abundance and shares. Records the species with the dataset; flags do not establish phenotype or specificity.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg, "species": textArg("human or mouse (required)"), "population": textArg("MAIT, iNKT, GEM, or empty for all clonotypes"),
+	})},
 	{Name: "find_networks", Title: "Find clonotype networks", Description: "Finds connected components of clonotypes joined within a sequence-distance cutoff, retaining all edges and memberships independently of the drawing. Shows Networks in Specificity and answers component counts. Options are kept with the dataset.", InputSchema: schema(map[string]any{
 		"dataset":  datasetArg,
 		"metric":   textArg("identity, hamming, levenshtein or tcrdist"),

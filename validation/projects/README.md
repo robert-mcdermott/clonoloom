@@ -17,6 +17,8 @@ and make its results again. `go test -run TestEveryReleasesProjectStillOpens .` 
 | 0.2.0 | A small simulated study (two samples) and a VDJtools table read through a mapping | Diversity (two), rarefaction, gene usage, overlap |
 | 0.3.0 | A small simulated CAR-T series: two patients, two samples a week before the infusion and four after it, with their infusion products (14 samples, gzipped, 330 KB) | Diversity, tracking (each product's 10 largest), tests (the week before against two weeks after, the beta-binomial test fitted on the replicates), classes (against the week before), attribution |
 
+| 0.4.0 | Twelve synthetic paired T cells exercising invariant rules, and 80 simulated beta-chain rows from the 0.2.0 fixture | TCRdist on CDR3s, Hamming networks, generation probabilities under ClonoLoom’s model; saved human invariant rules and sample counts |
+
 ## What a fixture holds
 
 | Path | What it is |
@@ -63,3 +65,14 @@ bootstrap replicates and seed 20140101.
 It was made through remote control on an empty library, with these actions:
 `new_project`, `open_data`, `measure_diversity`, `rarefy`, `gene_usage` and `measure_overlap`.
 The project and artifacts were then copied here.
+
+
+### 0.4.0
+
+Created by `node validation/create-project-0.4.mjs` through remote actions and an isolated
+browser/library. The script refuses to overwrite an existing fixture; pass a new output path
+when checking its generation. Synthetic cells are constructed from rule examples, not
+experimental data. `invariant.json` pins all sample totals and rule outcomes after saving the
+species in the project. The fixture needs no downloaded references; the generated model is
+built in. `projects_test.go` remakes all three result documents and the invariant summary;
+the project parser's test checks the entire saved project round trip.

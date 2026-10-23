@@ -109,7 +109,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | S4 | Clonotype networks by CDR3 identity, edit distance or TCRdist | planned (wave 4) |
 | S5 | Matching against specificity databases (VDJdb first; McPAS-TCR and IEDB as their terms allow) by exact or TCRdist-near match, with species, MHC and evidence; database versions recorded; downloaded on request, never bundled | partial (wave 4, slice 7: VDJdb and the simulated vaccine database; exact/TCRdist chain matching, evidence, per-sample shares, Tracking, download terms and checksums; McPAS-TCR and IEDB later) |
 | S6 | Cross-subject convergence; HLA association (hypergeometric) when HLA types are given | planned (wave 7) |
-| S7 | Invariant populations flagged (MAIT, iNKT, GEM) by published gene and junction rules | planned (wave 4) |
+| S7 | Invariant populations flagged (MAIT, iNKT, GEM) by published gene and junction rules | implemented (wave 4, slice 8: explicit species; MAIT/iNKT gene and junction-length rules, human GEM motif; flags, sample counts and evaluability, CSV and methods) |
 
 ## B cells
 
@@ -174,7 +174,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | --- | --- | --- |
 | E1 | Simulated studies with their truth (`clonoloom simulate`) | partial (wave 2, slice 2: bulk TRB studies from ClonoLoom's own recombination model, with each population's truth; presets standard, null and small; offered as examples; wave 3, slice 4: studies over time, CAR-T and transplant with an infusion product or a donor mixed into the blood in known shares, clones on known trajectories and biological variance between samples, offered as examples, and a null series; wave 4, slice 4: receptors of known specificity, families around shared founders and private receptors as near each other as Dash et al.'s, a vaccination study offered as an example, and a specificity database in VDJdb's format; wave 5: BCR lineages; wave 6: single cell with expression) |
 | E2 | Public example datasets downloaded on request with license and citation shown | done (wave 1, slice 6: six datasets of 10x Genomics, the AIRR Community and immuneACCESS; wave 4: Dash et al. 2017's epitope-specific TCRs and a healthy donor's OTS unit; every wave adds its own) |
-| E3 | Guided tours and worked examples per view | partial (wave 3, slice 8: the simulated CAR-T and transplant studies' guided steps in the Tracking view, each done by its remote control action; every wave adds its own) |
+| E3 | Guided tours and worked examples per view | partial (wave 3, slice 8: the simulated CAR-T and transplant studies' guided steps in the Tracking view, each done by its remote control action; wave 4, slice 8: human/mouse epitope networks and vaccine database/Tracking steps) |
 | E4 | Exercises graded against simulated truth, with class codes | parked |
 
 ## Cross-suite

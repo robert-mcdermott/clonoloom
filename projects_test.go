@@ -24,15 +24,19 @@ import (
 	"testing"
 	"time"
 
+	"clonoloom/internal/clonotype"
+	"clonoloom/internal/invariant"
 	"clonoloom/internal/reads"
 )
 
 // fixtureProject is what the test reads of a saved project.
 type fixtureProject struct {
 	Datasets []struct {
-		ID      string `json:"id"`
-		Name    string `json:"name"`
-		Sources []struct {
+		InvariantSpecies string               `json:"invariantSpecies"`
+		Definition       clonotype.Definition `json:"definition"`
+		ID               string               `json:"id"`
+		Name             string               `json:"name"`
+		Sources          []struct {
 			Path    string         `json:"path"`
 			SHA256  string         `json:"sha256"`
 			Mapping *reads.Mapping `json:"mapping"`
@@ -148,6 +152,24 @@ func remakeFixture(t *testing.T, dir string, each func(t *testing.T, file string
 		json.Unmarshal(rec.Body.Bytes(), &s)
 		if rec.Code != http.StatusOK || s.ID != ds.ID {
 			t.Fatalf("%s opens as %q, not %q: %d %s", ds.Name, s.ID, ds.ID, rec.Code, rec.Body)
+		}
+		if ds.InvariantSpecies != "" {
+			_, entry, _, err := a.clonotypeTable(clonotypeRequest{Dataset: ds.ID, Definition: ds.Definition})
+			if err != nil {
+				t.Fatal(err)
+			}
+			got, err := invariant.Compute(entry.table, ds.InvariantSpecies)
+			if err != nil {
+				t.Fatal(err)
+			}
+			got.Flags = nil
+			want, err := os.ReadFile(filepath.Join(dir, "invariant.json"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(mustJSON(got), want) {
+				t.Fatalf("invariant annotations changed: %s; want %s", mustJSON(got), want)
+			}
 		}
 	}
 	for _, kept := range p.Artifacts {

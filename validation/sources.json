@@ -382,6 +382,33 @@
           "summary": "1,924 paired αβ TCR clones (3,405 cells) of mice, a sample for each mouse and the epitope its cells were sorted for: influenza's PA, PB1, PB1-F2 and NP, and cytomegalovirus's M38, M45 and m139.",
           "files": [
             "dash.csv"
+          ],
+          "steps": [
+            {
+              "title": "Compare similar receptors",
+              "action": "find_neighbors",
+              "args": {
+                "radius": 24,
+                "cdr3Only": true,
+                "organism": "mouse",
+                "select": 1
+              },
+              "words": "Compare the paired CDR3s alone at TCRdist 24. Samples name the known tetramer epitope and donor. Sequence similarity can cross epitope labels; it is evidence to inspect, not a specificity assignment. Download V-gene loops in Reference data to include the other loops."
+            },
+            {
+              "title": "Connect receptors into networks",
+              "action": "find_networks",
+              "args": {
+                "metric": "tcrdist",
+                "cutoff": 24,
+                "arms": "all",
+                "cdr3Only": true,
+                "sameV": false,
+                "sameJ": false,
+                "select": 1
+              },
+              "words": "Every edge compares all retained chains. Components connect through intermediate receptors, so not every pair in a component is within 24. Inspect members and their samples against the known epitopes."
+            }
           ]
         },
         {
@@ -390,6 +417,33 @@
           "summary": "415 paired αβ TCRs of people's CD8+ T cells, a sample for each donor and epitope: influenza's M1, Epstein–Barr virus's BMLF1 and cytomegalovirus's pp65.",
           "files": [
             "dash_human.csv"
+          ],
+          "steps": [
+            {
+              "title": "Compare similar receptors",
+              "action": "find_neighbors",
+              "args": {
+                "radius": 24,
+                "cdr3Only": true,
+                "organism": "human",
+                "select": 1
+              },
+              "words": "Compare the paired CDR3s alone at TCRdist 24. Samples name the known tetramer epitope and donor. Sequence similarity can cross epitope labels; it is evidence to inspect, not a specificity assignment. Download V-gene loops in Reference data to include the other loops."
+            },
+            {
+              "title": "Connect receptors into networks",
+              "action": "find_networks",
+              "args": {
+                "metric": "tcrdist",
+                "cutoff": 24,
+                "arms": "all",
+                "cdr3Only": true,
+                "sameV": false,
+                "sameJ": false,
+                "select": 1
+              },
+              "words": "Every edge compares all retained chains. Components connect through intermediate receptors, so not every pair in a component is within 24. Inspect members and their samples against the known epitopes."
+            }
           ]
         }
       ]

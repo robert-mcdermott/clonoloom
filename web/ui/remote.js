@@ -5,6 +5,7 @@
 // same actions with their arguments (actions.go, GET /api/remote/tools); a Go test checks the two
 // lists agree. Adapted from SituCraft 0.9.0 web/ui/remote.js.
 
+import { useInvariantSpecies } from '../lib/invariant.js';
 import { networkOptions } from '../lib/networks.js';
 import { closeDialogs, toast } from './overlays.js';
 import { clonotypePresets } from './storage.js';
@@ -413,6 +414,20 @@ export function remoteActions(app) {
         await view.followEpitope(follow - 1);
       }
       return { message: `Found ${data.matches} chain–record matches in ${data.epitopes.length} epitope/antigen groups.`, data };
+    },
+
+    async flag_invariant({ dataset, species, population = '' } = {}) {
+      const d = datasetOf(dataset);
+      species = choose(species, ['human', 'mouse'], 'species');
+      if (population) population = choose(population, ['MAIT', 'iNKT', 'GEM'], 'population');
+      store.commit(useInvariantSpecies(store.project, d.id, species), 'Choose invariant-population species');
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('clonotypes');
+      const view = await waitFor(() => app.clonotypesView, 5000, 'Clonotypes');
+      view.show(d.id);
+      await view.population(population);
+      const page = await view.page(0, 20);
+      return { message: `${d.name}: ${species} invariant-population rules.`, data: page };
     },
 
     async find_networks({ dataset, metric, cutoff, arms, sameV, sameJ, cdr3Only, select } = {}) {

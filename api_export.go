@@ -22,6 +22,7 @@ import (
 	"clonoloom/internal/clonotype"
 	"clonoloom/internal/diversity"
 	"clonoloom/internal/export"
+	"clonoloom/internal/invariant"
 	"clonoloom/internal/overlap"
 	"clonoloom/internal/qc"
 )
@@ -46,7 +47,7 @@ func (a *app) registerExports(mux *http.ServeMux) {
 					return
 				}
 			}
-			ds, entry, status, err := a.clonotypeTable(clonotypeRequest{Dataset: q.Get("dataset"), Definition: def, Filter: filter})
+			ds, entry, status, err := a.clonotypeTable(clonotypeRequest{Species: q.Get("species"), Dataset: q.Get("dataset"), Definition: def, Filter: filter})
 			if err != nil {
 				writeErrorCode(w, status, "not-open", err.Error())
 				return
@@ -75,8 +76,22 @@ func (a *app) registerExports(mux *http.ServeMux) {
 					if err != nil {
 						return err
 					}
-					if err := export.Clonotypes(f, entry.table, names); err != nil {
+					var inv *invariant.Result
+					if q.Get("species") != "" {
+						inv, _ = invariant.Compute(entry.table, q.Get("species"))
+					}
+					if err := export.ClonotypesWithInvariant(f, entry.table, names, inv); err != nil {
 						return err
+					}
+					if inv != nil {
+						notice.What += " Invariant-population sequence rules v1 for " + inv.Species + ": MAIT/iNKT (Schattgen et al., doi:10.1038/s41587-021-00989-2), GEM (Van Rhijn et al., doi:10.4049/jimmunol.1401380). Flags are not established phenotype or specificity. Each clonotype counts once per rule; shares use all retained abundance, including unevaluable receptors. Missing shares are blank."
+						f, err := z.Create("invariant-samples.csv")
+						if err != nil {
+							return err
+						}
+						if err := export.InvariantSamples(f, inv, names); err != nil {
+							return err
+						}
 					}
 				}
 				return writeNotice(z, notice)

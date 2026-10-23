@@ -1,11 +1,32 @@
 # Changelog
 
-## 0.4.0 (unreleased)
+## 0.4.0 (2026-10-22)
 
-Wave 4 of the [roadmap](clonoloom-spec/roadmap.md): specificity. Built slice by slice; this section
-grows with each.
+Wave 4 of the [roadmap](clonoloom-spec/roadmap.md): specificity.
 
 ### Added
+
+- **Invariant populations and release preparation (wave 4, slice 8).** Clonotypes flags
+  MAIT-, iNKT- and GEM-consistent receptors by published gene, junction-length and motif rules.
+  Species is an explicit saved choice; human iNKT requires a paired beta-chain gene. Missing
+  or ambiguous required evidence is not evaluable, and no mouse GEM rule is asserted.
+  - Per-sample matched and evaluable abundance, with all retained abundance as the denominator;
+    each clonotype counts once per rule. Population filtering, complete CSV exports, cited
+    methods and `flag_invariant` remote control. Sequence flags do not establish phenotype
+    or antigen specificity.
+  - Independent cell-level CSV calculations agree: MAIT 10/406 (2.46%) in PBMC 1k and
+    80/4,562 (1.75%) in PBMC 10k v2, within the typical published blood T-cell range.
+    Rule tests cover published consensus receptors, constructed boundaries, missing evidence,
+    gene resolution and repeated chains.
+  - Complete guided epitope and vaccine steps, including networks, specificity matching and
+    Tracking; guide pages and screenshots in both themes.
+  - The 0.4.0 compatibility project saves synthetic rule examples, simulated beta chains,
+    the species choice, TCRdist, networks and generation probabilities. Results and invariant
+    summaries are reproduced byte for byte, without downloaded references. Versions and
+    release pages are prepared; publishing remains a maintainer action.
+  - Validated: Go race checks (the full validation package completes within the 20-minute
+    timeout), amd64 rule and compatibility checks, all six platform builds, 80 JavaScript
+    tests, 14 accessibility checks and 104 site audit checks with no problems.
 
 - **Specificity databases (wave 4, slice 7).** Specificity's Database part matches retained
   T-cell chains to VDJdb, downloaded on request with terms shown, or the vaccine example's

@@ -157,25 +157,33 @@ func TestGuidedStepsAreActions(t *testing.T) {
 		known[a.Name] = a
 	}
 	steps := 0
+	catalog, err := examples.Parse(exampleSources)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sources := append([]examples.Source(nil), catalog...)
 	for _, g := range simulatedExamples() {
-		for _, o := range g.Source.Opens {
+		sources = append(sources, g.Source)
+	}
+	for _, g := range sources {
+		for _, o := range g.Opens {
 			for _, s := range o.Steps {
 				steps++
 				a, ok := known[s.Action]
 				if !ok || a.reads || s.Title == "" || s.Words == "" {
-					t.Errorf("%s: step %q, action %s", g.Source.Name, s.Title, s.Action)
+					t.Errorf("%s: step %q, action %s", g.Name, s.Title, s.Action)
 					continue
 				}
 				properties := a.InputSchema["properties"].(map[string]any)
 				for arg := range s.Args {
 					if _, ok := properties[arg]; !ok {
-						t.Errorf("%s: step %q: %s takes no %s", g.Source.Name, s.Title, s.Action, arg)
+						t.Errorf("%s: step %q: %s takes no %s", g.Name, s.Title, s.Action, arg)
 					}
 				}
 			}
 		}
 	}
-	if steps != 14 {
+	if steps != 20 {
 		t.Errorf("%d steps", steps)
 	}
 }

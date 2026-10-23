@@ -15,8 +15,8 @@ now; later waves are outlined and refined as they come.
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
-2 and 3 are merged and released as 0.2.0 and 0.3.0; wave 4 (0.4.0) is being built on the branch
-`wave4`.
+2 and 3 are merged and released as 0.2.0 and 0.3.0; wave 4 (0.4.0) is implemented on `wave4`, with release preparation in slice 8;
+commit, CI, tag and publication remain maintainer actions.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -556,8 +556,8 @@ queries make a public cohort more than one example's files.
 | 4. Simulated antigen-specific responses | Done |
 | 5. Neighborhoods and backgrounds | Done |
 | 6. Clonotype networks | Done |
-| 7. Specificity databases | To come |
-| 8. Invariant populations and the examples; release 0.4.0 | To come |
+| 7. Specificity databases | Done |
+| 8. Invariant populations and the examples; release 0.4.0 | Implemented; release pending |
 
 ### Decisions for wave 4
 
@@ -855,6 +855,17 @@ queries make a public cohort more than one example's files.
    pictures and its pages.
    - Validation: each rule against the published receptors it comes from; the share of MAIT
      cells in 10x Genomics' PBMC data against the published range.
+   - Implemented: human/mouse MAIT and iNKT, human GEM motif; explicit saved species,
+     retained-chain flags with missing-evidence states, population filtering, complete sample
+     totals/evaluable abundance/shares, exports, cited methods and remote control.
+   - Checked: independent CSV cell-level rules agree with all counts; MAIT shares 10/406
+     (2.46%) and 80/4,562 (1.75%) in PBMC 1k and 10k v2. Published consensus receptors and
+     constructed gene/length boundaries, unsupported definitions and ambiguous calls tested.
+   - Guided mouse/human epitope and vaccine steps run through the browser in both themes.
+     Release 0.4.0's project fixture, version files, pictures and pages are prepared.
+     Go race checks, amd64 compatibility, six platform builds, 80 JavaScript tests,
+     14 accessibility checks and 104 site audit checks pass.
+     Commit, CI, tag and publication are left to the maintainer.
 
 ## Later waves (outlined)
 

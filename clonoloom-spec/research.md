@@ -871,3 +871,49 @@ compares outputs.
 - A mouse gene list (MGI) and its terms, before mouse immunoSEQ names are mapped fully.
 - IMGT's written confirmation of CC BY 4.0 for its download folders, whose READMEs still carry
   the earlier wording, before any IMGT-derived file is bundled.
+
+### 5.12 Invariant-population sequence rules (wave 4, slice 8)
+
+The implementation reads published method descriptions, not external implementations.
+Schattgen et al., Nat Biotechnol 2022;40:54–63, doi:10.1038/s41587-021-00989-2,
+Methods, TCR sequence features, defines MAIT and iNKT gene/length rules. The full junction
+includes its conserved cysteine and terminal F/W. Human MAIT: TRAV1-2 and TRAJ33/20/12,
+length 12; mouse: TRAV1/TRAJ33, length 12. Human iNKT: TRAV10/TRAJ18/TRBV25, alpha
+length 14–16; mouse: TRAV11/TRAJ18, length 15. IMGT's TRBV25-1 and the published TRBV25
+name are accepted; mouse TRAV11 and its duplicated TRAV11D are accepted explicitly
+(IMGT mouse TRAV allele table), not arbitrary prefix matches.
+
+Human GEM uses TRAV1-2/TRAJ9 and CAV[RL].TGGFKTIF, as defined by Van Rhijn et al.,
+J Immunol 2014;193:5338–5344, doi:10.4049/jimmunol.1401380, following the original
+GEM receptors (Nat Immunol 2013;14:706–713, doi:10.1038/ni.2630, Fig. 3). The consensus
+CAVRNTGGFKTIF is a positive test; the canonical human iNKT sequence CVVSDRGSTLGRLYF
+is also documented by Musvosvi et al., Nat Med 2023, doi:10.1038/s41591-022-02110-9,
+Extended Data Fig. 10. Additional published checks use human MAIT TRAV1-2/CAVKDSNYQLIW/TRAJ33 and mouse
+MAIT TRAV1/CAVRDSNYQLIW/TRAJ33 (Ito et al., Sci Immunol 2024,
+doi:10.1126/sciimmunol.ade6924, TCR transduction methods), and mouse iNKT
+TRAV11/CVVGDRGSALGRLHF/TRAJ18 (Blood Adv 2020, doi:10.1182/bloodadvances.2019000977).
+Other unit-test variants exercise constructed length/gene boundaries;
+they are not claimed to be experimentally typed receptors. GEM's beta bias is not a rule.
+No mouse GEM rule is asserted.
+
+Species is explicit and saved, initially unevaluated. Definitions without amino-acid junctions
+and gene/allele resolution cannot evaluate rules. Ambiguous genes are not resolved by choosing
+a favorable candidate. An entirely matching retained chain suffices; otherwise incomplete
+required evidence remains unknown. Human iNKT candidates require a retained beta chain.
+Secondary chains discarded by the definition do not contribute. Each clonotype contributes
+once per rule per sample; all retained abundance is the denominator, with evaluable abundance
+reported separately. This annotation never establishes phenotype or antigen specificity.
+
+On paired primary TRA/TRB clonotypes of cached 10x filtered T-cell contig tables, PBMC 1k has
+10 MAIT-consistent cells / 406 retained (2.4631%; 357 alpha-evaluable), one iNKT and no GEM;
+PBMC 10k v2 has 80 / 4,562 (1.7536%; 4,069 alpha-evaluable), two iNKT and no GEM.
+The typical 1–10% range is of blood T cells, not all PBMCs (van Wilgenburg et al., Nat Commun
+2018, doi:10.1038/s41467-018-07207-9). Both estimates lie within it. This is biological
+plausibility, not phenotype ground truth; capture, donor and ascertainment differ. The test
+reports departures rather than forcing every donor inside a typical range.
+
+A separate standard-library CSV calculation (`validation/reference/invariant.py`, run with uv)
+selects primary productive chains directly from Cell Ranger rows and applies the published
+human predicates without calling ClonoLoom. All matched counts and both cell denominators
+agree; the compact count reference is checked by `validation/invariant_test.go`.
+Mouse nomenclature source: https://www.imgt.org/IMGTrepertoire/Proteins/taballeles/mouse/TRA/TRAV/Mu_TRAVall.html.

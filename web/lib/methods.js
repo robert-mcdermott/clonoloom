@@ -19,6 +19,8 @@ export function joinList(parts) {
 
 // The works a paragraph cites.
 export const REFERENCES = {
+  conga: 'Schattgen SA, Guion K, Crawford JC, et al. Integrating T cell receptor sequences and transcriptional profiles by clonotype neighbor graph analysis (CoNGA). Nat Biotechnol. 2022;40:54–63. doi:10.1038/s41587-021-00989-2',
+  gem: 'Van Rhijn I, et al. Discovery of invariant T cells by next-generation sequencing of the human TCR alpha-chain repertoire. J Immunol. 2014;193:5338–5344. doi:10.4049/jimmunol.1401380',
   airr: 'Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. Front Immunol. 2018;9:2206. doi:10.3389/fimmu.2018.02206',
   miairr: 'Rubelt F, Busse CE, Bukhari SAC, et al. Adaptive Immune Receptor Repertoire Community recommendations for sharing immune-repertoire sequencing data. Nat Immunol. 2017;18:1274–1278. doi:10.1038/ni.3873',
   imgtNames: 'Lefranc MP. Immunoglobulin and T cell receptor genes: IMGT and the birth and rise of immunoinformatics. Front Immunol. 2014;5:22. doi:10.3389/fimmu.2014.00022',
@@ -182,6 +184,10 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     sentences.push(`Clonotypes were defined as ${clonotypes.describe} ("${definition.name}", ClonoLoom definition ${clonotypes.id}).`);
     if (/junction/.test(clonotypes.describe)) sentences.push(`A junction is the IMGT junction, from the conserved 2nd-CYS 104 to J-PHE or J-TRP 118 ${cite('imgtJunction')}.`);
     if (clonotypes.count !== undefined) sentences.push(`${clonotypes.cells ? `The ${plural(clonotypes.cells, 'cell')} formed` : 'They formed'} ${plural(clonotypes.count, 'clonotype')}.`);
+  }
+
+  if (definition && clonotypes && ['human', 'mouse'].includes(dataset.invariantSpecies)) {
+    sentences.push(`Retained chains were evaluated for ${dataset.invariantSpecies} MAIT and iNKT sequence rules ${cite('conga')}${dataset.invariantSpecies === 'human' ? ` and the GEM alpha-chain motif ${cite('gem')}` : ''} (rule version 1). Junction lengths include the conserved cysteine and terminal phenylalanine or tryptophan. Missing or ambiguous required calls and definitions lacking amino-acid junctions or gene resolution were not evaluable. Human iNKT required a beta chain with TRBV25 in the same clonotype. Each clonotype contributed once per rule to each sample; shares used all retained abundance, including unevaluable receptors, with evaluable abundance reported separately. These sequence flags do not establish cell phenotype or antigen specificity.`);
   }
 
   // Diversity, as each result kept says it was measured (the latest of each definition and filter).

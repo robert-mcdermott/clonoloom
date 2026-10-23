@@ -4,6 +4,7 @@
 // rows of public data under a provider's terms (or under no stated license), their terms are shown,
 // and the export is made only when the user says they will keep it to themselves.
 
+import { invariantSpecies } from '../lib/invariant.js';
 import { h } from './dom.js';
 import { confirmDialog } from './overlays.js';
 import { datasetDefinition } from '../lib/definitions.js';
@@ -42,7 +43,7 @@ export async function exportDataset(app, d, what) {
   const state = app.datasetStates.get(d.id);
   const loci = Object.keys(state?.summary?.samples?.reduce((acc, s) => Object.assign(acc, s.loci), {}) ?? {});
   if (!(await asked(d, true))) return;
-  const params = new URLSearchParams({ what, dataset: d.id, definition: JSON.stringify(datasetDefinition(d, loci)), filter: JSON.stringify(datasetFilter(app.store.project, d)?.rules ?? {}) });
+  const params = new URLSearchParams({ species: invariantSpecies(d), what, dataset: d.id, definition: JSON.stringify(datasetDefinition(d, loci)), filter: JSON.stringify(datasetFilter(app.store.project, d)?.rules ?? {}) });
   if (restrictedOf(d).length) params.set('accept', '1');
   download(`api/export?${params}`);
   app.log(`Exported the ${what} of ${d.name}.`);

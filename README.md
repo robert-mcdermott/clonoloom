@@ -16,8 +16,8 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Current release:** 0.3.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-Specificity, B-cell lineages, single-cell phenotypes and cohort comparisons come in later
+**Release prepared:** 0.4.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+B-cell lineages, single-cell phenotypes and cohort comparisons come in later
 releases.
 
 ## Features
@@ -34,7 +34,8 @@ releases.
   with its reason.
 - **Define clonotypes explicitly.** Named definitions (junction, V and J levels, chains,
   single-cell rules) stated in words with every table and figure; a million clonotypes sorted and
-  searched as they scroll.
+  searched as they scroll. Published MAIT, iNKT and GEM rules flag sequence-consistent receptors
+  for an explicitly chosen species, with evaluable abundance and shares per sample.
 - **Measure repertoires with their uncertainty.** Hill numbers, Chao1, ACE, the estimated Shannon
   and Simpson diversity, clonality, Gini and clonal space homeostasis, each with a 95% interval.
   Rarefaction and extrapolation compare samples at equal coverage or size.
@@ -59,7 +60,7 @@ releases.
   the dataset's own gene usage, with their enrichment and motif. Each clonotype's generation
   probability, how likely recombination alone is to make it, as OLGA computes it, under OLGA's
   models (downloaded on request) or ClonoLoom's own model of human TRB.
-- **Match specificity evidence.** In the development build, match retained chains to VDJdb
+- **Match specificity evidence.** Match retained chains to VDJdb
   (downloaded on request with its terms) or the simulated vaccine database, by exact CDR3 with
   optional V/J calls or within a TCRdist radius. Inspect evidence and per-sample epitope shares,
   then follow matched clonotypes in Tracking with the source result recorded. A matching chain
@@ -224,7 +225,7 @@ node docs/site/build.mjs /tmp/site       # the website, every link checked (docs
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.3.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.4.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Example data

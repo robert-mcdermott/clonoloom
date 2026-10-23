@@ -20,6 +20,7 @@ import (
 	"clonoloom/internal/airr"
 	"clonoloom/internal/clonotype"
 	"clonoloom/internal/diversity"
+	"clonoloom/internal/invariant"
 	"clonoloom/internal/overlap"
 	"clonoloom/internal/rep"
 	"clonoloom/internal/track"
@@ -232,6 +233,11 @@ func Rearrangements(w io.Writer, rt *rep.Table, keep []bool, ct *clonotype.Table
 // and J at the definition's levels), its total abundance and samples, and its abundance in each
 // sample (names).
 func Clonotypes(w io.Writer, ct *clonotype.Table, names []string) error {
+	return ClonotypesWithInvariant(w, ct, names, nil)
+}
+
+// ClonotypesWithInvariant adds the explicit species and versioned rule statuses, when requested.
+func ClonotypesWithInvariant(w io.Writer, ct *clonotype.Table, names []string, inv *invariant.Result) error {
 	chains := 1
 	for _, c := range ct.Clonotypes {
 		chains = max(chains, len(c.Chains))
@@ -244,6 +250,9 @@ func Clonotypes(w io.Writer, ct *clonotype.Table, names []string) error {
 	}
 	header = append(header, "total", "samples")
 	header = append(header, names...)
+	if inv != nil {
+		header = append(header, "invariant_species", "invariant_rule_version", "MAIT", "iNKT", "GEM")
+	}
 	if err := cw.Write(header); err != nil {
 		return err
 	}
@@ -261,6 +270,9 @@ func Clonotypes(w io.Writer, ct *clonotype.Table, names []string) error {
 			if int(s) < len(names) {
 				row[at+2+int(s)] = number(values[k])
 			}
+		}
+		if inv != nil {
+			copy(row[len(row)-5:], []string{inv.Species, strconv.Itoa(inv.Version), inv.Flags[i][0], inv.Flags[i][1], inv.Flags[i][2]})
 		}
 		if err := cw.Write(row); err != nil {
 			return err
@@ -703,4 +715,19 @@ func NeighborhoodMembers(w io.Writer, rows []NeighborhoodMember) error {
 		out = append(out, []string{r.Centroid, r.ID, r.Junction, r.V, r.J, number(r.Total), strconv.Itoa(r.Samples), strconv.Itoa(r.Distance)})
 	}
 	return writeAll(w, out)
+}
+
+// InvariantSamples writes complete sample denominators and evaluable abundance alongside flags.
+func InvariantSamples(w io.Writer, r *invariant.Result, names []string) error {
+	rows := [][]string{{"sample", "species", "rule_version", "population", "total", "evaluable", "matched", "share"}}
+	for s, x := range r.Samples {
+		for p, name := range invariant.Populations {
+			share := ""
+			if x.Share[p] != nil {
+				share = number(*x.Share[p])
+			}
+			rows = append(rows, []string{names[s], r.Species, strconv.Itoa(r.Version), name, number(x.Total), number(x.Evaluable[p]), number(x.Matched[p]), share})
+		}
+	}
+	return writeAll(w, rows)
 }

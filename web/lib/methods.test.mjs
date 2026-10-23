@@ -266,3 +266,16 @@ test('specificity reports reference identity, chain evidence, overlapping shares
   assert.match(text, /not established specificity of paired receptors/);
   assert.ok(references.some((s) => s.includes('gkx760')));
 });
+
+test('invariant methods cite only the explicitly selected species rules', () => {
+  const args = { dataset: pbmc, definition: { name: 'Paired' }, clonotypes: { id: 'def-a', describe: 'paired TRA and TRB', count: 1 }, program };
+  assert.doesNotMatch(methodsParagraph(args).text, /invariant|GEM alpha-chain/);
+  const human = methodsParagraph({ ...args, dataset: { ...pbmc, invariantSpecies: 'human' } });
+  assert.match(human.text, /human MAIT and iNKT/);
+  assert.match(human.text, /all retained abundance, including unevaluable/);
+  assert.ok(human.references.some((r) => r.includes('s41587-021-00989-2')));
+  assert.ok(human.references.some((r) => r.includes('1401380')));
+  const mouse = methodsParagraph({ ...args, dataset: { ...pbmc, invariantSpecies: 'mouse' } });
+  assert.match(mouse.text, /mouse MAIT and iNKT/);
+  assert.ok(!mouse.references.some((r) => r.includes('1401380')));
+});

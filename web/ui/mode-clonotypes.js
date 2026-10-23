@@ -15,6 +15,8 @@ import { JUNCTIONS, LEVELS, datasetDefinition, sameMeaning, saveDefinition, useD
 import { followAlso } from '../lib/tracking.js';
 import { pgenOptions, pgenRequest, probabilityWords } from '../lib/specificity.js';
 
+import { POPULATIONS, invariantSpecies, useInvariantSpecies } from '../lib/invariant.js';
+
 const ROW = 30;
 // The header row's height, above the rows inside the scrolling area.
 const HEAD = 29;
@@ -45,12 +47,19 @@ export function mountClonotypes(app, container) {
         { label: 'Rearrangements (AIRR TSV)', icon: 'download', onSelect: () => exportDataset(app, d, 'rearrangements') },
       ]);
     } }, icon('download'), 'Export'));
+  const speciesSelect = h('select.input.small', { 'aria-label': 'Invariant-population species', onchange: (e) => {
+    populationSelect.value = ''; detail = null;
+    store.commit(useInvariantSpecies(store.project, dataset().id, e.target.value), 'Choose invariant-population species');
+  } }, ...[['', 'Not evaluated'], ['human', 'Human'], ['mouse', 'Mouse']].map(([value, label]) => h('option', { value }, label)));
+  const populationSelect = h('select.input.small', { 'aria-label': 'Invariant population', style: { width: '190px' }, onchange: () => reload() },
+    h('option', { value: '' }, 'All clonotypes'), ...POPULATIONS.map((p) => h('option', { value: p }, `${p}-consistent`)));
+  const invariantControls = h('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' } }, h('label.unit-confirm', 'Invariant-population rules', speciesSelect), populationSelect);
   const info = h('div.clonotype-info');
   const header = h('div.ctable-head', { role: 'row' });
   const spacer = h('div.ctable-spacer');
   const windowEl = h('div.ctable-window', { role: 'rowgroup' });
   const scroller = h('div.ctable-scroll', { role: 'grid', tabIndex: 0, 'aria-label': 'Clonotypes', onscroll: () => paint() }, header, spacer, windowEl);
-  const body = h('div.view-body.clonotypes-view', info, h('div.ctable', scroller));
+  const body = h('div.view-body.clonotypes-view', invariantControls, info, h('div.ctable', scroller));
   root.append(head, body);
   container.append(root);
 
@@ -74,7 +83,7 @@ export function mountClonotypes(app, container) {
 
   function request(offset) {
     const d = dataset();
-    return { dataset: d.id, definition: definition(), filter: datasetFilter(store.project, d)?.rules ?? {}, sort: sort.by, desc: sort.desc, query: { text: query.text }, offset, limit: PAGE };
+    return { species: invariantSpecies(d), population: populationSelect.value, dataset: d.id, definition: definition(), filter: datasetFilter(store.project, d)?.rules ?? {}, sort: sort.by, desc: sort.desc, query: { text: query.text }, offset, limit: PAGE };
   }
 
   function chooseDefinition(value) {
@@ -99,11 +108,16 @@ export function mountClonotypes(app, container) {
     const d = dataset();
     clear(datasetSelect).append(...datasets.map((x) => h('option', { value: x.id, selected: d && x.id === d.id }, x.name)));
     datasetSelect.disabled = datasets.length < 2;
+    speciesSelect.value = invariantSpecies(d);
+    speciesSelect.disabled = !d;
+    populationSelect.disabled = !invariantSpecies(d);
+    if (populationSelect.disabled) populationSelect.value = '';
     const current = definition();
     clear(definitionSelect).append(...definitionOptions().map((o) => h('option', { value: o.key, selected: sameMeaning(o.definition, current) && o.definition.name === current.name }, o.label)));
   }
 
   function reset() {
+    populationSelect.value = ''; detail = null;
     sort = { by: 'total', desc: true };
     reload();
   }
@@ -111,7 +125,7 @@ export function mountClonotypes(app, container) {
   async function reload() {
     drawControls();
     const d = dataset();
-    lastKey = d ? JSON.stringify([d.id, d.definition, d.filter]) : '';
+    lastKey = d ? JSON.stringify([d.id, d.definition, d.filter, d.invariantSpecies]) : '';
     const token = ++generation;
     pages = new Map();
     meta = null;
@@ -137,6 +151,7 @@ export function mountClonotypes(app, container) {
       if (token !== generation) return;
       meta = first;
       pages.set(0, first.rows);
+      detail = null;
       app.clonotypeContext = { dataset: d.id, request: request(0), describe: first.describe, unit: first.unit, name: definition().name };
       // A clonotype chosen before the table's first page (by a script) is described now.
       if (store.ui.focus?.kind === 'clonotype') app.inspector.render();
@@ -165,6 +180,16 @@ export function mountClonotypes(app, container) {
         ` · abundance in ${UNITS[unit] ?? 'counts'}`,
         filter ? ` · filter ${filter.name} v${filter.version}` : ' · no filter',
         excluded.length ? ` · in no clonotype: ${excluded.join(', ')}` : ''));
+    if (meta.invariant) {
+      info.append(h('p.muted.small', 'Sequence-consistent flags, not established phenotype or specificity. Human iNKT requires paired TRA/TRB. Rules need amino-acid junctions and resolved V/J genes; missing evidence is not evaluable. ',
+        h('a', { href: 'https://doi.org/10.1038/s41587-021-00989-2', target: '_blank', rel: 'noreferrer' }, 'MAIT/iNKT methods'), ' · ',
+        h('a', { href: 'https://doi.org/10.4049/jimmunol.1401380', target: '_blank', rel: 'noreferrer' }, 'GEM methods')),
+      h('details', h('summary', 'Invariant populations by sample'),
+        h('p.muted.small', 'Matched abundance / all retained abundance (share); evaluable abundance shown separately. Each clonotype counts once per rule. Use paired T-cell clonotypes for cell shares; separately counted loci are not a unique-cell denominator. Mouse GEM has no rule.'),
+        h('div', { style: { maxHeight: '180px', overflow: 'auto' } }, h('table.data',
+          h('thead', h('tr', h('th', 'Sample'), ...POPULATIONS.map((p) => h('th.r', p)))),
+          h('tbody', ...meta.invariant.samples.map((x, i) => h('tr', h('td.sample-name', { title: meta.samples[i].name, style: { maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, meta.samples[i].name), ...POPULATIONS.map((p, k) => h('td.r', `${count(x.matched[k])} / ${count(x.total)} (${pct(x.share[k])}); evaluable ${count(x.evaluable[k])}`)))))))));
+    }
   }
 
   function sampleColumns() {
@@ -173,12 +198,12 @@ export function mountClonotypes(app, container) {
 
   function template() {
     const n = sampleColumns().length;
-    return `52px minmax(260px, 2.4fr) minmax(130px, 1fr) minmax(110px, 0.9fr) 100px 84px 70px${n ? ` repeat(${n}, 96px)` : ''}`;
+    return `52px minmax(260px, 2.4fr) minmax(130px, 1fr) minmax(110px, 0.9fr) ${meta?.invariant ? '180px ' : ''}100px 84px 70px${n ? ` repeat(${n}, 96px)` : ''}`;
   }
 
   // The narrowest the columns go: wider than the view, the table scrolls sideways, header and all.
   function minWidth() {
-    return 52 + 260 + 130 + 110 + 100 + 84 + 70 + 96 * sampleColumns().length;
+    return 52 + 260 + 130 + 110 + 100 + 84 + 70 + (meta?.invariant ? 180 : 0) + 96 * sampleColumns().length;
   }
 
   function drawHeader() {
@@ -191,7 +216,7 @@ export function mountClonotypes(app, container) {
       'aria-sort': sort.by === by ? (sort.desc ? 'descending' : 'ascending') : 'none',
       onclick: () => { sort = sort.by === by ? { by, desc: !sort.desc } : { by, desc: numeric }; reload(); },
     }, label, sort.by === by ? icon(sort.desc ? 'chevronDown' : 'chevronUp') : null);
-    header.append(h('span.ctable-th.r', '#'), col('Junction', 'junction'), col('V', 'v'), col('J', 'j'), col('Total', 'total', true), h('span.ctable-th.r', 'Frequency'), col('Samples', 'samples', true),
+    header.append(h('span.ctable-th.r', '#'), col('Junction', 'junction'), col('V', 'v'), col('J', 'j'), ...(meta.invariant ? [h('span.ctable-th', 'Invariant rules')] : []), col('Total', 'total', true), h('span.ctable-th.r', 'Frequency'), col('Samples', 'samples', true),
       ...sampleColumns().map((s, i) => col(s.name, `sample:${i}`, true, `Sort by the abundance in ${s.name}`)));
   }
 
@@ -244,9 +269,11 @@ export function mountClonotypes(app, container) {
       h('span.junctions', ...chains.map((c) => h('span.chain', c.locus ? h('span.locus', c.locus) : null, h('span.mono', c.junction)))),
       h('span.genes', chains.map((c) => c.v).filter(Boolean).join(' / ') || h('span.muted', '—')),
       h('span.genes', chains.map((c) => c.j).filter(Boolean).join(' / ') || h('span.muted', '—')),
+      ...(meta.invariant ? [h('span.small', { title: POPULATIONS.map((p, i) => `${p}: ${r.invariant[i]}`).join('; ') }, r.invariant.some((x) => x === 'match') ? POPULATIONS.filter((p, i) => r.invariant[i] === 'match').join(', ') + '-consistent' : r.invariant.every((x) => x === 'not evaluable') ? 'Not evaluable' : 'No match (see details)')] : []),
       h('span.r', count(r.total)),
       h('span.r', pct(r.frequency)),
       h('span.r', String(r.samples)),
+
       ...samples.map((s, i) => h('span.r', r.in[String(i)] ? count(r.in[String(i)]) : h('span.muted', '·')))));
     }
   }
@@ -266,6 +293,7 @@ export function mountClonotypes(app, container) {
       chosen = id;
       reset();
     },
+    population: async (value) => { populationSelect.value = value; await reload(); },
     page: (offset, limit = 1) => clonotypePage({ ...request(offset), limit }),
     select,
   };
@@ -335,6 +363,7 @@ export function mountClonotypes(app, container) {
       const ctx = app.clonotypeContext;
       if (ctx) {
         clonotypeDetail({ ...ctx.request, id: focus.id }).then((answer) => {
+          if (JSON.stringify(app.clonotypeContext?.request) !== JSON.stringify(ctx.request)) return;
           detail = answer;
           app.inspector.render();
         }).catch((error) => toast(error.message, { kind: 'error' }));
@@ -352,6 +381,7 @@ export function mountClonotypes(app, container) {
         h('dt', 'Junction'), h('dd.mono', ch.junction),
         ch.v ? [h('dt', 'V'), h('dd', ch.v)] : null,
         ch.j ? [h('dt', 'J'), h('dd', ch.j)] : null)),
+      detail.species ? h('p.small', `${detail.species} rules v1: ${POPULATIONS.map((p, i) => `${p}: ${detail.invariant[i]}`).join('; ')}. Sequence evidence only.`) : null,
       c.vendor ? h('dl.kv', h('dt', 'Source\'s clonotype'), h('dd', c.vendor)) : null,
       generationOf(c),
       h('div.section-title', { style: { marginTop: '10px' } }, `In ${detail.in.length} sample${detail.in.length === 1 ? '' : 's'}`),
@@ -434,7 +464,7 @@ export function mountClonotypes(app, container) {
       if (topics.has('project')) {
         // A new definition or filter: the table again; otherwise nothing that changes it.
         const d = dataset();
-        if ((d ? JSON.stringify([d.id, d.definition, d.filter]) : '') !== lastKey) reload();
+        if ((d ? JSON.stringify([d.id, d.definition, d.filter, d.invariantSpecies]) : '') !== lastKey) reload();
       }
     },
     destroy() {

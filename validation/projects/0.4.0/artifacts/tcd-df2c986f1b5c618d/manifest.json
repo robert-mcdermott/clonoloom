@@ -1,0 +1,106 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "tcd-df2c986f1b5c618d",
+  "kind": "tcrdist",
+  "name": "TCRdist neighbors · Synthetic invariant-rule examples",
+  "dataset": "d-62dc5b8c646474c0",
+  "state": "complete",
+  "created": "2026-10-23T04:30:46.620317Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-62dc5b8c646474c0",
+        "name": "Synthetic invariant-rule examples"
+      }
+    ],
+    "job": {
+      "id": "jmvkh2amq-1",
+      "kind": "tcrdist",
+      "spec": {
+        "dataset": "d-62dc5b8c646474c0",
+        "definition": {
+          "name": "Paired alpha beta",
+          "chains": [
+            "TRA",
+            "TRB"
+          ],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "tcrdist": {
+          "radius": 24,
+          "cdr3Only": true
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "TCRdist between clonotypes (Dash et al. 2017) as tcrdist3 computes it, each clonotype's neighbors within a radius",
+      "version": "1",
+      "citation": "Dash P, et al. Quantifiable predictive features define epitope-specific T cell receptor repertoires. Nature. 2017;547:89–93; Mayer-Blackwell K, et al. eLife. 2021;10:e68605"
+    },
+    "parameters": {
+      "dataset": "d-62dc5b8c646474c0",
+      "definition": {
+        "name": "Paired alpha beta",
+        "chains": [
+          "TRA",
+          "TRB"
+        ],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "tcrdist": {
+        "radius": 24,
+        "cdr3Only": true
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.4.0",
+        "commit": "a6386d4d4165e9ef13671ce5e00d9750e1241151-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "tcrdist.json",
+      "role": "tcrdist",
+      "size": 1823,
+      "sha256": "51e2a28a6415520f8843c352f49fbf26eeb7a6c185773a708b5bed8beca733bd"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "cdr3Only": true,
+    "compared": 4,
+    "definition": "Paired alpha beta",
+    "organism": "",
+    "radius": 24,
+    "withNeighbors": 2
+  }
+}

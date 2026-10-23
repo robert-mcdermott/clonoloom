@@ -145,6 +145,36 @@ const scenes = {
     await waitFor(`document.querySelectorAll('.ctable-row:not(.loading)').length > 5 && Boolean(document.querySelector('.members'))`);
   },
   // The methods paragraph of the PBMC 1k T cells, with its references.
+  async vaccine() {
+    // Execute the catalog's actual guided actions, without downloaded reference dependencies.
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    for (const name of ['dash-2017-tcrdist3', 'simulated-vaccine']) {
+      const e = catalog.examples.find((e) => e.name === name);
+      for (const opening of e.opens) {
+        await act('new_project', { name: opening.name });
+        await act('open_example', { example: name, opening: opening.title, download: true });
+        for (const step of opening.steps ?? []) {
+          await act(step.action, step.args ?? {});
+          console.log(`Guided step: ${opening.title} / ${step.title}`);
+        }
+      }
+    }
+    await waitFor(`window.clonoloom.trackingView?.followed().status === 'ready'`);
+    const tracked = await js('window.clonoloom.trackingView?.followed().result');
+    if (!tracked?.choice.evidence?.artifact || !tracked.subjects.length) throw new Error('Guided specificity tracking failed');
+    await act('match_specificity', {});
+    await waitFor(`Boolean(document.querySelector('.specificity-view table tbody button'))`);
+  },
+  async invariant() {
+    await act('open_example', { example: '10x-pbmc-10k-v2', opening: 'T cells' });
+    const result = await act('flag_invariant', { species: 'human', population: 'MAIT' });
+    if (result.data.invariant.samples[0].matched[0] !== 80) throw new Error('Unexpected MAIT cell count');
+    await js('window.clonoloom.store.undo()');
+    await waitFor(`window.clonoloom.clonotypeContext?.request.species === '' && window.clonoloom.clonotypeContext?.request.population === ''`);
+    await act('flag_invariant', { species: 'human', population: 'MAIT' });
+    await js(`document.querySelector('.clonotype-info details').open = true`);
+    await waitFor(`document.querySelectorAll('.ctable-row:not(.loading)').length > 5`);
+  },
   async methods() {
     await act('open_example', { example: '10x-pbmc-1k', opening: 'T cells' });
     await act('show_methods');
