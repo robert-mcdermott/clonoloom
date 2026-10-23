@@ -1,7 +1,7 @@
 package rep
 
 // EvidenceFields are the retained input annotations, in stable export/cache order.
-// AIRR Rearrangement schema 2.0; Vander Heiden et al. 2018, Front Immunol 9:2206,
+// AIRR fields plus the native IMGT annotation extension. AIRR Rearrangement schema 2.0; Vander Heiden et al. 2018, Front Immunol 9:2206,
 // doi:10.3389/fimmu.2018.02206. Raw text preserves invalid and missing evidence;
 // checked interpretations never replace what the annotation tool supplied.
 var EvidenceFields = [...]string{
@@ -47,6 +47,8 @@ var EvidenceFields = [...]string{
 	"fwr4_end",
 	"np1_length",
 	"np2_length",
+	// Native IMGT annotations, including coordinate provenance, as a JSON object.
+	"imgt_annotations",
 }
 
 const EvidenceCount = len(EvidenceFields)

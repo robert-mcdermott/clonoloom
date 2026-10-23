@@ -4,6 +4,17 @@
 
 ### Added
 
+- **IMGT/HighV-QUEST input (wave 5, slice 2).** Open extracted annotation folders or the four
+  named tables together. Join by sequence number and ID, rejecting incomplete or conflicting
+  bundles. Retain gapped queries, native annotations, optional Parameters and all source hashes.
+- Map query coordinates only against matching uncorrected Summary sequence; preserve original
+  positions and report withheld mappings after indel correction. Keep tied calls, unknown
+  functionality and failed annotations distinct; count sequences without inferring molecules.
+- Preserve grouped inputs through the cache, saved-project reopening and AIRR round trips.
+  Add an offline synthetic IMGT example, guided inspection, cited methods and both-theme images.
+  Independent CSV checks and boundary, fuzz, cache and browser tests cover the format contract.
+  Germline reconstruction and mutation remain later slices; the version stays 0.4.0.
+
 - **B-cell sequence evidence (wave 5, slice 1).** B cells → Inputs shows the active filter
   and definition, per-sample IGH/IGK/IGL rearrangement evidence counts, paginated rows and an
   inspector of original sequence annotations and findings. Counts are rows, not cells or families.

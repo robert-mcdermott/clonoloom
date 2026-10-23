@@ -877,13 +877,13 @@ threshold-dependent result, not a replacement for those identifiers.
 Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slice 1 is implemented; later slices need their methods, data and acceptance criteria settled
+puts a simulation with known families before the analyses it validates. Slices 1 and 2 are implemented; later slices need their methods, data and acceptance criteria settled
 in detail before implementation.
 
 | Slice | Status | Scope |
 | --- | --- | --- |
-| 1. B-cell sequence evidence | Implemented; awaiting commit | Retain AIRR sequences, alignments and coordinates; inspect their availability and validity |
-| 2. IMGT/HighV-QUEST input | To come | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
+| 1. B-cell sequence evidence | Committed | Retain AIRR sequences, alignments and coordinates; inspect their availability and validity |
+| 2. IMGT/HighV-QUEST input | Implemented; awaiting commit | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
 | 3. Simulated B-cell families | To come | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
 | 4. Clonal families | To come | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
 | 5. Germlines | To come | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
@@ -1016,6 +1016,60 @@ motivates retaining the evidence needed by later reconstruction, but slice 1 rec
 germline and computes no mutation rate. No new germline download, inferred allele, family
 threshold, selection statistic or lineage algorithm belongs here. Future reference comparisons
 use tools as external programs; their source is neither inspected nor copied into ClonoLoom.
+
+### Slice 2: IMGT/HighV-QUEST input
+
+**Serves D5, D8, D11 and O3.** Read annotated output without running annotation, reconstructing
+germlines or importing vendor mutation statistics as computed results. Use the documented table
+contract (research.md §5.14), retaining sequence evidence and the provenance needed by later slices.
+
+1. **Open one run as one sample.** Accept an extracted folder or explicitly selected tables
+   1, 2, 3 and 6, plus optional Parameters (11). Support gzip and prefixed names. Recognize output
+   folders in the picker. Check headers, exact row width and identities; join by sequence number
+   and sequence ID regardless of row order. Reject incomplete bundles, duplicate numbers,
+   mismatched identities and conflicting gene calls. Keep failed annotations as rows.
+2. **Map only justified fields.** Preserve ties, productive/unknown states, un-restored junctions,
+   the already oriented Summary sequence and table 2's gapped query. Map query coordinates only
+   when their uncorrected region matches the Summary substring. Retain original positions,
+   orientation, comments, corrected translations and contributing table lines in a native
+   annotation extension. Leave germline alignment, CIGAR and biological inference absent.
+3. **Preserve the whole input's identity.** Fingerprint every table and optional Parameters;
+   record sample grouping in source records, saved projects and cache keys. A companion change
+   must invalidate both the cache and dataset identity. Preserve old dataset/artifact IDs.
+   Use disk-backed identity indexes for reordered tables; remove temporary spools on all exits.
+4. **Make it inspectable.** Reuse B cells → Inputs, AIRR export and remote inspection. Show native
+   annotations in an expandable section and Parameters in Data. Add a locally generated,
+   explicitly artificial example with guided steps, format notes, cited methods and captures.
+
+**Acceptance checks.** Independent stdlib CSV joins and hand-specified coordinate expectations;
+shuffled rows, repeated IDs, heavy/light chains, ties, missing/failed annotations, reverse strand,
+indel correction and malformed input. Exercise gzip, cancellation, sources unchanged, cache and
+AIRR round trips, companion fingerprint changes, content-addressed relocation and project reopen.
+Fuzz the bounded index reader. Check the example in both themes, release compatibility on arm64
+and amd64, Go race tests and vet, JavaScript/accessibility checks, six builds and the site audit.
+Keep version 0.4.0. Extracted tabular output is the supported scope; archive/workbook import,
+reference reconstruction, N/P reconstruction and vendor mutation-statistics import are deferred.
+
+**Implemented.** The four-table identity join, optional Parameters, conservative coordinate
+mapping, native annotation evidence, cache/project integration, inspector, offline example,
+methods and documentation. No later biological analysis has been started.
+
+**Checked.** Independent CSV values agree for all four artificial fixture rows, including
+shuffled joins, repeated IDs, calls, sequences, mapped coordinates and missing evidence. AIRR
+round trips preserve the native annotation extension. Cache checks include changes in both gapped
+sequence and Parameters files. Gzip, hash-sharded library storage, legacy Functionality headers,
+prefixed cohorts, invalid grouping/mapping combinations and source-preserving relocation pass.
+The bounded reader fuzz run completed 498,261 executions without failure. Guided browser steps
+and project reopening pass in both themes. Existing release fixtures reproduce on arm64 and
+amd64. The full Go race suite and final changed-package checks, vet, six platform builds,
+82 JavaScript tests, 14 accessibility checks and 108 site audit checks pass.
+
+The isolated million-row budget reads and validates in 1.488 s, reopens the cached cohort in
+135 ms and answers the searched page in 39.847 ms. An earlier page timing exceeded the budget
+while scientific validation and builds competed for resources; the isolated rerun passed without
+a code change. No real IMGT-annotated cohort was used: the new reader's evidence is the published
+format contract and independently checked artificial fixtures. Version remains 0.4.0.
+
 
 ## Later waves (outlined)
 

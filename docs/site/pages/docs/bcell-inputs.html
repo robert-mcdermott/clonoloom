@@ -1,6 +1,6 @@
 ---
 title: B-cell sequence evidence
-description: Inspect the sequence, alignment and coordinate evidence supplied with B-cell AIRR rearrangements before interpreting germlines or mutations.
+description: Inspect the sequence, alignment and coordinate evidence supplied with B-cell AIRR or IMGT rearrangements before interpreting germlines or mutations.
 lede: In development for wave 5. B cells → Inputs shows what the annotation pipeline supplied, what is missing and which structural checks need attention.
 ---
 <h2 id="inputs">Inspect the inputs</h2>
@@ -17,6 +17,12 @@ lede: In development for wave 5. B cells → Inputs shows what the annotation pi
 <p>Missing evidence is not filled in. Unequal alignments, invalid coordinates and malformed CIGARs remain visible with findings. The original junctions can still support repertoire analysis. ClonoLoom does not pad the strings, realign them or reverse an already oriented alignment.</p>
 <h2 id="example">Try the synthetic example</h2>
 <p>In <strong>Example data</strong>, open <strong>Synthetic B-cell sequence evidence</strong>. Follow its steps to compare a consistent artificial annotation with unequal alignments. These short sequences illustrate validation; they are not biological receptors. The example is generated locally and works offline.</p>
+<h2 id="imgt">IMGT/HighV-QUEST tables</h2>
+<shot name="imgt" alt="IMGT evidence joined from four reordered tables, showing withheld query coordinates after an artificial insertion correction">The synthetic IMGT example includes three B-cell annotations and an unsuccessful annotation without an identified locus.</shot>
+<p>Open an extracted output folder containing <code>1_Summary.txt</code>, <code>2_IMGT-gapped-nt-sequences.txt</code>, <code>3_Nt-sequences.txt</code> and <code>6_Junction.txt</code>, or select those four files together. Gzip is supported. The optional <code>11_Parameters.txt</code> retains annotation settings. Tables are joined by sequence number and ID, even when their rows are reordered. Incomplete or conflicting bundles are rejected.</p>
+<p>IMGT already orients the Summary sequence. ClonoLoom preserves it and the IMGT-gapped query, and retains the submitted strand in <strong>Native IMGT annotations</strong>. Query coordinates are mapped only when an uncorrected region matches the Summary sequence. Insertion/deletion correction can prevent that mapping; original positions remain inspectable. A gapped query alone supplies no germline alignment.</p>
+<p>Try <strong>Synthetic IMGT annotation tables</strong> in Example data. Its steps compare a reverse submission with a corrected insertion. These artificial cases check the documented format, not IMGT's biological accuracy. The Data inspector lists every source fingerprint and the supplied Parameters text.</p>
+<p>See the <a href="https://www.imgt.org/IMGT_vquest/user_guide">IMGT output documentation</a> (Brochet et al. 2008, doi:10.1093/nar/gkn316). Extract archives before opening them; mutation-statistics reports and Excel workbooks are outside this reader.</p>
 <h2 id="exports">Export the evidence</h2>
 <p><strong>Export AIRR</strong> writes the retained evidence beside the existing rearrangement fields, with source and license notes. Invalid supplied values remain invalid in the export so they can be investigated. Correct them at the annotation source before later sequence analysis.</p>
 <h2 id="method">Method and limits</h2>

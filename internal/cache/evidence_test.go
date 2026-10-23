@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -72,7 +73,11 @@ func TestOldEvidenceCacheVersionsAreRefused(t *testing.T) {
 	}
 	for _, field := range []string{"version", "readers"} {
 		// Same-length header change leaves the body CRC intact: the version alone must reject it.
-		old := strings.Replace(string(data), `"`+field+`":2`, `"`+field+`":1`, 1)
+		current := formatVersion
+		if field == "readers" {
+			current = reads.ReaderVersion
+		}
+		old := strings.Replace(string(data), fmt.Sprintf(`"%s":%d`, field, current), `"`+field+`":1`, 1)
 		if old == string(data) {
 			t.Fatal("version marker absent")
 		}

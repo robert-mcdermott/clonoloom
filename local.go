@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"clonoloom/internal/reads"
 )
 
 // An item named on the command line (or by a later launch), or found in a folder named there: a
@@ -91,6 +93,9 @@ func fileKind(name string) string {
 // dirKind classifies a folder ClonoLoom reads as one thing; "" means its contents are looked at.
 // A Cell Ranger run's folder, its outs/ and a multi run's per-sample vdj folders are one item each.
 func dirKind(path string) string {
+	if _, found, _ := reads.IMGTFiles(path); found {
+		return "imgt"
+	}
 	if isFile(filepath.Join(path, contigManifest)) {
 		return "cellranger"
 	}

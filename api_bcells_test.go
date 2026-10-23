@@ -106,3 +106,63 @@ func TestBCellInputsMixedAndJunctionOnly(t *testing.T) {
 		t.Fatal(rec.Code, rec.Body)
 	}
 }
+
+func TestIMGTInputsAndReopen(t *testing.T) {
+	a, h := testApp(t)
+	rec := postJSON(t, h, "/api/datasets/open", `{"paths":["testdata/imgt-inputs"]}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	var ds datasetSummary
+	json.Unmarshal(rec.Body.Bytes(), &ds)
+	if ds.Rows != 4 || len(ds.Sources) != 5 || len(ds.Samples) != 1 || ds.Unit != "sequences" {
+		t.Fatalf("%+v", ds)
+	}
+	if ds.Sources[0].IMGTGroup != "imgt-inputs" || ds.Sources[4].AnnotationParameters == "" {
+		t.Fatal("provenance not exposed")
+	}
+	rec = postJSON(t, h, "/api/bcells/inputs", `{"dataset":"`+ds.ID+`"}`)
+	var page bcellPage
+	json.Unmarshal(rec.Body.Bytes(), &page)
+	if rec.Code != 200 || page.Count != 3 || page.Rows[0].Evidence.Paired || len(page.Rows[2].Evidence.Issues) != 1 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	rec = postJSON(t, h, "/api/bcells/inputs", `{"dataset":"`+ds.ID+`","id":"`+page.Rows[2].ID+`"}`)
+	json.Unmarshal(rec.Body.Bytes(), &page)
+	if page.Rows[0].Fields["cdr3_start"] != "" || !strings.Contains(page.Rows[0].Fields["imgt_annotations"], "7, 1 nt") {
+		t.Fatal("native indel lost")
+	}
+	// Simulate a saved project reopening files after relocation into content-addressed storage.
+	old, _ := a.datasets.get(ds.ID)
+	inputs := old.Inputs
+	dir := t.TempDir()
+	for i := range inputs {
+		data, e := os.ReadFile(inputs[i].Path)
+		if e != nil {
+			t.Fatal(e)
+		}
+		inputs[i].Path = filepath.Join(dir, string(rune('a'+i)))
+		if e = os.WriteFile(inputs[i].Path, data, 0600); e != nil {
+			t.Fatal(e)
+		}
+	}
+	body, _ := json.Marshal(map[string]any{"inputs": inputs})
+	a.datasets.remove(ds.ID)
+	rec = postJSON(t, h, "/api/datasets/open", string(body))
+	var reopened datasetSummary
+	json.Unmarshal(rec.Body.Bytes(), &reopened)
+	if rec.Code != 200 || reopened.ID != ds.ID || reopened.Samples[0].Name != ds.Samples[0].Name {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	for _, input := range inputs {
+		if input.Name == "2_IMGT-gapped-nt-sequences.txt" {
+			data, _ := os.ReadFile(input.Path)
+			os.WriteFile(input.Path, []byte(strings.Replace(string(data), "aaa...tgtgcttggccc", "aaa...tgtgcttggcca", 1)), 0600)
+		}
+	}
+	rec = postJSON(t, h, "/api/datasets/open", string(body))
+	json.Unmarshal(rec.Body.Bytes(), &reopened)
+	if rec.Code != 200 || reopened.ID == ds.ID {
+		t.Fatal("companion mutation did not change identity", rec.Body)
+	}
+}

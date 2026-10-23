@@ -306,7 +306,9 @@ async function start() {
         if (!summary) {
           // Tables read through a mapping of their columns are read through it again.
           const mappings = Object.fromEntries(record.sources.filter((s) => s.mapping).map((s) => [s.path, s.mapping]));
-          summary = await openDataset({ paths: datasetFiles(record).map((s) => s.path), name: record.name, ...(Object.keys(mappings).length ? { mappings } : {}) });
+          summary = await openDataset(record.sources.some((s) => s.imgtGroup)
+            ? { inputs: datasetFiles(record), name: record.name }
+            : { paths: datasetFiles(record).map((s) => s.path), name: record.name, ...(Object.keys(mappings).length ? { mappings } : {}) });
         }
         if (summary.id !== record.id) {
           const state = { status: 'changed', summary, error: 'The files are not those the project recorded: their contents changed.' };

@@ -51,7 +51,7 @@ export function mountData(app, container) {
       body.append(h('div.empty',
         icon('database'),
         h('h3', 'No data yet'),
-        h('p', 'Open AIRR rearrangement tables, a Cell Ranger V(D)J output folder or immunoSEQ exports. What you open together becomes one dataset: a cohort\'s exports, say, or a run\'s T and B cells. ClonoLoom reads each file where it is, checks it, and records its fingerprint in the project.'),
+        h('p', 'Open AIRR rearrangement tables, a Cell Ranger V(D)J or IMGT/HighV-QUEST output folder, or immunoSEQ exports. What you open together becomes one dataset: a cohort\'s exports, say, or a run\'s T and B cells. ClonoLoom reads each file where it is, checks it, and records its fingerprint in the project.'),
         h('div.btn-row', { style: { marginTop: '10px', justifyContent: 'center' } },
           h('button.btn.primary', { type: 'button', onclick: () => app.openPathDialog() }, icon('folder'), 'Open data'),
           h('button.btn', { type: 'button', onclick: () => app.showExamples() }, icon('flask'), 'Example data'))));
@@ -325,6 +325,7 @@ export function mountData(app, container) {
         h('span.muted.small', `${formatBytes(s.size)} · ${s.format}`),
         h('span.mono.small', { title: `SHA-256 ${s.sha256}` }, `SHA-256 ${s.sha256.slice(0, 16)}…`),
         h('span.muted.small.path', { title: s.path }, s.path))),
+      ...(summary?.sources ?? []).filter((s) => s.annotationParameters).map((s) => h('details', h('summary', `${s.imgtGroup}: annotation parameters`), h('pre', { style: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' } }, s.annotationParameters))),
       d.metadata?.length
         ? [h('div.section-title', { style: { marginTop: '10px' } }, 'Repertoire metadata'), ...d.metadata.map((m) => h('div.source-row',
           h('b', m.name),

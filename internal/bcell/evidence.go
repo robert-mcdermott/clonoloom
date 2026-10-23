@@ -4,6 +4,7 @@
 package bcell
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -143,6 +144,14 @@ func Check(raw [rep.EvidenceCount]string) Evidence {
 	out := Evidence{Sequence: get("sequence") != "", Paired: get("sequence_alignment") != "" && get("germline_alignment") != "", Issues: []Issue{}}
 	issue := func(code, field, message string) {
 		out.Issues = append(out.Issues, Issue{code, field, get(field), message})
+	}
+	if v := get("imgt_annotations"); v != "" {
+		var native struct {
+			Withheld bool `json:"query_coordinates_withheld"`
+		}
+		if json.Unmarshal([]byte(v), &native) == nil && native.Withheld {
+			issue("evidence-coordinate", "imgt_annotations", "IMGT query coordinates were withheld because their correspondence to the Summary sequence was not established; inspect the native positions and indel annotations.")
+		}
 	}
 	for _, name := range []string{"sequence", "sequence_alignment", "germline_alignment"} {
 		for _, c := range strings.ToUpper(get(name)) {

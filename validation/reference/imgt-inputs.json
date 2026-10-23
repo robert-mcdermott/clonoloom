@@ -1,0 +1,77 @@
+{
+  "python": "3.13.3",
+  "method": "CPython stdlib csv; documented IMGT columns and hand-specified coordinate eligibility",
+  "sources": {
+    "1_Summary.txt": "3a2218f6931cac37b07a26b1aac2b58b5906f6d8402887e36191d4e120ec2781",
+    "2_IMGT-gapped-nt-sequences.txt": "a6b1c1c9e574e1a70ae10b32587d65dfed09d32bf02d7961b9c774f78c05166d",
+    "3_Nt-sequences.txt": "e2fd41b2e566bf2407d14415f7a120f80bc1dd417619c2a0229b904361ae79ee",
+    "6_Junction.txt": "af193ffffc022c37438630ec6e760e1674d6bf34d3abded801ee227667b61b2b",
+    "11_Parameters.txt": "f397d5466e8d0724967bcbb2de3add049cb1d7675ae18c27b44a940a794b632e"
+  },
+  "rows": [
+    {
+      "number": "1",
+      "id": "heavy",
+      "v": "IGHV1-2*01,IGHV1-2*02",
+      "junction": "TGTGCTTGG",
+      "junctionAA": "CAW",
+      "evidence": {
+        "sequence": "aaatgtgcttggccc",
+        "rev_comp": "F",
+        "sequence_alignment": "aaa...tgtgcttggccc",
+        "v_sequence_start": "1",
+        "v_sequence_end": "6",
+        "j_sequence_start": "10",
+        "j_sequence_end": "15",
+        "cdr3_start": "7",
+        "cdr3_end": "9"
+      },
+      "orientation": "+"
+    },
+    {
+      "number": "2",
+      "id": "light",
+      "v": "IGKV1-39*01",
+      "junction": "TGTCAATTT",
+      "junctionAA": "CQF",
+      "evidence": {
+        "sequence": "gggtgtcaatttaaa",
+        "rev_comp": "F",
+        "sequence_alignment": "ggg...tgtcaatttaaa",
+        "v_sequence_start": "1",
+        "v_sequence_end": "6",
+        "j_sequence_start": "10",
+        "j_sequence_end": "15",
+        "cdr3_start": "7",
+        "cdr3_end": "9"
+      },
+      "orientation": "-"
+    },
+    {
+      "number": "3",
+      "id": "heavy",
+      "v": "IGHV3-23*01",
+      "junction": "TGTGCTTGG",
+      "junctionAA": "",
+      "evidence": {
+        "sequence": "aaatgtAgcttggccc",
+        "rev_comp": "F",
+        "sequence_alignment": "aaa...tgtgcttggccc"
+      },
+      "orientation": "+"
+    },
+    {
+      "number": "4",
+      "id": "failed",
+      "v": "",
+      "junction": "",
+      "junctionAA": "",
+      "evidence": {
+        "sequence": "NNNN",
+        "rev_comp": "F",
+        "sequence_alignment": ""
+      },
+      "orientation": ""
+    }
+  ]
+}

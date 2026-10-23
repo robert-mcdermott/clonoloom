@@ -74,6 +74,9 @@ func key(inputs []reads.Input) (string, []string, error) {
 		}
 		sums[i] = hex.EncodeToString(fh.Sum(nil))
 		fmt.Fprintf(h, "%s %d %s\n", sums[i], n, filepath.Base(name))
+		if in.IMGTGroup != "" {
+			fmt.Fprintf(h, "imgt-group %q\n", in.IMGTGroup)
+		}
 		if in.Mapping != nil {
 			raw, _ := json.Marshal(in.Mapping)
 			fmt.Fprintf(h, "mapping %s\n", raw)
@@ -88,6 +91,10 @@ func (c *Cache) entry(k string) string {
 
 // Tables reads a dataset's tables, from the cache when it holds them (a reads.TableReader).
 func (c *Cache) Tables(ctx context.Context, inputs []reads.Input) (*reads.Result, error) {
+	inputs, err := reads.PrepareIMGTInputs(inputs)
+	if err != nil {
+		return nil, err
+	}
 	k, sums, err := key(inputs)
 	if err != nil {
 		return nil, err

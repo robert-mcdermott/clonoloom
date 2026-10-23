@@ -25,6 +25,7 @@ import (
 	"clonoloom/internal/invariant"
 	"clonoloom/internal/overlap"
 	"clonoloom/internal/qc"
+	"clonoloom/internal/reads"
 )
 
 func (a *app) registerExports(mux *http.ServeMux) {
@@ -338,6 +339,12 @@ func (a *app) notice(ds *dataset, unit string, filter qc.Filter, definition, def
 	}
 	for _, c := range ds.Credits {
 		n.Credits = append(n.Credits, export.Credit{Title: c.Title, Source: c.Source, License: c.License, LicenseURL: c.LicenseURL, LicenseClass: c.LicenseClass, Citation: c.Citation})
+	}
+	for _, s := range ds.Result.Sources {
+		if s.Format == reads.FormatIMGT {
+			n.Method += " IMGT tables joined by sequence number and sequence ID; oriented queries retained, query coordinates checked against the Summary sequence, native annotations in imgt_annotations. No germline reconstructed. Brochet et al. 2008, doi:10.1093/nar/gkn316."
+			break
+		}
 	}
 	return n
 }

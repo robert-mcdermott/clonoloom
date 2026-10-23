@@ -116,6 +116,27 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async imgt() {
+    await act('open_example', { example: 'synthetic-imgt-inputs', download: true });
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    const example = catalog.examples.find((e) => e.name === 'synthetic-imgt-inputs');
+    for (const step of example.opens[0].steps) await act(step.action, step.args);
+    const page = await js('window.clonoloom.bcellsView.page()');
+    if (page.count !== 3 || page.rows.some((r) => r.evidence.paired) || !page.rows[2].evidence.issues.length) throw new Error('IMGT evidence differs');
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const record = app.store.project.datasets[0];
+      if (record.sources.length !== 5 || record.sources.some((s) => !s.imgtGroup)) throw new Error('IMGT source provenance missing');
+      const response = await fetch('api/datasets/' + record.id, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Closing IMGT dataset failed');
+      app.datasetStates.delete(record.id);
+      const reopened = await app.ensureDataset(record);
+      if (reopened.status !== 'open') throw new Error('IMGT project reopen failed');
+      return true;
+    })()`);
+    await act('inspect_bcell_inputs', { select: 3 });
+    await waitFor(`document.querySelector('.inspector').textContent.includes('withheld')`);
+  },
   async bcells() {
     await act('open_example', { example: 'synthetic-bcell-inputs', download: true });
     const catalog = await (await fetch(`${URL}api/examples`)).json();

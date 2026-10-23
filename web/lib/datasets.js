@@ -36,7 +36,7 @@ export function datasetRecord(summary, now = new Date().toISOString()) {
     name: summary.name,
     // The files, as the program read them: opening the dataset again reads these paths and checks
     // their fingerprints.
-    sources: summary.sources.map((s) => ({ path: s.path, name: s.name, size: s.size, sha256: s.sha256, modified: s.modified ?? '', format: s.format, ...(s.mapping ? { mapping: s.mapping } : {}) })),
+    sources: summary.sources.map((s) => ({ path: s.path, name: s.name, size: s.size, sha256: s.sha256, modified: s.modified ?? '', format: s.format, ...(s.mapping ? { mapping: s.mapping } : {}), ...(s.imgtGroup ? { imgtGroup: s.imgtGroup } : {}) })),
     // The AIRR Repertoire metadata read with them, part of the dataset in the same way.
     metadata: (summary.metadata ?? []).map((m) => ({ path: m.path, name: m.name, size: m.size, sha256: m.sha256, modified: m.modified ?? '' })),
     formats: summary.formats,

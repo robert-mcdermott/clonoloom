@@ -23,6 +23,7 @@ export const REFERENCES = {
   gem: 'Van Rhijn I, et al. Discovery of invariant T cells by next-generation sequencing of the human TCR alpha-chain repertoire. J Immunol. 2014;193:5338–5344. doi:10.4049/jimmunol.1401380',
   airr: 'Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. Front Immunol. 2018;9:2206. doi:10.3389/fimmu.2018.02206',
   miairr: 'Rubelt F, Busse CE, Bukhari SAC, et al. Adaptive Immune Receptor Repertoire Community recommendations for sharing immune-repertoire sequencing data. Nat Immunol. 2017;18:1274–1278. doi:10.1038/ni.3873',
+  imgtInput: 'Brochet X, Lefranc MP, Giudicelli V. IMGT/V-QUEST: the highly customized and integrated system for IG and TR standardized V-J and V-D-J sequence analysis. Nucleic Acids Res. 2008;36:W503–508. doi:10.1093/nar/gkn316',
   imgtNames: 'Lefranc MP. Immunoglobulin and T cell receptor genes: IMGT and the birth and rise of immunoinformatics. Front Immunol. 2014;5:22. doi:10.3389/fimmu.2014.00022',
   imgtJunction: 'Lefranc MP, Pommié C, Ruiz M, et al. IMGT unique numbering for immunoglobulin and T cell receptor variable domains and Ig superfamily V-like domains. Dev Comp Immunol. 2003;27:55–77. doi:10.1016/S0145-305X(02)00039-3',
   hgnc: 'Seal RL, Braschi B, Gray K, et al. Genenames.org: the HGNC resources in 2023. Nucleic Acids Res. 2023;51:D1003–D1009. doi:10.1093/nar/gkac888',
@@ -59,6 +60,7 @@ const UNIT_WORDS = { cells: 'cells', templates: 'templates', reads: 'reads', umi
 // The formats' names, as a methods section says them.
 const FORMATS = {
   airr: 'AIRR Rearrangement TSV',
+  'imgt-highvquest': 'IMGT/HighV-QUEST tables',
   'cellranger-contigs': '10x Genomics Cell Ranger contig annotations',
   'immunoseq-v3': 'Adaptive Biotechnologies immunoSEQ exports (v3 columns)',
   'immunoseq-v2': 'Adaptive Biotechnologies immunoSEQ exports (v2 columns)',
@@ -142,6 +144,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     const from = t && !b ? ots() : b && !t ? oas() : `${oas()} and ${ots()}`;
     sentences.push(`Data units of ${from} were read with their metadata as their samples'; a paired unit's rows as single cells, each with its two chains, named by their contigs' barcode.`);
   }
+  if (codes.includes('imgt-highvquest')) sentences.push(`IMGT tables ${cite('imgtInput')} were joined by sequence number and sequence ID, counting annotated sequences without inferring reads or molecules. Oriented query sequences and IMGT gaps were retained. Query coordinates were mapped only when their region matched the Summary sequence without reported indel correction; native annotations and contributing file fingerprints were preserved. No germline alignment was reconstructed.`);
   if (codes.includes('tcrdist3-clones')) sentences.push(`tcrdist3's clone tables ${cite('tcrdist3')} were read with each clone of n cells as n cells with its chains, a sample for each subject and epitope.`);
   // Tables of other tools, read through the columns the user mapped.
   for (const s of sources.filter((x) => x.mapping)) {
@@ -165,7 +168,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   sentences.push(`The dataset holds ${plural(dataset.samples.length, 'sample')} and ${plural(dataset.rows, dataset.singleCell ? 'contig' : 'rearrangement')}${dataset.singleCell ? ' of single cells' : ''}, ${unitText}.`);
 
   // Gene names.
-  const mapped = (summary?.sources ?? []).reduce((n, s) => n + Object.keys(s.geneNames ?? {}).length, 0);
+  const mapped = (summary?.sources ?? []).filter((s) => s.format !== 'imgt-highvquest').reduce((n, s) => n + Object.keys(s.geneNames ?? {}).length, 0);
   sentences.push(`Gene calls were read in IMGT nomenclature ${cite('imgtNames')}, ambiguous calls kept as sets${mapped ? `; ${plural(mapped, 'Adaptive Biotechnologies gene name')} ${mapped === 1 ? 'was' : 'were'} mapped to IMGT's by ClonoLoom's rules and the HGNC list of human TR and IG genes ${cite('hgnc')}, each mapping recorded` : ''}.`);
 
   // Validation.

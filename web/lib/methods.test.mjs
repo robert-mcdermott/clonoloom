@@ -288,3 +288,13 @@ test('sequence evidence methods distinguish additive reader versions from histor
   assert.match(current.references.join(' '), /02206/);
   assert.doesNotMatch(methodsParagraph({ dataset: { ...dataset, readerVersion: 1 }, program }).text, /retained without reconstruction/);
 });
+
+test('IMGT joins cite the annotation format without claiming germline reconstruction or Adaptive mappings', () => {
+  const source = { ...pbmc.sources[0], format: 'imgt-highvquest', imgtGroup: 'study', geneNames: { 'Homsap IGHV1-2*01 F': 'IGHV1-2*01' } };
+  const dataset = { ...pbmc, sources: [source], credits: [], unit: 'sequences', singleCell: false, readerVersion: 3 };
+  const { text, references } = methodsParagraph({ dataset, summary: { sources: [source] }, program });
+  assert.match(text, /joined by sequence number and sequence ID/);
+  assert.match(text, /No germline alignment was reconstructed/);
+  assert.doesNotMatch(text, /Adaptive Biotechnologies gene name/);
+  assert.ok(references.some((r) => r.includes('10.1093/nar/gkn316')));
+});

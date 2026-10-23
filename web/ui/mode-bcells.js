@@ -37,7 +37,8 @@ export function mountBCells(app, container) {
       h('p', `${detail.sample} · ${detail.locus} · ${detail.sequenceId || 'No sequence ID'}`),
       h('p.muted', `${detail.source}, line ${detail.line}`),
       ...detail.evidence.issues.map((i) => h('p', `${i.field}: ${i.message}`)),
-      h('dl.kv', ...detail.fieldOrder.filter((name) => detail.fields[name] !== '').flatMap((name) => [h('dt', name), h('dd', { style: { overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' } }, detail.fields[name])])),
+      h('dl.kv', ...detail.fieldOrder.filter((name) => name !== 'imgt_annotations' && detail.fields[name] !== '').flatMap((name) => [h('dt', name), h('dd', { style: { overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' } }, detail.fields[name])])),
+      detail.fields.imgt_annotations ? h('details', h('summary', 'Native IMGT annotations'), h('pre', { style: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', textAlign: 'left', fontSize: '12px' } }, nativeText(detail.fields.imgt_annotations))) : null,
       h('details', h('summary', 'Missing fields'), h('p.muted', { style: { overflowWrap: 'anywhere' } }, detail.fieldOrder.filter((name) => detail.fields[name] === '').join(', '))));
   });
 
@@ -61,7 +62,7 @@ export function mountBCells(app, container) {
     if (!answer) return;
     const filter = datasetFilter(store.project, dataset());
     body.append(h('p', `Filter: ${filter?.name ?? 'None'}${filter ? ` (version ${filter.version})` : ''}. Definition: ${answer.describe}. The definition is context; these rows are not grouped into clonotypes.`));
-    if (!answer.count) { body.append(h('p', 'No B-cell rearrangements under this filter. Open BCR AIRR data or change the filter in QC.')); return; }
+    if (!answer.count) { body.append(h('p', 'No B-cell rearrangements under this filter. Open BCR AIRR or IMGT data or change the filter in QC.')); return; }
     body.append(table(['Sample', 'Locus', 'Rows', 'Sequence', 'Both alignments', 'Structurally valid', 'Region coordinates'], answer.samples.map((s) => h('tr', ...[s.sample, s.locus, s.rows, s.sequence, s.paired, s.valid, s.regions].map(cell)))));
     body.append(h('p.muted', 'Region coordinates counts rows with supplied FWR/CDR coordinates, including incomplete or invalid ones. Inspect the row before interpreting them. Missing evidence is not filled in.'));
     body.append(table(['Sequence ID', 'Sample', 'Locus', 'Sequence', 'Alignment evidence', 'Findings'], answer.rows.map((r) => h('tr',
@@ -101,4 +102,9 @@ export function mountBCells(app, container) {
     },
     destroy() { generation++; selection++; if (app.bcellsView === view) app.bcellsView = null; app.inspector.setSection('bcell-input', null); root.remove(); },
   };
+}
+
+// Native annotations are displayed as text; invalid JSON from an AIRR input remains inspectable.
+function nativeText(value) {
+  try { return JSON.stringify(JSON.parse(value), null, 2); } catch { return value; }
 }

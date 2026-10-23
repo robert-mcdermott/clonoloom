@@ -62,7 +62,7 @@ func companionKind(header []string) string {
 	return ""
 }
 
-// Open reads what a user named as one dataset: rearrangement tables, Cell Ranger output folders
+// Open reads what a user named as one dataset: rearrangement tables, IMGT and Cell Ranger output folders
 // (each expanded to its contig annotations), AIRR Repertoire metadata (matched to the samples by
 // repertoire_id) and companion files, in the order given.
 func Open(ctx context.Context, paths []string) (*Result, error) {
@@ -97,6 +97,13 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 			return nil, err
 		}
 		if info.IsDir() {
+			if files, found, err := IMGTFiles(in.Path); found || err != nil {
+				if err != nil {
+					return nil, err
+				}
+				tables = append(tables, files...)
+				continue
+			}
 			contigs, more, err := CellRangerFiles(in.Path)
 			if err != nil {
 				return nil, err
@@ -127,6 +134,10 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 			return nil, ErrCompanion{Kind: companions[0].Kind}
 		}
 		return nil, errors.New("no rearrangement tables among the files named")
+	}
+	tables, err := PrepareIMGTInputs(tables)
+	if err != nil {
+		return nil, err
 	}
 	res, err := readTables(ctx, tables)
 	if err != nil {

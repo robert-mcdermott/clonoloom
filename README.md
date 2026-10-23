@@ -22,6 +22,8 @@ releases.
 
 **In development (wave 5):** B-cell Inputs retains AIRR sequence evidence, checks its
 coordinates and alignments, and lets you inspect and export the supplied annotations.
+IMGT/HighV-QUEST output tables can be opened together, with joined sequence evidence and
+annotation provenance.
 Germline reconstruction and mutation analysis are still planned.
 
 ## Features

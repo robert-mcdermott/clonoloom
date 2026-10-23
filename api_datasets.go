@@ -81,6 +81,9 @@ func datasetID(sources []reads.Source, metadata []reads.MetadataFile) string {
 	fmt.Fprintf(h, "clonoloom-dataset/1 readers %d\n", reads.IdentityVersion)
 	for _, s := range sources {
 		fmt.Fprintf(h, "%s %d\n", s.SHA256, s.Size)
+		if s.IMGTGroup != "" {
+			fmt.Fprintf(h, "imgt-group %q\n", s.IMGTGroup)
+		}
 		// A table read through a mapping of its columns is another dataset for each mapping.
 		if s.Mapping != nil {
 			raw, _ := json.Marshal(s.Mapping)
@@ -116,7 +119,7 @@ func (a *app) openDataset(ctx context.Context, paths []string, inputs []reads.In
 	ds := &dataset{ID: datasetID(res.Sources, res.Metadata), Result: res, Report: validate.Check(res), Opened: time.Now().UTC()}
 	var sums []string
 	for _, s := range res.Sources {
-		ds.Inputs = append(ds.Inputs, reads.Input{Path: s.Path, Name: s.Name, Mapping: s.Mapping})
+		ds.Inputs = append(ds.Inputs, reads.Input{Path: s.Path, Name: s.Name, Mapping: s.Mapping, IMGTGroup: s.IMGTGroup})
 		sums = append(sums, s.SHA256)
 	}
 	for _, m := range res.Metadata {
@@ -177,17 +180,19 @@ type sampleSummary struct {
 }
 
 type sourceSummary struct {
-	Path       string            `json:"path"`
-	Name       string            `json:"name"`
-	Format     reads.Format      `json:"format"`
-	FormatName string            `json:"formatName"`
-	Gzipped    bool              `json:"gzipped,omitempty"`
-	Rows       int               `json:"rows"`
-	Size       int64             `json:"size"`
-	Modified   string            `json:"modified,omitempty"`
-	SHA256     string            `json:"sha256"`
-	GeneNames  map[string]string `json:"geneNames,omitempty"`
-	Mapping    *reads.Mapping    `json:"mapping,omitempty"`
+	IMGTGroup            string            `json:"imgtGroup,omitempty"`
+	AnnotationParameters string            `json:"annotationParameters,omitempty"`
+	Path                 string            `json:"path"`
+	Name                 string            `json:"name"`
+	Format               reads.Format      `json:"format"`
+	FormatName           string            `json:"formatName"`
+	Gzipped              bool              `json:"gzipped,omitempty"`
+	Rows                 int               `json:"rows"`
+	Size                 int64             `json:"size"`
+	Modified             string            `json:"modified,omitempty"`
+	SHA256               string            `json:"sha256"`
+	GeneNames            map[string]string `json:"geneNames,omitempty"`
+	Mapping              *reads.Mapping    `json:"mapping,omitempty"`
 }
 
 type datasetSummary struct {
@@ -228,7 +233,7 @@ func (ds *dataset) summary() datasetSummary {
 			s.Formats = append(s.Formats, name)
 		}
 		s.Sources = append(s.Sources, sourceSummary{Path: src.Path, Name: src.Name, Format: src.Format, FormatName: name, Gzipped: src.Gzipped,
-			Rows: src.Rows, Size: src.Size, Modified: src.Modified, SHA256: src.SHA256, GeneNames: src.GeneNames, Mapping: src.Mapping})
+			Rows: src.Rows, Size: src.Size, Modified: src.Modified, SHA256: src.SHA256, GeneNames: src.GeneNames, Mapping: src.Mapping, IMGTGroup: src.IMGTGroup, AnnotationParameters: src.AnnotationParameters})
 	}
 	repertoires := map[string]*airr.Repertoire{}
 	for i := range res.Repertoires {
@@ -377,7 +382,8 @@ func (a *app) handleOpenDataset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var body struct {
-		Paths   []string `json:"paths"`
+		Paths   []string      `json:"paths"`
+		Inputs  []reads.Input `json:"inputs"`
 		Library []struct {
 			SHA256  string         `json:"sha256"`
 			Name    string         `json:"name"`
@@ -392,6 +398,21 @@ func (a *app) handleOpenDataset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var inputs []reads.Input
+	if len(body.Inputs) > 0 {
+		if len(body.Paths) > 0 || len(body.Library) > 0 {
+			writeError(w, 400, "Use inputs, paths or library separately.")
+			return
+		}
+		for _, in := range body.Inputs {
+			abs, err := absPath(in.Path)
+			if err != nil || strings.TrimSpace(in.Path) == "" {
+				writeError(w, 400, "Invalid input path.")
+				return
+			}
+			in.Path = abs
+			inputs = append(inputs, in)
+		}
+	}
 	for _, f := range body.Library {
 		path, ok := a.store.filePath(f.SHA256)
 		if !ok {
@@ -434,7 +455,7 @@ func (a *app) handleOpenDataset(w http.ResponseWriter, r *http.Request) {
 			items, problem := walkFolder(paths[0])
 			paths = paths[:0]
 			for _, item := range items {
-				if item.Kind == "table" || item.Kind == "metadata" || item.Kind == "cellranger" {
+				if item.Kind == "table" || item.Kind == "metadata" || item.Kind == "cellranger" || item.Kind == "imgt" {
 					paths = append(paths, item.path)
 				}
 			}

@@ -5,7 +5,8 @@ with sources, is in [clonoloom-spec/research.md](../clonoloom-spec/research.md).
 
 Every table can be gzipped (`.gz`); ClonoLoom recognizes gzip by its first bytes, not by the
 name. Lines may end in LF or CRLF, and a UTF-8 byte-order mark is ignored. A file's format is
-decided from its header, whatever its name.
+decided from its header, whatever its name, except IMGT's multi-file bundle: its documented
+filenames identify table roles and headers are then checked.
 
 ## What every reader produces
 
@@ -81,6 +82,52 @@ alignments may have unequal lengths; these are preserved and reported, never pad
 AIRR export fills the retained evidence fields and appends available optional columns in a fixed
 order. It preserves invalid evidence for inspection; a file with such evidence remains invalid
 until corrected at its source. Abundance and clone IDs retain their existing export semantics.
+
+
+## IMGT/HighV-QUEST
+
+Open an extracted output folder, or select these four tab-separated files together (optionally
+with `.gz`): `1_Summary.txt`, `2_IMGT-gapped-nt-sequences.txt`, `3_Nt-sequences.txt` and
+`6_Junction.txt`. `.tsv` and a shared sample prefix before the numbered name also work.
+`11_Parameters.txt` is optional; its text and checksum are retained, with a 64 KiB limit.
+Other reports in the folder are not imported. Extract ZIP/TXZ downloads before opening them;
+Excel workbooks and individual detailed result files are not supported by this reader.
+
+The reader joins by **Sequence number and Sequence ID**, independently of table row order.
+Both must agree. Duplicate sequence numbers, missing rows, conflicting gene calls and incomplete
+bundles are errors. Repeated sequence IDs with distinct numbers remain distinct. A folder's name
+(or the shared filename prefix) names the sample. Uploaded unprefixed tables use `IMGT`; open one
+such run at a time. Every contributing table is fingerprinted, including Parameters. Stored group
+names survive cache reopening and project relocation. Source files remain unchanged.
+
+- V/D/J/C calls lose the species and functionality decorations; all tied gene/allele names remain
+  as a sorted set. Original calls are retained. Productive/unproductive map to T/F; unknown and
+  unsuccessful annotations remain missing. No reads, UMIs, cells or isotypes are inferred.
+  Each annotated row contributes one **sequence** (the same unit as a count-free AIRR table).
+- `6_Junction` supplies the un-restored nucleotide JUNCTION and, where supplied, its un-restored
+  `JUNCTION (AA)`. The Summary AA field is a fallback only without a frameshift marker and without
+  an out-of-frame junction. Corrected translations remain native annotations, not canonical AA
+  junctions. The conserved anchors are included; CDR3 alone is not substituted.
+- `sequence` is Summary's already oriented Sequence, preserved with case. Exported `rev_comp=F`
+  describes that oriented sequence, not the originally submitted strand. Native `Orientation`
+  retains the original sign. No second reverse complement is applied.
+- `sequence_alignment` is table 2's V-D-J-REGION, else V-J-REGION, else V-REGION, with IMGT dots
+  preserved. No padding, germline alignment, CIGAR, N/P length or germline database is invented.
+- V/D/J and FWR/CDR start/end pairs from table 3 become AIRR query coordinates only when the
+  uncorrected region exactly matches the Summary substring (case-insensitive, 1-based closed).
+  Reported insertions or deletions withhold all query mappings. Incomplete, inconsistent or
+  unmatched endpoints also remain native positions with a finding. IMGT-numbered alignment
+  positions are never confused with query coordinates.
+- `imgt_annotations`, an optional JSON-valued extension column, retains the sequence number,
+  contributing table lines, original calls, functionality/comments, orientation, Summary AA,
+  indel annotations, table 6's junction/frame/restoration fields and native region coordinates.
+  B cells → Inputs exposes it under **Native IMGT annotations**, and AIRR export/re-import retains
+  it. The Data inspector shows the supplied Parameters text. Remaining source columns stay in
+  their files; vendor mutation statistics are not imported as ClonoLoom results.
+
+The field contract is documented in [IMGT/V-QUEST's output guide](https://www.imgt.org/IMGT_vquest/user_guide)
+(tables 1, 2, 3, 6 and 11; Brochet et al. 2008, doi:10.1093/nar/gkn316).
+This reader does not run IMGT, reconstruct references or establish mutation readiness.
 
 ## Cell Ranger V(D)J (10x Genomics)
 

@@ -40,6 +40,7 @@ func newExamples(dir string, offline bool) *examples.Library {
 func simulatedExamples() []examples.Generated {
 	return []examples.Generated{
 		bcellInputExample(),
+		imgtInputExample(),
 		simulatedExample("standard", nil, "A simulated TRB study with known truth",
 			"Bulk T-cell receptor β repertoires simulated by ClonoLoom: three control subjects and three whose repertoires hold a few expanded clones, two blood samples of each at different depths. Every clonotype of every subject is known (truth/), so diversity, rarefaction and overlap can be checked against the truth. Made on this computer in a few seconds.",
 			"The twelve samples, with their subjects and conditions, in templates.", 33<<20),

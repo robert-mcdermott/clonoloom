@@ -22,6 +22,7 @@ import (
 type Format string
 
 const (
+	FormatIMGT        Format = "imgt-highvquest"
 	FormatAIRR        Format = "airr"
 	FormatCellRanger  Format = "cellranger-contigs"
 	FormatImmunoSEQv3 Format = "immunoseq-v3"
@@ -33,6 +34,7 @@ const (
 
 // FormatNames are formats' names as the interface and methods text say them.
 var FormatNames = map[Format]string{
+	FormatIMGT:        "IMGT/HighV-QUEST tables",
 	FormatAIRR:        "AIRR Rearrangement TSV",
 	FormatCellRanger:  "Cell Ranger V(D)J contig annotations",
 	FormatImmunoSEQv3: "immunoSEQ export (v3)",
@@ -45,7 +47,7 @@ var FormatNames = map[Format]string{
 
 // ReaderVersion changes when a reader reads any file differently; cached tables and records name
 // it.
-const ReaderVersion = 2
+const ReaderVersion = 3
 
 // IdentityVersion changes only when existing rearrangement values change meaning.
 // ReaderVersion also covers additive evidence and invalidates the disposable cache;
@@ -54,6 +56,8 @@ const IdentityVersion = 1
 
 // Source is one file of a dataset as read.
 type Source struct {
+	IMGTGroup            string `json:"imgtGroup,omitempty"`
+	AnnotationParameters string `json:"annotationParameters,omitempty"`
 	// Size, Modified and SHA256 fingerprint the file as read (the bytes on disk, compressed or
 	// not), so that a project knows when its data changed or moved.
 	Size     int64    `json:"size"`
@@ -91,8 +95,10 @@ var ErrUnknownFormat = errors.New("not a format ClonoLoom reads")
 // Input is a file to read: its path, and the name to call it by when that is not the path's
 // (a file the page uploaded to the library is stored under its SHA-256).
 type Input struct {
-	Path string `json:"path"`
-	Name string `json:"name,omitempty"`
+	// IMGTGroup identifies one joined run and names its sample; retained on reopen.
+	IMGTGroup string `json:"imgtGroup,omitempty"`
+	Path      string `json:"path"`
+	Name      string `json:"name,omitempty"`
 	// Mapping: for a table ClonoLoom does not recognize, which column holds which field.
 	Mapping *Mapping `json:"mapping,omitempty"`
 }
@@ -109,10 +115,35 @@ func ReadFiles(ctx context.Context, paths []string) (*Result, error) {
 // ReadInputs reads files into one table, each a source of the dataset, fingerprinting each file
 // as it is read.
 func ReadInputs(ctx context.Context, inputs []Input) (*Result, error) {
+	var err error
+	inputs, err = PrepareIMGTInputs(inputs)
+	if err != nil {
+		return nil, err
+	}
 	res := &Result{Problems: newProblems()}
 	var b *rep.Builder
 	units := make([]rep.Unit, len(inputs))
-	for i, in := range inputs {
+	for i := 0; i < len(inputs); i++ {
+		in := inputs[i]
+		if in.IMGTGroup != "" {
+			end := i + 1
+			for end < len(inputs) && inputs[end].IMGTGroup == in.IMGTGroup {
+				end++
+			}
+			if b == nil {
+				b = rep.NewBuilder(rep.Sequences)
+			}
+			sources, err := readIMGT(ctx, inputs[i:end], i, b, res.Problems)
+			if err != nil {
+				return nil, err
+			}
+			res.Sources = append(res.Sources, sources...)
+			for j := i; j < end; j++ {
+				units[j] = rep.Sequences
+			}
+			i = end - 1
+			continue
+		}
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}
@@ -259,6 +290,9 @@ func readOne(ctx context.Context, r io.Reader, path string, index int, b **rep.B
 			header[i] = strings.TrimSpace(header[i])
 		}
 		src.Header = header
+		if newColumns(header).index("Sequence number") >= 0 && newColumns(header).index("Sequence ID") >= 0 {
+			return src, "", fmt.Errorf("IMGT annotations must be opened together: select the extracted output folder or its 1_Summary, 2_IMGT-gapped-nt-sequences, 3_Nt-sequences and 6_Junction tables")
+		}
 		if kind := companionKind(header); kind != "" {
 			return src, "", ErrCompanion{Kind: kind}
 		}

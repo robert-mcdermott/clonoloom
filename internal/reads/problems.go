@@ -10,7 +10,7 @@ import (
 var ProblemCodes = []string{
 	"airr-missing-required", "bad-csv", "cell-count", "field-count", "gene-name-unmapped", "integer-as-decimal", "mixed-units",
 	"molecules-missing", "negative-templates", "no-junction", "not-boolean", "not-integer", "not-number", "templates-missing",
-	"unit-metadata",
+	"unit-metadata", "imgt-annotation", "imgt-coordinate",
 }
 
 // Problem is something a reader could not read as its format says, kept with where it was. The
