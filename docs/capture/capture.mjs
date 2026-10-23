@@ -243,6 +243,20 @@ const scenes = {
     await js(`(() => { const el = document.querySelector('.specificity-view .plot-card'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
   },
   // A simulated sample's network, with the complete graph and bounded drawing.
+  async database() {
+    await act('open_example', { example: 'simulated-vaccine', download: true });
+    cpSync(join(DATA, 'tcrdist3-loops'), join(places.library, 'references', 'tcrdist3-loops'), { recursive: true });
+    const near = await act('match_specificity', { database: 'simulated-vaccine', metric: 'tcrdist', radius: 24, genes: true, cdr3Only: false });
+    if (near.data?.matches <= 62) throw new Error('Near matching failed to find additional evidence');
+    const result = await act('match_specificity', { metric: 'exact' });
+    if (result.data?.epitopes.length !== 4 || result.data?.matches !== 62) throw new Error('Specificity remote action returned incorrect counts: ' + JSON.stringify(result));
+    await act('match_specificity', { follow: 2 });
+    await waitFor(`window.clonoloom.trackingView?.followed().status === 'ready'`);
+    const tracked = await js(`window.clonoloom.trackingView.followed().result`);
+    if (!tracked.choice.evidence?.artifact || !tracked.subjects.length) throw new Error('Specificity tracking lost its provenance or subjects');
+    await act('match_specificity', {});
+    await waitFor(`Boolean(document.querySelector('.specificity-view table tbody button'))`);
+  },
   async networks() {
     await act('open_data', { paths: [join(DATA, 'simulated-vaccine/S01-d14.tsv')], name: 'Simulated vaccination · S01, day 14' });
     const result = await act('find_networks', { metric: 'levenshtein', cutoff: 2, sameV: true, sameJ: true, select: 1 });

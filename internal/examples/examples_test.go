@@ -301,3 +301,27 @@ func (c *countingWriter) Write(p []byte) (int, error) {
 	c.n += int64(n)
 	return n, err
 }
+
+func TestReleaseReferenceHosts(t *testing.T) {
+	raw := []byte(`{"references":{"vdjdb":{"members":{"url":"https://github.com/antigenomics/vdjdb-db/releases/download/date/data.zip","names":["data/vdjdb.txt"]},"files":[{"path":"vdjdb.txt"}]}}}`)
+	refs, err := ParseReferences(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lib := &Library{Sources: refs}
+	if got := strings.Join(lib.Hosts(), " "); got != "github.com release-assets.githubusercontent.com" {
+		t.Fatal(got)
+	}
+	client := lib.defaultClient()
+	for _, addr := range []string{"https://release-assets.githubusercontent.com/data", "http://release-assets.githubusercontent.com/data", "https://other.example/data"} {
+		req, _ := http.NewRequest(http.MethodGet, addr, nil)
+		err := client.CheckRedirect(req, nil)
+		if (err == nil) != (addr == "https://release-assets.githubusercontent.com/data") {
+			t.Fatal(addr, err)
+		}
+	}
+	lib.Sources = []Source{{Base: "https://raw.githubusercontent.com/publisher/data/"}}
+	if contains(lib.Hosts(), "release-assets.githubusercontent.com") {
+		t.Fatal("release CDN allowed without a catalogued release")
+	}
+}

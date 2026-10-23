@@ -1,0 +1,1202 @@
+[
+  {
+    "sample": "S01-d14",
+    "epitope": "GHSKLWDTF",
+    "total": 20328,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-d14",
+    "epitope": "KLDTEVYNA",
+    "total": 20328,
+    "matched": 88,
+    "trueMatched": 88,
+    "truth": 363
+  },
+  {
+    "sample": "S01-d14",
+    "epitope": "RPQGFSWLV",
+    "total": 20328,
+    "matched": 10,
+    "trueMatched": 10,
+    "truth": 153
+  },
+  {
+    "sample": "S01-d14",
+    "epitope": "VNRQEPAIL",
+    "total": 20328,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-d14",
+    "epitope": "YTNEAMPLC",
+    "total": 20328,
+    "matched": 20,
+    "trueMatched": 20,
+    "truth": 143
+  },
+  {
+    "sample": "S01-d28",
+    "epitope": "GHSKLWDTF",
+    "total": 12889,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-d28",
+    "epitope": "KLDTEVYNA",
+    "total": 12889,
+    "matched": 16,
+    "trueMatched": 16,
+    "truth": 72
+  },
+  {
+    "sample": "S01-d28",
+    "epitope": "RPQGFSWLV",
+    "total": 12889,
+    "matched": 5,
+    "trueMatched": 5,
+    "truth": 52
+  },
+  {
+    "sample": "S01-d28",
+    "epitope": "VNRQEPAIL",
+    "total": 12889,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-d28",
+    "epitope": "YTNEAMPLC",
+    "total": 12889,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 24
+  },
+  {
+    "sample": "S01-d7",
+    "epitope": "GHSKLWDTF",
+    "total": 14602,
+    "matched": 1,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-d7",
+    "epitope": "KLDTEVYNA",
+    "total": 14602,
+    "matched": 26,
+    "trueMatched": 26,
+    "truth": 92
+  },
+  {
+    "sample": "S01-d7",
+    "epitope": "RPQGFSWLV",
+    "total": 14602,
+    "matched": 7,
+    "trueMatched": 7,
+    "truth": 57
+  },
+  {
+    "sample": "S01-d7",
+    "epitope": "VNRQEPAIL",
+    "total": 14602,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-d7",
+    "epitope": "YTNEAMPLC",
+    "total": 14602,
+    "matched": 5,
+    "trueMatched": 5,
+    "truth": 30
+  },
+  {
+    "sample": "S01-d90",
+    "epitope": "GHSKLWDTF",
+    "total": 17740,
+    "matched": 1,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-d90",
+    "epitope": "KLDTEVYNA",
+    "total": 17740,
+    "matched": 6,
+    "trueMatched": 6,
+    "truth": 30
+  },
+  {
+    "sample": "S01-d90",
+    "epitope": "RPQGFSWLV",
+    "total": 17740,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 17
+  },
+  {
+    "sample": "S01-d90",
+    "epitope": "VNRQEPAIL",
+    "total": 17740,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-d90",
+    "epitope": "YTNEAMPLC",
+    "total": 17740,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 7
+  },
+  {
+    "sample": "S01-pre-1",
+    "epitope": "GHSKLWDTF",
+    "total": 12215,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-pre-1",
+    "epitope": "KLDTEVYNA",
+    "total": 12215,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 5
+  },
+  {
+    "sample": "S01-pre-1",
+    "epitope": "RPQGFSWLV",
+    "total": 12215,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 3
+  },
+  {
+    "sample": "S01-pre-1",
+    "epitope": "VNRQEPAIL",
+    "total": 12215,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-pre-1",
+    "epitope": "YTNEAMPLC",
+    "total": 12215,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 5
+  },
+  {
+    "sample": "S01-pre-2",
+    "epitope": "GHSKLWDTF",
+    "total": 16253,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-pre-2",
+    "epitope": "KLDTEVYNA",
+    "total": 16253,
+    "matched": 3,
+    "trueMatched": 3,
+    "truth": 12
+  },
+  {
+    "sample": "S01-pre-2",
+    "epitope": "RPQGFSWLV",
+    "total": 16253,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 5
+  },
+  {
+    "sample": "S01-pre-2",
+    "epitope": "VNRQEPAIL",
+    "total": 16253,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S01-pre-2",
+    "epitope": "YTNEAMPLC",
+    "total": 16253,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 2
+  },
+  {
+    "sample": "S02-d14",
+    "epitope": "GHSKLWDTF",
+    "total": 20572,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-d14",
+    "epitope": "KLDTEVYNA",
+    "total": 20572,
+    "matched": 72,
+    "trueMatched": 72,
+    "truth": 344
+  },
+  {
+    "sample": "S02-d14",
+    "epitope": "RPQGFSWLV",
+    "total": 20572,
+    "matched": 10,
+    "trueMatched": 10,
+    "truth": 210
+  },
+  {
+    "sample": "S02-d14",
+    "epitope": "VNRQEPAIL",
+    "total": 20572,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-d14",
+    "epitope": "YTNEAMPLC",
+    "total": 20572,
+    "matched": 13,
+    "trueMatched": 13,
+    "truth": 117
+  },
+  {
+    "sample": "S02-d28",
+    "epitope": "GHSKLWDTF",
+    "total": 13190,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-d28",
+    "epitope": "KLDTEVYNA",
+    "total": 13190,
+    "matched": 12,
+    "trueMatched": 12,
+    "truth": 65
+  },
+  {
+    "sample": "S02-d28",
+    "epitope": "RPQGFSWLV",
+    "total": 13190,
+    "matched": 3,
+    "trueMatched": 3,
+    "truth": 45
+  },
+  {
+    "sample": "S02-d28",
+    "epitope": "VNRQEPAIL",
+    "total": 13190,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-d28",
+    "epitope": "YTNEAMPLC",
+    "total": 13190,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 34
+  },
+  {
+    "sample": "S02-d7",
+    "epitope": "GHSKLWDTF",
+    "total": 14832,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-d7",
+    "epitope": "KLDTEVYNA",
+    "total": 14832,
+    "matched": 13,
+    "trueMatched": 13,
+    "truth": 73
+  },
+  {
+    "sample": "S02-d7",
+    "epitope": "RPQGFSWLV",
+    "total": 14832,
+    "matched": 4,
+    "trueMatched": 4,
+    "truth": 40
+  },
+  {
+    "sample": "S02-d7",
+    "epitope": "VNRQEPAIL",
+    "total": 14832,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-d7",
+    "epitope": "YTNEAMPLC",
+    "total": 14832,
+    "matched": 3,
+    "trueMatched": 3,
+    "truth": 29
+  },
+  {
+    "sample": "S02-d90",
+    "epitope": "GHSKLWDTF",
+    "total": 18020,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-d90",
+    "epitope": "KLDTEVYNA",
+    "total": 18020,
+    "matched": 12,
+    "trueMatched": 12,
+    "truth": 43
+  },
+  {
+    "sample": "S02-d90",
+    "epitope": "RPQGFSWLV",
+    "total": 18020,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 18
+  },
+  {
+    "sample": "S02-d90",
+    "epitope": "VNRQEPAIL",
+    "total": 18020,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-d90",
+    "epitope": "YTNEAMPLC",
+    "total": 18020,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 11
+  },
+  {
+    "sample": "S02-pre-1",
+    "epitope": "GHSKLWDTF",
+    "total": 12385,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-pre-1",
+    "epitope": "KLDTEVYNA",
+    "total": 12385,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 4
+  },
+  {
+    "sample": "S02-pre-1",
+    "epitope": "RPQGFSWLV",
+    "total": 12385,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 6
+  },
+  {
+    "sample": "S02-pre-1",
+    "epitope": "VNRQEPAIL",
+    "total": 12385,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-pre-1",
+    "epitope": "YTNEAMPLC",
+    "total": 12385,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 2
+  },
+  {
+    "sample": "S02-pre-2",
+    "epitope": "GHSKLWDTF",
+    "total": 16515,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-pre-2",
+    "epitope": "KLDTEVYNA",
+    "total": 16515,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 11
+  },
+  {
+    "sample": "S02-pre-2",
+    "epitope": "RPQGFSWLV",
+    "total": 16515,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 9
+  },
+  {
+    "sample": "S02-pre-2",
+    "epitope": "VNRQEPAIL",
+    "total": 16515,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S02-pre-2",
+    "epitope": "YTNEAMPLC",
+    "total": 16515,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 2
+  },
+  {
+    "sample": "S03-d14",
+    "epitope": "GHSKLWDTF",
+    "total": 21086,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-d14",
+    "epitope": "KLDTEVYNA",
+    "total": 21086,
+    "matched": 71,
+    "trueMatched": 71,
+    "truth": 345
+  },
+  {
+    "sample": "S03-d14",
+    "epitope": "RPQGFSWLV",
+    "total": 21086,
+    "matched": 30,
+    "trueMatched": 30,
+    "truth": 221
+  },
+  {
+    "sample": "S03-d14",
+    "epitope": "VNRQEPAIL",
+    "total": 21086,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-d14",
+    "epitope": "YTNEAMPLC",
+    "total": 21086,
+    "matched": 31,
+    "trueMatched": 31,
+    "truth": 160
+  },
+  {
+    "sample": "S03-d28",
+    "epitope": "GHSKLWDTF",
+    "total": 13464,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-d28",
+    "epitope": "KLDTEVYNA",
+    "total": 13464,
+    "matched": 27,
+    "trueMatched": 27,
+    "truth": 84
+  },
+  {
+    "sample": "S03-d28",
+    "epitope": "RPQGFSWLV",
+    "total": 13464,
+    "matched": 4,
+    "trueMatched": 4,
+    "truth": 42
+  },
+  {
+    "sample": "S03-d28",
+    "epitope": "VNRQEPAIL",
+    "total": 13464,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-d28",
+    "epitope": "YTNEAMPLC",
+    "total": 13464,
+    "matched": 4,
+    "trueMatched": 4,
+    "truth": 20
+  },
+  {
+    "sample": "S03-d7",
+    "epitope": "GHSKLWDTF",
+    "total": 15086,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-d7",
+    "epitope": "KLDTEVYNA",
+    "total": 15086,
+    "matched": 23,
+    "trueMatched": 23,
+    "truth": 83
+  },
+  {
+    "sample": "S03-d7",
+    "epitope": "RPQGFSWLV",
+    "total": 15086,
+    "matched": 9,
+    "trueMatched": 9,
+    "truth": 51
+  },
+  {
+    "sample": "S03-d7",
+    "epitope": "VNRQEPAIL",
+    "total": 15086,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-d7",
+    "epitope": "YTNEAMPLC",
+    "total": 15086,
+    "matched": 3,
+    "trueMatched": 3,
+    "truth": 30
+  },
+  {
+    "sample": "S03-d90",
+    "epitope": "GHSKLWDTF",
+    "total": 18326,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-d90",
+    "epitope": "KLDTEVYNA",
+    "total": 18326,
+    "matched": 10,
+    "trueMatched": 10,
+    "truth": 40
+  },
+  {
+    "sample": "S03-d90",
+    "epitope": "RPQGFSWLV",
+    "total": 18326,
+    "matched": 8,
+    "trueMatched": 8,
+    "truth": 30
+  },
+  {
+    "sample": "S03-d90",
+    "epitope": "VNRQEPAIL",
+    "total": 18326,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-d90",
+    "epitope": "YTNEAMPLC",
+    "total": 18326,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 13
+  },
+  {
+    "sample": "S03-pre-1",
+    "epitope": "GHSKLWDTF",
+    "total": 12450,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-pre-1",
+    "epitope": "KLDTEVYNA",
+    "total": 12450,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 11
+  },
+  {
+    "sample": "S03-pre-1",
+    "epitope": "RPQGFSWLV",
+    "total": 12450,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 5
+  },
+  {
+    "sample": "S03-pre-1",
+    "epitope": "VNRQEPAIL",
+    "total": 12450,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-pre-1",
+    "epitope": "YTNEAMPLC",
+    "total": 12450,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 1
+  },
+  {
+    "sample": "S03-pre-2",
+    "epitope": "GHSKLWDTF",
+    "total": 16730,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-pre-2",
+    "epitope": "KLDTEVYNA",
+    "total": 16730,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 5
+  },
+  {
+    "sample": "S03-pre-2",
+    "epitope": "RPQGFSWLV",
+    "total": 16730,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 7
+  },
+  {
+    "sample": "S03-pre-2",
+    "epitope": "VNRQEPAIL",
+    "total": 16730,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S03-pre-2",
+    "epitope": "YTNEAMPLC",
+    "total": 16730,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 3
+  },
+  {
+    "sample": "S04-d14",
+    "epitope": "GHSKLWDTF",
+    "total": 21114,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-d14",
+    "epitope": "KLDTEVYNA",
+    "total": 21114,
+    "matched": 1,
+    "trueMatched": 0,
+    "truth": 11
+  },
+  {
+    "sample": "S04-d14",
+    "epitope": "RPQGFSWLV",
+    "total": 21114,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 5
+  },
+  {
+    "sample": "S04-d14",
+    "epitope": "VNRQEPAIL",
+    "total": 21114,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-d14",
+    "epitope": "YTNEAMPLC",
+    "total": 21114,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 1
+  },
+  {
+    "sample": "S04-d28",
+    "epitope": "GHSKLWDTF",
+    "total": 13599,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-d28",
+    "epitope": "KLDTEVYNA",
+    "total": 13599,
+    "matched": 1,
+    "trueMatched": 0,
+    "truth": 9
+  },
+  {
+    "sample": "S04-d28",
+    "epitope": "RPQGFSWLV",
+    "total": 13599,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 6
+  },
+  {
+    "sample": "S04-d28",
+    "epitope": "VNRQEPAIL",
+    "total": 13599,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-d28",
+    "epitope": "YTNEAMPLC",
+    "total": 13599,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 4
+  },
+  {
+    "sample": "S04-d7",
+    "epitope": "GHSKLWDTF",
+    "total": 15197,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-d7",
+    "epitope": "KLDTEVYNA",
+    "total": 15197,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 9
+  },
+  {
+    "sample": "S04-d7",
+    "epitope": "RPQGFSWLV",
+    "total": 15197,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 3
+  },
+  {
+    "sample": "S04-d7",
+    "epitope": "VNRQEPAIL",
+    "total": 15197,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-d7",
+    "epitope": "YTNEAMPLC",
+    "total": 15197,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 5
+  },
+  {
+    "sample": "S04-d90",
+    "epitope": "GHSKLWDTF",
+    "total": 18459,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-d90",
+    "epitope": "KLDTEVYNA",
+    "total": 18459,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 11
+  },
+  {
+    "sample": "S04-d90",
+    "epitope": "RPQGFSWLV",
+    "total": 18459,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 13
+  },
+  {
+    "sample": "S04-d90",
+    "epitope": "VNRQEPAIL",
+    "total": 18459,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-d90",
+    "epitope": "YTNEAMPLC",
+    "total": 18459,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 4
+  },
+  {
+    "sample": "S04-pre-1",
+    "epitope": "GHSKLWDTF",
+    "total": 12664,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-pre-1",
+    "epitope": "KLDTEVYNA",
+    "total": 12664,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 7
+  },
+  {
+    "sample": "S04-pre-1",
+    "epitope": "RPQGFSWLV",
+    "total": 12664,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 3
+  },
+  {
+    "sample": "S04-pre-1",
+    "epitope": "VNRQEPAIL",
+    "total": 12664,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-pre-1",
+    "epitope": "YTNEAMPLC",
+    "total": 12664,
+    "matched": 3,
+    "trueMatched": 3,
+    "truth": 6
+  },
+  {
+    "sample": "S04-pre-2",
+    "epitope": "GHSKLWDTF",
+    "total": 16798,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-pre-2",
+    "epitope": "KLDTEVYNA",
+    "total": 16798,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 10
+  },
+  {
+    "sample": "S04-pre-2",
+    "epitope": "RPQGFSWLV",
+    "total": 16798,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 11
+  },
+  {
+    "sample": "S04-pre-2",
+    "epitope": "VNRQEPAIL",
+    "total": 16798,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S04-pre-2",
+    "epitope": "YTNEAMPLC",
+    "total": 16798,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 2
+  },
+  {
+    "sample": "S05-d14",
+    "epitope": "GHSKLWDTF",
+    "total": 21176,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-d14",
+    "epitope": "KLDTEVYNA",
+    "total": 21176,
+    "matched": 5,
+    "trueMatched": 5,
+    "truth": 12
+  },
+  {
+    "sample": "S05-d14",
+    "epitope": "RPQGFSWLV",
+    "total": 21176,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 11
+  },
+  {
+    "sample": "S05-d14",
+    "epitope": "VNRQEPAIL",
+    "total": 21176,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-d14",
+    "epitope": "YTNEAMPLC",
+    "total": 21176,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 4
+  },
+  {
+    "sample": "S05-d28",
+    "epitope": "GHSKLWDTF",
+    "total": 13413,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-d28",
+    "epitope": "KLDTEVYNA",
+    "total": 13413,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 7
+  },
+  {
+    "sample": "S05-d28",
+    "epitope": "RPQGFSWLV",
+    "total": 13413,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 2
+  },
+  {
+    "sample": "S05-d28",
+    "epitope": "VNRQEPAIL",
+    "total": 13413,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-d28",
+    "epitope": "YTNEAMPLC",
+    "total": 13413,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 1
+  },
+  {
+    "sample": "S05-d7",
+    "epitope": "GHSKLWDTF",
+    "total": 15080,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-d7",
+    "epitope": "KLDTEVYNA",
+    "total": 15080,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 10
+  },
+  {
+    "sample": "S05-d7",
+    "epitope": "RPQGFSWLV",
+    "total": 15080,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 3
+  },
+  {
+    "sample": "S05-d7",
+    "epitope": "VNRQEPAIL",
+    "total": 15080,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-d7",
+    "epitope": "YTNEAMPLC",
+    "total": 15080,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 2
+  },
+  {
+    "sample": "S05-d90",
+    "epitope": "GHSKLWDTF",
+    "total": 18462,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-d90",
+    "epitope": "KLDTEVYNA",
+    "total": 18462,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 11
+  },
+  {
+    "sample": "S05-d90",
+    "epitope": "RPQGFSWLV",
+    "total": 18462,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 6
+  },
+  {
+    "sample": "S05-d90",
+    "epitope": "VNRQEPAIL",
+    "total": 18462,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-d90",
+    "epitope": "YTNEAMPLC",
+    "total": 18462,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 2
+  },
+  {
+    "sample": "S05-pre-1",
+    "epitope": "GHSKLWDTF",
+    "total": 12805,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-pre-1",
+    "epitope": "KLDTEVYNA",
+    "total": 12805,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 4
+  },
+  {
+    "sample": "S05-pre-1",
+    "epitope": "RPQGFSWLV",
+    "total": 12805,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 1
+  },
+  {
+    "sample": "S05-pre-1",
+    "epitope": "VNRQEPAIL",
+    "total": 12805,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-pre-1",
+    "epitope": "YTNEAMPLC",
+    "total": 12805,
+    "matched": 2,
+    "trueMatched": 2,
+    "truth": 5
+  },
+  {
+    "sample": "S05-pre-2",
+    "epitope": "GHSKLWDTF",
+    "total": 16897,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-pre-2",
+    "epitope": "KLDTEVYNA",
+    "total": 16897,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 3
+  },
+  {
+    "sample": "S05-pre-2",
+    "epitope": "RPQGFSWLV",
+    "total": 16897,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 4
+  },
+  {
+    "sample": "S05-pre-2",
+    "epitope": "VNRQEPAIL",
+    "total": 16897,
+    "matched": 0,
+    "trueMatched": 0,
+    "truth": 0
+  },
+  {
+    "sample": "S05-pre-2",
+    "epitope": "YTNEAMPLC",
+    "total": 16897,
+    "matched": 1,
+    "trueMatched": 1,
+    "truth": 4
+  }
+]

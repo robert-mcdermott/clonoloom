@@ -159,7 +159,7 @@ func ParseReferences(raw []byte) ([]Source, error) {
 	for _, name := range order {
 		s := doc.References[name]
 		s.Name = name
-		if len(s.Files) == 0 || s.Base == "" {
+		if len(s.Files) == 0 || (s.Base == "" && (s.Members == nil || s.Members.URL == "" || len(s.Members.Names) == 0)) {
 			return nil, fmt.Errorf("%s: reference data with no files to download", name)
 		}
 		out = append(out, s)
@@ -778,9 +778,17 @@ func (l *Library) Hosts() []string {
 			}
 			return ""
 		}()} {
-			if u, err := url.Parse(a); err == nil && u.Host != "" && !seen[u.Host] {
-				seen[u.Host] = true
-				out = append(out, u.Host)
+			if u, err := url.Parse(a); err == nil && u.Host != "" {
+				if !seen[u.Host] {
+					seen[u.Host] = true
+					out = append(out, u.Host)
+				}
+				// GitHub serves pinned release assets from this dedicated CDN.
+				// It is allowed only when the catalog contains a release URL.
+				if u.Host == "github.com" && strings.Contains(u.Path, "/releases/download/") && !seen["release-assets.githubusercontent.com"] {
+					seen["release-assets.githubusercontent.com"] = true
+					out = append(out, "release-assets.githubusercontent.com")
+				}
 			}
 		}
 	}

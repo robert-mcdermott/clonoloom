@@ -59,6 +59,11 @@ releases.
   the dataset's own gene usage, with their enrichment and motif. Each clonotype's generation
   probability, how likely recombination alone is to make it, as OLGA computes it, under OLGA's
   models (downloaded on request) or ClonoLoom's own model of human TRB.
+- **Match specificity evidence.** In the development build, match retained chains to VDJdb
+  (downloaded on request with its terms) or the simulated vaccine database, by exact CDR3 with
+  optional V/J calls or within a TCRdist radius. Inspect evidence and per-sample epitope shares,
+  then follow matched clonotypes in Tracking with the source result recorded. A matching chain
+  is evidence, not proof of a paired receptor's specificity.
 - **Write results others can check.** Figures (SVG, PNG, PDF) whose captions state the clonotype
   definition, unit and samples; AIRR and CSV exports with a notice of each data set's license and
   citation; a methods paragraph with numbered references, written from the record. Every result is

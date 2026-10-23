@@ -767,6 +767,38 @@ family recovery nor connectedness proves a shared specificity or purity of the c
 to the explicit budgets; the benchmark does not claim every threshold on every dataset finishes
 within two minutes.
 
+### 5.11 Specificity database evidence (wave 4, slice 7)
+
+Read VDJdb's documented legacy `vdjdb.txt` by header names, preserving row identity, repeated
+publication evidence, complex IDs, receptor and antigen species, MHC, score, method and reference.
+The current publisher's [output documentation](https://github.com/antigenomics/vdjdb-db/blob/master/docs/outputs.md)
+distinguishes the normalized primary bundle from the legacy table. The pinned historical
+[2026-06-03 release](https://github.com/antigenomics/vdjdb-db/releases/tag/2026-06-03) already
+contains that table (284,546 rows); the app downloads its table and license only on request.
+Catalog terms link the current publisher license as well as retaining the historical archive's
+license. No data or derived real-release fixture is bundled. Citation: Shugay et al. 2018,
+Nucleic Acids Res. 46:D419–D427, doi:10.1093/nar/gkx760.
+
+Match a retained chain at the same locus and explicit receptor species, exactly by whole CDR3
+or within TCRdist (§5.9). Optional V/J matching compares identical nonempty call sets at the
+clonotype definition's gene/allele resolution, without guessing absent alleles. TCRdist at zero
+is not whole-junction identity. Missing required loops are counted and excluded, never silently
+replaced by CDR3-only distances. A matched chain is evidence, not proof of the paired receptor's
+specificity. MHC is evidence metadata; no sample HLA filter is implied. Complex IDs are retained
+without claiming a paired match. Scores 0–3 are evidence categories, not calibrated probabilities.
+
+An epitope/antigen/antigen-species group's sample count includes each matched clonotype once,
+regardless of matching chains or repeated evidence. Divide by all retained sample abundance;
+an empty denominator is null. Groups overlap. Tracking carries explicit IDs plus immutable
+source-result and epitope provenance; existing list and display limits remain explicit.
+At 100 million candidates or two million matches, fail rather than truncate the result.
+
+Independent pandas 2.3.3 lookups agree on all record identities for 424 simulated and 4,000
+real-release queries (V/J on/off; minimum score 0/2). All 150 simulated sample/epitope shares
+agree. Exact V/J matching covers 602 molecules, 598 supported by the assigned epitope in truth,
+out of 3,498 true response molecules. The database holds other donors' family members, so
+coverage is incomplete and chance matches are possible; neither is concealed as perfect recovery.
+
 ## 6. Datasets
 
 All are listed in `validation/sources.json` with their URL, sizes and SHA-256, and fetched by

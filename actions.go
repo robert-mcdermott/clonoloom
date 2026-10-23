@@ -111,6 +111,17 @@ var remoteActions = []remoteAction{
 		"top":      numberArg("How many of the clonotypes with the most neighbors to answer (default 10)."),
 		"select":   numberArg("A clonotype to show the nearest of, by its rank among those with the most neighbors (from 1)."),
 	})},
+	{Name: "match_specificity", Title: "Match specificity evidence", Description: "Matches retained chains against a downloaded VDJdb release or the generated vaccine database, and shows per-epitope sample shares. Never downloads a database implicitly. Optionally follows one epitope's matched clonotypes in Tracking.", InputSchema: schema(map[string]any{
+		"dataset":  datasetArg,
+		"database": textArg("vdjdb or simulated-vaccine"),
+		"metric":   textArg("exact or tcrdist"),
+		"genes":    flagArg("Require matching V and J calls"),
+		"radius":   numberArg("TCRdist radius, 0–1000"),
+		"species":  textArg("HomoSapiens, MusMusculus or MacacaMulatta"),
+		"minScore": numberArg("Minimum evidence score, 0–3"),
+		"cdr3Only": flagArg("Compare CDR3s alone for TCRdist"),
+		"follow":   numberArg("Epitope/antigen group to follow, from 1"),
+	})},
 	{Name: "find_networks", Title: "Find clonotype networks", Description: "Finds connected components of clonotypes joined within a sequence-distance cutoff, retaining all edges and memberships independently of the drawing. Shows Networks in Specificity and answers component counts. Options are kept with the dataset.", InputSchema: schema(map[string]any{
 		"dataset":  datasetArg,
 		"metric":   textArg("identity, hamming, levenshtein or tcrdist"),

@@ -7,6 +7,25 @@ grows with each.
 
 ### Added
 
+- **Specificity databases (wave 4, slice 7).** Specificity's Database part matches retained
+  T-cell chains to VDJdb, downloaded on request with terms shown, or the vaccine example's
+  simulated database. Exact CDR3 matching optionally requires identical V/J calls; TCRdist
+  matches within a radius, with V-gene loops or explicitly CDR3s alone. Species and minimum
+  score are explicit; every evidence row retains its MHC, epitope, antigen and reference.
+  - Each sample's epitope/antigen share counts a clonotype once, regardless of repeated
+    evidence or matched chains. Shares can overlap; a matching chain does not establish
+    specificity of the paired receptor. Missing required loops are counted, never replaced
+    silently by a different distance method.
+  - Follow matched clonotype IDs in Tracking with source-result and epitope provenance;
+    export complete evidence and sample shares with the database's NOTICE. Effective options
+    and reference checksums identify immutable results; Reports cite the methods.
+  - `match_specificity` remote control, a guide and captures in both themes. Explicit
+    comparison/evidence budgets fail rather than silently truncate results.
+  - Validated against pandas: 424 simulated and 4,000 published-release row-identity lookups,
+    and all 150 simulated sample/epitope shares. Exact V/J matching recovers 602 molecules,
+    598 supported by the assigned epitope in truth, out of 3,498 true response molecules;
+    coverage and chance matches are documented. No published-database fixtures are bundled.
+
 - **Clonotype networks (wave 4, slice 6).** Specificity's fourth part, Networks:
   - identity, Hamming and Levenshtein on whole junctions, or TCRdist on CDR3s alone or with
     downloaded V-gene loops; all retained chains or any shared chain, optionally matching V/J;

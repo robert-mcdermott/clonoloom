@@ -384,6 +384,37 @@ export function remoteActions(app) {
       return { message: `${d.name}: ${count(r.compared, 'clonotype')} compared by TCRdist; ${r.withNeighbors} have a neighbor within ${r.radius} (${done.artifact}).`, data };
     },
 
+    async match_specificity({ dataset, database, metric, genes, radius, species, minScore, cdr3Only, follow } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('database');
+      const changes = {};
+      if (database !== undefined) changes.database = choose(database, ['vdjdb', 'simulated-vaccine'], 'database');
+      if (metric !== undefined) changes.metric = choose(metric, ['exact', 'tcrdist'], 'metric');
+      if (species !== undefined) changes.species = choose(species, ['HomoSapiens', 'MusMusculus', 'MacacaMulatta'], 'species');
+      for (const [key, value, max] of [['radius', radius, 1000], ['minScore', minScore, 3]]) if (value !== undefined) {
+        if (!Number.isInteger(value) || value < 0 || value > max) throw new ActionError(`${key}: from 0 to ${max}.`);
+        changes[key] = value;
+      }
+      for (const [key, value] of Object.entries({ genes, cdr3Only })) if (value !== undefined) changes[key] = Boolean(value);
+      if (Object.keys(changes).length) await view.chooseDatabase(changes);
+      await view.load(); await view.settled();
+      const state = view.database();
+      if (['unsupported', 'no-database', 'no-loops', 'failed'].includes(state.status)) throw new ActionError(state.error ?? 'Use an amino-acid definition and prepare the chosen database and V-gene loops, or explicitly compare CDR3s alone.');
+      if (state.status === 'absent') await view.run('specificity');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.database().status) && view.database(), 30 * 60 * 1000, 'specificity matching');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const data = { artifact: done.artifact, matches: done.result.matches.length, epitopes: done.result.epitopes.map((e) => ({ epitope: e.epitope, antigen: e.antigen, species: e.species, clonotypes: e.clonotypes.length, shares: e.shares })), samples: done.result.samples };
+      if (follow !== undefined) {
+        if (!Number.isInteger(follow) || follow < 1 || follow > data.epitopes.length) throw new ActionError('Choose an epitope group by its number, from 1.');
+        if (data.epitopes[follow - 1].clonotypes > 1000) throw new ActionError('Tracking accepts at most 1000 IDs; narrow the matching options.');
+        await view.followEpitope(follow - 1);
+      }
+      return { message: `Found ${data.matches} chain–record matches in ${data.epitopes.length} epitope/antigen groups.`, data };
+    },
+
     async find_networks({ dataset, metric, cutoff, arms, sameV, sameJ, cdr3Only, select } = {}) {
       const d = datasetOf(dataset);
       app.focusItem({ kind: 'dataset', id: d.id });

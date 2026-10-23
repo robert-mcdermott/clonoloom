@@ -20,6 +20,8 @@ Go tests in this folder check whole results against independent references (`go 
 | `TestPgenOfTheSimulatorsModel` | Under ClonoLoom's own model of human TRB, 200 junctions (chosen from a pilot run) as frequent among 20 million rearrangements of the simulator as their probabilities say (mean z near 0, mean squared z near 1); and the generator's receptors likewise | the simulator |
 | `TestGeneratorAgreesWithPgen` | Receptors drawn from OLGA's human TRB model as frequent as their probabilities say, relative to the junctions compared | `olga-models` |
 | `TestPgenWithinBudget` | A million TRB CDR3s' probabilities (productive ones ClonoLoom's generator draws from OLGA's human TRB model) within 2 minutes on 10 cores (not under the race detector) | `olga-models` |
+| `TestSpecificityPandas`, `TestSpecificityVaccineShares` | Exact evidence row identities and all 150 sample/epitope shares | `reference/specificity.py`, pandas 2.3.3 on the simulated database; truth distinguishes database coverage from known specificity |
+| `TestSpecificityVDJdbMaintainer` | 4,000 exact row-identity lookups in VDJdb 2026-06-03 | Local-only pandas output; no real-data fixtures distributed |
 | `TestNetworksEqualScirpy` | All 420 complete cell partitions under identity, Hamming, Levenshtein and TCRdist, all/any arms and with/without V genes | `reference/networks.json`, made by `scirpy_networks.py`; eight 10x runs and three OTS units |
 | `TestNetworksConnectSimulatedFamilies` | All 34 observed families connected at TCRdist 48; 29 of 34 at two edits (97 observed members) | `simulated-vaccine/S01-d14.tsv` and its truth |
 | `TestNeighborhoodsEqualTCRdist3` | Every centroid's radius, its neighbors in the dataset and in the background, and the rates, odds ratio and χ² computed from them, equal to tcrdist3 0.3's `bkgd_cntl_nn2` on Dash et al. 2017's 415 human β chains against 5,204 OTS β chains with weights | `reference/tcrdist3_neighborhoods.json` (made by `reference/tcrdist3_neighborhoods.py`), `dash-2017-tcrdist3`, `ots-healthy-pbmc`, `tcrdist3-loops` |
@@ -50,3 +52,30 @@ Network layout bytes are pinned in `internal/network/graph_test.go`; run
 `go test ./internal/network -run TestGraphTCRdistAndLayout` on arm64 and amd64. The complete
 100,000-node sparse synthetic graph and drawing budget is measured with
 `go test ./internal/network -run '^$' -bench BenchmarkGraph100000 -benchtime=1x`.
+
+### Specificity database validation
+
+`uv run --with pandas==2.3.3 validation/reference/specificity.py` regenerates only simulated
+fixtures. Exact matching tests both with and without V/J, at minimum scores 0 and 2.
+The sample-share fixture independently joins all 30 vaccine samples to database and truth:
+602 matched molecules, 598 supported by their assigned epitope, 3,498 true response molecules.
+Neither incomplete coverage nor the four chance matches is treated as implementation failure.
+
+After downloading VDJdb under its terms, maintainer-only checks keep data and results outside
+version control:
+
+```sh
+uv run --with pandas==2.3.3 validation/reference/specificity.py \
+  --database /tmp/vdjdb.txt --output /tmp/vdjdb-lookup.json
+CLONOLOOM_VDJDB=/tmp/vdjdb.txt CLONOLOOM_VDJDB_LOOKUP=/tmp/vdjdb-lookup.json \
+  go test ./validation -run TestSpecificityVDJdbMaintainer -v
+CLONOLOOM_VDJDB_DOWNLOAD=1 go test . -run TestSpecificityPublishedDownload -v
+```
+
+The last check exercises the app's on-request archive download, terms gate and checksum checks
+in temporary storage. The database guide capture exercises matching, retained provenance and
+Tracking in an isolated library: `node docs/capture/capture.mjs database --theme both`.
+
+For the complete scientific suite with race detection, allow more than Go’s default ten minutes
+per package: `go test -race -timeout 20m ./...`. The simulated-truth checks generate their own
+repertoires, and the full validation package can exceed ten minutes on a busy machine.

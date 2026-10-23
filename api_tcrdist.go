@@ -76,6 +76,8 @@ func (a *app) tcrdistPrepare(spec *analysisSpec) error {
 // downloaded, "no-models" when OLGA's models are not (the page offers them).
 func prepareCode(err error) string {
 	switch {
+	case errors.Is(err, errNoDatabase):
+		return "no-database"
 	case errors.Is(err, errNoLoops):
 		return "no-loops"
 	case errors.Is(err, errNoModels):

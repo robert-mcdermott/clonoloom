@@ -301,6 +301,12 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     sentences.push(`Each ${r.locus} receptor (${under}) was taken as the centre of a neighborhood by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} as Mayer-Blackwell et al. define one ${cite('tcrdist3')}: its radius the largest of 0, 2, …, ${r.maxRadius ?? 48} TCRdist units ${cite('dash')} at which the weighted background within it was at most a share ${r.control ?? 1e-6} of the background's receptors, against a background of ${background}, comparing ${loops}. Of ${plural(r.receptors ?? 0, 'receptor')}, ${count(r.centers ?? 0)} had a neighborhood of ${r.minNeighbors ?? 2} receptors or more, each reported with the rates (n + 1)/(N + 2) in the dataset and the background, their ratio, an odds ratio and a χ² test.`);
   }
 
+  for (const r of results.filter((x) => x.kind === 'specificity')) {
+    const o = r.specificity;
+    const distance = o.metric === 'exact' ? 'identical CDR3 amino-acid sequences' : `TCRdist ≤ ${o.radius} ${cite('dash')} with searched gaps ${cite('tcrdist3')}, ${o.cdr3Only ? 'CDR3s alone' : `including V-gene loops (SHA-256 ${r.loops?.sha256 ?? ''})`}`;
+    sentences.push(`Retained chains (${r.describe || r.definition}) were matched at the same locus to ${r.database.reference} (${r.database.source}; SHA-256 ${r.database.sha256}; ${r.database.license}) ${cite(`specificityDatabase:${r.database.reference}`, r.database.citation)}, using ${distance}${o.genes ? ' and identical nonempty V/J call sets at the clonotype definition’s resolution' : ''}, receptor species ${o.species} and minimum database score ${o.minScore}. The ${r.matches} chain–record matches retained their evidence; each clonotype contributed once to each epitope/antigen group’s abundance, divided by all retained abundance per sample. These overlapping shares describe database evidence, not established specificity of paired receptors.`);
+  }
+
   for (const r of results.filter((x) => x.kind === 'networks')) {
     const o = r.networks;
     const distance = o.metric === 'tcrdist'

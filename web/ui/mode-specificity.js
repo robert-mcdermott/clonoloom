@@ -1,3 +1,6 @@
+import { databaseOptions, databaseWords, useDatabase } from '../lib/database.js';
+import { databaseControls, databaseResult } from './database.js';
+import { useTracking } from '../lib/tracking.js';
 // The Specificity view (clonoloom-spec/requirements.md, S1–S7 and R6; roadmap.md, wave 4), each
 // part an analysis the program runs as a job and keeps as a result:
 //   - Neighbors (slice 2: S1): each T-cell clonotype of a dataset compared with every other of the
@@ -29,12 +32,12 @@ import { BACKGROUNDS, CENTER_ORDERS, CONTROL_RATES, MODELS, ORGANISMS, PGEN_ORDE
 import { exportable, madeBy } from './figures.js';
 import { exportResult } from './exports.js';
 
-const PARTS = { neighbors: 'Neighbors', neighborhoods: 'Neighborhoods', generation: 'Generation', networks: 'Networks' };
+const PARTS = { neighbors: 'Neighbors', neighborhoods: 'Neighborhoods', generation: 'Generation', networks: 'Networks', database: 'Database' };
 // The analysis each part shows, the part each opens in, its API, and what the head's button says.
-const KIND_OF = { neighbors: 'tcrdist', neighborhoods: 'neighborhoods', generation: 'pgen', networks: 'networks' };
-const PART_OF = { tcrdist: 'neighbors', neighborhoods: 'neighborhoods', pgen: 'generation', networks: 'networks' };
-const KINDS = ['tcrdist', 'neighborhoods', 'pgen', 'networks'];
-const START = { tcrdist: 'Compare the receptors', neighborhoods: 'Find the neighborhoods', pgen: 'Compute the probabilities', networks: 'Find the network' };
+const KIND_OF = { neighbors: 'tcrdist', neighborhoods: 'neighborhoods', generation: 'pgen', networks: 'networks', database: 'specificity' };
+const PART_OF = { tcrdist: 'neighbors', neighborhoods: 'neighborhoods', pgen: 'generation', networks: 'networks', specificity: 'database' };
+const KINDS = ['tcrdist', 'neighborhoods', 'pgen', 'networks', 'specificity'];
+const START = { tcrdist: 'Compare the receptors', neighborhoods: 'Find the neighborhoods', pgen: 'Compute the probabilities', networks: 'Find the network', specificity: 'Match the database' };
 const SHOWN = 100;
 
 const count = (n) => Number(n ?? 0).toLocaleString('en-US');
@@ -84,6 +87,7 @@ export function mountSpecificity(app, container) {
   let centerBy = 'enriched';
   let selectedCenter = null;
   let selectedCluster = null;
+  let databasePage = 0;
   let nearest = { status: 'idle' };
   let generation = 0;
   let latest = Promise.resolve();
@@ -97,7 +101,7 @@ export function mountSpecificity(app, container) {
   const pgenBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, pgen: pgenRequest(spec.pgen), ...extra });
   const hoodBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, neighborhoods: neighborhoodRequest(spec.neighborhoods), ...extra });
   const networkBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, networks: spec.networks, subjects: Object.fromEntries((store.project.samples ?? []).filter((s) => s.dataset === spec.dataset).map((s) => [s.sample, s.fields?.subject ?? ''])), ...extra });
-  const bodyOf = (kind, extra) => (kind === 'networks' ? networkBody(extra) : kind === 'pgen' ? pgenBody(extra) : kind === 'neighborhoods' ? hoodBody(extra) : request(extra));
+  const bodyOf = (kind, extra) => (kind === 'specificity' ? { dataset: spec.dataset, definition: spec.definition, filter: spec.filter, specificity: spec.specificity, ...extra } : kind === 'networks' ? networkBody(extra) : kind === 'pgen' ? pgenBody(extra) : kind === 'neighborhoods' ? hoodBody(extra) : request(extra));
 
   function load() {
     latest = reload();
@@ -126,7 +130,7 @@ export function mountSpecificity(app, container) {
       if (mine !== generation) return;
       const loci = Object.keys(open.summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
       const filter = datasetFilter(store.project, d);
-      spec = { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, options: tcrdistOptions(d), pgen: pgenOptions(d), neighborhoods: neighborhoodOptions(d), networks: networkOptions(d), loci };
+      spec = { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, options: tcrdistOptions(d), pgen: pgenOptions(d), neighborhoods: neighborhoodOptions(d), networks: networkOptions(d), specificity: databaseOptions(d), loci };
       state = { status: 'ready', dataset: d.id, summary: open.summary };
     } catch (error) {
       if (mine !== generation) return;
@@ -170,7 +174,7 @@ export function mountSpecificity(app, container) {
       }
     } catch (error) {
       if (mine !== generation) return;
-      results[kind] = ['no-loops', 'no-models'].includes(error.code) ? { status: error.code } : { status: 'failed', error: error.message };
+      results[kind] = ['no-loops', 'no-models', 'no-database'].includes(error.code) ? { status: error.code } : { status: 'failed', error: error.message };
     }
   }
 
@@ -178,6 +182,10 @@ export function mountSpecificity(app, container) {
   function keep(d, kind, read) {
     if (store.project.artifacts.some((a) => a.id === read.artifact.id)) return;
     const r = read.result;
+    if (kind === 'specificity') {
+      store.commit(addResult(store.project, { id: read.artifact.id, kind, dataset: d.id, definition: spec.definition.name ?? '', describe: r.describe, made: read.artifact.created, unit: r.unit, name: `Specificity matches · ${d.name}`, method: databaseWords(r.specificity), specificity: r.specificity, database: r.database, loops: r.loops, matches: r.matches.length, epitopes: r.epitopes.length }), `Match the specificity database for ${d.name}`, ['project']);
+      return;
+    }
     if (kind === 'networks') {
       store.commit(addResult(store.project, {
         id: read.artifact.id, kind, dataset: d.id, definition: spec.definition.name ?? '', describe: r.describe,
@@ -247,7 +255,7 @@ export function mountSpecificity(app, container) {
         return;
       }
       results[kind] = { status: 'running', artifact: answer.artifact, job: answer.job };
-      app.log(kind === 'networks' ? `Find the network of ${d.name}: ${networkWords(spec.networks)}.` : kind === 'pgen'
+      app.log(kind === 'specificity' ? `Match specificity evidence for ${d.name}: ${databaseWords(spec.specificity)}.` : kind === 'networks' ? `Find the network of ${d.name}: ${networkWords(spec.networks)}.` : kind === 'pgen'
         ? `Compute the generation probabilities of ${d.name}: ${pgenWords(spec.pgen)}.`
         : kind === 'neighborhoods'
           ? `Find the neighborhoods of ${d.name}: ${neighborhoodWords(spec.neighborhoods)}.`
@@ -255,7 +263,7 @@ export function mountSpecificity(app, container) {
       render();
       watch(kind, answer.job);
     } catch (error) {
-      if (['no-loops', 'no-models'].includes(error.code)) {
+      if (['no-loops', 'no-models', 'no-database'].includes(error.code)) {
         results[kind] = { status: error.code };
         render();
         return;
@@ -278,6 +286,22 @@ export function mountSpecificity(app, container) {
     const next = useNeighborhoods(store.project, d.id, changes);
     if (next === store.project) return;
     store.commit(next, `Choose how the neighborhoods of ${d.name} are found`);
+  }
+  function chooseDatabase(changes) {
+    const d = dataset();
+    if (!d) return;
+    databasePage = 0;
+    const next = useDatabase(store.project, d.id, changes);
+    if (next !== store.project) store.commit(next, `Choose specificity matching for ${d.name}`);
+  }
+  async function followEpitope(e) {
+    const d = dataset();
+    const next = useTracking(store.project, d.id, { by: 'list', list: e.clonotypes, evidence: { artifact: results.specificity.artifact, epitope: e.epitope, antigen: e.antigen, species: e.species } });
+    store.commit(next, `Follow clonotypes matched to ${e.epitope} (${results.specificity.artifact})`);
+    app.focusItem({ kind: 'dataset', id: d.id });
+    await app.setMode('tracking');
+    await app.trackingView?.choose(d.id);
+    await app.trackingView?.followNow();
   }
   function chooseNetworks(changes) {
     const d = dataset();
@@ -389,10 +413,18 @@ export function mountSpecificity(app, container) {
     if (result.status === 'unsupported') {
       const words = {
         tcells: 'TCRdist compares T-cell receptors, and this dataset has none: open TRA, TRB, TRG or TRD chains.',
-        aa: 'TCRdist compares the junctions\' amino acids: choose a clonotype definition by amino-acid junction in the Clonotypes view.',
+        aa: 'Specificity analyses compare the junctions\' amino acids: choose a clonotype definition by amino-acid junction in the Clonotypes view.',
         vendor: `${kind === 'pgen' ? 'Generation probabilities need' : 'TCRdist needs'} clonotypes defined by their junctions, not by the source's own clonotypes: choose another definition in the Clonotypes view.`,
       };
       body.append(h('div.callout', h('p', words[result.why])));
+      return;
+    }
+    if (kind === 'specificity') {
+      body.append(databaseControls(spec.specificity, chooseDatabase));
+      if (result.status === 'ready') body.append(databaseResult(result.result, databasePage, (page) => { databasePage = page; render(); }, followEpitope, showInClonotypes));
+      else if (result.status === 'failed') body.append(h('div.callout.danger', result.error));
+      else if (result.status === 'no-database' || result.status === 'no-loops') body.append(h('p', result.status === 'no-loops' ? 'Download V-gene loops in Reference data.' : 'Download VDJdb in Reference data after reading its terms, or generate the vaccine example in Examples to use its simulated database.'), h('button.btn', { type: 'button', onclick: () => app.showReferences() }, 'Reference data…'));
+      else body.append(h('p.muted', result.status === 'absent' ? 'Match retained chains against published specificity evidence. Choose Match the database to begin.' : result.status === 'running' ? app.jobs.get(result.job)?.message ?? 'Matching…' : 'Reading…'));
       return;
     }
     if (kind === 'networks') {
@@ -715,7 +747,7 @@ export function mountSpecificity(app, container) {
   let shownChoices = '';
   const choices = () => {
     const d = dataset();
-    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d?.tcrdist ?? null, d?.pgen ?? null, d?.neighborhoods ?? null, d?.networks ?? null, store.project.samples]);
+    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d?.tcrdist ?? null, d?.pgen ?? null, d?.neighborhoods ?? null, d?.networks ?? null, d?.specificity ?? null, store.project.samples]);
   };
   function update(topics) {
     if (topics.has('theme') && part === 'networks') render();
@@ -749,7 +781,9 @@ export function mountSpecificity(app, container) {
     const ready = list.some((e) => e.name === 'olga-models' && e.state === 'ready');
     const changed = ready !== olgaReady;
     olgaReady = ready;
-    if ((results.tcrdist.status === 'no-loops' || results.networks.status === 'no-loops') && list.some((e) => e.name === 'tcrdist3-loops' && e.state === 'ready')) load();
+    if (results.specificity.status === 'no-database' && list.some((e) => e.name === 'vdjdb' && e.state === 'ready')) load();
+    else if (results.specificity.status === 'no-loops' && list.some((e) => e.name === 'tcrdist3-loops' && e.state === 'ready')) load();
+    else if ((results.tcrdist.status === 'no-loops' || results.networks.status === 'no-loops') && list.some((e) => e.name === 'tcrdist3-loops' && e.state === 'ready')) load();
     else if (changed && spec && !spec.pgen.models) load();
     else if (results.pgen.status === 'no-models' && ready) load();
   });
@@ -770,6 +804,9 @@ export function mountSpecificity(app, container) {
       choosePgen(changes);
       return settled();
     },
+    database: () => results.specificity,
+    chooseDatabase: (changes) => { chooseDatabase(changes); return settled(); },
+    followEpitope: (index) => followEpitope(results.specificity.result.epitopes[index]),
     networks: () => results.networks,
     chooseNetworks: (changes) => { chooseNetworks(changes); return settled(); },
     selectCluster: (id) => { selectedCluster = id; render(); },

@@ -49,7 +49,7 @@ type analysis struct {
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis, pgenAnalysis, neighborhoodAnalysis, networkAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis, pgenAnalysis, neighborhoodAnalysis, networkAnalysis, specificityAnalysis}
 
 // analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
 // (condition) and subject (by sample name), for the analyses that use them; Study is the samples'
@@ -69,7 +69,8 @@ type analysisSpec struct {
 	Class      *track.Classing      `json:"class,omitempty"`
 	TCRdist    *tcrdistOptions      `json:"tcrdist,omitempty"`
 	PGen       *pgenOptions         `json:"pgen,omitempty"`
-	// Networks and neighborhoods of similar receptors (api_networks.go, api_neighborhoods.go).
+	// Specificity evidence and sequence neighborhoods (api_specificity.go, api_networks.go, api_neighborhoods.go).
+	Specificity   *specificityOptions  `json:"specificity,omitempty"`
 	Networks      *networkOptions      `json:"networks,omitempty"`
 	Neighborhoods *neighborhoodOptions `json:"neighborhoods,omitempty"`
 	Method        int                  `json:"method"`
@@ -140,10 +141,11 @@ func (s analysisSpec) artifactID(prefix string) string {
 		TCRdist    *tcrdistOptions   `json:"tcrdist,omitempty"`
 		PGen       *pgenOptions      `json:"pgen,omitempty"`
 
+		Specificity   *specificityOptions  `json:"specificity,omitempty"`
 		Networks      *networkOptions      `json:"networks,omitempty"`
 		Neighborhoods *neighborhoodOptions `json:"neighborhoods,omitempty"`
 		Method        int                  `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.PGen, s.Networks, s.Neighborhoods, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.PGen, s.Specificity, s.Networks, s.Neighborhoods, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -203,6 +205,11 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 			if body.PGen == nil {
 				body.PGen = &pgenOptions{}
 			}
+		case "specificity":
+			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
+			if body.Specificity == nil {
+				body.Specificity = &specificityOptions{}
+			}
 		case "networks":
 			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
 			if body.Networks == nil {
@@ -215,6 +222,9 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 			}
 		default:
 			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
+		}
+		if k.over != "specificity" {
+			body.Specificity = nil
 		}
 		if k.over != "networks" {
 			body.Networks = nil

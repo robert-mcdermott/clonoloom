@@ -834,13 +834,20 @@ queries make a public cohort more than one example's files.
      Simulation validation distinguishes thresholds: TCRdist 48 connects all 34 observed
      families in S01 day 14; two edits connect 29, with five split (the simulator permits more
      than two substitutions). See research.md §5.10 for exact semantics and limits.
-7. **Specificity databases (S5, T1).** VDJdb downloaded on request and read (`vdjdb.txt`, by its
+7. **Specificity databases (S5, T1) — done.** VDJdb downloaded on request and read (`vdjdb.txt`, by its
    header's names); clonotypes matched exactly (the CDR3, with V and J or without) or within a
    TCRdist radius, with the epitope, antigen, species, MHC, score and reference; each sample's
    share matched to each epitope; Tracking follows the clonotypes matched to an epitope.
    - Validation: the matches equal to a direct lookup (pandas) in a VDJdb release for the
      maintainer, and in the simulated database in CI; on the simulated vaccine response, each
      sample's share matched to each epitope against the truth.
+   - Completed: reference download with terms, checksum-pinned evidence, exact and TCRdist
+     chain matching, deduplicated epitope/antigen shares, Tracking selections with provenance,
+     complete CSV exports and NOTICE, Reports methods, remote action and guide.
+   - Checked: all 424 simulated and 4,000 real-release pandas row-identity lookups agree;
+     all 150 simulated sample/epitope shares agree. Exact V/J matches contain 602 molecules,
+     598 supported by truth, compared with 3,498 total true response molecules. Database
+     coverage is incomplete and chance matches remain visible; see research.md §5.11.
 8. **Invariant populations, the examples' steps and release 0.4.0 (S7, E3).** MAIT, iNKT and GEM
    T cells flagged by their published rules (their TRAV and TRAJ genes, with the CDR3α's length
    or the TRBV gene where a rule names them), in the clonotype table, and counted in each sample;

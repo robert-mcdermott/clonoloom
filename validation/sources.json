@@ -790,6 +790,38 @@
           "sha256": "4298c047367f44933c0ea5729c88b967679e0c1cf4b6e86f6d05cb66320284ed"
         }
       ]
+    },
+    "vdjdb": {
+      "title": "VDJdb 2026-06-03",
+      "description": "Published T-cell receptor specificity evidence. Downloaded only on request. The publisher currently specifies non-commercial use and no redistribution of adaptations (CC BY-NC-ND 4.0); the historical archive retains its original license. Read both before use.",
+      "source": "https://github.com/antigenomics/vdjdb-db/releases/tag/2026-06-03",
+      "publisher": "VDJdb",
+      "page": "https://vdjdb.com",
+      "license": "CC BY-NC-ND 4.0 (current publisher terms); historical archive includes its original license",
+      "licenseUrl": "https://github.com/antigenomics/vdjdb-db/blob/master/LICENSE",
+      "licenseClass": "restricted",
+      "citation": "Shugay M, et al. VDJdb: a curated database of T-cell receptor sequences with known antigen specificity. Nucleic Acids Res. 2018;46:D419–D427. doi:10.1093/nar/gkx760",
+      "members": {
+        "url": "https://github.com/antigenomics/vdjdb-db/releases/download/2026-06-03/vdjdb-2026-06-03.zip",
+        "size": 41017409,
+        "names": [
+          "vdjdb.txt",
+          "LICENSE"
+        ],
+        "strip": "vdjdb-2026-06-03/"
+      },
+      "files": [
+        {
+          "path": "vdjdb.txt",
+          "size": 239910782,
+          "sha256": "3f5823f01d954751567a8d40870a284e384625242bce870b6390c3222a46568a"
+        },
+        {
+          "path": "LICENSE",
+          "size": 34522,
+          "sha256": "4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b"
+        }
+      ]
     }
   },
   "tools": {

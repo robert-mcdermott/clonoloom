@@ -258,3 +258,11 @@ test('network methods carry chain rules, thresholds and source citations', () =>
   assert.ok(references.some((r) => r.includes('Levenshtein VI')));
   assert.ok(references.some((r) => r.includes('Fruchterman')));
 });
+
+test('specificity reports reference identity, chain evidence, overlapping shares and methods', () => {
+  const { text, references } = methodsParagraph({ dataset: pbmc, program, results: [{ kind: 'specificity', describe: 'TRB amino-acid genes', specificity: { metric: 'tcrdist', radius: 24, cdr3Only: true, species: 'HomoSapiens', genes: true, minScore: 2 }, database: { reference: 'VDJdb 2026-06-03', source: 'publisher', sha256: 'abc123', license: 'CC BY-NC-ND 4.0', citation: 'Shugay et al. doi:10.1093/nar/gkx760' }, matches: 12 }] });
+  assert.match(text, /SHA-256 abc123/);
+  assert.match(text, /TCRdist ≤ 24/);
+  assert.match(text, /not established specificity of paired receptors/);
+  assert.ok(references.some((s) => s.includes('gkx760')));
+});
