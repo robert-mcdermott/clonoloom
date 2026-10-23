@@ -75,6 +75,14 @@
           <li><a href="classes.html">Classes across time points</a></li>
           <li><a href="attribution.html">Attribution to a reference</a></li>
         </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html">Specificity databases</a></li>
+        </ul>
         <h4>Results</h4>
         <ul>
           <li><a href="figures.html">Figures and exports</a></li>
@@ -148,6 +156,8 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
         <li>Data under a provider's terms of use (the immuneACCESS example) are never downloaded by a program: only you can accept their terms, in the window.</li>
         <li>One action runs at a time, in the order they come.</li>
       </ul>
+      <h2 id="invariant">Invariant-population annotation</h2>
+      <p><code>flag_invariant</code> takes <code>species: "human" | "mouse"</code>, an optional dataset, and optionally <code>population: "MAIT" | "iNKT" | "GEM"</code>. It records the species and shows Clonotypes, returning the first 20 rows plus complete sample totals, matched and evaluable abundance and shares. The <a href="clonotypes.html#invariant">published sequence rules</a> do not establish phenotype or specificity.</p>
 
       <nav class="doc-pager" aria-label="Pages">
         <a class="prev" href="simulation.html"><span>Previous</span>Simulated studies</a>

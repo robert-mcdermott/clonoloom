@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Specificity databases · ClonoLoom</title>
+  <meta name="description" content="Match receptor chains to VDJdb evidence, inspect epitope shares and follow matched clonotypes over time." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/database.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Specificity databases" />
+  <meta property="og:description" content="Match receptor chains to VDJdb evidence, inspect epitope shares and follow matched clonotypes over time." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/database.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html" aria-current="page">Specificity databases</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Specificity databases</h1>
+      <p class="doc-lede">Specificity’s Database part matches each retained T-cell chain to specificity evidence. Every record keeps its epitope, antigen, receptor species, MHC, score and reference. A match supplies evidence; it does not prove the specificity of a complete receptor.</p>
+
+      <h2 id="database">Choose the database</h2>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/database-dark.webp" width="2000" height="1250" loading="lazy" alt="Specificity database matches for the simulated vaccination study, with matching controls and each sample’s epitope shares." /><img class="shot-light" src="../assets/img/database-light.webp" width="2000" height="1250" loading="lazy" alt="Specificity database matches for the simulated vaccination study, with matching controls and each sample’s epitope shares." /></div>
+        <figcaption>The simulated vaccine database is generated with the vaccine example; it contains no VDJdb-derived data.</figcaption>
+      </figure>
+      <p>In <strong>Reference data</strong>, read VDJdb’s terms and request its download. ClonoLoom pins the 2026-06-03 release and verifies its <code>vdjdb.txt</code> by SHA-256. The historical archive’s license is retained; the catalog also links the publisher’s current CC BY-NC-ND 4.0 terms. The database is never bundled. For practice, generate the vaccine example in Examples and choose <strong>Simulated vaccine database</strong>.</p>
+      <h2 id="matching">Choose the matching rule</h2>
+      <p>Choose a receptor species explicitly: human, mouse or rhesus macaque. Only database records of that species and the same chain locus are compared. Choose a minimum evidence score from 0 to 3. The score is reported evidence strength, not a calibrated probability of a correct match.</p>
+      <p><strong>Exact CDR3</strong> compares whole amino-acid junctions. Optionally require identical, nonempty V and J calls at the clonotype definition’s gene or allele resolution; ambiguous calls must have identical sets of names. Family-only definitions cannot use this option. An allele absent from a record is not invented.</p>
+      <p><strong>TCRdist radius</strong> uses the validated <a href="tcrdist.html">TCRdist method</a>, including its trimmed CDR3s, weights and searched gaps. Include downloaded V-gene loops, or explicitly choose CDR3s alone. A radius of zero is allowed and is not the same as whole-junction identity. Chains missing required loops are excluded and counted; they never silently fall back to CDR3 alone.</p>
+      <h2 id="evidence">Read evidence and shares</h2>
+      <p>Each retained chain is matched separately. Matching one chain does not confirm a paired receptor’s specificity. Evidence retains repeated database rows, row numbers, complex IDs, database genes, MHC, score, method and reference. Complex IDs are provenance, not an assertion that both chains matched. Browse the evidence in pages of 100 or export every row.</p>
+      <p>Shares group by epitope, antigen and antigen species. Each clonotype contributes its abundance once per group, even if several chains or duplicate records match. The denominator is all retained abundance in that sample under the current definition and filter; empty samples have no share. Groups can overlap, so shares need not sum to one. MHC is reported evidence, not a filter against a sample’s HLA genotype.</p>
+      <h2 id="tracking">Follow an epitope’s clonotypes</h2>
+      <p><strong>Follow clonotypes</strong> opens Tracking with the matched IDs and the source result and epitope recorded. Annotate the samples’ subjects and time points first. The existing Tracking limits apply: at most 1,000 listed IDs and 200 displayed clonotypes per subject, with omitted clonotypes reported. Changing the list removes its specificity provenance; changing the matching options creates a new result.</p>
+      <h2 id="export">Export and reproduce</h2>
+      <p>Export includes <code>matches.csv</code> and <code>epitopes.csv</code>, with a NOTICE identifying the database, checksum, source, license and citation. Results keep the effective options, definition, filter, database checksum and V-loop checksum when used. Reports cite VDJdb (Shugay et al. 2018, <a href="https://doi.org/10.1093/nar/gkx760">doi:10.1093/nar/gkx760</a>) and the distance method. Remote control provides <code>match_specificity</code>. Analyses exceeding 100 million candidate comparisons or two million evidence matches fail explicitly; reduce the dataset or narrow the options.</p>
+      <h2 id="validation">Independent checks and coverage</h2>
+      <p>Exact matching row identities agree with pandas for 424 simulated queries and 4,000 maintainer-only queries against 284,546 records of the published release. All 150 simulated sample/epitope shares agree independently. Exact V/J matching finds 602 molecules, of which 598 have the assigned epitope in the truth, compared with 3,498 true response molecules in total. The database contains other donors’ family members: incomplete coverage and chance matches remain visible. No real database records or derived fixtures are distributed with the tests.</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="networks.html"><span>Previous</span>Clonotype networks</a>
+        <a class="next" href="figures.html"><span>Next</span>Figures and exports</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

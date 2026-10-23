@@ -68,7 +68,7 @@
       <h2 id="start">Start it</h2>
       <div class="code"><pre><code><span class="prompt">$ </span>clonoloom</code></pre></div>
       <p>ClonoLoom starts a local server on <code>http://127.0.0.1:8860</code> (or the next free port up to 8879) and opens its window. If Chrome, Edge, Brave or Chromium is installed, the window is a desktop app window with its own profile; otherwise your default browser is used. Closing the window stops the program. On Windows, open a new terminal after installing so that it sees the updated <code>PATH</code>.</p>
-      <p>Files and folders named on the command line (AIRR tables, Cell Ranger output folders, immunoSEQ exports, or folders of them) open directly as one dataset, and running <code>clonoloom &lt;paths&gt;</code> again while it is open hands them to the open window:</p>
+      <p>Files and folders named on the command line (AIRR tables, Cell Ranger output folders, immunoSEQ exports, MiXCR clone tables, OAS and OTS units, tcrdist3 clone tables, or folders of them) open directly as one dataset, and running <code>clonoloom &lt;paths&gt;</code> again while it is open hands them to the open window:</p>
       <div class="code"><pre><code><span class="prompt">$ </span>clonoloom /path/to/airr_rearrangement.tsv</code></pre></div>
       <p>Then continue with <a href="docs/getting-started.html">Getting started</a>.</p>
 
@@ -91,7 +91,7 @@
 
       <h2 id="options">Options</h2>
       <p>To install a particular release, or somewhere else:</p>
-      <div class="code wrap"><pre><code><span class="prompt">$ </span>curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.sh | CLONOLOOM_VERSION=v0.3.0 CLONOLOOM_INSTALL_DIR="$HOME/bin" sh</code></pre></div>
+      <div class="code wrap"><pre><code><span class="prompt">$ </span>curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.sh | CLONOLOOM_VERSION=v0.4.0 CLONOLOOM_INSTALL_DIR="$HOME/bin" sh</code></pre></div>
       <p>In PowerShell, set <code>$env:CLONOLOOM_VERSION</code> and <code>$env:CLONOLOOM_INSTALL_DIR</code> before the same command. To read an installer before running it, download it first; <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/INSTALLING.md">INSTALLING.md</a> describes every option, and how to install by hand.</p>
       <p>The program's own options:</p>
       <div class="table-wrap">

@@ -48,9 +48,9 @@
   <main id="main">
     <section class="hero">
       <div class="container hero-grid">
-        <a class="eyebrow" href="https://github.com/robert-mcdermott/clonoloom/releases/tag/v0.3.0"><span class="pill">v0.3.0</span> Repertoire basics: diversity, rarefaction, gene usage and overlap, each with its uncertainty</a>
+        <a class="eyebrow" href="https://github.com/robert-mcdermott/clonoloom/releases/tag/v0.4.0"><span class="pill">v0.4.0</span> Repertoire basics: diversity, rarefaction, gene usage and overlap, each with its uncertainty</a>
         <h1>Immune repertoires <span class="accent">you can check</span></h1>
-        <p class="lede">ClonoLoom opens the output of your annotation pipeline (AIRR Community files, Cell Ranger V(D)J, immunoSEQ exports, or another tool's table), checks it, and groups it into clonotypes by a definition you can see. It measures each repertoire's diversity, compares samples at equal coverage, counts their genes and junctions, and measures how much they overlap, each number with its interval, and writes figures, exports and a methods paragraph others can check, keeping every step on record. It runs on your own computer as one self-contained program, installed with a single command: no account, Python or R, and your data never leave your machine.</p>
+        <p class="lede">ClonoLoom opens the output of your annotation pipeline (AIRR Community files, Cell Ranger V(D)J, immunoSEQ exports, MiXCR clone tables, OAS and OTS data units, tcrdist3 clone tables, or another tool's table), checks it, and groups it into clonotypes by a definition you can see. It measures each repertoire's diversity, compares samples at equal coverage, counts their genes and junctions, and measures how much they overlap, each number with its interval, and writes figures, exports and a methods paragraph others can check, keeping every step on record. It runs on your own computer as one self-contained program, installed with a single command: no account, Python or R, and your data never leave your machine.</p>
         <figure class="hero-shot">
         <div class="shot shot-window" data-url="127.0.0.1:8860"><img class="shot-dark" src="assets/img/diversity-dark.webp" width="2000" height="1250" fetchpriority="high" alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis" /><img class="shot-light" src="assets/img/diversity-light.webp" width="2000" height="1250" fetchpriority="high" alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis" /></div>
         <figcaption>A simulated TRB study of twelve samples, one of the examples: each sample's Shannon diversity with its 95% interval, the Hill profile and clonal space homeostasis.</figcaption>
@@ -117,7 +117,7 @@
           <div class="feature-text">
             <span class="kicker">Open and check</span>
             <h3>Data checked before they are used</h3>
-            <p>ClonoLoom reads AIRR Rearrangement tables with their Repertoire metadata, Cell Ranger V(D)J outputs and immunoSEQ exports with its own readers, fingerprints every file by its SHA-256, and checks it: each finding fatal, a warning or a note, with how many rows it concerns, examples, and what to do. The abundance unit is stated, never guessed.</p>
+            <p>ClonoLoom reads AIRR Rearrangement tables with their Repertoire metadata, Cell Ranger V(D)J outputs, immunoSEQ exports, MiXCR clone tables, OAS and OTS data units and tcrdist3 clone tables with its own readers, fingerprints every file by its SHA-256, and checks it: each finding fatal, a warning or a note, with how many rows it concerns, examples, and what to do. The abundance unit is stated, never guessed.</p>
             <ul class="checklist">
               <li>Every column of 25 development files as the <code>airr</code> library and pandas read it</li>
               <li>Another tool's CSV or TSV through a mapping of its columns, checked column by column</li>
@@ -279,7 +279,7 @@
           <a class="card" href="docs/opening-data.html#mapping">
             <span class="icon-badge pink"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg></span>
             <h3>Any tool's table</h3>
-            <p>VDJtools', MiXCR's or a spreadsheet's table, opened through a mapping of its columns that ClonoLoom guesses from their names and checks over the whole file before it opens.</p>
+            <p>VDJtools' or a spreadsheet's table, opened through a mapping of its columns that ClonoLoom guesses from their names and checks over the whole file before it opens.</p>
           </a>
         </div>
       </div>
@@ -296,7 +296,7 @@
           <table>
             <thead><tr><th>Area</th><th>Checked against</th><th>Agreement</th></tr></thead>
             <tbody>
-              <tr><td><strong>Readers</strong></td><td>Every column of 25 AIRR, Cell Ranger and immunoSEQ files as the <code>airr</code> library 2.0.0 and pandas 3.0.6 read it</td><td class="agree">every value</td></tr>
+              <tr><td><strong>Readers</strong></td><td>Every column of 35 AIRR, Cell Ranger, immunoSEQ, MiXCR, OAS, OTS and tcrdist3 files as the <code>airr</code> library 2.0.0 and pandas 3.1.0 read it</td><td class="agree">every value</td></tr>
               <tr><td><strong>Quality control</strong></td><td>An R implementation and iNEXT 3.0.2 on six bulk samples; Cell Ranger 4.0, 6.1 and 9.0's metrics for six runs; immunoSEQ's own clonality</td><td class="agree">to 10⁻¹²; exactly; to seven digits</td></tr>
               <tr><td><strong>Clonotypes</strong></td><td>scirpy 0.25.1 on eight Cell Ranger runs, by four definitions</td><td class="agree">the same partitions of cells</td></tr>
               <tr><td><strong>Diversity</strong></td><td>iNEXT 3.0.2, immunarch and vegan 2.7.6 on 18 samples</td><td class="agree">the measures seen to 10⁻⁹; the estimates to iNEXT's printed digits</td></tr>
@@ -305,6 +305,9 @@
               <tr><td><strong>Overlap</strong></td><td>immunarch, vegan and R on 69 pairs; scirpy 0.25.1 on four single-cell runs</td><td class="agree">to 10⁻⁹; the same shared clonotypes</td></tr>
               <tr><td><strong>Tests over time</strong></td><td>R's <code>binom.test</code> and <code>fisher.test</code> on 215 cases; an independent R implementation of the beta-binomial test and its fit</td><td class="agree">to 4 × 10⁻¹²; the same fit</td></tr>
               <tr><td><strong>Tracking, classes and attribution</strong></td><td>Simulated CAR-T, transplant and null series whose truth is known</td><td class="agree">no false call where nothing changes; every class right; a donor's share within 0.065</td></tr>
+              <tr><td><strong>TCRdist</strong></td><td>tcrdist3 0.3 on Dash et al. 2017's 2,339 epitope-specific clones, every pair</td><td class="agree">every distance</td></tr>
+              <tr><td><strong>Generation probabilities</strong></td><td>OLGA 1.3.0 under its seven models on 99,949 CDR3s; the simulator's own frequencies</td><td class="agree">to 3 × 10⁻¹⁵</td></tr>
+              <tr><td><strong>Neighborhoods</strong></td><td>tcrdist3 0.3's radii and enrichment on Dash et al.'s 415 human β chains against a weighted background</td><td class="agree">every centroid</td></tr>
               <tr><td><strong>Intervals</strong></td><td>Simulated repertoires whose truth is known: 200 samples of each, 330 pairs</td><td class="agree">diversity 91.5–99.5% where well sampled; usage 97.4–100%; overlap 95.2%</td></tr>
               <tr><td><strong>The simulator</strong></td><td>10x Genomics' 10k PBMC data's junction lengths and V usage</td><td class="agree">mean length within 0.1 amino acids</td></tr>
               <tr><td><strong>Scale</strong></td><td>A million rearrangements; a cohort of 100 samples; a million clonotypes</td><td class="agree">read and checked in 1.5 s; reopened in 118 ms; a page in 37 ms</td></tr>
@@ -329,7 +332,7 @@
               <tr><td><strong>0.1.0</strong></td><td>Trust the data: AIRR, Cell Ranger and immunoSEQ data read and checked, each sample's quality, clonotypes by an explicit definition, and a project that records where the data came from</td></tr>
               <tr><td><strong>0.2.0</strong></td><td>Repertoire basics: diversity, rarefaction and extrapolation, gene usage and junctions, and overlap, each with its uncertainty; figures, exports and other tools' tables; simulated studies and remote control</td></tr>
               <tr><td><strong>0.3.0</strong></td><td>Tracking: subjects and time points, clonotypes followed through a subject's samples, the clonotypes that expand or contract tested with false discoveries controlled (the beta-binomial test, its variance fitted on replicate samples), classes across time points, and attribution to an infusion product or a donor; the website</td></tr>
-              <tr><td><strong>0.4.0</strong> (coming)</td><td>Specificity: TCRdist and neighborhoods, generation probability, clonotype networks, and matching to known epitopes</td></tr>
+              <tr><td><strong>0.4.0</strong></td><td>Specificity: TCRdist and neighborhoods, generation probability, clonotype networks, matching to known epitopes, and invariant-population sequence rules</td></tr>
             </tbody>
           </table>
         </div>

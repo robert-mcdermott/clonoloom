@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Neighborhoods and backgrounds · ClonoLoom</title>
+  <meta name="description" content="Find the receptors around each of a dataset's receptors that a background does not explain in ClonoLoom, each radius controlled at a rate of the background, with their enrichment and motif." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/neighborhoods.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Neighborhoods and backgrounds" />
+  <meta property="og:description" content="Find the receptors around each of a dataset's receptors that a background does not explain in ClonoLoom, each radius controlled at a rate of the background, with their enrichment and motif." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/neighborhoods.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html" aria-current="page">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html">Specificity databases</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Neighborhoods and backgrounds</h1>
+      <p class="doc-lede">The Specificity view's Neighborhoods part gives each receptor the largest radius at which a background holds few enough receptors, and reports the dataset's receptors within it. A receptor recombination makes often takes a small radius; one it rarely makes can take a large one.</p>
+
+      <h2 id="neighborhoods">Each receptor as a centroid</h2>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/neighborhoods-dark.webp" width="2000" height="1250" loading="lazy" alt="The Specificity view's Neighborhoods part on the simulated vaccination study: a summary of the receptors compared against a background drawn from a recombination model, and a table of neighborhoods with their radius, receptors, abundance, enrichment and motif, the most enriched first" /><img class="shot-light" src="../assets/img/neighborhoods-light.webp" width="2000" height="1250" loading="lazy" alt="The Specificity view's Neighborhoods part on the simulated vaccination study: a summary of the receptors compared against a background drawn from a recombination model, and a table of neighborhoods with their radius, receptors, abundance, enrichment and motif, the most enriched first" /></div>
+        <figcaption>The simulated vaccination study's neighborhoods, the most enriched first. Choosing one shows its receptors, nearest first.</figcaption>
+      </figure>
+      <p>Open receptors, define clonotypes by amino-acid junction (<a href="clonotypes.html">Clonotypes</a>), and open <strong>Specificity › Neighborhoods</strong>. <strong>Find the neighborhoods</strong> compares every receptor of one locus with a background, as a job, and keeps the result with the project. For each receptor it reports:</p>
+      <ul>
+        <li><strong>Its radius</strong>: the largest of 0, 2, …, 48 TCRdist units at which the weighted background within it is at most a share of the background's receptors (10<sup>−6</sup> by default, Mayer-Blackwell et al.'s; tcrdist3's own default is 10<sup>−5</sup>).</li>
+        <li><strong>Its neighborhood</strong>: the dataset's receptors within that radius, the centroid counted. Choose one to see them, nearest first.</li>
+        <li><strong>Its enrichment</strong>: how much commoner the neighborhood is in the dataset than in the background, with an odds ratio and a χ² test. Enriched neighborhoods are shown first, by descending χ²; depleted ones follow, by ascending χ².</li>
+        <li><strong>Its motif</strong>: the residues its neighbors have at each position the distance compares, written as a pattern.</li>
+      </ul>
+      <p>Why a background at all: the receptors with the most neighbors in a repertoire are the ones recombination makes most easily, and they are the same in everybody. Giving each receptor a radius the background cannot fill leaves the neighborhoods that are unusual in <em>this</em> dataset.</p>
+
+      <h2 id="backgrounds">The backgrounds</h2>
+      <ul>
+        <li><strong>Drawn from a recombination model</strong> (the default): receptors drawn with the dataset's own V–J usage, so that the background has receptors with the right genes to be near the dataset's. Each is weighted by the model's own probability of its V–J pair over the dataset's share of it, so that the weighted background is the repertoire recombination alone would make: a receptor whose genes the dataset over-uses weighs less. The model is OLGA's for the locus, where downloaded, or ClonoLoom's own model of human TRB, built in (<a href="generation.html">Generation probabilities</a>).</li>
+        <li><strong>The dataset's own CDR3s, shuffled</strong>: every receptor keeps its V and J genes and takes another's CDR3. The genes and the CDR3s are those the dataset has, no longer together. It needs no model, and it is the stricter background where a dataset's CDR3s are unusual for reasons the model does not know.</li>
+      </ul>
+      <p>A background of 100,000 receptors is drawn by default. The V genes' loops are part of the distance, as they are for <a href="tcrdist.html">TCRdist</a>; a definition by V family, or without V, compares the CDR3s alone.</p>
+
+      <h2 id="reading">Reading a result</h2>
+      <p>The radius is chosen so that almost no background receptor lies within it, so a large <em>neighborhood</em> at a large radius is the signal, not the radius alone. The relative rate depends on how large the background is beside the dataset, so compare neighborhoods within one result rather than across results of different sizes; χ² accounts for both counts but measures differences in either direction, so the ordering also uses the direction of the relative rate.</p>
+      <p>The neighborhoods are of the dataset as you have defined and filtered it. Pooling many samples makes the CDR3s that several of them share abundant, so a pooled cohort gives many large, loose neighborhoods (the picture above, of a whole simulated study, is one); a single repertoire gives few and tight ones. The checks below were made on one sample.</p>
+      <p>Receptors this alike may recognize the same antigen, and a neighborhood is a hypothesis, not a specificity: it says these receptors are unusual together, not what they bind. Matching them to known epitopes comes in a later release.</p>
+
+      <h2 id="checks">How it is checked</h2>
+      <p>On Dash et al. 2017's 415 human epitope-specific β chains against a background of 5,204 OTS β chains with weights, every centroid's radius, its neighbors in the dataset and the background, and the rates, odds ratio and χ² computed from them equal tcrdist3 0.3's. On the simulated vaccination study, where every receptor's epitope is known, the twenty most enriched neighborhoods of a vaccinated subject's day-14 sample are all receptors of the vaccine's epitopes, and so is every one of the 149 receptors in them; in a subject given the placebo, which holds the same receptors but rare and unexpanded, none of the twenty is. Ten thousand receptors against a background of 100,000 take about 1.3 seconds on ten processors.</p>
+
+      <h2 id="use">Using the result</h2>
+      <p><strong>Export</strong> writes each centroid with its radius, neighborhood and enrichment (<code>neighborhoods.csv</code>) and each neighborhood's receptors with their distances (<code>members.csv</code>). The methods paragraph says how the background was made and how each radius was chosen. Scripts use <code>find_neighborhoods</code> (<a href="remote-control.html">Remote control</a>).</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="tcrdist.html"><span>Previous</span>Similar receptors (TCRdist)</a>
+        <a class="next" href="generation.html"><span>Next</span>Generation probabilities</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>
