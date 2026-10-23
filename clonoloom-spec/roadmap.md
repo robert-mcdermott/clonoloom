@@ -9,14 +9,14 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–4 are planned to the slice
-now; later waves are outlined and refined as they come.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–4 are complete; wave 5
+has a sequence of slices and a detailed plan for slice 1. Later slices are refined as they come.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
-2 and 3 are merged and released as 0.2.0 and 0.3.0; wave 4 (0.4.0) is implemented on `wave4`, with release preparation in slice 8;
-commit, CI, tag and publication remain maintainer actions.
+2–4 are merged and released as 0.2.0–0.4.0, and the 0.4.0 product site is published.
+Wave 5 is being planned on `wave5`; slice 1 is next, with no implementation yet.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -557,7 +557,7 @@ queries make a public cohort more than one example's files.
 | 5. Neighborhoods and backgrounds | Done |
 | 6. Clonotype networks | Done |
 | 7. Specificity databases | Done |
-| 8. Invariant populations and the examples; release 0.4.0 | Implemented; release pending |
+| 8. Invariant populations and the examples; release 0.4.0 | Done; released and site published |
 
 ### Decisions for wave 4
 
@@ -865,13 +865,137 @@ queries make a public cohort more than one example's files.
      Release 0.4.0's project fixture, version files, pictures and pages are prepared.
      Go race checks, amd64 compatibility, six platform builds, 80 JavaScript tests,
      14 accessibility checks and 104 site audit checks pass.
-     Commit, CI, tag and publication are left to the maintainer.
+     Completed: merged, CI passed, 0.4.0 released and its product site published by the maintainer.
+
+## 0.5.0: B cells (wave 5)
+
+A researcher opens annotated B-cell repertoires, checks which sequences can support the
+analysis, and follows clonal families, their mutations and isotypes through a study. Junction
+clonotypes remain the existing, explicit definitions; a B-cell clonal family is a separate,
+threshold-dependent result, not a replacement for those identifiers.
+
+Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
+before building on it, keep the source's identity with derived results, and test against
+independent values. ClonoLoom continues to compute every reported number in Go. The order below
+puts a simulation with known families before the analyses it validates. Only slice 1 is ready
+to implement; later slices need their methods, data and acceptance criteria settled in detail.
+
+| Slice | Status | Scope |
+| --- | --- | --- |
+| 1. B-cell sequence evidence | Next; planned below | Retain AIRR sequences, alignments and coordinates; inspect their availability and validity |
+| 2. IMGT/HighV-QUEST input | To come | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
+| 3. Simulated B-cell families | To come | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
+| 4. Clonal families | To come | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
+| 5. Germlines | To come | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
+| 6. Somatic hypermutation | To come | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
+| 7. Lineage trees | To come | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
+| 8. Isotypes and class switching | To come | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
+| 9. Examples and release 0.5.0 | To come | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
+
+### Slice 1: B-cell sequence evidence
+
+**Serves D5, D8, D11 and O3; prerequisite for B1 and B3.** These B-cell analyses remain planned
+after this slice. The deliverable is useful on its own: open an AIRR table, see which IGH, IGK
+and IGL rearrangements have sequence and alignment evidence, inspect a row and export the
+retained evidence. An absent or inconsistent alignment is a reason an analysis cannot use that
+row, not a reason to discard a valid junction from the existing repertoire analyses.
+
+**Why this comes first.** `internal/airr/schema.go` already types the alignment fields, but
+`internal/reads/airr.go` and `internal/rep` do not retain them. `internal/export` currently writes
+empty sequence, alignment and CIGAR fields. The B cells view is still a placeholder. Building
+mutation counts on this table would either lose the evidence or silently assume an alignment.
+
+1. **Retain a bounded set of AIRR evidence fields.** Extend `rep.Row`, `rep.Table` and its builder
+   with optional columns for `sequence`, `rev_comp`, `sequence_alignment`, `germline_alignment`,
+   `v_cigar`, `d_cigar`, `j_cigar`, the V/D/J sequence, germline and alignment start/end fields,
+   FWR1–4/CDR1–3 start/end fields, `np1_length`, `np2_length`, and `germline_database`.
+   Keep strings as supplied, including gaps and ambiguity symbols; interpretation uses a
+   separate checked representation. Store long sequences outside the gene-call dictionary.
+   Columns absent from the input allocate nothing; mixed files backfill missing values.
+   Existing non-AIRR readers continue to leave this evidence missing. Mapping OAS-specific
+   fields, legacy Change-O headers and raw IgBLAST output is outside this slice.
+2. **Keep coordinate systems distinct.** AIRR positions are 1-based closed intervals. Sequence,
+   germline and alignment coordinates name different strings; FWR/CDR coordinates refer to the
+   query sequence. Keep their names and values in the table and exports. Checked internal
+   slices may use zero-based half-open intervals, with the conversion in one tested place.
+   Missing, invalid and explicit zero lengths remain distinguishable. `rev_comp` is preserved;
+   do not reverse an already oriented alignment a second time. No positional mapping is inferred
+   by padding strings, assuming a full-length V gene, or treating the junction as a full VDJ.
+3. **Validate what is actually present.** Add stable findings with source, line, field, example
+   and remedy for invalid coordinates, reversed or out-of-bounds intervals, malformed CIGARs
+   and incompatible paired alignment lengths. Do not bounds-check germline coordinates against
+   the query or pretend the unprovided reference length is known. Parse CIGAR operations with
+   overflow and allocation bounds; apply AIRR's operation semantics rather than equating a
+   CIGAR span with a gapped string's length. Preserve the supplied evidence when invalid, but
+   refuse to use it as a checked alignment. A missing optional field is availability information,
+   not a warning for every row. Equal lengths alone do not establish IMGT numbering, valid
+   region mapping or a trustworthy germline. Cell Ranger's existing unequal alignment examples
+   must remain readable and show that limitation explicitly.
+4. **Cache and export without changing old results.** Extend the cache's column/store inventory,
+   decoding bounds and memory accounting. Increment `reads.ReaderVersion` and the cache layout
+   version when the retained layout changes; rebuild disposable caches from the checked sources.
+   Do not rewrite old artifacts or change the project archive version for an optional table
+   extension. Populate the AIRR export's existing evidence columns and append retained optional
+   coordinates deterministically, preserving missing values. Existing clone IDs, counts, filters
+   and single-cell chain selection stay the same. Correct the format guide's present claim that
+   exports re-read every other source column: arbitrary source-column round trips are not part
+   of this slice.
+5. **Make the evidence inspectable.** Replace the B cells placeholder with an Inputs part
+   (`api_bcells.go`, `web/ui/mode-bcells.js`, backed by a small `internal/bcell` package).
+   Show the active filter and definition, IGH/IGK/IGL row counts by sample, and separate counts
+   for sequence present, both alignments present, structurally valid paired alignments and
+   supplied region coordinates. Count rearrangements here, not cells or clonal families; any
+   abundance shown names its unit and denominator. These are evidence summaries, not a blanket
+   "ready for mutation" verdict. A paginated table opens the source sequence, alignments,
+   coordinates and findings in the inspector, linked by source identity and sequence ID even
+   when IDs repeat across files. Paginate from Go; do not send all sequences to the browser.
+   Reuse the existing dataset/filter and inspector patterns, with a remote action
+   `inspect_bcell_inputs` for the same summary and a bounded page. No new background job or
+   scientific artifact is needed for this deterministic inspection of an already opened table.
+6. **Example and documentation.** Supply a small labeled synthetic AIRR example with complete,
+   partial, ambiguous and invalid evidence, made by a committed script. Its guided steps open
+   B cells and inspect the reasons rows differ. Use the existing openly licensed B-cell AIRR
+   development files as real-format checks. Add the Inputs guide page and both-theme capture
+   scene, update `docs/FORMATS.md`, the README, remote-action documentation and requirements,
+   and add an unreleased changelog entry when implemented. Keep the released version at 0.4.0
+   until the wave's release-preparation slice.
+
+**Validation and exit criteria.**
+
+- Independent `airr`/CSV reads agree on every retained field and missing value in the selected
+  development files; commit the comparison script, tool version and reduced reference output.
+  Use `uv` for Python reference scripts. Synthetic coordinates have hand-calculated boundaries,
+  including reverse orientation, leading offsets, gaps, partial segments, ambiguity symbols,
+  missing endpoints, zero N/P lengths and hostile large integers/CIGAR operations.
+- Cache round trips retain every new column; old cache keys are not reused; corrupt optional
+  columns fail safely. AIRR export/re-import preserves the declared evidence fields. Source
+  checksums remain unchanged. Fuzz the new parsers and coordinate conversions.
+- Existing reader, QC, clonotype and export tests pass. Every released project fixture opens;
+  its existing artifact documents reproduce byte for byte on arm64 and amd64. A changed reader
+  version alone must not invalidate a saved scientific result whose inputs and method agree.
+- API and browser checks cover mixed T/B data, no B cells, missing evidence, filters, repeated
+  sequence IDs, paging, selection changes and remote inspection. The example's guided steps
+  work in both themes; accessibility checks and the site build pass.
+- Re-run the existing million-row read and page budgets and measure the added sequence memory
+  on a fixed synthetic AIRR dataset. Confirm no sequence columns are allocated for junction-only
+  inputs. Large reference regeneration stays outside per-commit CI; small reference checks run
+  in CI. Go race tests and `go vet`, JavaScript tests and six-platform builds remain required.
+
+**Sources and boundary.** The field and coordinate contract is the
+[AIRR Rearrangement schema 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html),
+with the older supported schemas still accepted (Vander Heiden et al. 2018, *Front Immunol*
+9:2206, doi:10.3389/fimmu.2018.02206). Before implementing the coordinate checks, pin the schema
+version and document each supported field's string and orientation convention in `research.md`.
+Change-O's public [germline documentation](https://changeo.readthedocs.io/en/stable/examples/germlines.html)
+motivates retaining the evidence needed by later reconstruction, but slice 1 reconstructs no
+germline and computes no mutation rate. No new germline download, inferred allele, family
+threshold, selection statistic or lineage algorithm belongs here. Future reference comparisons
+use tools as external programs; their source is neither inspected nor copied into ClonoLoom.
 
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 5 | 0.5.0 | B cells | Germline reconstruction, clonal families with thresholds from distance to nearest, mutation by region, parsimony trees, isotypes; immunization example |
 | 6 | 0.6.0 | Single cell | Expression linked by barcode, the map, phenotypes per clonotype, clonotype modularity and CoNGA-style analysis; AnnData, MuData and 10x matrices |
 | 7 | 0.7.0 | Cohorts and robustness | Study design, group comparisons with the subject as unit, robustness to the definition, GLIPH2-style groups, HLA association, contamination and batch QC, pseudobulk |
 | 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |
