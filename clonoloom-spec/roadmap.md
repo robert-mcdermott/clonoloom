@@ -555,7 +555,7 @@ queries make a public cohort more than one example's files.
 | 3. Generation probability | Done |
 | 4. Simulated antigen-specific responses | Done |
 | 5. Neighborhoods and backgrounds | Done |
-| 6. Clonotype networks | Next |
+| 6. Clonotype networks | Done |
 | 7. Specificity databases | To come |
 | 8. Invariant populations and the examples; release 0.4.0 | To come |
 
@@ -828,6 +828,12 @@ queries make a public cohort more than one example's files.
      without the same V gene; on the simulated vaccine study, each family's members in one cluster;
      the layout's bytes pinned on arm64 and amd64; a budget (the networks of 100,000 clonotypes in
      under 2 minutes on 10 cores).
+   - Completed: the analysis, full graph and cluster exports, deterministic bounded drawing,
+     Networks view and remote action. All 420 scirpy partitions agree with matched settings;
+     layout digest matches arm64 and amd64; the 100,000-node sparse synthetic budgets pass.
+     Simulation validation distinguishes thresholds: TCRdist 48 connects all 34 observed
+     families in S01 day 14; two edits connect 29, with five split (the simulator permits more
+     than two substitutions). See research.md §5.10 for exact semantics and limits.
 7. **Specificity databases (S5, T1).** VDJdb downloaded on request and read (`vdjdb.txt`, by its
    header's names); clonotypes matched exactly (the CDR3, with V and J or without) or within a
    TCRdist radius, with the epitope, antigen, species, MHC, score and reference; each sample's

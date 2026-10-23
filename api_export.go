@@ -253,6 +253,16 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		}
 		files["pgen.csv"] = func(f io.Writer) error { return export.Pgen(f, rows) }
 		files["samples.csv"] = func(f io.Writer) error { return export.PgenSamples(f, samples) }
+	case "networks":
+		var doc networkDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		notice.What = fmt.Sprintf("Clonotype networks of %s: %s at cutoff %d, %s chains; same V %t, same J %t. clusters.csv assigns every clonotype; edges.csv contains every edge, independent of the drawing limit. %s", ds.Name, doc.Options.Metric, doc.Options.Cutoff, doc.Options.Arms, doc.Options.SameV, doc.Options.SameJ, doc.Describe)
+		files["clusters.csv"] = func(f io.Writer) error { return export.NetworkMembership(f, doc.Clonotypes, doc.Graph, doc.Unit) }
+		files["edges.csv"] = func(f io.Writer) error { return export.NetworkEdges(f, doc.Clonotypes, doc.Graph) }
+
 	case "neighborhoods":
 		var doc neighborhoodDocument
 		if err := json.Unmarshal(raw, &doc); err != nil {

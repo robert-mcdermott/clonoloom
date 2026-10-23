@@ -111,6 +111,16 @@ var remoteActions = []remoteAction{
 		"top":      numberArg("How many of the clonotypes with the most neighbors to answer (default 10)."),
 		"select":   numberArg("A clonotype to show the nearest of, by its rank among those with the most neighbors (from 1)."),
 	})},
+	{Name: "find_networks", Title: "Find clonotype networks", Description: "Finds connected components of clonotypes joined within a sequence-distance cutoff, retaining all edges and memberships independently of the drawing. Shows Networks in Specificity and answers component counts. Options are kept with the dataset.", InputSchema: schema(map[string]any{
+		"dataset":  datasetArg,
+		"metric":   textArg("identity, hamming, levenshtein or tcrdist"),
+		"cutoff":   numberArg("0 for identity, 0–2 for edit distance, 0–1000 for TCRdist"),
+		"arms":     textArg("all retained chains or any shared chain"),
+		"sameV":    flagArg("Require the same V gene at the definition's resolution"),
+		"sameJ":    flagArg("Require the same J gene at the definition's resolution"),
+		"cdr3Only": flagArg("TCRdist on CDR3s alone"),
+		"select":   numberArg("Cluster number to select, from 1"),
+	})},
 	{Name: "find_neighborhoods", Title: "Find neighborhoods against a background", Description: "Shows the Specificity view's Neighborhoods part and finds, for each receptor of one locus, the largest radius at which a background holds few enough receptors and the dataset's receptors within it (a job; the result kept with the project), as Mayer-Blackwell et al. 2021 define a neighborhood. The background is drawn from a recombination model with the dataset's V and J usage, or made by moving the dataset's own CDR3s among its genes. The options given are kept with the dataset. Answers how many receptors have a neighborhood and the first by enrichment, each with its radius, its neighborhood's receptors, how much commoner it is than in the background, and its motif.", InputSchema: schema(map[string]any{
 		"dataset":      datasetArg,
 		"background":   textArg("model (drawn from a recombination model; the default) or shuffled (the dataset's own CDR3s moved among its genes)."),

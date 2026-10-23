@@ -20,6 +20,8 @@ Go tests in this folder check whole results against independent references (`go 
 | `TestPgenOfTheSimulatorsModel` | Under ClonoLoom's own model of human TRB, 200 junctions (chosen from a pilot run) as frequent among 20 million rearrangements of the simulator as their probabilities say (mean z near 0, mean squared z near 1); and the generator's receptors likewise | the simulator |
 | `TestGeneratorAgreesWithPgen` | Receptors drawn from OLGA's human TRB model as frequent as their probabilities say, relative to the junctions compared | `olga-models` |
 | `TestPgenWithinBudget` | A million TRB CDR3s' probabilities (productive ones ClonoLoom's generator draws from OLGA's human TRB model) within 2 minutes on 10 cores (not under the race detector) | `olga-models` |
+| `TestNetworksEqualScirpy` | All 420 complete cell partitions under identity, Hamming, Levenshtein and TCRdist, all/any arms and with/without V genes | `reference/networks.json`, made by `scirpy_networks.py`; eight 10x runs and three OTS units |
+| `TestNetworksConnectSimulatedFamilies` | All 34 observed families connected at TCRdist 48; 29 of 34 at two edits (97 observed members) | `simulated-vaccine/S01-d14.tsv` and its truth |
 | `TestNeighborhoodsEqualTCRdist3` | Every centroid's radius, its neighbors in the dataset and in the background, and the rates, odds ratio and χ² computed from them, equal to tcrdist3 0.3's `bkgd_cntl_nn2` on Dash et al. 2017's 415 human β chains against 5,204 OTS β chains with weights | `reference/tcrdist3_neighborhoods.json` (made by `reference/tcrdist3_neighborhoods.py`), `dash-2017-tcrdist3`, `ots-healthy-pbmc`, `tcrdist3-loops` |
 | `TestNeighborhoodsFindTheSimulatedFamilies` | On the simulated vaccination study against a background drawn from the model it was made with, the twenty most enriched neighborhoods of a vaccinated subject's day-14 sample are receptors of the vaccine's epitopes, and every receptor in them is; in a subject given the placebo, none is | `tcrdist3-loops` |
 | `TestNeighborhoodsWithinBudget` | Ten thousand receptors' neighborhoods against a background of 100,000 within 2 minutes on 10 cores (not under the race detector) | `ots-healthy-pbmc`, `tcrdist3-loops` |
@@ -43,3 +45,8 @@ Reference outputs are committed in `validation/reference/` with the script and t
 produced them. Public datasets are fetched and checksummed by `validation/fetch.mjs` into
 `validation/cache/`, which is never stored in the repository (clonoloom-spec/design.md,
 "Development data").
+
+Network layout bytes are pinned in `internal/network/graph_test.go`; run
+`go test ./internal/network -run TestGraphTCRdistAndLayout` on arm64 and amd64. The complete
+100,000-node sparse synthetic graph and drawing budget is measured with
+`go test ./internal/network -run '^$' -bench BenchmarkGraph100000 -benchtime=1x`.

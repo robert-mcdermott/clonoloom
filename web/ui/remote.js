@@ -5,6 +5,7 @@
 // same actions with their arguments (actions.go, GET /api/remote/tools); a Go test checks the two
 // lists agree. Adapted from SituCraft 0.9.0 web/ui/remote.js.
 
+import { networkOptions } from '../lib/networks.js';
 import { closeDialogs, toast } from './overlays.js';
 import { clonotypePresets } from './storage.js';
 import { showMethods } from './methods.js';
@@ -381,6 +382,31 @@ export function remoteActions(app) {
         data.selected = row(chosen);
       }
       return { message: `${d.name}: ${count(r.compared, 'clonotype')} compared by TCRdist; ${r.withNeighbors} have a neighbor within ${r.radius} (${done.artifact}).`, data };
+    },
+
+    async find_networks({ dataset, metric, cutoff, arms, sameV, sameJ, cdr3Only, select } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('networks');
+      const changes = {};
+      if (metric !== undefined) changes.metric = choose(metric, ['identity', 'hamming', 'levenshtein', 'tcrdist'], 'metric');
+      if (arms !== undefined) changes.arms = choose(arms, ['all', 'any'], 'arms');
+      if (cutoff !== undefined) {
+        if (!Number.isInteger(cutoff) || cutoff < 0 || cutoff > ((metric ?? networkOptions(d).metric) === 'tcrdist' ? 1000 : (metric ?? networkOptions(d).metric) === 'identity' ? 0 : 2)) throw new ActionError('Invalid network cutoff.');
+        changes.cutoff = cutoff;
+      }
+      for (const [key, value] of Object.entries({ sameV, sameJ, cdr3Only })) if (value !== undefined) changes[key] = Boolean(value);
+      if (Object.keys(changes).length) await view.chooseNetworks(changes);
+      await view.load(); await view.settled();
+      const state = view.networks();
+      if (['unsupported', 'no-loops', 'failed'].includes(state.status)) throw new ActionError(state.error ?? 'Choose a junction definition and download V-gene loops, or compare CDR3s alone.');
+      if (state.status === 'absent') await view.run('networks');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.networks().status) && view.networks(), 30 * 60 * 1000, 'the network');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      if (select !== undefined) view.selectCluster(Number(select));
+      return { message: `Found ${done.result.graph.components.length} connected components.`, data: { artifact: done.artifact, nodes: done.result.clonotypes.length, edges: done.result.graph.edges.length, components: done.result.graph.components.length } };
     },
 
     async find_neighborhoods({ dataset, background, locus, control, minNeighbors, order = 'enriched', top = 10, select }) {

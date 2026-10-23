@@ -16,6 +16,8 @@
 //     OLGA's models (the reference data olga-models) or ClonoLoom's own model of human TRB; each
 //     sample's distribution, and the clonotypes by abundance or probability.
 
+import { networkOptions, networkWords, useNetworks } from '../lib/networks.js';
+import { networkControls, networkResult } from './networks.js';
 import { h, icon, clear } from './dom.js';
 import { toast } from './overlays.js';
 import { columns, intervals } from '../lib/plot.js';
@@ -27,12 +29,12 @@ import { BACKGROUNDS, CENTER_ORDERS, CONTROL_RATES, MODELS, ORGANISMS, PGEN_ORDE
 import { exportable, madeBy } from './figures.js';
 import { exportResult } from './exports.js';
 
-const PARTS = { neighbors: 'Neighbors', neighborhoods: 'Neighborhoods', generation: 'Generation' };
+const PARTS = { neighbors: 'Neighbors', neighborhoods: 'Neighborhoods', generation: 'Generation', networks: 'Networks' };
 // The analysis each part shows, the part each opens in, its API, and what the head's button says.
-const KIND_OF = { neighbors: 'tcrdist', neighborhoods: 'neighborhoods', generation: 'pgen' };
-const PART_OF = { tcrdist: 'neighbors', neighborhoods: 'neighborhoods', pgen: 'generation' };
-const KINDS = ['tcrdist', 'neighborhoods', 'pgen'];
-const START = { tcrdist: 'Compare the receptors', neighborhoods: 'Find the neighborhoods', pgen: 'Compute the probabilities' };
+const KIND_OF = { neighbors: 'tcrdist', neighborhoods: 'neighborhoods', generation: 'pgen', networks: 'networks' };
+const PART_OF = { tcrdist: 'neighbors', neighborhoods: 'neighborhoods', pgen: 'generation', networks: 'networks' };
+const KINDS = ['tcrdist', 'neighborhoods', 'pgen', 'networks'];
+const START = { tcrdist: 'Compare the receptors', neighborhoods: 'Find the neighborhoods', pgen: 'Compute the probabilities', networks: 'Find the network' };
 const SHOWN = 100;
 
 const count = (n) => Number(n ?? 0).toLocaleString('en-US');
@@ -81,6 +83,7 @@ export function mountSpecificity(app, container) {
   let order = 'abundant';
   let centerBy = 'enriched';
   let selectedCenter = null;
+  let selectedCluster = null;
   let nearest = { status: 'idle' };
   let generation = 0;
   let latest = Promise.resolve();
@@ -93,7 +96,8 @@ export function mountSpecificity(app, container) {
   const request = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, tcrdist: tcrdistRequest(spec.options), ...extra });
   const pgenBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, pgen: pgenRequest(spec.pgen), ...extra });
   const hoodBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, neighborhoods: neighborhoodRequest(spec.neighborhoods), ...extra });
-  const bodyOf = (kind, extra) => (kind === 'pgen' ? pgenBody(extra) : kind === 'neighborhoods' ? hoodBody(extra) : request(extra));
+  const networkBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, networks: spec.networks, subjects: Object.fromEntries((store.project.samples ?? []).filter((s) => s.dataset === spec.dataset).map((s) => [s.sample, s.fields?.subject ?? ''])), ...extra });
+  const bodyOf = (kind, extra) => (kind === 'networks' ? networkBody(extra) : kind === 'pgen' ? pgenBody(extra) : kind === 'neighborhoods' ? hoodBody(extra) : request(extra));
 
   function load() {
     latest = reload();
@@ -122,7 +126,7 @@ export function mountSpecificity(app, container) {
       if (mine !== generation) return;
       const loci = Object.keys(open.summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
       const filter = datasetFilter(store.project, d);
-      spec = { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, options: tcrdistOptions(d), pgen: pgenOptions(d), neighborhoods: neighborhoodOptions(d), loci };
+      spec = { dataset: d.id, definition: datasetDefinition(d, loci), filter: filter?.rules ?? {}, filterRecord: filter, options: tcrdistOptions(d), pgen: pgenOptions(d), neighborhoods: neighborhoodOptions(d), networks: networkOptions(d), loci };
       state = { status: 'ready', dataset: d.id, summary: open.summary };
     } catch (error) {
       if (mine !== generation) return;
@@ -138,7 +142,7 @@ export function mountSpecificity(app, container) {
   // Why an analysis cannot run on the dataset as defined, or null.
   function unsupported(kind) {
     if (spec.definition.vendor) return 'vendor';
-    if (kind === 'pgen') return null;
+    if (kind === 'pgen' || (kind === 'networks' && spec.networks.metric !== 'tcrdist')) return null;
     if ((spec.definition.junction ?? 'aa') !== 'aa') return 'aa';
     if (kind === 'neighborhoods') return null;
     if (!spec.loci.some((l) => l.startsWith('TR'))) return 'tcells';
@@ -174,6 +178,16 @@ export function mountSpecificity(app, container) {
   function keep(d, kind, read) {
     if (store.project.artifacts.some((a) => a.id === read.artifact.id)) return;
     const r = read.result;
+    if (kind === 'networks') {
+      store.commit(addResult(store.project, {
+        id: read.artifact.id, kind, dataset: d.id, definition: spec.definition.name ?? '', describe: r.describe,
+        filter: spec.filterRecord ? `${spec.filterRecord.name} v${spec.filterRecord.version}` : null,
+        made: read.artifact.created, unit: r.unit, name: `Networks · ${d.name}`, method: networkWords(r.networks),
+        networks: r.networks, nodes: r.clonotypes.length, edges: r.graph.edges.length, components: r.graph.components.length,
+        loops: r.loops, organism: r.graph.organism,
+      }), `Find the network of ${d.name}`, ['project']);
+      return;
+    }
     if (kind === 'neighborhoods') {
       store.commit(addResult(store.project, {
         id: read.artifact.id, kind: 'neighborhoods', dataset: d.id, definition: spec.definition.name ?? '',
@@ -233,7 +247,7 @@ export function mountSpecificity(app, container) {
         return;
       }
       results[kind] = { status: 'running', artifact: answer.artifact, job: answer.job };
-      app.log(kind === 'pgen'
+      app.log(kind === 'networks' ? `Find the network of ${d.name}: ${networkWords(spec.networks)}.` : kind === 'pgen'
         ? `Compute the generation probabilities of ${d.name}: ${pgenWords(spec.pgen)}.`
         : kind === 'neighborhoods'
           ? `Find the neighborhoods of ${d.name}: ${neighborhoodWords(spec.neighborhoods)}.`
@@ -265,6 +279,13 @@ export function mountSpecificity(app, container) {
     if (next === store.project) return;
     store.commit(next, `Choose how the neighborhoods of ${d.name} are found`);
   }
+  function chooseNetworks(changes) {
+    const d = dataset();
+    if (!d) return;
+    const next = useNetworks(store.project, d.id, changes);
+    if (next !== store.project) store.commit(next, `Choose the network of ${d.name}`);
+  }
+
   function choosePgen(changes) {
     const d = dataset();
     if (!d) return;
@@ -372,6 +393,15 @@ export function mountSpecificity(app, container) {
         vendor: `${kind === 'pgen' ? 'Generation probabilities need' : 'TCRdist needs'} clonotypes defined by their junctions, not by the source's own clonotypes: choose another definition in the Clonotypes view.`,
       };
       body.append(h('div.callout', h('p', words[result.why])));
+      return;
+    }
+    if (kind === 'networks') {
+      body.append(networkControls(spec.networks, chooseNetworks));
+      if (result.status === 'ready') body.append(networkResult(result.result, selectedCluster, (id) => { selectedCluster = id; render(); }, showInClonotypes));
+      else if (result.status === 'failed') body.append(h('div.callout.danger', result.error));
+      else if (result.status === 'no-loops') body.append(h('button.btn', { type: 'button', onclick: () => app.showReferences() }, 'Download V-gene loops in Reference data…'));
+      else if (result.status === 'absent') body.append(h('p', 'Join clonotypes within a sequence-distance cutoff and find connected components. Choose Find the network to begin.'));
+      else body.append(h('p.muted', result.status === 'running' ? app.jobs.get(result.job)?.message ?? 'Finding the network…' : 'Reading…'));
       return;
     }
     if (kind === 'pgen') {
@@ -685,9 +715,10 @@ export function mountSpecificity(app, container) {
   let shownChoices = '';
   const choices = () => {
     const d = dataset();
-    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d?.tcrdist ?? null, d?.pgen ?? null, d?.neighborhoods ?? null]);
+    return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d?.tcrdist ?? null, d?.pgen ?? null, d?.neighborhoods ?? null, d?.networks ?? null, store.project.samples]);
   };
   function update(topics) {
+    if (topics.has('theme') && part === 'networks') render();
     if (topics.has('jobs') && results[KIND_OF[part]].status === 'running') render();
     if (topics.has('focus')) {
       const r = store.ui.focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === store.ui.focus.id) : null;
@@ -718,7 +749,7 @@ export function mountSpecificity(app, container) {
     const ready = list.some((e) => e.name === 'olga-models' && e.state === 'ready');
     const changed = ready !== olgaReady;
     olgaReady = ready;
-    if (results.tcrdist.status === 'no-loops' && list.some((e) => e.name === 'tcrdist3-loops' && e.state === 'ready')) load();
+    if ((results.tcrdist.status === 'no-loops' || results.networks.status === 'no-loops') && list.some((e) => e.name === 'tcrdist3-loops' && e.state === 'ready')) load();
     else if (changed && spec && !spec.pgen.models) load();
     else if (results.pgen.status === 'no-models' && ready) load();
   });
@@ -739,6 +770,9 @@ export function mountSpecificity(app, container) {
       choosePgen(changes);
       return settled();
     },
+    networks: () => results.networks,
+    chooseNetworks: (changes) => { chooseNetworks(changes); return settled(); },
+    selectCluster: (id) => { selectedCluster = id; render(); },
     neighborhoods: () => results.neighborhoods,
     chooseNeighborhoods: (changes) => {
       chooseNeighborhoods(changes);

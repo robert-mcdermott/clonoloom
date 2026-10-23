@@ -242,9 +242,21 @@ const scenes = {
     await waitFor(`Boolean(document.querySelector('.specificity-view .nearest table'))`);
     await js(`(() => { const el = document.querySelector('.specificity-view .plot-card'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
   },
-  // The simulated vaccination study's neighborhoods against a background drawn from OLGA's human
-  // TRB model (the reference data put in the library, as a download leaves them), the most
-  // enriched first.
+  // A simulated sample's network, with the complete graph and bounded drawing.
+  async networks() {
+    await act('open_data', { paths: [join(DATA, 'simulated-vaccine/S01-d14.tsv')], name: 'Simulated vaccination · S01, day 14' });
+    const result = await act('find_networks', { metric: 'levenshtein', cutoff: 2, sameV: true, sameJ: true, select: 1 });
+    if (result.data?.nodes !== 7658 || result.data?.edges !== 1176) throw new Error('Network remote action returned incorrect counts');
+    await waitFor(`Boolean(document.querySelector('.specificity-view canvas'))`);
+    // Check bounded cluster navigation and a member's link before capturing.
+    await js(`(() => { const input = document.querySelector('input[aria-label="Cluster number"]'); input.value = '201'; input.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+    await waitFor(`document.querySelector('select[aria-label="Cluster"]').value === '201'`);
+    await js(`document.querySelector('.specificity-view table tbody button').click()`);
+    await waitFor(`window.clonoloom.store.ui.mode === 'clonotypes'`);
+    await act('find_networks', { select: 1 });
+    await waitFor(`Boolean(document.querySelector('.specificity-view canvas'))`);
+  },
+  // Neighborhoods against a background drawn from OLGA's human TRB model.
   async neighborhoods() {
     cpSync(join(DATA, 'tcrdist3-loops'), join(places.library, 'references', 'tcrdist3-loops'), { recursive: true });
     cpSync(join(DATA, 'olga-models'), join(places.library, 'references', 'olga-models'), { recursive: true });

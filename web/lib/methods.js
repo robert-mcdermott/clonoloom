@@ -301,5 +301,13 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     sentences.push(`Each ${r.locus} receptor (${under}) was taken as the centre of a neighborhood by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} as Mayer-Blackwell et al. define one ${cite('tcrdist3')}: its radius the largest of 0, 2, …, ${r.maxRadius ?? 48} TCRdist units ${cite('dash')} at which the weighted background within it was at most a share ${r.control ?? 1e-6} of the background's receptors, against a background of ${background}, comparing ${loops}. Of ${plural(r.receptors ?? 0, 'receptor')}, ${count(r.centers ?? 0)} had a neighborhood of ${r.minNeighbors ?? 2} receptors or more, each reported with the rates (n + 1)/(N + 2) in the dataset and the background, their ratio, an odds ratio and a χ² test.`);
   }
 
+  for (const r of results.filter((x) => x.kind === 'networks')) {
+    const o = r.networks;
+    const distance = o.metric === 'tcrdist'
+      ? `TCRdist ${cite('dash')} with the gap searched ${cite('tcrdist3')}, ${o.cdr3Only ? 'CDR3s alone' : `including V-gene loops (${r.organism}, SHA-256 ${r.loops?.sha256 ?? ''})`}`
+      : o.metric === 'levenshtein' ? `Levenshtein distance ${cite('levenshtein', 'Levenshtein VI. Binary codes capable of correcting deletions, insertions, and reversals. Soviet Physics Doklady. 1966;10:707–710.')}, on whole junctions` : `${o.metric} on whole junctions`;
+    sentences.push(`A clonotype network (${r.describe || r.definition}) joined ${r.nodes} clonotypes by ${distance} at cutoff ${o.cutoff}, requiring ${o.arms === 'all' ? 'a bijection of all retained chains at each locus (missing matching missing only)' : 'any shared chain at the same locus'}${o.sameV ? ', with matching V calls' : ''}${o.sameJ ? ', with matching J calls' : ''}. The ${r.edges} edges formed ${r.components} connected components. Components express sequence similarity, not proven antigen specificity. A deterministic force drawing ${cite('forceDrawing', 'Fruchterman TMJ, Reingold EM. Graph drawing by force-directed placement. Software: Practice and Experience. 1991;21:1129–1164. doi:10.1002/spe.4380211102')} used a fixed grid start and 60 iterations, with a drawing limit independent of the complete graph.`);
+  }
+
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };
 }

@@ -244,3 +244,17 @@ test('a simulated series says it was sampled over time, and how its reference wa
   const standard = { samples: [{ name: 'S01-1', repertoire: { repertoireId: 'S01-1', studyId: 'clonoloom-simulated-standard', studyTitle: 'A simulated TRB study' } }], sources: [{}] };
   assert.doesNotMatch(methodsParagraph({ dataset, summary: standard, program }).text, /time points/);
 });
+
+test('network methods carry chain rules, thresholds and source citations', () => {
+  const { text, references } = methodsParagraph({ dataset: pbmc, program,
+    results: [{ kind: 'networks', describe: 'paired amino-acid junctions', nodes: 10, edges: 6, components: 4,
+      networks: { metric: 'levenshtein', cutoff: 2, arms: 'all', sameV: true } }],
+  });
+  assert.match(text, /Levenshtein distance/);
+  assert.match(text, /cutoff 2/);
+  assert.match(text, /bijection of all retained chains at each locus/);
+  assert.match(text, /6 edges formed 4 connected components/);
+  assert.match(text, /not proven antigen specificity/);
+  assert.ok(references.some((r) => r.includes('Levenshtein VI')));
+  assert.ok(references.some((r) => r.includes('Fruchterman')));
+});

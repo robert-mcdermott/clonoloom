@@ -7,13 +7,22 @@ grows with each.
 
 ### Added
 
-- **Sequence search for clonotype networks (wave 4, slice 6, in progress).**
-  `internal/network` streams exact identity, Hamming and Levenshtein neighbors at cutoffs 0–2,
-  using a junction hash, matching segments or deletion signatures to find candidates, then
-  checking their distances. Deterministic ordering, cancellation and an explicit index budget;
-  checked against exhaustive distances on short strings, duplicates and junction examples.
-  This is the search foundation; network analyses, clustering, layout and the view are not yet
-  available.
+- **Clonotype networks (wave 4, slice 6).** Specificity's fourth part, Networks:
+  - identity, Hamming and Levenshtein on whole junctions, or TCRdist on CDR3s alone or with
+    downloaded V-gene loops; all retained chains or any shared chain, optionally matching V/J;
+  - complete edges and connected components, with clonotypes, abundance, samples and annotated
+    subjects; deterministic force drawing with a separate limit of 1,000 nodes (up to 2,000);
+    cluster selection and links to Clonotypes; complete membership and edge CSV exports;
+  - immutable results with effective options and reference checksums, methods text and citations,
+    remote control's `find_networks`, a guide and screenshots in both themes;
+  - exact indexed sequence searches, length-and-loop pruning for TCRdist, cancellation and explicit
+    index, candidate and edge budgets; exceeding a budget fails rather than truncating the graph.
+  - Validated: all 420 complete cell partitions equal scirpy 0.25.1 on eight 10x runs and three OTS
+    units, with matched gene resolution and TCRdist gap cost; all 34 observed simulated families
+    connected at TCRdist 48 in S01's day-14 repertoire (29 of 34 at two edits); layout bytes equal
+    on arm64 and amd64. Complete sparse synthetic 100,000-node graphs and drawing take 0.14 s
+    (identity), 4.16 s (Hamming 2), 2.97 s (Levenshtein 2), and 69.03 s (TCRdist 24) on an Apple M4,
+    within the two-minute budget; these timings are not a guarantee for dense graphs.
 - **Neighborhoods and backgrounds (wave 4, slice 5).** The Specificity view's Neighborhoods part
   (`internal/neighborhood`, `api_neighborhoods.go`):
   - each receptor of one locus as a centroid, its radius the largest of 0, 2, …, 48 TCRdist units

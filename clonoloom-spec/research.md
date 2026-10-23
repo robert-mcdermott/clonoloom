@@ -693,7 +693,7 @@ compare the figure with another study's, without the text.
   (OLGA 1.2.4 and 1.3.0 give different IGH, IGK and IGL probabilities), so the model's version and
   checksum are part of every result.
 
-### 5.10 Clonotype networks (wave 4, in progress)
+### 5.10 Clonotype networks (wave 4)
 
 The sequence-search foundation in `internal/network/pairs.go` compares whole junctions, including
 their conserved anchors. Identity requires equality; Hamming counts substitutions between equal
@@ -720,12 +720,52 @@ These bounds are engineering choices, not biological thresholds. Unit tests comp
 of all binary-alphabet strings of lengths 1–6 with an independent full-matrix calculation, as
 well as duplicate junctions, receptor examples, cancellation and budget failures.
 
-For the planned chain matching, scirpy 0.25.1 documents `receptor_arms="all"` as the maximum of
-the arm distances, and `"any"` as their minimum; `dual_ir` is a separate choice for additional
-chains. This differs from summing paired TCRdist distances in the Neighbors analysis
-([scirpy's API](https://scirpy.scverse.org/en/v0.25.1/generated/scirpy.tl.define_clonotype_clusters.html)).
-Chain matching, TCRdist edges, connected components, layout, the view and scirpy partition
-validation remain to be implemented; the sequence-search tests do not establish their agreement.
+Chain matching uses the maximum for `all`, the minimum for `any`, as
+[scirpy's API](https://scirpy.scverse.org/en/v0.25.1/generated/scirpy.tl.define_clonotype_clusters.html)
+describes for receptor arms. This differs from summing paired TCRdist distances in Neighbors.
+ClonoLoom's choices are explicit: chains must have the same locus (IGK and IGL remain distinct);
+`all` requires a bijection of every retained chain, with a minimum bottleneck found by bipartite
+augmenting paths, while `any` needs one shared chain. Extra chains in an `all` cell definition
+are retained, not reduced to the primary chain. Missing matches missing only under `all`.
+Gene restrictions compare nonempty calls at the definition's gene or allele resolution; a
+missing call cannot satisfy a same-gene restriction. Definitions at family resolution cannot
+request a gene match. The scirpy comparisons use primary chains, not its default dual-IR policy.
+
+TCRdist uses the established implementation (§5.9), with a length difference cost of 12 and the
+V-loop distance as lower bounds. All clonotypes remain nodes: non-T-cell receptors and receptors
+without required V loops are explicitly counted and left isolated for TCRdist. Loop checksums
+and inferred alleles travel with the result. Sequence pairs are mapped back to their owning
+clonotypes; candidate pairs are limited to 10 million and edges to 2 million. Every budget
+failure discards the partial result. Connected components use disjoint sets with path compression
+(Tarjan 1975, *J ACM* 22:215–225, [doi:10.1145/321879.321884](https://doi.org/10.1145/321879.321884)),
+sorted by node count, then their first node in the stable clonotype table. Abundance sums follow
+that order. Samples and annotated subjects are distinct sets, sorted before serialization.
+
+The drawing is inspired by Fruchterman and Reingold (1991, *Software: Practice and Experience*
+21:1129–1164, [doi:10.1002/spe.4380211102](https://doi.org/10.1002/spe.4380211102)), with ClonoLoom's
+own fixed grid start, inverse-squared repulsion, linear edge attraction, bounded updates for
+60 iterations and shelf packing with a width derived from the occupied area (target aspect 16:9). It draws components largest first, taking a prefix of an
+oversized component when necessary, with all omitted nodes counted. The default is 1,000 nodes,
+maximum 2,000; layout never changes scientific edges, memberships or exports. Coordinates carry
+no scientific distance meaning. Products are rounded explicitly before accumulation, and layout
+bytes are pinned on arm64 and amd64.
+
+`validation/reference/scirpy_networks.py` runs scirpy 0.25.1 as a black box on eight 10x runs and
+three OTS units. All 420 cell partitions agree: identity; Hamming and Levenshtein at 0, 1, 2;
+TCRdist at 0, 12, 24, 48 on T-cell data; all/any arms, with/without V genes. OTS calls are
+normalized to genes, matching the definition; TCRdist explicitly searches the gap and charges
+12 per length difference, rather than scirpy's default of 4. At zero TCRdist, scirpy is asked
+for cutoff 1 (distances are multiples of 3) to avoid its automatic substitution of identity.
+On the simulated vaccination S01 day-14 repertoire, 97 observed members of 34 founder families
+are all connected within their families at TCRdist 48 with same V and J. At two Hamming or
+Levenshtein edits, 29 families connect and five split: the simulator's Poisson substitution
+count is not bounded by two, and an unobserved intermediate cannot connect two nodes. Neither
+family recovery nor connectedness proves a shared specificity or purity of the components.
+
+`BenchmarkGraph100000` measures the whole sparse synthetic graph plus drawing: 0.14 s identity,
+4.16 s Hamming 2, 2.97 s Levenshtein 2, 69.03 s TCRdist 24 on Apple M4. Dense inputs are subject
+to the explicit budgets; the benchmark does not claim every threshold on every dataset finishes
+within two minutes.
 
 ## 6. Datasets
 
