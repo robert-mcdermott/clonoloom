@@ -7,6 +7,13 @@ grows with each.
 
 ### Added
 
+- **Sequence search for clonotype networks (wave 4, slice 6, in progress).**
+  `internal/network` streams exact identity, Hamming and Levenshtein neighbors at cutoffs 0–2,
+  using a junction hash, matching segments or deletion signatures to find candidates, then
+  checking their distances. Deterministic ordering, cancellation and an explicit index budget;
+  checked against exhaustive distances on short strings, duplicates and junction examples.
+  This is the search foundation; network analyses, clustering, layout and the view are not yet
+  available.
 - **Neighborhoods and backgrounds (wave 4, slice 5).** The Specificity view's Neighborhoods part
   (`internal/neighborhood`, `api_neighborhoods.go`):
   - each receptor of one locus as a centroid, its radius the largest of 0, 2, …, 48 TCRdist units
@@ -126,6 +133,16 @@ grows with each.
 
 ### Fixed
 
+- A neighborhood depleted relative to its background could rank above enriched ones because χ²
+  is two-sided. Enriched neighborhoods now precede depleted ones; the rates and χ² values are
+  unchanged. The browser uses the same ordering and describes a relative rate below one correctly.
+- Background draws from VJ recombination models now preserve the joint distribution of the
+  requested genes' alleles. Independent draws from the marginals could produce a pair with zero
+  model probability. Such pairs are now refused. Neighborhood method version 2 gives corrected
+  results new artifact IDs, preserving results already kept. Interrupted jobs of an earlier
+  method require a new analysis rather than writing changed answers under an old artifact ID.
+- Cancelling background generation is observed while drawing a gene pair, including when
+  unproductive draws are rejected, instead of waiting until the next pair.
 - In the clonotype table, a paired clonotype's long α junction no longer runs over its β chain:
   each junction is cut with an ellipsis (the inspector shows them whole).
 - The methods paragraph now says how the clonotypes were compared by TCRdist (the Methods dialog

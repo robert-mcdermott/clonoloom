@@ -25,7 +25,7 @@ import (
 	"clonoloom/internal/tcrdist"
 )
 
-var neighborhoodAnalysis = analysis{kind: "neighborhoods", prefix: "nbh-", version: 1, title: "Neighborhoods", over: "neighborhoods",
+var neighborhoodAnalysis = analysis{kind: "neighborhoods", prefix: "nbh-", version: 2, title: "Neighborhoods", over: "neighborhoods",
 	work: (*app).neighborhoodWork, prepare: (*app).neighborhoodPrepare}
 
 // backgroundSize is how many receptors a drawn background holds by default (Mayer-Blackwell et

@@ -9,7 +9,7 @@ lede: The Specificity view's Neighborhoods part gives each receptor the largest 
       <ul>
         <li><strong>Its radius</strong>: the largest of 0, 2, …, 48 TCRdist units at which the weighted background within it is at most a share of the background's receptors (10<sup>−6</sup> by default, Mayer-Blackwell et al.'s; tcrdist3's own default is 10<sup>−5</sup>).</li>
         <li><strong>Its neighborhood</strong>: the dataset's receptors within that radius, the centroid counted. Choose one to see them, nearest first.</li>
-        <li><strong>Its enrichment</strong>: how much commoner the neighborhood is in the dataset than in the background, with an odds ratio and a χ² test. The neighborhoods are shown most enriched first, by χ².</li>
+        <li><strong>Its enrichment</strong>: how much commoner the neighborhood is in the dataset than in the background, with an odds ratio and a χ² test. Enriched neighborhoods are shown first, by descending χ²; depleted ones follow, by ascending χ².</li>
         <li><strong>Its motif</strong>: the residues its neighbors have at each position the distance compares, written as a pattern.</li>
       </ul>
       <p>Why a background at all: the receptors with the most neighbors in a repertoire are the ones recombination makes most easily, and they are the same in everybody. Giving each receptor a radius the background cannot fill leaves the neighborhoods that are unusual in <em>this</em> dataset.</p>
@@ -22,7 +22,7 @@ lede: The Specificity view's Neighborhoods part gives each receptor the largest 
       <p>A background of 100,000 receptors is drawn by default. The V genes' loops are part of the distance, as they are for <a href="tcrdist.html">TCRdist</a>; a definition by V family, or without V, compares the CDR3s alone.</p>
 
       <h2 id="reading">Reading a result</h2>
-      <p>The radius is chosen so that almost no background receptor lies within it, so a large <em>neighborhood</em> at a large radius is the signal, not the radius alone. The relative rate depends on how large the background is beside the dataset, so compare neighborhoods within one result rather than across results of different sizes; the χ² the table orders by accounts for both counts.</p>
+      <p>The radius is chosen so that almost no background receptor lies within it, so a large <em>neighborhood</em> at a large radius is the signal, not the radius alone. The relative rate depends on how large the background is beside the dataset, so compare neighborhoods within one result rather than across results of different sizes; χ² accounts for both counts but measures differences in either direction, so the ordering also uses the direction of the relative rate.</p>
       <p>The neighborhoods are of the dataset as you have defined and filtered it. Pooling many samples makes the CDR3s that several of them share abundant, so a pooled cohort gives many large, loose neighborhoods (the picture above, of a whole simulated study, is one); a single repertoire gives few and tight ones. The checks below were made on one sample.</p>
       <p>Receptors this alike may recognize the same antigen, and a neighborhood is a hypothesis, not a specificity: it says these receptors are unusual together, not what they bind. Matching them to known epitopes comes in a later release.</p>
 

@@ -384,8 +384,11 @@ func Find(ctx context.Context, sample, background *Repertoire, loops *tcrdist.Lo
 		}
 	}
 	sort.SliceStable(res.Centers, func(x, y int) bool {
-		if res.Centers[x].ChiSquare != res.Centers[y].ChiSquare {
-			return res.Centers[x].ChiSquare > res.Centers[y].ChiSquare
+		if a, b := res.Centers[x].RelativeRate < 1, res.Centers[y].RelativeRate < 1; a != b {
+			return !a
+		}
+		if a, b := enrichmentScore(res.Centers[x]), enrichmentScore(res.Centers[y]); a != b {
+			return a > b
 		}
 		return res.Centers[x].Receptor < res.Centers[y].Receptor
 	})
@@ -393,6 +396,15 @@ func Find(ctx context.Context, sample, background *Repertoire, loops *tcrdist.Lo
 		res.Organism = ""
 	}
 	return res, nil
+}
+
+// The two-sided χ² measures departure in either direction. Rank enrichment first, then lack
+// of a difference, then depletion. Keep the reported statistic unchanged for reference checks.
+func enrichmentScore(c Center) float64 {
+	if c.RelativeRate < 1 {
+		return -c.ChiSquare
+	}
+	return c.ChiSquare
 }
 
 // summarize fills a center's abundance, samples and enrichment.

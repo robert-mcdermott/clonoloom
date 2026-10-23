@@ -804,6 +804,30 @@ queries make a public cohort more than one example's files.
    on every computer; the Specificity view's Network part, linked to the clonotype table; exports.
    - Validation: clusters equal to scirpy's (`define_clonotype_clusters`) on 10x and OTS data under
      each metric scirpy offers; the simulated families found as clusters.
+   - Plan: `internal/network`. The nodes are the dataset's clonotypes under its definition; two are
+     joined when their junctions are within a cutoff by a metric: identity, Hamming or Levenshtein
+     (0 to 2, scirpy's cutoffs) or TCRdist (the CDR3s alone, or with the V genes' loops where they
+     are downloaded). A pair definition joins clonotypes on `all` their chains (a missing chain
+     matching only a missing one, as scirpy's `receptor_arms="all"` does) or on `any` chain both
+     have; the same V (or J) gene may be required too. The pairs within the cutoff are found per
+     chain among the unique junctions, without comparing every pair: a hash for identity, segments
+     that must agree for Hamming (pigeonhole), deletion neighborhoods for Levenshtein, and the
+     length-and-loops lower bound for TCRdist; then the clonotypes that hold them are joined.
+     - *Clusters*: the connected components (union–find), each with its clonotypes, abundance,
+       samples and subjects, the largest first.
+     - *Layout*: each cluster drawn by a force-directed layout from a fixed start, its float
+       arithmetic rounded as N7 requires, so that the picture is the same on every computer; the
+       clusters packed largest first, up to a number of nodes the page can draw.
+     - *The view*: the Specificity view's fourth part, Networks: the metric and cutoff, the drawing
+       (nodes sized by abundance), the clusters with their sizes and samples, a chosen cluster's
+       clonotypes linked to the Clonotypes view; exports of each clonotype's cluster and the
+       edges.
+   - Validation (as planned): every partition equal to scirpy 0.25.1's on the 10x runs and the OTS
+     units, under identity, Hamming and Levenshtein at each cutoff, and TCRdist on the CDR3s (scirpy's
+     calculator with its gap searched, as tcrdist3 places it), `receptor_arms` all and any, with and
+     without the same V gene; on the simulated vaccine study, each family's members in one cluster;
+     the layout's bytes pinned on arm64 and amd64; a budget (the networks of 100,000 clonotypes in
+     under 2 minutes on 10 cores).
 7. **Specificity databases (S5, T1).** VDJdb downloaded on request and read (`vdjdb.txt`, by its
    header's names); clonotypes matched exactly (the CDR3, with V and J or without) or within a
    TCRdist radius, with the epitope, antigen, species, MHC, score and reference; each sample's

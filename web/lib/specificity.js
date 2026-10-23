@@ -213,7 +213,7 @@ export function neighborhoodWords(o) {
 // background, and how much of the background its radius holds.
 export function enrichmentWords(row) {
   const times = row.relativeRate >= 100 ? Math.round(row.relativeRate) : Number(row.relativeRate.toPrecision(2));
-  return `${times.toLocaleString('en-US')}× commoner than in the background`;
+  return `${times.toLocaleString('en-US')}× as common as in the background`;
 }
 
 // The centroids in the order chosen: 'enriched' (the most enriched first, as the program answers
@@ -221,7 +221,8 @@ export function enrichmentWords(row) {
 // molecules first).
 export const CENTER_ORDERS = { enriched: 'Most enriched', neighbors: 'Largest', abundant: 'Most abundant' };
 export function centerOrder(rows, by = 'enriched') {
-  const tie = (a, b) => b.chiSquare - a.chiSquare || (a.id < b.id ? -1 : 1);
+  const score = (r) => (r.relativeRate < 1 ? -r.chiSquare : r.chiSquare);
+  const tie = (a, b) => Number(a.relativeRate < 1) - Number(b.relativeRate < 1) || score(b) - score(a) || (a.id < b.id ? -1 : 1);
   return [...rows].sort((a, b) => {
     if (by === 'neighbors') return b.neighbors - a.neighbors || tie(a, b);
     if (by === 'abundant') return b.abundance - a.abundance || tie(a, b);

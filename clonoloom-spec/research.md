@@ -667,6 +667,11 @@ compare the figure with another study's, without the text.
   (the paper's cord-blood set is not redistributable): receptors drawn from a recombination model
   with the dataset's V–J usage, weighted by the model's probability of the pair over the dataset's
   share of it, or the dataset's own chains with their CDR3s moved among its genes.
+  The χ² is two-sided: a large value can describe depletion. ClonoLoom's ranking puts rates at
+  least as large as the background first, by descending χ², then depleted neighborhoods by
+  ascending χ². The reported statistic is unchanged. For a VJ model, drawing with named genes
+  conditions the joint P(V, J) on those names; the alleles must not be drawn independently from
+  their marginal probabilities. Neighborhood method version 2 records these corrections.
 - **Generation probability** (Sethna et al. 2019, *Bioinformatics* 35:2974,
   doi:10.1093/bioinformatics/btz035; models in IGoR's format, Marcou et al. 2018, *Nat Commun*
   9:561). The probability of an amino-acid CDR3 (the junction, both conserved residues included)
@@ -687,6 +692,40 @@ compare the figure with another study's, without the text.
   no data license apart from the GPL-3.0 of their repositories (§7.1), and their versions differ
   (OLGA 1.2.4 and 1.3.0 give different IGH, IGK and IGL probabilities), so the model's version and
   checksum are part of every result.
+
+### 5.10 Clonotype networks (wave 4, in progress)
+
+The sequence-search foundation in `internal/network/pairs.go` compares whole junctions, including
+their conserved anchors. Identity requires equality; Hamming counts substitutions between equal
+lengths; Levenshtein permits substitutions, insertions and deletions, each of cost one
+(Levenshtein 1966, *Soviet Physics Doklady* 10:707–710;
+[original article, 1965](https://www.mathnet.ru/eng/dan31411)). The dynamic-programming recurrence
+is the string correction recurrence of Wagner and Fischer (1974, *J ACM* 21:168–173,
+[doi:10.1145/321796.321811](https://doi.org/10.1145/321796.321811)).
+
+ClonoLoom's indexing choices, for cutoffs from 0 to 2:
+
+- Identity: a hash of the whole junction.
+- Hamming: k+1 disjoint segments at cutoff k; at least one must agree at its position. Lengths
+  must agree too. Even junctions shorter than k+1 are covered (an empty segment gives candidates).
+- Levenshtein: signatures made by deleting up to k symbols from each junction. Within k edits,
+  the two junctions share at least one signature. This is only a candidate filter: the exact
+  distance is checked by dynamic programming within the diagonal band reachable in k edits.
+
+Pairs are streamed once in input-index order. The caller must discard partial output after an
+error. Cancellation is checked during the search, and exceeding the index budget is an error,
+never a truncated graph. Junctions must be uppercase sequence letters, from 1 to 256 symbols;
+ambiguous letters are compared literally. The default budget is 20 million index postings.
+These bounds are engineering choices, not biological thresholds. Unit tests compare every pair
+of all binary-alphabet strings of lengths 1–6 with an independent full-matrix calculation, as
+well as duplicate junctions, receptor examples, cancellation and budget failures.
+
+For the planned chain matching, scirpy 0.25.1 documents `receptor_arms="all"` as the maximum of
+the arm distances, and `"any"` as their minimum; `dual_ir` is a separate choice for additional
+chains. This differs from summing paired TCRdist distances in the Neighbors analysis
+([scirpy's API](https://scirpy.scverse.org/en/v0.25.1/generated/scirpy.tl.define_clonotype_clusters.html)).
+Chain matching, TCRdist edges, connected components, layout, the view and scirpy partition
+validation remain to be implemented; the sequence-search tests do not establish their agreement.
 
 ## 6. Datasets
 

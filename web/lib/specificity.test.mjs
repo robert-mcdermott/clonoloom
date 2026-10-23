@@ -90,6 +90,12 @@ test('centroids in the order chosen', () => {
   assert.deepEqual(centerOrder(rows, 'enriched').map((r) => r.id), ['b', 'c', 'a']);
   assert.deepEqual(centerOrder(rows, 'neighbors').map((r) => r.id), ['c', 'b', 'a']);
   assert.deepEqual(centerOrder(rows, 'abundant').map((r) => r.id), ['a', 'b', 'c']);
-  assert.equal(enrichmentWords({ relativeRate: 143.6 }), '144× commoner than in the background');
-  assert.equal(enrichmentWords({ relativeRate: 2.345 }), '2.3× commoner than in the background');
+  assert.equal(enrichmentWords({ relativeRate: 143.6 }), '144× as common as in the background');
+  assert.equal(enrichmentWords({ relativeRate: 2.345 }), '2.3× as common as in the background');
+  assert.equal(enrichmentWords({ relativeRate: 0.25 }), '0.25× as common as in the background');
+  assert.deepEqual(centerOrder([
+    { id: 'depleted', relativeRate: 0.25, chiSquare: 100 },
+    { id: 'enriched', relativeRate: 3, chiSquare: 10 },
+    { id: 'equal', relativeRate: 1, chiSquare: 0 },
+  ]).map((r) => r.id), ['enriched', 'equal', 'depleted']);
 });

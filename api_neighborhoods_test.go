@@ -47,6 +47,10 @@ func TestNeighborhoodsOfClonotypes(t *testing.T) {
 	}
 	id := job["artifact"].(string)
 	waitForJob(t, a, job["job"].(string), 60*time.Second)
+	manifest, err := a.artifacts.Get(id)
+	if err != nil || manifest.Lineage.Method.Version != "2" {
+		t.Fatalf("the corrected neighborhoods must record method version 2: %v, %v", manifest, err)
+	}
 	var read struct {
 		Result neighborhoodDocument `json:"result"`
 	}
@@ -76,7 +80,10 @@ func TestNeighborhoodsOfClonotypes(t *testing.T) {
 	}
 	// The centroids are the most enriched first.
 	for i := 1; i < len(doc.Rows); i++ {
-		if doc.Rows[i-1].ChiSquare < doc.Rows[i].ChiSquare {
+		a, b := doc.Rows[i-1], doc.Rows[i]
+		if a.RelativeRate < 1 && b.RelativeRate >= 1 ||
+			a.RelativeRate >= 1 && b.RelativeRate >= 1 && a.ChiSquare < b.ChiSquare ||
+			a.RelativeRate < 1 && b.RelativeRate < 1 && a.ChiSquare > b.ChiSquare {
 			t.Fatalf("centroid %d is less enriched than the one after it", i-1)
 		}
 	}

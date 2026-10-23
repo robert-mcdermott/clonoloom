@@ -17,6 +17,39 @@ func receptors(cdr3s ...string) *Repertoire {
 	return r
 }
 
+// A depleted neighborhood can have a larger two-sided χ² than an enriched one. It must not
+// displace the enriched neighborhoods when the API keeps only the first 500 centers.
+func TestEnrichmentOrderAccountsForDirection(t *testing.T) {
+	sample := receptors("CASSAAAAAAF", "CASSRRRRRRF", "CASSRRRRRRF")
+	for range 97 {
+		sample.Receptors = append(sample.Receptors, Receptor{CDR3: "CASSWWWWWWF", Count: 1})
+	}
+	background := receptors()
+	for range 9900 {
+		background.Receptors = append(background.Receptors, Receptor{CDR3: "CASSAAAAAAF", Count: 1})
+	}
+	for range 100 {
+		background.Receptors = append(background.Receptors, Receptor{CDR3: "CASSWWWWWWF", Count: 1})
+	}
+	o := DefaultOptions()
+	o.MaxRadius, o.MinNeighbors = 0, 1
+	r, err := Find(context.Background(), sample, background, nil, "", o, 1, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	depleted := false
+	for _, c := range r.Centers {
+		if c.RelativeRate < 1 {
+			depleted = true
+		} else if depleted {
+			t.Fatalf("enriched receptor %d follows a depleted one", c.Receptor)
+		}
+	}
+	if !depleted {
+		t.Fatal("test did not include a depleted neighborhood")
+	}
+}
+
 // The rates, odds ratio and χ² are Mayer-Blackwell et al.'s, the χ² with Yates's correction as
 // scipy's chi2_contingency applies it to a 2 × 2 table (the values pinned here are scipy's).
 func TestTheEnrichmentStatistics(t *testing.T) {
@@ -263,6 +296,19 @@ func TestTheModelBackground(t *testing.T) {
 	}
 	if src.Missing != 1 || src.Pairs != 1 {
 		t.Errorf("%+v", src)
+	}
+}
+
+// Cancellation must be observed inside a gene pair, including the last (or only) pair.
+func TestModelBackgroundCancellationWithinPair(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	sample := receptors("CASSLGGNTEAFF")
+	sample.Receptors[0].V, sample.Receptors[0].J = "TRBV5-1", "TRBJ1-1"
+	bg, src, err := ModelBackground(ctx, sample, pgen.Simulator(), "simulator", "", 10000, 5,
+		func(done, of int) { cancel() })
+	if err != context.Canceled || bg != nil || src != nil {
+		t.Fatalf("cancelled background: %v, %v, %v", bg, src, err)
 	}
 }
 

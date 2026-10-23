@@ -116,6 +116,9 @@ func ModelBackground(ctx context.Context, sample *Repertoire, m *pgen.Model, nam
 			weight = p[k] / share
 		}
 		for made := 0; made < n; {
+			if err := ctx.Err(); err != nil {
+				return nil, nil, err
+			}
 			draw, ok := g.DrawWith(r, k[0], k[1])
 			if !ok {
 				break

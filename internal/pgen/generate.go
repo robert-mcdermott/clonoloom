@@ -158,7 +158,22 @@ func (m *Model) Usage() map[[2]string]float64 {
 // Genes answers whether the model uses a V gene and a J gene of these names (a gene, or one of
 // its alleles), which DrawWith can draw.
 func (g *Generator) Genes(v, j string) bool {
-	return len(g.vGene[v]) > 0 && len(g.jGene[j]) > 0
+	for _, vi := range g.vGene[v] {
+		for _, ji := range g.jGene[j] {
+			if !g.m.VDJ {
+				if g.m.PVJ[vi][ji] > 0 {
+					return true
+				}
+			} else if g.m.PV[vi] > 0 {
+				for _, p := range g.m.PJD[ji] {
+					if p > 0 {
+						return true
+					}
+				}
+			}
+		}
+	}
+	return false
 }
 
 // DrawWith draws a receptor of the V and J genes named (a gene, one of whose used alleles is
@@ -171,6 +186,30 @@ func (g *Generator) DrawWith(r *random.Random, v, j string) (Draw, bool) {
 		return Draw{}, false
 	}
 	m := g.m
+	if !m.VDJ {
+		// VJ models give P(V, J), not P(V)P(J). Condition that joint distribution on
+		// the requested names, including the correlation between their alleles.
+		weights := make([]float64, 0, len(vs)*len(js))
+		for _, vi := range vs {
+			for _, ji := range js {
+				weights = append(weights, m.PVJ[vi][ji])
+			}
+		}
+		cumulative := random.Cumulate(weights)
+		for range 1000 {
+			at := pick(r, cumulative)
+			if at < 0 {
+				return Draw{}, false
+			}
+			if out, ok := g.draw(r, vs[at/len(js)], js[at%len(js)], 0); ok {
+				return out, true
+			}
+		}
+		return Draw{}, false
+	}
+	if !g.Genes(v, j) {
+		return Draw{}, false
+	}
 	// An allele of each gene, in proportion to the model's probability of it.
 	allele := func(list []int, weight func(int) float64) int {
 		if len(list) == 1 {
@@ -187,13 +226,6 @@ func (g *Generator) DrawWith(r *random.Random, v, j string) (Draw, bool) {
 		return list[r.IntN(len(list))]
 	}
 	jTotal := func(x int) float64 {
-		if !m.VDJ {
-			p := 0.0
-			for vi := range m.V {
-				p += m.PVJ[vi][x]
-			}
-			return p
-		}
 		p := 0.0
 		for d := range m.D {
 			p += m.PJD[x][d]
@@ -201,14 +233,7 @@ func (g *Generator) DrawWith(r *random.Random, v, j string) (Draw, bool) {
 		return p
 	}
 	vTotal := func(x int) float64 {
-		if m.VDJ {
-			return m.PV[x]
-		}
-		p := 0.0
-		for ji := range m.J {
-			p += m.PVJ[x][ji]
-		}
-		return p
+		return m.PV[x]
 	}
 	for range 1000 {
 		vi, ji := allele(vs, vTotal), allele(js, jTotal)
