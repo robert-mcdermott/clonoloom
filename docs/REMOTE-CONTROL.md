@@ -129,3 +129,19 @@ HTTP clients use `POST /api/germlines` with `{dataset, germlines: {families, ref
 `GET /api/germlines/{id}/page?kind=families|rows&family=...&locus=...&offset=0&limit=50`
 reads bounded pages (maximum 200). Saved inspection needs neither open inputs nor a reference
 download; computing requires the original dataset and verified family/reference bytes.
+
+### Somatic hypermutation
+
+`measure_bcell_shm` opens B cells → SHM and computes or reuses a saved result. Pass `dataset`
+and optionally `germlines` (a saved germline artifact ID; latest for this dataset if omitted).
+The response includes the artifact ID, source-row/evaluated counts, exclusions, codon exclusions
+and effective options. It requires an open original dataset and a completed germline parent.
+
+HTTP: `POST /api/shm` with `{dataset, shm: {germlines}, start}`. `start: false` checks availability.
+The server resolves and pins `germlineSha256`; unrelated current QC, clonotype and diversity
+choices do not affect this derived result. `GET /api/shm/{id}` returns the complete document;
+`GET /api/shm/{id}/page?kind=summaries|rows&offset=0&limit=50` returns bounded pages (maximum 200).
+For `kind=rows`, optional `family` and `locus` filters select source rows. The saved document can
+be inspected without reopening sources or downloading references; new computation checks the
+parent bytes and source-row identities. `GET /api/export?what=result&artifact=...` exports all
+row/region statistics, pooled summaries, complete JSON, manifest and source notice.

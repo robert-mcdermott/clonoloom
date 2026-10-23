@@ -42,7 +42,7 @@ export async function showMethods(app, dataset) {
   const { filterResult, clonotypes } = await computed(dataset, summary, filter, definition);
   // A dataset recorded before its files were known as public data takes their credits now.
   const credited = dataset.credits?.length ? dataset : { ...dataset, credits: summary.credits ?? [] };
-  const results = ['diversity', 'rarefaction', 'usage', 'overlap', 'tracking', 'expansion', 'classes', 'attribution', 'tcrdist', 'pgen', 'neighborhoods', 'families', 'germlines'].flatMap((kind) => resultsOf(store.project, dataset.id, kind));
+  const results = ['diversity', 'rarefaction', 'usage', 'overlap', 'tracking', 'expansion', 'classes', 'attribution', 'tcrdist', 'pgen', 'neighborhoods', 'families', 'germlines', 'shm'].flatMap((kind) => resultsOf(store.project, dataset.id, kind));
   const { text, references } = methodsParagraph({ dataset: credited, summary, filter, filterResult, definition, clonotypes, results, program: { version: app.version, commit: app.commit } });
   const all = `${text}\n\nReferences\n${references.join('\n')}`;
   showDialog({

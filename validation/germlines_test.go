@@ -147,6 +147,14 @@ func TestGermlinePublicReferenceAndAIRRCoverage(t *testing.T) {
 		if strings.Contains(pattern, "10x") && r.Reconstructed != 0 {
 			t.Fatal("gene-only calls must not become allele-specific germlines")
 		}
+		measured, err := bcell.SHM(context.Background(), res.Table, sources, r)
+		if err != nil || len(measured.Rows) != len(r.Rows) {
+			t.Fatal(err)
+		}
+		if strings.Contains(pattern, "10x") && measured.Evaluated != 0 {
+			t.Fatal("excluded reconstructions cannot support SHM")
+		}
+		t.Logf("SHM coverage: %d rows with evaluable bases; row exclusions %v; codon exclusions %v", measured.Evaluated, measured.Excluded, measured.CodonExclusions)
 		for _, row := range r.Rows {
 			if row.Excluded == "" && (len(row.Query) != len(row.Germline) || len(row.Query) != len(row.QueryPositions)) {
 				t.Fatal("invalid projection")

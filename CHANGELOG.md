@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Somatic hypermutation (wave 5, slice 6).** Compare saved D-masked germlines
+  with source chain rows, retaining parent checksums and reference provenance.
+  Report evaluable bases/codons, regional substitution frequencies, single-hit
+  replacement/silent substitutions, endpoint codon changes and unclassified
+  substitutions. Missing coordinates/frame evidence, ambiguity, indels and stops
+  have explicit denominator and exclusion rules. Add SHM, row inspection, bounded
+  pages, complete CSV/JSON exports, descriptive sample/locus totals, cited methods,
+  remote control and the guided artificial workflow. Independently validate all
+  4,320 rows and 43,200 region records against known ancestors. No selection test,
+  historical mutation rate or lineage tree is inferred.
 - **D-masked germlines (wave 5, slice 5).** Reconstruct assigned B-cell source rows
   using a saved family result, common explicit V/J alleles and checksum-pinned references.
   Project ungapped-reference AIRR CIGARs onto oriented queries, preserve indels and coordinate

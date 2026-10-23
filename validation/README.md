@@ -140,3 +140,25 @@ The Python check constructs V/J projections from reference segments and explicit
 then compares to truth outside the masked junction. It does not consume the Go reconstruction.
 All source-row sequences, masks and coordinate maps contribute to the reduced digest.
 Public reference files are downloaded data, never external implementation source.
+
+### Somatic hypermutation
+
+`TestSHMAgainstKnownAncestors` checks all 4,320 default v2 chain rows and 43,200 regional entries
+against `reference/shm.json`. The independent Python stdlib script compares final observed
+sequences directly with known roots, using the simulator's fixed regional contract and NCBI
+table 1; it never reads the Go reconstruction or SHM implementation. Source checksums and
+Python version are retained with the all-row digest. Regenerate after generating the default
+`bcell-immunization` study:
+
+```sh
+uv run --no-project validation/reference/shm.py /path/to/study
+```
+
+Hand-computed tests additionally cover clipping, reverse orientation, missing/invalid region
+coordinates and frame evidence, ambiguities, indels, stops, single-/multi-hit codons, partial
+regional codons, missing versus zero, source-row identity, cancellation and abundance-independent
+pooling. `FuzzSHMEvidence` bounds adversarial coordinates and sequence text. API tests check
+parent checksum pinning, resumed-work refusal, immutable identity, paging and complete exports.
+The `shm` capture scene exercises the visible run button, paging, row inspector, cited methods,
+view disposal and saved-result reopening in both themes; the immunization guide calls the new
+remote action. This is validation against known artificial truth, not biological calibration.

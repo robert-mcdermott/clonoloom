@@ -186,7 +186,7 @@ async function start() {
     store.setUI({ focus }, ['focus']);
     // A result opens in its view.
     const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
-    if (['families', 'germlines'].includes(result?.kind) && store.ui.mode !== 'bcells') app.setMode('bcells');
+    if (['families', 'germlines', 'shm'].includes(result?.kind) && store.ui.mode !== 'bcells') app.setMode('bcells');
     if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
     if (['tracking', 'expansion', 'classes', 'attribution'].includes(result?.kind) && store.ui.mode !== 'tracking') app.setMode('tracking');
     if (['tcrdist', 'pgen', 'neighborhoods', 'networks', 'specificity'].includes(result?.kind) && store.ui.mode !== 'specificity') app.setMode('specificity');

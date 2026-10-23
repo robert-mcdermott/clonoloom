@@ -878,8 +878,8 @@ threshold-dependent result, not a replacement for those identifiers.
 Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slices 1–4 are
-committed and slice 5 is implemented; later slices need their methods, data and acceptance
+puts a simulation with known families before the analyses it validates. Slices 1–5 are
+committed and slice 6 is implemented; later slices need their methods, data and acceptance
 criteria settled in detail before implementation.
 
 | Slice | Status | Scope |
@@ -888,8 +888,8 @@ criteria settled in detail before implementation.
 | 2. IMGT/HighV-QUEST input | Committed | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
 | 3. Simulated B-cell families | Committed | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
 | 4. Clonal families | Committed | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
-| 5. Germlines | Implemented; awaiting commit | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
-| 6. Somatic hypermutation | To come | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
+| 5. Germlines | Committed | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
+| 6. Somatic hypermutation | Implemented; awaiting commit | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
 | 7. Lineage trees | To come | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
 | 8. Isotypes and class switching | To come | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
 | 9. Examples and release 0.5.0 | To come | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
@@ -1237,7 +1237,60 @@ reruns after fixes, and vet pass. arm64/amd64 germline, simulation and released-
 six platform builds, 89 JavaScript tests, 14 contrast checks, five browser workflows in both
 themes and 116 site audit checks pass. The site builds 30 pages with 28 screenshot sets.
 Isolated million-row budgets pass: read/validate 2.915 s, cached reopen 231 ms and searched
-page 82.289 ms. No slice 6 work has started. Version remains 0.4.0. Awaiting maintainer commit.
+page 82.289 ms. Version remains 0.4.0. Committed by the maintainer.
+
+### Slice 6: Somatic hypermutation
+
+**Serves B3.** Compare the saved D-masked germline parent with the original source chain rows.
+Pin the parent checksum and retain its family/reference provenance. Keep all rows, including
+exclusions. Current QC and clonotype settings must not change a derived result's identity.
+
+- Count unequal paired A/C/G/T bases; frequency is substitutions / evaluable paired bases,
+  missing at denominator zero. Report masks, gaps and ambiguities separately. These are net
+  differences, not historical event counts, mutation rates or sequencing-error corrections.
+- Keep whole-alignment, V/J and individual FWR/CDR results distinct. Use supplied oriented-query
+  coordinates. Missing regions stay missing; invalid/overlapping/out-of-order intervals suppress
+  the regional partition without discarding nucleotide totals. Uncovered positions stay in
+  totals; deletion gaps have no query-region assignment.
+- Check query codon phase from explicit in-frame V/J annotation and CDR3/junction agreement,
+  including conserved flanking codons. Never assume reference base 1 starts a codon. Suppress
+  codon inference for any indel-containing projection; omit partial, ambiguous, masked,
+  cross-segment and stop-containing codons. Regional codons must fit in the region.
+- Classify single-hit substitutions by NCBI table 1. For multi-hit codons report endpoint
+  replacement/silent codon counts but leave individual substitutions unclassified. Record
+  evaluable codons and stops separately. Do not infer mutation order or selection statistics.
+- Provide B cells → SHM, bounded pages, per-row region inspection, descriptive sample/locus
+  pooled counts, complete CSV/JSON exports, methods, remote control and a guided example.
+  Pool source rows without abundance weighting or deduplication; they are not subject replicates.
+
+**Acceptance.** Analytic coordinate/frame/ambiguity/indel/stop cases; every artificial row and
+region compared independently with known ancestors, including reversals and multi-hit codons;
+source and parent identity, missing versus zero, immutable options and complete exports;
+released-project and processor compatibility; Go race/vet, JavaScript, fuzz, browser workflows
+in both themes, accessibility/site checks, six platform builds and isolated performance budgets.
+Version remains 0.4.0. Trees and class switching remain in slices 7 and 8.
+
+**Implemented.** The core comparison, saved jobs and lineage, SHM view and regional inspector,
+source-row/sample summaries, complete exports, methods and remote/guided workflow are present.
+Detailed scientific choices and limitations are recorded in research §5.18 and FORMATS.
+
+**Checked.** Independent Python 3.13.3 ancestor comparisons agree for all 4,320
+source rows and 43,200 region entries: 9,941 substitutions / 1,412,640 evaluable bases; 7,297
+single-hit replacement, 2,360 silent, and 284 unclassified substitutions in 142 multi-hit codons.
+Endpoint counts are 7,439 replacement and 2,360 silent codons, with 470,880 evaluable codons.
+Source-file hashes and pooled summary denominators are checked. Analytic evidence/coordinate,
+indel, ambiguity, stop, partial-codon and attribution tests pass, along with source/parent
+identity, exports, cancellation and fuzzing (26,614 executions). The public Ramos row supports
+base/codon comparisons; 56/437 gene-only 10x heavy rows retain explicit germline exclusions.
+Full Go race coverage passes with loopback-enabled reruns of the two sandbox-blocked packages
+and focused reruns after test refinements; the scientific validation package completes in
+867.877 s. Vet, arm64/amd64 SHM and released-project compatibility, six platform builds,
+90 JavaScript tests and 14 contrast checks pass. Six B-cell browser workflows pass in both
+themes, including the guided SHM action, visible run control, paging, inspection, cited methods,
+view disposal and reopening. The site builds 31 pages with 29 screenshot sets; its 120-check
+audit across 30 pages finds no problems. Isolated million-row budgets pass: read/validate
+1.563 s, cached reopen 127 ms and searched page 41.742 ms. Version remains 0.4.0.
+Awaiting maintainer commit; slice 7 has not started.
 
 ## Later waves (outlined)
 

@@ -116,6 +116,35 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async shm() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families', { threshold: 0.1 });
+    await act('reconstruct_bcell_germlines', { reference: 'simulated-bcell-immunization' });
+    await js(`(() => { window.clonoloom.bcellsMode.show('shm'); return true; })()`);
+    await waitFor(`window.clonoloom.shmView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Measure SHM').click(); return true; })()`);
+    await waitFor(`window.clonoloom.shmView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.shmView.state()');
+    if (result.page.result.evaluated !== 4320 || result.page.summaryCount !== 270 || result.page.rows.length !== 50 || Object.keys(result.page.result.codonExclusions).length) throw new Error('Wrong SHM summary');
+    await js(`window.clonoloom.shmView.showPage('rows')`);
+    const row = await js('window.clonoloom.shmView.state().page.rows[0]');
+    if (row.regions[0].evaluableBases !== 327 || row.regions[0].evaluableCodons !== 109 || row.regions[8].frequency !== null) throw new Error('Wrong SHM denominator');
+    await js(`window.clonoloom.shmView.showPage('rows', '', '', 50)`);
+    if ((await js('window.clonoloom.shmView.state().page.rows[0].id')) === row.id) throw new Error('SHM page did not advance');
+    await js(`(() => { const v=window.clonoloom.shmView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('Endpoint codons')`);
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('single-hit') || !methods.includes('No selection statistic') || !methods.includes(result.page.result.shmOptions.germlineSha256)) throw new Error('Missing SHM methods');
+    await act('close_dialogs');
+    await js(`(() => { window.clonoloom.shmView.showPage('rows'); window.clonoloom.bcellsMode.show('inputs'); return true; })()`);
+    await waitFor(`Boolean(window.clonoloom.bcellsView)`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.shmView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.shmView.state().artifact')) !== result.artifact) throw new Error('Saved SHM did not reopen');
+    await js(`window.clonoloom.shmView.showPage('rows')`);
+  },
   async germlines() {
     await act('open_example', { example: 'simulated-bcell-immunization', download: true });
     await act('find_bcell_families', { threshold: 0.1 });

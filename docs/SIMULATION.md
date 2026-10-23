@@ -253,7 +253,7 @@ reference. `germline_database` names the artificial model. The supplied V/J quer
 and 319–360. Artificial FWR1/CDR1/FWR2/CDR2/FWR3/CDR3/FWR4 spans are 1–78, 79–114, 115–165,
 166–195, 196–285, 286–318 and 319–360 (1-based closed); they are **not IMGT numbering**.
 D calls are missing; v2 supplies V/J CIGARs and reference-segment coordinates. These limits matter when using
-the truth to test future germline and mutation analyses.
+the truth to test germline reconstruction and mutation comparisons.
 
 A complete study is built in a temporary sibling folder before being promoted. Cancellation or
 failure leaves no partial output, and a nonempty destination is refused. The same parameters,
@@ -267,3 +267,13 @@ with the app's readers, input checks and paired clonotypes. Tests also cover dif
 round-tripped parameters, cancellation, bounds and overwrite refusal. Fixed-seed sampling is
 checked against the stated categorical probabilities. The old TRB simulations' pinned bytes
 remain unchanged.
+
+The wave 5 SHM comparison uses the v2 saved D-masked germlines. Each default-preset chain row
+has 327 evaluable bases and 109 evaluable codons, with all 33 intervening bases masked. Across
+4,320 source rows there are 9,941 net substitutions: 7,297 replacement and 2,360 silent in
+single-hit codons, plus 284 unclassified substitutions in 142 multi-hit codons. Endpoint
+codon counts are 7,439 replacement and 2,360 silent. These pooled source-row counts differ from
+mutation events on the generating tree: sampled descendants repeat changes, and reversals
+remove net differences. The independent `validation/reference/shm.py` compares observed
+sequences directly with known root sequences by the fixed artificial regions, including all
+43,200 row/region entries. It validates bookkeeping, not biological SHM accuracy.

@@ -1181,3 +1181,89 @@ the pinned human reference. The 10x PBMC 1k/10k-v2 AIRR examples contribute 56/4
 heavy rows; all are correctly excluded for gene-only calls. These are format and coverage
 checks, not biological truth or a claim that the selected set matches every original
 annotation. SHM denominators, codon changes, selection and lineage inference remain later slices.
+
+### 5.18 Somatic hypermutation: observed divergence and codon attribution (wave 5, slice 6)
+
+**Sources consulted.** Gupta NT et al. (2015), *Change-O: a toolkit for analyzing large-scale
+B cell immunoglobulin repertoire sequencing data*, Bioinformatics 31:3356–3358,
+[doi:10.1093/bioinformatics/btv359](https://doi.org/10.1093/bioinformatics/btv359), establishes
+the D-masked sequence/germline comparison framework already used in §5.17.
+The public [SHazaM observedMutations documentation](https://shazam.readthedocs.io/en/stable/topics/observedMutations/)
+describes amino-acid identity for R/S and non-N denominators, with its own ambiguity modes and
+IMGT-aligned regional definitions. We consulted documentation only, not implementation source.
+ClonoLoom does **not** reproduce those modes or claim numerical equivalence to SHazaM.
+[AIRR Rearrangement schema 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+defines region coordinates on the query and distinguishes CDR3 from the junction including its
+flanking conserved residues. Translation uses [NCBI genetic code table 1](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#SG1),
+through the existing independent `internal/seq` implementation. Consulted 23 October 2026.
+
+**ClonoLoom's choices.** No empirical selection model is fitted. Nucleotide divergence is the
+number of unequal, aligned, unambiguous A/C/G/T pairs divided by all such pairs. The stored
+parent's D/N/P mask is excluded first; gaps and remaining ambiguous symbols are separately
+counted. Even an IUPAC pair that could agree is excluded. A zero denominator yields a missing
+frequency. Counts compare final sequence with reference; reversals and repeated changes cannot
+be reconstructed from these endpoints. They do not establish a rate or mutation history.
+
+A saved germline parent supplies immutable family membership, V/J projections and coordinate
+maps. Its file SHA-256 is checked when preparing and running an analysis. The result preserves
+family and reference hashes, source, license and citation without needing another download.
+Original source hashes/line/sequence ID identify each row; altered or duplicate identities fail.
+Every parent row remains represented, including reconstruction exclusions. Saved SHM inspection
+needs neither the parent file nor the original dataset; new computation needs both.
+
+Regions are the input's 1-based closed intervals on the oriented query, not fixed positions in
+the reconstructed alignment. Missing intervals remain unavailable. A malformed, partially
+supplied, overlapping or out-of-order interval invalidates the regional partition, while `all`,
+`V` and `J` comparisons remain valid. Coordinates outside the reconstructed coverage do not
+create bases. Unassigned query positions stay in totals; reference deletions have no query
+position and no regional gap assignment. Segment and region totals overlap and must not be
+summed. The CDR3 label itself does not impose a mask: V/J-covered CDR3 positions remain eligible
+if the saved reference supplies them.
+
+An ungapped reference FASTA does not establish codon phase. Codon comparisons require explicit
+`vj_in_frame=true`, a valid whole-codon CDR3 interval, exact query/junction agreement including
+the two flanking codons, and unambiguous translation with C and F/W anchors and no junction stop.
+The CDR3 start fixes query phase. This conservative input-consistency check does not independently
+validate the annotator's frame assignment. Any indel in the projection suppresses all codon
+inference, including in-frame indels; inferring how codons span them is deferred. Complete paired
+A/C/G/T codons must occupy consecutive query and reference positions within one V/J segment;
+regional codons also fit entirely in the interval. Truncated, masked or ambiguous codons are
+omitted. Stop-containing paired codons are separately counted and omitted from the codon
+denominator. Their otherwise valid nucleotide pairs still count toward base divergence.
+
+For single-hit evaluable codons, amino-acid identity defines silent versus replacement
+**substitutions**. Multi-hit codons have an endpoint amino-acid classification, recorded as
+replacement/silent **codons**, but their individual substitutions remain unclassified. We do
+not choose an order of changes or distribute fractional attribution across hypothetical paths.
+Unclassified substitutions also include differences outside evaluable codons. They remain in
+the nucleotide numerator. `replacement + silent + unclassified = substitutions`; endpoint codon
+counts are a different unit. Zero classified substitutions with no evaluable codons is not
+biological absence of mutation. Each row records codon exclusions and the phase anchor.
+
+Summaries pool source-row counts by sample, locus and region, divide pooled substitutions by
+pooled evaluable bases, and show available-row/codon-row coverage. They do not average per-row
+frequencies, weight by abundance, collapse contigs, combine heavy/light denominators or treat
+rows as independent subjects. No confidence intervals, selection statistic, family inference,
+lineage, error correction or group-level inference is introduced.
+
+**Independent validation.** `validation/reference/shm.py` uses only Python stdlib, known root
+sequences, final observed sequences, NCBI table 1 and the fixed artificial region contract.
+It does not consume the Go reconstruction or its SHM result. Every one of 43,200 row/region
+records is pinned by a digest; original TSV hashes and Python version accompany it. All 4,320
+rows have 327 evaluable bases and 109 evaluable codons. Pooled totals: 9,941 substitutions /
+1,412,640 bases, 7,297 single-hit R, 2,360 single-hit S, 284 unclassified substitutions in 142
+multi-hit codons. Endpoint codons: 7,439 R and 2,360 S; 470,880 codons evaluated. The ancestor
+comparison naturally nets deliberate reversals rather than summing historical events.
+
+Analytic tests use GCT/GCC (one silent), AAA/GAA (one replacement), TTA/CTG (two-hit synonymous
+endpoint), TTT/GGG (three-hit replacement endpoint) and AAA/TAA (stop exclusion). They cover
+clipping without resetting phase, reverse orientation, partial regional codons, ambiguity,
+indels, hostile bounds, missing frame, conflicting junctions, source identity and cancellation.
+This validates the stated conservative rules and artificial bookkeeping, not biological
+annotation accuracy or selection inference. Native IMGT and gene-only inputs still require the
+unsupported reconstruction evidence identified in §5.17; this slice does not fill it in.
+
+The pinned public Ramos AIRR row supplies evaluable bases and codons. The 56 and 437 assigned
+heavy rows in the 10x PBMC 1k and 10k-v2 fixtures remain excluded for gene-only calls inherited
+from germline reconstruction; SHM does not convert those exclusions into zero-mutation rows.
+These are coverage and provenance checks, not independently known biological mutation truth.

@@ -441,6 +441,19 @@ export function remoteActions(app) {
       return { message: `${done.page.result.reconstructed} reconstructed source rows.`, data: { artifact: done.artifact, reconstructed: done.page.result.reconstructed, rows: done.page.rowCount, familyLoci: done.page.familyCount, excluded: done.page.result.excluded, options: done.page.result.germlinesOptions } };
     },
 
+    async measure_bcell_shm({ dataset, germlines } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('shm');
+      const view = app.shmView;
+      await view.show(d.id, { germlines });
+      if (view.state().status === 'idle') throw new ActionError('Save a germline result first.');
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'Somatic hypermutation');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.result.evaluated} source rows with evaluable bases.`, data: { artifact: done.artifact, evaluated: done.page.result.evaluated, rows: done.page.rowCount, excluded: done.page.result.excluded, codonExclusions: done.page.result.codonExclusions, options: done.page.result.shmOptions } };
+    },
+
     async inspect_bcell_inputs({ dataset, select } = {}) {
       const d = datasetOf(dataset);
       app.focusItem({ kind: 'dataset', id: d.id });

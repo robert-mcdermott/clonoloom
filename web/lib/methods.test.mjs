@@ -346,3 +346,11 @@ test('v2 artificial B-cell metadata preserves the model name and avoids TRB meth
   assert.match(text, /clonoloom-artificial-bcell-v2/);
   assert.doesNotMatch(text, /GRCh38|Ensembl/);
 });
+
+test('SHM methods keep denominators, attribution policy and independent parent provenance', () => {
+  const result = { id: 'shm-one', kind: 'shm', evaluated: 2, rowCount: 3, describe: 'Paired A/C/G/T bases only. Single-hit R/S; multiple-hit codons remain unclassified substitutions.', shm: { germlines: 'grm-one', germlineSha256: 'germline-hash' }, germlineProvenance: { families: 'fam-one', familySha256: 'family-hash', files: [{ reference: 'ref-one', file: 'segments.fasta', sha256: 'reference-hash', license: 'CC0', citation: 'Reference citation', source: 'https://example.org/data' }] } };
+  const { text, references } = methodsParagraph({ dataset: pbmc, program, results: [result] });
+  for (const phrase of ['2 of 3', 'germline-hash', 'family-hash', 'reference-hash', 'Single-hit', 'Unclassified substitutions remain', 'No selection statistic', 'CC0']) assert.ok(text.includes(phrase), phrase);
+  assert.match(references.join(' '), /btv359/);
+  assert.match(references.join(' '), /genetic code|Genetic Codes/);
+});

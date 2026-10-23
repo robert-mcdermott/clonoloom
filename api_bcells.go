@@ -57,6 +57,7 @@ func (a *app) registerBCells(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/bcells/inputs", a.handleBCellInputs)
 	mux.HandleFunc("GET /api/families/{id}/page", a.handleFamilyPage)
 	mux.HandleFunc("GET /api/germlines/{id}/page", a.handleGermlinePage)
+	mux.HandleFunc("GET /api/shm/{id}/page", a.handleSHMPage)
 }
 func (a *app) handleBCellInputs(w http.ResponseWriter, r *http.Request) {
 	var req bcellRequest

@@ -373,3 +373,41 @@ reference coordinates reset for V and J. Zero marks absent mappings. D/N/P junct
 are masked, including intervening light-chain bases. FASTA exports successful projections,
 with stable source-row IDs; CSV includes all exclusions. These result exports are not full
 AIRR input round trips. No mutation count is calculated in this slice.
+
+### Somatic hypermutation (wave 5, slice 6)
+
+SHM consumes a saved germline artifact, with its checksum and reference provenance. Membership
+is fixed by that parent. Each source chain row is retained, including exclusions and duplicate
+contigs; counts are not weighted by reads, UMIs or cells. `shm.csv` has one row per source row
+and region; `summaries.csv` pools counts by sample/locus/region. These are descriptive totals,
+not independent replicates. The complete `shm.json` and manifest accompany the export.
+
+A substitution is an unequal paired A/C/G/T base. Its frequency is substitutions divided by
+paired A/C/G/T bases, or missing when there are none. Masked D/N/P columns, gap columns and
+ambiguity columns are counted separately, in that order. Missing regional evidence produces
+blank CSV statistics and an explicit JSON `unavailable` reason, not an observed zero.
+
+`all`, `V`, `J` and individual `fwr1`, `cdr1`, `fwr2`, `cdr2`, `fwr3`, `cdr3`, `fwr4` entries
+overlap and must not be added together. Regional intervals refer to the oriented raw query,
+not the alignment or reference. Missing intervals stay missing. Incomplete, reversed,
+out-of-bounds, overlapping or out-of-order intervals invalidate the regional partition while
+whole-alignment and V/J counts remain available. Uncovered bases remain in the totals; deletion
+gaps have no query-region assignment. CDR3 may include reference-covered V/J bases in real
+inputs; only the saved D/N/P mask determines which bases are excluded from comparison.
+
+Codon phase requires `vj_in_frame=T`, valid CDR3 bounds, a multiple-of-three CDR3 length,
+and exact agreement between the query span including the flanking codons and `junction`.
+The junction must translate without ambiguity/stops and retain the C and F/W anchors. Its
+CDR3 start anchors query phase; no phase is inferred from reference position 1. Any alignment
+indel suppresses codon inference for that row. Only complete paired A/C/G/T codons within one
+V/J segment and, for a regional count, one region are evaluable. Stop-containing codons are
+counted separately and excluded from the codon denominator, while their bases still contribute
+to nucleotide comparisons. Truncated or ambiguous codons do not support R/S attribution.
+
+Single-hit codons classify the sole substitution as replacement or silent using NCBI table 1.
+Multi-hit codons retain endpoint replacement/silent **codon** counts; their substitutions stay
+unclassified because their order is unknown. `unclassified = substitutions - replacement - silent`.
+Codon exclusion reasons and the evaluable-codon denominator accompany classification counts;
+zero classified substitutions without evaluable codons is not evidence for absence of SHM.
+These are net observed differences, not cumulative events, evolutionary rates, selection tests,
+or biological error correction. Reference choice and annotation accuracy remain prerequisites.

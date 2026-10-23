@@ -278,6 +278,17 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = fmt.Sprintf("Chain specificity evidence for %s. Database %s, SHA-256 %s, source %s, license %s, citation %s. Matches are evidence, not proof of receptor specificity. Epitope shares count each clonotype once per group and can overlap.", ds.Name, doc.Database.Reference, doc.Database.SHA256, doc.Database.Source, doc.Database.License, doc.Database.Citation)
 		files["matches.csv"] = func(f io.Writer) error { return export.SpecificityMatches(f, doc.Clonotypes, doc.Result) }
 		files["epitopes.csv"] = func(f io.Writer) error { return export.SpecificityShares(f, doc.Samples, doc.Result) }
+	case "shm":
+		var doc shmDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " shm.csv contains all rows and regions, including missing evidence; summaries.csv pools source rows by sample, locus and region. shm.json includes parent and reference provenance."
+		files["shm.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		files["shm.csv"] = func(f io.Writer) error { return export.SHMRows(f, doc.SHMResult) }
+		files["summaries.csv"] = func(f io.Writer) error { return export.SHMSummaries(f, doc.SHMResult) }
 	case "germlines":
 		var doc germlineDocument
 		if err := json.Unmarshal(raw, &doc); err != nil {

@@ -1,5 +1,6 @@
-// Package bcell checks supplied sequence evidence, infers clonal families and reconstructs
-// D-masked reference germlines. These structural evidence checks do not infer mutations.
+// Package bcell checks supplied sequence evidence, infers clonal families, reconstructs
+// D-masked reference germlines and measures observed SHM. The structural evidence
+// checks in this file do not infer mutations.
 // AIRR Rearrangement schema 2.0, https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html
 // Vander Heiden et al. 2018, Front Immunol 9:2206, doi:10.3389/fimmu.2018.02206.
 package bcell

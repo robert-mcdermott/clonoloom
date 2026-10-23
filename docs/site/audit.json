@@ -28,6 +28,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/bcell-shm.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/classes.html",
   "theme": "light",
   "width": "desktop",
@@ -231,6 +238,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/bcell-shm.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/classes.html",
   "theme": "dark",
   "width": "desktop",
@@ -434,6 +448,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/bcell-shm.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/classes.html",
   "theme": "light",
   "width": "phone",
@@ -631,6 +652,13 @@
  },
  {
   "page": "docs/bcell-inputs.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/bcell-shm.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],
