@@ -122,6 +122,9 @@ var remoteActions = []remoteAction{
 		"cdr3Only": flagArg("Compare CDR3s alone for TCRdist"),
 		"follow":   numberArg("Epitope/antigen group to follow, from 1"),
 	})},
+	{Name: "inspect_bcell_inputs", Title: "Inspect B-cell inputs", Description: "Shows B cells, the filtered rearrangement evidence counts and a bounded first page. Optionally inspects one row. Does not reconstruct germlines or measure mutation.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg, "select": numberArg("Rearrangement on the first page to inspect, from 1 (at most 50)."),
+	})},
 	{Name: "flag_invariant", Title: "Flag invariant populations", Description: "Evaluate published MAIT, iNKT and GEM sequence rules for an explicit species. Shows Clonotypes, optionally narrowed to a matched population, and answers sample totals, evaluable abundance and shares. Records the species with the dataset; flags do not establish phenotype or specificity.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg, "species": textArg("human or mouse (required)"), "population": textArg("MAIT, iNKT, GEM, or empty for all clonotypes"),
 	})},

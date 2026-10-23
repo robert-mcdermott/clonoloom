@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **B-cell sequence evidence (wave 5, slice 1).** B cells → Inputs shows the active filter
+  and definition, per-sample IGH/IGK/IGL rearrangement evidence counts, paginated rows and an
+  inspector of original sequence annotations and findings. Counts are rows, not cells or families.
+- Retain 42 AIRR fields, including sequences, alignments, orientation, CIGARs and coordinates.
+  Check structural consistency without realigning, padding, reconstructing germlines or measuring
+  mutation. Missing evidence remains missing; invalid values remain inspectable and exportable.
+- Preserve evidence in the table cache and AIRR exports. Rebuild old caches while retaining
+  existing dataset and artifact identities, since junction analyses are unchanged.
+- Add `inspect_bcell_inputs`, a locally generated synthetic example with guided steps, cited
+  methods, a guide and captures in both themes. Independent CSV values agree on all retained
+  fields across four public B-cell datasets; cache/export, boundary, fuzz, browser and saved-project
+  checks cover the new path. Go race validation, amd64 compatibility, six builds, 81 JavaScript
+  tests, 14 accessibility checks and 108 site audit checks pass. Versions remain 0.4.0 until
+  wave 5 release preparation.
+
 ## 0.4.0 (2026-10-22)
 
 Wave 4 of the [roadmap](clonoloom-spec/roadmap.md): specificity.

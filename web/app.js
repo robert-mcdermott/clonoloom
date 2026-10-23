@@ -37,14 +37,7 @@ const MODES = [
   { id: 'repertoire', label: 'Repertoire', icon: 'repertoire', load: () => import('./ui/mode-repertoire.js').then((m) => m.mountRepertoire) },
   { id: 'tracking', label: 'Tracking', icon: 'threads', load: () => import('./ui/mode-tracking.js').then((m) => m.mountTracking) },
   { id: 'specificity', label: 'Specificity', icon: 'receptor', load: () => import('./ui/mode-specificity.js').then((m) => m.mountSpecificity) },
-  {
-    id: 'bcells', label: 'B cells', icon: 'lineage',
-    load: async () => plannedMode({
-      title: 'B cells', icon: 'lineage',
-      purpose: 'Clonal families with a threshold chosen from the data, germlines reconstructed, somatic hypermutation by region, isotypes and class switching, and lineage trees with their ancestors.',
-      steps: ['Open BCR data.', 'Cluster clonal families and check the threshold.', 'Explore mutations and trees.'],
-    }),
-  },
+  { id: 'bcells', label: 'B cells', icon: 'lineage', load: () => import('./ui/mode-bcells.js').then((m) => m.mountBCells) },
   {
     id: 'cells', label: 'Cells', icon: 'cell',
     load: async () => plannedMode({

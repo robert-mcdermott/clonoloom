@@ -279,3 +279,12 @@ test('invariant methods cite only the explicitly selected species rules', () => 
   assert.match(mouse.text, /mouse MAIT and iNKT/);
   assert.ok(!mouse.references.some((r) => r.includes('1401380')));
 });
+
+
+test('sequence evidence methods distinguish additive reader versions from historical reads', () => {
+  const dataset = { ...pbmc, sources: [{ ...pbmc.sources[0], format: 'airr' }], readerVersion: 2 };
+  const current = methodsParagraph({ dataset, program });
+  assert.match(current.text, /retained without reconstruction/);
+  assert.match(current.references.join(' '), /02206/);
+  assert.doesNotMatch(methodsParagraph({ dataset: { ...dataset, readerVersion: 1 }, program }).text, /retained without reconstruction/);
+});

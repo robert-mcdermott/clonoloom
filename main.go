@@ -474,6 +474,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerDatasets(mux)
 	a.registerQC(mux)
 	a.registerClonotypes(mux)
+	a.registerBCells(mux)
 	a.registerExamples(mux)
 	a.registerReferences(mux)
 	a.registerJobs(mux)

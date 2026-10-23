@@ -113,3 +113,27 @@ func TestEveryReaderProblemHasAKind(t *testing.T) {
 		}
 	}
 }
+
+func TestEvidenceFindingsPreserveUsableJunctions(t *testing.T) {
+	res, err := reads.ReadFiles(context.Background(), []string{"../../testdata/bcell-inputs.tsv"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	report := Check(res)
+	got := codes(report)
+	for code, want := range map[string]int{"evidence-alignment": 1, "evidence-coordinate": 2, "evidence-cigar": 1} {
+		if got[code] != want {
+			t.Errorf("%s: %d, want %d", code, got[code], want)
+		}
+	}
+	if !report.Usable() || res.Table.Len() != 7 {
+		t.Fatal(report)
+	}
+	for _, finding := range report.Findings {
+		if strings.HasPrefix(finding.Code, "evidence-") {
+			if finding.Remedy == "" || len(finding.Examples) == 0 || finding.Examples[0].Line == 0 || finding.Examples[0].SequenceID == "" {
+				t.Fatal(finding)
+			}
+		}
+	}
+}

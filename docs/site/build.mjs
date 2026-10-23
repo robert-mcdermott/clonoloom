@@ -52,6 +52,7 @@ const DOCS = [
   { group: 'Repertoires', pages: [['diversity', 'Diversity'], ['rarefaction', 'Rarefaction'], ['genes', 'Genes and junctions'], ['overlap', 'Overlap']] },
   { group: 'Tracking', pages: [['subjects', 'Subjects and time points'], ['tracking', 'Following clonotypes'], ['tests', 'Expanded and contracted clonotypes'], ['classes', 'Classes across time points'], ['attribution', 'Attribution to a reference']] },
   { group: 'Specificity', pages: [['tcrdist', 'Similar receptors (TCRdist)'], ['neighborhoods', 'Neighborhoods and backgrounds'], ['generation', 'Generation probabilities'], ['networks', 'Clonotype networks'], ['database', 'Specificity databases']] },
+  { group: 'B cells', pages: [['bcell-inputs', 'Sequence evidence']] },
   { group: 'Results', pages: [['figures', 'Figures and exports'], ['record', 'The record']] },
   { group: 'Reference', pages: [['simulation', 'Simulated studies'], ['remote-control', 'Remote control']] },
 ];

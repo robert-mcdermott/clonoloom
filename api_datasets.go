@@ -75,10 +75,10 @@ func (d *datasets) remove(id string) bool {
 	return ok
 }
 
-// datasetID is made from the readers' version and each source's SHA-256, in order.
+// datasetID is made from the readers' identity version and each source's SHA-256, in order.
 func datasetID(sources []reads.Source, metadata []reads.MetadataFile) string {
 	h := sha256.New()
-	fmt.Fprintf(h, "clonoloom-dataset/1 readers %d\n", reads.ReaderVersion)
+	fmt.Fprintf(h, "clonoloom-dataset/1 readers %d\n", reads.IdentityVersion)
 	for _, s := range sources {
 		fmt.Fprintf(h, "%s %d\n", s.SHA256, s.Size)
 		// A table read through a mapping of its columns is another dataset for each mapping.

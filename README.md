@@ -16,9 +16,13 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Release prepared:** 0.4.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+**Current release:** 0.4.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
 B-cell lineages, single-cell phenotypes and cohort comparisons come in later
 releases.
+
+**In development (wave 5):** B-cell Inputs retains AIRR sequence evidence, checks its
+coordinates and alignments, and lets you inspect and export the supplied annotations.
+Germline reconstruction and mutation analysis are still planned.
 
 ## Features
 

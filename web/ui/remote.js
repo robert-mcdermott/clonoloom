@@ -416,6 +416,19 @@ export function remoteActions(app) {
       return { message: `Found ${data.matches} chain–record matches in ${data.epitopes.length} epitope/antigen groups.`, data };
     },
 
+    async inspect_bcell_inputs({ dataset, select } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells');
+      const view = await waitFor(() => app.bcellsView, 5000, 'B cells');
+      const page = await view.show(d.id);
+      if (select !== undefined) {
+        if (!Number.isInteger(select) || select < 1 || select > page.rows.length) throw new ActionError('Select a rearrangement on the first page, from 1.');
+        await view.inspect(page.rows[select - 1].id);
+      }
+      return { message: `${d.name}: ${page.count} B-cell rearrangements under the active filter.`, data: page };
+    },
+
     async flag_invariant({ dataset, species, population = '' } = {}) {
       const d = datasetOf(dataset);
       species = choose(species, ['human', 'mouse'], 'species');

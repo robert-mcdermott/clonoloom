@@ -45,7 +45,12 @@ var FormatNames = map[Format]string{
 
 // ReaderVersion changes when a reader reads any file differently; cached tables and records name
 // it.
-const ReaderVersion = 1
+const ReaderVersion = 2
+
+// IdentityVersion changes only when existing rearrangement values change meaning.
+// ReaderVersion also covers additive evidence and invalidates the disposable cache;
+// retaining additional annotations in version 2 leaves version 1 dataset/artifact IDs valid.
+const IdentityVersion = 1
 
 // Source is one file of a dataset as read.
 type Source struct {

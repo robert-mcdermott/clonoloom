@@ -24,8 +24,11 @@ the AIRR Rearrangement schema names them):
 | reads, UMIs | Reads and UMIs where the format gives them beside the count |
 | cell, clone | Single cell: the barcode, and the source's own clonotype or clone ID |
 
-A missing value stays missing: a count that was not given is not a count of one. The other
-columns of a file stay in the file; exports read them again from it.
+A missing value stays missing: a count that was not given is not a count of one. AIRR sequence evidence is retained separately: sequence, orientation, query and germline
+alignments, V/D/J CIGARs and their sequence/germline/alignment coordinates, FWR/CDR coordinates,
+N/P lengths and the named germline database. Original text (including invalid values) is
+inspectable and exportable. Other source columns stay in the source; exports do not re-read
+arbitrary columns.
 
 ### Abundance units
 
@@ -61,6 +64,23 @@ export, TRUST4, Cell Ranger (`airr_rearrangement.tsv`) and AIRR Data Commons dow
 API answers) named with the tables annotates their samples by `repertoire_id`: study, subject,
 species, sex, age, diagnosis, tissue, cell subset, time point, template and HLA. Schema 1.3's
 text fields and 2.0's objects are both read. YAML metadata arrives in a later release.
+
+### Sequence evidence (wave 5, in development)
+
+B cells → Inputs counts IGH/IGK/IGL rearrangements after the active QC filter, separately for
+sequence present, paired alignments, structurally valid evidence and supplied region coordinates.
+It neither groups rows into families nor computes a mutation rate. Missing evidence stays missing.
+
+AIRR coordinates are 1-based closed intervals in their named query, reference or alignment
+string. FWR/CDR coordinates use the query sequence, not an IMGT position in a padded alignment.
+Orientation is preserved; alignments are not reverse-complemented again. The validator checks
+positions, nucleotide symbols, paired alignment lengths and AIRR CIGAR operations. Findings
+retain source locations and do not discard otherwise usable junctions. Cell Ranger AIRR
+alignments may have unequal lengths; these are preserved and reported, never padded to match.
+
+AIRR export fills the retained evidence fields and appends available optional columns in a fixed
+order. It preserves invalid evidence for inspection; a file with such evidence remains invalid
+until corrected at its source. Abundance and clone IDs retain their existing export semantics.
 
 ## Cell Ranger V(D)J (10x Genomics)
 
@@ -242,8 +262,8 @@ these columns:
 - `locus`, `c_call`, `duplicate_count` (reads), `umi_count`, `templates`, `cell_id`, `clone_id`
   and `repertoire_id`.
 
-The sequences, alignments and CIGARs are empty: ClonoLoom does not keep them, and the source
-files have them. `clone_id` is the row's clonotype under the definition. `templates` holds an
+Retained AIRR sequences, alignments, orientation and CIGARs are filled as supplied; optional
+evidence fields are appended when available. Other readers leave them missing. `clone_id` is the row's clonotype under the definition. `templates` holds an
 immunoSEQ export's templates, which the schema has no field for. The file reads back into the same
 clonotypes.
 

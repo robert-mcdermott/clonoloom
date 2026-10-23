@@ -10,6 +10,7 @@ import (
 	"math"
 	"sort"
 
+	"clonoloom/internal/bcell"
 	"clonoloom/internal/genes"
 	"clonoloom/internal/reads"
 	"clonoloom/internal/rep"
@@ -107,6 +108,18 @@ func Check(res *reads.Result) Report {
 	c := &checker{t: res.Table, sources: res.Sources, found: map[string]*collector{}}
 	c.readerProblems(res.Problems)
 	c.rows()
+	if c.t.EvidenceText != nil {
+		for row := 0; row < c.t.Len(); row++ {
+			seen := map[string]bool{}
+			for _, issue := range bcell.Check(c.t.EvidenceRow(row)).Issues {
+				if seen[issue.Code] {
+					continue
+				}
+				seen[issue.Code] = true
+				c.add(issue.Code, Warning, "Sequence evidence needs attention", issue.Message, "Inspect the supplied annotation in B cells; re-export consistent evidence before using it for sequence analysis. Junction-based analyses remain available.", c.t.Len(), c.example(row, issue.Field, issue.Value))
+			}
+		}
+	}
 	c.cells()
 	c.samples()
 	c.unit(res.Unit)

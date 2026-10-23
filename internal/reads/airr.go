@@ -25,6 +25,7 @@ type airrLayout struct {
 	cellID, cloneID                     int
 	repertoireID, sampleProcessingID    int
 	missingRequired                     []string
+	evidence                            [rep.EvidenceCount]int
 }
 
 func newAIRRLayout(header []string) *airrLayout {
@@ -43,6 +44,9 @@ func newAIRRLayout(header []string) *airrLayout {
 		if _, ok := c[name]; !ok {
 			l.missingRequired = append(l.missingRequired, name)
 		}
+	}
+	for i, name := range rep.EvidenceFields {
+		l.evidence[i] = c.index(name)
 	}
 	return l
 }
@@ -148,6 +152,9 @@ func readAIRR(ls *lines, l *airrLayout, b *rep.Builder, src int, name string, p 
 			}
 		}
 		r := rep.NewRow()
+		for i, column := range l.evidence {
+			r.Evidence[i] = field(fields, column)
+		}
 		r.Source, r.Line = src, ls.n
 		r.SequenceID = field(fields, l.sequenceID)
 		r.Locus = strings.ToUpper(field(fields, l.locus))

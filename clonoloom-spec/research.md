@@ -917,3 +917,43 @@ selects primary productive chains directly from Cell Ranger rows and applies the
 human predicates without calling ClonoLoom. All matched counts and both cell denominators
 agree; the compact count reference is checked by `validation/invariant_test.go`.
 Mouse nomenclature source: https://www.imgt.org/IMGTrepertoire/Proteins/taballeles/mouse/TRA/TRAV/Mu_TRAVall.html.
+
+
+### 5.13 B-cell input evidence (wave 5, slice 1)
+
+The first slice preserves annotations before interpreting them. Its contract is the
+[AIRR Rearrangement schema 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+(accessed 23 October 2026), alongside the existing older-schema readers; Vander Heiden et al.
+2018, *Front Immunol* 9:2206, doi:10.3389/fimmu.2018.02206. No external implementation's source
+was used.
+
+ClonoLoom retains 42 named fields as optional columns in a separate string store. Text is kept
+as supplied by the existing TSV field reader, including invalid numbers, case, gaps and ambiguity
+symbols. This is ClonoLoom's choice: conversion must not destroy the evidence that explains a
+finding. Checked values are temporary. A missing column costs no per-row storage. Raw evidence
+is not a license to use an invalid alignment in a later analysis.
+
+Query, reference and aligned-string positions have separate bounds; region endpoints belong to
+the query. No reference length is guessed. Intervals are checked before conversion to internal
+slice bounds. AIRR CIGAR spans exclude numbering spacers and use its restricted terminal S/N
+convention. Parsing limits accumulated lengths to signed 32-bit range and never expands a CIGAR
+into an allocation. The orientation flag is preserved without reorienting supplied alignments.
+Equal lengths and valid symbols are structural evidence only: numbering, germline correctness,
+codon mapping and biological interpretation require the later analysis's checks.
+
+Evidence warnings leave existing junction analyses available. The Inputs summary counts rows
+under QC filters, not cells, clones or abundance. Presence of region coordinates is separate from
+validity. Long sequences are fetched only for a selected row. Identity includes the source
+checksum/name, its ordinal among the dataset's sources, source line and supplied sequence ID, avoiding collisions between repeated IDs.
+
+The disposable table cache and reader versions advance to 2. The readers' identity version stays
+at 1 because existing counts, calls, junctions and chain selection have not changed; previously
+saved dataset and artifact IDs therefore remain valid. Future changes to those meanings must
+advance identity separately. The retained annotations add no new scientific result artifact.
+
+Independent Python CSV checks cover every retained value, including missing fields, in four
+10x B-cell AIRR datasets and the artificial input example (`validation/reference/bcell_inputs.py`,
+with its Python version and source checksums in `bcell-inputs.json`). Hand-calculated cases check
+coordinate boundaries, orientation, incomplete evidence, CIGAR offsets and overflow. Round trips
+check the cache and AIRR export, and release fixtures check existing results. These are input
+validation checks, not a validation of germline reconstruction or somatic hypermutation.

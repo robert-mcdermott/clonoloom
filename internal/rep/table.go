@@ -66,6 +66,8 @@ type Sample struct {
 // Table is a dataset's rearrangements, one row per rearrangement (bulk) or contig (single cell).
 // Optional columns are nil when no source gave them.
 type Table struct {
+	EvidenceText *Strings
+	Evidence     [EvidenceCount][]uint32
 	// Dict interns the short strings that repeat: gene calls, samples' barcodes, clone ids.
 	Dict *Strings
 	// Junctions (nucleotides) and JunctionsAA (amino acids) intern the IMGT junctions.
@@ -157,6 +159,12 @@ func (t *Table) Size() int64 {
 		if f != nil {
 			size += n
 		}
+	}
+	if t.EvidenceText != nil {
+		size += t.EvidenceText.Size()
+	}
+	for _, c := range t.Evidence {
+		size += int64(len(c)) * 4
 	}
 	return size
 }

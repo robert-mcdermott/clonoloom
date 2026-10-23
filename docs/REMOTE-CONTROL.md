@@ -95,3 +95,12 @@ act("open_data", paths=[table], mappings={table: {
   ClonoLoom does not take actions (reload it).
 
 Agents (an MCP server whose changes you accept or reject) come in a later release.
+
+### B-cell input evidence (wave 5)
+
+`inspect_bcell_inputs({dataset, select})` opens B cells → Inputs and returns evidence counts by
+sample and locus, plus the first page (at most 50 rearrangements) under the active QC filter.
+`dataset` uses the same dataset selector as the other actions; optional `select` is a one-based
+row on that page. It displays that row's original sequence annotations and findings in the
+inspector. The response contains bounded summaries, not all sequences. This inspection neither
+reconstructs a germline nor computes mutation or family membership.

@@ -1,0 +1,23 @@
+---
+title: B-cell sequence evidence
+description: Inspect the sequence, alignment and coordinate evidence supplied with B-cell AIRR rearrangements before interpreting germlines or mutations.
+lede: In development for wave 5. B cells → Inputs shows what the annotation pipeline supplied, what is missing and which structural checks need attention.
+---
+<h2 id="inputs">Inspect the inputs</h2>
+<shot name="bcells" alt="B-cell Inputs showing seven artificial rearrangements and the unequal query and germline alignment of a selected row">The synthetic example deliberately includes complete, partial, ambiguous and invalid evidence.</shot>
+<p>Open an AIRR rearrangement table, choose <strong>B cells</strong>, then select a sequence ID. The inspector shows its source file and line, original sequence, alignments, orientation, coordinates and findings. Repeated sequence IDs from different files remain separate.</p>
+<p>The summary counts IGH, IGK and IGL <strong>rearrangements</strong> under the active QC filter. These are not counts of cells or clonal families. The clonotype definition is shown for context; it does not group these input rows. Change the filter in <a href="qc.html">QC</a>.</p>
+<h2 id="evidence">Presence and validity</h2>
+<ul>
+<li><strong>Sequence</strong>: the query sequence was supplied.</li>
+<li><strong>Both alignments</strong>: query and germline alignment strings were supplied.</li>
+<li><strong>Structurally valid</strong>: both strings are present and the evidence checks found no inconsistency. This does not establish a biological germline, IMGT numbering or a mutation rate.</li>
+<li><strong>Region coordinates</strong>: at least one FWR/CDR endpoint was supplied. Inspect it for incomplete or invalid intervals.</li>
+</ul>
+<p>Missing evidence is not filled in. Unequal alignments, invalid coordinates and malformed CIGARs remain visible with findings. The original junctions can still support repertoire analysis. ClonoLoom does not pad the strings, realign them or reverse an already oriented alignment.</p>
+<h2 id="example">Try the synthetic example</h2>
+<p>In <strong>Example data</strong>, open <strong>Synthetic B-cell sequence evidence</strong>. Follow its steps to compare a consistent artificial annotation with unequal alignments. These short sequences illustrate validation; they are not biological receptors. The example is generated locally and works offline.</p>
+<h2 id="exports">Export the evidence</h2>
+<p><strong>Export AIRR</strong> writes the retained evidence beside the existing rearrangement fields, with source and license notes. Invalid supplied values remain invalid in the export so they can be investigated. Correct them at the annotation source before later sequence analysis.</p>
+<h2 id="method">Method and limits</h2>
+<p>Checks follow the <a href="https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html">AIRR Rearrangement schema 2.0</a> (Vander Heiden et al. 2018, <em>Frontiers in Immunology</em> 9:2206, doi:10.3389/fimmu.2018.02206). This slice does not reconstruct germlines, infer families or measure mutation. Those analyses arrive in later wave 5 slices.</p>

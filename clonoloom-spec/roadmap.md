@@ -16,7 +16,7 @@ has a sequence of slices and a detailed plan for slice 1. Later slices are refin
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
 2–4 are merged and released as 0.2.0–0.4.0, and the 0.4.0 product site is published.
-Wave 5 is being planned on `wave5`; slice 1 is next, with no implementation yet.
+Wave 5 is underway on `wave5`; slice 1 is implemented and awaiting the maintainer's commit.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -877,12 +877,12 @@ threshold-dependent result, not a replacement for those identifiers.
 Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Only slice 1 is ready
-to implement; later slices need their methods, data and acceptance criteria settled in detail.
+puts a simulation with known families before the analyses it validates. Slice 1 is implemented; later slices need their methods, data and acceptance criteria settled
+in detail before implementation.
 
 | Slice | Status | Scope |
 | --- | --- | --- |
-| 1. B-cell sequence evidence | Next; planned below | Retain AIRR sequences, alignments and coordinates; inspect their availability and validity |
+| 1. B-cell sequence evidence | Implemented; awaiting commit | Retain AIRR sequences, alignments and coordinates; inspect their availability and validity |
 | 2. IMGT/HighV-QUEST input | To come | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
 | 3. Simulated B-cell families | To come | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
 | 4. Clonal families | To come | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
@@ -980,6 +980,31 @@ mutation counts on this table would either lose the evidence or silently assume 
   on a fixed synthetic AIRR dataset. Confirm no sequence columns are allocated for junction-only
   inputs. Large reference regeneration stays outside per-commit CI; small reference checks run
   in CI. Go race tests and `go vet`, JavaScript tests and six-platform builds remain required.
+
+**Implemented.** Optional raw evidence columns, bounded CIGAR and coordinate checks, stable
+findings, cache and AIRR round trips, paginated Inputs and its inspector, remote action and
+seven-row artificial example with guided steps. The new guide, captures, format notes and cited
+methods describe the distinction between structural evidence and biological inference.
+
+**Checked.** All 42 fields agree with independent CSV reads on 7 artificial and 7,733 public
+B-cell rows (four 10x datasets). Cache corruption and old versions are refused; absent evidence
+allocates no columns. API tests cover repeated IDs, mixed T/B data, missing evidence, filters,
+paging and invalid requests. Both-theme browser checks cover the example, filtered/empty results
+and stale inspector responses. Release fixtures and evidence checks pass on arm64 and amd64;
+Go race validation (including the full scientific package and a root-package rerun after the
+example catalog grew), `go vet`, 81 JavaScript tests, six platform builds, 14 accessibility
+checks and 108 site audit checks pass. The million-row page
+budget is 41 ms and cached cohort reopening 185 ms on this machine. The fixed 100,000-row
+sequence-memory case adds 30.9 MiB. CIGAR and interval fuzz runs pass.
+
+**Decided during implementation.** Keep raw numeric and orientation text as well as sequence
+strings, so that missing, zero and invalid annotations can be inspected and exported distinctly.
+Reader/cache version 2 rebuilds cached tables, while a separate identity version remains 1:
+additional annotations do not change existing junction analyses or their dataset/artifact IDs.
+The first Inputs part does not create an artifact; it inspects the current source and filter.
+Rows count under the QC filter rather than a clonotype definition's chain selection. Region
+presence and structural validity remain separate. IMGT input and all biological inference stay
+in later slices. The version remains 0.4.0 until release preparation.
 
 **Sources and boundary.** The field and coordinate contract is the
 [AIRR Rearrangement schema 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html),

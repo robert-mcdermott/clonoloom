@@ -116,6 +116,53 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async bcells() {
+    await act('open_example', { example: 'synthetic-bcell-inputs', download: true });
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    const example = catalog.examples.find((e) => e.name === 'synthetic-bcell-inputs');
+    for (const step of example.opens[0].steps) await act(step.action, step.args);
+    const page = await js('window.clonoloom.bcellsView.page()');
+    if (page.count !== 7 || page.rows[3].evidence.valid || !page.rows[0].evidence.valid) throw new Error('B-cell evidence summary differs');
+    // A selection that finishes after reloading must not restore stale inspector evidence.
+    await js(`(async () => {
+      const app = window.clonoloom, view = app.bcellsView;
+      const id = app.store.project.datasets[0].id;
+      const oldFetch = window.fetch;
+      let release;
+      const gate = new Promise((resolve) => { release = resolve; });
+      window.fetch = async (...args) => {
+        const response = oldFetch(...args);
+        if (String(args[0]).includes('bcells/inputs') && JSON.parse(args[1].body).id) await gate;
+        return response;
+      };
+      try {
+        const pending = view.inspect(view.page().rows[0].id);
+        await view.show(id);
+        release();
+        if (await pending !== undefined) throw new Error('Stale inspector response applied');
+      } finally { release(); window.fetch = oldFetch; }
+      const { saveFilter } = await import('./lib/filters.js');
+      app.store.commit(saveFilter(app.store.project, { dataset: id, name: 'Only light kappa', rules: { loci: ['IGK'] }, reason: 'Check evidence filtering' }), 'Filter evidence');
+      return true;
+    })()`);
+    await waitFor(`window.clonoloom.bcellsView.page()?.count === 1`);
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const { saveFilter } = await import('./lib/filters.js');
+      app.store.commit(saveFilter(app.store.project, { dataset: app.store.project.datasets[0].id, name: 'Only T cells', rules: { loci: ['TRB'] }, reason: 'Check empty B-cell inputs' }), 'Filter evidence');
+      return true;
+    })()`);
+    await waitFor(`window.clonoloom.bcellsView.page()?.count === 0`);
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const { useFilter } = await import('./lib/filters.js');
+      app.store.commit(useFilter(app.store.project, app.store.project.datasets[0].id, null), 'Restore inputs');
+      return true;
+    })()`);
+    await waitFor(`window.clonoloom.bcellsView.page()?.count === 7`);
+    await act('inspect_bcell_inputs', { select: 4 });
+    await waitFor(`document.querySelector('.inspector').textContent.includes('different lengths')`);
+  },
   // The start page of a first run.
   async start() {
     await waitFor(`Boolean(document.querySelector('.welcome'))`);

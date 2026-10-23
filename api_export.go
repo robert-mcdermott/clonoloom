@@ -61,7 +61,7 @@ func (a *app) registerExports(mux *http.ServeMux) {
 			names := sampleNames(ds)
 			a.writeZip(w, ds.Name+"-"+what, func(z *zip.Writer) error {
 				if what == "rearrangements" {
-					notice.What = "The rearrangements of " + ds.Name + " as an AIRR Rearrangement TSV, the filter's rows only, each with its clonotype under the definition (clone_id)."
+					notice.What = "The rearrangements of " + ds.Name + " as an AIRR Rearrangement TSV, the filter's rows only, each with its clonotype under the definition (clone_id). Retained AIRR sequence evidence is exported as supplied, including invalid annotations; it is not a reconstructed germline or a mutation measurement. AIRR Rearrangement schema 2.0; Vander Heiden et al. 2018, doi:10.3389/fimmu.2018.02206."
 					keep, _ := qc.Apply(ds.Result.Table, filter)
 					f, err := z.Create("rearrangements.tsv")
 					if err != nil {
