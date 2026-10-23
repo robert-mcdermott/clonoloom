@@ -30,9 +30,10 @@ const names = args.filter((a) => !a.startsWith('--'));
 const record = args.includes('--record');
 const dataRoot = process.env.CLONOLOOM_DATA || `${here}/cache`;
 const ciOnly = args.includes('--ci');
-// The data sets, and the tools the checks use: each files under a base URL, members of a remote
-// archive, an archive, or repertoires of an ADC repository.
-const sets = { ...manifest.datasets, ...(manifest.fixtures ?? {}), ...(manifest.tools ?? {}) };
+// The data sets, the reference data the program downloads on request, and the tools the checks
+// use: each files under a base URL, members of a remote archive, an archive, or repertoires of an
+// ADC repository.
+const sets = { ...manifest.datasets, ...(manifest.fixtures ?? {}), ...(manifest.references ?? {}), ...(manifest.tools ?? {}) };
 const USER_AGENT = 'ClonoLoom-validation (+https://github.com/robert-mcdermott/clonoloom)';
 
 if (args.includes('--list')) {

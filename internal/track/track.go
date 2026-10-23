@@ -48,9 +48,20 @@ const (
 	MaxList     = 1000
 )
 
-// Choice is which clonotypes are followed: by a reference sample, each sample's largest, a list
-// (clonotype IDs, or junctions as the definition writes them), a test's calls, or a class.
+// Evidence identifies the immutable specificity result that supplied a list.
+// Keeping the explicit IDs makes the selection reproducible without its database.
+type Evidence struct {
+	Artifact string `json:"artifact"`
+	Epitope  string `json:"epitope"`
+	Antigen  string `json:"antigen"`
+	Species  string `json:"species"`
+}
+
+// Choice is which clonotypes are followed: a reference sample's or each sample's
+// largest, a list, a test's calls or a class; an epitope selection is an explicit
+// list with the immutable result that supplied its evidence.
 type Choice struct {
+	Evidence *Evidence   `json:"evidence,omitempty"`
 	By       string      `json:"by"`
 	N        int         `json:"n,omitempty"`
 	List     []string    `json:"list,omitempty"`
@@ -69,6 +80,9 @@ func (c Choice) Normalize() (Choice, error) {
 	case ByReference, ByLargest, ByList, ByTest, ByClass:
 	default:
 		return c, fmt.Errorf("track by %q: by is reference, largest, list, test or class", c.By)
+	}
+	if c.By != ByList {
+		c.Evidence = nil
 	}
 	if c.By == ByClass {
 		if c.Classing == nil || !slices.Contains(Classes, c.Class) {

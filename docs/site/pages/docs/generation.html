@@ -1,0 +1,37 @@
+---
+title: Generation probabilities
+description: Compute how likely V(D)J recombination alone is to make each clonotype in ClonoLoom, as OLGA computes it, under OLGA's default models or ClonoLoom's own, and see each sample's distribution.
+lede: The Specificity view's Generation part computes each clonotype's generation probability, the probability that recombination alone makes its CDR3s. Receptors recombination makes often are found in many people by chance; the probability says how a receptor is made, not what it recognizes.
+---
+      <h2 id="generation">Each clonotype's probability</h2>
+      <shot name="generation" alt="The Specificity view's Generation part on Dash et al.'s mouse epitope-specific TCRs under OLGA's mouse models: the distribution of the paired clonotypes' generation probabilities (each the product of its two chains'), most between 10 to the minus 20 and 10 to the minus 10 and a few far lower, and the most abundant clonotypes with their probabilities">Dash et al. 2017's mouse TCRs under OLGA's mouse models: the clonotypes' generation probabilities, and the most abundant with theirs.</shot>
+      <p>Open T- or B-cell receptors, define clonotypes by junction (<a href="clonotypes.html">Clonotypes</a>), and open <strong>Specificity › Generation</strong>. <strong>Compute the probabilities</strong> computes each clonotype's, as a job, and keeps the result with the project:</p>
+      <ul>
+        <li><strong>By sample</strong>: each sample's clonotypes' probabilities, their median and middle half, on a logarithmic scale.</li>
+        <li><strong>The distribution</strong> of the clonotypes' probabilities, in bins of half a power of ten.</li>
+        <li><strong>The clonotypes</strong>, the most abundant, most probable or least probable first, each with its probability. Choose one to see it in the Clonotypes view.</li>
+      </ul>
+      <p>The Clonotypes view's inspector shows the probability of the clonotype chosen, and each chain's, under the same choices.</p>
+
+      <h2 id="probability">The probability</h2>
+      <p>A recombination model gives the probability of each event that makes a chain: its V, D and J genes, how many nucleotides each gene end loses or gains as a palindrome, and the nucleotides inserted between them. A CDR3's generation probability (Sethna et al. 2019) sums the probabilities of every event that makes it, the junction from the conserved cysteine to the phenylalanine or tryptophan, both included:</p>
+      <ul>
+        <li>a clonotype defined by amino-acid junction has its amino acids' probability, every codon of each counted; by nucleotide junction, its nucleotides';</li>
+        <li><strong>With the V and J genes</strong>, it is the probability of the CDR3 with the genes the clonotype names, not of the CDR3 alone (a gene named without its allele stands for each of its alleles). A definition by V family, or without genes, computes the CDR3 alone;</li>
+        <li>a pair's probability is the product of its chains': recombination makes them independently;</li>
+        <li>a CDR3 the model cannot make has a probability of 0, and is counted apart from the distribution.</li>
+      </ul>
+      <p>ClonoLoom computes it as OLGA does, by dynamic programming over the CDR3's codons, its choices included: every insertion length the model allows, a palindrome made from the gene's part of the CDR3, and only the genes OLGA uses (those its anchor files mark functional).</p>
+
+      <h2 id="models">The models</h2>
+      <ul>
+        <li><strong>OLGA's default models</strong>, inferred by IGoR (Marcou et al. 2018) from unproductive rearrangements: human TRA, TRB, IGH, IGK and IGL, and mouse TRA and TRB. ClonoLoom downloads them once, when you ask (<strong>Reference data</strong>; 28 files, 2.2 MB, from OLGA's repository), checks each against its recorded SHA-256, and names their checksum in every result.</li>
+        <li><strong>ClonoLoom's own model</strong> of human TRB, built in: the model its simulator draws rearrangements from (GRCh38's gene segments, 10x Genomics' V and J usage). It is used until OLGA's are downloaded, or when you choose it.</li>
+      </ul>
+      <p>The organism is the one whose models name the most of the dataset's V genes, unless you choose it. A chain whose locus has no model (TRG or TRD, or anything but TRB under ClonoLoom's model), or whose genes the model lacks when the genes are part of the probability, has none, and the result counts why; a pair has one only when each chain has one.</p>
+
+      <h2 id="checks">How it is checked</h2>
+      <p>Under OLGA's seven models, the probabilities of 99,949 CDR3s (the development data's T- and B-cell chains, CDR3s OLGA draws from each model, nucleotide junctions, CDR3s with their genes, and CDR3s with residues of any amino acid) are within a relative 10<sup>−9</sup> of OLGA 1.3.0's (in fact within 3 × 10<sup>−15</sup>). In one place ClonoLoom counts events OLGA leaves out: an insertion of the longest length a model allows, when that length is one more than a multiple of three and the insertion starts a codon. Of the seven models, it changes mouse TRA's (whose insertions reach 22 nucleotides) by more than a relative 10<sup>−15</sup>: by up to 13% of a probability among the 5,583 mouse TRA CDR3s compared. OLGA's own generator makes these receptors. Under ClonoLoom's model, the probabilities agree with how often its simulator makes each of 200 junctions in 20 million rearrangements, and its generator with the probabilities, under its own model and OLGA's human TRB model.</p>
+
+      <h2 id="use">Using the result</h2>
+      <p>Both plots save as figures. <strong>Export</strong> writes each clonotype's probability, and each chain's, and each sample's quartiles, as CSV. The methods paragraph names the models by their checksum. Scripts use <code>measure_generation</code> (<a href="remote-control.html">Remote control</a>). A million TRB CDR3s take about 30 seconds on ten processors.</p>

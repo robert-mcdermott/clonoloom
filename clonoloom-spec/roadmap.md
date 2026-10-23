@@ -9,14 +9,14 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–3 are planned to the slice
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–4 are planned to the slice
 now; later waves are outlined and refined as they come.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
-release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); wave 2
-is merged and released as 0.2.0; wave 3 is done (0.3.0, to be merged and tagged); wave 4 is next,
-to be planned to the slice at its start.
+release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
+2 and 3 are merged and released as 0.2.0 and 0.3.0; wave 4 (0.4.0) is implemented on `wave4`, with release preparation in slice 8;
+commit, CI, tag and publication remain maintainer actions.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -290,7 +290,8 @@ A researcher follows clonotypes through each subject's samples over time and get
 Built on the branch `wave3`, one commit per slice. Planned in detail at the wave's start, after
 slice 1: the website was moved here from wave 8, so that each wave from now on adds its own pages
 to it, and making results the same on every processor was added, so that the wave's new methods
-are written under that rule from the start.
+are written under that rule from the start. **Done**: merged as robert-mcdermott/clonoloom#3 and
+released as 0.3.0.
 
 | Slice | Status |
 | --- | --- |
@@ -530,14 +531,349 @@ are written under that rule from the start.
      CAR-T example, the beta-binomial test finds the product's expansions transient (up at day 14,
      back by day 90); none emerging or contracting at day 90.
 
+## 0.4.0: specificity (wave 4)
+
+A researcher asks which of their T-cell receptors may recognize the same antigen, and gets:
+- distances between receptors (TCRdist) equal to tcrdist3's, on one chain or both;
+- each receptor's generation probability under a named recombination model;
+- neighborhoods of similar receptors, tested against a background of what recombination alone
+  makes, and networks of the clonotypes that resemble each other;
+- the receptors whose specificity is published (VDJdb) and the invariant populations (MAIT, iNKT,
+  GEM), which Tracking follows over time like any chosen clonotypes.
+
+Built on the branch `wave4`, one commit per slice. Planned in detail at the wave's start. The
+readers come first, as in wave 1; TCRdist and generation probability before the methods built on
+them; and a simulated response to an antigen, whose truth says which receptors share a
+specificity, before the neighborhoods and networks validated on it, as wave 3's simulated series
+came before its tests. Overlap with public cohorts (R4) moves to wave 9, whose AIRR Data Commons
+queries make a public cohort more than one example's files.
+
+| Slice | Status |
+| --- | --- |
+| 1. Readers of wave 4 | Done |
+| 2. TCRdist | Done |
+| 3. Generation probability | Done |
+| 4. Simulated antigen-specific responses | Done |
+| 5. Neighborhoods and backgrounds | Done |
+| 6. Clonotype networks | Done |
+| 7. Specificity databases | Done |
+| 8. Invariant populations and the examples; release 0.4.0 | Implemented; release pending |
+
+### Decisions for wave 4
+
+| Decision | Choice |
+| --- | --- |
+| TCRdist | As tcrdist3 computes it (Mayer-Blackwell et al. 2021) where it differs from Dash et al. 2017's description: the CDR3's gap placed where it costs least, 12 for each residue of difference in the CDR3s' lengths (the paper says 8), and the gap character of the V gene's aligned loops costing nothing against a residue. Distances are integers, equal to tcrdist3's chain by chain; a pair's distance is the sum of its chains'. The paper's variant is not offered |
+| The V gene's loops | CDR1, CDR2 and CDR2.5 of each V allele as tcrdist3's database aligns them (`combo_xcr_2024-03-05.tsv`: MIT; human, mouse and rhesus; made from IMGT's germlines, CC BY 4.0 since July 2026), downloaded on request with its checksum, as an example is: germline data are not bundled until IMGT's terms are confirmed (`research.md` §7.1, §8). Without it, TCRdist is on the CDR3 alone, and every result says which. A V gene called without its allele takes its \*01 allele's loops, and says so |
+| Recombination models | The simulator's own human TRB model, built in (the one the simulated studies are made from), and OLGA's default models (human TRB, TRA, IGH, IGK and IGL; mouse TRB and TRA), downloaded on request from OLGA's repository at a pinned commit with their GPL-3.0 notice: their parameters are not bundled (`research.md` §7.1). Generation probability is computed as OLGA 1.3.0 computes it, its choices included (every insertion length the model allows, the palindrome made from the gene's part of the CDR3, the genes its anchor files mark functional), so that it agrees with OLGA to 10⁻⁹; but not OLGA's omission of the longest insertion at one codon position (slice 3, *Found*). Every result names its model and the model's checksum |
+| Backgrounds | A neighborhood is compared with receptors drawn from a recombination model with the sample's V and J usage (each weighted by its V–J pair's share in the sample over its share in the draws, as Mayer-Blackwell et al.'s are), with the sample's own receptors with their CDR3s shuffled, or with a public repertoire the user opens (an OTS unit). A neighborhood's radius is the largest at which at most one background receptor in a million is a neighbor (Mayer-Blackwell et al.'s 10⁻⁶; tcrdist3's default is 10⁻⁵) |
+| Specificity databases | VDJdb, downloaded on request (its legacy release files) once its license (CC BY-NC-ND 4.0 since September 2026: non-commercial use) is shown and accepted, the release recorded; never bundled, and no fixture derived from it, so CI uses a simulated database. McPAS-TCR (no license published) and IEDB (CC BY 4.0) later, as their terms allow |
+| Units and definitions | Specificity works on clonotypes, whatever the unit: distances, generation probabilities and networks need no counts. TCRdist needs each clonotype's amino-acid junction and V gene: a definition without V gives TCRdist on the CDR3 alone, and a paired definition paired distances |
+| Development data | Dash et al. 2017's epitope-specific TCRs as tcrdist3 distributes them (mouse, `dash.csv`, 1,924 clones; human, `dash_human.csv`, 415; MIT), for exact TCRdist against tcrdist3 run in `validation/reference/`; OTS paired units (CC BY 4.0) for the paired readers, the budgets and a public background; PyClonal's MiXCR clone tables (MIT), and MiXCR 4 tables without a license for the maintainer only; OLGA, run in `validation/reference/`, for generation probabilities; scirpy for networks |
+
+1. **Readers of wave 4 (D5, E2).** ClonoLoom's own readers of:
+   - MiXCR clone tables (MiXCR 2's, 3's and 4's column sets; a file per chain or all chains): the
+     junction (`nSeqCDR3`, `aaSeqCDR3`), each segment's best hit (its score dropped, MiXCR's `*00`
+     read as no allele), and reads (`cloneCount`, `readCount`) or molecules
+     (`uniqueMoleculeCount`) as the unit;
+   - OAS and OTS data units: the metadata line kept as the sample's (subject, species, tissue,
+     cell type, disease, vaccine, treatment, age) and offered as its annotation; unpaired units
+     as bulk rearrangements, paired units (`_heavy` and `_light`, `_beta` and `_alpha`) as cells
+     with their two chains;
+   - tcrdist3's clone tables (the columns of `dash.csv`): a TCR's α and β chains on each row
+     with its count of cells, a sample for each subject and epitope, the epitope kept with the
+     sample.
+   - Examples: Dash et al. 2017's mouse and human epitope-specific TCRs (tcrdist3's files) and a
+     healthy donor's OTS unit.
+   - Validation: every value read equal to pandas' reading of PyClonal's MiXCR tables, three OTS
+     units, an OAS unit and Dash et al.'s files, and, for the maintainer, of MiXCR 4 tables; each
+     reader fuzzed.
+   - *Done:* `internal/reads/mixcr.go`, `oas.go` and `tcrdist3.go`, each format recognized by its
+     header (an OAS or OTS unit by its metadata line); MiXCR 4's single-cell exports read as cells
+     (each row a clone's chain in a cell, MiXCR's clonotype of cells as its clone); three new
+     findings (`molecules-missing`, `cell-count`, `unit-metadata`); Fill from metadata offers the
+     units' subject, tissue, cells sorted and disease and tcrdist3 tables' subjects and epitopes;
+     the methods paragraph says how each was read, citing OAS or OTS by the units' loci; the
+     examples, Dash et al.'s mouse and human TCRs and a healthy donor's OTS unit (4,424 cells);
+     `docs/FORMATS.md`, the guide's Opening data page and `research.md` §1.6.
+   - *Validation:* every column of ten more files equal to pandas' reading (PyClonal's two MiXCR 3
+     tables, three OTS units, two OAS units, Dash et al.'s two tables, and MiLaboratories' MiXCR 4
+     single-cell table on the maintainer's computer), each unit's metadata as given; 35 files in
+     all; the readers fuzzed with 21 million inputs without a fault.
+   - *Decided:* a tcrdist3 clone of n cells is read as n cells, since clonotype tables of single
+     cells count cells; a table of one chain is bulk. A MiXCR call is every hit of the best score,
+     as an AIRR call lists ties; a MiXCR table is counted in molecules only when every clone has
+     them. OAS's `Redundancy` does not say what it counted, so the user confirms the unit. Dash et
+     al.'s epitope is offered as each sample's condition. The example's OTS unit is a healthy,
+     untreated donor's (a unit of donors given thymosin α1 was left aside).
+   - *Found:* the reference script read every file under `validation/cache/`, the simulated studies
+     the tests make included, had it been run again: it now reads the data sets of `sources.json`
+     only. Real tables hold junctions without their conserved residues (62 of Dash et al.'s 6,810
+     mouse chains, 25 of the OTS donor's 8,848), which the validator notes. In the clonotype table,
+     a paired clonotype's long α junction ran over its β chain: each is now cut with an ellipsis.
+2. **TCRdist (S1).** `internal/tcrdist`: the substitution matrix (4 less BLOSUM62's score, at most
+   4), the CDR3's distance (its first three and last two residues left out, its gap where it costs
+   least), the V gene's loops from tcrdist3's database, downloaded on request (a Reference data
+   dialog beside Example data); single chains and pairs. The neighbors of a dataset's clonotypes
+   within a radius, computed in parallel; the Specificity view's first part, each clonotype's
+   nearest neighbors, and the inspector's.
+   - Validation: every distance between Dash et al.'s clones (about 1.85 million pairs of mouse
+     TCRs and 86,000 of human), α, β and paired, equal to tcrdist3's; the budget measured on OTS
+     units (the neighbors of 100,000 paired TCRs in under 2 minutes on 10 cores).
+   - *Done:* `internal/tcrdist` (the matrix from BLOSUM62, the CDR3's and the loops' distances,
+     tcrdist3's database of genes read and looked up, the receptors of a clonotype table grouped by
+     their chains, neighbors in parallel with a lower bound that skips far pairs, a receptor's
+     nearest and the distance loop by loop); the reference data `tcrdist3-loops` in
+     `sources.json`'s new `references`, downloaded on request through a Reference data dialog
+     (`api_references.go`, the example dialog's code); the analysis `tcrdist` (`api_tcrdist.go`)
+     and `POST /api/tcrdist/nearest`; the Specificity view's Neighbors part; CSV export, the methods
+     paragraph's sentence, `find_neighbors`, the guide's page and capture scene.
+   - *Validation:* every distance between Dash et al.'s 1,924 mouse and 415 human clones (3.87
+     million pairs, rather than the half the plan counted: each pair both ways), α, β and paired,
+     and each loop's alone, equal to tcrdist3 0.3's; every clone's neighbors and nearest at radii 0,
+     24, 48 and 96 equal to those of every distance; the neighbors of 100,000 paired TCRs (the OTS
+     donors' α and β chains paired at random) in 25 s on 10 processors, within 0.1 GB.
+   - *Decided:* the radius 24 TCRdist units a chain by default (48 for a pair: two CDR3
+     substitutions of the most different residues); the organism whose database names the most of
+     the V genes, unless chosen; a V gene called without its allele (a definition by gene keeps
+     none) read as its \*01, a tie as its first gene, and the result lists them; a definition by V
+     family, or without V, compares the CDR3s alone; B-cell clonotypes are left out, counted.
+     A clonotype's nearest are computed when asked, not kept. Reference data are listed in
+     `sources.json` beside the development data and the tools, so that CI fetches them too.
+   - *Found:* tcrdist3 keeps each loop's matrix before its weight, the CDR3's a third of what
+     enters the chain's sum. Paralogous V genes with the same loops (mouse TRAV3-3 and TRAV3D-3)
+     make receptors of different V genes 0 apart, as tcrdist3 does. On a healthy donor's 3,576
+     paired clonotypes, 1% had a neighbor within 48; on Dash et al.'s epitope-sorted mouse TCRs,
+     54%. tcrdist3 needs parasail, whose macOS wheels are for x86_64 only: its reference is made
+     under Rosetta, with numba 0.60.
+3. **Generation probability (R6).** `internal/pgen`: IGoR's model files read; OLGA's dynamic
+   programming for amino-acid and nucleotide CDR3s, with V and J masks; receptors drawn from a
+   model (for backgrounds); the simulator's model in the same terms. Each clonotype's generation
+   probability in the clonotype table and the inspector, and their distribution in each sample in
+   the Specificity view.
+   - Validation: against OLGA (its version pinned) on 100,000 CDR3s of OTS units and simulated
+     samples, to a relative 10⁻⁹; the simulator model's probabilities against the frequencies of
+     junctions among the 10⁸ rearrangements it draws; the budget (a million CDR3s in under 2
+     minutes on 10 cores).
+   - *Done:* `internal/pgen` (IGoR's model files read, OLGA's anchors and gene rules; the
+     probability of an amino-acid or nucleotide CDR3 with V and J masks, forward from the V and
+     backward from the J over codon states, in parallel; receptors drawn from a model; the
+     simulator's model in the same terms, `pgen.Simulator`); the reference data `olga-models` (OLGA's
+     seven default models at a pinned commit); the analysis `pgen` (`api_pgen.go`) and `POST
+     /api/pgen/chains`; the Specificity view's Generation part (each sample's median and middle
+     half, the distribution, the clonotypes by abundance or probability) and the inspector's line;
+     CSV export, the methods paragraph's sentence, `measure_generation`, the guide's page and
+     capture scene.
+   - *Validation:* 99,949 CDR3s under OLGA's seven models (the OTS, Dash and OAS development
+     data's chains, CDR3s OLGA draws from each model, 2,094 nucleotide junctions, 1,000 with their
+     genes, 200 with residues of any amino acid) within a relative 3 × 10⁻¹⁵ of OLGA 1.3.0's;
+     under the simulator's model, 200 junctions' frequencies in 20 million rearrangements as their
+     probabilities say (mean squared z 0.96), and the generator's under its model and OLGA's human
+     TRB (1.08, 0.89); a million TRB CDR3s in 32 s on 10 processors.
+   - *Decided:* OLGA's models where downloaded, else ClonoLoom's model of human TRB, unless chosen;
+     the organism whose models name the most V genes, unless chosen; with the V and J genes as an
+     option (a gene without its allele stands for each allele), off for a definition by family or
+     without genes; a pair's probability the product of its chains', none unless each has one. The
+     clonotype table has no column of probabilities (each page would need a job): the Generation
+     part's table orders the clonotypes by it, and the inspector shows the one chosen. 20 million
+     simulated rearrangements rather than 10⁸ give each of the 200 junctions enough counts.
+   - *Found:* OLGA 1.3.0 sums every insertion length (no truncation, which `research.md` §5.9 had
+     assumed), builds a gene's palindrome from its part of the CDR3 (a V whose CDR3 part is three
+     nucleotides gets at most three), and reads the DJ insertion from its J end. It leaves out an
+     insertion of the longest length a model allows when that length is one more than a multiple
+     of three and the insertion starts a codon; its generator makes them. ClonoLoom counts them: of
+     the seven models, only mouse TRA's probabilities change by more than 10⁻¹⁵ (insertions up to 22
+     nucleotides): 4,660 of its 5,583 CDR3s, by up to 13% of a probability. The reference runs
+     OLGA on a copy of such a model that allows one nucleotide more with probability 10⁻³⁰, and
+     keeps OLGA's values on the model as shipped beside them. Making OLGA's sequence generator from a
+     model object changes that object in place, and probabilities computed with it after (by up to
+     6 × 10⁻⁷ for TRB): the reference gives the generator its own copy.
+4. **Simulated antigen-specific responses (E1).** `clonoloom simulate` presets in which some
+   clonotypes recognize an epitope: families of receptors around a few founders, as close as Dash
+   et al. found epitope-specific receptors to be; a vaccination series in which the families
+   expand in a repertoire; and a specificity database of the founders' epitopes (for slice 7). The
+   truth gives each clonotype's epitope, or none. Offered as the vaccine example.
+   - Plan: a series' `response` (`internal/simulate/response.go`). Each epitope's founders are
+     rearrangements the generator makes, the same in every subject; a subject's family of a founder
+     are receptors of its V, D and J genes and deletions whose non-templated nucleotides differ, so
+     that their CDR3s differ by a few residues, mostly ones alike (a substitution d TCRdist units
+     away chosen in proportion to e^(−κd)); a family's size drawn for each founder, so that some are
+     large in every subject and many small. The families are a share of each subject's blood at
+     each time point by its condition, beside its own repertoire (and a reference, where a study
+     has one), with the series' variance between samples. The preset `vaccine`: three vaccinated
+     subjects and two given a placebo, a week before (twice) and 7, 14, 28 and 90 days after; three
+     epitopes of a simulated antigen whose families expand from 0.1% of the blood to 3% at day 14
+     in the vaccinated; and a database in VDJdb's format (`database/vdjdb.txt`) of each epitope's
+     founders and receptors of other donors around them, with two epitopes no subject responds to.
+     The truth adds each subject's epitope-specific clonotypes, their epitope and founder.
+   - Validation: the families as close as Dash et al.'s epitope-specific β chains (each one's
+     nearest of the same epitope, by TCRdist with the V genes' loops: the shares within 12, 24 and
+     48 units); each sample's share of templates in the families against the truth's expectation;
+     the database's every founder and the subjects' families within reach of it; the same bytes for
+     the same seed, and the other presets unchanged.
+   - *Done:* as planned, with private receptors (below); `truth/specificity.tsv` and
+     `truth/founders.tsv`, the series files' `epitope` column and `response` trajectory; the
+     study's folder opened without its `database` folder; the vaccine example with four guided
+     steps (its subjects, the test of day −7 against day 14, the classes, the transient clonotypes
+     followed); SIMULATION.md and the guide's page.
+   - *Validation:* pooled across subjects, 58%, 63% and 68% of the receptors have another of the
+     same epitope within 12, 24 and 48 TCRdist units (with the V genes' loops; median 12), against
+     Dash et al.'s 54%, 59% and 69% (human, 415 β chains) and 61%, 71% and 85% (mouse, 1,924); the
+     response's share of the samples within a quarter of the truth's at every time point (day 14:
+     0.102 pooled, the truth 0.107); replicate samples' variance as the series'; each family member
+     its founder's genes and deletions, differing only at codons its insertions made, by the
+     residues counted; the small response's bytes pinned on arm64 and checked on amd64; standard,
+     car-t, transplant and null-series byte for byte as before.
+   - *Decided:* members differ from their founder only where its non-templated nucleotides make a
+     codon, so that each is a rearrangement of its own (the truth's deletions and insertions make its
+     junction), and keep its junction's length (Dash et al.'s nearest neighbors are mostly of one
+     length); a substitution d TCRdist units away is chosen in proportion to e^(−0.5d). The epitopes
+     are peptides made up for the study, the database's MHC `simulated`, so that nothing reads as a
+     real specificity. The database lists gene-level calls, as the simulator makes them.
+   - *Found:* families alone are nearer than Dash et al.'s receptors (90% within 12, 99% within 24):
+     a third or more of an epitope's receptors have no near neighbor, so each subject has receptors
+     of its own besides its families, twice as many as the epitope's founders on average. On the
+     example, the beta-binomial test between day −7 and day 14 calls 10 clonotypes, each a receptor
+     of the vaccine's epitopes, and none in the placebo group; most of the response is too many small
+     clones to call one by one, and TCRdist's neighbor counts over the whole dataset are led by
+     common background CDR3s (CASSLGGNTEAFF): what slice 5's backgrounds are for.
+5. **Neighborhoods and backgrounds (S2).** Each clonotype's neighbors within a radius in its
+   sample and in a background (above); each radius chosen from the background's rate; the
+   neighborhood's enrichment (Mayer-Blackwell et al.'s rates, odds ratio and test) and its CDR3
+   motif; neighborhoods kept as meta-clonotypes, which Tracking follows (T1).
+   - Validation: neighbor counts, weights and radii equal to tcrdist3's on Dash et al.'s TCRs with
+     the same background; on the simulated responses, the families found against their truth
+     (each family's members found, and the neighbors not of it).
+   - Plan: `internal/neighborhood`, on one locus's chains (the β chains of a bulk study, as
+     Mayer-Blackwell et al. work).
+     - *Backgrounds* (`background.go`), each receptor with a weight: `model`, receptors drawn from a
+       recombination model (`internal/pgen`) conditioned on the dataset's V–J usage, each weighted
+       by the model's own probability of its V–J pair over the dataset's share of it, so that the
+       background's rate is the rate in a repertoire recombination alone makes; `shuffled`, the
+       dataset's own chains with their CDR3s moved among its V–J pairs (weight 1). A public repertoire
+       the user opens as a background waits for a later slice: the two above need no data of their
+       own.
+     - *Radii* (`neighborhood.go`): each centroid's is the largest of 0, 2, …, 48 at which the weighted
+       background within it is at most a share of the background's receptors (10⁻⁶ by default,
+       Mayer-Blackwell et al.'s; tcrdist3's own default is 10⁻⁵), 0 where none is.
+     - *Enrichment* (`neighborhood.go`): at that radius, the neighbors in the dataset (the centroid
+       counted, as tcrdist3 counts it) and in the background, weighted and not; the rates
+       (n + 1)/(N + 2), their ratio, the odds ratio with one added to each count, and a χ² test of
+       the two with Yates's correction, as tcrdist3 computes them.
+     - *Motifs* (`motif.go`): the neighbors' residues at each position of the centroid's CDR3,
+       aligned as TCRdist aligned them (`tcrdist.AlignCDR3`), written as a pattern: a residue, a
+       set of up to three, or `.`; a gap makes it optional.
+     - *The view*: the Specificity view's third part, Neighborhoods: the background chosen and
+       made (a job, kept as a result), the centroids by enrichment with their radius, neighbors,
+       rate against the background and motif, and a chosen one's neighbors.
+   - Validation: the radii and enrichment equal to tcrdist3 0.3's `bkgd_cntl_nn2` on Dash et al.'s
+     TCRs against a background of OLGA draws, run in `validation/reference/`; on the simulated
+     vaccine study, each family's members found within its founder's radius and the enrichment of
+     the epitopes' centroids above the rest; a budget (10,000 centroids against 100,000 background
+     receptors in under 2 minutes on 10 cores).
+   - *Done:* `internal/neighborhood` (the two backgrounds, each centroid's radius and
+     neighborhood found in parallel, the enrichment, the motif from the alignment TCRdist chose,
+     `tcrdist.AlignCDR3` added for it); `pgen.Generator.DrawWith` and `pgen.Model.Usage`, to draw a
+     background of named genes and weigh it; the analysis `neighborhoods` (`api_neighborhoods.go`)
+     and `POST /api/neighborhoods/loci`; the Specificity view's Neighborhoods part with the chosen
+     neighborhood's receptors; CSV export, the methods paragraph's sentence,
+     `find_neighborhoods`, the guide's page and capture scene.
+   - *Validation:* all 415 centroids' radii, hits, weighted hits, rates, relative rate, odds ratio
+     and χ² equal to tcrdist3 0.3's on Dash et al.'s human β chains against 5,204 OTS β chains with
+     weights (the background's own construction is ClonoLoom's, so the reference fixes the
+     background and compares what is computed from it); on the vaccine study's S01 at day 14, the
+     20 most enriched neighborhoods and all 149 receptors in them recognize an epitope, and on S04
+     (placebo) none of the 20 does; 10,000 receptors against 100,000 in 1.3 s on 10 processors.
+   - *Decided:* neighborhoods are of one locus's chains, as Mayer-Blackwell et al. work and as a
+     background is drawn; the locus is the dataset's commonest unless chosen. A result keeps the
+     500 most enriched centroids and each one's first 100 receptors, so that a large dataset's
+     document stays small. The motif uses the alignment the distance chose, so that a neighbor of
+     another length lines up as TCRdist lined it up, and covers the positions the distance compares
+     (the first three and last two residues left out), as tcrdist3's regex does. A public
+     repertoire as a background waits for a later wave.
+   - *Found:* tcrdist3 falls back to a radius of 0 where no threshold holds the control rate, and
+     then still counts the background at distance 0 — two of Dash et al.'s 415 centroids differ
+     without it. With a background ten times the dataset and a radius chosen to leave almost none
+     of it within, a relative rate above 10 and "no background within the radius" are both true of
+     nearly every centroid: the summary reports the largest neighborhood instead, and the table
+     orders by χ², which accounts for both counts. On the vaccine study the neighborhoods are exact
+     where slice 4's plain neighbor counts were swamped by common background CDR3s.
+6. **Clonotype networks (S4).** Clonotypes joined by identical CDR3s, by edit distance
+   (Levenshtein or Hamming) or by TCRdist within a threshold, on one chain or both; the clusters
+   (connected components), with their sizes and samples; a layout computed by ClonoLoom, the same
+   on every computer; the Specificity view's Network part, linked to the clonotype table; exports.
+   - Validation: clusters equal to scirpy's (`define_clonotype_clusters`) on 10x and OTS data under
+     each metric scirpy offers; the simulated families found as clusters.
+   - Plan: `internal/network`. The nodes are the dataset's clonotypes under its definition; two are
+     joined when their junctions are within a cutoff by a metric: identity, Hamming or Levenshtein
+     (0 to 2, scirpy's cutoffs) or TCRdist (the CDR3s alone, or with the V genes' loops where they
+     are downloaded). A pair definition joins clonotypes on `all` their chains (a missing chain
+     matching only a missing one, as scirpy's `receptor_arms="all"` does) or on `any` chain both
+     have; the same V (or J) gene may be required too. The pairs within the cutoff are found per
+     chain among the unique junctions, without comparing every pair: a hash for identity, segments
+     that must agree for Hamming (pigeonhole), deletion neighborhoods for Levenshtein, and the
+     length-and-loops lower bound for TCRdist; then the clonotypes that hold them are joined.
+     - *Clusters*: the connected components (union–find), each with its clonotypes, abundance,
+       samples and subjects, the largest first.
+     - *Layout*: each cluster drawn by a force-directed layout from a fixed start, its float
+       arithmetic rounded as N7 requires, so that the picture is the same on every computer; the
+       clusters packed largest first, up to a number of nodes the page can draw.
+     - *The view*: the Specificity view's fourth part, Networks: the metric and cutoff, the drawing
+       (nodes sized by abundance), the clusters with their sizes and samples, a chosen cluster's
+       clonotypes linked to the Clonotypes view; exports of each clonotype's cluster and the
+       edges.
+   - Validation (as planned): every partition equal to scirpy 0.25.1's on the 10x runs and the OTS
+     units, under identity, Hamming and Levenshtein at each cutoff, and TCRdist on the CDR3s (scirpy's
+     calculator with its gap searched, as tcrdist3 places it), `receptor_arms` all and any, with and
+     without the same V gene; on the simulated vaccine study, each family's members in one cluster;
+     the layout's bytes pinned on arm64 and amd64; a budget (the networks of 100,000 clonotypes in
+     under 2 minutes on 10 cores).
+   - Completed: the analysis, full graph and cluster exports, deterministic bounded drawing,
+     Networks view and remote action. All 420 scirpy partitions agree with matched settings;
+     layout digest matches arm64 and amd64; the 100,000-node sparse synthetic budgets pass.
+     Simulation validation distinguishes thresholds: TCRdist 48 connects all 34 observed
+     families in S01 day 14; two edits connect 29, with five split (the simulator permits more
+     than two substitutions). See research.md §5.10 for exact semantics and limits.
+7. **Specificity databases (S5, T1) — done.** VDJdb downloaded on request and read (`vdjdb.txt`, by its
+   header's names); clonotypes matched exactly (the CDR3, with V and J or without) or within a
+   TCRdist radius, with the epitope, antigen, species, MHC, score and reference; each sample's
+   share matched to each epitope; Tracking follows the clonotypes matched to an epitope.
+   - Validation: the matches equal to a direct lookup (pandas) in a VDJdb release for the
+     maintainer, and in the simulated database in CI; on the simulated vaccine response, each
+     sample's share matched to each epitope against the truth.
+   - Completed: reference download with terms, checksum-pinned evidence, exact and TCRdist
+     chain matching, deduplicated epitope/antigen shares, Tracking selections with provenance,
+     complete CSV exports and NOTICE, Reports methods, remote action and guide.
+   - Checked: all 424 simulated and 4,000 real-release pandas row-identity lookups agree;
+     all 150 simulated sample/epitope shares agree. Exact V/J matches contain 602 molecules,
+     598 supported by truth, compared with 3,498 total true response molecules. Database
+     coverage is incomplete and chance matches remain visible; see research.md §5.11.
+8. **Invariant populations, the examples' steps and release 0.4.0 (S7, E3).** MAIT, iNKT and GEM
+   T cells flagged by their published rules (their TRAV and TRAJ genes, with the CDR3α's length
+   or the TRBV gene where a rule names them), in the clonotype table, and counted in each sample;
+   the epitope and vaccine examples' guided steps; release 0.4.0 with its project fixture, its
+   pictures and its pages.
+   - Validation: each rule against the published receptors it comes from; the share of MAIT
+     cells in 10x Genomics' PBMC data against the published range.
+   - Implemented: human/mouse MAIT and iNKT, human GEM motif; explicit saved species,
+     retained-chain flags with missing-evidence states, population filtering, complete sample
+     totals/evaluable abundance/shares, exports, cited methods and remote control.
+   - Checked: independent CSV cell-level rules agree with all counts; MAIT shares 10/406
+     (2.46%) and 80/4,562 (1.75%) in PBMC 1k and 10k v2. Published consensus receptors and
+     constructed gene/length boundaries, unsupported definitions and ambiguous calls tested.
+   - Guided mouse/human epitope and vaccine steps run through the browser in both themes.
+     Release 0.4.0's project fixture, version files, pictures and pages are prepared.
+     Go race checks, amd64 compatibility, six platform builds, 80 JavaScript tests,
+     14 accessibility checks and 104 site audit checks pass.
+     Commit, CI, tag and publication are left to the maintainer.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 4 | 0.4.0 | Specificity | TCRdist (exact against tcrdist3), neighborhoods with backgrounds, generation probability (OLGA's algorithm; IGoR models on request), clonotype networks, VDJdb matching, invariant populations; MiXCR, OAS/OTS and VDJdb readers; vaccine and epitope examples |
 | 5 | 0.5.0 | B cells | Germline reconstruction, clonal families with thresholds from distance to nearest, mutation by region, parsimony trees, isotypes; immunization example |
 | 6 | 0.6.0 | Single cell | Expression linked by barcode, the map, phenotypes per clonotype, clonotype modularity and CoNGA-style analysis; AnnData, MuData and 10x matrices |
 | 7 | 0.7.0 | Cohorts and robustness | Study design, group comparisons with the subject as unit, robustness to the definition, GLIPH2-style groups, HLA association, contamination and batch QC, pseudobulk |
 | 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |
-| 9 | 0.9.0 | Suite and public data | ADC queries, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |
+| 9 | 0.9.0 | Suite and public data | ADC queries, overlap with public cohorts, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |
 | 10 | 1.0.0 | Hardening | Budgets met, accessibility audit, documentation complete, external beta feedback addressed |

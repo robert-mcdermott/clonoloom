@@ -16,14 +16,15 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Current release:** 0.3.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-Following clonotypes over time, specificity, B-cell lineages, single-cell phenotypes and cohort
-comparisons come in later releases.
+**Release prepared:** 0.4.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+B-cell lineages, single-cell phenotypes and cohort comparisons come in later
+releases.
 
 ## Features
 
-- **Open and check your data.** AIRR Rearrangement TSV, Cell Ranger V(D)J outputs and immunoSEQ
-  exports are read by ClonoLoom's own readers. Any other tool's CSV or TSV is read through a
+- **Open and check your data.** AIRR Rearrangement TSV, Cell Ranger V(D)J outputs, immunoSEQ
+  exports, MiXCR clone tables, OAS and OTS data units and tcrdist3 clone tables are read by
+  ClonoLoom's own readers. Any other tool's CSV or TSV is read through a
   mapping of its columns, checked column by column. Each file is fingerprinted by its SHA-256. A
   validator's findings say how many rows they concern, show examples and say what to do. The
   abundance unit (cells, templates, reads, UMIs) is stated, never guessed.
@@ -33,7 +34,8 @@ comparisons come in later releases.
   with its reason.
 - **Define clonotypes explicitly.** Named definitions (junction, V and J levels, chains,
   single-cell rules) stated in words with every table and figure; a million clonotypes sorted and
-  searched as they scroll.
+  searched as they scroll. Published MAIT, iNKT and GEM rules flag sequence-consistent receptors
+  for an explicitly chosen species, with evaluable abundance and shares per sample.
 - **Measure repertoires with their uncertainty.** Hill numbers, Chao1, ACE, the estimated Shannon
   and Simpson diversity, clonality, Gini and clonal space homeostasis, each with a 95% interval.
   Rarefaction and extrapolation compare samples at equal coverage or size.
@@ -51,6 +53,18 @@ comparisons come in later releases.
   controlled, and classed across several as emerging, transient, contracting or persistent. Each
   sample measured against its reference sample: an infusion product's clonotypes, or a donor's
   share of the blood.
+- **Find receptors alike.** Every T-cell clonotype compared with every other of its chains by
+  TCRdist, as tcrdist3 computes it, with the V genes' loops downloaded on request: each one's
+  neighbors within a radius and its nearest, loop by loop. The neighborhoods a background does
+  not explain, each radius controlled at a rate of receptors drawn from a recombination model with
+  the dataset's own gene usage, with their enrichment and motif. Each clonotype's generation
+  probability, how likely recombination alone is to make it, as OLGA computes it, under OLGA's
+  models (downloaded on request) or ClonoLoom's own model of human TRB.
+- **Match specificity evidence.** Match retained chains to VDJdb
+  (downloaded on request with its terms) or the simulated vaccine database, by exact CDR3 with
+  optional V/J calls or within a TCRdist radius. Inspect evidence and per-sample epitope shares,
+  then follow matched clonotypes in Tracking with the source result recorded. A matching chain
+  is evidence, not proof of a paired receptor's specificity.
 - **Write results others can check.** Figures (SVG, PNG, PDF) whose captions state the clonotype
   definition, unit and samples; AIRR and CSV exports with a notice of each data set's license and
   citation; a methods paragraph with numbered references, written from the record. Every result is
@@ -59,7 +73,7 @@ comparisons come in later releases.
   programs on this computer can drive the window through remote control.
 
 Every method is checked against an independent implementation or a known truth (the `airr`
-library, pandas, scirpy, iNEXT, immunarch, vegan and simulated studies among them): see
+library, pandas, scirpy, iNEXT, immunarch, vegan, tcrdist3, OLGA and simulated studies among them): see
 [methods and validation](https://robert-mcdermott.github.io/clonoloom/science.html).
 
 ## A look around
@@ -211,7 +225,7 @@ node docs/site/build.mjs /tmp/site       # the website, every link checked (docs
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.3.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.4.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Example data

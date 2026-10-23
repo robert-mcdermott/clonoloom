@@ -51,11 +51,21 @@ jobs:
         run: |
           # A successful CI run whose commit has exactly these files, and none of whose jobs was
           # skipped (a merge's run that skipped them, its branch tested before, does not count).
+          # The runs are filtered here rather than by the API's status filter, which has answered
+          # nothing while GitHub's Actions were degraded; an empty list is never the answer.
           tree="$(git rev-parse 'HEAD^{tree}')"
-          gh run list --workflow ci.yml --status success --limit 200 --json databaseId,headSha --jq '.[] | "\(.databaseId) \(.headSha)"' > runs.txt
+          gh run list --workflow ci.yml --limit 200 --json databaseId,headSha,conclusion --jq '.[] | select(.conclusion == "success") | "\(.databaseId) \(.headSha)"' > runs.txt
+          if [ ! -s runs.txt ]; then
+            echo "GitHub listed no successful CI run at all: its API is failing (githubstatus.com). Re-run this job later."
+            exit 1
+          fi
           while read -r id sha; do
             [ "$(git rev-parse -q --verify "$sha^{tree}" 2> /dev/null)" = "$tree" ] || continue
-            if [ "$(gh run view "$id" --json jobs --jq '[.jobs[] | select(.conclusion != "success")] | length')" = 0 ]; then
+            for try in 1 2 3; do
+              failed="$(gh run view "$id" --json jobs --jq '[.jobs[] | select(.conclusion != "success")] | length')" && break
+              sleep 10
+            done
+            if [ "$failed" = 0 ]; then
               echo "CI run $id passed on these files (commit $sha)."
               exit 0
             fi

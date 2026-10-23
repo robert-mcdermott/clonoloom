@@ -59,3 +59,5 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
         <li>Data under a provider's terms of use (the immuneACCESS example) are never downloaded by a program: only you can accept their terms, in the window.</li>
         <li>One action runs at a time, in the order they come.</li>
       </ul>
+      <h2 id="invariant">Invariant-population annotation</h2>
+      <p><code>flag_invariant</code> takes <code>species: "human" | "mouse"</code>, an optional dataset, and optionally <code>population: "MAIT" | "iNKT" | "GEM"</code>. It records the species and shows Clonotypes, returning the first 20 rows plus complete sample totals, matched and evaluable abundance and shares. The <a href="clonotypes.html#invariant">published sequence rules</a> do not establish phenotype or specificity.</p>

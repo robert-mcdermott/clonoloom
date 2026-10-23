@@ -52,6 +52,7 @@ export function trackingChoice(dataset, comparison = null) {
   const by = BY[c.by] ? c.by : 'reference';
   const list = Array.isArray(c.list) ? c.list : [];
   const out = { by, n: by === 'list' ? undefined : Number.isInteger(c.n) && c.n > 0 ? c.n : BY[by].n, list };
+  if (by === 'list' && c.evidence) out.evidence = c.evidence;
   if (by === 'test') out.test = comparison;
   if (by === 'class') out.classing = { ...(comparison ? classRequest(comparison) : {}), class: CLASSES[c.class] ? c.class : 'emerging' };
   return out;
@@ -60,7 +61,7 @@ export function trackingChoice(dataset, comparison = null) {
 // The choice as the program is asked it (api_tracking.go): a list only when following one, the
 // comparison only when following its calls, the class and classing only when following a class.
 export function trackRequest(choice) {
-  if (choice.by === 'list') return { by: 'list', list: choice.list };
+  if (choice.by === 'list') return { by: 'list', list: choice.list, ...(choice.evidence ? { evidence: choice.evidence } : {}) };
   if (choice.by === 'test') return { by: 'test', n: choice.n, test: choice.test ? compareRequest(choice.test) : undefined };
   if (choice.by === 'class') {
     const { class: cls, ...classing } = choice.classing ?? {};
@@ -73,7 +74,8 @@ export function trackRequest(choice) {
 // program's record of a choice names its class beside its classing.)
 const classingOf = (choice) => (choice.classing ? { ...choice.classing, class: choice.class ?? choice.classing.class } : null);
 export function choiceWords(choice) {
-  return BY[choice.by]?.words(choice.n, choice.list ?? [], choice.test, classingOf(choice)) ?? choice.by;
+  const words = BY[choice.by]?.words(choice.n, choice.list ?? [], choice.test, classingOf(choice)) ?? choice.by;
+  return choice.by === 'list' && choice.evidence ? `${words}, matched to ${choice.evidence.epitope} (${choice.evidence.antigen}, ${choice.evidence.species}) in specificity result ${choice.evidence.artifact}` : words;
 }
 export function choiceShort(choice) {
   return BY[choice.by]?.short(choice.n, choice.list ?? [], choice.test, classingOf(choice)) ?? choice.by;
@@ -156,12 +158,12 @@ export function useTracking(project, datasetId, choice, now = new Date().toISOSt
   const dataset = project.datasets.find((d) => d.id === datasetId);
   if (!dataset) return project;
   const before = trackingChoice(dataset);
-  const next = { by: choice.by ?? before.by, list: cleanList(choice.list ?? before.list) };
+  const next = { evidence: choice.evidence, by: choice.by ?? before.by, list: cleanList(choice.list ?? before.list) };
   next.n = next.by === 'list' ? undefined : Number.isInteger(choice.n) && choice.n > 0 ? choice.n : before.by === next.by ? before.n : BY[next.by].n;
   const kept = dataset.tracking?.class;
   next.class = next.by === 'class' ? (CLASSES[choice.class] ? choice.class : kept ?? 'emerging') : kept;
-  if (next.by === before.by && next.n === before.n && JSON.stringify(next.list) === JSON.stringify(before.list) && next.class === kept) return project;
-  const tracking = { by: next.by, ...(next.n ? { n: next.n } : {}), ...(next.list.length ? { list: next.list } : {}), ...(next.class ? { class: next.class } : {}) };
+  if (next.by === before.by && next.n === before.n && JSON.stringify(next.list) === JSON.stringify(before.list) && next.class === kept && JSON.stringify(choice.evidence) === JSON.stringify(dataset.tracking?.evidence)) return project;
+  const tracking = { ...(next.by === 'list' && choice.evidence ? { evidence: choice.evidence } : {}), by: next.by, ...(next.n ? { n: next.n } : {}), ...(next.list.length ? { list: next.list } : {}), ...(next.class ? { class: next.class } : {}) };
   return touch({
     ...project,
     datasets: project.datasets.map((d) => (d.id === datasetId ? { ...d, tracking } : d)),

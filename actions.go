@@ -57,8 +57,8 @@ var remoteActions = []remoteAction{
 		"opening":  textArg("What of it to open, such as \"T cells\" (its first if not given)."),
 		"download": flagArg("Download it first if it is not downloaded (openly licensed data only)."),
 	}, "example")},
-	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, tracking, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
-		"view":    textArg("start, data, qc, clonotypes, repertoire, tracking or jobs."),
+	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, tracking, specificity, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
+		"view":    textArg("start, data, qc, clonotypes, repertoire, tracking, specificity or jobs."),
 		"dataset": datasetArg,
 	}, "view")},
 	{Name: "set_definition", Title: "Define clonotypes", Description: "Chooses a dataset's clonotype definition: a preset by name, or one stated in full.", InputSchema: schema(map[string]any{
@@ -102,6 +102,56 @@ var remoteActions = []remoteAction{
 	})},
 	{Name: "attribute_samples", Title: "Attribute samples to the reference", Description: "Shows the Tracking view's Attribution part and measures each sample of each subject with a reference sample (an infusion product, a donor) under the dataset's clonotype definition and filter (a job; the result kept with the project): its share in the clonotypes the reference sample holds, and, where the subject has samples before the reference event and the reference shares few clonotypes with them (a donor), the share derived from the reference, each with its 95% interval (Wilson's). Answers each subject's time points, the share before the event and the reference's overlap with it.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
+	})},
+	{Name: "find_neighbors", Title: "Find similar receptors by TCRdist", Description: "Shows the Specificity view's Neighbors part and compares each T-cell clonotype of the dataset with every other of the same chains by TCRdist, as tcrdist3 computes it, under the dataset's clonotype definition and filter (a job; the result kept with the project): with the V genes' CDR1, CDR2 and CDR2.5 (the reference data tcrdist3-loops, which must be downloaded) or the CDR3s alone. The options given are kept with the dataset. Answers how many clonotypes were compared and have a neighbor within the radius, and the clonotypes with the most neighbors; with select, the chosen clonotype's nearest, loop by loop.", InputSchema: schema(map[string]any{
+		"dataset":  datasetArg,
+		"radius":   numberArg("The radius within which two clonotypes are neighbors, in TCRdist units (default: 24 a chain)."),
+		"cdr3Only": flagArg("Compare the CDR3s alone, without the V genes' loops."),
+		"organism": textArg("Whose loops: human, mouse or rhesus (default: guessed from the V genes)."),
+		"top":      numberArg("How many of the clonotypes with the most neighbors to answer (default 10)."),
+		"select":   numberArg("A clonotype to show the nearest of, by its rank among those with the most neighbors (from 1)."),
+	})},
+	{Name: "match_specificity", Title: "Match specificity evidence", Description: "Matches retained chains against a downloaded VDJdb release or the generated vaccine database, and shows per-epitope sample shares. Never downloads a database implicitly. Optionally follows one epitope's matched clonotypes in Tracking.", InputSchema: schema(map[string]any{
+		"dataset":  datasetArg,
+		"database": textArg("vdjdb or simulated-vaccine"),
+		"metric":   textArg("exact or tcrdist"),
+		"genes":    flagArg("Require matching V and J calls"),
+		"radius":   numberArg("TCRdist radius, 0–1000"),
+		"species":  textArg("HomoSapiens, MusMusculus or MacacaMulatta"),
+		"minScore": numberArg("Minimum evidence score, 0–3"),
+		"cdr3Only": flagArg("Compare CDR3s alone for TCRdist"),
+		"follow":   numberArg("Epitope/antigen group to follow, from 1"),
+	})},
+	{Name: "flag_invariant", Title: "Flag invariant populations", Description: "Evaluate published MAIT, iNKT and GEM sequence rules for an explicit species. Shows Clonotypes, optionally narrowed to a matched population, and answers sample totals, evaluable abundance and shares. Records the species with the dataset; flags do not establish phenotype or specificity.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg, "species": textArg("human or mouse (required)"), "population": textArg("MAIT, iNKT, GEM, or empty for all clonotypes"),
+	})},
+	{Name: "find_networks", Title: "Find clonotype networks", Description: "Finds connected components of clonotypes joined within a sequence-distance cutoff, retaining all edges and memberships independently of the drawing. Shows Networks in Specificity and answers component counts. Options are kept with the dataset.", InputSchema: schema(map[string]any{
+		"dataset":  datasetArg,
+		"metric":   textArg("identity, hamming, levenshtein or tcrdist"),
+		"cutoff":   numberArg("0 for identity, 0–2 for edit distance, 0–1000 for TCRdist"),
+		"arms":     textArg("all retained chains or any shared chain"),
+		"sameV":    flagArg("Require the same V gene at the definition's resolution"),
+		"sameJ":    flagArg("Require the same J gene at the definition's resolution"),
+		"cdr3Only": flagArg("TCRdist on CDR3s alone"),
+		"select":   numberArg("Cluster number to select, from 1"),
+	})},
+	{Name: "find_neighborhoods", Title: "Find neighborhoods against a background", Description: "Shows the Specificity view's Neighborhoods part and finds, for each receptor of one locus, the largest radius at which a background holds few enough receptors and the dataset's receptors within it (a job; the result kept with the project), as Mayer-Blackwell et al. 2021 define a neighborhood. The background is drawn from a recombination model with the dataset's V and J usage, or made by moving the dataset's own CDR3s among its genes. The options given are kept with the dataset. Answers how many receptors have a neighborhood and the first by enrichment, each with its radius, its neighborhood's receptors, how much commoner it is than in the background, and its motif.", InputSchema: schema(map[string]any{
+		"dataset":      datasetArg,
+		"background":   textArg("model (drawn from a recombination model; the default) or shuffled (the dataset's own CDR3s moved among its genes)."),
+		"locus":        textArg("The locus whose chains are compared (default: the dataset's commonest)."),
+		"control":      numberArg("The share of the background a radius may hold: 1e-5, 1e-6 (the default) or 1e-7."),
+		"minNeighbors": numberArg("How many receptors a neighborhood needs to be reported, its centroid counted (default 2)."),
+		"order":        textArg("Which neighborhoods first: enriched (the default), neighbors or abundant."),
+		"top":          numberArg("How many neighborhoods to answer (default 10)."),
+		"select":       numberArg("A neighborhood to show the receptors of, by its rank in the order asked for (from 1)."),
+	})},
+	{Name: "measure_generation", Title: "Compute generation probabilities", Description: "Shows the Specificity view's Generation part and computes each clonotype's generation probability, the probability that V(D)J recombination alone makes its CDR3s, as OLGA computes it, under the dataset's clonotype definition and filter (a job; the result kept with the project): under OLGA's default models (the reference data olga-models, which must be downloaded) or ClonoLoom's own model of human TRB; a pair's is the product of its chains'. The options given are kept with the dataset. Answers the models and how many clonotypes have a probability, each sample's quartiles (log10), and the first clonotypes in the order asked for.", InputSchema: schema(map[string]any{
+		"dataset":  datasetArg,
+		"models":   textArg("Whose models: olga, clonoloom, or \"\" for OLGA's where downloaded, else ClonoLoom's (the default)."),
+		"organism": textArg("human or mouse, or \"\" to guess from the V genes (the default)."),
+		"genes":    flagArg("The probability of each CDR3 with its V and J genes, not of the CDR3 alone."),
+		"order":    textArg("Which clonotypes first: abundant (the default), probable or improbable."),
+		"top":      numberArg("How many clonotypes to answer (default 10)."),
 	})},
 	{Name: "select_clonotype", Title: "Choose a clonotype", Description: "Shows the Clonotypes view and chooses a clonotype, which the inspector describes: by its rank in the table (1 for the first) or its ID.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,

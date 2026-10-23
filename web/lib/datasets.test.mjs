@@ -84,6 +84,12 @@ test('metadata gives fields: AIRR repertoires and immunoSEQ sample tags', () => 
   const tags = 'Age:41 Years,Biological Sex:Male,HLA MHC class I:HLA-A*24,HLA MHC class I:HLA-B*07,Inferred HLA type:Inferred HLA-A*03,Virus Diseases:Cytomegalovirus -';
   assert.deepEqual(fieldsFromMetadata({ metadata: { sample_tags: tags } }), { hla: 'HLA-A*24, HLA-B*07', condition: 'CMV-' });
   assert.deepEqual(fieldsFromMetadata({}), {});
+  // OAS and OTS data units, and tcrdist3's clone tables.
+  assert.deepEqual(fieldsFromMetadata({ metadata: { Run: 'SRR18365371', Subject: 'no', TSource: 'pbmc', TType: 'cd8+', TSubtype: 'tetramer_sorted', Disease: 'cancer', CancerType: 'breast' } }),
+    { tissue: 'pbmc', cellSubset: 'cd8+ (tetramer_sorted)', condition: 'cancer (breast)' });
+  assert.deepEqual(fieldsFromMetadata({ metadata: { Subject: 'Subject-Healthy-10', BSource: 'PBMC', BType: 'Unsorted-B-Cells', Disease: 'None' } }),
+    { subject: 'Subject-Healthy-10', tissue: 'PBMC', cellSubset: 'Unsorted-B-Cells' });
+  assert.deepEqual(fieldsFromMetadata({ metadata: { subject: 'mouse_subject0050', epitope: 'PA' } }), { subject: 'mouse_subject0050', condition: 'PA' });
 });
 
 test('the study is read from each sample\'s annotation, else its metadata', () => {

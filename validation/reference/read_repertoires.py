@@ -1,7 +1,8 @@
 # The development files as independent readers see them, for validation/readers_test.go: AIRR
-# files read by the AIRR Community's own library (airr), Cell Ranger contig annotations and
-# immunoSEQ exports read by pandas, each column ClonoLoom reads reduced to its row count and a
-# SHA-256 digest (validation/reference/readers.json).
+# files read by the AIRR Community's own library (airr); Cell Ranger contig annotations, immunoSEQ
+# exports, MiXCR clone tables, OAS and OTS data units and tcrdist3 clone tables read by pandas;
+# each column ClonoLoom reads reduced to its row count and a SHA-256 digest
+# (validation/reference/readers.json), and a data unit's metadata kept as given.
 #
 #   uv run --with airr --with pandas python -I validation/reference/read_repertoires.py
 #
@@ -13,8 +14,11 @@
 # has a positive template count, else in reads. Gene names of immunoSEQ files are kept as Adaptive
 # writes them (the resolved name, or the ties when the gene is not resolved): the test maps them
 # with the dataset's own record of names. A row's locus is the file's locus column, else the locus
-# its J call names (its first three letters), else its V call's, else its C call's.
-import hashlib, json, math, os, sys
+# its J call names (its first three letters), else its V call's, else its C call's. The readers of
+# wave 4 make the choices their files document (internal/reads: mixcr.go, oas.go, tcrdist3.go):
+# MiXCR's calls are the best-scoring hits without the allele *00; a paired unit's cell is its
+# contigs' barcode; a tcrdist3 clone of n cells is n cells.
+import csv, gzip, hashlib, json, math, os, sys
 import airr
 import pandas as pd
 
@@ -187,28 +191,214 @@ def immunoseq_file(path):
     return {'format': 'immunoseq-v3' if v3 else 'immunoseq-v2', 'reader': f'pandas {pd.__version__}', 'rows': len(df),
             'unit': 'templates' if all_templates else 'reads', 'columns': {k: digest(v) for k, v in columns.items()}, 'gene_names': names}
 
+def sample_of(path):
+    # A sample's name from its file's: without the extensions of tables and compression.
+    name = os.path.basename(path)
+    while True:
+        stem, ext = os.path.splitext(name)
+        if ext.lower() in ('.gz', '.tsv', '.csv', '.txt', '.tab', '.airr'):
+            name = stem
+            continue
+        return name
+
+def mixcr_call(hits):
+    # The hits of the best score, each without its score and without MiXCR's allele *00.
+    hits = text(hits)
+    if not hits:
+        return None
+    parsed = []
+    for part in hits.split(','):
+        part = part.strip()
+        if not part:
+            continue
+        name, score = part, float('-inf')
+        if part.endswith(')') and part.rfind('(') > 0:
+            try:
+                name, score = part[:part.rfind('(')].strip(), float(part[part.rfind('(') + 1:-1])
+            except ValueError:
+                name, score = part, float('-inf')
+        if name.endswith('*00'):
+            name = name[:-3]
+        parsed.append((name, score))
+    best = max(s for _, s in parsed)
+    names = []
+    for name, score in parsed:
+        if score == best and name not in names:
+            names.append(name)
+    return ','.join(names) or None
+
+def mixcr_file(path):
+    # MiXCR's clone tables: its 3 and 4 namings (cloneCount, readCount), the best hits, the
+    # junction's amino acids dropped when out of frame (_), molecules as the count when every clone
+    # has them, else reads; a single-cell export's rows are its cells' chains.
+    df = pd.read_csv(path, sep='\t', dtype=str, keep_default_na=False)
+    get = lambda *names: next((df[c].tolist() for c in names if c in df.columns), [''] * len(df))
+    reads = [number(v) for v in get('readCount', 'cloneCount', 'Clone count')]
+    molecules = [number(v) for v in get('uniqueMoleculeCount', 'uniqueTagCountMolecule')]
+    cells = [text(v) for v in get('tagValueCELL')]
+    single = any(cells)
+    count = molecules if all(m is not None for m in molecules) else reads
+    seg = lambda s: [mixcr_call(v) for v in get(f'all{s}HitsWithScore', f'all{s}Hits', f'best{s}Hit', f'best{s}Gene', f'All {s} hits')]
+    v, d, j, c = seg('V'), seg('D'), seg('J'), seg('C')
+    nt = [upper(x) for x in get('nSeqCDR3', 'N. Seq. CDR3')]
+    aa_raw = [upper(x) for x in get('aaSeqCDR3', 'AA. Seq. CDR3')]
+    junction_aa, productive = [], []
+    for n, a in zip(nt, aa_raw):
+        if a is None:
+            junction_aa.append(None); productive.append(None)
+        elif '_' in a or (n and len(n) % 3):
+            junction_aa.append(None); productive.append('F')
+        else:
+            junction_aa.append(a); productive.append('F' if '*' in a else 'T')
+    chains = [upper(x) for x in get('topChains')]
+    ids = [text(x) for x in get('cloneId', 'Clone ID')]
+    base = sample_of(path)
+    for sep in ('.clones_', '.clonotypes.'):
+        i = base.rfind(sep)
+        if i > 0 and (base[i + len(sep):] == 'ALL' or base[i + len(sep):] in LOCI):
+            base = base[:i]
+            break
+    columns = {
+        'sequence_id': [f'{cell}_clone_{i}' if cell else i for cell, i in zip(cells, ids)],
+        'locus': [ch if ch in LOCI else locus_of(None, jj, vv, cc) for ch, jj, vv, cc in zip(chains, j, v, c)],
+        'v_call': v, 'd_call': d, 'j_call': j, 'c_call': c,
+        'junction': nt, 'junction_aa': junction_aa, 'productive': productive,
+        'count': count, 'reads': reads,
+        'sample': [base] * len(df),
+    }
+    if single:
+        columns['cell'] = cells
+        columns['clone'] = [text(x) if cell else None for x, cell in zip(get('cellGroup'), cells)]
+        columns['is_cell'] = ['T' if cell else None for cell in cells]
+    unit = 'cells' if single else ('umis' if all(m is not None for m in molecules) and molecules else 'reads')
+    return {'format': 'mixcr-clones', 'reader': f'pandas {pd.__version__}', 'rows': len(df), 'unit': unit, 'columns': {k: digest(v) for k, v in columns.items()}}
+
+UNIT_LOCI = {'H': 'IGH', 'K': 'IGK', 'L': 'IGL', 'B': 'TRB', 'A': 'TRA', 'G': 'TRG', 'D': 'TRD'}
+
+def unit_file(path):
+    # An OAS or OTS data unit: its first line the metadata (one CSV field holding JSON; a zero-width
+    # space a link holds dropped), then IgBLAST's AIRR columns; a paired unit's columns once per
+    # chain, its rows cells.
+    with gzip.open(path, 'rt', newline='') as f:
+        meta = json.loads(next(csv.reader([f.readline()]))[0])
+        df = pd.read_csv(f, dtype=str, keep_default_na=False)
+    suffixes = [c[len('v_call_'):] for c in df.columns if c.startswith('v_call_')]
+    paired = 'v_call' not in df.columns and len(suffixes) == 2
+    sample = sample_of(path)
+    columns = {k: [] for k in ('sequence_id', 'locus', 'v_call', 'd_call', 'j_call', 'junction', 'junction_aa', 'productive', 'count', 'sample')}
+    if paired:
+        columns.update({'cell': [], 'is_cell': []})
+    rows = 0
+    for line, r in enumerate(df.to_dict('records'), start=3):
+        chains = suffixes if paired else ['']
+        col = lambda name, s: r.get(f'{name}_{s}' if s else name, '')
+        if paired:
+            ids = [text(col('sequence_id', s)) for s in chains]
+            ids = [i for i in ids if i]
+            stems = [i[:i.find('_contig')] if i.find('_contig') > 0 else None for i in ids]
+            cell = stems[0] if stems and None not in stems and len(set(stems)) == 1 else f'row {line}'
+        for s in chains:
+            v, d, j = text(col('v_call', s)), text(col('d_call', s)), text(col('j_call', s))
+            nt, aa = upper(col('junction', s)), upper(col('junction_aa', s))
+            if paired and not (v or j or nt or aa):
+                continue
+            rows += 1
+            columns['sequence_id'].append(text(col('sequence_id', s)))
+            columns['locus'].append(locus_of(UNIT_LOCI.get((text(col('locus', s)) or '').upper(), (text(col('locus', s)) or '').upper()), j, v, None))
+            columns['v_call'].append(v); columns['d_call'].append(d); columns['j_call'].append(j)
+            columns['junction'].append(nt); columns['junction_aa'].append(aa)
+            columns['productive'].append(flag(col('productive', s)))
+            if paired:
+                columns['count'].append('1'); columns['cell'].append(cell); columns['is_cell'].append('T')
+            else:
+                columns['count'].append(number(r['Redundancy']) if 'Redundancy' in r else '1')
+            columns['sample'].append(sample)
+    out = {'format': 'oas-unit', 'reader': f'pandas {pd.__version__}', 'rows': rows, 'columns': {k: digest(v) for k, v in columns.items()}, 'metadata': {k: str(v).replace('\u200b', '').strip() for k, v in sorted(meta.items()) if v is not None and str(v).strip()}}
+    if paired:
+        out['unit'] = 'cells'
+    return out
+
+TCRDIST_CHAINS = [('a', 'TRA'), ('b', 'TRB'), ('g', 'TRG'), ('d', 'TRD')]
+
+def tcrdist_file(path):
+    # tcrdist3's clone tables: paired chains as single cells (each clone's count its cells, a count
+    # that is not a whole number from 1 to 100,000 one cell), one chain as bulk clones; a sample for
+    # each subject and epitope.
+    with open(path) as f:
+        sep = '\t' if '\t' in f.readline() else ','
+    df = pd.read_csv(path, sep=sep, dtype=str, keep_default_na=False)
+    chains = [(l, locus) for l, locus in TCRDIST_CHAINS if f'cdr3_{l}_aa' in df.columns and f'v_{l}_gene' in df.columns]
+    paired = len(chains) > 1
+    columns = {k: [] for k in ('sequence_id', 'locus', 'v_call', 'j_call', 'junction', 'junction_aa', 'productive', 'clone', 'count', 'sample')}
+    if paired:
+        columns.update({'cell': [], 'is_cell': []})
+    for line, r in enumerate(df.to_dict('records'), start=2):
+        subject, epitope = text(r.get('subject')), text(r.get('epitope'))
+        sample = subject + ('_' + epitope if epitope else '') if subject else sample_of(path)
+        clone = text(r.get('clone_id'))
+        n = number(r['count']) if 'count' in r else '1'
+        def emit(l, locus, sequence_id, cell):
+            nt, aa = upper(r.get(f'cdr3_{l}_nucseq')), upper(r.get(f'cdr3_{l}_aa'))
+            columns['sequence_id'].append(sequence_id)
+            columns['locus'].append(locus)
+            columns['v_call'].append(text(r.get(f'v_{l}_gene'))); columns['j_call'].append(text(r.get(f'j_{l}_gene')))
+            columns['junction'].append(nt); columns['junction_aa'].append(aa)
+            columns['productive'].append(None if aa is None else 'F' if (nt and len(nt) % 3) or '*' in aa else 'T')
+            columns['clone'].append(clone)
+            columns['sample'].append(sample)
+            if cell is not None:
+                columns['count'].append('1'); columns['cell'].append(cell); columns['is_cell'].append('T')
+            else:
+                columns['count'].append(n)
+        if not paired:
+            emit(*chains[0], clone, None)
+            continue
+        cells = int(float(n)) if n is not None and float(n) == int(float(n)) and 1 <= float(n) <= 100000 else 1
+        ident = clone or f'row {line}'
+        for k in range(1, cells + 1):
+            cell = f'{ident}#{k}' if cells > 1 else ident
+            for l, locus in chains:
+                if not text(r.get(f'v_{l}_gene')) and not text(r.get(f'cdr3_{l}_aa')):
+                    continue
+                emit(l, locus, f'{cell}_{l}', cell)
+    out = {'format': 'tcrdist3-clones', 'reader': f'pandas {pd.__version__}', 'rows': len(columns['sample']), 'columns': {k: digest(v) for k, v in columns.items()}}
+    if paired:
+        out['unit'] = 'cells'
+    return out
+
 def kind(path):
+    if path.endswith('.gz'):
+        with gzip.open(path, 'rt') as f:
+            head = f.readline()
+        return unit_file if head.startswith('"{') else None
     with open(path, 'rb') as f:
         head = f.readline().decode('utf-8', 'replace')
+    cols = head.rstrip('\r\n').split('\t' if '\t' in head else ',')
+    if any(f'cdr3_{l}_aa' in cols and f'v_{l}_gene' in cols for l, _ in TCRDIST_CHAINS) and 'sequence_id' not in cols:
+        return tcrdist_file
     if '\t' in head:
-        cols = head.rstrip('\r\n').split('\t')
         if 'rearrangement' in cols or 'aminoAcid' in cols:
             return immunoseq_file
+        if 'aaSeqCDR3' in cols or 'AA. Seq. CDR3' in cols:
+            return mixcr_file
         if 'sequence_id' in cols:
             return airr_file
     elif 'contig_id' in head and 'barcode' in head:
         return cellranger_file
     return None
 
+# The development data sets: those sources.json lists (the cache also holds what the tests make).
+with open(os.path.join(here, '..', 'sources.json')) as f:
+    listed = set(json.load(f)['datasets'])
 out = {}
 for dataset in sorted(os.listdir(cache)):
     root = os.path.join(cache, dataset)
-    if not os.path.isdir(root):
+    if not os.path.isdir(root) or dataset not in listed:
         continue
     for dirpath, _, files in sorted(os.walk(root)):
         for name in sorted(files):
             path = os.path.join(dirpath, name)
-            if name.endswith('.gz') or name.endswith('.part'):
+            if name.endswith('.part'):
                 continue
             reader = kind(path)
             if reader is None:

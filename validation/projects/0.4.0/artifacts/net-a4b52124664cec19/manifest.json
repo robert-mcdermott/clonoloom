@@ -1,0 +1,116 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "net-a4b52124664cec19",
+  "kind": "networks",
+  "name": "Clonotype networks · Synthetic invariant-rule examples",
+  "dataset": "d-62dc5b8c646474c0",
+  "state": "complete",
+  "created": "2026-10-23T04:30:46.892472Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-62dc5b8c646474c0",
+        "name": "Synthetic invariant-rule examples"
+      }
+    ],
+    "job": {
+      "id": "jmvkh2aue-2",
+      "kind": "networks",
+      "spec": {
+        "dataset": "d-62dc5b8c646474c0",
+        "definition": {
+          "name": "Paired alpha beta",
+          "chains": [
+            "TRA",
+            "TRB"
+          ],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "networks": {
+          "metric": "hamming",
+          "cutoff": 1,
+          "arms": "all",
+          "sameV": true,
+          "sameJ": true,
+          "maxEdges": 2000000,
+          "cdr3Only": false,
+          "drawNodes": 1000
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Clonotype sequence neighbors and connected components; deterministic force drawing",
+      "version": "1",
+      "citation": "Levenshtein 1966, Soviet Physics Doklady 10:707–710; Wagner and Fischer 1974, doi:10.1145/321796.321811; Dash et al. 2017, doi:10.1038/nature22383; Tarjan 1975, doi:10.1145/321879.321884; Fruchterman and Reingold 1991, doi:10.1002/spe.4380211102"
+    },
+    "parameters": {
+      "dataset": "d-62dc5b8c646474c0",
+      "definition": {
+        "name": "Paired alpha beta",
+        "chains": [
+          "TRA",
+          "TRB"
+        ],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "networks": {
+        "metric": "hamming",
+        "cutoff": 1,
+        "arms": "all",
+        "sameV": true,
+        "sameJ": true,
+        "maxEdges": 2000000,
+        "cdr3Only": false,
+        "drawNodes": 1000
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.4.0",
+        "commit": "a6386d4d4165e9ef13671ce5e00d9750e1241151-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "networks.json",
+      "role": "networks",
+      "size": 2072,
+      "sha256": "e98361afa4c9cd512498d614c5eb04020e8d10881181b38a87e1b8e7ce5eb76f"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "components": 3,
+    "definition": "Paired alpha beta",
+    "edges": 1,
+    "nodes": 4
+  }
+}

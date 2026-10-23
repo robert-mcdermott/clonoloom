@@ -734,7 +734,7 @@ export function mountTracking(app, container) {
         // A result kept for another choice: that choice shown again.
         const d = store.project.datasets.find((x) => x.id === r.dataset);
         if (d && r.kind === 'tracking' && r.choice) {
-          const kept = { by: r.choice.by, n: r.choice.n, list: r.choice.list };
+          const kept = { by: r.choice.by, n: r.choice.n, list: r.choice.list, evidence: r.choice.evidence };
           if (JSON.stringify(trackRequest(trackingChoice({ tracking: kept }))) !== JSON.stringify(trackRequest(trackingChoice(d)))) store.commit(useTracking(store.project, d.id, kept), `Show the clonotypes followed in ${d.name}`);
           if (r.choice.test) store.commit(useComparison(store.project, d.id, compareRequest(r.choice.test)), `Show the clonotypes followed in ${d.name}`);
         }

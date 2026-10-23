@@ -15,7 +15,7 @@ the AIRR Rearrangement schema names them):
 | Field | Meaning |
 | --- | --- |
 | sample | The repertoire the row belongs to (below, per format) |
-| `sequence_id` | The row's identifier as given (a contig ID for Cell Ranger; none for immunoSEQ) |
+| `sequence_id` | The row's identifier as given (a contig ID for Cell Ranger; none for immunoSEQ and unpaired OAS units) |
 | `locus` | IGH, IGK, IGL, TRA, TRB, TRD or TRG |
 | `v_call`, `d_call`, `j_call`, `c_call` | Gene calls in IMGT nomenclature, ties separated by commas |
 | `junction`, `junction_aa` | The IMGT junction: the CDR3 with its conserved cysteine and phenylalanine or tryptophan |
@@ -35,9 +35,9 @@ Each dataset has one unit, said with every result:
 | --- | --- |
 | cells | Single-cell data: a clonotype's abundance is its number of cells |
 | templates | immunoSEQ files with a positive template count on every row |
-| reads | immunoSEQ files without templates on every row (each such file is counted in reads throughout, with a finding); AIRR files with `consensus_count` alone |
-| UMIs | AIRR files with `umi_count` |
-| unknown | AIRR files with `duplicate_count` alone, and immunoSEQ v2's `count (templates/reads)` without `estimatedNumberGenomes`: the format does not say what was counted, so the user confirms it in the Data view |
+| reads | immunoSEQ files without templates on every row (each such file is counted in reads throughout, with a finding); AIRR files with `consensus_count` alone; MiXCR tables without a count of molecules on every clone |
+| UMIs | AIRR files with `umi_count`; MiXCR tables with `uniqueMoleculeCount` on every clone |
+| unknown | AIRR files with `duplicate_count` alone, immunoSEQ v2's `count (templates/reads)` without `estimatedNumberGenomes`, unpaired OAS units (`Redundancy`) and tcrdist3 tables of one chain (`count`): the format does not say what was counted, so the user confirms it in the Data view |
 | sequences | No count at all: each row counts once |
 
 ## AIRR Rearrangement TSV
@@ -109,9 +109,77 @@ to its family is called by its ties: `TCRBV20` with ties `TCRBV20-01,TCRBV20-or0
 `TRBV20-1,TRBV20/OR9-2`; `TCRBV12-03/12-04` is `TRBV12-3,TRBV12-4`. Every name a file uses is
 recorded with the IMGT name it was read as. Mouse names keep their gene numbers.
 
+## MiXCR clone tables (MiLaboratories)
+
+The clone tables `mixcr exportClones` writes (MiXCR 2, 3 and 4), bulk or single-cell. MiXCR's AIRR
+export is an AIRR file, read as one.
+
+- Recognized by a tab-separated header with the junction's amino acids (`aaSeqCDR3`, MiXCR 2's
+  `AA. Seq. CDR3`) and a segment's hits (`allVHitsWithScore`, `bestVHit`, `bestVGene`, `All V
+  hits`).
+- **Calls.** A segment's hits are listed best first with their scores (`TRBV7-3*00(248),
+  TRBV7-2*00(200)`): the call is the best hit and any other of the same score, without its score.
+  MiXCR's allele `*00` (its library gives no alleles) is dropped: `TRBV7-3`. The locus is
+  `topChains` where the table has it, else the calls'.
+- **Junction.** `nSeqCDR3` and `aaSeqCDR3`: MiXCR's CDR3 is the IMGT junction. A `_` in the amino
+  acids (a frameshift) or nucleotides that are not whole codons make the clone out of frame, with
+  no amino-acid junction; a `*` is a stop codon. Lower-case letters (imputed from the germline)
+  are read as upper case.
+- **Counts.** Molecules (`uniqueMoleculeCount`) when every clone has them; otherwise reads
+  (`readCount`, MiXCR 3's `cloneCount`, MiXCR 2's `Clone count`), with a finding when some clones
+  had molecules. A clone's reads are kept beside its molecules. The `cloneId` is its sequence ID.
+- **Single cell.** A table with `tagValueCELL` (MiXCR 4's single-cell exports, each row a clone's
+  chain in one cell) is single-cell data: the cell is its barcode, the sequence ID the barcode
+  and the clone's ID (`GAGTCC_clone_7`), MiXCR's clonotype of cells (`cellGroup`) the clone, and
+  the dataset's unit cells.
+- **The sample** is the file's name less the chain MiXCR 4 splits files by (`S1.clones_TRB.tsv`
+  and `S1.clones_TRA.tsv` are sample `S1`; MiXCR 3's `S1.clonotypes.TRB.txt` too).
+
+## OAS and OTS data units (Oxford Protein Informatics Group)
+
+The data units of the Observed Antibody Space and the Observed T cell receptor Space, as their
+search pages give them (`.csv.gz`), CC BY 4.0.
+
+- Recognized by their first line: the unit's metadata, a JSON object written as one CSV field.
+  The second line is the header: IgBLAST's AIRR columns.
+- **Metadata** (`Run`, `Subject`, `Species`, `BSource` or `TSource`, `BType` or `TType`,
+  `TSubtype`, `Disease`, `Vaccine`, `Treatment`, `Age` …) are kept as the sample's, as given (a
+  zero-width space some links hold dropped). **Fill from metadata** in the Data view offers the
+  subject, the tissue (`BSource`, `TSource`), the cells sorted (`BType`, `TType` with `TSubtype`)
+  as the cell subset and the disease as the condition; `no`, `none` and `unknown` say nothing.
+- **Unpaired units** (OAS): one row per sequence of a bulk repertoire, without `sequence_id`,
+  counted by `Redundancy` (the times the sequence was seen, which the unit does not say are reads
+  or molecules: the user confirms the unit).
+- **Paired units** (OAS's `_heavy` and `_light`, OTS's `_beta` and `_alpha` columns): one row per
+  cell, read as the cell's two chains. The cell is its contigs' barcode (their `sequence_id` less
+  `_contig_n`, 10x Genomics' names, which the units keep), else the row's line; each chain counts
+  one, and the dataset's unit is cells.
+- The locus is written as one letter (`H`, `K`, `L`; `B`, `A`), booleans as `T` and `F`, and
+  integers as decimals (`214.0`). The sample is the file's name.
+
+## tcrdist3 clone tables
+
+The clone tables tcrdist3 reads (`dash.csv`, the epitope-specific TCRs of Dash et al. 2017, among
+them), comma- or tab-separated.
+
+- Recognized by a chain's junction and V gene in tcrdist3's naming: `cdr3_b_aa` and `v_b_gene`
+  (chains `a`, `b`, `g` and `d`: TRA, TRB, TRG and TRD). Each chain's `j_b_gene` and nucleotide
+  junction (`cdr3_b_nucseq`) are read where given; tcrdist3's CDR3 is the IMGT junction.
+- **Paired chains** are single-cell data: a clone's `count` is its cells, and the clone is read as
+  that many cells with the same chains (`tcr7#1`, `tcr7#2`; a count that is not a whole number
+  from 1 to 100,000 is one cell, with a finding). The `clone_id` is each cell's clone.
+- **One chain** is a bulk repertoire: each clone a rearrangement counted by `count`, whose unit
+  the user confirms (tcrdist3 counts cells, templates or reads alike); without `count`, each clone
+  counts once.
+- **The sample** is the clone's `subject`, one for each subject and `epitope`
+  (`mouse_subject0050_PA`), the subject and epitope kept as its metadata (Fill from metadata
+  offers the epitope as the condition); without `subject`, the file's name.
+- A junction is productive when its amino acids hold no stop codon and its nucleotides, where
+  given, are whole codons.
+
 ## Tables with mapped columns
 
-A CSV or TSV that no reader recognizes (VDJtools' or MiXCR's clone tables, a spreadsheet) is read
+A CSV or TSV that no reader recognizes (VDJtools' clone tables, a spreadsheet) is read
 through a **mapping** of its columns, made in the window
 ([the guide](https://robert-mcdermott.github.io/clonoloom/docs/opening-data.html#mapping)) or given to remote control's `open_data`
 ([REMOTE-CONTROL.md](REMOTE-CONTROL.md)).

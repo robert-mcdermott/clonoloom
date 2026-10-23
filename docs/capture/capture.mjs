@@ -11,7 +11,7 @@
 // Needs Go (to build ClonoLoom) and Chrome, Chromium, Edge or Brave (CHROME=path).
 
 import { spawn } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -145,6 +145,36 @@ const scenes = {
     await waitFor(`document.querySelectorAll('.ctable-row:not(.loading)').length > 5 && Boolean(document.querySelector('.members'))`);
   },
   // The methods paragraph of the PBMC 1k T cells, with its references.
+  async vaccine() {
+    // Execute the catalog's actual guided actions, without downloaded reference dependencies.
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    for (const name of ['dash-2017-tcrdist3', 'simulated-vaccine']) {
+      const e = catalog.examples.find((e) => e.name === name);
+      for (const opening of e.opens) {
+        await act('new_project', { name: opening.name });
+        await act('open_example', { example: name, opening: opening.title, download: true });
+        for (const step of opening.steps ?? []) {
+          await act(step.action, step.args ?? {});
+          console.log(`Guided step: ${opening.title} / ${step.title}`);
+        }
+      }
+    }
+    await waitFor(`window.clonoloom.trackingView?.followed().status === 'ready'`);
+    const tracked = await js('window.clonoloom.trackingView?.followed().result');
+    if (!tracked?.choice.evidence?.artifact || !tracked.subjects.length) throw new Error('Guided specificity tracking failed');
+    await act('match_specificity', {});
+    await waitFor(`Boolean(document.querySelector('.specificity-view table tbody button'))`);
+  },
+  async invariant() {
+    await act('open_example', { example: '10x-pbmc-10k-v2', opening: 'T cells' });
+    const result = await act('flag_invariant', { species: 'human', population: 'MAIT' });
+    if (result.data.invariant.samples[0].matched[0] !== 80) throw new Error('Unexpected MAIT cell count');
+    await js('window.clonoloom.store.undo()');
+    await waitFor(`window.clonoloom.clonotypeContext?.request.species === '' && window.clonoloom.clonotypeContext?.request.population === ''`);
+    await act('flag_invariant', { species: 'human', population: 'MAIT' });
+    await js(`document.querySelector('.clonotype-info details').open = true`);
+    await waitFor(`document.querySelectorAll('.ctable-row:not(.loading)').length > 5`);
+  },
   async methods() {
     await act('open_example', { example: '10x-pbmc-1k', opening: 'T cells' });
     await act('show_methods');
@@ -231,6 +261,63 @@ const scenes = {
     await js(`(() => { const g = document.querySelector('.tracking-guide'); if (g) g.open = false; return true; })()`);
     await waitFor(`document.querySelectorAll('.tracking-view .plot-card svg').length >= 2`);
     await js(`(() => { const el = document.querySelectorAll('.tracking-view .plot-card')[1]; el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
+  },
+  // Dash et al.'s mouse TCRs compared by TCRdist with their V genes' loops (the reference data put
+  // in the library, as a download leaves them): each clonotype's distance to its nearest, and the
+  // clonotype with the most neighbors with its nearest, loop by loop.
+  async tcrdist() {
+    cpSync(join(DATA, 'tcrdist3-loops'), join(places.library, 'references', 'tcrdist3-loops'), { recursive: true });
+    await act('open_example', { example: 'dash-2017-tcrdist3', download: true });
+    await act('find_neighbors', { select: 1 });
+    await waitFor(`Boolean(document.querySelector('.specificity-view .nearest table'))`);
+    await js(`(() => { const el = document.querySelector('.specificity-view .plot-card'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
+  },
+  // A simulated sample's network, with the complete graph and bounded drawing.
+  async database() {
+    await act('open_example', { example: 'simulated-vaccine', download: true });
+    cpSync(join(DATA, 'tcrdist3-loops'), join(places.library, 'references', 'tcrdist3-loops'), { recursive: true });
+    const near = await act('match_specificity', { database: 'simulated-vaccine', metric: 'tcrdist', radius: 24, genes: true, cdr3Only: false });
+    if (near.data?.matches <= 62) throw new Error('Near matching failed to find additional evidence');
+    const result = await act('match_specificity', { metric: 'exact' });
+    if (result.data?.epitopes.length !== 4 || result.data?.matches !== 62) throw new Error('Specificity remote action returned incorrect counts: ' + JSON.stringify(result));
+    await act('match_specificity', { follow: 2 });
+    await waitFor(`window.clonoloom.trackingView?.followed().status === 'ready'`);
+    const tracked = await js(`window.clonoloom.trackingView.followed().result`);
+    if (!tracked.choice.evidence?.artifact || !tracked.subjects.length) throw new Error('Specificity tracking lost its provenance or subjects');
+    await act('match_specificity', {});
+    await waitFor(`Boolean(document.querySelector('.specificity-view table tbody button'))`);
+  },
+  async networks() {
+    await act('open_data', { paths: [join(DATA, 'simulated-vaccine/S01-d14.tsv')], name: 'Simulated vaccination · S01, day 14' });
+    const result = await act('find_networks', { metric: 'levenshtein', cutoff: 2, sameV: true, sameJ: true, select: 1 });
+    if (result.data?.nodes !== 7658 || result.data?.edges !== 1176) throw new Error('Network remote action returned incorrect counts');
+    await waitFor(`Boolean(document.querySelector('.specificity-view canvas'))`);
+    // Check bounded cluster navigation and a member's link before capturing.
+    await js(`(() => { const input = document.querySelector('input[aria-label="Cluster number"]'); input.value = '201'; input.dispatchEvent(new Event('change', { bubbles: true })); })()`);
+    await waitFor(`document.querySelector('select[aria-label="Cluster"]').value === '201'`);
+    await js(`document.querySelector('.specificity-view table tbody button').click()`);
+    await waitFor(`window.clonoloom.store.ui.mode === 'clonotypes'`);
+    await act('find_networks', { select: 1 });
+    await waitFor(`Boolean(document.querySelector('.specificity-view canvas'))`);
+  },
+  // Neighborhoods against a background drawn from OLGA's human TRB model.
+  async neighborhoods() {
+    cpSync(join(DATA, 'tcrdist3-loops'), join(places.library, 'references', 'tcrdist3-loops'), { recursive: true });
+    cpSync(join(DATA, 'olga-models'), join(places.library, 'references', 'olga-models'), { recursive: true });
+    await act('open_example', { example: 'simulated-vaccine', download: true });
+    await act('find_neighborhoods', {});
+    await waitFor(`document.querySelectorAll('.specificity-view table.selectable tbody tr').length > 10`);
+    await js(`(() => { const el = document.querySelector('.specificity-view .summary-card'); el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
+  },
+  // Dash et al.'s mouse TCRs' generation probabilities under OLGA's mouse models (the reference
+  // data put in the library, as a download leaves them): their distribution, and the clonotypes,
+  // the most abundant first.
+  async generation() {
+    cpSync(join(DATA, 'olga-models'), join(places.library, 'references', 'olga-models'), { recursive: true });
+    await act('open_example', { example: 'dash-2017-tcrdist3', download: true });
+    await act('measure_generation', {});
+    await waitFor(`document.querySelectorAll('.specificity-view .plot-card svg').length >= 2`);
+    await js(`(() => { const el = document.querySelectorAll('.specificity-view .plot-card')[1]; el.closest('.workbench-scroll').scrollTop = el.offsetTop - 60; return true; })()`);
   },
 };
 

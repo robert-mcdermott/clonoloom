@@ -351,6 +351,193 @@
         }
       ]
     },
+    "dash-2017-tcrdist3": {
+      "title": "Epitope-specific TCRs of Dash et al. 2017 (tcrdist3's clone tables)",
+      "description": "Paired αβ TCRs of CD8+ T cells sorted with peptide–MHC tetramers, as tcrdist3 distributes them: 1,924 clones (3,405 cells) of mice infected with influenza or cytomegalovirus, for seven epitopes, and 415 human clones for three epitopes of influenza, Epstein–Barr virus and cytomegalovirus. Each clone's epitope is known: the data TCRdist was made on.",
+      "source": "tcrdist3, dash.csv and dash_human.csv (https://github.com/kmayerb/tcrdist3), from Dash et al. 2017",
+      "page": "https://github.com/kmayerb/tcrdist3",
+      "publisher": "tcrdist3 (Mayer-Blackwell, Fiore-Gartland, Bradley and colleagues)",
+      "license": "MIT (tcrdist3)",
+      "licenseUrl": "https://github.com/kmayerb/tcrdist3/blob/master/LICENSE",
+      "licenseClass": "open",
+      "citation": "Dash P, Fiore-Gartland AJ, Hertz T, et al. Quantifiable predictive features define epitope-specific T cell receptor repertoires. Nature 2017;547:89–93. doi:10.1038/nature22383",
+      "ci": true,
+      "base": "https://raw.githubusercontent.com/kmayerb/tcrdist3/0e6efa39092e2c64c9c0b52a72c2f5961c161ebb/",
+      "files": [
+        {
+          "path": "dash.csv",
+          "size": 384362,
+          "sha256": "2d7f56f3a5790920996d3347ea0189017d8bafd0a085c8842e177b6570bd44d7"
+        },
+        {
+          "path": "dash_human.csv",
+          "size": 43445,
+          "sha256": "ee89099763f3c5d97eb564f0fe3a0e7edcc443cfff76e92e70acb2d61fd21c71"
+        }
+      ],
+      "opens": [
+        {
+          "title": "Mouse epitope-specific TCRs",
+          "name": "Dash 2017 mouse TCRs",
+          "summary": "1,924 paired αβ TCR clones (3,405 cells) of mice, a sample for each mouse and the epitope its cells were sorted for: influenza's PA, PB1, PB1-F2 and NP, and cytomegalovirus's M38, M45 and m139.",
+          "files": [
+            "dash.csv"
+          ],
+          "steps": [
+            {
+              "title": "Compare similar receptors",
+              "action": "find_neighbors",
+              "args": {
+                "radius": 24,
+                "cdr3Only": true,
+                "organism": "mouse",
+                "select": 1
+              },
+              "words": "Compare the paired CDR3s alone at TCRdist 24. Samples name the known tetramer epitope and donor. Sequence similarity can cross epitope labels; it is evidence to inspect, not a specificity assignment. Download V-gene loops in Reference data to include the other loops."
+            },
+            {
+              "title": "Connect receptors into networks",
+              "action": "find_networks",
+              "args": {
+                "metric": "tcrdist",
+                "cutoff": 24,
+                "arms": "all",
+                "cdr3Only": true,
+                "sameV": false,
+                "sameJ": false,
+                "select": 1
+              },
+              "words": "Every edge compares all retained chains. Components connect through intermediate receptors, so not every pair in a component is within 24. Inspect members and their samples against the known epitopes."
+            }
+          ]
+        },
+        {
+          "title": "Human epitope-specific TCRs",
+          "name": "Dash 2017 human TCRs",
+          "summary": "415 paired αβ TCRs of people's CD8+ T cells, a sample for each donor and epitope: influenza's M1, Epstein–Barr virus's BMLF1 and cytomegalovirus's pp65.",
+          "files": [
+            "dash_human.csv"
+          ],
+          "steps": [
+            {
+              "title": "Compare similar receptors",
+              "action": "find_neighbors",
+              "args": {
+                "radius": 24,
+                "cdr3Only": true,
+                "organism": "human",
+                "select": 1
+              },
+              "words": "Compare the paired CDR3s alone at TCRdist 24. Samples name the known tetramer epitope and donor. Sequence similarity can cross epitope labels; it is evidence to inspect, not a specificity assignment. Download V-gene loops in Reference data to include the other loops."
+            },
+            {
+              "title": "Connect receptors into networks",
+              "action": "find_networks",
+              "args": {
+                "metric": "tcrdist",
+                "cutoff": 24,
+                "arms": "all",
+                "cdr3Only": true,
+                "sameV": false,
+                "sameJ": false,
+                "select": 1
+              },
+              "words": "Every edge compares all retained chains. Components connect through intermediate receptors, so not every pair in a component is within 24. Inspect members and their samples against the known epitopes."
+            }
+          ]
+        }
+      ]
+    },
+    "ots-healthy-pbmc": {
+      "title": "Paired TCRs of healthy donors' blood (Observed T cell receptor Space)",
+      "description": "Three data units of the Observed T cell receptor Space (OTS), each one donor's T cells with their paired α and β chains as IgBLAST annotated them, and the unit's metadata: a healthy adult's PBMC (4,424 cells), and two smaller ones of other studies.",
+      "source": "Observed T cell receptor Space (OTS), Oxford Protein Informatics Group; data units of Sureshchandra et al. 2023, Bai et al. 2023 and Poon et al. 2023",
+      "page": "https://opig.stats.ox.ac.uk/webapps/ots/",
+      "publisher": "Oxford Protein Informatics Group",
+      "license": "CC BY 4.0 (OTS)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "licenseClass": "open",
+      "citation": "Raybould MIJ, Greenshields-Watson A, Agarwal P, et al. The Observed T cell receptor Space database enables paired-chain repertoire mining, coherence analysis, and language modeling. Cell Rep 2024;43:114704. doi:10.1016/j.celrep.2024.114704. Data of Sureshchandra S, et al. Cell Rep 2023;42:112769, doi:10.1016/j.celrep.2023.112769; Bai H, et al. Int Immunopharmacol 2023;124:110983, doi:10.1016/j.intimp.2023.110983; Poon MML, et al. Nat Immunol 2023;24:309–319, doi:10.1038/s41590-022-01395-9.",
+      "ci": true,
+      "base": "https://opig.stats.ox.ac.uk/webapps/ots-ngsdb/",
+      "files": [
+        {
+          "path": "Sureshchandra_2023/csv_paired/SRR18365371_1_Paired_All.csv.gz",
+          "size": 5435854,
+          "sha256": "584ad56267a82ad139f42976f4ddf9c2e3f9f865107fca27957f78b733b67ef6"
+        },
+        {
+          "path": "Bai_2023/csv_paired/SRR14045264_1_Paired_All.csv.gz",
+          "size": 528405,
+          "sha256": "e22b713c0dda2fca929df320c77df4642b539f71268c12ac432cd1939bbfa84e"
+        },
+        {
+          "path": "Poon_2023/csv_paired/SRR19760479_1_Paired_All.csv.gz",
+          "size": 437586,
+          "sha256": "e15503502b17f31842a74eacb764b80e971972806a006501aa90b13a1cf31c70"
+        }
+      ],
+      "opens": [
+        {
+          "title": "A healthy donor's paired TCRs",
+          "name": "OTS healthy donor SRR18365371",
+          "summary": "4,424 T cells of a healthy adult's blood, each with its α and β chains, the unit's metadata (tissue, cells sorted, disease) as the sample's annotation.",
+          "files": [
+            "Sureshchandra_2023/csv_paired/SRR18365371_1_Paired_All.csv.gz"
+          ]
+        }
+      ]
+    },
+    "oas-units": {
+      "title": "Antibody data units of the Observed Antibody Space",
+      "description": "Two small data units of the Observed Antibody Space (OAS): a bulk repertoire's IgG heavy chains (unpaired) and a single-cell repertoire's paired heavy and light chains, each with its metadata. For the reader's validation; B-cell examples come with wave 5.",
+      "source": "Observed Antibody Space (OAS), Oxford Protein Informatics Group; data units of Bashford-Rogers et al. 2013 and Eccles et al. 2020",
+      "page": "https://opig.stats.ox.ac.uk/webapps/oas/",
+      "publisher": "Oxford Protein Informatics Group",
+      "license": "CC BY 4.0 (OAS)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "licenseClass": "open",
+      "citation": "Olsen TH, Boyles F, Deane CM. Observed Antibody Space: a diverse database of cleaned, annotated, and translated unpaired and paired antibody sequences. Protein Sci 2022;31:141–146. doi:10.1002/pro.4205. Data of Bashford-Rogers RJM, et al. Genome Res 2013;23:1874–1884, doi:10.1101/gr.154815.113; Eccles JD, et al. Cell Rep 2020;30:351–366, doi:10.1016/j.celrep.2019.12.027.",
+      "ci": true,
+      "base": "https://opig.stats.ox.ac.uk/webapps/ngsdb/",
+      "files": [
+        {
+          "path": "unpaired/Bashford_2013/csv/ERR220445_Heavy_IGHG.csv.gz",
+          "size": 9432,
+          "sha256": "6ab21ce6b22655ade152d3e322ee0b58841dedad4fdad94ea156639938fbf9d3"
+        },
+        {
+          "path": "paired/Eccles_2020/csv/SRR10358524_paired.csv.gz",
+          "size": 57326,
+          "sha256": "8360eb53ca2ff03bd4b8818dff12631a72eb78620c1b3b92ce339ef503f7b405"
+        }
+      ]
+    },
+    "pyclonal-mixcr": {
+      "title": "MiXCR 3 clone tables (PyClonal's sample inputs)",
+      "description": "Two bulk TCR clone tables exported by MiXCR 3, as the PyClonal project (an NCBI hackathon) distributes them: the reader of MiXCR's tables checked on files MiXCR wrote.",
+      "source": "PyClonal, sample_input_files/Mixcr (https://github.com/NCBI-Hackathons/PyClonal)",
+      "page": "https://github.com/NCBI-Hackathons/PyClonal",
+      "publisher": "NCBI-Hackathons",
+      "license": "MIT (PyClonal)",
+      "licenseUrl": "https://github.com/NCBI-Hackathons/PyClonal/blob/master/LICENSE",
+      "licenseClass": "open",
+      "citation": "PyClonal (NCBI-Hackathons), https://github.com/NCBI-Hackathons/PyClonal, commit 3cf4fd5.",
+      "ci": true,
+      "base": "https://raw.githubusercontent.com/NCBI-Hackathons/PyClonal/3cf4fd5ada694bb6cb197f1f0d8ee3a25e329fed/sample_input_files/Mixcr/",
+      "files": [
+        {
+          "path": "p1s2.txt",
+          "size": 90133,
+          "sha256": "aaa11e1fb4b824ba832eb8b1631c4682d2fc419833dc0ba02020ef5802ab4f83"
+        },
+        {
+          "path": "p2s2.txt",
+          "size": 97877,
+          "sha256": "1c7420c9d8d949e61d58897fb17d59bd655a4a99bc869f8f850e21acf1343cd6"
+        }
+      ]
+    },
     "vdjserver-ramos-libra": {
       "title": "Ramos B-cell line, LIBRA-seq (VDJServer, AIRR Data Commons)",
       "description": "One repertoire of the LIBRA-seq study (Setliff et al. 2019, PRJNA578389): 1,857 single-cell IGH, IGK and IGL rearrangements of the Ramos cell line, queried from VDJServer's ADC API as AIRR TSV with its Repertoire metadata.",
@@ -458,6 +645,235 @@
             "P00441.tsv",
             "P00572.tsv"
           ]
+        }
+      ]
+    },
+    "mixcr-benchmark-v4": {
+      "title": "MiXCR 4 single-cell clone table (MiLaboratories' benchmark)",
+      "description": "A single-cell B-cell clone table exported by MiXCR 4 from 10x Genomics' 10k PBMC data (downsampled), as MiLaboratories' benchmark repository holds it: MiXCR 4's columns, with cells and molecules. The repository states no license, so it is for the maintainer's validation only.",
+      "source": "milaboratory/mixcr-benchmark, downsampled_data/B_cells/mixcr (https://github.com/milaboratory/mixcr-benchmark)",
+      "page": "https://github.com/milaboratory/mixcr-benchmark",
+      "publisher": "MiLaboratories",
+      "license": "Not stated by the repository",
+      "licenseUrl": "",
+      "licenseClass": "unknown",
+      "citation": "MiLaboratories, mixcr-benchmark, https://github.com/milaboratory/mixcr-benchmark, commit 4c75a82.",
+      "ci": false,
+      "base": "https://raw.githubusercontent.com/milaboratory/mixcr-benchmark/4c75a82297e0032b9de308f895c4ef3430d9f27a/downsampled_data/",
+      "files": [
+        {
+          "path": "B_cells/mixcr/10k_PBMC_5pv2_nextgem_Chromium_Controller_vdj_b_1_d01.tsv",
+          "size": 1243653,
+          "sha256": "601e03f276f9139e7bd6407df23cf21eda2b3ffacf7f9354fff0908daadc2aae"
+        }
+      ]
+    }
+  },
+  "references": {
+    "tcrdist3-loops": {
+      "title": "The V genes' loops for TCRdist (tcrdist3's database of genes)",
+      "description": "Each T-cell receptor V allele's CDR1, CDR2 and CDR2.5 (the loop between CDR2 and CDR3 that faces the peptide–MHC), aligned, for human, mouse and rhesus macaque, as tcrdist3 computes TCRdist with them: its database of genes, made from IMGT's germline genes. Without it, TCRdist compares the CDR3s alone.",
+      "source": "tcrdist3, tcrdist/db/combo_xcr_2024-03-05.tsv (https://github.com/kmayerb/tcrdist3)",
+      "page": "https://github.com/kmayerb/tcrdist3",
+      "publisher": "tcrdist3 (Mayer-Blackwell, Fiore-Gartland, Bradley and colleagues), from IMGT",
+      "license": "MIT (tcrdist3); the germline sequences are IMGT's, CC BY 4.0",
+      "licenseUrl": "https://github.com/kmayerb/tcrdist3/blob/master/LICENSE",
+      "licenseClass": "open",
+      "citation": "Mayer-Blackwell K, et al. TCR meta-clonotypes for biomarker discovery with tcrdist3 enabled identification of public, HLA-restricted clusters of SARS-CoV-2 TCRs. eLife 2021;10:e68605. doi:10.7554/eLife.68605. Germline genes: Lefranc MP, et al. IMGT, the international ImMunoGeneTics information system. Nucleic Acids Res 2009;37:D1006–D1012. doi:10.1093/nar/gkn838",
+      "ci": true,
+      "base": "https://raw.githubusercontent.com/kmayerb/tcrdist3/0e6efa39092e2c64c9c0b52a72c2f5961c161ebb/",
+      "files": [
+        {
+          "path": "tcrdist/db/combo_xcr_2024-03-05.tsv",
+          "size": 1234156,
+          "sha256": "1d7fcac37ad6d955b3a3f693526e36623186464aef2c528cf8e0322dc89706cd"
+        }
+      ]
+    },
+    "olga-models": {
+      "title": "Recombination models for generation probabilities (OLGA's default models)",
+      "description": "The V(D)J recombination models OLGA distributes, inferred with IGoR from published repertoires: human TRB, TRA, IGH, IGK and IGL, and mouse TRB and TRA. ClonoLoom computes each CDR3's generation probability under them with its own implementation; without them, only human TRB, under ClonoLoom's own model.",
+      "source": "OLGA 1.3.0, olga/default_models (https://github.com/statbiophys/OLGA), at commit 1104df2",
+      "page": "https://github.com/statbiophys/OLGA",
+      "publisher": "OLGA (Sethna, Elhanati, Callan, Walczak and Mora)",
+      "license": "GPL-3.0 (OLGA's repository); the model files carry no license of their own",
+      "licenseUrl": "https://github.com/statbiophys/OLGA/blob/master/LICENSE",
+      "licenseClass": "open",
+      "citation": "Sethna Z, Elhanati Y, Callan CG Jr, Walczak AM, Mora T. OLGA: fast computation of generation probabilities of B- and T-cell receptor amino acid sequences and motifs. Bioinformatics 2019;35:2974–2981. doi:10.1093/bioinformatics/btz035. Models inferred with IGoR: Marcou Q, Mora T, Walczak AM. High-throughput immune repertoire analysis with IGoR. Nat Commun 2018;9:561. doi:10.1038/s41467-018-02832-w",
+      "ci": true,
+      "base": "https://raw.githubusercontent.com/statbiophys/OLGA/1104df2dec51af4c13b8078d6df6681531e58b7f/olga/default_models/",
+      "files": [
+        {
+          "path": "human_T_beta/model_params.txt",
+          "size": 30009,
+          "sha256": "2ad3a5fd94a0554543c4835c9e91e31fbe973e7ce8c727b69f3125105b95c3e6"
+        },
+        {
+          "path": "human_T_beta/model_marginals.txt",
+          "size": 27384,
+          "sha256": "2d8ee55020a0a538f7841883927eefa0bdb6653df9c6ca635b12a6e4a4d57460"
+        },
+        {
+          "path": "human_T_beta/V_gene_CDR3_anchors.csv",
+          "size": 2570,
+          "sha256": "b1552be7927e6397e60fb8e5f0212914d3cfa1e3fc300e33204d372202619161"
+        },
+        {
+          "path": "human_T_beta/J_gene_CDR3_anchors.csv",
+          "size": 283,
+          "sha256": "38e06fb953be5d85d8cd5f0b4f6774e0654fa498d81184767f99d9287718ce49"
+        },
+        {
+          "path": "human_T_alpha/model_params.txt",
+          "size": 35883,
+          "sha256": "b8c2203b3a1c5da8d3717c27076636e4f36d7391ff07c33aebaa697941238555"
+        },
+        {
+          "path": "human_T_alpha/model_marginals.txt",
+          "size": 75679,
+          "sha256": "bef8e7f1be1d15f540fd89c3066ccd62ff62a9226b0a9946e4b9a36465f1c336"
+        },
+        {
+          "path": "human_T_alpha/V_gene_CDR3_anchors.csv",
+          "size": 1901,
+          "sha256": "41f57ceb357a9c8abb066e7cdf16e34b1e0e8f064ae9f2813c15a975e27b3888"
+        },
+        {
+          "path": "human_T_alpha/J_gene_CDR3_anchors.csv",
+          "size": 1127,
+          "sha256": "47c85062965e602e94d56936154972cb6c7297c384b349e5f1440cd9b9c44e3c"
+        },
+        {
+          "path": "human_B_heavy/model_params.txt",
+          "size": 32873,
+          "sha256": "a9e5fe496cbf3618f32104c858e359933b627c7102a87364f47408d0baca1803"
+        },
+        {
+          "path": "human_B_heavy/model_marginals.txt",
+          "size": 1717630,
+          "sha256": "504cc674d5472ce19ba4e516a95e77989ae13a10eae479c26e7a285c0b3ec0cf"
+        },
+        {
+          "path": "human_B_heavy/V_gene_CDR3_anchors.csv",
+          "size": 1644,
+          "sha256": "273a12ddcce9692c97a36e4fb68ae20ee32cbf9cdde2c3443b6ce1ffe6ee87c0"
+        },
+        {
+          "path": "human_B_heavy/J_gene_CDR3_anchors.csv",
+          "size": 125,
+          "sha256": "7b068ed555497b8e0dd977ff1b37cd7292f837085c7aac73927a3122fba671cf"
+        },
+        {
+          "path": "human_B_kappa/model_params.txt",
+          "size": 21239,
+          "sha256": "2500cb02307025835a4f0c6ad2dd0f46ed76bdde3abd23219d4b92c2becb5c0e"
+        },
+        {
+          "path": "human_B_kappa/model_marginals.txt",
+          "size": 45314,
+          "sha256": "c68e300715c6ea6d54d5d164c6c2ad02d02ee7c186784c720ab086406407b779"
+        },
+        {
+          "path": "human_B_kappa/V_gene_CDR3_anchors.csv",
+          "size": 1189,
+          "sha256": "53ff0df050c9b9383c3dcef3eb5759fea9528f85793bd4fd18f838d7a4da4f56"
+        },
+        {
+          "path": "human_B_kappa/J_gene_CDR3_anchors.csv",
+          "size": 118,
+          "sha256": "92432fb0a7a8c819dae8170547587b8c0aa1f6002cec9ce0483f069107a997e8"
+        },
+        {
+          "path": "human_B_lambda/model_params.txt",
+          "size": 26492,
+          "sha256": "c9223d9624c753ce2f597e3620d93f42da919f479715c35056eb7990028c5f1d"
+        },
+        {
+          "path": "human_B_lambda/model_marginals.txt",
+          "size": 55240,
+          "sha256": "7a7d281b1da4e136f2c33959dd2e9adee59222f0e5bebac685cd2860cd596ec4"
+        },
+        {
+          "path": "human_B_lambda/V_gene_CDR3_anchors.csv",
+          "size": 1497,
+          "sha256": "b84b6140448fcc9a6d1cead1bef0293c971e4a7cc625ade88081d26cc29adf39"
+        },
+        {
+          "path": "human_B_lambda/J_gene_CDR3_anchors.csv",
+          "size": 144,
+          "sha256": "f3b80c8af4208b8a1f86a9b26d0a00a047bdd06bbdf1262dccb97e3944395601"
+        },
+        {
+          "path": "mouse_T_beta/model_params.txt",
+          "size": 13475,
+          "sha256": "858560500c7303ee496c1c5e1d0c9f26f9c83f78e6287103f5e45ac279872050"
+        },
+        {
+          "path": "mouse_T_beta/model_marginals.txt",
+          "size": 12795,
+          "sha256": "fb0fe31186d818e94537d53358556bcdc2cad68b1e647eca35e0b42cde7305b3"
+        },
+        {
+          "path": "mouse_T_beta/V_gene_CDR3_anchors.csv",
+          "size": 448,
+          "sha256": "5b0a50685eeb0ed34c0d724c47f55198d3587d6916bc7f1617d65e80f856c27c"
+        },
+        {
+          "path": "mouse_T_beta/J_gene_CDR3_anchors.csv",
+          "size": 257,
+          "sha256": "8ebb09da9fc858df1a6951aae19353f305f94dd9b337a71219a4687ca8c04e53"
+        },
+        {
+          "path": "mouse_T_alpha/model_params.txt",
+          "size": 36713,
+          "sha256": "13a9d2c974c84633178ad631e9ca0940af517541cedc4cd618a6059d172a8869"
+        },
+        {
+          "path": "mouse_T_alpha/model_marginals.txt",
+          "size": 81928,
+          "sha256": "212997257fb094a46d574476098563a9a2fa115533ecf61cca7ca0c3ea924089"
+        },
+        {
+          "path": "mouse_T_alpha/V_gene_CDR3_anchors.csv",
+          "size": 1981,
+          "sha256": "22b4f96ffad1e2b4c460290a6b0a99aea9bac6ee9d9b8c6b07da44d1ab37f7a5"
+        },
+        {
+          "path": "mouse_T_alpha/J_gene_CDR3_anchors.csv",
+          "size": 785,
+          "sha256": "4298c047367f44933c0ea5729c88b967679e0c1cf4b6e86f6d05cb66320284ed"
+        }
+      ]
+    },
+    "vdjdb": {
+      "title": "VDJdb 2026-06-03",
+      "description": "Published T-cell receptor specificity evidence. Downloaded only on request. The publisher currently specifies non-commercial use and no redistribution of adaptations (CC BY-NC-ND 4.0); the historical archive retains its original license. Read both before use.",
+      "source": "https://github.com/antigenomics/vdjdb-db/releases/tag/2026-06-03",
+      "publisher": "VDJdb",
+      "page": "https://vdjdb.com",
+      "license": "CC BY-NC-ND 4.0 (current publisher terms); historical archive includes its original license",
+      "licenseUrl": "https://github.com/antigenomics/vdjdb-db/blob/master/LICENSE",
+      "licenseClass": "restricted",
+      "citation": "Shugay M, et al. VDJdb: a curated database of T-cell receptor sequences with known antigen specificity. Nucleic Acids Res. 2018;46:D419–D427. doi:10.1093/nar/gkx760",
+      "members": {
+        "url": "https://github.com/antigenomics/vdjdb-db/releases/download/2026-06-03/vdjdb-2026-06-03.zip",
+        "size": 41017409,
+        "names": [
+          "vdjdb.txt",
+          "LICENSE"
+        ],
+        "strip": "vdjdb-2026-06-03/"
+      },
+      "files": [
+        {
+          "path": "vdjdb.txt",
+          "size": 239910782,
+          "sha256": "3f5823f01d954751567a8d40870a284e384625242bce870b6390c3222a46568a"
+        },
+        {
+          "path": "LICENSE",
+          "size": 34522,
+          "sha256": "4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b"
         }
       ]
     }

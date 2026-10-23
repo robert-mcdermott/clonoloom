@@ -199,3 +199,6 @@ var Presets = []Definition{
 	{Name: "Paired heavy and light: amino-acid junctions, V and J genes", Chains: []string{"IGH", Light}, Junction: "aa", V: "gene", J: "gene", Cells: "primary"},
 	{Name: "The source's own clonotypes", Vendor: true},
 }
+
+// KnownLocus answers whether s is a locus ClonoLoom knows (TRA, TRB, TRG, TRD, IGH, IGK, IGL).
+func KnownLocus(s string) bool { return isLocus(s) }

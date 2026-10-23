@@ -261,7 +261,7 @@ export function mountData(app, container) {
       }
     }
     if (!proposals.length) {
-      toast(from === 'names' ? 'The samples\' names have no parts that differ in a way ClonoLoom recognizes.' : 'The samples have no metadata to fill fields from (AIRR Repertoire files, immunoSEQ sample tags).', { timeout: 4000 });
+      toast(from === 'names' ? 'The samples\' names have no parts that differ in a way ClonoLoom recognizes.' : 'The samples have no metadata to fill fields from (AIRR Repertoire files, immunoSEQ sample tags, OAS and OTS data units, tcrdist3 clone tables).', { timeout: 4000 });
       return;
     }
     const fields = [...new Set(proposals.map((p) => p.field))];
@@ -279,7 +279,7 @@ export function mountData(app, container) {
       content: [
         h('p', from === 'names'
           ? 'The parts of the samples\' names that differ, read by what they look like: time points (d7, day28, baseline), tissues, cell subsets, batches, subjects (P01, HIP00110) and the condition. Check the fields to fill.'
-          : 'Fields from the samples\' metadata: AIRR Repertoire files (subject, tissue, cell subset, time point, diagnosis or study group, HLA) and immunoSEQ sample tags (HLA, CMV status).'),
+          : 'Fields from the samples\' metadata: AIRR Repertoire files (subject, tissue, cell subset, time point, diagnosis or study group, HLA), immunoSEQ sample tags (HLA, CMV status), OAS and OTS data units (subject, tissue, cells sorted, disease) and tcrdist3 clone tables (subject, and the epitope as the condition).'),
         h('div.btn-row', ...fields.map((f) => {
           const box = h('input', { type: 'checkbox', checked: true, onchange: (e) => (e.target.checked ? chosen.add(f) : chosen.delete(f)) });
           return h('label.check', box, SAMPLE_FIELDS.find((x) => x.id === f).label);

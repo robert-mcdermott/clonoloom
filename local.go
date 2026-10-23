@@ -208,8 +208,12 @@ func walkFolder(dir string) ([]localFile, string) {
 			if path == dir {
 				return nil
 			}
-			// A simulated study's truth (clonoloom simulate) describes its data and is not data.
+			// A simulated study's truth (clonoloom simulate) describes its data and is not data;
+			// nor is its specificity database, beside it.
 			if name == "truth" && isFile(filepath.Join(path, "truth.json")) {
+				return filepath.SkipDir
+			}
+			if name == "database" && isFile(filepath.Join(filepath.Dir(path), "truth", "truth.json")) {
 				return filepath.SkipDir
 			}
 			if kind := dirKind(path); kind != "" {

@@ -2,7 +2,8 @@
 // read back as a study's design (internal/study): each preset's samples read with their metadata
 // and no finding, its subjects' samples placed at their days with their reference sample and
 // replicates; each blood sample's share in the reference population's clonotypes as the truth
-// expects it; each trajectory's clonotypes rising and falling as their folds say; the null series'
+// expects it; each trajectory's clonotypes (and a response's receptors) rising and falling as their
+// folds (and shares) say; the null series'
 // expectations the same at every time; and replicate samples differing by the biological variance
 // the study states, beyond sampling.
 package validation
@@ -44,10 +45,12 @@ type seriesTruth struct {
 }
 
 // clonotypeRow is a clonotype of a subject's series file: its trajectory, whether the reference
-// holds it, and its expected frequency at each time point.
+// holds it, the epitope it recognizes (in a study with a response), and its expected frequency at
+// each time point.
 type clonotypeRow struct {
 	trajectory string
 	reference  bool
+	epitope    string
 	frequency  []float64
 }
 
@@ -65,11 +68,22 @@ func readSeriesFile(t *testing.T, path string) map[string]clonotypeRow {
 	s := bufio.NewScanner(z)
 	s.Buffer(make([]byte, 1<<20), 1<<20)
 	s.Scan()
+	col := map[string]int{}
+	var frequencies []int
+	for i, name := range strings.Split(s.Text(), "\t") {
+		col[name] = i
+		if strings.HasPrefix(name, "frequency_") {
+			frequencies = append(frequencies, i)
+		}
+	}
 	for s.Scan() {
 		c := strings.Split(s.Text(), "\t")
-		row := clonotypeRow{trajectory: c[3], reference: c[4] == "T"}
-		for _, v := range c[6:] {
-			x, _ := strconv.ParseFloat(v, 64)
+		row := clonotypeRow{trajectory: c[col["trajectory"]], reference: c[col["in_reference"]] == "T"}
+		if i, ok := col["epitope"]; ok {
+			row.epitope = c[i]
+		}
+		for _, i := range frequencies {
+			x, _ := strconv.ParseFloat(c[i], 64)
 			row.frequency = append(row.frequency, x)
 		}
 		out[c[0]+"|"+c[1]+"|"+c[2]] = row
@@ -106,7 +120,10 @@ func sampleClonotypes(t *testing.T, path string) (map[string]float64, float64) {
 }
 
 func TestSimulatedSeriesAgainstTheirTruth(t *testing.T) {
-	for _, preset := range []string{"car-t", "transplant", "null-series"} {
+	if raceDetector {
+		t.Skip("measured without the race detector (CI's data job), which slows its simulations tenfold")
+	}
+	for _, preset := range []string{"car-t", "transplant", "null-series", "vaccine"} {
 		t.Run(preset, func(t *testing.T) { checkSeries(t, preset) })
 	}
 }
@@ -182,7 +199,7 @@ func checkSeries(t *testing.T, preset string) {
 	for _, st := range truth.Series {
 		clonotypes := readSeriesFile(t, filepath.Join(dir, st.File))
 		// Expectations without change in a series that has none.
-		if len(ser.Trajectories) == 0 && ser.Reference == nil {
+		if len(ser.Trajectories) == 0 && ser.Reference == nil && ser.Response == nil {
 			for key, c := range clonotypes {
 				for _, f := range c.frequency[1:] {
 					if math.Abs(f-c.frequency[0]) > 1e-12*c.frequency[0] {

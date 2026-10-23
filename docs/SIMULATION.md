@@ -4,7 +4,7 @@
 every subject, and the numbers an analysis estimates (diversity, the clonotypes a sample of its
 depth shows, the clonotypes subjects share). It is for checking methods, ClonoLoom's or anyone's,
 against the truth, and for learning ClonoLoom without data of your own. The Example data dialog
-offers two of them, made on your computer in a few seconds.
+offers five of them, made on your computer in a few seconds.
 
 ```sh
 clonoloom simulate                         # the standard study, into clonoloom-simulated-standard
@@ -25,8 +25,9 @@ The same parameters and seed give the same study, byte for byte, on every comput
 | `car-t` | 2 responders, 1 non-responder | a week before infusion (twice), days 7, 14, 28 and 90, and the infusion product | tracking, expansion tests and attribution after a CAR-T infusion |
 | `transplant` | 2 recipients without graft-versus-host disease, 1 with | before the transplant, days 30, 100 and 365 (twice), and the donor's blood | tracking and attribution to a donor |
 | `null-series` | 4 of one kind | days 0, 14 and 28, twice each | expansion tests should find nothing |
+| `vaccine` | 3 vaccinated, 2 given a placebo | a week before the vaccination (twice), days 7, 14, 28 and 90 | receptors of known specificity: similar receptors, their expansion, and matching to a specificity database |
 
-The last three are studies over time, below.
+The last four are studies over time, below; the last has receptors of known specificity too.
 
 ## What it writes
 
@@ -39,7 +40,7 @@ The last three are studies over time, below.
 | `README.md` | What the study is. |
 
 Open the folder in ClonoLoom (or the `.tsv` files with `repertoires.airr.json`) as one dataset: its
-truth folder is left out.
+truth folder is left out, and so is the vaccination study's database folder.
 
 ### The truth
 
@@ -99,6 +100,41 @@ An infusion product made from the subject's own cells holds the subject's own cl
 the infusion, about three quarters of the blood is already in clonotypes the product holds. The
 truth gives both the infused share and that share in the product's clonotypes, which are not the
 same.
+
+## Receptors of known specificity
+
+A series' `response` adds receptors that recognize epitopes (the `vaccine` preset: three epitopes
+of a vaccine, peptides made up for it):
+
+- **Founders:** each epitope's (20, 15 and 10), rearrangements the generator makes, the same in every
+  subject, as public receptors are.
+- **Families:** in each subject, a Poisson number of receptors of each founder, whose mean is drawn
+  once for the founder (exponential, mean 4), so that some families are large in every subject and
+  many small. A member is a rearrangement of the founder's genes and deletions whose non-templated
+  nucleotides differ: its CDR3 differs from the founder's at a Poisson number of residues (mean 1;
+  none, and it is the founder itself), each changed to a residue TCRdist puts d units away with a
+  chance in proportion to e^(−0.5d), mostly ones alike.
+- **Private receptors:** each subject's own, unlike any other, twice as many as the epitope's
+  founders on average: Dash et al. 2017 found a third or more of an epitope's receptors without a
+  near neighbor.
+- **Shares:** the receptors are a share of each subject's blood at each time point, by its
+  condition (vaccinated: 0.1% a week before, 1%, 3%, 1% and 0.3% at days 7, 14, 28 and 90; placebo:
+  0.1% throughout), divided among the epitopes (half, three tenths and a fifth), each receptor's
+  cells from a power law; with the series' variance between samples.
+
+Pooled across the five subjects, 58% of the receptors have another of the same epitope within 12
+TCRdist units (with the V genes' loops), 63% within 24 and 68% within 48; Dash et al.'s β chains, 54%,
+59% and 69% (human) and 61%, 71% and 85% (mouse).
+
+What its truth adds:
+
+| File | What it holds |
+| --- | --- |
+| `truth/specificity.tsv` | Every subject's receptors that recognize an epitope: genes, junction, epitope, antigen, founder (or private) and the residues by which it differs from the founder. Any other clonotype recognizes none. |
+| `truth/founders.tsv` | Each founder: its epitope, rearrangement and family's mean size. |
+| `truth/S01.series.tsv.gz`, … | An `epitope` column, and the trajectory `response` for its receptors. |
+| `truth/truth.json` | Each subject's receptors by epitope (family members, founders with a family, members that are the founder, private receptors) and the files above. |
+| `database/vdjdb.txt` | A specificity database in VDJdb's format (`vdjdb.txt`'s columns to `vdjdb.score`): each epitope's founders (score 3) and three receptors of other donors around each (score 1), with two epitopes no subject responds to. The MHC is `simulated`; the antigen's species, `Simulated`. |
 
 ## The model
 

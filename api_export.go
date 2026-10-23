@@ -22,6 +22,7 @@ import (
 	"clonoloom/internal/clonotype"
 	"clonoloom/internal/diversity"
 	"clonoloom/internal/export"
+	"clonoloom/internal/invariant"
 	"clonoloom/internal/overlap"
 	"clonoloom/internal/qc"
 )
@@ -46,7 +47,7 @@ func (a *app) registerExports(mux *http.ServeMux) {
 					return
 				}
 			}
-			ds, entry, status, err := a.clonotypeTable(clonotypeRequest{Dataset: q.Get("dataset"), Definition: def, Filter: filter})
+			ds, entry, status, err := a.clonotypeTable(clonotypeRequest{Species: q.Get("species"), Dataset: q.Get("dataset"), Definition: def, Filter: filter})
 			if err != nil {
 				writeErrorCode(w, status, "not-open", err.Error())
 				return
@@ -75,8 +76,22 @@ func (a *app) registerExports(mux *http.ServeMux) {
 					if err != nil {
 						return err
 					}
-					if err := export.Clonotypes(f, entry.table, names); err != nil {
+					var inv *invariant.Result
+					if q.Get("species") != "" {
+						inv, _ = invariant.Compute(entry.table, q.Get("species"))
+					}
+					if err := export.ClonotypesWithInvariant(f, entry.table, names, inv); err != nil {
 						return err
+					}
+					if inv != nil {
+						notice.What += " Invariant-population sequence rules v1 for " + inv.Species + ": MAIT/iNKT (Schattgen et al., doi:10.1038/s41587-021-00989-2), GEM (Van Rhijn et al., doi:10.4049/jimmunol.1401380). Flags are not established phenotype or specificity. Each clonotype counts once per rule; shares use all retained abundance, including unevaluable receptors. Missing shares are blank."
+						f, err := z.Create("invariant-samples.csv")
+						if err != nil {
+							return err
+						}
+						if err := export.InvariantSamples(f, inv, names); err != nil {
+							return err
+						}
 					}
 				}
 				return writeNotice(z, notice)
@@ -216,6 +231,86 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		}
 		notice.What = fmt.Sprintf("Each sample and time point of %s attributed to its subject's reference sample: its share in the reference's clonotypes and, where it can be told, the share derived from the reference, each with its %g%% interval (Wilson's) (attribution.csv). %s", ds.Name, 100*doc.Confidence, doc.Caveat)
 		files["attribution.csv"] = func(f io.Writer) error { return export.Attribution(f, doc.Attribution) }
+	case "tcrdist":
+		var doc tcrdistDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		compared := "the CDR3s alone"
+		if doc.Loops != nil {
+			compared = fmt.Sprintf("the CDR3s and the V genes' loops (%s, %s, SHA-256 %s)", doc.Organism, doc.Loops.File, doc.Loops.SHA256)
+		}
+		notice.What = fmt.Sprintf("Each T-cell clonotype of %s compared by TCRdist with every other of the same chains, comparing %s: its neighbors within %d TCRdist units and its nearest (tcrdist.csv).", ds.Name, compared, doc.Radius)
+		rows := make([]export.Neighbor, len(doc.Clonotype))
+		for i, r := range doc.Clonotype {
+			rows[i] = export.Neighbor{ID: r.ID, Chains: r.Chains, Total: r.Total, Samples: r.Samples, Neighbors: r.Neighbors, Nearest: r.Nearest, Distance: r.Distance}
+		}
+		files["tcrdist.csv"] = func(f io.Writer) error { return export.TCRdist(f, doc.Radius, rows) }
+	case "pgen":
+		var doc pgenDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		with := "the CDR3 alone"
+		if doc.Genes {
+			with = "the CDR3 with its V and J genes"
+		}
+		notice.What = fmt.Sprintf("Each clonotype of %s's generation probability (pgen.csv: each chain's, %s, under %s, %s; a pair's the product of its chains'), and each sample's distribution of them (samples.csv). Models: %s (checksum %s); %s", ds.Name, with, doc.Set.Name, doc.Organism, doc.Set.Source, doc.Set.Checksum, doc.Set.Citation)
+		rows := make([]export.Generated, len(doc.Rows))
+		for i, r := range doc.Rows {
+			rows[i] = export.Generated{ID: r.ID, Chains: r.Chains, Total: r.Total, Samples: r.Samples, Chain: r.Chain, Pgen: r.Pgen}
+		}
+		samples := make([]export.PgenSample, len(doc.Samples))
+		for i, x := range doc.Samples {
+			samples[i] = export.PgenSample{Name: x.Name, With: x.With, Zero: x.Zero, Quartiles: x.Quartiles}
+		}
+		files["pgen.csv"] = func(f io.Writer) error { return export.Pgen(f, rows) }
+		files["samples.csv"] = func(f io.Writer) error { return export.PgenSamples(f, samples) }
+	case "specificity":
+		var doc specificityDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		notice.What = fmt.Sprintf("Chain specificity evidence for %s. Database %s, SHA-256 %s, source %s, license %s, citation %s. Matches are evidence, not proof of receptor specificity. Epitope shares count each clonotype once per group and can overlap.", ds.Name, doc.Database.Reference, doc.Database.SHA256, doc.Database.Source, doc.Database.License, doc.Database.Citation)
+		files["matches.csv"] = func(f io.Writer) error { return export.SpecificityMatches(f, doc.Clonotypes, doc.Result) }
+		files["epitopes.csv"] = func(f io.Writer) error { return export.SpecificityShares(f, doc.Samples, doc.Result) }
+	case "networks":
+		var doc networkDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		notice.What = fmt.Sprintf("Clonotype networks of %s: %s at cutoff %d, %s chains; same V %t, same J %t. clusters.csv assigns every clonotype; edges.csv contains every edge, independent of the drawing limit. %s", ds.Name, doc.Options.Metric, doc.Options.Cutoff, doc.Options.Arms, doc.Options.SameV, doc.Options.SameJ, doc.Describe)
+		files["clusters.csv"] = func(f io.Writer) error { return export.NetworkMembership(f, doc.Clonotypes, doc.Graph, doc.Unit) }
+		files["edges.csv"] = func(f io.Writer) error { return export.NetworkEdges(f, doc.Clonotypes, doc.Graph) }
+
+	case "neighborhoods":
+		var doc neighborhoodDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		against := "the dataset's own chains with their CDR3s moved among them"
+		if doc.Source.Kind == "model" {
+			against = fmt.Sprintf("%d receptors drawn from %s with the dataset's V–J usage, each weighted by what recombination makes over what the dataset holds", doc.Source.Receptors, doc.Source.Name)
+		}
+		notice.What = fmt.Sprintf("The neighborhoods of %s's %s receptors against a background of %s (neighborhoods.csv: each centroid's radius, its neighborhood and its enrichment; members.csv: each neighborhood's receptors). A centroid's radius is the largest at which the background within it is at most a share %g of the background's receptors.", ds.Name, doc.Locus, against, doc.Options.Control)
+		centers := make([]export.Neighborhood, len(doc.Rows))
+		var members []export.NeighborhoodMember
+		for i, r := range doc.Rows {
+			centers[i] = export.Neighborhood{ID: r.ID, Locus: r.Chain.Locus, Junction: r.Chain.Junction, V: r.Chain.V, J: r.Chain.J,
+				Total: r.Total, Samples: r.Samples, Radius: r.Radius, Neighbors: r.Neighbors, Abundance: r.Abundance,
+				Background: r.Background, Weighted: r.Weighted, Rate: r.Rate, BackgroundRate: r.BackgroundRate,
+				RelativeRate: r.RelativeRate, OddsRatio: r.OddsRatio, ChiSquare: r.ChiSquare, Motif: r.Motif}
+			for _, m := range r.Members {
+				members = append(members, export.NeighborhoodMember{Centroid: r.ID, ID: m.ID, Junction: m.Junction, V: m.V, J: m.J, Total: m.Total, Samples: m.Samples, Distance: m.Distance})
+			}
+		}
+		files["neighborhoods.csv"] = func(f io.Writer) error { return export.Neighborhoods(f, centers) }
+		files["members.csv"] = func(f io.Writer) error { return export.NeighborhoodMembers(f, members) }
 	default:
 		writeError(w, http.StatusBadRequest, "This result has nothing to export as a table.")
 		return

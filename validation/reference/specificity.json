@@ -1,0 +1,4008 @@
+{
+  "generatedBy": "pandas 2.3.3",
+  "sha256": "ec10143815dda116a317bbc55446523c638282ee7c98b2a753c3d222e34cf787",
+  "queries": [
+    {
+      "locus": "TRB",
+      "cdr3": "CASSGLANYGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRQGAPAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        9
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEALSGDTEAFF",
+      "v": "TRBV2",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYSPAGANVLTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-6",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        41
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CGMTGGNEKLFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSWGTSSDPQFF",
+      "v": "TRBV9",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        5
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSILAGTSAYEQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYSPSGANVLTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-6",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        43
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQGTTTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        150
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRSEDRGRSYEQYF",
+      "v": "TRBV28",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSADSDNYGYTF",
+      "v": "TRBV2",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSHGQGAPHGYTF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CSALISGRQETQYF",
+      "v": "TRBV20-1",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        17
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQWTITDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        152
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQVNTEAFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CATKTGGLANYGYTF",
+      "v": "TRBV2",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVLGTGGNIQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-4",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        49
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYEREVTGELFF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-2",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        69
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARGLYTEAFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYGTSGHNEQFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSFASGRAANEQFF",
+      "v": "TRBV5-1",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEQGAYNSPLHF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-6",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDEWVQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLALPCTRDRGAYEQYF",
+      "v": "TRBV12-3",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        29
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGTSNQPQHF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        57
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLEYPRDRGDYGYTF",
+      "v": "TRBV11-3",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        153
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGQHYTEAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAREDRGQQFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGQGNYGYTF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGTGGNSNQPQHF",
+      "v": "TRBV9",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARQGGRAMNTEAFF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRGTGNGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSISDSYEQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLARDRGNQPQHF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAAGQVGNTIYF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-3",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDRACYNSPLHF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-6",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEKLPDRDNQPQHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEAITGGEPQHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        25
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASANRVQRNEKLFF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        97
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRSLENTEAFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        111
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASIPRQGTGVTELFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        121
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQGTNTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        149
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSPAGQGASNQPQHF",
+      "v": "TRBV18",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGLAGGHYEQYF",
+      "v": "TRBV11-3",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSVSNQPQHF",
+      "v": "TRBV27",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASCLTGGDYGYTF",
+      "v": "TRBV7-2",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASLTGSYNSPLHF",
+      "v": "TRBV6-7",
+      "j": "TRBJ1-6",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVCDRGPDTQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLTGGTGGEYSTDTQYF",
+      "v": "TRBV5-4",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLRTGGNYGYTF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTGLNEKLFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYLSGGFNYGYTF",
+      "v": "TRBV6-5",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEARGSDGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRTGVHQPQHF",
+      "v": "TRBV10-1",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEQRTGDSYEQYF",
+      "v": "TRBV18",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CALRRNYGYTF",
+      "v": "TRBV24-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSIVQGNNEQFF",
+      "v": "TRBV19",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRQREILQETQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGDRGGQETQYF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSMSLETGDTQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASIRRGQGNTEAFF",
+      "v": "TRBV9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTRQDRVGYTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRDRGRQGYGYTF",
+      "v": "TRBV4-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSMIRGITSEAFF",
+      "v": "TRBV9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQEHRQPQHF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSKGRTF",
+      "v": "TRBV12-3",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGLSNQPQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        58
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWRGPTYNEQFF",
+      "v": "TRBV30",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSGGLRYTF",
+      "v": "TRBV14",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSESTEYDSGNTIYF",
+      "v": "TRBV10-2",
+      "j": "TRBJ1-3",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGSADREYTEAFF",
+      "v": "TRBV12-5",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSSGDRGSANQPQHF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSHLQGTSGTVHF",
+      "v": "TRBV14",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRKPRGPDGYTF",
+      "v": "TRBV19",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAGRGRERYNYGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLERATQYF",
+      "v": "TRBV7-9",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQRKTGPNTEAFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLFASTDTQYF",
+      "v": "TRBV27",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSWDRGTNYGYTF",
+      "v": "TRBV5-4",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYRHCTDTQYF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSGTGAKTQYF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASPTGATNEKLFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLVTGGRTEAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQDALAGHLTTYNEQFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRRGRSVDFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVISCNQPQHF",
+      "v": "TRBV9",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRDRGPNYGYTF",
+      "v": "TRBV28",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLANRGTSSYNEQFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSGLAGGSYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEGTGGLHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-6",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARSWTGGVSTDTQYF",
+      "v": "TRBV7-2",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLAGGYNEQFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARRWVGEQFF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSIERDRAEAFF",
+      "v": "TRBV19",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSDYGTGVQPQHF",
+      "v": "TRBV6-4",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGVQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        1
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGIQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        3
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVLGTGENIQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-4",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        51
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CATSSRGTGGGNYGYTF",
+      "v": "TRBV15",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        105
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSVTGFYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        127
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSVTGSYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        125
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGQGANTIYF",
+      "v": "TRBV11-3",
+      "j": "TRBJ1-3",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        129
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTVALAGQETQYF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        145
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQWTNTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        151
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASTWTSGRASYEQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 0,
+      "rows": [
+        161
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLRRRTGGKAFF",
+      "v": "TRBV27",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSGLANYGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRQGAPAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        9
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEALSGDTEAFF",
+      "v": "TRBV2",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYSPAGANVLTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-6",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        41
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CGMTGGNEKLFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSWGTSSDPQFF",
+      "v": "TRBV9",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        5
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSILAGTSAYEQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYSPSGANVLTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-6",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQGTTTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRSEDRGRSYEQYF",
+      "v": "TRBV28",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSADSDNYGYTF",
+      "v": "TRBV2",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSHGQGAPHGYTF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CSALISGRQETQYF",
+      "v": "TRBV20-1",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        17
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQWTITDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQVNTEAFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CATKTGGLANYGYTF",
+      "v": "TRBV2",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVLGTGGNIQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-4",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        49
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYEREVTGELFF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-2",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        69
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARGLYTEAFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYGTSGHNEQFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSFASGRAANEQFF",
+      "v": "TRBV5-1",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEQGAYNSPLHF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-6",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDEWVQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLALPCTRDRGAYEQYF",
+      "v": "TRBV12-3",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        29
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGTSNQPQHF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        57
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLEYPRDRGDYGYTF",
+      "v": "TRBV11-3",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        153
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGQHYTEAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAREDRGQQFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGQGNYGYTF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGTGGNSNQPQHF",
+      "v": "TRBV9",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARQGGRAMNTEAFF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRGTGNGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSISDSYEQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLARDRGNQPQHF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAAGQVGNTIYF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDRACYNSPLHF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-6",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEKLPDRDNQPQHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEAITGGEPQHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        25
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASANRVQRNEKLFF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        97
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRSLENTEAFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASIPRQGTGVTELFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        121
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQGTNTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        149
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSPAGQGASNQPQHF",
+      "v": "TRBV18",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGLAGGHYEQYF",
+      "v": "TRBV11-3",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSVSNQPQHF",
+      "v": "TRBV27",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASCLTGGDYGYTF",
+      "v": "TRBV7-2",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASLTGSYNSPLHF",
+      "v": "TRBV6-7",
+      "j": "TRBJ1-6",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVCDRGPDTQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLTGGTGGEYSTDTQYF",
+      "v": "TRBV5-4",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLRTGGNYGYTF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTGLNEKLFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYLSGGFNYGYTF",
+      "v": "TRBV6-5",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEARGSDGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRTGVHQPQHF",
+      "v": "TRBV10-1",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEQRTGDSYEQYF",
+      "v": "TRBV18",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CALRRNYGYTF",
+      "v": "TRBV24-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSIVQGNNEQFF",
+      "v": "TRBV19",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRQREILQETQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGDRGGQETQYF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSMSLETGDTQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASIRRGQGNTEAFF",
+      "v": "TRBV9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTRQDRVGYTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRDRGRQGYGYTF",
+      "v": "TRBV4-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSMIRGITSEAFF",
+      "v": "TRBV9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQEHRQPQHF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSKGRTF",
+      "v": "TRBV12-3",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGLSNQPQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWRGPTYNEQFF",
+      "v": "TRBV30",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSGGLRYTF",
+      "v": "TRBV14",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSESTEYDSGNTIYF",
+      "v": "TRBV10-2",
+      "j": "TRBJ1-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGSADREYTEAFF",
+      "v": "TRBV12-5",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSSGDRGSANQPQHF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSHLQGTSGTVHF",
+      "v": "TRBV14",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRKPRGPDGYTF",
+      "v": "TRBV19",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAGRGRERYNYGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLERATQYF",
+      "v": "TRBV7-9",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQRKTGPNTEAFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLFASTDTQYF",
+      "v": "TRBV27",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSWDRGTNYGYTF",
+      "v": "TRBV5-4",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYRHCTDTQYF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSGTGAKTQYF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASPTGATNEKLFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-4",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLVTGGRTEAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQDALAGHLTTYNEQFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRRGRSVDFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVISCNQPQHF",
+      "v": "TRBV9",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRDRGPNYGYTF",
+      "v": "TRBV28",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLANRGTSSYNEQFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSGLAGGSYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEGTGGLHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-6",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARSWTGGVSTDTQYF",
+      "v": "TRBV7-2",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLAGGYNEQFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARRWVGEQFF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSIERDRAEAFF",
+      "v": "TRBV19",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSDYGTGVQPQHF",
+      "v": "TRBV6-4",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGVQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        1
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGIQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVLGTGENIQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-4",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CATSSRGTGGGNYGYTF",
+      "v": "TRBV15",
+      "j": "TRBJ1-2",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        105
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSVTGFYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSVTGSYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        125
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGQGANTIYF",
+      "v": "TRBV11-3",
+      "j": "TRBJ1-3",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        129
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTVALAGQETQYF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-5",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        145
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQWTNTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASTWTSGRASYEQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-7",
+      "genes": false,
+      "score": 2,
+      "rows": [
+        161
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLRRRTGGKAFF",
+      "v": "TRBV27",
+      "j": "TRBJ1-1",
+      "genes": false,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSGLANYGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRQGAPAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        9
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEALSGDTEAFF",
+      "v": "TRBV2",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYSPAGANVLTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-6",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        41
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CGMTGGNEKLFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSWGTSSDPQFF",
+      "v": "TRBV9",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        5
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSILAGTSAYEQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYSPSGANVLTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-6",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        43
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQGTTTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        150
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRSEDRGRSYEQYF",
+      "v": "TRBV28",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSADSDNYGYTF",
+      "v": "TRBV2",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSHGQGAPHGYTF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CSALISGRQETQYF",
+      "v": "TRBV20-1",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        17
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQWTITDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        152
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQVNTEAFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CATKTGGLANYGYTF",
+      "v": "TRBV2",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVLGTGGNIQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-4",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        49
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYEREVTGELFF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-2",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        69
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARGLYTEAFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYGTSGHNEQFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSFASGRAANEQFF",
+      "v": "TRBV5-1",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEQGAYNSPLHF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-6",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDEWVQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLALPCTRDRGAYEQYF",
+      "v": "TRBV12-3",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        29
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGTSNQPQHF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        57
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLEYPRDRGDYGYTF",
+      "v": "TRBV11-3",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        153
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGQHYTEAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAREDRGQQFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGQGNYGYTF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGTGGNSNQPQHF",
+      "v": "TRBV9",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARQGGRAMNTEAFF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRGTGNGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSISDSYEQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLARDRGNQPQHF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAAGQVGNTIYF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-3",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDRACYNSPLHF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-6",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEKLPDRDNQPQHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEAITGGEPQHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        25
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASANRVQRNEKLFF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        97
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRSLENTEAFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        111
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASIPRQGTGVTELFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        121
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQGTNTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        149
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSPAGQGASNQPQHF",
+      "v": "TRBV18",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGLAGGHYEQYF",
+      "v": "TRBV11-3",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSVSNQPQHF",
+      "v": "TRBV27",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASCLTGGDYGYTF",
+      "v": "TRBV7-2",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASLTGSYNSPLHF",
+      "v": "TRBV6-7",
+      "j": "TRBJ1-6",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVCDRGPDTQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLTGGTGGEYSTDTQYF",
+      "v": "TRBV5-4",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLRTGGNYGYTF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTGLNEKLFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYLSGGFNYGYTF",
+      "v": "TRBV6-5",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEARGSDGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRTGVHQPQHF",
+      "v": "TRBV10-1",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEQRTGDSYEQYF",
+      "v": "TRBV18",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CALRRNYGYTF",
+      "v": "TRBV24-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSIVQGNNEQFF",
+      "v": "TRBV19",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRQREILQETQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGDRGGQETQYF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSMSLETGDTQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASIRRGQGNTEAFF",
+      "v": "TRBV9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTRQDRVGYTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRDRGRQGYGYTF",
+      "v": "TRBV4-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSMIRGITSEAFF",
+      "v": "TRBV9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQEHRQPQHF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSKGRTF",
+      "v": "TRBV12-3",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGLSNQPQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWRGPTYNEQFF",
+      "v": "TRBV30",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSGGLRYTF",
+      "v": "TRBV14",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSESTEYDSGNTIYF",
+      "v": "TRBV10-2",
+      "j": "TRBJ1-3",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGSADREYTEAFF",
+      "v": "TRBV12-5",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSSGDRGSANQPQHF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSHLQGTSGTVHF",
+      "v": "TRBV14",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRKPRGPDGYTF",
+      "v": "TRBV19",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAGRGRERYNYGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLERATQYF",
+      "v": "TRBV7-9",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQRKTGPNTEAFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLFASTDTQYF",
+      "v": "TRBV27",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSWDRGTNYGYTF",
+      "v": "TRBV5-4",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYRHCTDTQYF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSGTGAKTQYF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASPTGATNEKLFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLVTGGRTEAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQDALAGHLTTYNEQFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRRGRSVDFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVISCNQPQHF",
+      "v": "TRBV9",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRDRGPNYGYTF",
+      "v": "TRBV28",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLANRGTSSYNEQFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSGLAGGSYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEGTGGLHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-6",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARSWTGGVSTDTQYF",
+      "v": "TRBV7-2",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLAGGYNEQFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARRWVGEQFF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSIERDRAEAFF",
+      "v": "TRBV19",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSDYGTGVQPQHF",
+      "v": "TRBV6-4",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGVQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        1
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGIQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        3
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVLGTGENIQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-4",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        51
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CATSSRGTGGGNYGYTF",
+      "v": "TRBV15",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        105
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSVTGFYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        127
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSVTGSYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        125
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGQGANTIYF",
+      "v": "TRBV11-3",
+      "j": "TRBJ1-3",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        129
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTVALAGQETQYF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        145
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQWTNTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        151
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASTWTSGRASYEQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 0,
+      "rows": [
+        161
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLRRRTGGKAFF",
+      "v": "TRBV27",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 0,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSGLANYGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRQGAPAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        9
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEALSGDTEAFF",
+      "v": "TRBV2",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYSPAGANVLTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-6",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        41
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CGMTGGNEKLFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSWGTSSDPQFF",
+      "v": "TRBV9",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        5
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSILAGTSAYEQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYSPSGANVLTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-6",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQGTTTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRSEDRGRSYEQYF",
+      "v": "TRBV28",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSADSDNYGYTF",
+      "v": "TRBV2",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSHGQGAPHGYTF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CSALISGRQETQYF",
+      "v": "TRBV20-1",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        17
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQWTITDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQVNTEAFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CATKTGGLANYGYTF",
+      "v": "TRBV2",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVLGTGGNIQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-4",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        49
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYEREVTGELFF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-2",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        69
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARGLYTEAFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYGTSGHNEQFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSFASGRAANEQFF",
+      "v": "TRBV5-1",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEQGAYNSPLHF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-6",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDEWVQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLALPCTRDRGAYEQYF",
+      "v": "TRBV12-3",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        29
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGTSNQPQHF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        57
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLEYPRDRGDYGYTF",
+      "v": "TRBV11-3",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        153
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGQHYTEAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAREDRGQQFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGQGNYGYTF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGTGGNSNQPQHF",
+      "v": "TRBV9",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARQGGRAMNTEAFF",
+      "v": "TRBV5-1",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRGTGNGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSISDSYEQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLARDRGNQPQHF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAAGQVGNTIYF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDRACYNSPLHF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-6",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEKLPDRDNQPQHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEAITGGEPQHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        25
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASANRVQRNEKLFF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        97
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRSLENTEAFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASIPRQGTGVTELFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        121
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQGTNTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        149
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSPAGQGASNQPQHF",
+      "v": "TRBV18",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGLAGGHYEQYF",
+      "v": "TRBV11-3",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSVSNQPQHF",
+      "v": "TRBV27",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASCLTGGDYGYTF",
+      "v": "TRBV7-2",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASLTGSYNSPLHF",
+      "v": "TRBV6-7",
+      "j": "TRBJ1-6",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVCDRGPDTQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLTGGTGGEYSTDTQYF",
+      "v": "TRBV5-4",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLRTGGNYGYTF",
+      "v": "TRBV12-4",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTGLNEKLFF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYLSGGFNYGYTF",
+      "v": "TRBV6-5",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEARGSDGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRTGVHQPQHF",
+      "v": "TRBV10-1",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEQRTGDSYEQYF",
+      "v": "TRBV18",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CALRRNYGYTF",
+      "v": "TRBV24-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSIVQGNNEQFF",
+      "v": "TRBV19",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRQREILQETQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGDRGGQETQYF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSMSLETGDTQYF",
+      "v": "TRBV19",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASIRRGQGNTEAFF",
+      "v": "TRBV9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTRQDRVGYTF",
+      "v": "TRBV6-6",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSRDRGRQGYGYTF",
+      "v": "TRBV4-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSMIRGITSEAFF",
+      "v": "TRBV9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQEHRQPQHF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSKGRTF",
+      "v": "TRBV12-3",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLGLSNQPQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWRGPTYNEQFF",
+      "v": "TRBV30",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLSGGLRYTF",
+      "v": "TRBV14",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSESTEYDSGNTIYF",
+      "v": "TRBV10-2",
+      "j": "TRBJ1-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASGSADREYTEAFF",
+      "v": "TRBV12-5",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSSGDRGSANQPQHF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSHLQGTSGTVHF",
+      "v": "TRBV14",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRKPRGPDGYTF",
+      "v": "TRBV19",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAGRGRERYNYGYTF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLERATQYF",
+      "v": "TRBV7-9",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQRKTGPNTEAFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLFASTDTQYF",
+      "v": "TRBV27",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSWDRGTNYGYTF",
+      "v": "TRBV5-4",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYRHCTDTQYF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSGTGAKTQYF",
+      "v": "TRBV6-5",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASPTGATNEKLFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ1-4",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLVTGGRTEAFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQDALAGHLTTYNEQFF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRRGRSVDFF",
+      "v": "TRBV6-1",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVISCNQPQHF",
+      "v": "TRBV9",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASRDRGPNYGYTF",
+      "v": "TRBV28",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLANRGTSSYNEQFF",
+      "v": "TRBV7-9",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSGLAGGSYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSEGTGGLHF",
+      "v": "TRBV2",
+      "j": "TRBJ1-6",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARSWTGGVSTDTQYF",
+      "v": "TRBV7-2",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLAGGYNEQFF",
+      "v": "TRBV7-6",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CARRWVGEQFF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSIERDRAEAFF",
+      "v": "TRBV19",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSDYGTGVQPQHF",
+      "v": "TRBV6-4",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGVQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        1
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGIQAQHF",
+      "v": "TRBV13",
+      "j": "TRBJ1-5",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSVLGTGENIQYF",
+      "v": "TRBV9",
+      "j": "TRBJ2-4",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CATSSRGTGGGNYGYTF",
+      "v": "TRBV15",
+      "j": "TRBJ1-2",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        105
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSVTGFYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CAWSVTGSYEQYF",
+      "v": "TRBV30",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        125
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLDQGQGANTIYF",
+      "v": "TRBV11-3",
+      "j": "TRBJ1-3",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        129
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSYTVALAGQETQYF",
+      "v": "TRBV6-2",
+      "j": "TRBJ2-5",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        145
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSQWTNTDTQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-3",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASTWTSGRASYEQYF",
+      "v": "TRBV3-1",
+      "j": "TRBJ2-7",
+      "genes": true,
+      "score": 2,
+      "rows": [
+        161
+      ]
+    },
+    {
+      "locus": "TRB",
+      "cdr3": "CASSLRRRTGGKAFF",
+      "v": "TRBV27",
+      "j": "TRBJ1-1",
+      "genes": true,
+      "score": 2,
+      "rows": []
+    }
+  ]
+}

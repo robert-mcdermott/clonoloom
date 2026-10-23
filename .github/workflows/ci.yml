@@ -127,7 +127,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Cache the openly licensed development data (10x Genomics and AIRR Community, CC BY 4.0)
+      - name: Cache the openly licensed development data (CC BY 4.0 and MIT)
         uses: actions/cache@v4
         with:
           path: validation/cache
@@ -136,8 +136,10 @@ jobs:
         run: node validation/fetch.mjs --ci
       - name: Readers against independent readers, and the budgets
         env:
-          CLONOLOOM_REQUIRE_DATA: 10x-pbmc-1k,10x-mouse-splenocytes-1k,10x-pbmc-10k-v2,10x-mouse-splenocytes-5k-gemx,airr-standards-tests
-        run: go test -v ./validation/
+          CLONOLOOM_REQUIRE_DATA: 10x-pbmc-1k,10x-mouse-splenocytes-1k,10x-pbmc-10k-v2,10x-mouse-splenocytes-5k-gemx,airr-standards-tests,dash-2017-tcrdist3,ots-healthy-pbmc,oas-units,pyclonal-mixcr,tcrdist3-loops,olga-models
+        # The combined reference and budget checks can exceed Go's ten-minute package
+        # default on hosted runners; each performance test still enforces its own budget.
+        run: go test -v -timeout 20m ./validation/
 
   installers:
     name: Installer syntax

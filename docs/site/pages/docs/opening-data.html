@@ -1,6 +1,6 @@
 ---
 title: Opening data
-description: Open AIRR rearrangement tables, Cell Ranger V(D)J outputs, immunoSEQ exports or another tool's table in ClonoLoom, and read how it checks them before analysis.
+description: Open AIRR rearrangement tables, Cell Ranger V(D)J outputs, immunoSEQ exports, MiXCR clone tables, OAS and OTS data units, tcrdist3 clone tables or another tool's table in ClonoLoom, and read how it checks them before analysis.
 lede: ClonoLoom reads the output of your annotation pipeline where it lies, fingerprints every file, and checks it before anything is computed from it. A table it does not recognize is read through a mapping of its columns that you confirm.
 ---
       <h2 id="formats">What it reads</h2>
@@ -11,7 +11,10 @@ lede: ClonoLoom reads the output of your annotation pipeline where it lies, fing
             <tr><td>AIRR Rearrangement TSV (schema 1.3 to 2.0)</td><td>The tables, with their AIRR Repertoire metadata (<code>.json</code>) beside them: written by IgBLAST and Change-O, MiXCR, TRUST4, Cell Ranger, the AIRR Data Commons and ClonoLoom's simulator</td></tr>
             <tr><td>Cell Ranger V(D)J</td><td>A <code>vdj</code> run's folder or its <code>outs/</code>, a <code>multi</code> run's per-sample folders, or the contig annotations alone</td></tr>
             <tr><td>immunoSEQ exports (v2 and v3 columns)</td><td>Bulk TCR or BCR exports from the immunoSEQ Analyzer and immuneACCESS, templates and reads kept apart</td></tr>
-            <tr><td>Another tool's CSV or TSV</td><td>VDJtools' or MiXCR's clone tables, a spreadsheet: read through a <a href="#mapping">mapping of its columns</a></td></tr>
+            <tr><td>MiXCR clone tables (MiXCR 2 to 4)</td><td>What <code>mixcr exportClones</code> writes, one file per chain or all chains together, bulk or single-cell; molecules counted where MiXCR counted them, else reads</td></tr>
+            <tr><td>OAS and OTS data units</td><td>The Observed Antibody Space's and the Observed T cell receptor Space's <code>.csv.gz</code> units as their search pages give them: unpaired units as bulk repertoires, paired units as single cells, each unit's metadata kept as its sample's</td></tr>
+            <tr><td>tcrdist3 clone tables</td><td>The tables tcrdist3 reads (such as Dash et al. 2017's <code>dash.csv</code>): paired chains as single cells, a clone of n cells as n cells; a sample for each subject and epitope</td></tr>
+            <tr><td>Another tool's CSV or TSV</td><td>VDJtools' clone tables, a spreadsheet: read through a <a href="#mapping">mapping of its columns</a></td></tr>
           </tbody>
         </table>
       </div>
@@ -36,6 +39,6 @@ lede: ClonoLoom reads the output of your annotation pipeline where it lies, fing
       <ul>
         <li><strong>The card</strong>: its format, rows, samples, whether it is single-cell or bulk, and its <strong>unit</strong>: cells, templates, reads or UMIs. When the files do not say whether reads or molecules were counted (an AIRR file with <code>duplicate_count</code> alone), ClonoLoom does not guess: choose the unit, and until you do, results say "counts".</li>
         <li><strong>Validation</strong>: each finding with its severity, how many rows it concerns, examples (file, line, value) and what to do. A <strong>fatal</strong> finding stops analysis; a <strong>warning</strong> is shown with every result that uses the dataset; a <strong>note</strong> informs. Each has a stable code (<code>junction-anchors</code>, <code>locus-mismatch</code>, …) you can cite.</li>
-        <li><strong>Samples</strong>: rows, productive share, abundance and loci, and their annotation: subject, time point, tissue, reference, cell subset, condition, batch and HLA (<a href="subjects.html">Subjects and time points</a>). <strong>Suggest from file names</strong> and <strong>Fill from metadata</strong> (AIRR Repertoire metadata, immunoSEQ's sample tags) propose values, and each keeps where it came from. The Repertoire view colors samples by condition and pairs them by subject.</li>
+        <li><strong>Samples</strong>: rows, productive share, abundance and loci, and their annotation: subject, time point, tissue, reference, cell subset, condition, batch and HLA (<a href="subjects.html">Subjects and time points</a>). <strong>Suggest from file names</strong> and <strong>Fill from metadata</strong> (AIRR Repertoire metadata, immunoSEQ's sample tags, an OAS or OTS unit's metadata, a tcrdist3 table's subjects and epitopes) propose values, and each keeps where it came from. The Repertoire view colors samples by condition and pairs them by subject.</li>
         <li><strong>The inspector</strong> (right): the files with their SHA-256 fingerprints, what was read beside them (Cell Ranger's clonotypes and metrics), and the data's source and license.</li>
       </ul>

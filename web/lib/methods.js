@@ -19,6 +19,8 @@ export function joinList(parts) {
 
 // The works a paragraph cites.
 export const REFERENCES = {
+  conga: 'Schattgen SA, Guion K, Crawford JC, et al. Integrating T cell receptor sequences and transcriptional profiles by clonotype neighbor graph analysis (CoNGA). Nat Biotechnol. 2022;40:54–63. doi:10.1038/s41587-021-00989-2',
+  gem: 'Van Rhijn I, et al. Discovery of invariant T cells by next-generation sequencing of the human TCR alpha-chain repertoire. J Immunol. 2014;193:5338–5344. doi:10.4049/jimmunol.1401380',
   airr: 'Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. Front Immunol. 2018;9:2206. doi:10.3389/fimmu.2018.02206',
   miairr: 'Rubelt F, Busse CE, Bukhari SAC, et al. Adaptive Immune Receptor Repertoire Community recommendations for sharing immune-repertoire sequencing data. Nat Immunol. 2017;18:1274–1278. doi:10.1038/ni.3873',
   imgtNames: 'Lefranc MP. Immunoglobulin and T cell receptor genes: IMGT and the birth and rise of immunoinformatics. Front Immunol. 2014;5:22. doi:10.3389/fimmu.2014.00022',
@@ -36,12 +38,18 @@ export const REFERENCES = {
   morisita: 'Morisita M. Measuring of interspecific association and similarity between communities. Mem Fac Sci Kyushu Univ Ser E Biol. 1959;3:65–80',
   horn: 'Horn HS. Measurement of "overlap" in comparative ecological studies. Am Nat. 1966;100:419–424. doi:10.1086/282436',
   horvitzThompson: 'Horvitz DG, Thompson DJ. A generalization of sampling without replacement from a finite universe. J Am Stat Assoc. 1952;47:663–685. doi:10.1080/01621459.1952.10483446',
+  dash: 'Dash P, Fiore-Gartland AJ, Hertz T, et al. Quantifiable predictive features define epitope-specific T cell receptor repertoires. Nature. 2017;547:89–93. doi:10.1038/nature22383',
+  oas: 'Olsen TH, Boyles F, Deane CM. Observed Antibody Space: a diverse database of cleaned, annotated, and translated unpaired and paired antibody sequences. Protein Sci. 2022;31:141–146. doi:10.1002/pro.4205',
+  ots: 'Raybould MIJ, Greenshields-Watson A, Agarwal P, et al. The Observed T cell receptor Space database enables paired-chain repertoire mining, coherence analysis, and language modeling. Cell Rep. 2024;43:114704. doi:10.1016/j.celrep.2024.114704',
+  tcrdist3: 'Mayer-Blackwell K, Schattgen S, Cohen-Lavi L, et al. TCR meta-clonotypes for biomarker discovery with tcrdist3 enabled identification of public, HLA-restricted clusters of SARS-CoV-2 TCRs. eLife. 2021;10:e68605. doi:10.7554/eLife.68605',
   chaoJost: 'Chao A, Jost L. Coverage-based rarefaction and extrapolation: standardizing samples by completeness rather than size. Ecology. 2012;93:2533–2547. doi:10.1890/11-1952.1',
   rytlewski: 'Rytlewski J, Deng S, Xie T, et al. Model to improve specificity for identification of clinically-relevant expanded T cells in peripheral blood. PLoS One. 2019;14:e0213684. doi:10.1371/journal.pone.0213684',
   dewitt: 'DeWitt WS, Emerson RO, Lindau P, et al. Dynamics of the cytotoxic T cell response to a model of acute viral infection. J Virol. 2015;89:4517–4526. doi:10.1128/JVI.03474-14',
   bh: 'Benjamini Y, Hochberg Y. Controlling the false discovery rate: a practical and powerful approach to multiple testing. J R Stat Soc B. 1995;57:289–300. doi:10.1111/j.2517-6161.1995.tb02031.x',
   storey: 'Storey JD. A direct approach to false discovery rates. J R Stat Soc B. 2002;64:479–498. doi:10.1111/1467-9868.00346',
   wilson: 'Wilson EB. Probable inference, the law of succession, and statistical inference. J Am Stat Assoc. 1927;22:209–212. doi:10.1080/01621459.1927.10502953',
+  sethna: 'Sethna Z, Elhanati Y, Callan CG Jr, Walczak AM, Mora T. OLGA: fast computation of generation probabilities of B- and T-cell receptor amino acid sequences and motifs. Bioinformatics. 2019;35:2974–2981. doi:10.1093/bioinformatics/btz035',
+  marcou: 'Marcou Q, Mora T, Walczak AM. High-throughput immune repertoire analysis with IGoR. Nat Commun. 2018;9:561. doi:10.1038/s41467-018-02832-w',
 };
 
 const coverageWords = (v) => (v > 0.99 && v < 1 ? v.toFixed(4) : v.toFixed(3));
@@ -54,6 +62,9 @@ const FORMATS = {
   'cellranger-contigs': '10x Genomics Cell Ranger contig annotations',
   'immunoseq-v3': 'Adaptive Biotechnologies immunoSEQ exports (v3 columns)',
   'immunoseq-v2': 'Adaptive Biotechnologies immunoSEQ exports (v2 columns)',
+  'mixcr-clones': 'MiXCR clone tables',
+  'oas-unit': 'Observed Antibody Space or Observed T cell receptor Space data units',
+  'tcrdist3-clones': 'tcrdist3 clone tables',
   table: 'a table with mapped columns',
 };
 
@@ -119,6 +130,18 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const program_ = `ClonoLoom ${program.version}${program.commit ? ` (commit ${program.commit.slice(0, 7)})` : ''} ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}`;
   sentences.push(`${files} (${joinList(formats)}) ${sources.length === 1 ? 'was' : 'were'} read with ${program_} by its own readers (reader version ${dataset.readerVersion}), which recorded ${sources.length === 1 ? 'its' : 'each file\'s'} SHA-256 checksum as ${sources.length === 1 ? 'it' : 'each'} was read.`);
   if (codes.includes('airr')) sentences.push(`AIRR files were read as the AIRR Community's Rearrangement schema defines them ${cite('airr')}.`);
+  if (codes.includes('mixcr-clones')) sentences.push('MiXCR clone tables were read with each segment\'s best-scoring hits as its call, MiXCR\'s allele *00 (no allele resolved) dropped, and MiXCR\'s CDR3 (from the conserved cysteine to the phenylalanine or tryptophan, both included) as the junction.');
+  if (codes.includes('oas-unit')) {
+    // The database the units come from, as their loci say: OAS holds antibodies, OTS T-cell receptors.
+    const loci = (summary?.samples ?? []).flatMap((x) => Object.keys(x.loci ?? {}));
+    const t = loci.some((l) => l.startsWith('TR'));
+    const b = loci.some((l) => l.startsWith('IG'));
+    const oas = () => `the Observed Antibody Space ${cite('oas')}`;
+    const ots = () => `the Observed T cell receptor Space ${cite('ots')}`;
+    const from = t && !b ? ots() : b && !t ? oas() : `${oas()} and ${ots()}`;
+    sentences.push(`Data units of ${from} were read with their metadata as their samples'; a paired unit's rows as single cells, each with its two chains, named by their contigs' barcode.`);
+  }
+  if (codes.includes('tcrdist3-clones')) sentences.push(`tcrdist3's clone tables ${cite('tcrdist3')} were read with each clone of n cells as n cells with its chains, a sample for each subject and epitope.`);
   // Tables of other tools, read through the columns the user mapped.
   for (const s of sources.filter((x) => x.mapping)) {
     const m = s.mapping;
@@ -161,6 +184,10 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     sentences.push(`Clonotypes were defined as ${clonotypes.describe} ("${definition.name}", ClonoLoom definition ${clonotypes.id}).`);
     if (/junction/.test(clonotypes.describe)) sentences.push(`A junction is the IMGT junction, from the conserved 2nd-CYS 104 to J-PHE or J-TRP 118 ${cite('imgtJunction')}.`);
     if (clonotypes.count !== undefined) sentences.push(`${clonotypes.cells ? `The ${plural(clonotypes.cells, 'cell')} formed` : 'They formed'} ${plural(clonotypes.count, 'clonotype')}.`);
+  }
+
+  if (definition && clonotypes && ['human', 'mouse'].includes(dataset.invariantSpecies)) {
+    sentences.push(`Retained chains were evaluated for ${dataset.invariantSpecies} MAIT and iNKT sequence rules ${cite('conga')}${dataset.invariantSpecies === 'human' ? ` and the GEM alpha-chain motif ${cite('gem')}` : ''} (rule version 1). Junction lengths include the conserved cysteine and terminal phenylalanine or tryptophan. Missing or ambiguous required calls and definitions lacking amino-acid junctions or gene resolution were not evaluable. Human iNKT required a beta chain with TRBV25 in the same clonotype. Each clonotype contributed once per rule to each sample; shares used all retained abundance, including unevaluable receptors, with evaluable abundance reported separately. These sequence flags do not establish cell phenotype or antigen specificity.`);
   }
 
   // Diversity, as each result kept says it was measured (the latest of each definition and filter).
@@ -247,6 +274,51 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     const interval = r.intervals ? `, with Wilson's ${Math.round(100 * (r.options?.confidence ?? 0.95))}% score interval for sampling ${cite('wilson')}` : '';
     const derived = r.derived ? ` For the ${plural(r.derived, 'subject')} whose reference shared few clonotypes with the samples before the reference event (at most 25% of its ${unit}), the share derived from the reference was estimated as the share, of a sample's ${unit} in clonotypes found in the reference or in the samples before but not in both, in the reference's${interval}.` : '';
     sentences.push(`Each sample's share of ${unit} in the clonotypes (${under}) its subject's reference sample (${(r.references ?? []).join(', ') || 'reference'}) holds was measured by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}${interval}; it counts the subject's own cells where the reference holds their clonotypes, and not the clonotypes the reference sample missed.${derived}`);
+  }
+
+  // TCRdist between clonotypes.
+  for (const r of results.filter((x) => x.kind === 'tcrdist')) {
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const loops = r.cdr3Only
+      ? 'their CDR3s alone (the IMGT junction less its first three and last two residues, weighted 3, each residue of difference in length costing 12)'
+      : `their CDR3s (the IMGT junction less its first three and last two residues, weighted 3, each residue of difference in length costing 12) and their V genes' CDR1, CDR2 and CDR2.5 (each weighted 1), the loops of each ${r.organism} V allele taken from tcrdist3's database of genes (${r.loops?.file ?? 'combo_xcr_2024-03-05.tsv'}, SHA-256 ${r.loops?.sha256 ?? ''}), made from IMGT's germline genes ${cite('imgtNames')}`;
+    sentences.push(`Each T-cell clonotype (${under}) was compared with every other of the same chains by TCRdist ${cite('dash')}, as tcrdist3 computes it ${cite('tcrdist3')}, by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}: two residues differing by min(4, 4 − BLOSUM62), a pair of chains by the sum of its chains', each chain by ${loops}. Of ${plural(r.compared ?? 0, 'clonotype')} compared, ${count(r.withNeighbors ?? 0)} had another within ${r.radius} TCRdist units.`);
+  }
+
+  // Generation probabilities.
+  for (const r of results.filter((x) => x.kind === 'pgen')) {
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const loci = Object.entries(r.loci ?? {}).map(([locus, model]) => `${model} for ${locus}`).join(', ');
+    const models = r.models === 'clonoloom'
+      ? `ClonoLoom's own model of human TRB recombination (its simulator's: GRCh38's gene segments, version ${String(r.set?.checksum ?? '').split(' ').at(-1) || '1'})`
+      : `OLGA's default models ${cite('sethna')}${loci ? ` (${loci})` : ''}, inferred by IGoR ${cite('marcou')} (checksum ${r.set?.checksum ?? ''})`;
+    sentences.push(`Each clonotype's generation probability (${under}), the probability that V(D)J recombination alone makes its CDR3s${r.genes ? ' with their V and J genes' : ''}, summed over every gene choice, deletion and insertion that makes them, was computed by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} as OLGA computes it ${cite('sethna')}, under ${models}, ${r.organism ?? 'human'}; a pair's as the product of its chains'. Of ${plural(r.clonotypes ?? 0, 'clonotype')}, ${count(r.computed ?? 0)} had one.`);
+  }
+
+  // Neighborhoods against a background.
+  for (const r of results.filter((x) => x.kind === 'neighborhoods')) {
+    const under = `${r.definition ? `"${r.definition}"` : 'its clonotype definition'}${r.filter ? `, filter ${r.filter}` : ''}`;
+    const background = r.background?.kind === 'shuffled'
+      ? `the same receptors with their CDR3s moved among their V and J genes (${count(r.background?.receptors ?? 0)} receptors)`
+      : `${count(r.background?.receptors ?? 0)} receptors drawn from ${r.background?.name ?? 'a recombination model'} (checksum ${r.background?.checksum ?? ''}) with the dataset's V–J usage, each weighted by the model's probability of its V–J pair over the dataset's share of it`;
+    const loops = r.cdr3Only
+      ? 'their CDR3s alone'
+      : `their CDR3s and their V genes' CDR1, CDR2 and CDR2.5, the loops of each ${r.organism} V allele taken from tcrdist3's database of genes (${r.loops?.file ?? ''}, SHA-256 ${r.loops?.sha256 ?? ''})`;
+    sentences.push(`Each ${r.locus} receptor (${under}) was taken as the centre of a neighborhood by ClonoLoom ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} as Mayer-Blackwell et al. define one ${cite('tcrdist3')}: its radius the largest of 0, 2, …, ${r.maxRadius ?? 48} TCRdist units ${cite('dash')} at which the weighted background within it was at most a share ${r.control ?? 1e-6} of the background's receptors, against a background of ${background}, comparing ${loops}. Of ${plural(r.receptors ?? 0, 'receptor')}, ${count(r.centers ?? 0)} had a neighborhood of ${r.minNeighbors ?? 2} receptors or more, each reported with the rates (n + 1)/(N + 2) in the dataset and the background, their ratio, an odds ratio and a χ² test.`);
+  }
+
+  for (const r of results.filter((x) => x.kind === 'specificity')) {
+    const o = r.specificity;
+    const distance = o.metric === 'exact' ? 'identical CDR3 amino-acid sequences' : `TCRdist ≤ ${o.radius} ${cite('dash')} with searched gaps ${cite('tcrdist3')}, ${o.cdr3Only ? 'CDR3s alone' : `including V-gene loops (SHA-256 ${r.loops?.sha256 ?? ''})`}`;
+    sentences.push(`Retained chains (${r.describe || r.definition}) were matched at the same locus to ${r.database.reference} (${r.database.source}; SHA-256 ${r.database.sha256}; ${r.database.license}) ${cite(`specificityDatabase:${r.database.reference}`, r.database.citation)}, using ${distance}${o.genes ? ' and identical nonempty V/J call sets at the clonotype definition’s resolution' : ''}, receptor species ${o.species} and minimum database score ${o.minScore}. The ${r.matches} chain–record matches retained their evidence; each clonotype contributed once to each epitope/antigen group’s abundance, divided by all retained abundance per sample. These overlapping shares describe database evidence, not established specificity of paired receptors.`);
+  }
+
+  for (const r of results.filter((x) => x.kind === 'networks')) {
+    const o = r.networks;
+    const distance = o.metric === 'tcrdist'
+      ? `TCRdist ${cite('dash')} with the gap searched ${cite('tcrdist3')}, ${o.cdr3Only ? 'CDR3s alone' : `including V-gene loops (${r.organism}, SHA-256 ${r.loops?.sha256 ?? ''})`}`
+      : o.metric === 'levenshtein' ? `Levenshtein distance ${cite('levenshtein', 'Levenshtein VI. Binary codes capable of correcting deletions, insertions, and reversals. Soviet Physics Doklady. 1966;10:707–710.')}, on whole junctions` : `${o.metric} on whole junctions`;
+    sentences.push(`A clonotype network (${r.describe || r.definition}) joined ${r.nodes} clonotypes by ${distance} at cutoff ${o.cutoff}, requiring ${o.arms === 'all' ? 'a bijection of all retained chains at each locus (missing matching missing only)' : 'any shared chain at the same locus'}${o.sameV ? ', with matching V calls' : ''}${o.sameJ ? ', with matching J calls' : ''}. The ${r.edges} edges formed ${r.components} connected components. Components express sequence similarity, not proven antigen specificity. A deterministic force drawing ${cite('forceDrawing', 'Fruchterman TMJ, Reingold EM. Graph drawing by force-directed placement. Software: Practice and Experience. 1991;21:1129–1164. doi:10.1002/spe.4380211102')} used a fixed grid start and 60 iterations, with a drawing limit independent of the complete graph.`);
   }
 
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

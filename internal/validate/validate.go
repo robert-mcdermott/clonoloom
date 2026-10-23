@@ -132,6 +132,9 @@ var readerKinds = map[string]kind{
 	"templates-missing":     {Warning, "A file counted in reads, for want of templates", "Some of the file's rows have no template count, so every row of it is counted in reads, which amplification distorts more than templates. Compare its samples with others counted in reads."},
 	"mixed-units":           {Warning, "Files that count different things", "The dataset's files are counted in one unit wherever they can be (immunoSEQ files in reads when some lack templates). Otherwise compare samples only within a unit."},
 	"gene-name-unmapped":    {Warning, "Vendor gene names not mapped to IMGT's", "These names are kept as given; clonotypes still tell them apart, but they match no IMGT name. Report them to ClonoLoom's developers."},
+	"molecules-missing":     {Warning, "A MiXCR table counted in reads, for want of molecules", "Some clones have no count of molecules (uniqueMoleculeCount), so every clone of the file is counted in reads, which amplification distorts more than molecules. Compare its samples with others counted in reads."},
+	"cell-count":            {Warning, "Clone counts that are not whole numbers of cells", "A table of paired chains counts each clone's cells. These clones are read as one cell each: check the count column."},
+	"unit-metadata":         {Note, "A data unit without its metadata", "The first line of an OAS or OTS data unit is its metadata, as JSON; this one could not be read, so the samples have no annotation from it. Download the unit again."},
 }
 
 // readerProblems: what the readers could not read as the format says.

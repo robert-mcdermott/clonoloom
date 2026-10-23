@@ -32,7 +32,10 @@ func TestTheSimulateCommand(t *testing.T) {
 	if err := json.Unmarshal(out.Bytes(), &params); err != nil || params.Name != "small" || params.Seed != 99 {
 		t.Errorf("%v %+v", err, params)
 	}
-	// Opened as a folder, a study is its samples and their metadata: its truth is not data.
+	// Opened as a folder, a study is its samples and their metadata: its truth is not data, nor is
+	// a specificity database beside it (the vaccine study's).
+	os.MkdirAll(filepath.Join(dir, "database"), 0o755)
+	os.WriteFile(filepath.Join(dir, "database", "vdjdb.txt"), []byte("complex.id\tgene\tcdr3\n"), 0o644)
 	items, _ := walkFolder(dir)
 	var names []string
 	for _, item := range items {

@@ -114,12 +114,11 @@ as an AIRR call lists them.
 
 ### 1.4 Formats of later waves
 
-MiXCR clone tables (v3 `cloneCount`, v4 `readCount`; `aaSeqCDR3` is the junction; scores in
-calls, `*00` alleles), OAS and OTS data units (gzipped CSV whose first line is CSV-quoted JSON
-metadata; paired units with `_heavy`/`_light` or `_beta`/`_alpha` suffixes; integers written as
-`214.0`), VDJdb releases (re-packaged in 2026; parse by header name), TRUST4, IMGT/HighV-QUEST
-and VDJtools. Each is researched again when its wave is planned. Until then, MiXCR's and VDJtools'
-tables are read through a mapping of their columns (§1.5).
+VDJdb releases (re-packaged in 2026: a normalized primary zip, the legacy files `vdjdb.txt`,
+`vdjdb.slim.txt` and `vdjdb_full.txt` in a zip of their own, and an AIRR zip; tab-separated, parsed
+by header name), TRUST4, IMGT/HighV-QUEST and VDJtools. Each is researched again when its wave is
+planned. Until then, VDJtools' tables are read through a mapping of their columns (§1.5). MiXCR's
+clone tables, OAS and OTS data units and tcrdist3's clone tables are read from wave 4 (§1.6).
 
 ### 1.5 Tables with mapped columns (wave 2)
 
@@ -146,6 +145,39 @@ confirms (requirement D7, `internal/reads/mapped.go`):
 - **The mapping is part of the dataset**, as a format is: it is kept with the project, enters the
   dataset's ID (one file under two mappings is two datasets) and its cache key, and is stated in the
   methods paragraph.
+
+### 1.6 MiXCR, OAS and OTS, and tcrdist3's tables (wave 4)
+
+Checked against the files themselves (PyClonal's MiXCR 3 tables, MiLaboratories' benchmark tables
+of MiXCR 4, OTS and OAS units of five studies, tcrdist3's `dash.csv` and `dash_human.csv`) and the
+tools' documentation; how each is read is in `docs/FORMATS.md`.
+
+- **MiXCR** (`mixcr exportClones`): MiXCR 3 names counts `cloneCount`, MiXCR 4 `readCount`, with
+  `uniqueMoleculeCount` where molecules were tagged; MiXCR 2 writes readable names (`Clone count`,
+  `All V hits`, `AA. Seq. CDR3`). `nSeqCDR3` and `aaSeqCDR3` are the IMGT junction; `_` marks a
+  frameshift, `*` a stop, lower case an imputed residue. Hits are listed best first with their
+  scores; `*00` is MiXCR's allele for a library without alleles. MiXCR 4 splits files by chain
+  (`<sample>.clones_TRB.tsv`) and, for single cells, writes each clone's chain in each cell
+  (`tagValueCELL`), MiXCR's clonotype of cells as `cellGroup`, and the chain as `topChains`.
+  **ClonoLoom's choice:** the call is every hit with the best score (a tie kept as a set, as AIRR
+  calls list ties), without its score and without `*00`; a table is counted in molecules only when
+  every clone has them.
+- **OAS and OTS** (Olsen et al. 2022, *Protein Sci* 31:141, doi:10.1002/pro.4205; Raybould et al.
+  2024, *Cell Rep* 43:114704, doi:10.1016/j.celrep.2024.114704; both CC BY 4.0): gzipped CSV,
+  the first line the unit's metadata as JSON in one CSV field (a link may hold a zero-width
+  space), then IgBLAST's AIRR columns; OAS's unpaired units have no `sequence_id` and count each
+  sequence by `Redundancy`; paired units hold each AIRR column once per chain (`_heavy`, `_light`;
+  `_beta`, `_alpha`, the β block first), one row per cell, with 10x Genomics' contig names
+  (`<barcode>_contig_1`), each barcode once a unit. Loci are one letter, booleans `T`/`F`,
+  integers decimals. **ClonoLoom's choice:** `Redundancy` counts sightings of a sequence, reads or
+  molecules as the study tagged them, so the user confirms the unit.
+- **tcrdist3's clone tables** (Mayer-Blackwell et al. 2021; tcrdist3 is MIT): a row per clone,
+  each chain's `v_b_gene`, `j_b_gene`, `cdr3_b_aa` (the IMGT junction) and `cdr3_b_nucseq` (chain
+  letters `a`, `b`, `g`, `d`), the clone's `count`, and `subject`, `epitope` and `clone_id` where
+  given. tcrdist3 itself counts cells, templates or reads alike in `count`. **ClonoLoom's choice:**
+  a table of paired chains is single-cell data, so a clone of n cells is read as n cells (the
+  clonotype tables count cells, not counts); a table of one chain is bulk, its unit for the user
+  to confirm.
 
 ## 2. Gene nomenclature
 
@@ -594,6 +626,179 @@ compare the figure with another study's, without the text.
 - **Attribution**: the share of a sample's cells or molecules in clonotypes its subject's
   reference sample holds, under the definition, with an interval from a bootstrap of the sample.
 
+### 5.9 Specificity (wave 4, planned)
+
+- **TCRdist** (Dash et al. 2017, *Nature* 547:89, doi:10.1038/nature22383; as tcrdist3 computes
+  it, Mayer-Blackwell et al. 2021, *eLife* 10:e68605, doi:10.7554/eLife.68605; tcrdist3 and its
+  distance library are MIT, so their parameters may be read and matched). Two residues differ by
+  min(4, 4 − BLOSUM62(a, b)), and a residue by 0 from itself; the only differences under 4 are
+  AS 3, DE 2, DN 3, EK 3, EQ 2, FW 3, FY 1, HN 3, HY 2, IL 2, IM 3, IV 1, KQ 3, KR 2, LM 2, LV 3,
+  MV 3, NS 3, QR 3, ST 3 and WY 2. A chain's distance sums four loops: CDR1, CDR2 and CDR2.5 (the
+  loop between CDR2 and CDR3 that faces the peptide–MHC), each weight 1, and the CDR3, weight 3.
+  - The V gene's three loops are strings of one length within an organism and chain, aligned
+    with the gap character `.`, compared position by position. tcrdist3 encodes `.` (and `X`,
+    `*`) outside its alphabet, and its matrix gives them 0 against anything: a gap opposite a
+    residue costs nothing, not the gap penalty Dash et al. describe. Human loops are IMGT columns
+    27–38, 56–65 and 81–86; tcrdist3's mouse α and β alignments place them at 28–39, 57–66 and
+    82–88, so the loops are taken from its database as written, not recomputed.
+  - The CDR3 (the IMGT junction) leaves out its first three and last two residues. Of equal
+    length, its distance is the sum of the residues' differences. Of different lengths, the
+    shorter is aligned to the longer's two ends with the Δ extra residues of the longer left out
+    at one place, chosen where the sum of differences is least among positions 5 to (shorter
+    length − 5), widened until there is one; each left-out residue costs 4. tcrdist3 multiplies the
+    whole CDR3 term by 3 (3·differences + 12·Δ), its distance library's own default does not (4 per
+    gap and a fixed gap position), and Dash et al. say 8: three numbers, and tcrdist3's is the
+    one ClonoLoom matches.
+  - Distances are integers (tcrdist3 sums them in 16-bit integers); a pair's is the sum of its
+    chains'. tcrdist3 takes the single allele given; the original tcr-dist took the least
+    distance over a gene's alleles.
+- **Neighborhoods** (Mayer-Blackwell et al. 2021): a centroid's radius is the largest of
+  0, 2, …, 48 at which its weighted background neighbors are at most a share 10⁻⁶ of the
+  background (the paper's; tcrdist3's function defaults to 10⁻⁵); the background is 100,000
+  receptors drawn from a recombination model with the antigen-enriched set's V and J genes,
+  weighted by w = p(V, J) / q(V, J), the pair's share in the sample over its share in the draws,
+  plus 100,000 cord-blood receptors of weight 1. Each centroid's report: its neighbors in the
+  sample and the background, the weighted background rate, the relative rate
+  ((n + 1)/(N + 2) over the background's), an odds ratio with one added to each count, and a χ²
+  test (scipy's `chi2_contingency`, so with Yates's correction on the 2 × 2 table); a motif from
+  the neighbors aligned to the centroid (ambiguity up to 3 residues in tcrdist3's code, 5 in the
+  paper). Where no threshold holds the rate, tcrdist3 falls back to a radius of 0 and still counts
+  the background at distance 0 (roadmap, wave 4, slice 5). ClonoLoom's backgrounds are its own
+  (the paper's cord-blood set is not redistributable): receptors drawn from a recombination model
+  with the dataset's V–J usage, weighted by the model's probability of the pair over the dataset's
+  share of it, or the dataset's own chains with their CDR3s moved among its genes.
+  The χ² is two-sided: a large value can describe depletion. ClonoLoom's ranking puts rates at
+  least as large as the background first, by descending χ², then depleted neighborhoods by
+  ascending χ². The reported statistic is unchanged. For a VJ model, drawing with named genes
+  conditions the joint P(V, J) on those names; the alleles must not be drawn independently from
+  their marginal probabilities. Neighborhood method version 2 records these corrections.
+- **Generation probability** (Sethna et al. 2019, *Bioinformatics* 35:2974,
+  doi:10.1093/bioinformatics/btz035; models in IGoR's format, Marcou et al. 2018, *Nat Commun*
+  9:561). The probability of an amino-acid CDR3 (the junction, both conserved residues included)
+  summed over every recombination event that makes it, by dynamic programming over its codons:
+  P(V) P(D, J) (P(D | J) for T cells) and each segment's deletions (palindromic nucleotides as
+  negative deletions), the insertions' lengths and a dinucleotide Markov chain for their
+  nucleotides, the first one drawn from the chain's stationary distribution; the DJ insertion read
+  from its J end. What OLGA does, and an exact reimplementation must too: genes not marked
+  functional (`F` or `(F)`) or without an anchor contribute nothing and keep their share (P(V) is
+  not made to sum to 1 again); only the Markov rows are normalized; every insertion length the
+  model allows is summed, except that OLGA 1.3.0 leaves out an insertion of the longest length
+  when that length is one more than a multiple of three and the insertion starts a codon (mouse
+  TRA's 22 nucleotides; its own generator makes them, and ClonoLoom counts them: roadmap, wave 4,
+  slice 3); a gene's palindrome is made from its part of the CDR3, at most as long as that part; a
+  D deleted entirely only by left and right deletions that sum to its length; V and J
+  each keep at least one nucleotide in the CDR3; the probability is over all recombination events,
+  not only productive ones; V and J masks give joint probabilities. The default models' files carry
+  no data license apart from the GPL-3.0 of their repositories (§7.1), and their versions differ
+  (OLGA 1.2.4 and 1.3.0 give different IGH, IGK and IGL probabilities), so the model's version and
+  checksum are part of every result.
+
+### 5.10 Clonotype networks (wave 4)
+
+The sequence-search foundation in `internal/network/pairs.go` compares whole junctions, including
+their conserved anchors. Identity requires equality; Hamming counts substitutions between equal
+lengths; Levenshtein permits substitutions, insertions and deletions, each of cost one
+(Levenshtein 1966, *Soviet Physics Doklady* 10:707–710;
+[original article, 1965](https://www.mathnet.ru/eng/dan31411)). The dynamic-programming recurrence
+is the string correction recurrence of Wagner and Fischer (1974, *J ACM* 21:168–173,
+[doi:10.1145/321796.321811](https://doi.org/10.1145/321796.321811)).
+
+ClonoLoom's indexing choices, for cutoffs from 0 to 2:
+
+- Identity: a hash of the whole junction.
+- Hamming: k+1 disjoint segments at cutoff k; at least one must agree at its position. Lengths
+  must agree too. Even junctions shorter than k+1 are covered (an empty segment gives candidates).
+- Levenshtein: signatures made by deleting up to k symbols from each junction. Within k edits,
+  the two junctions share at least one signature. This is only a candidate filter: the exact
+  distance is checked by dynamic programming within the diagonal band reachable in k edits.
+
+Pairs are streamed once in input-index order. The caller must discard partial output after an
+error. Cancellation is checked during the search, and exceeding the index budget is an error,
+never a truncated graph. Junctions must be uppercase sequence letters, from 1 to 256 symbols;
+ambiguous letters are compared literally. The default budget is 20 million index postings.
+These bounds are engineering choices, not biological thresholds. Unit tests compare every pair
+of all binary-alphabet strings of lengths 1–6 with an independent full-matrix calculation, as
+well as duplicate junctions, receptor examples, cancellation and budget failures.
+
+Chain matching uses the maximum for `all`, the minimum for `any`, as
+[scirpy's API](https://scirpy.scverse.org/en/v0.25.1/generated/scirpy.tl.define_clonotype_clusters.html)
+describes for receptor arms. This differs from summing paired TCRdist distances in Neighbors.
+ClonoLoom's choices are explicit: chains must have the same locus (IGK and IGL remain distinct);
+`all` requires a bijection of every retained chain, with a minimum bottleneck found by bipartite
+augmenting paths, while `any` needs one shared chain. Extra chains in an `all` cell definition
+are retained, not reduced to the primary chain. Missing matches missing only under `all`.
+Gene restrictions compare nonempty calls at the definition's gene or allele resolution; a
+missing call cannot satisfy a same-gene restriction. Definitions at family resolution cannot
+request a gene match. The scirpy comparisons use primary chains, not its default dual-IR policy.
+
+TCRdist uses the established implementation (§5.9), with a length difference cost of 12 and the
+V-loop distance as lower bounds. All clonotypes remain nodes: non-T-cell receptors and receptors
+without required V loops are explicitly counted and left isolated for TCRdist. Loop checksums
+and inferred alleles travel with the result. Sequence pairs are mapped back to their owning
+clonotypes; candidate pairs are limited to 10 million and edges to 2 million. Every budget
+failure discards the partial result. Connected components use disjoint sets with path compression
+(Tarjan 1975, *J ACM* 22:215–225, [doi:10.1145/321879.321884](https://doi.org/10.1145/321879.321884)),
+sorted by node count, then their first node in the stable clonotype table. Abundance sums follow
+that order. Samples and annotated subjects are distinct sets, sorted before serialization.
+
+The drawing is inspired by Fruchterman and Reingold (1991, *Software: Practice and Experience*
+21:1129–1164, [doi:10.1002/spe.4380211102](https://doi.org/10.1002/spe.4380211102)), with ClonoLoom's
+own fixed grid start, inverse-squared repulsion, linear edge attraction, bounded updates for
+60 iterations and shelf packing with a width derived from the occupied area (target aspect 16:9). It draws components largest first, taking a prefix of an
+oversized component when necessary, with all omitted nodes counted. The default is 1,000 nodes,
+maximum 2,000; layout never changes scientific edges, memberships or exports. Coordinates carry
+no scientific distance meaning. Products are rounded explicitly before accumulation, and layout
+bytes are pinned on arm64 and amd64.
+
+`validation/reference/scirpy_networks.py` runs scirpy 0.25.1 as a black box on eight 10x runs and
+three OTS units. All 420 cell partitions agree: identity; Hamming and Levenshtein at 0, 1, 2;
+TCRdist at 0, 12, 24, 48 on T-cell data; all/any arms, with/without V genes. OTS calls are
+normalized to genes, matching the definition; TCRdist explicitly searches the gap and charges
+12 per length difference, rather than scirpy's default of 4. At zero TCRdist, scirpy is asked
+for cutoff 1 (distances are multiples of 3) to avoid its automatic substitution of identity.
+On the simulated vaccination S01 day-14 repertoire, 97 observed members of 34 founder families
+are all connected within their families at TCRdist 48 with same V and J. At two Hamming or
+Levenshtein edits, 29 families connect and five split: the simulator's Poisson substitution
+count is not bounded by two, and an unobserved intermediate cannot connect two nodes. Neither
+family recovery nor connectedness proves a shared specificity or purity of the components.
+
+`BenchmarkGraph100000` measures the whole sparse synthetic graph plus drawing: 0.14 s identity,
+4.16 s Hamming 2, 2.97 s Levenshtein 2, 69.03 s TCRdist 24 on Apple M4. Dense inputs are subject
+to the explicit budgets; the benchmark does not claim every threshold on every dataset finishes
+within two minutes.
+
+### 5.11 Specificity database evidence (wave 4, slice 7)
+
+Read VDJdb's documented legacy `vdjdb.txt` by header names, preserving row identity, repeated
+publication evidence, complex IDs, receptor and antigen species, MHC, score, method and reference.
+The current publisher's [output documentation](https://github.com/antigenomics/vdjdb-db/blob/master/docs/outputs.md)
+distinguishes the normalized primary bundle from the legacy table. The pinned historical
+[2026-06-03 release](https://github.com/antigenomics/vdjdb-db/releases/tag/2026-06-03) already
+contains that table (284,546 rows); the app downloads its table and license only on request.
+Catalog terms link the current publisher license as well as retaining the historical archive's
+license. No data or derived real-release fixture is bundled. Citation: Shugay et al. 2018,
+Nucleic Acids Res. 46:D419–D427, doi:10.1093/nar/gkx760.
+
+Match a retained chain at the same locus and explicit receptor species, exactly by whole CDR3
+or within TCRdist (§5.9). Optional V/J matching compares identical nonempty call sets at the
+clonotype definition's gene/allele resolution, without guessing absent alleles. TCRdist at zero
+is not whole-junction identity. Missing required loops are counted and excluded, never silently
+replaced by CDR3-only distances. A matched chain is evidence, not proof of the paired receptor's
+specificity. MHC is evidence metadata; no sample HLA filter is implied. Complex IDs are retained
+without claiming a paired match. Scores 0–3 are evidence categories, not calibrated probabilities.
+
+An epitope/antigen/antigen-species group's sample count includes each matched clonotype once,
+regardless of matching chains or repeated evidence. Divide by all retained sample abundance;
+an empty denominator is null. Groups overlap. Tracking carries explicit IDs plus immutable
+source-result and epitope provenance; existing list and display limits remain explicit.
+At 100 million candidates or two million matches, fail rather than truncate the result.
+
+Independent pandas 2.3.3 lookups agree on all record identities for 424 simulated and 4,000
+real-release queries (V/J on/off; minimum score 0/2). All 150 simulated sample/epitope shares
+agree. Exact V/J matching covers 602 molecules, 598 supported by the assigned epitope in truth,
+out of 3,498 true response molecules. The database holds other donors' family members, so
+coverage is incomplete and chance matches are possible; neither is concealed as perfect recovery.
+
 ## 6. Datasets
 
 All are listed in `validation/sources.json` with their URL, sizes and SHA-256, and fetched by
@@ -609,10 +814,14 @@ All are listed in `validation/sources.json` with their URL, sizes and SHA-256, a
 | `emerson-2017-immunoseq` | Three small samples of Emerson et al. 2017 (*Nat Genet* 49:659, doi:10.1038/ng.3822) in immunoSEQ v3 format, taken by HTTP range from the published 19.9 GB archive | immuneACCESS Terms of Use (research use, no redistribution) | maintainer validation only |
 | `emerson-2017-adc` | The same cohort through VDJServer's ADC API as AIRR TSV | immuneACCESS Terms of Use | maintainer validation only |
 | `vdjserver-ramos-libra` | One single-cell BCR repertoire of the LIBRA-seq study (Setliff et al. 2019, *Cell* 179:1636) through the ADC API | not stated | maintainer validation only |
+| `dash-2017-tcrdist3` | Dash et al. 2017's epitope-specific paired TCRs as tcrdist3 distributes them: 1,924 mouse clones (3,405 cells) for seven epitopes, 415 human clones for three; tcrdist3 at a pinned commit | MIT (tcrdist3) | per-commit CI; the tcrdist3 reader; TCRdist against tcrdist3 (wave 4); an example |
+| `ots-healthy-pbmc` | Three OTS paired units of healthy donors' blood (Sureshchandra et al. 2023, 4,424 cells; Bai et al. 2023; Poon et al. 2023) | CC BY 4.0 (OTS) | per-commit CI; the units' reader; an example |
+| `oas-units` | Two OAS units: unpaired IgG heavy chains (Bashford-Rogers et al. 2013) and paired heavy and light chains (Eccles et al. 2020) | CC BY 4.0 (OAS) | per-commit CI; the units' reader |
+| `pyclonal-mixcr` | Two bulk TCR clone tables of MiXCR 3, PyClonal's sample inputs | MIT (PyClonal) | per-commit CI; the MiXCR reader |
+| `mixcr-benchmark-v4` | A single-cell B-cell clone table of MiXCR 4 (MiLaboratories' benchmark of 10x Genomics' 10k PBMC data) | not stated | maintainer validation only |
 
-Later waves add: Dash et al. 2017's epitope-specific TCRs as tcrdist3 distributes them (MIT),
-OAS and OTS subsets (CC BY 4.0), DeWitt et al. 2015's longitudinal TRB repertoires (ADC), scirpy's
-example datasets (Wu et al. 2020, Maynard et al. 2020), and VDJdb (on request only).
+Later waves add: DeWitt et al. 2015's longitudinal TRB repertoires (ADC), scirpy's example
+datasets (Wu et al. 2020, Maynard et al. 2020), and VDJdb (on request only).
 
 ## 7. Licenses
 
@@ -662,3 +871,49 @@ compares outputs.
 - A mouse gene list (MGI) and its terms, before mouse immunoSEQ names are mapped fully.
 - IMGT's written confirmation of CC BY 4.0 for its download folders, whose READMEs still carry
   the earlier wording, before any IMGT-derived file is bundled.
+
+### 5.12 Invariant-population sequence rules (wave 4, slice 8)
+
+The implementation reads published method descriptions, not external implementations.
+Schattgen et al., Nat Biotechnol 2022;40:54–63, doi:10.1038/s41587-021-00989-2,
+Methods, TCR sequence features, defines MAIT and iNKT gene/length rules. The full junction
+includes its conserved cysteine and terminal F/W. Human MAIT: TRAV1-2 and TRAJ33/20/12,
+length 12; mouse: TRAV1/TRAJ33, length 12. Human iNKT: TRAV10/TRAJ18/TRBV25, alpha
+length 14–16; mouse: TRAV11/TRAJ18, length 15. IMGT's TRBV25-1 and the published TRBV25
+name are accepted; mouse TRAV11 and its duplicated TRAV11D are accepted explicitly
+(IMGT mouse TRAV allele table), not arbitrary prefix matches.
+
+Human GEM uses TRAV1-2/TRAJ9 and CAV[RL].TGGFKTIF, as defined by Van Rhijn et al.,
+J Immunol 2014;193:5338–5344, doi:10.4049/jimmunol.1401380, following the original
+GEM receptors (Nat Immunol 2013;14:706–713, doi:10.1038/ni.2630, Fig. 3). The consensus
+CAVRNTGGFKTIF is a positive test; the canonical human iNKT sequence CVVSDRGSTLGRLYF
+is also documented by Musvosvi et al., Nat Med 2023, doi:10.1038/s41591-022-02110-9,
+Extended Data Fig. 10. Additional published checks use human MAIT TRAV1-2/CAVKDSNYQLIW/TRAJ33 and mouse
+MAIT TRAV1/CAVRDSNYQLIW/TRAJ33 (Ito et al., Sci Immunol 2024,
+doi:10.1126/sciimmunol.ade6924, TCR transduction methods), and mouse iNKT
+TRAV11/CVVGDRGSALGRLHF/TRAJ18 (Blood Adv 2020, doi:10.1182/bloodadvances.2019000977).
+Other unit-test variants exercise constructed length/gene boundaries;
+they are not claimed to be experimentally typed receptors. GEM's beta bias is not a rule.
+No mouse GEM rule is asserted.
+
+Species is explicit and saved, initially unevaluated. Definitions without amino-acid junctions
+and gene/allele resolution cannot evaluate rules. Ambiguous genes are not resolved by choosing
+a favorable candidate. An entirely matching retained chain suffices; otherwise incomplete
+required evidence remains unknown. Human iNKT candidates require a retained beta chain.
+Secondary chains discarded by the definition do not contribute. Each clonotype contributes
+once per rule per sample; all retained abundance is the denominator, with evaluable abundance
+reported separately. This annotation never establishes phenotype or antigen specificity.
+
+On paired primary TRA/TRB clonotypes of cached 10x filtered T-cell contig tables, PBMC 1k has
+10 MAIT-consistent cells / 406 retained (2.4631%; 357 alpha-evaluable), one iNKT and no GEM;
+PBMC 10k v2 has 80 / 4,562 (1.7536%; 4,069 alpha-evaluable), two iNKT and no GEM.
+The typical 1–10% range is of blood T cells, not all PBMCs (van Wilgenburg et al., Nat Commun
+2018, doi:10.1038/s41467-018-07207-9). Both estimates lie within it. This is biological
+plausibility, not phenotype ground truth; capture, donor and ascertainment differ. The test
+reports departures rather than forcing every donor inside a typical range.
+
+A separate standard-library CSV calculation (`validation/reference/invariant.py`, run with uv)
+selects primary productive chains directly from Cell Ranger rows and applies the published
+human predicates without calling ClonoLoom. All matched counts and both cell denominators
+agree; the compact count reference is checked by `validation/invariant_test.go`.
+Mouse nomenclature source: https://www.imgt.org/IMGTrepertoire/Proteins/taballeles/mouse/TRA/TRAV/Mu_TRAVall.html.

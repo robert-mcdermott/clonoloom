@@ -26,6 +26,9 @@ const (
 	FormatCellRanger  Format = "cellranger-contigs"
 	FormatImmunoSEQv3 Format = "immunoseq-v3"
 	FormatImmunoSEQv2 Format = "immunoseq-v2"
+	FormatMiXCR       Format = "mixcr-clones"
+	FormatUnit        Format = "oas-unit"
+	FormatTCRdist     Format = "tcrdist3-clones"
 )
 
 // FormatNames are formats' names as the interface and methods text say them.
@@ -34,6 +37,9 @@ var FormatNames = map[Format]string{
 	FormatCellRanger:  "Cell Ranger V(D)J contig annotations",
 	FormatImmunoSEQv3: "immunoSEQ export (v3)",
 	FormatImmunoSEQv2: "immunoSEQ export (v2)",
+	FormatMiXCR:       "MiXCR clone table",
+	FormatUnit:        "OAS or OTS data unit",
+	FormatTCRdist:     "tcrdist3 clone table",
 	FormatTable:       "Table with mapped columns",
 }
 
@@ -281,6 +287,22 @@ func readOne(ctx context.Context, r io.Reader, path string, index int, b **rep.B
 			}
 			return src, rep.Reads, nil
 		}
+		if isMiXCRHeader(header) {
+			src.Format = FormatMiXCR
+			if *b == nil {
+				*b = rep.NewBuilder(rep.UnitUnknown)
+			}
+			before := (*b).Len()
+			unit, err := readMiXCR(ls, newMiXCRLayout(header), len(header), *b, index, sample, p)
+			if err != nil {
+				return src, "", err
+			}
+			src.Rows = (*b).Len() - before
+			return src, unit, nil
+		}
+		if isTCRdistHeader(header) && !isAIRRHeader(header) {
+			return readTCRdistSource(ls, header, func(line []byte, fields []string) ([]string, bool) { return splitTab(line, fields), true }, src, b, index, sample, p)
+		}
 		if isAIRRHeader(header) {
 			src.Format = FormatAIRR
 			layout := newAIRRLayout(header)
@@ -300,6 +322,29 @@ func readOne(ctx context.Context, r io.Reader, path string, index int, b **rep.B
 	if kind := companionKind(header); ok && kind != "" {
 		return src, "", ErrCompanion{Kind: kind}
 	}
+	if ok && isUnitMetadata(header) {
+		header, meta, err := readUnitHeader(ls, header, index, p)
+		if err != nil {
+			return src, "", err
+		}
+		if !isUnitHeader(header) {
+			return src, "", ErrUnknownFormat
+		}
+		src.Header, src.Format = header, FormatUnit
+		if *b == nil {
+			*b = rep.NewBuilder(rep.UnitUnknown)
+		}
+		before := (*b).Len()
+		unit, err := readUnit(ls, header, meta, *b, index, sample, p)
+		if err != nil {
+			return src, "", err
+		}
+		src.Rows = (*b).Len() - before
+		return src, unit, nil
+	}
+	if ok && isTCRdistHeader(header) {
+		return readTCRdistSource(ls, header, func(line []byte, fields []string) ([]string, bool) { return splitCSV(line, fields) }, src, b, index, sample, p)
+	}
 	if ok && isCellRangerContigHeader(header) {
 		for i := range header {
 			header[i] = strings.TrimSpace(header[i])
@@ -316,6 +361,24 @@ func readOne(ctx context.Context, r io.Reader, path string, index int, b **rep.B
 		return src, rep.Cells, nil
 	}
 	return src, "", ErrUnknownFormat
+}
+
+// readTCRdistSource reads a tcrdist3 clone table whose header is read, its rows split by split.
+func readTCRdistSource(ls *lines, header []string, split func([]byte, []string) ([]string, bool), src Source, b **rep.Builder, index int, sample string, p *Problems) (Source, rep.Unit, error) {
+	for i := range header {
+		header[i] = strings.TrimSpace(header[i])
+	}
+	src.Header, src.Format = header, FormatTCRdist
+	if *b == nil {
+		*b = rep.NewBuilder(rep.UnitUnknown)
+	}
+	before := (*b).Len()
+	unit, err := readTCRdist(ls, newTCRdistLayout(header), len(header), split, *b, index, sample, p)
+	if err != nil {
+		return src, "", err
+	}
+	src.Rows = (*b).Len() - before
+	return src, unit, nil
 }
 
 // sampleName is a sample's name from its file's name: without folders and without the extensions

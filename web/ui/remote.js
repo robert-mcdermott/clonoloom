@@ -5,6 +5,8 @@
 // same actions with their arguments (actions.go, GET /api/remote/tools); a Go test checks the two
 // lists agree. Adapted from SituCraft 0.9.0 web/ui/remote.js.
 
+import { useInvariantSpecies } from '../lib/invariant.js';
+import { networkOptions } from '../lib/networks.js';
 import { closeDialogs, toast } from './overlays.js';
 import { clonotypePresets } from './storage.js';
 import { showMethods } from './methods.js';
@@ -12,6 +14,7 @@ import { datasetDefinition, sameMeaning, useDefinition } from '../lib/definition
 import { datasetFilter } from '../lib/filters.js';
 import { SAMPLE_FIELDS, annotate, datasetUnit } from '../lib/datasets.js';
 import { ALPHAS, MAX_LIST, timePoints, trackingChoice, useComparison, useTracking } from '../lib/tracking.js';
+import { BACKGROUNDS, CENTER_ORDERS, PGEN_ORDERS, centerOrder, pgenOrder } from '../lib/specificity.js';
 
 export class ActionError extends Error {}
 
@@ -21,7 +24,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const count = (n, noun) => `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`;
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', jobs: 'jobs' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.
@@ -344,6 +347,192 @@ export function remoteActions(app) {
           })),
         },
       };
+    },
+
+    async find_neighbors({ dataset, radius, cdr3Only, organism, top = 10, select }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('neighbors');
+      const changes = {};
+      if (radius !== undefined) changes.radius = Math.round(Number(radius));
+      if (cdr3Only !== undefined) changes.cdr3Only = Boolean(cdr3Only);
+      if (organism !== undefined) changes.organism = String(organism);
+      if (Object.keys(changes).length) await view.choose(changes);
+      await view.load();
+      await view.settled();
+      let state = view.neighbors();
+      if (state.status === 'no-loops') throw new ActionError('The V genes\' loops are not downloaded: download them in Reference data (tcrdist3-loops), or ask with cdr3Only.');
+      if (state.status === 'unsupported') throw new ActionError('TCRdist compares the amino-acid junctions of T-cell receptors: this dataset or its definition has none.');
+      if (state.status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.neighbors().status) && view.neighbors(), 30 * 60 * 1000, 'the comparison');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const r = done.result;
+      const ranked = [...r.clonotypes].sort((a, b) => b.neighbors - a.neighbors || (a.nearest ? a.distance : Infinity) - (b.nearest ? b.distance : Infinity) || b.total - a.total || (a.id < b.id ? -1 : 1));
+      const row = (c) => ({ id: c.id, chains: c.chains, total: c.total, samples: c.samples, neighbors: c.neighbors, nearest: c.nearest ?? null, distance: c.nearest ? c.distance : null });
+      const data = {
+        result: done.artifact, radius: r.radius, cdr3Only: r.cdr3Only, organism: r.organism ?? null, loops: r.loops ?? null, definition: r.describe,
+        compared: r.compared, withNeighbors: r.withNeighbors, excluded: r.excluded, groups: r.groups.map((g) => ({ loci: g.loci, clonotypes: g.receptors })),
+        top: ranked.slice(0, Math.max(0, Math.round(top))).map(row),
+      };
+      if (select) {
+        const chosen = ranked[Math.round(select) - 1];
+        if (!chosen) throw new ActionError(`select: from 1 to ${ranked.length}.`);
+        await view.select(chosen.id);
+        data.selected = row(chosen);
+      }
+      return { message: `${d.name}: ${count(r.compared, 'clonotype')} compared by TCRdist; ${r.withNeighbors} have a neighbor within ${r.radius} (${done.artifact}).`, data };
+    },
+
+    async match_specificity({ dataset, database, metric, genes, radius, species, minScore, cdr3Only, follow } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('database');
+      const changes = {};
+      if (database !== undefined) changes.database = choose(database, ['vdjdb', 'simulated-vaccine'], 'database');
+      if (metric !== undefined) changes.metric = choose(metric, ['exact', 'tcrdist'], 'metric');
+      if (species !== undefined) changes.species = choose(species, ['HomoSapiens', 'MusMusculus', 'MacacaMulatta'], 'species');
+      for (const [key, value, max] of [['radius', radius, 1000], ['minScore', minScore, 3]]) if (value !== undefined) {
+        if (!Number.isInteger(value) || value < 0 || value > max) throw new ActionError(`${key}: from 0 to ${max}.`);
+        changes[key] = value;
+      }
+      for (const [key, value] of Object.entries({ genes, cdr3Only })) if (value !== undefined) changes[key] = Boolean(value);
+      if (Object.keys(changes).length) await view.chooseDatabase(changes);
+      await view.load(); await view.settled();
+      const state = view.database();
+      if (['unsupported', 'no-database', 'no-loops', 'failed'].includes(state.status)) throw new ActionError(state.error ?? 'Use an amino-acid definition and prepare the chosen database and V-gene loops, or explicitly compare CDR3s alone.');
+      if (state.status === 'absent') await view.run('specificity');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.database().status) && view.database(), 30 * 60 * 1000, 'specificity matching');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const data = { artifact: done.artifact, matches: done.result.matches.length, epitopes: done.result.epitopes.map((e) => ({ epitope: e.epitope, antigen: e.antigen, species: e.species, clonotypes: e.clonotypes.length, shares: e.shares })), samples: done.result.samples };
+      if (follow !== undefined) {
+        if (!Number.isInteger(follow) || follow < 1 || follow > data.epitopes.length) throw new ActionError('Choose an epitope group by its number, from 1.');
+        if (data.epitopes[follow - 1].clonotypes > 1000) throw new ActionError('Tracking accepts at most 1000 IDs; narrow the matching options.');
+        await view.followEpitope(follow - 1);
+      }
+      return { message: `Found ${data.matches} chain–record matches in ${data.epitopes.length} epitope/antigen groups.`, data };
+    },
+
+    async flag_invariant({ dataset, species, population = '' } = {}) {
+      const d = datasetOf(dataset);
+      species = choose(species, ['human', 'mouse'], 'species');
+      if (population) population = choose(population, ['MAIT', 'iNKT', 'GEM'], 'population');
+      store.commit(useInvariantSpecies(store.project, d.id, species), 'Choose invariant-population species');
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('clonotypes');
+      const view = await waitFor(() => app.clonotypesView, 5000, 'Clonotypes');
+      view.show(d.id);
+      await view.population(population);
+      const page = await view.page(0, 20);
+      return { message: `${d.name}: ${species} invariant-population rules.`, data: page };
+    },
+
+    async find_networks({ dataset, metric, cutoff, arms, sameV, sameJ, cdr3Only, select } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('networks');
+      const changes = {};
+      if (metric !== undefined) changes.metric = choose(metric, ['identity', 'hamming', 'levenshtein', 'tcrdist'], 'metric');
+      if (arms !== undefined) changes.arms = choose(arms, ['all', 'any'], 'arms');
+      if (cutoff !== undefined) {
+        if (!Number.isInteger(cutoff) || cutoff < 0 || cutoff > ((metric ?? networkOptions(d).metric) === 'tcrdist' ? 1000 : (metric ?? networkOptions(d).metric) === 'identity' ? 0 : 2)) throw new ActionError('Invalid network cutoff.');
+        changes.cutoff = cutoff;
+      }
+      for (const [key, value] of Object.entries({ sameV, sameJ, cdr3Only })) if (value !== undefined) changes[key] = Boolean(value);
+      if (Object.keys(changes).length) await view.chooseNetworks(changes);
+      await view.load(); await view.settled();
+      const state = view.networks();
+      if (['unsupported', 'no-loops', 'failed'].includes(state.status)) throw new ActionError(state.error ?? 'Choose a junction definition and download V-gene loops, or compare CDR3s alone.');
+      if (state.status === 'absent') await view.run('networks');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.networks().status) && view.networks(), 30 * 60 * 1000, 'the network');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      if (select !== undefined) view.selectCluster(Number(select));
+      return { message: `Found ${done.result.graph.components.length} connected components.`, data: { artifact: done.artifact, nodes: done.result.clonotypes.length, edges: done.result.graph.edges.length, components: done.result.graph.components.length } };
+    },
+
+    async find_neighborhoods({ dataset, background, locus, control, minNeighbors, order = 'enriched', top = 10, select }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('neighborhoods');
+      const by = choose(order, Object.keys(CENTER_ORDERS), 'order');
+      view.centerOrder(by);
+      const changes = {};
+      if (background !== undefined) changes.background = choose(String(background), Object.keys(BACKGROUNDS), 'background');
+      if (locus !== undefined) changes.locus = String(locus).toUpperCase();
+      if (control !== undefined) changes.control = Number(control);
+      if (minNeighbors !== undefined) changes.minNeighbors = Math.round(Number(minNeighbors));
+      if (Object.keys(changes).length) await view.chooseNeighborhoods(changes);
+      await view.load();
+      await view.settled();
+      const state = view.neighborhoods();
+      if (state.status === 'no-loops') throw new ActionError('The V genes\' loops are not downloaded: download them in Reference data (tcrdist3-loops).');
+      if (state.status === 'no-models') throw new ActionError('No recombination model of this locus is downloaded: download OLGA\'s models in Reference data (olga-models), or ask with background "shuffled".');
+      if (state.status === 'unsupported') throw new ActionError('Neighborhoods need clonotypes defined by their amino-acid junctions: choose another definition.');
+      if (state.status === 'absent') await view.run('neighborhoods');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.neighborhoods().status) && view.neighborhoods(), 30 * 60 * 1000, 'the neighborhoods');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const r = done.result;
+      const ranked = centerOrder(r.centers, by);
+      const row = (c) => ({
+        id: c.id, chain: c.chain, total: c.total, samples: c.samples, radius: c.radius, neighbors: c.neighbors,
+        abundance: c.abundance, background: c.background, backgroundWeighted: c.weighted,
+        relativeRate: c.relativeRate, oddsRatio: c.oddsRatio, chiSquare: c.chiSquare, motif: c.motif,
+      });
+      const data = {
+        result: done.artifact, locus: r.locus, loci: r.loci, definition: r.describe,
+        source: r.source, organism: r.organism ?? null, loops: r.loops ?? null, cdr3Only: Boolean(r.neighborhoods.cdr3Only),
+        control: r.neighborhoods.control, minNeighbors: r.neighborhoods.minNeighbors,
+        receptors: r.result.receptors, centers: r.result.centers, shown: r.result.shown,
+        largest: r.result.largest, largestRadius: r.result.largestRadius, excluded: r.result.excluded,
+        order: by, top: ranked.slice(0, Math.max(0, Math.round(top))).map(row),
+      };
+      if (select) {
+        const chosen = ranked[Math.round(select) - 1];
+        if (!chosen) throw new ActionError(`select: from 1 to ${ranked.length}.`);
+        view.selectCenter(chosen.id);
+        data.selected = { ...row(chosen), members: chosen.members };
+      }
+      return { message: `${d.name}: ${count(r.result.centers, 'receptor')} of ${r.result.receptors.toLocaleString('en-US')} have a neighborhood of ${r.neighborhoods.minNeighbors} or more (${done.artifact}).`, data };
+    },
+
+    async measure_generation({ dataset, models, organism, genes, order = 'abundant', top = 10 }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.specificityView, 5000, 'the Specificity view');
+      view.show('generation');
+      const by = choose(order, Object.keys(PGEN_ORDERS), 'order');
+      view.order(by);
+      const changes = {};
+      if (models !== undefined) changes.models = choose(String(models), ['', 'olga', 'clonoloom'], 'models');
+      if (organism !== undefined) changes.organism = choose(String(organism), ['', 'human', 'mouse'], 'organism');
+      if (genes !== undefined) changes.genes = Boolean(genes);
+      if (Object.keys(changes).length) await view.choosePgen(changes);
+      await view.load();
+      await view.settled();
+      const state = view.generation();
+      if (state.status === 'no-models') throw new ActionError('OLGA\'s models are not downloaded: download them in Reference data (olga-models), or ask with models "clonoloom".');
+      if (state.status === 'unsupported') throw new ActionError('Generation probabilities need clonotypes defined by their junctions: choose another definition.');
+      if (state.status === 'absent') await view.run('pgen');
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.generation().status) && view.generation(), 30 * 60 * 1000, 'the probabilities');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      const r = done.result;
+      const computed = r.clonotypes.filter((c) => c.pgen >= 0).length;
+      const data = {
+        result: done.artifact, models: r.models, set: { name: r.set.name, checksum: r.set.checksum }, organism: r.organism, genes: r.genes, loci: r.loci, definition: r.describe,
+        clonotypes: r.clonotypes.length, computed, without: r.without,
+        samples: r.samples.map((s) => ({ sample: s.name, clonotypes: s.with, zero: s.zero, log10Quartiles: s.with > s.zero ? s.quartiles : null })),
+        order: by,
+        top: pgenOrder(r.clonotypes, by).slice(0, Math.max(0, Math.round(top))).map((c) => ({ id: c.id, chains: c.chains, total: c.total, samples: c.samples, pgen: c.pgen >= 0 ? c.pgen : null, chain: c.chain.map((p) => (p >= 0 ? p : null)) })),
+      };
+      return { message: `${d.name}: ${count(computed, 'clonotype')} of ${r.clonotypes.length.toLocaleString('en-US')} with a generation probability, under ${r.set.name} (${done.artifact}).`, data };
     },
 
     async select_clonotype({ dataset, rank, id }) {

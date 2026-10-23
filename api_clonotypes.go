@@ -16,6 +16,7 @@ import (
 	"sync"
 
 	"clonoloom/internal/clonotype"
+	"clonoloom/internal/invariant"
 	"clonoloom/internal/qc"
 	"clonoloom/internal/rep"
 )
@@ -27,10 +28,11 @@ type clonotypeTables struct {
 }
 
 type clonotypeEntry struct {
-	key    string
-	table  *clonotype.Table
-	orders map[string][]int32
-	mu     sync.Mutex
+	key        string
+	table      *clonotype.Table
+	invariants map[string]*invariant.Result
+	orders     map[string][]int32
+	mu         sync.Mutex
 }
 
 const keptTables = 6
@@ -188,6 +190,8 @@ func (q clonotypeQuery) matches(t *clonotype.Table, i int) bool {
 }
 
 type clonotypeRequest struct {
+	Species    string               `json:"species"`
+	Population string               `json:"population"`
 	Dataset    string               `json:"dataset"`
 	Definition clonotype.Definition `json:"definition"`
 	Filter     qc.Filter            `json:"filter"`
@@ -200,6 +204,7 @@ type clonotypeRequest struct {
 }
 
 type clonotypeRow struct {
+	Invariant invariant.Flags    `json:"invariant"`
 	Index     int                `json:"index"`
 	Rank      int                `json:"rank"`
 	ID        string             `json:"id"`
@@ -217,6 +222,7 @@ type sampleTotal struct {
 }
 
 type clonotypePage struct {
+	Invariant    *invariant.Result    `json:"invariant,omitempty"`
 	DefinitionID string               `json:"definitionId"`
 	Definition   clonotype.Definition `json:"definition"`
 	Describe     string               `json:"describe"`
@@ -248,6 +254,15 @@ func (a *app) clonotypeTable(req clonotypeRequest) (*dataset, *clonotypeEntry, i
 	ds, ok := a.datasets.get(req.Dataset)
 	if !ok {
 		return nil, nil, http.StatusNotFound, fmt.Errorf("the dataset is not open: open it again from its files")
+	}
+	if !invariant.ValidSpecies(req.Species) {
+		return nil, nil, http.StatusBadRequest, fmt.Errorf("invariant species: human, mouse, or empty")
+	}
+	if req.Population != "" && req.Species == "" {
+		return nil, nil, http.StatusBadRequest, fmt.Errorf("choose a species before filtering invariant populations")
+	}
+	if req.Population != "" && req.Population != "MAIT" && req.Population != "iNKT" && req.Population != "GEM" {
+		return nil, nil, http.StatusBadRequest, fmt.Errorf("population: MAIT, iNKT, GEM, or empty")
 	}
 	def, err := req.Definition.Normalize()
 	if err != nil {
@@ -287,11 +302,21 @@ func (a *app) handleClonotypes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t := entry.table
+	var inv *invariant.Result
+	if req.Species != "" {
+		inv = entry.invariant(req.Species)
+	}
 	matched := order
-	if !req.Query.empty() {
+	if !req.Query.empty() || req.Population != "" {
 		matched = make([]int32, 0, 1024)
 		for _, i := range order {
-			if req.Query.matches(t, int(i)) {
+			populationMatch := req.Population == ""
+			if inv != nil {
+				for p, name := range invariant.Populations {
+					populationMatch = populationMatch || (req.Population == name && inv.Flags[i][p] == invariant.Match)
+				}
+			}
+			if populationMatch && req.Query.matches(t, int(i)) {
 				matched = append(matched, i)
 			}
 		}
@@ -311,7 +336,10 @@ func (a *app) handleClonotypes(w http.ResponseWriter, r *http.Request) {
 	for k := offset; k < len(matched) && k < offset+limit; k++ {
 		i := int(matched[k])
 		c := t.Clonotypes[i]
-		row := clonotypeRow{Index: i, Rank: k + 1, ID: c.ID, Chains: c.Chains, Vendor: c.Vendor, Total: c.Total, Samples: c.Samples, In: map[string]float64{}}
+		row := clonotypeRow{Invariant: invariant.Flags{invariant.Unknown, invariant.Unknown, invariant.Unknown}, Index: i, Rank: k + 1, ID: c.ID, Chains: c.Chains, Vendor: c.Vendor, Total: c.Total, Samples: c.Samples, In: map[string]float64{}}
+		if inv != nil {
+			row.Invariant = inv.Flags[i]
+		}
 		if grand > 0 {
 			row.Frequency = c.Total / grand
 		}
@@ -320,6 +348,11 @@ func (a *app) handleClonotypes(w http.ResponseWriter, r *http.Request) {
 			row.In[strconv.Itoa(int(s))] = values[j]
 		}
 		page.Rows = append(page.Rows, row)
+	}
+	if req.Species != "" {
+		summary := *inv
+		summary.Flags = nil
+		page.Invariant = &summary
 	}
 	writeJSON(w, page)
 }
@@ -400,7 +433,7 @@ func (a *app) handleClonotype(w http.ResponseWriter, r *http.Request) {
 		}
 		rows = append(rows, mr)
 	}
-	writeJSON(w, map[string]any{"clonotype": c, "describe": t.Definition.Describe(), "unit": t.Unit, "in": in, "members": rows, "memberCount": len(members)})
+	writeJSON(w, map[string]any{"invariant": invariant.Classify(c, t.Definition, req.Species), "species": req.Species, "clonotype": c, "describe": t.Definition.Describe(), "unit": t.Unit, "in": in, "members": rows, "memberCount": len(members)})
 }
 
 func finiteOr0(v float64) float64 {
@@ -408,4 +441,19 @@ func finiteOr0(v float64) float64 {
 		return 0
 	}
 	return v
+}
+
+// The annotation shares the table's immutable lifetime and is computed once per species.
+func (e *clonotypeEntry) invariant(species string) *invariant.Result {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if e.invariants == nil {
+		e.invariants = map[string]*invariant.Result{}
+	}
+	if r := e.invariants[species]; r != nil {
+		return r
+	}
+	r, _ := invariant.Compute(e.table, species)
+	e.invariants[species] = r
+	return r
 }

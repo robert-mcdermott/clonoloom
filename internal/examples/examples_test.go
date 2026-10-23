@@ -42,7 +42,7 @@ func TestTheRecordedExamples(t *testing.T) {
 			t.Errorf("%s: license class %q is not offered", s.Name, s.LicenseClass)
 		}
 	}
-	for _, want := range []string{"10x-pbmc-1k", "10x-mouse-splenocytes-1k", "10x-pbmc-10k-v2", "10x-mouse-splenocytes-5k-gemx", "airr-standards-tests", "emerson-2017-immunoseq"} {
+	for _, want := range []string{"10x-pbmc-1k", "10x-mouse-splenocytes-1k", "10x-pbmc-10k-v2", "10x-mouse-splenocytes-5k-gemx", "airr-standards-tests", "dash-2017-tcrdist3", "ots-healthy-pbmc", "emerson-2017-immunoseq"} {
 		if _, ok := names[want]; !ok {
 			t.Errorf("%s is not offered", want)
 		}
@@ -54,12 +54,13 @@ func TestTheRecordedExamples(t *testing.T) {
 	if sources[0].Name != "10x-pbmc-1k" || sources[len(sources)-1].LicenseClass != "terms" {
 		t.Errorf("listed first %s, last %s", sources[0].Name, sources[len(sources)-1].Name)
 	}
-	// Every recorded data set identifies its files, offered or not.
+	// Every recorded data set identifies its files, offered or not: the two ADC queries, and
+	// three kept for the readers' validation.
 	all, err := ParseAll(raw)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(all) != len(sources)+2 {
+	if len(all) != len(sources)+5 {
 		t.Errorf("%d recorded, %d offered", len(all), len(sources))
 	}
 	adc := all[0]
@@ -72,8 +73,36 @@ func TestTheRecordedExamples(t *testing.T) {
 		t.Errorf("identified %v", ids)
 	}
 	lib := &Library{Sources: sources}
-	if hosts := strings.Join(lib.Hosts(), " "); hosts != "adaptivepublic.blob.core.windows.net cf.10xgenomics.com raw.githubusercontent.com" {
+	if hosts := strings.Join(lib.Hosts(), " "); hosts != "adaptivepublic.blob.core.windows.net cf.10xgenomics.com opig.stats.ox.ac.uk raw.githubusercontent.com" {
 		t.Errorf("hosts %s", hosts)
+	}
+}
+
+// The reference data sources.json records (the V genes' loops TCRdist compares): downloaded like
+// the examples, each file recorded, and never offered as an example.
+func TestTheRecordedReferenceData(t *testing.T) {
+	raw, err := os.ReadFile("../../validation/sources.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	refs, err := ParseReferences(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(refs) == 0 || refs[0].Name != "tcrdist3-loops" || refs[0].Base == "" || len(refs[0].Files) != 1 || refs[0].Files[0].SHA256 == "" || refs[0].LicenseClass != "open" {
+		t.Fatalf("%+v", refs)
+	}
+	offered, _ := Parse(raw)
+	all, _ := ParseAll(raw)
+	for _, list := range [][]Source{offered, all} {
+		for _, s := range list {
+			if s.Name == "tcrdist3-loops" {
+				t.Error("reference data listed with the data sets")
+			}
+		}
+	}
+	if _, err := ParseReferences([]byte(`{"references": {"x": {"files": [{"path": "a"}]}}}`)); err == nil {
+		t.Error("reference data without a base URL")
 	}
 }
 
@@ -271,4 +300,28 @@ func (c *countingWriter) Write(p []byte) (int, error) {
 	n, err := c.ResponseWriter.Write(p)
 	c.n += int64(n)
 	return n, err
+}
+
+func TestReleaseReferenceHosts(t *testing.T) {
+	raw := []byte(`{"references":{"vdjdb":{"members":{"url":"https://github.com/antigenomics/vdjdb-db/releases/download/date/data.zip","names":["data/vdjdb.txt"]},"files":[{"path":"vdjdb.txt"}]}}}`)
+	refs, err := ParseReferences(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lib := &Library{Sources: refs}
+	if got := strings.Join(lib.Hosts(), " "); got != "github.com release-assets.githubusercontent.com" {
+		t.Fatal(got)
+	}
+	client := lib.defaultClient()
+	for _, addr := range []string{"https://release-assets.githubusercontent.com/data", "http://release-assets.githubusercontent.com/data", "https://other.example/data"} {
+		req, _ := http.NewRequest(http.MethodGet, addr, nil)
+		err := client.CheckRedirect(req, nil)
+		if (err == nil) != (addr == "https://release-assets.githubusercontent.com/data") {
+			t.Fatal(addr, err)
+		}
+	}
+	lib.Sources = []Source{{Base: "https://raw.githubusercontent.com/publisher/data/"}}
+	if contains(lib.Hosts(), "release-assets.githubusercontent.com") {
+		t.Fatal("release CDN allowed without a catalogued release")
+	}
 }

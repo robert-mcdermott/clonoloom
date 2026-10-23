@@ -20,6 +20,7 @@ import (
 	"clonoloom/internal/airr"
 	"clonoloom/internal/clonotype"
 	"clonoloom/internal/diversity"
+	"clonoloom/internal/invariant"
 	"clonoloom/internal/overlap"
 	"clonoloom/internal/rep"
 	"clonoloom/internal/track"
@@ -232,6 +233,11 @@ func Rearrangements(w io.Writer, rt *rep.Table, keep []bool, ct *clonotype.Table
 // and J at the definition's levels), its total abundance and samples, and its abundance in each
 // sample (names).
 func Clonotypes(w io.Writer, ct *clonotype.Table, names []string) error {
+	return ClonotypesWithInvariant(w, ct, names, nil)
+}
+
+// ClonotypesWithInvariant adds the explicit species and versioned rule statuses, when requested.
+func ClonotypesWithInvariant(w io.Writer, ct *clonotype.Table, names []string, inv *invariant.Result) error {
 	chains := 1
 	for _, c := range ct.Clonotypes {
 		chains = max(chains, len(c.Chains))
@@ -244,6 +250,9 @@ func Clonotypes(w io.Writer, ct *clonotype.Table, names []string) error {
 	}
 	header = append(header, "total", "samples")
 	header = append(header, names...)
+	if inv != nil {
+		header = append(header, "invariant_species", "invariant_rule_version", "MAIT", "iNKT", "GEM")
+	}
 	if err := cw.Write(header); err != nil {
 		return err
 	}
@@ -261,6 +270,9 @@ func Clonotypes(w io.Writer, ct *clonotype.Table, names []string) error {
 			if int(s) < len(names) {
 				row[at+2+int(s)] = number(values[k])
 			}
+		}
+		if inv != nil {
+			copy(row[len(row)-5:], []string{inv.Species, strconv.Itoa(inv.Version), inv.Flags[i][0], inv.Flags[i][1], inv.Flags[i][2]})
 		}
 		if err := cw.Write(row); err != nil {
 			return err
@@ -570,6 +582,151 @@ func Attribution(w io.Writer, res track.Attribution) error {
 		}
 		for _, x := range s.Points {
 			rows = append(rows, attributedRow([]string{s.Subject, strings.Join(s.Reference, " "), strings.Join(x.Point.Samples, " ")}, x))
+		}
+	}
+	return writeAll(w, rows)
+}
+
+// Neighbor is a clonotype TCRdist compared: its neighbors within the radius, and its nearest other
+// clonotype of the same chains ("" when it has none) with their distance.
+type Neighbor struct {
+	ID        string
+	Chains    []clonotype.Chain
+	Total     float64
+	Samples   int
+	Neighbors int
+	Nearest   string
+	Distance  int
+}
+
+// TCRdist writes each clonotype TCRdist compared (tcrdist.csv): its chains, abundance and samples,
+// its neighbors within the radius, and its nearest clonotype with their distance.
+func TCRdist(w io.Writer, radius int, rows []Neighbor) error {
+	out := [][]string{{"clonotype_id", "chains", "total", "samples", "radius", "neighbors", "nearest_id", "nearest_distance"}}
+	for _, r := range rows {
+		distance := ""
+		if r.Nearest != "" {
+			distance = strconv.Itoa(r.Distance)
+		}
+		out = append(out, []string{r.ID, chainsText(r.Chains), number(r.Total), strconv.Itoa(r.Samples), strconv.Itoa(radius), strconv.Itoa(r.Neighbors), r.Nearest, distance})
+	}
+	return writeAll(w, out)
+}
+
+// Generated is a clonotype's generation probabilities: each chain's (−1 when its locus has no
+// model) and their product (−1 unless every chain has one).
+type Generated struct {
+	ID      string
+	Chains  []clonotype.Chain
+	Total   float64
+	Samples int
+	Chain   []float64
+	Pgen    float64
+}
+
+// Pgen writes each clonotype's generation probabilities (pgen.csv): its chains, abundance and
+// samples, the product, and each chain's (locus:probability, separated by spaces); a probability
+// missing is empty.
+func Pgen(w io.Writer, rows []Generated) error {
+	out := [][]string{{"clonotype_id", "chains", "total", "samples", "pgen", "chain_pgen"}}
+	text := func(p float64) string {
+		if p < 0 {
+			return ""
+		}
+		return strconv.FormatFloat(p, 'g', 10, 64)
+	}
+	for _, r := range rows {
+		var chains []string
+		for k, ch := range r.Chains {
+			if k < len(r.Chain) {
+				chains = append(chains, ch.Locus+":"+text(r.Chain[k]))
+			}
+		}
+		out = append(out, []string{r.ID, chainsText(r.Chains), number(r.Total), strconv.Itoa(r.Samples), text(r.Pgen), strings.Join(chains, " ")})
+	}
+	return writeAll(w, out)
+}
+
+// PgenSample is a sample's clonotypes' generation probabilities: how many have one, how many the
+// model cannot make, and the quartiles of the others' log₁₀.
+type PgenSample struct {
+	Name      string
+	With      int
+	Zero      int
+	Quartiles [3]float64
+}
+
+// PgenSamples writes each sample's distribution (samples.csv).
+func PgenSamples(w io.Writer, rows []PgenSample) error {
+	out := [][]string{{"sample", "clonotypes_with_pgen", "pgen_zero", "log10_pgen_q1", "log10_pgen_median", "log10_pgen_q3"}}
+	for _, r := range rows {
+		q := []string{"", "", ""}
+		if r.With > r.Zero {
+			for i, v := range r.Quartiles {
+				q[i] = strconv.FormatFloat(v, 'f', 4, 64)
+			}
+		}
+		out = append(out, append([]string{r.Name, strconv.Itoa(r.With), strconv.Itoa(r.Zero)}, q...))
+	}
+	return writeAll(w, out)
+}
+
+// Neighborhood is a centroid of a neighborhoods result, for neighborhoods.csv.
+type Neighborhood struct {
+	ID                                           string
+	Locus, Junction, V, J                        string
+	Total                                        float64
+	Samples, Radius, Neighbors                   int
+	Abundance                                    float64
+	Background                                   int
+	Weighted, Rate, BackgroundRate, RelativeRate float64
+	OddsRatio, ChiSquare                         float64
+	Motif                                        string
+}
+
+// Neighborhoods writes each centroid: its chain, radius, neighborhood and enrichment.
+func Neighborhoods(w io.Writer, rows []Neighborhood) error {
+	out := [][]string{{"centroid_id", "locus", "junction_aa", "v_call", "j_call", "total", "samples", "radius",
+		"neighbors", "neighbor_abundance", "background", "background_weighted", "rate", "background_rate",
+		"relative_rate", "odds_ratio", "chi_square", "motif"}}
+	for _, r := range rows {
+		out = append(out, []string{r.ID, r.Locus, r.Junction, r.V, r.J, number(r.Total), strconv.Itoa(r.Samples),
+			strconv.Itoa(r.Radius), strconv.Itoa(r.Neighbors), number(r.Abundance), strconv.Itoa(r.Background),
+			strconv.FormatFloat(r.Weighted, 'g', 10, 64), strconv.FormatFloat(r.Rate, 'g', 10, 64),
+			strconv.FormatFloat(r.BackgroundRate, 'g', 10, 64), strconv.FormatFloat(r.RelativeRate, 'g', 10, 64),
+			strconv.FormatFloat(r.OddsRatio, 'g', 10, 64), strconv.FormatFloat(r.ChiSquare, 'g', 10, 64), r.Motif})
+	}
+	return writeAll(w, out)
+}
+
+// NeighborhoodMember is a receptor of a neighborhood, for members.csv.
+type NeighborhoodMember struct {
+	Centroid, ID   string
+	Junction, V, J string
+	Total          float64
+	Samples        int
+	Distance       int
+}
+
+// NeighborhoodMembers writes each neighborhood's receptors, its centroid first.
+func NeighborhoodMembers(w io.Writer, rows []NeighborhoodMember) error {
+	out := [][]string{{"centroid_id", "clonotype_id", "junction_aa", "v_call", "j_call", "total", "samples", "distance"}}
+	for _, r := range rows {
+		out = append(out, []string{r.Centroid, r.ID, r.Junction, r.V, r.J, number(r.Total), strconv.Itoa(r.Samples), strconv.Itoa(r.Distance)})
+	}
+	return writeAll(w, out)
+}
+
+// InvariantSamples writes complete sample denominators and evaluable abundance alongside flags.
+func InvariantSamples(w io.Writer, r *invariant.Result, names []string) error {
+	rows := [][]string{{"sample", "species", "rule_version", "population", "total", "evaluable", "matched", "share"}}
+	for s, x := range r.Samples {
+		for p, name := range invariant.Populations {
+			share := ""
+			if x.Share[p] != nil {
+				share = number(*x.Share[p])
+			}
+			rows = append(rows, []string{names[s], r.Species, strconv.Itoa(r.Version), name, number(x.Total), number(x.Evaluable[p]), number(x.Matched[p]), share})
 		}
 	}
 	return writeAll(w, rows)

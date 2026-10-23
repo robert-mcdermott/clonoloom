@@ -6,7 +6,7 @@ import { showMenu, showDialog, promptDialog, confirmDialog, toast, closeMenu } f
 import { createStore } from './ui/store.js';
 import { createLibrary, detectBackend, getDataset, locateFile, openDataset, prefs } from './ui/storage.js';
 import { pickPaths } from './ui/file-picker.js';
-import { createExamples } from './ui/examples.js';
+import { REFERENCES, createExamples } from './ui/examples.js';
 import { createJobs } from './ui/jobs.js';
 import { showMethods } from './ui/methods.js';
 import { exportDataset } from './ui/exports.js';
@@ -22,7 +22,7 @@ import { createProject, isEmptyProject, parseProject, rename, serializeProject }
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
-const VERSION = '0.3.0';
+const VERSION = '0.4.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -36,14 +36,7 @@ const MODES = [
   { id: 'clonotypes', label: 'Clonotypes', icon: 'clonotypes', load: () => import('./ui/mode-clonotypes.js').then((m) => m.mountClonotypes) },
   { id: 'repertoire', label: 'Repertoire', icon: 'repertoire', load: () => import('./ui/mode-repertoire.js').then((m) => m.mountRepertoire) },
   { id: 'tracking', label: 'Tracking', icon: 'threads', load: () => import('./ui/mode-tracking.js').then((m) => m.mountTracking) },
-  {
-    id: 'specificity', label: 'Specificity', icon: 'receptor',
-    load: async () => plannedMode({
-      title: 'Specificity', icon: 'receptor',
-      purpose: 'Receptors grouped by likely shared specificity: TCRdist neighborhoods against a background, specificity groups, networks of similar receptors, and matches to receptors of known specificity in public databases, with their evidence. Similarity suggests specificity; it does not prove it.',
-      steps: ['Define clonotypes.', 'Compute distances and neighborhoods.', 'Inspect groups and their database matches.'],
-    }),
-  },
+  { id: 'specificity', label: 'Specificity', icon: 'receptor', load: () => import('./ui/mode-specificity.js').then((m) => m.mountSpecificity) },
   {
     id: 'bcells', label: 'B cells', icon: 'lineage',
     load: async () => plannedMode({
@@ -202,6 +195,7 @@ async function start() {
     const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
     if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
     if (['tracking', 'expansion', 'classes', 'attribution'].includes(result?.kind) && store.ui.mode !== 'tracking') app.setMode('tracking');
+    if (['tcrdist', 'pgen', 'neighborhoods', 'networks', 'specificity'].includes(result?.kind) && store.ui.mode !== 'specificity') app.setMode('specificity');
   };
 
   app.toggleDrawer = (open = !store.ui.drawer.open, tab = store.ui.drawer.tab) => {
@@ -250,11 +244,13 @@ async function start() {
     if (paths?.length) await app.openData(paths);
   };
 
-  // The program's background jobs (ui/jobs.js), and public example data, downloaded when asked
-  // (ui/examples.js).
+  // The program's background jobs (ui/jobs.js), and public example data and the reference data
+  // the analyses use, downloaded when asked (ui/examples.js).
   app.jobs = createJobs(app);
   app.examples = createExamples(app);
   app.showExamples = () => app.examples.dialog();
+  app.references = createExamples(app, REFERENCES);
+  app.showReferences = () => app.references.dialog();
 
   // --- Datasets ----------------------------------------------------------------------------------
 

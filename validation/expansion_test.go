@@ -140,6 +140,9 @@ func openSeries(t *testing.T, name string, variance float64) (*clonotype.Table, 
 // (about 0.2% of those tested, as Rytlewski et al. found between blood samples two weeks apart);
 // the beta-binomial test, its variance fitted on the replicate samples, (almost) none.
 func TestExpansionTestsOnANullSeries(t *testing.T) {
+	if raceDetector {
+		t.Skip("measured without the race detector (CI's data job), which slows its simulations tenfold")
+	}
 	for _, c := range []struct {
 		variance float64
 		test     string
@@ -186,6 +189,9 @@ func TestExpansionTestsOnANullSeries(t *testing.T) {
 // fewer of the clones that did change. How many of the expanding clones tested are called is said
 // too: most are small.
 func TestExpansionTestsOnACARTSeries(t *testing.T) {
+	if raceDetector {
+		t.Skip("measured without the race detector (CI's data job), which slows its simulations tenfold")
+	}
 	for _, c := range []struct {
 		variance float64
 		test     string

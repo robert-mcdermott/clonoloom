@@ -62,6 +62,61 @@ test('mapped Adaptive names cite HGNC; a unit the user confirmed is said so; dat
   assert.match(text, /2 Adaptive Biotechnologies gene names were mapped to IMGT's by ClonoLoom's rules and the HGNC list of human TR and IG genes \[\d\]/);
 });
 
+test('the readers of MiXCR\'s tables, OAS and OTS units and tcrdist3\'s tables say how they read', () => {
+  const sources = [{ ...pbmc.sources[0], format: 'mixcr-clones' }, { ...pbmc.sources[0], format: 'oas-unit' }, { ...pbmc.sources[0], format: 'tcrdist3-clones' }];
+  const { text, references } = methodsParagraph({ dataset: { ...pbmc, credits: [], sources }, program });
+  assert.match(text, /\(MiXCR clone tables, Observed Antibody Space or Observed T cell receptor Space data units and tcrdist3 clone tables\) were read/);
+  assert.match(text, /MiXCR clone tables were read with each segment's best-scoring hits as its call, MiXCR's allele \*00 \(no allele resolved\) dropped/);
+  assert.match(text, /Data units of the Observed Antibody Space \[2\] and the Observed T cell receptor Space \[3\] were read with their metadata as their samples'; a paired unit's rows as single cells/);
+  assert.match(text, /tcrdist3's clone tables \[4\] were read with each clone of n cells as n cells with its chains/);
+  assert.match(references[1], /Olsen TH/);
+  assert.match(references[3], /Mayer-Blackwell K/);
+  // One format alone says only its own; a unit of T-cell receptors cites OTS alone.
+  const alone = methodsParagraph({ dataset: { ...pbmc, credits: [], sources: [sources[0]] }, program }).text;
+  assert.doesNotMatch(alone, /Observed|tcrdist3/);
+  const ots = methodsParagraph({ dataset: { ...pbmc, credits: [], sources: [sources[1]] }, summary: { samples: [{ name: 'u', loci: { TRA: 2, TRB: 2 } }], sources: [{}] }, program }).text;
+  assert.match(ots, /Data units of the Observed T cell receptor Space \[2\] were read/);
+});
+
+test('a TCRdist result says how the clonotypes were compared, with the loops\' database named by its checksum', () => {
+  const result = { kind: 'tcrdist', definition: 'Paired αβ', filter: null, radius: 48, cdr3Only: false, organism: 'mouse', loops: { file: 'combo_xcr_2024-03-05.tsv', sha256: '1d7fcac3' }, compared: 1746, withNeighbors: 936 };
+  const { text, references } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [result], program });
+  assert.match(text, /Each T-cell clonotype \("Paired αβ"\) was compared with every other of the same chains by TCRdist \[\d\], as tcrdist3 computes it \[\d\]/);
+  assert.match(text, /the loops of each mouse V allele taken from tcrdist3's database of genes \(combo_xcr_2024-03-05\.tsv, SHA-256 1d7fcac3\)/);
+  assert.match(text, /Of 1,746 clonotypes compared, 936 had another within 48 TCRdist units\./);
+  assert.ok(references.some((r) => /Dash P/.test(r)) && references.some((r) => /Mayer-Blackwell/.test(r)));
+  const alone = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [{ ...result, cdr3Only: true, loops: null }], program }).text;
+  assert.match(alone, /each chain by their CDR3s alone/);
+  assert.doesNotMatch(alone, /tcrdist3's database/);
+});
+
+test('a generation probabilities result names its models by their checksum', () => {
+  const result = { kind: 'pgen', definition: 'AA', filter: null, models: 'olga', set: { name: 'OLGA\'s default models', checksum: 'ab12cd34' }, organism: 'human', genes: true, loci: { TRB: 'human_T_beta', TRA: 'human_T_alpha' }, clonotypes: 1200, computed: 1180 };
+  const { text, references } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [result], program });
+  assert.match(text, /Each clonotype's generation probability \("AA"\), the probability that V\(D\)J recombination alone makes its CDR3s with their V and J genes/);
+  assert.match(text, /under OLGA's default models \[\d\] \(human_T_beta for TRB, human_T_alpha for TRA\), inferred by IGoR \[\d\] \(checksum ab12cd34\), human/);
+  assert.match(text, /Of 1,200 clonotypes, 1,180 had one\./);
+  assert.ok(references.some((r) => /Sethna Z/.test(r)) && references.some((r) => /Marcou Q/.test(r)));
+  const own = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [{ ...result, models: 'clonoloom', genes: false, set: { checksum: 'clonoloom_human_T_beta 1' }, loci: { TRB: 'clonoloom_human_T_beta' } }], program });
+  assert.match(own.text, /under ClonoLoom's own model of human TRB recombination \(its simulator's: GRCh38's gene segments, version 1\)/);
+  assert.ok(!own.references.some((r) => /Marcou Q/.test(r)));
+});
+
+test('a neighborhoods result names its background and how each radius was chosen', () => {
+  const result = { kind: 'neighborhoods', definition: 'AA', filter: null, locus: 'TRB', cdr3Only: false, organism: 'human',
+    loops: { file: 'combo_xcr_2024-03-05.tsv', sha256: '1d7fcac3' }, control: 1e-6, maxRadius: 48, minNeighbors: 2,
+    background: { kind: 'model', name: 'human_T_beta', checksum: 'ab12cd34', receptors: 100000 },
+    receptors: 7658, centers: 956 };
+  const { text, references } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [result], program });
+  assert.match(text, /Each TRB receptor \("AA"\) was taken as the centre of a neighborhood by ClonoLoom \[\d\] as Mayer-Blackwell et al\. define one \[\d\]/);
+  assert.match(text, /at most a share 0\.000001 of the background's receptors, against a background of 100,000 receptors drawn from human_T_beta \(checksum ab12cd34\)/);
+  assert.match(text, /Of 7,658 receptors, 956 had a neighborhood of 2 receptors or more/);
+  assert.ok(references.some((r) => /Mayer-Blackwell/.test(r)) && references.some((r) => /Dash P/.test(r)));
+  const shuffled = methodsParagraph({ dataset: { ...pbmc, credits: [] }, results: [{ ...result, cdr3Only: true, loops: null, background: { kind: 'shuffled', receptors: 7658 } }], program }).text;
+  assert.match(shuffled, /the same receptors with their CDR3s moved among their V and J genes \(7,658 receptors\)/);
+  assert.match(shuffled, /comparing their CDR3s alone/);
+});
+
 test('the same inputs give the same text', () => {
   const inputs = { dataset: pbmc, program };
   assert.deepEqual(methodsParagraph(inputs), methodsParagraph(inputs));
@@ -188,4 +243,39 @@ test('a simulated series says it was sampled over time, and how its reference wa
   // A study at one time says nothing of it.
   const standard = { samples: [{ name: 'S01-1', repertoire: { repertoireId: 'S01-1', studyId: 'clonoloom-simulated-standard', studyTitle: 'A simulated TRB study' } }], sources: [{}] };
   assert.doesNotMatch(methodsParagraph({ dataset, summary: standard, program }).text, /time points/);
+});
+
+test('network methods carry chain rules, thresholds and source citations', () => {
+  const { text, references } = methodsParagraph({ dataset: pbmc, program,
+    results: [{ kind: 'networks', describe: 'paired amino-acid junctions', nodes: 10, edges: 6, components: 4,
+      networks: { metric: 'levenshtein', cutoff: 2, arms: 'all', sameV: true } }],
+  });
+  assert.match(text, /Levenshtein distance/);
+  assert.match(text, /cutoff 2/);
+  assert.match(text, /bijection of all retained chains at each locus/);
+  assert.match(text, /6 edges formed 4 connected components/);
+  assert.match(text, /not proven antigen specificity/);
+  assert.ok(references.some((r) => r.includes('Levenshtein VI')));
+  assert.ok(references.some((r) => r.includes('Fruchterman')));
+});
+
+test('specificity reports reference identity, chain evidence, overlapping shares and methods', () => {
+  const { text, references } = methodsParagraph({ dataset: pbmc, program, results: [{ kind: 'specificity', describe: 'TRB amino-acid genes', specificity: { metric: 'tcrdist', radius: 24, cdr3Only: true, species: 'HomoSapiens', genes: true, minScore: 2 }, database: { reference: 'VDJdb 2026-06-03', source: 'publisher', sha256: 'abc123', license: 'CC BY-NC-ND 4.0', citation: 'Shugay et al. doi:10.1093/nar/gkx760' }, matches: 12 }] });
+  assert.match(text, /SHA-256 abc123/);
+  assert.match(text, /TCRdist ≤ 24/);
+  assert.match(text, /not established specificity of paired receptors/);
+  assert.ok(references.some((s) => s.includes('gkx760')));
+});
+
+test('invariant methods cite only the explicitly selected species rules', () => {
+  const args = { dataset: pbmc, definition: { name: 'Paired' }, clonotypes: { id: 'def-a', describe: 'paired TRA and TRB', count: 1 }, program };
+  assert.doesNotMatch(methodsParagraph(args).text, /invariant|GEM alpha-chain/);
+  const human = methodsParagraph({ ...args, dataset: { ...pbmc, invariantSpecies: 'human' } });
+  assert.match(human.text, /human MAIT and iNKT/);
+  assert.match(human.text, /all retained abundance, including unevaluable/);
+  assert.ok(human.references.some((r) => r.includes('s41587-021-00989-2')));
+  assert.ok(human.references.some((r) => r.includes('1401380')));
+  const mouse = methodsParagraph({ ...args, dataset: { ...pbmc, invariantSpecies: 'mouse' } });
+  assert.match(mouse.text, /mouse MAIT and iNKT/);
+  assert.ok(!mouse.references.some((r) => r.includes('1401380')));
 });

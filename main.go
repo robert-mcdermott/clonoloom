@@ -37,7 +37,7 @@ import (
 //go:embed web/index.html web/styles.css web/app.js web/favicon.svg web/lib/*.js web/ui/*.js
 var content embed.FS
 
-var version = "0.3.0"
+var version = "0.4.0"
 
 // commit is the source revision the program was built from. Release builds set it with
 // -ldflags "-X main.commit=..."; otherwise it comes from the version-control stamp Go records
@@ -81,6 +81,10 @@ type app struct {
 	clonotypes *clonotypeTables
 	// examples are the example datasets, downloaded when asked (api_examples.go).
 	examples *examples.Library
+	// references are the reference data the analyses use, downloaded when asked
+	// (api_references.go), and loops the V genes' loops TCRdist uses, read from them once.
+	references *examples.Library
+	loops      loopsCache
 	// jobs runs the long computations in the background (api_jobs.go), kept in the library.
 	jobs *jobs.Manager
 	// artifacts are the results kept, with their lineage (internal/artifacts), in the library.
@@ -361,6 +365,7 @@ func newApp(cfg config) (*app, error) {
 		datasets:   newDatasets(),
 		clonotypes: &clonotypeTables{},
 		examples:   newExamples(cfg.examplesDir, cfg.offline),
+		references: newReferences(filepath.Join(cfg.dataDir, "references"), cfg.offline),
 	}
 	if cfg.remote {
 		a.remote = newRemoteHub(a.session)
@@ -470,9 +475,13 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerQC(mux)
 	a.registerClonotypes(mux)
 	a.registerExamples(mux)
+	a.registerReferences(mux)
 	a.registerJobs(mux)
 	a.registerCache(mux)
 	a.registerAnalyses(mux)
+	a.registerTCRdist(mux)
+	a.registerPgen(mux)
+	a.registerNeighborhoods(mux)
 	a.registerFigures(mux)
 	a.registerExports(mux)
 	a.registerStudy(mux)

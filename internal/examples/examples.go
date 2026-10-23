@@ -112,7 +112,7 @@ func ParseAll(raw []byte) ([]Source, error) {
 	if err := json.Unmarshal(raw, &doc); err != nil {
 		return nil, err
 	}
-	order, err := datasetOrder(raw)
+	order, err := keyOrder(raw, "datasets")
 	if err != nil {
 		return nil, err
 	}
@@ -141,9 +141,35 @@ func ParseAll(raw []byte) ([]Source, error) {
 	return out, nil
 }
 
-// datasetOrder answers the names of sources.json's data sets in the file's order (a map in Go
-// has none).
-func datasetOrder(raw []byte) ([]string, error) {
+// ParseReferences reads the reference data of sources.json (its "references": data the program
+// uses rather than opens, such as the V genes' loops TCRdist compares), downloaded on request as
+// examples are, in the file's order.
+func ParseReferences(raw []byte) ([]Source, error) {
+	var doc struct {
+		References map[string]Source `json:"references"`
+	}
+	if err := json.Unmarshal(raw, &doc); err != nil {
+		return nil, err
+	}
+	order, err := keyOrder(raw, "references")
+	if err != nil {
+		return nil, err
+	}
+	var out []Source
+	for _, name := range order {
+		s := doc.References[name]
+		s.Name = name
+		if len(s.Files) == 0 || (s.Base == "" && (s.Members == nil || s.Members.URL == "" || len(s.Members.Names) == 0)) {
+			return nil, fmt.Errorf("%s: reference data with no files to download", name)
+		}
+		out = append(out, s)
+	}
+	return out, nil
+}
+
+// keyOrder answers the names of the objects under one of sources.json's top-level keys, in the
+// file's order (a map in Go has none).
+func keyOrder(raw []byte, key string) ([]string, error) {
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	depth := 0
 	var names []string
@@ -167,9 +193,9 @@ func datasetOrder(raw []byte) ([]string, error) {
 				}
 			}
 		case string:
-			// Keys and values alternate in an object; at depth 1, "datasets" opens the list, and
-			// at depth 2 within it each key is a data set's name, followed by its object.
-			if depth == 1 && t == "datasets" && dec.More() {
+			// Keys and values alternate in an object; at depth 1, the key opens the list, and at
+			// depth 2 within it each key is a data set's name, followed by its object.
+			if depth == 1 && t == key && dec.More() {
 				inDatasets = true
 				continue
 			}
@@ -752,9 +778,17 @@ func (l *Library) Hosts() []string {
 			}
 			return ""
 		}()} {
-			if u, err := url.Parse(a); err == nil && u.Host != "" && !seen[u.Host] {
-				seen[u.Host] = true
-				out = append(out, u.Host)
+			if u, err := url.Parse(a); err == nil && u.Host != "" {
+				if !seen[u.Host] {
+					seen[u.Host] = true
+					out = append(out, u.Host)
+				}
+				// GitHub serves pinned release assets from this dedicated CDN.
+				// It is allowed only when the catalog contains a release URL.
+				if u.Host == "github.com" && strings.Contains(u.Path, "/releases/download/") && !seen["release-assets.githubusercontent.com"] {
+					seen["release-assets.githubusercontent.com"] = true
+					out = append(out, "release-assets.githubusercontent.com")
+				}
 			}
 		}
 	}

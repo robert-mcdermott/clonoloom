@@ -126,6 +126,9 @@ func (a *app) handleJobs() {
 			if err := json.Unmarshal(spec, &s); err != nil || s.Dataset == "" {
 				return nil, errors.New("its spec names no dataset")
 			}
+			if s.Method != k.version {
+				return nil, fmt.Errorf("this job uses method version %d; %s now uses version %d: start a new analysis", s.Method, k.title, k.version)
+			}
 			return k.work(a, k, s), nil
 		}, nil)
 	}

@@ -1,0 +1,104 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "pgn-f9d8d0858f1201f4",
+  "kind": "pgen",
+  "name": "Generation probabilities · Simulated beta chains",
+  "dataset": "d-d5ec144758219e25",
+  "state": "complete",
+  "created": "2026-10-23T04:30:47.363594Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-d5ec144758219e25",
+        "name": "Simulated beta chains"
+      }
+    ],
+    "job": {
+      "id": "jmvkh2b5o-3",
+      "kind": "pgen",
+      "spec": {
+        "dataset": "d-d5ec144758219e25",
+        "definition": {
+          "name": "Amino-acid junction, V and J genes",
+          "chains": [],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "pgen": {
+          "models": "clonoloom",
+          "organism": "human",
+          "genes": true,
+          "checksum": "clonoloom_human_T_beta 1"
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Generation probability of each clonotype's chains under a V(D)J recombination model (Sethna et al. 2019), computed as OLGA computes it",
+      "version": "1",
+      "citation": "Sethna Z, et al. OLGA: fast computation of generation probabilities of B- and T-cell receptor amino acid sequences and motifs. Bioinformatics. 2019;35:2974–2981"
+    },
+    "parameters": {
+      "dataset": "d-d5ec144758219e25",
+      "definition": {
+        "name": "Amino-acid junction, V and J genes",
+        "chains": [],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "pgen": {
+        "models": "clonoloom",
+        "organism": "human",
+        "genes": true,
+        "checksum": "clonoloom_human_T_beta 1"
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.4.0",
+        "commit": "a6386d4d4165e9ef13671ce5e00d9750e1241151-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "pgen.json",
+      "role": "pgen",
+      "size": 14061,
+      "sha256": "3ca3c29f46d14362715555807c75ea486bb419fd944953216af496a2f12959c6"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "clonotypes": 67,
+    "computed": 67,
+    "definition": "Amino-acid junction, V and J genes",
+    "genes": true,
+    "models": "clonoloom",
+    "organism": "human"
+  }
+}
