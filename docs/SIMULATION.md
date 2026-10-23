@@ -190,7 +190,7 @@ their IDs retain their existing meaning. The next guided steps inspect paired ne
 and infer families at an explicit threshold of 0.1. Both paired and heavy-only inference recover
 the exact 36 known families at that threshold; at 0.05 they yield 43 and 38 families respectively.
 The threshold is a demonstration for these artificial data, not a biological recommendation.
-Mutation and lineage inference remain later slices.
+The development SHM and lineage views analyze these saved projections; see below.
 
 This is a deliberately artificial benchmark, model `clonoloom-artificial-bcell-v2`. The sequences
 are generated coding strings, not biological antibody references. Gene calls containing `SIM`
@@ -277,3 +277,12 @@ mutation events on the generating tree: sampled descendants repeat changes, and 
 remove net differences. The independent `validation/reference/shm.py` compares observed
 sequences directly with known root sequences by the fixed artificial regions, including all
 43,200 row/region entries. It validates bookkeeping, not biological SHM accuracy.
+
+### Lineage validation (wave 5, slice 7)
+
+The guided workflow builds 72 separate family/locus trees on 327 shared V/J sites. Independent
+rooted-bipartition enumeration and four-state scoring agree with every Go minimum score and
+optimal-topology count: 1,093 changes in total, with ties in 71 searches. The known full generating
+tree supplies an upper bound, not a uniquely recoverable topology. Unobserved states, reversals
+and the masked junction prevent that claim. Observed isotype, timepoint and tissue labels are
+retained without inferring switching or migration. The simulator and its v2 truth are unchanged.

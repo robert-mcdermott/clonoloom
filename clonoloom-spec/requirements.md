@@ -118,7 +118,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | B1 | Germline reconstruction per clonal family, D masked | done (wave 5 slice 5): explicit allele intersection, ungapped AIRR CIGAR projection and provenance; unsupported evidence excluded |
 | B2 | Clonal families (C4) with heavy and light pairing in single-cell data | implemented (wave 5, slice 4: conservative paired maximum distance, explicit boundaries/thresholds, exclusions, memberships and source provenance) |
 | B3 | Somatic hypermutation: mutation frequency by sequence and region (FWR/CDR), replacement and silent counts; selection (BASELINe-style) later | implemented (wave 5, slice 6: saved D-masked parents, evaluable-base frequencies by row/region, explicit codon phase, single-hit R/S substitutions and multi-hit endpoint codons, descriptive source-row pooling and independent ancestor validation; selection parked) |
-| B4 | Lineage trees by maximum parsimony with ancestral sequences, maximum likelihood later; a tree viewer with isotype, timepoint and tissue on the nodes | planned (wave 5: parsimony; wave 9: likelihood) |
+| B4 | Lineage trees by maximum parsimony with ancestral sequences, maximum likelihood later; a tree viewer with isotype, timepoint and tissue on the nodes | partial (wave 5, slice 7: shared V/J panels, exhaustive parsimony through eight states, bounded heuristic through 64, conditional ancestral states and observed metadata viewer; likelihood remains wave 9) |
 | B5 | Isotype and subclass usage, class switching by clonal family | planned (wave 5) |
 | B6 | Candidates ranked by size, mutation, isotype and expansion; FASTA for synthesis; sent to Proteoscope | planned (wave 9) |
 

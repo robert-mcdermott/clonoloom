@@ -116,6 +116,46 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async lineages() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families', { threshold: 0.1 });
+    await act('reconstruct_bcell_germlines', { reference: 'simulated-bcell-immunization' });
+    await js(`(() => { window.clonoloom.bcellsMode.show('lineages'); return true; })()`);
+    await waitFor(`window.clonoloom.lineagesView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Build lineage trees').click(); return true; })()`);
+    await waitFor(`window.clonoloom.lineagesView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.lineagesView.state()');
+    if (result.page.result.built !== 72 || result.page.rowCount !== 4320 || result.page.rows.length !== 50) throw new Error('Wrong lineage totals');
+    await js(`window.clonoloom.lineagesView.openTree(${JSON.stringify(result.page.rows[0].id)})`);
+    const tree = await js('window.clonoloom.lineagesView.state().tree');
+    if ((await js(`getComputedStyle(document.querySelector('.lineage-plot path')).stroke`)) === 'none') throw new Error('Invisible tree edges');
+    if (tree.sites !== 327 || !tree.optimalTrees || !tree.nodes.some((n) => n.kind === 'inferred')) throw new Error('Wrong lineage detail');
+    const id = tree.nodes.find((n) => n.kind === 'inferred').id;
+    await js(`(() => { document.querySelector('[data-node="${id}"]').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); return true; })()`);
+    await waitFor(`window.clonoloom.lineagesView.state().node?.id === ${JSON.stringify(id)}`);
+    if ((await js('window.clonoloom.lineagesView.state().node.possible.length')) !== 327) throw new Error('Missing conditional states');
+    if (!(await js(`document.activeElement.hasAttribute('data-lineage-detail')`))) throw new Error('Node details lost keyboard focus');
+    await js(`(() => { const s=document.querySelector('[aria-label="Tree annotations"]'); s.value='timepoint'; s.dispatchEvent(new Event('change')); return true; })()`);
+    await js(`window.clonoloom.lineagesView.showPage('rows')`);
+    const row = await js('window.clonoloom.lineagesView.state().page.rows[0]');
+    if (!row.isotype || !row.timepoint || !row.tissue || !row.node) throw new Error('Missing observed annotations');
+    await js(`window.clonoloom.lineagesView.showPage('rows', '', '', 50)`);
+    if ((await js('window.clonoloom.lineagesView.state().page.rows[0].id')) === row.id) throw new Error('Lineage page did not advance');
+    await js(`(() => { const v=window.clonoloom.lineagesView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('Lineage source row')`);
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('0128004') || !methods.includes('not bootstrap support') || !methods.includes(result.page.result.lineageOptions.germlineSha256)) throw new Error('Missing lineage methods');
+    await act('close_dialogs');
+    await js(`(() => { window.clonoloom.lineagesView.openTree(${JSON.stringify(tree.id)}); window.clonoloom.bcellsMode.show('inputs'); return true; })()`);
+    await waitFor(`Boolean(window.clonoloom.bcellsView)`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.lineagesView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.lineagesView.state().artifact')) !== result.artifact) throw new Error('Saved lineage did not reopen');
+    await js(`window.clonoloom.lineagesView.openTree(${JSON.stringify(tree.id)})`);
+    await js(`(() => { document.querySelector('.lineage-plot').scrollIntoView({block:'center'}); return true; })()`);
+  },
   async shm() {
     await act('open_example', { example: 'simulated-bcell-immunization', download: true });
     await act('find_bcell_families', { threshold: 0.1 });

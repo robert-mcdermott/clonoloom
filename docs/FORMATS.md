@@ -411,3 +411,41 @@ Codon exclusion reasons and the evaluable-codon denominator accompany classifica
 zero classified substitutions without evaluable codons is not evidence for absence of SHM.
 These are net observed differences, not cumulative events, evolutionary rates, selection tests,
 or biological error correction. Reference choice and annotation accuracy remain prerequisites.
+
+### Lineage trees (wave 5, slice 7)
+
+`lineages.json` is a version-1 `clonoloom-lineages` artifact derived from checksum-verified
+`germlines.json`. `lineageOptions` pins the parent hash and search limits; `germlineProvenance`
+retains family and reference identities. `annotations` pins normalized sample timepoint/tissue
+values. Subject/reference flags, active QC and clonotype settings do not alter this derived
+analysis. Saved results can be inspected without the original input; new computation requires it.
+
+`trees` contains each family/locus summary and its complete panel, graph and Newick. `columns`
+is an ordered list of `{segment, position}` with 1-based ungapped V/J reference coordinates.
+Only paired canonical bases present in every included row enter this complete-case panel.
+`sites` is its length; `omitted` counts mapped V/J reference sites removed from the union, not
+masked junction positions or query insertions. `taxa` counts distinct panel states including
+the reference. `included` counts source rows, not abundance. Excluded groups retain reasons;
+zero integer fields on excluded groups must not be read as measurements.
+
+Nodes contain stable IDs, parent, kind (`reference`, `observed`, `inferred`), one chosen `sequence`
+and marginal `possible` IUPAC states conditional on the selected topology. Both strings are
+concatenated panel states, not full rearrangements. `changes` is the chosen assignment's edge
+length; `distance` sums those changes from the reference; `depth` counts edges. Zero edges are
+retained. `annotations` counts observed source rows by sample/isotype/timepoint/tissue. Inferred
+nodes have no observed traits. `members` maps every parent source row to its tree and node or
+exclusion, preserving source SHA-256, line, sequence ID and metadata. Identical panel states
+collapse without losing distinct original rows; rows matching the root attach to it.
+
+Search is exhaustive through eight taxa and a bounded addition/NNI heuristic through 64. Exact
+`optimalTrees` and node `splitTrees` count tied optimal binary resolutions, not probabilities or
+bootstrap support. Heuristic counts are absent, with `budgetLimited` marking early termination;
+no global optimality claim is made. `examined` counts candidate scores. Limits and deterministic
+choices are documented in research §5.19 and travel in the analysis identity.
+
+The result ZIP contains `trees.csv`, `nodes.csv`, `members.csv`, `panel.fasta`, `trees.nwk`, full
+`lineages.json`, `manifest.json` and `NOTICE.txt`. Tree scores are blank for excluded groups;
+unknown tie counts are blank. FASTA gives the consistent chosen panel assignment. JSON retains
+the coordinate map and possible states, also in node CSV. Newick uses stable node IDs and
+integer change lengths, one tree per line; its root ID joins to nodes.csv and that tree's ID.
+No class-switching, migration, event-date, selection or likelihood inference is encoded.

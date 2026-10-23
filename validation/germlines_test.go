@@ -154,6 +154,18 @@ func TestGermlinePublicReferenceAndAIRRCoverage(t *testing.T) {
 		if strings.Contains(pattern, "10x") && measured.Evaluated != 0 {
 			t.Fatal("excluded reconstructions cannot support SHM")
 		}
+		trees, err := bcell.Lineages(context.Background(), res.Table, sources, r, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		included := 0
+		for _, tree := range trees.Trees {
+			included += tree.Included
+		}
+		if included != r.Reconstructed {
+			t.Fatal("lineage coverage differs", included, r.Reconstructed, trees.Excluded)
+		}
+		t.Logf("Lineage coverage: %d trees; %d source rows; exclusions %v", trees.Built, included, trees.Excluded)
 		t.Logf("SHM coverage: %d rows with evaluable bases; row exclusions %v; codon exclusions %v", measured.Evaluated, measured.Excluded, measured.CodonExclusions)
 		for _, row := range r.Rows {
 			if row.Excluded == "" && (len(row.Query) != len(row.Germline) || len(row.Query) != len(row.QueryPositions)) {

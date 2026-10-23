@@ -278,6 +278,20 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = fmt.Sprintf("Chain specificity evidence for %s. Database %s, SHA-256 %s, source %s, license %s, citation %s. Matches are evidence, not proof of receptor specificity. Epitope shares count each clonotype once per group and can overlap.", ds.Name, doc.Database.Reference, doc.Database.SHA256, doc.Database.Source, doc.Database.License, doc.Database.Citation)
 		files["matches.csv"] = func(f io.Writer) error { return export.SpecificityMatches(f, doc.Clonotypes, doc.Result) }
 		files["epitopes.csv"] = func(f io.Writer) error { return export.SpecificityShares(f, doc.Samples, doc.Result) }
+	case "lineages":
+		var doc lineageDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " trees.csv indexes trees; nodes.csv retains chosen panel sequences and conditional IUPAC states; members.csv retains source identities and observed annotations. panel.fasta is the concatenated shared V/J panel, not a full rearrangement. trees.nwk uses stable node IDs and integer change lengths. lineages.json retains panel coordinate maps and parent/reference provenance."
+		files["lineages.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		files["trees.csv"] = func(f io.Writer) error { return export.LineageTrees(f, doc.LineageResult) }
+		files["nodes.csv"] = func(f io.Writer) error { return export.LineageNodes(f, doc.LineageResult) }
+		files["members.csv"] = func(f io.Writer) error { return export.LineageMembers(f, doc.LineageResult) }
+		files["panel.fasta"] = func(f io.Writer) error { return export.LineageFASTA(f, doc.LineageResult) }
+		files["trees.nwk"] = func(f io.Writer) error { return export.LineageNewick(f, doc.LineageResult) }
 	case "shm":
 		var doc shmDocument
 		if err := json.Unmarshal(raw, &doc); err != nil {

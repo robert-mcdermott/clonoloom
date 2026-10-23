@@ -354,3 +354,10 @@ test('SHM methods keep denominators, attribution policy and independent parent p
   assert.match(references.join(' '), /btv359/);
   assert.match(references.join(' '), /genetic code|Genetic Codes/);
 });
+
+test('lineage methods cite parsimony and retain parent/reference identity and uncertainty', () => {
+  const r = { id: 'lin-one', kind: 'lineages', built: 2, describe: 'Heuristic scores are not proven global minima. Conditional IUPAC states.', lineages: { germlines: 'grm-one', germlineSha256: 'parent-hash' }, germlineProvenance: { families: 'fam-one', familySha256: 'family-hash', files: [{ reference: 'ref', file: 'segments.fasta', sha256: 'ref-hash', license: 'CC0', citation: 'Reference citation', source: 'https://example.org/data' }] } };
+  const out = methodsParagraph({ dataset: pbmc, results: [r], program });
+  for (const word of ['parent-hash', 'family-hash', 'ref-hash', 'Conditional IUPAC', 'not proven global minima', 'No class-switching']) assert.ok(out.text.includes(word), word);
+  for (const doi of ['10.1093/sysbio/20.4.406', '10.1137/0128004', '10.1371/journal.pcbi.1009885']) assert.ok(out.references.join('\n').includes(doi), doi);
+});

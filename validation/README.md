@@ -162,3 +162,31 @@ parent checksum pinning, resumed-work refusal, immutable identity, paging and co
 The `shm` capture scene exercises the visible run button, paging, row inspector, cited methods,
 view disposal and saved-result reopening in both themes; the immunization guide calls the new
 remote action. This is validation against known artificial truth, not biological calibration.
+
+### B-cell lineage trees
+
+`TestLineagesAgainstIndependentExactSearch` regenerates the default artificial v2 study and
+checks source hashes, every membership digest and all 72 family/locus minimum scores and tied
+optimal-tree counts against `reference/lineages.json`. The reference script independently
+enumerates rooted bipartitions and uses four-state dynamic programming on known roots and
+observed TSV sequences. It does not consume production projections or tree code. Regenerate:
+
+```sh
+uv run --no-project validation/reference/lineages.py /tmp/clonoloom-germline-study
+```
+
+There are 327 shared sites per tree, 1,093 changes total, and 71 searches with tied optima.
+The known generating tree's panel score bounds each result above; its topology is not asserted
+recoverable. Node edge sums, path distances, panel lengths, exact split counts and source-row
+coverage are checked. Core tests exhaust small topology counts and independently brute-force
+ancestral assignments, then check deterministic heuristics, cancellation, metadata mixtures,
+partial panels and work refusals. `FuzzLineageProjection` exercises hostile coordinate input.
+API tests check immutable metadata/parent identity, bounded pages, all exports and tampering.
+The `lineages` browser scene checks visible run controls, keyboard node selection, observed
+annotations, source paging/inspection, methods, view disposal and historical reopening in both
+themes. The immunization guide also exercises its remote action.
+
+The full selected-tree serialization (panels, graph, chosen/possible states, split counts and
+observed annotations) is separately pinned for arm64/amd64 repeatability. Public AIRR coverage
+also checks that the Ramos row builds a tree while all 56/437 gene-only heavy rows in the 10x
+PBMC fixtures preserve their reconstruction exclusions. Neither is a biological accuracy test.

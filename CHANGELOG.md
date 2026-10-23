@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Lineage trees (wave 5, slice 7).** Build separate family/locus trees from saved
+  germlines on shared evaluable V/J panels. Collapse identical states while retaining
+  source rows and observed metadata. Search exactly through eight taxa and with bounded,
+  deterministic addition/NNI through 64; keep heuristic limits and exclusions explicit.
+  Show one consistent ancestral assignment, conditional IUPAC states and exact topology
+  tie/split counts without treating them as confidence probabilities. Add the interactive
+  tree, accessible node tables, source inspection, figure and CSV/JSON/FASTA/Newick exports,
+  pinned metadata/provenance, cited methods and remote/guided workflow. Independently check
+  all 72 artificial trees, including 1,093 changes and all optimal-topology counts.
+  No class-switching, migration, selection, event-date or likelihood inference is added.
 - **Somatic hypermutation (wave 5, slice 6).** Compare saved D-masked germlines
   with source chain rows, retaining parent checksums and reference provenance.
   Report evaluable bases/codons, regional substitution frequencies, single-hit

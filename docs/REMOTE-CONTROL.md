@@ -145,3 +145,19 @@ For `kind=rows`, optional `family` and `locus` filters select source rows. The s
 be inspected without reopening sources or downloading references; new computation checks the
 parent bytes and source-row identities. `GET /api/export?what=result&artifact=...` exports all
 row/region statistics, pooled summaries, complete JSON, manifest and source notice.
+
+### Lineage trees (wave 5, slice 7)
+
+`build_bcell_lineages({dataset, germlines})` opens B cells → Lineages and computes or reuses
+an immutable result. Omit `germlines` to use the latest saved germline result for that dataset.
+The action uses current sample timepoint/tissue annotations and returns artifact ID, built-tree
+and source-row counts, exclusions and normalized limits. Annotations are pinned in identity.
+
+`POST /api/lineages` takes `{dataset, lineages:{germlines}, study?, start?}`. Omitted `study`
+uses imported repertoire timepoint/tissue; an explicit array overrides that metadata, with
+unspecified samples empty. Duplicate and unknown names are refused. `start:false` checks the
+cache without starting work. The server pins parent SHA-256 and fixed search limits.
+`GET /api/lineages/{id}` returns the complete result. `/page?kind=trees|rows&offset=0&limit=50`
+pages summaries or members (limit 1–200); row filters are `family`, `locus`, `tree`, `node`.
+`/page?kind=detail&tree=ID` returns one bounded tree with panel and nodes. Saved pages require
+neither original input nor parent availability. Export uses the standard result endpoint.

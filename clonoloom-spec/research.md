@@ -1267,3 +1267,91 @@ The pinned public Ramos AIRR row supplies evaluable bases and codons. The 56 and
 heavy rows in the 10x PBMC 1k and 10k-v2 fixtures remain excluded for gene-only calls inherited
 from germline reconstruction; SHM does not convert those exclusions into zero-mutation rows.
 These are coverage and provenance checks, not independently known biological mutation truth.
+
+### 5.19 Lineage trees: bounded parsimony and conditional ancestors (wave 5, slice 7)
+
+**Sources consulted.** Fitch WM (1971), *Toward Defining the Course of Evolution: Minimum
+Change for a Specific Tree Topology*, Syst Zool 20:406–416,
+[doi:10.1093/sysbio/20.4.406](https://doi.org/10.1093/sysbio/20.4.406), supplies the fixed-topology
+minimum-change framework. Sankoff D (1975), *Minimal Mutation Trees of Sequences*, SIAM J
+Appl Math 28:35–42, [doi:10.1137/0128004](https://doi.org/10.1137/0128004), supplies the
+sequence-state cost framework. Hoehn KB, Pybus OG, Kleinstein SH (2022), *Phylogenetic analysis
+of migration, differentiation, and class switching in B cells*, PLoS Comput Biol 18:e1009885,
+[doi:10.1371/journal.pcbi.1009885](https://doi.org/10.1371/journal.pcbi.1009885), is context for
+keeping observed traits distinct from inferred transitions. We implement no trait-transition
+statistic from that paper. Consulted 23 October 2026. Only papers and public method descriptions
+were consulted; no external tree implementation source was examined or copied.
+
+**ClonoLoom's policies.** Each immutable germline parent's family/locus is analyzed separately.
+Its SHA-256 and original source identities are checked before computation. The selected V/J
+alleles and per-column reference coordinates define homology. A complete-case panel retains
+only positions with paired A/C/G/T in every eligible row and a consistent reference base.
+Positions are ordered V then J, each by 1-based ungapped reference position. D/N/P, insertions,
+deletions, ambiguity and missing coverage do not become character states. `omitted` counts the
+union of mapped V/J reference positions minus this intersection; it does not count query
+insertions or masked junction bases. One poorly covered row can shorten the whole panel.
+No shared sites is an exclusion, not a zero-change tree. No full V(D)J ancestor is fabricated.
+
+Identical panel sequences collapse even when the source sequences differ outside the panel.
+All source identities and observed C calls, samples, timepoints and tissues remain attached.
+Rows matching the reference attach to the reference root. Distinct states, including that root,
+are the taxa; abundance does not weight the search. Reference root placement is an assumption,
+not evidence for a sampled ancestor. Heavy and light trees are not concatenated or reconciled.
+
+At most eight taxa are searched by inserting each successive tip into every edge of each
+unrooted binary tree. This visits each labeled topology once, up to 10,395 at eight taxa.
+Equal-cost unordered nucleotide changes are scored with Fitch sets, compressed by site pattern;
+constant columns contribute zero. The reference is a fixed tip used to orient the output root.
+Among globally minimal trees, choose the lexicographically smallest canonical rooted subtree
+encoding on sorted panel states. Record the number of tied optimal binary trees and the count
+containing each selected split. Counts include zero-edge binary resolutions. They are neither
+bootstrap support, posterior probabilities, nor an assertion that the selected resolution is
+biologically identifiable. The one-state tree is just its reference node.
+
+Nine through 64 taxa use stepwise addition in sorted, reverse-sorted and decreasing
+reference-distance order, each followed by strict-improvement nearest-neighbor interchange.
+Equal-score candidates use the same canonical tie break; equal-score plateaus are not traversed.
+At most 50,000 candidate scores and 200 million estimated pattern-node work units are allowed.
+A candidate's conservative work charge is `max(1, variable patterns) * max(1, 2*taxa-2)`,
+including partial addition trees. Exact enumeration must fit this bound in full. The heuristic
+requires capacity for the three addition passes before starting; NNI may exhaust the remaining
+budget and prevent later passes. `budgetLimited` records early termination. The reported
+`examined` counts addition and NNI candidate scores, not bookkeeping rescoring of incumbents.
+Heuristic scores are not proven global minima and have no exhaustive tie/split counts. More
+than 64 states or a work refusal excludes that group without silently subsampling or losing
+other groups. These search limits and algorithms are our own implementation choices.
+
+Conditional on the selected topology, four-state inside/outside costs enumerate each node's
+marginal optimal states at every panel site. IUPAC symbols encode these sets. They do not encode
+a joint assignment: arbitrarily combining allowed symbols can increase total cost. Separately,
+a top-down pass chooses one consistent minimum-cost assignment, preferring the parent's state
+then A/C/G/T. Integer edge lengths count changes in that assignment, including zero lengths.
+They are not mutation rates, times or all historical events. Inferred nodes may repeat observed
+states. The viewer draws topological depth, labels each edge's chosen change count, and exposes
+all nodes in an accessible table; Newick exports the same lengths and stable node IDs.
+
+Observed annotations never constrain topology or assign traits to unobserved nodes. Project
+sample annotations override imported metadata and are normalized and pinned in analysis identity;
+subject/reference flags are irrelevant to this derived analysis. Editing annotations requires a
+new result to change labels; saved inspection remains historical. Mixed or missing values stay
+explicit. This slice infers neither class switching, migration, event dates, selection, affinity
+nor likelihood trees. Context-dependent SHM, alignment uncertainty, sequencing errors and family
+threshold uncertainty are not modeled. Biological interpretation depends on those upstream inputs.
+
+**Independent validation.** `validation/reference/lineages.py` reads only known artificial
+families, root sequences and observed TSV sequences. It enumerates rooted bipartitions and
+scores them with independent four-state dynamic programming, rather than the production edge
+insertion and Fitch scorer. Pinned source hashes and membership digests connect its results to
+the Go family/germline pipeline. All 72 default-v2 family/locus trees agree in panel size (327),
+taxa, minimum score and optimal-topology count: 1,093 changes total; 71 searches have ties.
+Each score is at most the known generating tree's panel score. This is not a claim of recovering
+the generating topology: unobserved states, reversals and ties make that unidentifiable here.
+Small analytic trees check topology counts and brute-force every internal state assignment to
+verify marginal ambiguity and the consistent assignment's score. Tests also cover heuristic
+repeatability, cancellation, incomplete panels, metadata mixtures, parent/source identity,
+explicit exclusions, work limits and complete exports. Artificial agreement validates the
+implemented objective, not biological phylogeny accuracy.
+
+The public Ramos AIRR row produces one supported tree; the 56/437 gene-only heavy rows in the
+10x PBMC 1k/10k-v2 fixtures retain upstream reconstruction exclusions. This checks format and
+evidence coverage, not reference suitability or biological lineage accuracy.

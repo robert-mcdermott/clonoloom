@@ -454,6 +454,19 @@ export function remoteActions(app) {
       return { message: `${done.page.result.evaluated} source rows with evaluable bases.`, data: { artifact: done.artifact, evaluated: done.page.result.evaluated, rows: done.page.rowCount, excluded: done.page.result.excluded, codonExclusions: done.page.result.codonExclusions, options: done.page.result.shmOptions } };
     },
 
+    async build_bcell_lineages({ dataset, germlines } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('lineages');
+      const view = app.lineagesView;
+      await view.show(d.id, { germlines });
+      if (view.state().status === 'idle') throw new ActionError('Save a germline result first.');
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'Lineage trees');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.result.built} family/locus trees built.`, data: { artifact: done.artifact, built: done.page.result.built, rows: done.page.rowCount, excluded: done.page.result.excluded, options: done.page.result.lineageOptions } };
+    },
+
     async inspect_bcell_inputs({ dataset, select } = {}) {
       const d = datasetOf(dataset);
       app.focusItem({ kind: 'dataset', id: d.id });

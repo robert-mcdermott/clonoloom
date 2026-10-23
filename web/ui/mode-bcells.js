@@ -1,3 +1,4 @@
+import { mountLineages } from './bcell-lineages.js';
 // B-cell evidence, families, germlines and SHM: all counts and checks come from Go.
 import { mountSHM } from './bcell-shm.js';
 import { mountGermlines } from './bcell-germlines.js';
@@ -121,10 +122,10 @@ export function mountBCells(app, container) {
   function show(next) {
     if (part === next) return;
     part = next; child?.destroy(); clear(content); clear(tabs);
-    for (const [id, label] of [['inputs', 'Inputs'], ['families', 'Families'], ['germlines', 'Germlines'], ['shm', 'SHM']]) tabs.append(h(`button${part === id ? '.active' : ''}`, { type: 'button', 'aria-pressed': part === id, onclick: () => show(id) }, label));
-    child = (part === 'shm' ? mountSHM : part === 'germlines' ? mountGermlines : part === 'families' ? mountFamilies : mountInputs)(app, content);
+    for (const [id, label] of [['inputs', 'Inputs'], ['families', 'Families'], ['germlines', 'Germlines'], ['shm', 'SHM'], ['lineages', 'Lineages']]) tabs.append(h(`button${part === id ? '.active' : ''}`, { type: 'button', 'aria-pressed': part === id, onclick: () => show(id) }, label));
+    child = (part === 'lineages' ? mountLineages : part === 'shm' ? mountSHM : part === 'germlines' ? mountGermlines : part === 'families' ? mountFamilies : mountInputs)(app, content);
   }
-  const focused = () => app.store.ui.focus?.kind === 'result' && app.store.project.artifacts.find((r) => r.id === app.store.ui.focus.id && ['families', 'germlines', 'shm'].includes(r.kind))?.kind;
+  const focused = () => app.store.ui.focus?.kind === 'result' && app.store.project.artifacts.find((r) => r.id === app.store.ui.focus.id && ['families', 'germlines', 'shm', 'lineages'].includes(r.kind))?.kind;
   const view = { show }; app.bcellsMode = view;
   show(focused() || 'inputs');
   return { update(topics) { if (topics.has('focus') && focused()) show(focused()); child?.update(topics); }, destroy() { child?.destroy(); if (app.bcellsMode === view) app.bcellsMode = null; root.remove(); } };

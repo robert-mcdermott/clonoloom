@@ -34,7 +34,7 @@ type shmDocument struct {
 	bcell.SHMResult
 }
 
-func (a *app) shmParent(id, dataset string) (germlineDocument, string, error) {
+func (a *app) checkedGermlineParent(id, dataset string) (germlineDocument, string, error) {
 	var doc germlineDocument
 	m, err := a.artifacts.Get(id)
 	if err != nil || m.Kind != "germlines" || m.State != artifacts.Complete || m.Dataset != dataset {
@@ -63,12 +63,12 @@ func (a *app) shmParent(id, dataset string) (germlineDocument, string, error) {
 		return doc, "", err
 	}
 	if doc.Format != "clonoloom-germlines" || doc.Version != bcell.GermlineVersion || doc.Dataset != dataset {
-		return doc, "", errors.New("SHM needs a supported germlines result")
+		return doc, "", errors.New("a supported germlines result is required")
 	}
 	return doc, hash, nil
 }
 func (a *app) shmPrepare(s *analysisSpec) error {
-	_, hash, err := a.shmParent(s.SHM.Germlines, s.Dataset)
+	_, hash, err := a.checkedGermlineParent(s.SHM.Germlines, s.Dataset)
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func (a *app) shmWork(k analysis, s analysisSpec) jobs.Func {
 		if !ok {
 			return errors.New("open the dataset again from its files")
 		}
-		parent, hash, err := a.shmParent(s.SHM.Germlines, s.Dataset)
+		parent, hash, err := a.checkedGermlineParent(s.SHM.Germlines, s.Dataset)
 		if err != nil {
 			return err
 		}

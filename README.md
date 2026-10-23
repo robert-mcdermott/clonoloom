@@ -17,7 +17,7 @@ It is one self-contained program for macOS, Linux and Windows. It opens as a des
 no Python, R or account, and keeps your data on your computer.
 
 **Current release:** 0.4.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-B-cell lineages, single-cell phenotypes and cohort comparisons come in later
+Single-cell phenotypes and cohort comparisons come in later
 releases.
 
 **In development (wave 5):** B cells → Families adds nearest-distance diagnostics and
@@ -49,6 +49,7 @@ Germline reconstruction and mutation analysis are still planned.
 - **Measure repertoires with their uncertainty.** Hill numbers, Chao1, ACE, the estimated Shannon
   and Simpson diversity, clonality, Gini and clonal space homeostasis, each with a 95% interval.
   Rarefaction and extrapolation compare samples at equal coverage or size.
+- **Explore B-cell lineages (wave 5 development).** Bounded parsimony trees, conditional ancestral sequences, topology ties and observed isotype/timepoint/tissue annotations, with complete provenance and Newick/FASTA exports. [Lineage guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-lineages.html).
 - **Measure somatic hypermutation (wave 5 development).** Evaluable bases and codons, regional substitution frequencies, single-hit replacement/silent counts, multi-hit codon endpoints and explicit exclusions, derived from saved germlines. [SHM guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-shm.html).
 - **Reconstruct B-cell germlines (wave 5 development).** Saved family/locus allele choices, checksum-pinned human OGRDB or artificial references, AIRR CIGAR projection and D/N/P masking, with explicit exclusions and complete provenance. [Germlines guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-germlines.html).
 - **See what the clonotypes are made of.** V, D, J and C genes and families, V–J pairs, junction

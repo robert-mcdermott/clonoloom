@@ -24,7 +24,7 @@ internal/seq/        nucleotides, codons, translation, junction checks
 internal/genes/      gene names: parsing, IMGT nomenclature, vendor names mapped, loci
 internal/reads/      readers of vendor and tool formats into one rearrangement table
 internal/rep/        the rearrangement table (columnar), samples and cells
-internal/bcell/      B-cell evidence, clonal families, D-masked germlines and SHM (wave 5)
+internal/bcell/      B-cell evidence, clonal families, D-masked germlines, SHM and lineage trees (wave 5)
 internal/validate/   findings with stable codes
 internal/clonotype/  definitions, clonotype tables for bulk and single-cell data
 internal/qc/         per-sample and single-cell QC
@@ -161,3 +161,8 @@ ClonoLoom is for research use. It is not a medical device and makes no diagnosti
   per-commit CI (`design.md`, "Testing and CI").
 - A slice is done when it runs, its tests and validation pass, its documentation is written, and
   `CHANGELOG.md` says what it added.
+
+Lineage trees use checksum-pinned germline projections and metadata. All scientific scoring,
+ancestral states and branch changes stay in Go; JavaScript lays out and labels the saved graph.
+Keep exact and heuristic search explicit, conditional IUPAC states distinct from a consistent
+assignment, and observed annotations distinct from inferred traits. See research §5.19.

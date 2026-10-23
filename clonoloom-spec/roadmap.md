@@ -878,8 +878,8 @@ threshold-dependent result, not a replacement for those identifiers.
 Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slices 1–5 are
-committed and slice 6 is implemented; later slices need their methods, data and acceptance
+puts a simulation with known families before the analyses it validates. Slices 1–6 are
+committed and slice 7 is implemented; later slices need their methods, data and acceptance
 criteria settled in detail before implementation.
 
 | Slice | Status | Scope |
@@ -889,8 +889,8 @@ criteria settled in detail before implementation.
 | 3. Simulated B-cell families | Committed | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
 | 4. Clonal families | Committed | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
 | 5. Germlines | Committed | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
-| 6. Somatic hypermutation | Implemented; awaiting commit | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
-| 7. Lineage trees | To come | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
+| 6. Somatic hypermutation | Committed | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
+| 7. Lineage trees | Implemented; awaiting commit | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
 | 8. Isotypes and class switching | To come | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
 | 9. Examples and release 0.5.0 | To come | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
 
@@ -1290,7 +1290,55 @@ themes, including the guided SHM action, visible run control, paging, inspection
 view disposal and reopening. The site builds 31 pages with 29 screenshot sets; its 120-check
 audit across 30 pages finds no problems. Isolated million-row budgets pass: read/validate
 1.563 s, cached reopen 127 ms and searched page 41.742 ms. Version remains 0.4.0.
-Awaiting maintainer commit; slice 7 has not started.
+Committed by the maintainer.
+
+### Slice 7: Lineage trees
+
+**Serves B4.** Build separate family/locus parsimony trees from checksum-pinned germlines.
+Scientific choices and citations are detailed in research §5.19. Version remains 0.4.0.
+
+- Intersect unambiguous, covered V/J reference positions across eligible rows; omit the
+  D/N/P mask, indels and ambiguity. Retain the panel map and all excluded source rows.
+- Collapse identical panel states without abundance weighting, retaining every source row
+  and observed C call, sample, timepoint and tissue. Fix the reference as the root state.
+- Enumerate every binary topology through eight taxa including the reference. Search 9–64
+  taxa by deterministic addition/NNI with explicit candidate/work bounds; mark heuristic
+  results and budget termination. Refuse larger groups rather than subsampling.
+- Choose a reproducible minimum topology and consistent ancestral assignment. Show conditional
+  IUPAC state sets and exact optimal-topology/split counts; never present them as probabilities.
+  Retain zero edges and acknowledge non-identifiable binary resolutions.
+- Add B cells → Lineages, an interactive/keyboard tree, observed annotation choices, node and
+  source inspection, accessible tables, complete CSV/JSON/FASTA/Newick exports, figure exports,
+  cited methods, remote control and the guided artificial study. Pin metadata in the result.
+- Do not infer class switching, migration, likelihood trees, selection or event dates.
+  Class-switching work remains slice 8; release preparation remains slice 9.
+
+**Acceptance.** Exact topology counts, brute-force ancestral ambiguity, deterministic heuristic
+and cancellation, partial/ambiguous panels, duplicate states and metadata mixtures; independent
+exhaustive calculation of all 72 artificial family/locus trees; immutable source/parent/metadata
+identity and complete exports; browser workflow in both themes; Go race/vet, processor and
+released-project compatibility, six builds, JavaScript, fuzz, accessibility/site and isolated
+performance checks.
+
+**Implemented.** Core parsimony and conditional-state reconstruction, immutable jobs and
+provenance, viewer and source inspection, exports, methods and remote/guided workflow are in place.
+Independent exact search agrees for all 72 trees and 4,320 rows, including all optimal-tree
+counts and 1,093 changes.
+
+**Checked.** Exact topology counts and brute-force ancestral ambiguity, deterministic heuristic
+search, cancellation, state/work bounds, partial panels, metadata mixtures and exclusions pass.
+Source/parent/annotation identity, historical metadata, pages and all export formats pass.
+The public Ramos row builds a tree; all 56/437 gene-only heavy rows in the 10x PBMC fixtures
+retain their upstream exclusions. These are evidence-coverage checks, not biological truth.
+The full Go race suite passes (scientific validation: 562.741 s), with focused reruns after
+final memory and test refinements. Coordinate maps are processed one row at a time rather
+than duplicating all saved alignments as maps. Vet, arm64/amd64 tree-serialization and released-project compatibility,
+six platform builds, 93 JavaScript tests, 517,526 projection fuzz cases and 14 contrast checks
+pass. Seven B-cell browser workflows pass in both themes, including keyboard node inspection,
+observed annotations, source paging, methods, disposal and saved reopening. The site builds
+32 pages with 30 screenshot sets; 124 audit checks across 31 pages find no problems.
+Isolated million-row budgets pass: read/validate 1.503 s, cached reopen 125 ms and searched
+page 47.415 ms. Version remains 0.4.0. Awaiting maintainer commit; slice 8 has not started.
 
 ## Later waves (outlined)
 
