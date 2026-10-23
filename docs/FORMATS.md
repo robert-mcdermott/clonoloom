@@ -356,3 +356,20 @@ measured, the clonotype definition, the unit, the samples, the filter and ClonoL
 The public files the readers are checked on, their licenses and how to fetch them are listed in
 [validation/sources.json](../validation/sources.json); `node validation/fetch.mjs --list` prints
 them. `node validation/fetch.mjs --ci` fetches the openly licensed ones.
+
+### Reconstructed B-cell germlines (wave 5, slice 5)
+
+Germlines uses saved family membership, explicit allele calls, `sequence`, `rev_comp`, and
+V/J AIRR CIGARs against a selected ungapped V/J reference. Supplied sequence and germline
+endpoints must agree with CIGAR offsets. Native IMGT input, gene-only calls and missing CIGARs
+remain inspectable but are excluded from reconstruction; no alignment or reference offset is
+guessed. The chosen reference must match the annotation's segment boundaries.
+
+The new projected alignment is distinct from retained `sequence_alignment` and
+`germline_alignment`. CSV exports use `sequence_alignment`, `germline_alignment_d_mask` and
+`segment_labels`; JSON retains per-column query and reference positions, the parent family
+checksum and reference file records. Query coordinates refer to the oriented sequence;
+reference coordinates reset for V and J. Zero marks absent mappings. D/N/P junction bases
+are masked, including intervening light-chain bases. FASTA exports successful projections,
+with stable source-row IDs; CSV includes all exclusions. These result exports are not full
+AIRR input round trips. No mutation count is calculated in this slice.

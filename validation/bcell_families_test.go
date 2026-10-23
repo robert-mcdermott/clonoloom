@@ -75,7 +75,7 @@ func TestSimulatedBCellFamiliesAgainstIndependentCSV(t *testing.T) {
 		t.Fatalf("unit, metadata or invented counts: %s; %d repertoires", res.Unit, len(res.Repertoires))
 	}
 	for _, r := range res.Repertoires {
-		if r.SubjectID == "" || r.TimePoint == "" || r.SingleCell == nil || !*r.SingleCell || r.StudyID != "clonoloom-simulated-clonoloom-artificial-bcell-v1" {
+		if r.SubjectID == "" || r.TimePoint == "" || r.SingleCell == nil || !*r.SingleCell || r.StudyID != "clonoloom-simulated-clonoloom-artificial-bcell-v2" {
 			t.Fatalf("metadata: %+v", r)
 		}
 	}

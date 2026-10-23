@@ -278,6 +278,17 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = fmt.Sprintf("Chain specificity evidence for %s. Database %s, SHA-256 %s, source %s, license %s, citation %s. Matches are evidence, not proof of receptor specificity. Epitope shares count each clonotype once per group and can overlap.", ds.Name, doc.Database.Reference, doc.Database.SHA256, doc.Database.Source, doc.Database.License, doc.Database.Citation)
 		files["matches.csv"] = func(f io.Writer) error { return export.SpecificityMatches(f, doc.Clonotypes, doc.Result) }
 		files["epitopes.csv"] = func(f io.Writer) error { return export.SpecificityShares(f, doc.Samples, doc.Result) }
+	case "germlines":
+		var doc germlineDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " germlines.csv contains every member and exclusion; germlines.fasta contains successful D-masked projections, not inferred ancestors. germlines.json retains coordinate mappings and reference provenance."
+		files["germlines.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		files["germlines.csv"] = func(f io.Writer) error { return export.GermlineRows(f, doc.GermlineResult) }
+		files["germlines.fasta"] = func(f io.Writer) error { return export.GermlineFASTA(f, doc.GermlineResult) }
 	case "families":
 		var doc familyDocument
 		if err := json.Unmarshal(raw, &doc); err != nil {

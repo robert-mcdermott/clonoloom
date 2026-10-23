@@ -878,16 +878,17 @@ threshold-dependent result, not a replacement for those identifiers.
 Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slices 1–4 are implemented; later slices need their methods, data and acceptance criteria settled
-in detail before implementation.
+puts a simulation with known families before the analyses it validates. Slices 1–4 are
+committed and slice 5 is implemented; later slices need their methods, data and acceptance
+criteria settled in detail before implementation.
 
 | Slice | Status | Scope |
 | --- | --- | --- |
 | 1. B-cell sequence evidence | Committed | Retain AIRR sequences, alignments and coordinates; inspect their availability and validity |
 | 2. IMGT/HighV-QUEST input | Committed | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
 | 3. Simulated B-cell families | Committed | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
-| 4. Clonal families | Implemented; awaiting commit | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
-| 5. Germlines | To come | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
+| 4. Clonal families | Committed | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
+| 5. Germlines | Implemented; awaiting commit | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
 | 6. Somatic hypermutation | To come | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
 | 7. Lineage trees | To come | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
 | 8. Isotypes and class switching | To come | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
@@ -1184,6 +1185,59 @@ searched page 40.444 ms. The reference checks every membership and nearest value
 mode/threshold combinations. Explicit empty subject maps override metadata; unrelated clonotype
 and diversity choices do not change family identity.
 No germline, SHM, tree or class-switch implementation is included. Version remains 0.4.0.
+
+### Slice 5: Germline reconstruction
+
+**Serves B1.** Reconstruct from a saved, thresholded family result and a checksum-pinned
+ungapped V/J reference. Retain the family result's checksum, original row identities,
+reference bytes' checksums, versions, license and citation in the immutable result.
+
+- Resolve one V and J allele per family/locus by intersecting explicit member calls.
+  Conflicts, unresolved ties and absent alleles remain exclusions. Do not infer a genotype,
+  choose the first tie, borrow another subject's evidence or substitute a reference allele.
+- Project selected V/J segments using bounded AIRR CIGARs and oriented raw query sequence.
+  Check supplied query/reference endpoints against CIGAR offsets. Preserve insertions and
+  deletions as alignment gaps and retain per-column query/reference positions. Mask the
+  entire intervening D/N/P region with N, including the V–J junction in light chains.
+  Rows may cover different reference spans; keep their individual projections under the
+  common family allele selection rather than inventing one padded family alignment.
+- First biological catalog: human OGRDB IGH v10, IGK v5 and IGL v4 (27 May 2026), CC0,
+  downloaded only on request. No raw-sequence annotation, gapped IMGT projection, gene-only
+  allele inference, custom reference upload, SHM statistics or lineage reconstruction.
+  Missing CIGARs are an explicit unsupported-evidence state, including native IMGT input.
+- Version the artificial study as v2: export its independent V/J backbones and CIGARs;
+  correct the shared J name for distinct backbone sequences. Do not change its simulated
+  sequences or mutation histories. Existing v1 datasets/results remain immutable and openable.
+- Add a Germlines view, bounded pages/row inspection, complete JSON/CSV/FASTA exports,
+  methods and reference provenance, remote action and guided artificial workflow.
+
+**Acceptance.** Hand-calculated reverse orientation, offsets, indels, masking, ambiguity,
+missing evidence and hostile lengths; independent CSV/reference reconstruction of the
+artificial study; pinned public-reference parsing and real AIRR evidence checks; parent and
+reference tampering refusal; cache identity and released-project compatibility; browser
+workflow in both themes; Go race/vet, JavaScript, accessibility, builds and site checks.
+Keep version 0.4.0 until release preparation. No slice 6 mutation statistics in this slice.
+
+**Implemented.** Immutable germline jobs derive from checksum-verified saved families and
+on-request human OGRDB or generated artificial references. The Germlines view, bounded
+family/row pages, alignment inspector, source identity, complete CSV/FASTA/JSON exports,
+parent/reference lineage, cited methods and remote/guided workflow are in place. Native IMGT,
+gene-only calls and missing CIGARs remain explicit exclusions. Artificial model v2 supplies
+reference segments and unambiguous J names while preserving sequences and mutation histories.
+
+**Checked.** Independent Python 3.13.3 CSV/FASTA reconstruction agrees with all 4,320 projected
+alignments and coordinate maps in 72 family/locus groups. All 252 mutation histories and all
+observed sequences/ancestors are unchanged from v1; existing independent family memberships
+and nearest distances remain unchanged. All 421 pinned OGRDB records parse. The public Ramos
+heavy row reconstructs; 56/437 assigned heavy rows in 10x PBMC 1k/10k-v2 are explicitly excluded
+for gene-only calls, a coverage check rather than biological truth. Orientation, clipping,
+indels, ambiguity, invalid coordinates, missing evidence, byte bounds and checksum changes
+pass focused tests; projection fuzzing passes. Full Go race coverage, with affected-package
+reruns after fixes, and vet pass. arm64/amd64 germline, simulation and released-project checks,
+six platform builds, 89 JavaScript tests, 14 contrast checks, five browser workflows in both
+themes and 116 site audit checks pass. The site builds 30 pages with 28 screenshot sets.
+Isolated million-row budgets pass: read/validate 2.915 s, cached reopen 231 ms and searched
+page 82.289 ms. No slice 6 work has started. Version remains 0.4.0. Awaiting maintainer commit.
 
 ## Later waves (outlined)
 

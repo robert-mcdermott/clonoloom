@@ -876,6 +876,35 @@
           "sha256": "4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b"
         }
       ]
+    },
+    "ogrdb-human-2026-05-27": {
+      "title": "Human IG germline segments (OGRDB, 27 May 2026)",
+      "description": "Ungapped AIRR-C reference segments: IGH release 10, IGK release 5 and IGL release 4. For explicit allele calls and ungapped-reference AIRR CIGAR coordinates. Download only when requested.",
+      "source": "https://ogrdb.airr-community.org/germline_sets/Human",
+      "publisher": "AIRR Community / OGRDB",
+      "page": "https://ogrdb.airr-community.org/germline_sets/Human",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://ogrdb.airr-community.org/render_page/licensing_statement.html",
+      "licenseClass": "open",
+      "citation": "Collins et al. 2024, AIRR-C IG Reference Sets, doi:10.3389/fimmu.2023.1330153. IGH v10 doi:10.5281/zenodo.20409587; IGK v5 doi:10.5281/zenodo.20409594; IGL v4 doi:10.5281/zenodo.20409602.",
+      "base": "https://ogrdb.airr-community.org/download_germline_set/Homo%20sapiens/",
+      "files": [
+        {
+          "path": "IGH_VDJ/10/ungapped_ex",
+          "size": 65230,
+          "sha256": "5beb005256e702a41ef78c359481d645ca7bcf7bb400b598830058aa278bb520"
+        },
+        {
+          "path": "IGKappa_VJ/5/ungapped_ex",
+          "size": 24209,
+          "sha256": "78f24cd89d3a9ff2bcd58efb82c4cb4f85dc56c7453bbda6c4840ee2acf3434c"
+        },
+        {
+          "path": "IGLambda_VJ/4/ungapped_ex",
+          "size": 28255,
+          "sha256": "d3a9949dac9b48be4758d69d4f44c2047087d1708101a0c295b328e82ead86ec"
+        }
+      ]
     }
   },
   "tools": {

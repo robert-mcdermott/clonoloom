@@ -164,6 +164,17 @@ Simulated data describe no person, and may be used and shared without restrictio
 
 ## Artificial B-cell families (wave 5, slice 3)
 
+Wave 5 slice 5 versions the model as v2. It adds explicit V/J CIGARs and ungapped germline
+coordinates, exports `reference/germlines.fasta`, and gives the two distinct J backbones
+separate fictional allele names. The simulated nucleotide sequences, mutation events,
+sampling and family recovery are unchanged. Existing v1 files/results remain openable;
+regenerate an example to obtain the new reference evidence. Never use the artificial reference
+for biological sequences. Germlines currently offers the default example reference (seed
+20261027); other seeds need their own exported reference and are outside the current reference
+selector. The reference is generated from V/J backbones, without reading
+family ancestors or sampled observations.
+
+
 ```sh
 clonoloom simulate --preset bcell-immunization --out bcell-study
 clonoloom simulate --preset bcell-immunization --print-params > bcell-params.json
@@ -181,7 +192,7 @@ the exact 36 known families at that threshold; at 0.05 they yield 43 and 38 fami
 The threshold is a demonstration for these artificial data, not a biological recommendation.
 Mutation and lineage inference remain later slices.
 
-This is a deliberately artificial benchmark, model `clonoloom-artificial-bcell-v1`. The sequences
+This is a deliberately artificial benchmark, model `clonoloom-artificial-bcell-v2`. The sequences
 are generated coding strings, not biological antibody references. Gene calls containing `SIM`
 are fictional. These data test bookkeeping and recovery under a known model; they do not establish
 accuracy on real repertoires or calibrate a biological mutation rate.
@@ -231,6 +242,7 @@ analyses.
 | --- | --- |
 | `S01-pre.tsv`, `S01-d14.tsv`, `S01-d28.tsv`, … | AIRR observations. Each `cell_id` has two chains, each with its own `sequence_id`. Count cells once. Read/UMI counts and inferred family labels are absent. |
 | `repertoires.airr.json` | Sample, subject, time relative to simulated immunization, single-cell status and locus metadata. The study's model marker survives a renamed title/preset. |
+| `reference/germlines.fasta` | Artificial ungapped V/J segments; explicit fictional allele names. SHA-256 is recorded in reconstructed results. |
 | `truth/truth.json` | Parameters, model and version; all nodes with parent, family, subject, isotype, heavy/light sequences and ordered edge events; sample probabilities and cell counts; SHA-256 manifest for every other output. |
 | `truth/observations.tsv` | Exact sample/cell-to-node assignment, including repeated draws of a state. |
 | `README.md` | Model, limits, file meanings and how to reproduce the run. |
@@ -240,7 +252,7 @@ rearranged ancestor**, including its artificial junction, not a reconstructed or
 reference. `germline_database` names the artificial model. The supplied V/J query spans are 1–285
 and 319–360. Artificial FWR1/CDR1/FWR2/CDR2/FWR3/CDR3/FWR4 spans are 1–78, 79–114, 115–165,
 166–195, 196–285, 286–318 and 319–360 (1-based closed); they are **not IMGT numbering**.
-D calls, CIGARs and reference-segment coordinates are missing. These limits matter when using
+D calls are missing; v2 supplies V/J CIGARs and reference-segment coordinates. These limits matter when using
 the truth to test future germline and mutation analyses.
 
 A complete study is built in a temporary sibling folder before being promoted. Cancellation or

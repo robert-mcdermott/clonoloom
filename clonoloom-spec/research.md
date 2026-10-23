@@ -1106,3 +1106,78 @@ mode has 84 unique receptors; paired mode has 133. At threshold 0.05 these yield
 families; at 0.1 both recover the exact 36 true families. Truth is read only after inference for
 evaluation. These results do not establish performance on biological samples or recommend a
 threshold, and no fitted SHM model is implied.
+
+### 5.17 D-masked germline reconstruction (wave 5, slice 5)
+
+**Sources checked 2026-10-23.** Gupta et al. (2015), *Change-O*,
+[doi:10.1093/bioinformatics/btv359](https://doi.org/10.1093/bioinformatics/btv359), and its
+[public CreateGermlines documentation](https://changeo.readthedocs.io/en/stable/tools/CreateGermlines.html)
+describe reference reconstruction and masking the uncertain D/N/P region. The
+[AIRR Rearrangement schema 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+defines query orientation, 1-based closed intervals and CIGAR offsets/operations.
+Only publications, documentation and licensed reference data were consulted, not another
+implementation's source code. This method is independently implemented in Go.
+
+**ClonoLoom's choices.** A saved, explicitly thresholded family result defines membership and
+subject/sample boundaries. Within each family/locus, intersect every member's explicit V/J
+allele calls. Exactly one common allele per segment must remain and exist in the selected
+reference. Conflicts, unresolved ties, missing calls and gene-only calls are exclusions, not
+votes or opportunities to guess a genotype. This differs from Change-O's clone consensus:
+ClonoLoom does not use majority abundance, choose the longest representative, infer deletions
+from junction length, or transfer an inferred unmutated junction to other members.
+
+The raw query must be ungapped IUPAC nucleotide sequence with known orientation. Reverse
+complement it once when `rev_comp` is true. Project each selected ungapped V/J segment using
+its AIRR CIGAR: leading S/N establishes query/reference offsets, M or =/X consumes both,
+I consumes query only, D consumes reference only. Supplied sequence/germline endpoints must
+agree with those offsets and consumed spans. Check bounds before allocation; =/X assertions
+are checked where both symbols are unambiguous. Optional trailing S/N do not create columns.
+V and J query spans must be ordered and nonoverlapping. Query insertions and reference
+insertions relative to query remain '-' in the other alignment. Ambiguity symbols remain
+ambiguous. All intervening query bases get reference N, including light-chain junctions.
+
+Output is a new unnumbered alignment with V/J/N segment labels and per-column 1-based oriented
+query/reference coordinates. A reference coordinate belongs to its labeled segment; zero
+marks no reference position at query insertions/masked junctions, or no query position at
+reference deletions. Common family allele choices accompany individual member projections,
+which may have different lengths. No padding or cross-member sequence consensus is invented.
+The input's supplied germline alignment is never used as the reference. Names/lengths alone
+cannot prove the annotation used this reference; the user must choose compatible segment
+boundaries. Native IMGT gapped coordinates and missing CIGARs are unsupported in this slice.
+
+**References and provenance.** The human catalog contains OGRDB AIRR-C IGH_VDJ v10,
+IGKappa_VJ v5 and IGLambda_VJ v4, released 27 May 2026, from version-specific `ungapped_ex`
+endpoints. The 240/84/97 records include D alleles; reconstruction uses only V and J.
+Files are pinned by byte count and SHA-256 in `validation/sources.json`, downloaded only on
+request, and rehashed when preparing and running each job. OGRDB's
+[licensing statement](https://ogrdb.airr-community.org/render_page/licensing_statement.html)
+places this reference information under CC0; website software is not part of these data.
+The reference-set paper is [AIRR-C IG Reference Sets](https://doi.org/10.3389/fimmu.2023.1330153).
+Release records: [IGH v10](https://doi.org/10.5281/zenodo.20409587),
+[IGK v5](https://doi.org/10.5281/zenodo.20409594),
+[IGL v4](https://doi.org/10.5281/zenodo.20409602).
+
+Artifacts record the parent family checksum, reference files/checksums/license/citation and
+method version. Resume rejects changed bytes. Inspection of completed results needs neither
+open source data nor a downloaded reference. Exports retain complete rows, exclusions and
+coordinate maps, with FASTA limited to successful projections. Counts are source rows, not
+cells or abundance. Query/reference segments are bounded at 10,000 bases, reference input at
+10 MiB and reconstructed output at 50 million columns; limits fail without subsampling.
+
+**Artificial model v2 and validation.** The v1 simulator had distinct J backbones under one
+fictional J name. Model v2 gives each backbone its own J name, exports the independent V/J
+segments, and supplies explicit CIGARs and germline coordinates. Simulated sequences, mutation
+events and sampling are unchanged. Older datasets/results remain readable. Independent
+CSV/FASTA slicing (`validation/reference/germlines.py`, Python 3.13.3 via uv) checks all 4,320
+projections and every coordinate against generative ancestors outside the 33 masked junction
+bases. All 72 family/locus groups reconstruct; the existing independent graph calculation
+still recovers 36 families and the same nearest distances. Truth is not an inference input.
+Hand-derived tests cover clipping, offsets, reverse orientation, I/D operations, ambiguity,
+conflicting/tied calls, inconsistent coordinates, missing evidence, checksum changes and
+hostile lengths; fuzzing exercises the projection boundary.
+
+The public Ramos AIRR file gives one eligible heavy row and one successful projection with
+the pinned human reference. The 10x PBMC 1k/10k-v2 AIRR examples contribute 56/437 eligible
+heavy rows; all are correctly excluded for gene-only calls. These are format and coverage
+checks, not biological truth or a claim that the selected set matches every original
+annotation. SHM denominators, codon changes, selection and lineage inference remain later slices.

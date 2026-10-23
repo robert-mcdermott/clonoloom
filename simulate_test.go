@@ -77,8 +77,8 @@ func TestBCellSimulateCommandAndFolder(t *testing.T) {
 		t.Fatalf("folder: %v %v", items, err)
 	}
 	for _, item := range items {
-		if strings.Contains(item.Name, "truth") || strings.Contains(item.Name, "observations") {
-			t.Fatal("truth treated as data")
+		if strings.Contains(item.Name, "truth") || strings.Contains(item.Name, "observations") || strings.Contains(item.Name, "germlines") {
+			t.Fatal("truth or reference treated as data")
 		}
 	}
 }

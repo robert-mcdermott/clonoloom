@@ -35,7 +35,7 @@ def rows(path):
 
 def check(folder):
     truth = json.loads((folder / 'truth/truth.json').read_text())
-    assert truth['model'] == 'clonoloom-artificial-bcell-v1'
+    assert truth['model'] == 'clonoloom-artificial-bcell-v2'
     config = truth['study']['bcells']
     for file in truth['files']:
         assert hashlib.sha256((folder / file['path']).read_bytes()).hexdigest() == file['sha256']
@@ -119,7 +119,9 @@ def check(folder):
             assert row['v_call'] == chain['vCall'] and row['j_call'] == chain['jCall']
             assert row['productive'] == row['vj_in_frame'] == 'T' and row['stop_codon'] == row['rev_comp'] == 'F'
             assert row['repertoire_id'] == sid and row['sequence_id'] == row['cell_id'] + '-' + chain['locus']
-            assert all(row[x] == '' for x in ('d_call', 'v_cigar', 'd_cigar', 'j_cigar'))
+            assert all(row[x] == '' for x in ('d_call', 'd_cigar'))
+            assert (row['v_cigar'], row['j_cigar']) == ('285M75S', '318S42M')
+            assert [int(row[k]) for k in ('v_germline_start', 'v_germline_end', 'j_germline_start', 'j_germline_end')] == [1, 285, 1, 42]
             assert all(x not in row for x in ('clone_id', 'umi_count', 'duplicate_count', 'consensus_count'))
             assert [int(row[k]) for k in ('v_sequence_start', 'v_sequence_end', 'j_sequence_start', 'j_sequence_end')] == [1, 285, 319, 360]
             for region, start, end in regions:

@@ -114,3 +114,18 @@ Omitting the threshold measures nearest distances without assigning families; ze
 identity. Subject scope uses Data annotations or supplied subject metadata. Paired distance is the larger normalized chain
 distance, within both chains' V/J/length partitions. The response reports eligibility, exclusions,
 receptor/family counts and the artifact identity. `inspect_bcell_inputs` returns to Inputs.
+
+### D-masked B-cell germlines
+
+`reconstruct_bcell_germlines` opens Germlines and computes or reuses an immutable result.
+Arguments: `dataset`, `families` (saved thresholded family artifact ID; the latest such result
+if omitted), and `reference` (`ogrdb-human-2026-05-27`, the default, or
+`simulated-bcell-immunization`). References must already be downloaded or generated;
+this action does not download anything. It returns the artifact ID, reconstructed/assigned
+source-row counts, family/locus count, exclusions and parent/reference provenance.
+
+HTTP clients use `POST /api/germlines` with `{dataset, germlines: {families, reference}, start}`.
+`start: false` checks availability. `GET /api/germlines/{id}` reads the full result;
+`GET /api/germlines/{id}/page?kind=families|rows&family=...&locus=...&offset=0&limit=50`
+reads bounded pages (maximum 200). Saved inspection needs neither open inputs nor a reference
+download; computing requires the original dataset and verified family/reference bytes.

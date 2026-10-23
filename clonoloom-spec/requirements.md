@@ -115,7 +115,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| B1 | Germline reconstruction per clonal family, D masked | planned (wave 5) |
+| B1 | Germline reconstruction per clonal family, D masked | done (wave 5 slice 5): explicit allele intersection, ungapped AIRR CIGAR projection and provenance; unsupported evidence excluded |
 | B2 | Clonal families (C4) with heavy and light pairing in single-cell data | implemented (wave 5, slice 4: conservative paired maximum distance, explicit boundaries/thresholds, exclusions, memberships and source provenance) |
 | B3 | Somatic hypermutation: mutation frequency by sequence and region (FWR/CDR), replacement and silent counts; selection (BASELINe-style) later | planned (wave 5; selection parked) |
 | B4 | Lineage trees by maximum parsimony with ancestral sequences, maximum likelihood later; a tree viewer with isotype, timepoint and tissue on the nodes | planned (wave 5: parsimony; wave 9: likelihood) |

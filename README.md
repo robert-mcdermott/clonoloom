@@ -49,6 +49,7 @@ Germline reconstruction and mutation analysis are still planned.
 - **Measure repertoires with their uncertainty.** Hill numbers, Chao1, ACE, the estimated Shannon
   and Simpson diversity, clonality, Gini and clonal space homeostasis, each with a 95% interval.
   Rarefaction and extrapolation compare samples at equal coverage or size.
+- **Reconstruct B-cell germlines (wave 5 development).** Saved family/locus allele choices, checksum-pinned human OGRDB or artificial references, AIRR CIGAR projection and D/N/P masking, with explicit exclusions and complete provenance. [Germlines guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-germlines.html).
 - **See what the clonotypes are made of.** V, D, J and C genes and families, V–J pairs, junction
   lengths and amino acids by IMGT position; by clonotypes or abundance, by sample or condition.
 - **Compare samples.** Every pair's shared clonotypes, Jaccard, Sørensen–Dice and the overlap

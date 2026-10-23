@@ -4,6 +4,18 @@
 
 ### Added
 
+- **D-masked germlines (wave 5, slice 5).** Reconstruct assigned B-cell source rows
+  using a saved family result, common explicit V/J alleles and checksum-pinned references.
+  Project ungapped-reference AIRR CIGARs onto oriented queries, preserve indels and coordinate
+  maps, and mask all intervening D/N/P bases. Report conflicting, ambiguous and unsupported
+  evidence rather than choosing an allele or padding an alignment. Human OGRDB IGH v10,
+  IGK v5 and IGL v4 are available as on-request CC0 reference downloads.
+  Add Germlines, row inspection, immutable lineage, complete JSON/CSV/FASTA exports,
+  cited methods, remote control and the guided artificial workflow.
+- **Artificial B-cell model v2.** Export V/J references and CIGAR/coordinate evidence;
+  distinguish J alleles for the two existing backbones. Simulated sequences, mutation
+  histories and family recovery remain unchanged. Existing v1 files remain openable.
+
 - **Clonal families (wave 5, slice 4).** Compare normalized nucleotide junction distances
   within explicit subject or sample and V/J/length partitions. Inspect nearest-distance
   distributions before selecting an inclusive single-linkage threshold. Null and zero differ.

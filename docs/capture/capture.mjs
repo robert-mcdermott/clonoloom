@@ -116,6 +116,34 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async germlines() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families', { threshold: 0.1 });
+    await js(`(() => { window.clonoloom.bcellsMode.show('germlines'); return true; })()`);
+    await waitFor(`Boolean(document.querySelector('[aria-label="Reference"]'))`);
+    await js(`(() => { const select = document.querySelector('[aria-label="Reference"]'); select.value = 'simulated-bcell-immunization'; select.dispatchEvent(new Event('change')); return true; })()`);
+    await waitFor(`window.clonoloom.germlinesView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Reconstruct germlines').click(); return true; })()`);
+    await waitFor(`window.clonoloom.germlinesView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.germlinesView.state()');
+    if (result.page.result.reconstructed !== 4320 || result.page.familyCount !== 72 || result.page.rows.length !== 50) throw new Error('Wrong germline reconstruction');
+    await js(`window.clonoloom.germlinesView.showPage('rows')`);
+    const row = await js('window.clonoloom.germlinesView.state().page.rows[0]');
+    if (row.germline.slice(285,318) !== 'N'.repeat(33) || row.queryPositions.length !== 360) throw new Error('Wrong masking or coordinates');
+    await js(`(() => { const v=window.clonoloom.germlinesView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('not IMGT numbered')`);
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('D-masked germline reconstruction') || !methods.includes('btv359') || !methods.includes(result.page.result.germlinesOptions.files[0].sha256)) throw new Error('Missing germline methods or provenance');
+    await act('close_dialogs');
+    // A delayed row load cannot repaint a destroyed view.
+    await js(`(() => { window.clonoloom.germlinesView.showPage('rows'); window.clonoloom.bcellsMode.show('inputs'); return true; })()`);
+    await waitFor(`Boolean(window.clonoloom.bcellsView)`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.germlinesView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.germlinesView.state().artifact')) !== result.artifact) throw new Error('Saved germline result did not reopen');
+  },
   async families() {
     await act('open_example', { example: 'simulated-bcell-immunization', download: true });
     await act('find_bcell_families');
@@ -162,7 +190,7 @@ const scenes = {
     if (!methods.includes('artificial paired B-cell') || methods.includes('GRCh38') || methods.includes('varying between samples beyond sampling')) throw new Error('Wrong simulation methods');
     await act('close_dialogs');
     await act('inspect_bcell_inputs', { select: 1 });
-    await waitFor(`document.querySelector('.inspector').textContent.includes('clonoloom-artificial-bcell-v1')`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('clonoloom-artificial-bcell-v2')`);
   },
   async imgt() {
     await act('open_example', { example: 'synthetic-imgt-inputs', download: true });

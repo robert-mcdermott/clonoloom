@@ -1,0 +1,8 @@
+{
+  "python": "3.13.3",
+  "method": "Independent CSV/FASTA coordinate slicing, then ancestor comparison",
+  "model": "clonoloom-artificial-bcell-v2",
+  "rows": 4320,
+  "referenceSHA256": "65732bc3409e087619524da3810758364eb1250ed230d3e3ce596c176f63d56b",
+  "projectionsSHA256": "fce29376c9bf2524e9072197b47581caea4471427e5e95e04d6548afed9ac7e2"
+}

@@ -71,6 +71,7 @@ var (
 			Words: "Every row retains a coding sequence, its known rearranged ancestor and artificial region coordinates. SIM calls are fictional. These are supplied annotations; mutation and lineage inference remain later steps. Count cells once, even though each has two sequence rows."},
 		{Title: "Inspect distances before choosing a threshold", Action: "find_bcell_families", Words: "Each distinct paired nucleotide receptor contributes once to nearest distances within its subject and both chains' V/J/length partitions. Missing neighbors are not zero; no families are assigned yet."},
 		{Title: "Find families at an explicit threshold", Action: "find_bcell_families", Args: map[string]any{"threshold": 0.1}, Words: "At 0.1 the artificial study recovers its 36 known families. This is a demonstration threshold, not a recommendation for biological data. Paired distance is the larger heavy/light distance; single-linkage endpoints can exceed the threshold."},
+		{Title: "Reconstruct D-masked germlines", Action: "reconstruct_bcell_germlines", Args: map[string]any{"reference": simulatedGermlines}, Words: "The v2 artificial reference reconstructs all 4,320 assigned chain rows across 72 family/locus groups. The 33 intervening bases are masked, including the light-chain junction. These are reference projections, not the known full ancestors; mutation statistics come later."},
 	}
 	carTSteps = []examples.Step{
 		{Title: "See each patient's samples in time", Action: "describe_subjects",

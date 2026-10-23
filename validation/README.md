@@ -13,6 +13,8 @@ Go tests in this folder check whole results against independent references (`go 
 
 | Test | What it checks | Data |
 | --- | --- | --- |
+| `TestGermlinesAgainstIndependentCoordinates` | All 4,320 artificial D-masked projections and coordinate maps; 72 family/locus groups | `reference/germlines.json`, independent CSV/FASTA slicing and ancestor check in `reference/germlines.py` |
+| `TestGermlinePublicReferenceAndAIRRCoverage` | Checksums/parsing of 421 OGRDB alleles, Ramos AIRR reconstruction and explicit exclusion of gene-only 10x calls; format coverage, not known biological truth | On-request `ogrdb-human-2026-05-27`, `vdjserver-ramos-libra`, human 10x AIRR examples |
 | `TestClonalFamiliesAgainstIndependentGraph` | All 2,160 cell memberships and nearest-distance float bits, heavy/paired at four thresholds; exact recovery of 36 artificial families at 0.1 | `reference/clonal-families.json`, independent Python CSV and adjacency-graph traversal in `reference/clonal_families.py` |
 | `TestReadersAgreeWithIndependentReaders` | Every column ClonoLoom reads from every development file equals what an independent reader reads: the AIRR Community's `airr` library for AIRR files, pandas for Cell Ranger, immunoSEQ, MiXCR, OAS and OTS and tcrdist3 files; immunoSEQ gene names mapped as the dataset records them, a data unit's metadata as given | `reference/readers.json` (made by `reference/read_repertoires.py`), the files of `sources.json` |
 | `TestTCRdistEqualsTCRdist3` | Every TCRdist between Dash et al. 2017's 1,924 mouse and 415 human clones, α, β and paired and each loop's alone, equals tcrdist3's; every clone's neighbors and nearest, found with pruning in parallel, equal those of every distance | `reference/tcrdist3.json` (made by `reference/tcrdist3_distances.py`), `dash-2017-tcrdist3`, `tcrdist3-loops` |
@@ -120,3 +122,21 @@ partition, ambiguity, missing-count, paired-cell, work-limit and cancellation ca
 `internal/bcell/families_test.go`; API tests cover identity, metadata precedence, bounded pages
 and complete exports. `node docs/capture/capture.mjs families --theme both` exercises the visible
 threshold form, source inspection, saved-result reopening and cited methods in a real browser.
+
+### Rebuilding the B-cell germline reference
+
+Use a fresh output directory with model v2; do not overwrite an existing study:
+
+```sh
+go run . simulate --preset bcell-immunization --quiet --out /tmp/clonoloom-germline-study
+uv run --no-project validation/reference/bcell_families.py --study /tmp/clonoloom-germline-study
+uv run --no-project validation/reference/clonal_families.py /tmp/clonoloom-germline-study validation/reference/clonal-families.json
+uv run --no-project validation/reference/germlines.py /tmp/clonoloom-germline-study
+node validation/fetch.mjs ogrdb-human-2026-05-27
+go test ./validation -run 'TestGermline' -v
+```
+
+The Python check constructs V/J projections from reference segments and explicit coordinates,
+then compares to truth outside the masked junction. It does not consume the Go reconstruction.
+All source-row sequences, masks and coordinate maps contribute to the reduced digest.
+Public reference files are downloaded data, never external implementation source.

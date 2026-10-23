@@ -1,7 +1,7 @@
 {
   "python": "3.13.3",
   "method": "stdlib CSV, sequential event replay, standard genetic code and closed-form sampling probabilities",
-  "model": "clonoloom-artificial-bcell-v1",
+  "model": "clonoloom-artificial-bcell-v2",
   "seed": 20261027,
   "config": {
     "subjects": 3,
@@ -30,7 +30,7 @@
       },
       "pairedClonotypes": 12,
       "netDifferences": 0,
-      "sha256": "4982f429fdb7a4e5672094a157105f84352d4531a135dbe920410eab668d7a52"
+      "sha256": "a19725c5a4b2395c324442db74b3c935defe7f26980f7c0f1e45337d8c0b6f40"
     },
     {
       "sample": "S01-d14",
@@ -47,7 +47,7 @@
       },
       "pairedClonotypes": 23,
       "netDifferences": 1332,
-      "sha256": "12fa42fb66cd57942ab07f3596e1d150d150322fadebe448f59764f66b51c667"
+      "sha256": "bac435131364d95a646179b04434cfeb359a005e6f8d7fb6cc07dacf6a344241"
     },
     {
       "sample": "S01-d28",
@@ -65,7 +65,7 @@
       },
       "pairedClonotypes": 39,
       "netDifferences": 2330,
-      "sha256": "e8cbeb0b07faace18c4f13d85c1eb3404189baf7cdc780a71d5eff15adc7a9e0"
+      "sha256": "657db76bf60be2cc0e0330287a4b4312716ef2c02abbedc000248913393f7739"
     },
     {
       "sample": "S02-pre",
@@ -81,7 +81,7 @@
       },
       "pairedClonotypes": 12,
       "netDifferences": 0,
-      "sha256": "3a926174fe80d38f743e42d11f9f8e975a718cec71c1951bcbd659ff910b6b9a"
+      "sha256": "233aab9e25ca1441458c6635a1faa96d6c24663133610c920935d933476a1395"
     },
     {
       "sample": "S02-d14",
@@ -98,7 +98,7 @@
       },
       "pairedClonotypes": 18,
       "netDifferences": 1230,
-      "sha256": "c388868a1ba0a9d41732f7557dcd689ec67134ba73d45b40e00ac334a0679839"
+      "sha256": "fab4dae86c4c88205d734bda27501363d206853343f1d18442ab39f7c953f505"
     },
     {
       "sample": "S02-d28",
@@ -116,7 +116,7 @@
       },
       "pairedClonotypes": 36,
       "netDifferences": 2323,
-      "sha256": "5e3c47637ca019f946442e54f4ea83499b1ad71da9f9905c79dc6e4ff4467047"
+      "sha256": "28dc5fea53f3bee6a27a1e137271a76757e6109996eb0e6a108564d379d21c9b"
     },
     {
       "sample": "S03-pre",
@@ -132,7 +132,7 @@
       },
       "pairedClonotypes": 12,
       "netDifferences": 0,
-      "sha256": "195af0c87851c2314629cb99a326a086f85df518fbd0f083607c99f714635d26"
+      "sha256": "c01a68dba00647a6cfec4f47c7137bf395444b94b90f9139101adfffa9708922"
     },
     {
       "sample": "S03-d14",
@@ -149,7 +149,7 @@
       },
       "pairedClonotypes": 19,
       "netDifferences": 1332,
-      "sha256": "de2a0db9586f4777b943ae38815e5ef742b462a03cd23990f5f7e6fa992b9470"
+      "sha256": "3dd1685118155e326b7b801e08411d45c394faa5ef6ae4754b24b03c2833bdbc"
     },
     {
       "sample": "S03-d28",
@@ -167,7 +167,7 @@
       },
       "pairedClonotypes": 40,
       "netDifferences": 2402,
-      "sha256": "1cc8943c314277bbc0dfae35c2d6a92cee452111a6d5ca233d6e48377fee77b7"
+      "sha256": "45281dc14de49970335f9598753eb65329b38c2c3a1c30e3bb012c0fd595d8cb"
     }
   ]
 }

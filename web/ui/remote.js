@@ -428,6 +428,19 @@ export function remoteActions(app) {
       return { message: `${done.page.familyCount} families; ${done.page.result.eligible} eligible observations.`, data: { artifact: done.artifact, families: done.page.familyCount, representatives: done.page.representativeCount, eligible: done.page.result.eligible, excluded: done.page.result.excluded, withoutNeighbor: done.page.result.withoutNeighbor, options: done.page.result.familiesOptions } };
     },
 
+    async reconstruct_bcell_germlines({ dataset, families, reference } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('germlines');
+      const view = app.germlinesView;
+      await view.show(d.id, { families, reference });
+      if (view.state().status === 'idle') throw new ActionError('Save a thresholded family result first.');
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'Germline reconstruction');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.result.reconstructed} reconstructed source rows.`, data: { artifact: done.artifact, reconstructed: done.page.result.reconstructed, rows: done.page.rowCount, familyLoci: done.page.familyCount, excluded: done.page.result.excluded, options: done.page.result.germlinesOptions } };
+    },
+
     async inspect_bcell_inputs({ dataset, select } = {}) {
       const d = datasetOf(dataset);
       app.focusItem({ kind: 'dataset', id: d.id });

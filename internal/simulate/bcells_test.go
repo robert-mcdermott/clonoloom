@@ -150,7 +150,7 @@ func TestBCellStudyTruthAndBytes(t *testing.T) {
 	if digest(t, dir) != digest(t, again) {
 		t.Fatal("same serialized parameters differ")
 	}
-	const want = "b9b50fb55f17bcaf80362478b2f57c46ec0db8575e432042f067007e71801e76"
+	const want = "f2fa95c0206c104f97ede7427ac2d3ecdb1d006139f3879738d853d099146144"
 	if got := digest(t, dir); got != want {
 		t.Errorf("B-cell study digest %s; want %s (check arm64 and amd64)", got, want)
 	}

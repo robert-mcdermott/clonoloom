@@ -332,3 +332,17 @@ test('family methods cite the inference and keep saved-result thresholds separat
   assert.match(references.join(' '), /1601850/);
   assert.match(references.join(' '), /btv359/);
 });
+
+test('germline methods retain parent and reference checksums and do not infer an ancestor', () => {
+  const result = { id: 'grm-one', kind: 'germlines', reconstructed: 10, rowCount: 12, describe: 'D/N/P bases masked.', germlines: { families: 'fam-one', familySha256: 'family-hash', files: [{ reference: 'ref-one', file: 'segments.fasta', sha256: 'reference-hash', license: 'CC0', citation: 'Reference citation', source: 'https://example.org/data' }] } };
+  const { text, references } = methodsParagraph({ dataset: pbmc, program, results: [result] });
+  for (const phrase of ['fam-one', 'family-hash', 'reference-hash', '10 of 12', 'No mutation rate or lineage ancestor', 'CC0']) assert.ok(text.includes(phrase), phrase);
+  assert.match(references.join(' '), /btv359/);
+  assert.match(references.join(' '), /Reference citation/);
+});
+test('v2 artificial B-cell metadata preserves the model name and avoids TRB methods', () => {
+  const summary = { samples: [{ repertoire: { studyId: 'clonoloom-simulated-clonoloom-artificial-bcell-v2' } }] };
+  const { text } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, summary, program });
+  assert.match(text, /clonoloom-artificial-bcell-v2/);
+  assert.doesNotMatch(text, /GRCh38|Ensembl/);
+});

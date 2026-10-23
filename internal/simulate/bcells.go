@@ -22,7 +22,7 @@ import (
 	"clonoloom/internal/random"
 )
 
-const bcellModel = "clonoloom-artificial-bcell-v1"
+const bcellModel = "clonoloom-artificial-bcell-v2"
 
 // BCellStudy makes three samples per subject, at days -7, 14 and 28 of an immunization.
 // Families is per subject; CellsPerSample counts paired cells, not rearrangements or molecules.
@@ -135,7 +135,7 @@ func bcellAncestor(seed uint64, locus string, family int, r *random.Random) bcel
 		anchor = "TTT"
 	}
 	copy(bases[318:321], anchor)
-	return bcellChain{Locus: locus, VCall: fmt.Sprintf("%sV%d-SIM*01", locus, family%2+1), JCall: locus + "J1-SIM*01", Sequence: string(bases), Mutations: []bcellMutation{}}
+	return bcellChain{Locus: locus, VCall: fmt.Sprintf("%sV%d-SIM*01", locus, family%2+1), JCall: fmt.Sprintf("%sJ%d-SIM*01", locus, family%2+1), Sequence: string(bases), Mutations: []bcellMutation{}}
 }
 
 // Uniform proposed site and alternative base; reject anchor changes and stop codons. Sequential
@@ -222,7 +222,7 @@ func bcellWeights(families, time int) []float64 {
 	return weights
 }
 
-var bcellColumns = []string{"sequence_id", "cell_id", "repertoire_id", "productive", "vj_in_frame", "stop_codon", "locus", "v_call", "d_call", "j_call", "c_call", "junction", "junction_aa", "sequence", "sequence_alignment", "germline_alignment", "germline_database", "v_cigar", "d_cigar", "j_cigar", "rev_comp", "v_sequence_start", "v_sequence_end", "j_sequence_start", "j_sequence_end", "fwr1_start", "fwr1_end", "cdr1_start", "cdr1_end", "fwr2_start", "fwr2_end", "cdr2_start", "cdr2_end", "fwr3_start", "fwr3_end", "cdr3_start", "cdr3_end", "fwr4_start", "fwr4_end"}
+var bcellColumns = []string{"sequence_id", "cell_id", "repertoire_id", "productive", "vj_in_frame", "stop_codon", "locus", "v_call", "d_call", "j_call", "c_call", "junction", "junction_aa", "sequence", "sequence_alignment", "germline_alignment", "germline_database", "v_cigar", "d_cigar", "j_cigar", "rev_comp", "v_sequence_start", "v_sequence_end", "j_sequence_start", "j_sequence_end", "fwr1_start", "fwr1_end", "cdr1_start", "cdr1_end", "fwr2_start", "fwr2_end", "cdr2_start", "cdr2_end", "fwr3_start", "fwr3_end", "cdr3_start", "cdr3_end", "fwr4_start", "fwr4_end", "v_germline_start", "v_germline_end", "j_germline_start", "j_germline_end"}
 
 func bcellFields(sample, cell string, node, root bcellNode, heavy bool) []string {
 	chain, ancestor, constant := node.Light, root.Light, node.Light.Locus+"C"
@@ -234,8 +234,8 @@ func bcellFields(sample, cell string, node, root bcellNode, heavy bool) []string
 	}
 	junction := chain.Sequence[282:321]
 	return []string{cell + "-" + chain.Locus, cell, sample, "T", "T", "F", chain.Locus, chain.VCall, "", chain.JCall, constant,
-		junction, Translate(junction), chain.Sequence, chain.Sequence, ancestor.Sequence, bcellModel, "", "", "", "F",
-		"1", "285", "319", "360", "1", "78", "79", "114", "115", "165", "166", "195", "196", "285", "286", "318", "319", "360"}
+		junction, Translate(junction), chain.Sequence, chain.Sequence, ancestor.Sequence, bcellModel, "285M75S", "", "318S42M", "F",
+		"1", "285", "319", "360", "1", "78", "79", "114", "115", "165", "166", "195", "196", "285", "286", "318", "319", "360", "1", "285", "1", "42"}
 }
 
 func writeBCellSample(ctx context.Context, path, id string, nodes []bcellNode, weights []float64, cells int, r *random.Random, observations *csv.Writer) ([]bcellAbundance, error) {
@@ -366,7 +366,22 @@ func runBCells(ctx context.Context, s Study, dir, version string, progress Progr
 	if err := os.WriteFile(filepath.Join(stage, "README.md"), []byte(bcellReadme(s, version)), 0o644); err != nil {
 		return Summary{}, err
 	}
-	summary.Files = append(summary.Files, "repertoires.airr.json", "README.md", "truth/observations.tsv")
+	// Export the generative V/J backbones independently of sampled family truth.
+	// v2 distinguishes the two J backbones, previously given one fictional name.
+	var reference strings.Builder
+	for _, locus := range []string{"IGH", "IGK", "IGL"} {
+		for family := range 2 {
+			ancestor := bcellAncestor(s.Seed, locus, family, random.New(1, 1))
+			fmt.Fprintf(&reference, ">%s\n%s\n>%s\n%s\n", ancestor.VCall, ancestor.Sequence[:285], ancestor.JCall, ancestor.Sequence[318:])
+		}
+	}
+	if err := os.MkdirAll(filepath.Join(stage, "reference"), 0755); err != nil {
+		return Summary{}, err
+	}
+	if err := os.WriteFile(filepath.Join(stage, "reference", "germlines.fasta"), []byte(reference.String()), 0644); err != nil {
+		return Summary{}, err
+	}
+	summary.Files = append(summary.Files, "repertoires.airr.json", "README.md", "truth/observations.tsv", "reference/germlines.fasta")
 	sort.Strings(summary.Files)
 	for _, file := range summary.Files {
 		data, err := os.ReadFile(filepath.Join(stage, file))
@@ -404,6 +419,10 @@ func runBCells(ctx context.Context, s Study, dir, version string, progress Progr
 func bcellReadme(s Study, version string) string {
 	return fmt.Sprintf(`# %s
 
+Model v2 adds explicit ungapped V/J CIGARs and coordinates, distinct J names for the two
+backbones, and reference/germlines.fasta. Simulated sequences and mutation histories are
+unchanged from v1. Existing v1 examples can still be opened; regenerate to use germlines.
+
 Artificial paired B-cell data made by ClonoLoom %s, model %s, seed %d.
 Open this folder in ClonoLoom: the AIRR samples and repertoires.airr.json are observations;
 truth/ is excluded from the dataset. Each cell has one heavy and one kappa or lambda chain.
@@ -427,8 +446,9 @@ Sequences are artificial 360-nt coding strings, with shared backbones for two fi
 per locus and random family junctions at 283–321. The junction anchors are Cys and Trp/Phe.
 SIM gene names are not reference alleles. germline_alignment holds the known rearranged ancestor,
 including its artificial junction, not a reconstructed germline or a D-masked reference.
-FWR/CDR coordinates describe artificial contiguous regions, not IMGT numbering. D calls, CIGARs,
-reference-segment coordinates and molecule counts are absent, rather than invented.
+FWR/CDR coordinates describe artificial contiguous regions, not IMGT numbering. V/J CIGARs
+and germline coordinates refer to reference/germlines.fasta; D calls and molecule counts
+are absent, rather than invented.
 
 Each edge changes each chain by the configured number of sequential substitutions: propose a
 uniform position and base, reject unchanged bases, anchor changes and stop codons. N3's first
