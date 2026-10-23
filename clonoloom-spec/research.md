@@ -1054,3 +1054,55 @@ artificial truth, not biological validation. A separate fixed-seed sampling chec
 180,000 draws against their categorical probabilities. Byte digests cover both processor
 architectures and retain the pre-existing TRB digests. Bounds, parameter serialization,
 cancellation, no-overwrite behavior, offline generation and guided inspection are tested.
+
+
+### 5.16 B-cell clonal families (wave 5, slice 4)
+
+The implemented method follows the published V/J/junction-length partitioning and normalized
+nucleotide Hamming/single-linkage framework in Gupta et al. (2015), *Change-O: a toolkit for
+analyzing large-scale B cell immunoglobulin repertoire sequencing data*, Bioinformatics
+31:3356–3358, [doi:10.1093/bioinformatics/btv359](https://doi.org/10.1093/bioinformatics/btv359),
+and Gupta et al. (2017), *Hierarchical Clustering Can Identify B Cell Clones with High Confidence
+in Ig Repertoire Sequencing Data*, J Immunol 198:2489–2499,
+[doi:10.4049/jimmunol.1601850](https://doi.org/10.4049/jimmunol.1601850).
+The primary publications and public [Change-O method documentation](https://changeo.readthedocs.io/en/1.3.1/methods/clustering.html)
+and [SHazaM distance documentation](https://shazam.readthedocs.io/en/stable/topics/distToNearest/)
+were checked on 2026-10-23. No external implementation source was inspected or copied.
+
+ClonoLoom independently computes mismatches divided by nucleotide junction length. V/J calls
+must resolve to one gene; ambiguous alleles of that gene are acceptable, unreadable calls are
+not. Junctions must be nonempty, productive, ACGT-only, a multiple of three and at most 1,000
+bases. The QC filter acts first. Subject scope requires explicit metadata/annotations; missing
+subjects are excluded, never pooled as an anonymous subject. Explicit sample scope is available.
+
+Paired mode is a **ClonoLoom policy**, not claimed equivalence to Change-O or SHazaM pairing:
+exactly one distinct heavy and one distinct IGK/IGL chain per sample-scoped cell, with duplicate
+identical chains collapsed. Multiple or invalid chains exclude the observation. Each chain must
+match its own locus/V/J/length partition; distance is the larger of the two normalized Hamming
+distances. Thus both chains must support an edge. Auto selects paired mode whenever the input
+table has cell IDs. Explicit heavy mode ignores light chains but still counts cells once.
+
+Each distinct compared receptor per scope contributes once to the distance-to-nearest histogram;
+identical observations retain their membership and abundance separately. A singleton partition
+has no comparable neighbor, recorded as null rather than zero. No mixture fit or automatic
+threshold is supplied. A user-selected threshold joins edges at distance ≤ threshold; connected
+components implement single linkage. Paths can join endpoints exceeding that threshold. Zero
+joins exact receptors; null computes distances without assigning families. A threshold suitable
+for the artificial example is not a biological recommendation. Inferred families neither prove
+ancestry nor replace junction clonotypes.
+
+The complete result records the filter, subjects, mode, threshold, source names/checksums/lines,
+sequence and cell IDs, exclusions, nearest neighbors and per-sample family abundance. Missing
+bulk abundance remains null; cells contribute one regardless of contig counts. Deterministic
+sorting fixes IDs, tie breaks and summation. All-pairs comparisons are bounded to 200 million
+base comparisons and 250,000 observations; exceeding either refuses the job without subsampling.
+Cancellation is checked during grouping and comparisons. UI pages are bounded independently of
+complete exports. Germline reconstruction, SHM and lineage inference remain separate slices.
+
+An independent Python standard-library CSV reader and breadth-first adjacency-graph calculation
+checks all 2,160 artificial cells at four thresholds in both modes. Digests cover every membership
+and nearest float bit pattern; source hashes and Python version accompany the reference. Heavy
+mode has 84 unique receptors; paired mode has 133. At threshold 0.05 these yield 38 and 43
+families; at 0.1 both recover the exact 36 true families. Truth is read only after inference for
+evaluation. These results do not establish performance on biological samples or recommend a
+threshold, and no fitted SHM model is implied.

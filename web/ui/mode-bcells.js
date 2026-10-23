@@ -1,4 +1,5 @@
-// B-cell input evidence: all counts and checks come from Go (api_bcells.go).
+// B-cell evidence and families: all counts and checks come from Go.
+import { mountFamilies } from './bcell-families.js';
 import { h, icon, clear } from './dom.js';
 import { bcellInputs } from './storage.js';
 import { datasetFilter } from '../lib/filters.js';
@@ -6,7 +7,7 @@ import { datasetDefinition } from '../lib/definitions.js';
 import { exportDataset } from './exports.js';
 import { toast } from './overlays.js';
 
-export function mountBCells(app, container) {
+function mountInputs(app, container) {
   const { store } = app;
   let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : store.project.datasets[0]?.id;
   let offset = 0;
@@ -23,7 +24,7 @@ export function mountBCells(app, container) {
   const key = () => JSON.stringify(request());
   const select = h('select.input.small', { 'aria-label': 'Dataset', onchange: () => { chosen = select.value; offset = 0; reload(); } });
   const body = h('div.view-body');
-  const root = h('div.view', h('div.workbench-head', h('h1', icon('lineage'), 'B cells'), h('span.spacer'),
+  const root = h('div.view', h('div.workbench-head', h('span.spacer'),
     h('label.unit-confirm', 'Dataset', select), h('button.btn.small', { type: 'button', onclick: () => { if (dataset()) exportDataset(app, dataset(), 'rearrangements'); } }, icon('download'), 'Export AIRR')), body);
   container.append(root);
   const cell = (v) => h('td', String(v));
@@ -107,4 +108,22 @@ export function mountBCells(app, container) {
 // Native annotations are displayed as text; invalid JSON from an AIRR input remains inspectable.
 function nativeText(value) {
   try { return JSON.stringify(JSON.parse(value), null, 2); } catch { return value; }
+}
+
+export function mountBCells(app, container) {
+  const root = h('div.view');
+  const tabs = h('div.segmented', { role: 'group', 'aria-label': 'B-cell analyses' });
+  const content = h('div', { style: { display: 'contents' } });
+  root.append(h('div.workbench-head', h('h1', icon('lineage'), 'B cells'), tabs), content); container.append(root);
+  let part = '', child = null;
+  function show(next) {
+    if (part === next) return;
+    part = next; child?.destroy(); clear(content); clear(tabs);
+    for (const [id, label] of [['inputs', 'Inputs'], ['families', 'Families']]) tabs.append(h(`button${part === id ? '.active' : ''}`, { type: 'button', 'aria-pressed': part === id, onclick: () => show(id) }, label));
+    child = (part === 'families' ? mountFamilies : mountInputs)(app, content);
+  }
+  const focused = () => app.store.ui.focus?.kind === 'result' && app.store.project.artifacts.some((r) => r.id === app.store.ui.focus.id && r.kind === 'families');
+  const view = { show }; app.bcellsMode = view;
+  show(focused() ? 'families' : 'inputs');
+  return { update(topics) { if (topics.has('focus') && focused()) show('families'); child?.update(topics); }, destroy() { child?.destroy(); if (app.bcellsMode === view) app.bcellsMode = null; root.remove(); } };
 }

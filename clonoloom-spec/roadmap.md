@@ -16,7 +16,8 @@ has a sequence of slices and a detailed plan for slice 1. Later slices are refin
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
 2–4 are merged and released as 0.2.0–0.4.0, and the 0.4.0 product site is published.
-Wave 5 is underway on `wave5`; slice 1 is implemented and awaiting the maintainer's commit.
+Wave 5 is underway on `wave5`; slices 1–3 are committed. Slice 4 is implemented and validated,
+awaiting the maintainer's commit.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -877,15 +878,15 @@ threshold-dependent result, not a replacement for those identifiers.
 Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slices 1–3 are implemented; later slices need their methods, data and acceptance criteria settled
+puts a simulation with known families before the analyses it validates. Slices 1–4 are implemented; later slices need their methods, data and acceptance criteria settled
 in detail before implementation.
 
 | Slice | Status | Scope |
 | --- | --- | --- |
 | 1. B-cell sequence evidence | Committed | Retain AIRR sequences, alignments and coordinates; inspect their availability and validity |
 | 2. IMGT/HighV-QUEST input | Committed | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
-| 3. Simulated B-cell families | Implemented; awaiting commit | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
-| 4. Clonal families | To come | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
+| 3. Simulated B-cell families | Committed | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
+| 4. Clonal families | Implemented; awaiting commit | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
 | 5. Germlines | To come | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
 | 6. Somatic hypermutation | To come | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
 | 7. Lineage trees | To come | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
@@ -1136,6 +1137,53 @@ inspection in both themes, and the 108-check site audit with no problems. Mixed 
 keep separate methods descriptions. The site builds 28 pages with 26 screenshot sets. Isolated
 million-row budgets: read/validate 1.518 s, cached cohort reopen 123 ms, searched page 37.058 ms.
 No later slice or release preparation has been started. Version remains 0.4.0.
+
+### Slice 4: Clonal families
+
+**Serves C4 and B2.** Keep these inferred families separate from junction clonotypes. The
+settled method is length-normalized nucleotide Hamming distance and single-linkage connected
+components at an explicit inclusive threshold, following Gupta et al. (2015, 2017), with the
+conservative eligibility and paired policies documented in research §5.16.
+
+1. Compare productive ACGT nucleotide junctions with resolved V/J genes (same-gene allele ties
+   are acceptable), within equal V/J/length partitions and explicit subject boundaries. Do not
+   infer subject from a sample name. Missing subjects are excluded; sample scope is an explicit
+   alternative. QC applies first. A null threshold measures distances only; zero is exact identity.
+2. Auto selects paired mode for cell-indexed tables. Require exactly one distinct heavy and
+   one distinct kappa/lambda chain per sample-scoped cell. Collapse duplicate identical chains,
+   exclude ambiguous or missing evidence, and use the maximum normalized chain distance within
+   both chains' partitions. Heavy mode remains available. Bulk rows retain their count unit;
+   cells count once. Unknown abundance stays missing.
+3. Collapse identical compared receptors only within their scope for nearest distances. Each
+   contributes once, without abundance weighting. No comparable receptor is null. Use 20 bins
+   of width 0.05, with 1 included in the final bin. State transitivity and threshold sensitivity.
+4. Keep cancellable, resumable jobs and immutable artifacts with normalized options, subjects,
+   QC, source-row identities, membership, exclusions, nearest distances and per-sample abundance.
+   Retain existing clonotype IDs. Refuse more than 250,000 observations or 200 million compared
+   bases explicitly, without sampling. The UI reads pages of at most 200 rows (normally 50).
+5. Add B cells → Families, saved choices, source inspection, old-result reopening, figure and
+   CSV exports, methods citations, remote control and two guided steps. Export all rows and
+   source hashes, not only the current page. Keep membership abundance at observation level;
+   chain-row repeats must not be summed. Family IDs and artifact IDs record different scopes:
+   family IDs hash members/options; artifacts additionally identify files, filters and annotations.
+6. Validate boundary cases, subjects, missing evidence, duplicate chains, multi-chain cells,
+   transitive links, explicit zero, cancellation and work bounds. Compare every observed-cell
+   membership and nearest-distance bit pattern against an independent CSV/adjacency-graph
+   calculation for eight cases. At 0.1, both heavy and paired modes exactly recover all 36 known
+   artificial families. This validates artificial truth, not accuracy on biological repertoires.
+
+**Implemented and validated.** The complete Go race suite passes (scientific validation
+669.3 s), followed by the final API/core/export race rerun. Vet, six platform builds,
+arm64/amd64 family and released-project compatibility checks, and five seconds of distance
+fuzzing pass. All 87 JavaScript tests and 14 accessibility checks pass. Browser checks cover the
+visible threshold controls, metadata subjects, paginated members/nearest receptors, source
+inspection, methods and reopening an older result. All four affected B-cell guided workflows
+pass in both themes. The site builds 29 pages with 27 screenshot sets; its 112-check audit finds
+no problems. Isolated million-row budgets pass: read/validate 1.558 s, cached reopen 161 ms,
+searched page 40.444 ms. The reference checks every membership and nearest value at eight
+mode/threshold combinations. Explicit empty subject maps override metadata; unrelated clonotype
+and diversity choices do not change family identity.
+No germline, SHM, tree or class-switch implementation is included. Version remains 0.4.0.
 
 ## Later waves (outlined)
 

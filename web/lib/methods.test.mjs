@@ -320,3 +320,15 @@ test('mixed simulations describe B-cell and TRB models separately, without givin
     assert.doesNotMatch(text, /varying between samples beyond sampling/);
   }
 });
+
+
+test('family methods cite the inference and keep saved-result thresholds separate', () => {
+  const results = [null, 0, 0.1].map((threshold, i) => ({ id: `fam-${i}`, kind: 'families', eligible: 12, representativeCount: 5, familyCount: threshold === null ? 0 : 3, families: { mode: 'paired', scope: 'subject', threshold }, filter: { productiveOnly: true }, describe: threshold === null ? 'Distances only; no family threshold has been selected.' : `Single-linkage families at distance ≤ ${threshold}.` }));
+  const { text, references } = methodsParagraph({ dataset: pbmc, program, results });
+  assert.match(text, /Distances only; no family threshold/);
+  assert.match(text, /distance ≤ 0\./);
+  assert.match(text, /distance ≤ 0.1/);
+  assert.match(text, /Paired maximum distance is a conservative ClonoLoom policy/);
+  assert.match(references.join(' '), /1601850/);
+  assert.match(references.join(' '), /btv359/);
+});

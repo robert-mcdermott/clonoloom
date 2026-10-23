@@ -175,7 +175,11 @@ subjects in time and inspect a supplied sequence and ancestor alignment. The def
 subjects, twelve families per subject, days −7, 14 and 28, and 240 paired cells per sample:
 2,160 cells and 4,320 rearrangement rows. Each cell has one IGH and one IGK or IGL chain.
 Family identity is subject-specific and kept in truth only; ordinary junction clonotypes and
-their IDs retain their existing meaning. Family, mutation and lineage inference come later.
+their IDs retain their existing meaning. The next guided steps inspect paired nearest distances
+and infer families at an explicit threshold of 0.1. Both paired and heavy-only inference recover
+the exact 36 known families at that threshold; at 0.05 they yield 43 and 38 families respectively.
+The threshold is a demonstration for these artificial data, not a biological recommendation.
+Mutation and lineage inference remain later slices.
 
 This is a deliberately artificial benchmark, model `clonoloom-artificial-bcell-v1`. The sequences
 are generated coding strings, not biological antibody references. Gene calls containing `SIM`

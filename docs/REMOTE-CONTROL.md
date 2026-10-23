@@ -104,3 +104,13 @@ sample and locus, plus the first page (at most 50 rearrangements) under the acti
 row on that page. It displays that row's original sequence annotations and findings in the
 inspector. The response contains bounded summaries, not all sequences. This inspection neither
 reconstructs a germline nor computes mutation or family membership.
+
+
+### B-cell clonal families
+
+`find_bcell_families` opens Families and keeps the result. Optional arguments: `dataset`,
+`mode` (`auto`, `heavy`, `paired`), `scope` (`subject`, `sample`), and `threshold` (0–1).
+Omitting the threshold measures nearest distances without assigning families; zero means exact
+identity. Subject scope uses Data annotations or supplied subject metadata. Paired distance is the larger normalized chain
+distance, within both chains' V/J/length partitions. The response reports eligibility, exclusions,
+receptor/family counts and the artifact identity. `inspect_bcell_inputs` returns to Inputs.

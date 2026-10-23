@@ -4,6 +4,21 @@
 
 ### Added
 
+- **Clonal families (wave 5, slice 4).** Compare normalized nucleotide junction distances
+  within explicit subject or sample and V/J/length partitions. Inspect nearest-distance
+  distributions before selecting an inclusive single-linkage threshold. Null and zero differ.
+- Support heavy-only and conservative paired heavy/light comparisons, with explicit exclusions,
+  cell counts, missing abundance, deterministic identities and bounded cancellable work.
+  Keep inferred families separate from existing junction clonotypes.
+- Add B cells → Families, saved choices/results, paginated memberships and source inspection,
+  complete CSV exports, figure exports, cited methods, remote control and guided example steps.
+- Match every membership and nearest distance against independent graph calculations at four
+  thresholds in both modes. Recover all 36 known artificial families at 0.1; this demonstration
+  threshold is not a recommendation for biological data. Version remains 0.4.0.
+- Complete Go race checks, vet, six builds, arm64/amd64 compatibility, distance fuzzing,
+  87 JavaScript tests, 14 accessibility checks, both-theme guided browser checks, the
+  112-check site audit and isolated million-row performance budgets.
+
 - **Simulated B-cell families (wave 5, slice 3).** Add `bcell-immunization`: three artificial
   subjects, paired heavy/light chains, known ancestors, seven-state families, ordered substitutions,
   fixed isotype histories and sampled cell abundance at three time points. Record unobserved

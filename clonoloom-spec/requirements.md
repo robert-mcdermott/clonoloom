@@ -72,7 +72,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | C1 | Explicit, named clonotype definitions: nucleotide or amino-acid junction; V and J by gene, family or not at all; one chain or paired chains; for BCR, a distance-thresholded definition (C4) | partial (wave 1, slice 5: nucleotide or amino-acid junction; V and J by allele, gene, family or not at all; each locus, one locus, or paired αβ, γδ and heavy–light chains; the source's own clonotypes; presets, an editor and definitions saved for reuse; IDs made from the definition and the key; equal to scirpy's partitions of eight Cell Ranger runs under four definitions, and to Cell Ranger's own clonotype sizes; C4 in wave 5) |
 | C2 | The definition is part of every result's lineage and is shown with every table and figure | partial (wave 1, slice 5: said in words above the clonotype table, in the inspector and in the status bar with the unit; wave 2: in every result's lineage, and with the unit and samples in every figure's caption and every export's notice) |
 | C3 | Single-cell rules for cells with extra or missing chains: primary pair by UMIs, all chains, or excluded; orphan chains kept or dropped | done (wave 1, slice 5: the primary chain of each locus by UMIs, then reads, then contig ID; or every chain; cells without both chains grouped with cells of the same chain alone, or left out; QC's filter leaves out cells with too many chains) |
-| C4 | BCR clonal families: same V, J and junction length, junction distance under a threshold chosen from the distance-to-nearest distribution; light chains used when paired | planned (wave 5) |
+| C4 | BCR clonal families: same V, J and junction length, junction distance under a threshold chosen from the distance-to-nearest distribution; light chains used when paired | implemented (wave 5, slice 4: normalized nucleotide Hamming, nearest distributions and explicit single-linkage thresholds; separate from junction clonotypes) |
 | C5 | Sensitivity: key results recomputed under alternative definitions, with a plain verdict on whether the conclusion holds | planned (wave 7) |
 | C6 | The abundance unit is explicit: reads, UMIs, templates or cells, never inferred silently | done (wave 1, slices 2–5: every dataset's unit from its format, confirmed by the user when the format leaves it open, said with QC and every clonotype table) |
 
@@ -116,7 +116,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | # | Requirement | Status |
 | --- | --- | --- |
 | B1 | Germline reconstruction per clonal family, D masked | planned (wave 5) |
-| B2 | Clonal families (C4) with heavy and light pairing in single-cell data | planned (wave 5) |
+| B2 | Clonal families (C4) with heavy and light pairing in single-cell data | implemented (wave 5, slice 4: conservative paired maximum distance, explicit boundaries/thresholds, exclusions, memberships and source provenance) |
 | B3 | Somatic hypermutation: mutation frequency by sequence and region (FWR/CDR), replacement and silent counts; selection (BASELINe-style) later | planned (wave 5; selection parked) |
 | B4 | Lineage trees by maximum parsimony with ancestral sequences, maximum likelihood later; a tree viewer with isotype, timepoint and tissue on the nodes | planned (wave 5: parsimony; wave 9: likelihood) |
 | B5 | Isotype and subclass usage, class switching by clonal family | planned (wave 5) |

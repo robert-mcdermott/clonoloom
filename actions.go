@@ -122,6 +122,7 @@ var remoteActions = []remoteAction{
 		"cdr3Only": flagArg("Compare CDR3s alone for TCRdist"),
 		"follow":   numberArg("Epitope/antigen group to follow, from 1"),
 	})},
+	{Name: "find_bcell_families", Title: "Find B-cell clonal families", Description: "Measures nearest distinct-receptor distances, and assigns single-linkage families only with an explicit threshold. Respects subject or sample boundaries; paired mode uses both chains. Keeps a cited immutable result.", InputSchema: schema(map[string]any{"dataset": datasetArg, "mode": textArg("auto, heavy or paired"), "scope": textArg("subject (default) or sample"), "threshold": numberArg("Inclusive normalized distance 0–1. Omit for distances only; zero means exact identity.")})},
 	{Name: "inspect_bcell_inputs", Title: "Inspect B-cell inputs", Description: "Shows B cells, the filtered rearrangement evidence counts and a bounded first page. Optionally inspects one row. Does not reconstruct germlines or measure mutation.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg, "select": numberArg("Rearrangement on the first page to inspect, from 1 (at most 50)."),
 	})},

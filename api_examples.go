@@ -68,7 +68,9 @@ var (
 		{Title: "See each subject's samples in time", Action: "describe_subjects",
 			Words: "Three artificial subjects, sampled at days -7, 14 and 28 of an immunization. Each sample holds 240 paired cells; the sampling probabilities and actual counts are recorded in truth/."},
 		{Title: "Inspect an artificial sequence and its ancestor", Action: "inspect_bcell_inputs", Args: map[string]any{"select": 1},
-			Words: "Every row retains a coding sequence, its known rearranged ancestor and artificial region coordinates. SIM calls are fictional. These are supplied annotations; family, mutation and lineage inference remain later steps. Count cells once, even though each has two sequence rows."},
+			Words: "Every row retains a coding sequence, its known rearranged ancestor and artificial region coordinates. SIM calls are fictional. These are supplied annotations; mutation and lineage inference remain later steps. Count cells once, even though each has two sequence rows."},
+		{Title: "Inspect distances before choosing a threshold", Action: "find_bcell_families", Words: "Each distinct paired nucleotide receptor contributes once to nearest distances within its subject and both chains' V/J/length partitions. Missing neighbors are not zero; no families are assigned yet."},
+		{Title: "Find families at an explicit threshold", Action: "find_bcell_families", Args: map[string]any{"threshold": 0.1}, Words: "At 0.1 the artificial study recovers its 36 known families. This is a demonstration threshold, not a recommendation for biological data. Paired distance is the larger heavy/light distance; single-linkage endpoints can exceed the threshold."},
 	}
 	carTSteps = []examples.Step{
 		{Title: "See each patient's samples in time", Action: "describe_subjects",

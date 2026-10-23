@@ -19,6 +19,7 @@ import (
 	"path/filepath"
 
 	"clonoloom/internal/artifacts"
+	"clonoloom/internal/bcell"
 	"clonoloom/internal/clonotype"
 	"clonoloom/internal/diversity"
 	"clonoloom/internal/jobs"
@@ -49,7 +50,7 @@ type analysis struct {
 }
 
 // analyses are every kind, registered and resumed alike.
-var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis, pgenAnalysis, neighborhoodAnalysis, networkAnalysis, specificityAnalysis}
+var analyses = []analysis{diversityAnalysis, rarefactionAnalysis, usageAnalysis, overlapAnalysis, trackingAnalysis, expansionAnalysis, classesAnalysis, attributionAnalysis, tcrdistAnalysis, pgenAnalysis, neighborhoodAnalysis, networkAnalysis, specificityAnalysis, familyAnalysis}
 
 // analysisSpec is what an analysis measures, and how. Groups and Subjects name each sample's group
 // (condition) and subject (by sample name), for the analyses that use them; Study is the samples'
@@ -73,6 +74,7 @@ type analysisSpec struct {
 	Specificity   *specificityOptions  `json:"specificity,omitempty"`
 	Networks      *networkOptions      `json:"networks,omitempty"`
 	Neighborhoods *neighborhoodOptions `json:"neighborhoods,omitempty"`
+	Families      *bcell.FamilyOptions `json:"families,omitempty"`
 	Method        int                  `json:"method"`
 }
 
@@ -144,8 +146,9 @@ func (s analysisSpec) artifactID(prefix string) string {
 		Specificity   *specificityOptions  `json:"specificity,omitempty"`
 		Networks      *networkOptions      `json:"networks,omitempty"`
 		Neighborhoods *neighborhoodOptions `json:"neighborhoods,omitempty"`
+		Families      *bcell.FamilyOptions `json:"families,omitempty"`
 		Method        int                  `json:"method"`
-	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.PGen, s.Specificity, s.Networks, s.Neighborhoods, s.Method}
+	}{s.Dataset, s.Definition.Canonical(), s.Filter, s.Options, s.Groups, s.Subjects, s.Study, s.Track, s.Compare, s.Class, s.TCRdist, s.PGen, s.Specificity, s.Networks, s.Neighborhoods, s.Families, s.Method}
 	raw, _ := json.Marshal(key)
 	sum := sha256.Sum256(raw)
 	return prefix + hex.EncodeToString(sum[:])[:16]
@@ -215,6 +218,14 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 			if body.Networks == nil {
 				body.Networks = &networkOptions{}
 			}
+		case "families":
+			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
+			if body.Families == nil {
+				body.Families = &bcell.FamilyOptions{}
+			}
+			// Families operate on rearrangements, independently of the active clonotype definition.
+			body.Definition = clonotype.Definition{}
+			body.Options = diversity.Options{}
 		case "neighborhoods":
 			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
 			if body.Neighborhoods == nil {
@@ -222,6 +233,9 @@ func (a *app) registerAnalysis(mux *http.ServeMux, k analysis) {
 			}
 		default:
 			body.Study, body.Track, body.Compare, body.Class = nil, nil, nil, nil
+		}
+		if k.over != "families" {
+			body.Families = nil
 		}
 		if k.over != "specificity" {
 			body.Specificity = nil

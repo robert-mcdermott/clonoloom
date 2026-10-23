@@ -278,6 +278,18 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = fmt.Sprintf("Chain specificity evidence for %s. Database %s, SHA-256 %s, source %s, license %s, citation %s. Matches are evidence, not proof of receptor specificity. Epitope shares count each clonotype once per group and can overlap.", ds.Name, doc.Database.Reference, doc.Database.SHA256, doc.Database.Source, doc.Database.License, doc.Database.Citation)
 		files["matches.csv"] = func(f io.Writer) error { return export.SpecificityMatches(f, doc.Clonotypes, doc.Result) }
 		files["epitopes.csv"] = func(f io.Writer) error { return export.SpecificityShares(f, doc.Samples, doc.Result) }
+	case "families":
+		var doc familyDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " members.csv repeats observation abundance for each source chain row: do not sum across those rows. families.json retains the complete result, including subjects and exclusions."
+		files["families.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		files["members.csv"] = func(f io.Writer) error { return export.FamilyMembers(f, doc.FamilyResult) }
+		files["nearest.csv"] = func(f io.Writer) error { return export.FamilyNearest(f, doc.FamilyResult) }
+		files["families.csv"] = func(f io.Writer) error { return export.FamilyAmounts(f, doc.FamilyResult) }
 	case "networks":
 		var doc networkDocument
 		if err := json.Unmarshal(raw, &doc); err != nil {

@@ -116,11 +116,44 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async families() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families');
+    const diagnostic = await js('window.clonoloom.familiesView.state()');
+    if (diagnostic.page.familyCount !== 0 || diagnostic.page.representativeCount !== 133 || diagnostic.page.result.eligible !== 2160) throw new Error('Wrong distance diagnostics: ' + JSON.stringify({ counts: [diagnostic.page.familyCount, diagnostic.page.representativeCount, diagnostic.page.result.eligible], result: diagnostic.page.result }));
+    // Exercise the visible form, not just the remote handler.
+    await js(`(() => {
+      const input = document.querySelector('[aria-label="Family threshold"]'); input.value = '0.1';
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Apply threshold').click(); return true;
+    })()`);
+    await waitFor(`window.clonoloom.familiesView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Find clonal families').click(); return true; })()`);
+    await waitFor(`window.clonoloom.familiesView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.familiesView.state()');
+    if (result.page.familyCount !== 36 || result.page.result.eligible !== 2160) throw new Error('Wrong family recovery');
+    if (await js(`document.querySelector('.plot').outerHTML.includes('NaN')`)) throw new Error('Invalid histogram');
+    await js(`window.clonoloom.familiesView.showPage('members', ${JSON.stringify(result.page.rows[0].id)})`);
+    await js(`(() => { const v = window.clonoloom.familiesView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('SHA-256')`);
+    await js(`window.clonoloom.familiesView.showPage('nearest')`);
+    if ((await js('window.clonoloom.familiesView.state().page.rows.length')) !== 50) throw new Error('Unbounded nearest page');
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('1601850') || !methods.includes('Paired maximum distance')) throw new Error('Family methods missing');
+    await act('close_dialogs');
+    // An older diagnostic is inspected by its identity, independent of current options.
+    await js(`(() => { window.clonoloom.focusItem({kind:'result', id:${JSON.stringify(diagnostic.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.familiesView.state().status === 'ready' && window.clonoloom.familiesView.state().page.familyCount === 0`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result', id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.familiesView.state().status === 'ready' && window.clonoloom.familiesView.state().page.familyCount === 36`);
+  },
   async immunization() {
     await act('open_example', { example: 'simulated-bcell-immunization', download: true });
     const catalog = await (await fetch(`${URL}api/examples`)).json();
     const example = catalog.examples.find((e) => e.name === 'simulated-bcell-immunization');
     for (const step of example.opens[0].steps) await act(step.action, step.args);
+    await act('inspect_bcell_inputs', { select: 1 });
     const page = await js('window.clonoloom.bcellsView.page()');
     if (page.count !== 4320 || page.samples.length !== 27 || page.samples.some((s) => s.rows !== s.valid || s.rows !== s.regions)) throw new Error('Artificial B-cell evidence differs');
     await act('show_methods');

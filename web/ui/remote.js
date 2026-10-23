@@ -416,10 +416,23 @@ export function remoteActions(app) {
       return { message: `Found ${data.matches} chain–record matches in ${data.epitopes.length} epitope/antigen groups.`, data };
     },
 
+    async find_bcell_families({ dataset, mode = 'auto', scope = 'subject', threshold = null } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('families');
+      const view = app.familiesView;
+      await view.show(d.id, { mode, scope, threshold });
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'B-cell families');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.familyCount} families; ${done.page.result.eligible} eligible observations.`, data: { artifact: done.artifact, families: done.page.familyCount, representatives: done.page.representativeCount, eligible: done.page.result.eligible, excluded: done.page.result.excluded, withoutNeighbor: done.page.result.withoutNeighbor, options: done.page.result.familiesOptions } };
+    },
+
     async inspect_bcell_inputs({ dataset, select } = {}) {
       const d = datasetOf(dataset);
       app.focusItem({ kind: 'dataset', id: d.id });
       await app.setMode('bcells');
+      app.bcellsMode.show('inputs');
       const view = await waitFor(() => app.bcellsView, 5000, 'B cells');
       const page = await view.show(d.id);
       if (select !== undefined) {

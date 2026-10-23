@@ -13,6 +13,7 @@ Go tests in this folder check whole results against independent references (`go 
 
 | Test | What it checks | Data |
 | --- | --- | --- |
+| `TestClonalFamiliesAgainstIndependentGraph` | All 2,160 cell memberships and nearest-distance float bits, heavy/paired at four thresholds; exact recovery of 36 artificial families at 0.1 | `reference/clonal-families.json`, independent Python CSV and adjacency-graph traversal in `reference/clonal_families.py` |
 | `TestReadersAgreeWithIndependentReaders` | Every column ClonoLoom reads from every development file equals what an independent reader reads: the AIRR Community's `airr` library for AIRR files, pandas for Cell Ranger, immunoSEQ, MiXCR, OAS and OTS and tcrdist3 files; immunoSEQ gene names mapped as the dataset records them, a data unit's metadata as given | `reference/readers.json` (made by `reference/read_repertoires.py`), the files of `sources.json` |
 | `TestTCRdistEqualsTCRdist3` | Every TCRdist between Dash et al. 2017's 1,924 mouse and 415 human clones, α, β and paired and each loop's alone, equals tcrdist3's; every clone's neighbors and nearest, found with pruning in parallel, equal those of every distance | `reference/tcrdist3.json` (made by `reference/tcrdist3_distances.py`), `dash-2017-tcrdist3`, `tcrdist3-loops` |
 | `TestTCRdistNeighborsWithinBudget` | The neighbors of 100,000 paired TCRs (the OTS donors' chains paired at random) within 2 minutes on 10 cores and 8 GB (not under the race detector) | `ots-healthy-pbmc`, `tcrdist3-loops` |
@@ -102,3 +103,20 @@ trips, cancellation cleanup, overwrite refusal and 180,000 draws against their p
 The pinned byte digest must agree on arm64 and amd64. These tests validate an artificial
 benchmark, not SHM rates or inference on biological repertoires; model limits and citations are
 in `docs/SIMULATION.md` and `clonoloom-spec/research.md` §5.15.
+
+
+Regenerate the artificial clonal-family reference with:
+
+```sh
+go run . simulate --preset bcell-immunization --out /tmp/clonoloom-family-reference
+uv run --no-project validation/reference/clonal_families.py /tmp/clonoloom-family-reference validation/reference/clonal-families.json
+go test ./validation -run TestClonalFamiliesAgainstIndependentGraph
+```
+
+The reference reads source TSVs independently, computes all distances directly and traverses an
+adjacency graph breadth first. It reads truth only after clustering to assess exact recovery.
+No biological accuracy or recommended threshold follows from artificial recovery. Boundary,
+partition, ambiguity, missing-count, paired-cell, work-limit and cancellation cases are in
+`internal/bcell/families_test.go`; API tests cover identity, metadata precedence, bounded pages
+and complete exports. `node docs/capture/capture.mjs families --theme both` exercises the visible
+threshold form, source inspection, saved-result reopening and cited methods in a real browser.

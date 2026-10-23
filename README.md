@@ -20,7 +20,11 @@ no Python, R or account, and keeps your data on your computer.
 B-cell lineages, single-cell phenotypes and cohort comparisons come in later
 releases.
 
-**In development (wave 5):** B-cell Inputs retains AIRR sequence evidence, checks its
+**In development (wave 5):** B cells → Families adds nearest-distance diagnostics and
+explicit single-linkage thresholds, with subject boundaries and heavy/light pairing.
+Families retain source evidence and remain separate from junction clonotypes.
+
+**Sequence evidence:** B-cell Inputs retains AIRR sequence evidence, checks its
 coordinates and alignments, and lets you inspect and export the supplied annotations.
 IMGT/HighV-QUEST output tables can be opened together, with joined sequence evidence and
 annotation provenance.

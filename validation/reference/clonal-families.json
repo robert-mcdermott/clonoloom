@@ -1,0 +1,126 @@
+{
+  "python": "3.13.3",
+  "method": "Independent CSV, direct distances and breadth-first connected components; all observations",
+  "files": [
+    {
+      "name": "S01-d14.tsv",
+      "sha256": "12fa42fb66cd57942ab07f3596e1d150d150322fadebe448f59764f66b51c667"
+    },
+    {
+      "name": "S01-d28.tsv",
+      "sha256": "e8cbeb0b07faace18c4f13d85c1eb3404189baf7cdc780a71d5eff15adc7a9e0"
+    },
+    {
+      "name": "S01-pre.tsv",
+      "sha256": "4982f429fdb7a4e5672094a157105f84352d4531a135dbe920410eab668d7a52"
+    },
+    {
+      "name": "S02-d14.tsv",
+      "sha256": "c388868a1ba0a9d41732f7557dcd689ec67134ba73d45b40e00ac334a0679839"
+    },
+    {
+      "name": "S02-d28.tsv",
+      "sha256": "5e3c47637ca019f946442e54f4ea83499b1ad71da9f9905c79dc6e4ff4467047"
+    },
+    {
+      "name": "S02-pre.tsv",
+      "sha256": "3a926174fe80d38f743e42d11f9f8e975a718cec71c1951bcbd659ff910b6b9a"
+    },
+    {
+      "name": "S03-d14.tsv",
+      "sha256": "de2a0db9586f4777b943ae38815e5ef742b462a03cd23990f5f7e6fa992b9470"
+    },
+    {
+      "name": "S03-d28.tsv",
+      "sha256": "1cc8943c314277bbc0dfae35c2d6a92cee452111a6d5ca233d6e48377fee77b7"
+    },
+    {
+      "name": "S03-pre.tsv",
+      "sha256": "195af0c87851c2314629cb99a326a086f85df518fbd0f083607c99f714635d26"
+    }
+  ],
+  "observations": 2160,
+  "truthFamilies": 36,
+  "cases": [
+    {
+      "mode": "heavy",
+      "threshold": 0,
+      "families": 84,
+      "representatives": 84,
+      "comparisons": 554,
+      "membershipSHA256": "46862441017c36297525f53e0c4a18404e65fd86a0d9c17ee5e4a9c18dd7f6d1",
+      "nearestSHA256": "df4204bb6d539e207eb3c1415a4bb02afde2bfe8b531d7d5d5cfa38773986047",
+      "exactTruthRecovery": false
+    },
+    {
+      "mode": "heavy",
+      "threshold": 0.025,
+      "families": 84,
+      "representatives": 84,
+      "comparisons": 554,
+      "membershipSHA256": "46862441017c36297525f53e0c4a18404e65fd86a0d9c17ee5e4a9c18dd7f6d1",
+      "nearestSHA256": "df4204bb6d539e207eb3c1415a4bb02afde2bfe8b531d7d5d5cfa38773986047",
+      "exactTruthRecovery": false
+    },
+    {
+      "mode": "heavy",
+      "threshold": 0.05,
+      "families": 38,
+      "representatives": 84,
+      "comparisons": 554,
+      "membershipSHA256": "04291fe187b2979db839a1b185ffbac2dc8d73ba5e119489343b90ee1d57b115",
+      "nearestSHA256": "df4204bb6d539e207eb3c1415a4bb02afde2bfe8b531d7d5d5cfa38773986047",
+      "exactTruthRecovery": false
+    },
+    {
+      "mode": "heavy",
+      "threshold": 0.1,
+      "families": 36,
+      "representatives": 84,
+      "comparisons": 554,
+      "membershipSHA256": "58d07a7ffe1c6340782d3a30d5ed6d5ac62027e10af4a158b91610ddc6121007",
+      "nearestSHA256": "df4204bb6d539e207eb3c1415a4bb02afde2bfe8b531d7d5d5cfa38773986047",
+      "exactTruthRecovery": true
+    },
+    {
+      "mode": "paired",
+      "threshold": 0,
+      "families": 133,
+      "representatives": 133,
+      "comparisons": 1423,
+      "membershipSHA256": "98617232d6f05151296c13ab8c422d98e6a0788321b183957d73d60b5d8f81cb",
+      "nearestSHA256": "54aeb7970a019d0b87bfa44469146bbcc514d20d179fa6bd1a5354e75623a48f",
+      "exactTruthRecovery": false
+    },
+    {
+      "mode": "paired",
+      "threshold": 0.025,
+      "families": 133,
+      "representatives": 133,
+      "comparisons": 1423,
+      "membershipSHA256": "98617232d6f05151296c13ab8c422d98e6a0788321b183957d73d60b5d8f81cb",
+      "nearestSHA256": "54aeb7970a019d0b87bfa44469146bbcc514d20d179fa6bd1a5354e75623a48f",
+      "exactTruthRecovery": false
+    },
+    {
+      "mode": "paired",
+      "threshold": 0.05,
+      "families": 43,
+      "representatives": 133,
+      "comparisons": 1423,
+      "membershipSHA256": "e21b61dcdaaeafdcd38f2567dac46edccccb7f94bd576acc079bb53631d56332",
+      "nearestSHA256": "54aeb7970a019d0b87bfa44469146bbcc514d20d179fa6bd1a5354e75623a48f",
+      "exactTruthRecovery": false
+    },
+    {
+      "mode": "paired",
+      "threshold": 0.1,
+      "families": 36,
+      "representatives": 133,
+      "comparisons": 1423,
+      "membershipSHA256": "58d07a7ffe1c6340782d3a30d5ed6d5ac62027e10af4a158b91610ddc6121007",
+      "nearestSHA256": "54aeb7970a019d0b87bfa44469146bbcc514d20d179fa6bd1a5354e75623a48f",
+      "exactTruthRecovery": true
+    }
+  ]
+}
