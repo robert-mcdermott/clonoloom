@@ -1,0 +1,173 @@
+{
+  "python": "3.13.3",
+  "method": "stdlib CSV, sequential event replay, standard genetic code and closed-form sampling probabilities",
+  "model": "clonoloom-artificial-bcell-v1",
+  "seed": 20261027,
+  "config": {
+    "subjects": 3,
+    "families": 12,
+    "cellsPerSample": 240,
+    "mutationsPerBranch": 3
+  },
+  "nodes": 252,
+  "events": {
+    "replacement": 998,
+    "silent": 298
+  },
+  "deliberateReversals": 72,
+  "samples": [
+    {
+      "sample": "S01-pre",
+      "cells": 240,
+      "rows": 480,
+      "loci": {
+        "IGH": 240,
+        "IGK": 112,
+        "IGL": 128
+      },
+      "isotypes": {
+        "IGHM": 240
+      },
+      "pairedClonotypes": 12,
+      "netDifferences": 0,
+      "sha256": "4982f429fdb7a4e5672094a157105f84352d4531a135dbe920410eab668d7a52"
+    },
+    {
+      "sample": "S01-d14",
+      "cells": 240,
+      "rows": 480,
+      "loci": {
+        "IGH": 240,
+        "IGK": 150,
+        "IGL": 90
+      },
+      "isotypes": {
+        "IGHG1": 117,
+        "IGHM": 123
+      },
+      "pairedClonotypes": 23,
+      "netDifferences": 1332,
+      "sha256": "12fa42fb66cd57942ab07f3596e1d150d150322fadebe448f59764f66b51c667"
+    },
+    {
+      "sample": "S01-d28",
+      "cells": 240,
+      "rows": 480,
+      "loci": {
+        "IGH": 240,
+        "IGK": 136,
+        "IGL": 104
+      },
+      "isotypes": {
+        "IGHA1": 51,
+        "IGHG1": 112,
+        "IGHM": 77
+      },
+      "pairedClonotypes": 39,
+      "netDifferences": 2330,
+      "sha256": "e8cbeb0b07faace18c4f13d85c1eb3404189baf7cdc780a71d5eff15adc7a9e0"
+    },
+    {
+      "sample": "S02-pre",
+      "cells": 240,
+      "rows": 480,
+      "loci": {
+        "IGH": 240,
+        "IGK": 118,
+        "IGL": 122
+      },
+      "isotypes": {
+        "IGHM": 240
+      },
+      "pairedClonotypes": 12,
+      "netDifferences": 0,
+      "sha256": "3a926174fe80d38f743e42d11f9f8e975a718cec71c1951bcbd659ff910b6b9a"
+    },
+    {
+      "sample": "S02-d14",
+      "cells": 240,
+      "rows": 480,
+      "loci": {
+        "IGH": 240,
+        "IGK": 148,
+        "IGL": 92
+      },
+      "isotypes": {
+        "IGHG1": 113,
+        "IGHM": 127
+      },
+      "pairedClonotypes": 18,
+      "netDifferences": 1230,
+      "sha256": "c388868a1ba0a9d41732f7557dcd689ec67134ba73d45b40e00ac334a0679839"
+    },
+    {
+      "sample": "S02-d28",
+      "cells": 240,
+      "rows": 480,
+      "loci": {
+        "IGH": 240,
+        "IGK": 129,
+        "IGL": 111
+      },
+      "isotypes": {
+        "IGHA1": 46,
+        "IGHG1": 109,
+        "IGHM": 85
+      },
+      "pairedClonotypes": 36,
+      "netDifferences": 2323,
+      "sha256": "5e3c47637ca019f946442e54f4ea83499b1ad71da9f9905c79dc6e4ff4467047"
+    },
+    {
+      "sample": "S03-pre",
+      "cells": 240,
+      "rows": 480,
+      "loci": {
+        "IGH": 240,
+        "IGK": 123,
+        "IGL": 117
+      },
+      "isotypes": {
+        "IGHM": 240
+      },
+      "pairedClonotypes": 12,
+      "netDifferences": 0,
+      "sha256": "195af0c87851c2314629cb99a326a086f85df518fbd0f083607c99f714635d26"
+    },
+    {
+      "sample": "S03-d14",
+      "cells": 240,
+      "rows": 480,
+      "loci": {
+        "IGH": 240,
+        "IGK": 131,
+        "IGL": 109
+      },
+      "isotypes": {
+        "IGHG1": 108,
+        "IGHM": 132
+      },
+      "pairedClonotypes": 19,
+      "netDifferences": 1332,
+      "sha256": "de2a0db9586f4777b943ae38815e5ef742b462a03cd23990f5f7e6fa992b9470"
+    },
+    {
+      "sample": "S03-d28",
+      "cells": 240,
+      "rows": 480,
+      "loci": {
+        "IGH": 240,
+        "IGK": 124,
+        "IGL": 116
+      },
+      "isotypes": {
+        "IGHA1": 52,
+        "IGHG1": 116,
+        "IGHM": 72
+      },
+      "pairedClonotypes": 40,
+      "netDifferences": 2402,
+      "sha256": "1cc8943c314277bbc0dfae35c2d6a92cee452111a6d5ca233d6e48377fee77b7"
+    }
+  ]
+}

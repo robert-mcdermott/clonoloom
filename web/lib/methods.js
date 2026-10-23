@@ -109,11 +109,17 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   }
 
   // Simulated data (clonoloom simulate): how they were made.
-  const simulated = (summary?.samples ?? []).map((s) => s.repertoire).find((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
+  const simulations = (summary?.samples ?? []).map((s) => s.repertoire).filter((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
+  const bcellModel = 'clonoloom-simulated-clonoloom-artificial-bcell-v1';
+  const bcellSimulation = simulations.some((r) => r.studyId === bcellModel);
+  const simulated = simulations.find((r) => r.studyId !== bcellModel);
+  if (bcellSimulation) {
+    sentences.push(`The artificial paired B-cell sequences were made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} (model clonoloom-artificial-bcell-v1): fictional SIM gene calls, coding sequences with uniform proposed substitutions restricted to preserve junction anchors and avoid stop codons, a fixed seven-node family tree, deliberate back-mutations, and fixed forward isotype transitions. B cells were sampled independently at days -7, 14 and 28 of a simulated immunization from recorded family and node probabilities. Ancestors, ordered mutation events, isotypes and observed cell assignments are recorded in truth/. Supplied ancestor alignments and region coordinates are artificial; this is not a fitted SHM or affinity model. No read counts, UMI counts, sequencing errors or additional biological variance were simulated for these B cells.`);
+  }
   if (simulated) {
-    sentences.push(`The data are simulated (${simulated.studyTitle || simulated.studyId}): T-cell receptor β rearrangements made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} from GRCh38's gene segments at Ensembl's annotation ${cite('ensembl')}, with the V and J usage of 10x Genomics' 10k PBMC data, deletions and non-templated insertions at the junctions, and selection on junction length to that data's ${cite('selection')}; each subject's clones of power-law sizes, each sample templates drawn from them and sequenced into reads. Their truth is recorded beside them.`);
+    sentences.push(`${bcellSimulation ? 'The T-cell receptor β data' : 'The data'} are simulated (${simulated.studyTitle || simulated.studyId}): T-cell receptor β rearrangements made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} from GRCh38's gene segments at Ensembl's annotation ${cite('ensembl')}, with the V and J usage of 10x Genomics' 10k PBMC data, deletions and non-templated insertions at the junctions, and selection on junction length to that data's ${cite('selection')}; each subject's clones of power-law sizes, each sample templates drawn from them and sequenced into reads. Their truth is recorded beside them.`);
     // A study over time: its samples' time points and reference samples say so.
-    const repertoires = (summary?.samples ?? []).map((x) => x.repertoire).filter(Boolean);
+    const repertoires = simulations.filter((r) => r.studyId !== bcellModel);
     const event = repertoires.map((r) => /\(([^()]+)\)$/.exec(r.timePoint ?? '')?.[1]).find(Boolean);
     if (event) {
       const tissues = repertoires.map((r) => r.tissue ?? '');

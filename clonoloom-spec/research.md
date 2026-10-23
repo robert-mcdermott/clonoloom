@@ -1005,3 +1005,52 @@ conflicting identities, malformed widths/headers, gzip, cancellation, cache inva
 round trips. Browser steps inspect the same cases and reopen the saved source groups. These are
 format-contract tests on artificial data; no real IMGT-annotated cohort or IMGT algorithm accuracy
 is claimed to have been validated in this slice.
+
+### 5.15 Artificial B-cell families (wave 5, slice 3)
+
+`internal/simulate/bcells.go` implements **ClonoLoom's own artificial benchmark**, version
+`clonoloom-artificial-bcell-v1`. It supplies truth for later family, mutation and lineage tests;
+it is not an implementation of a published germinal-center simulator. No external implementation
+source or reference allele set is used. The complete probability rules, fixed topology, coordinate
+geometry and parameter bounds are in `docs/SIMULATION.md` and each generated study's README.
+
+The scientific boundary is deliberate. Yaari et al. (2013), “Models of Somatic Hypermutation
+Targeting and Substitution Based on Synonymous Mutations from High-Throughput Immunoglobulin
+Sequencing Data”, *Front Immunol* 4:358,
+[doi:10.3389/fimmu.2013.00358](https://doi.org/10.3389/fimmu.2013.00358), establishes why a uniform
+mutation proposal is not a calibrated model of SHM. We do not implement S5F, infer selection,
+or use event counts as a biological mutation rate. Horns et al. (2016), “Lineage tracing of human
+B cells reveals the in vivo landscape of human antibody class switching”, *eLife* 5:e16578,
+[doi:10.7554/eLife.16578](https://doi.org/10.7554/eLife.16578), supplies biological context for
+irreversible switching along the human constant-region order. The fixed M→G1→A1 subset here
+asserts no measured switching probability, edge timing or inferred lineage. Both primary
+publications were checked on 2026-10-23; neither paper's computational model is reproduced.
+
+Each artificial family has a paired rearranged ancestor and six descendants in a fixed binary
+tree. Uniform sense-codon backbones are shared by fictional V calls, with independent family
+junctions; conserved junction anchors and reading frame are preserved. Accepted substitutions
+are recorded in order, with silent/replacement classified against the codon at that event.
+One edge deliberately reverses its parent's last event. This tests the distinction between edge
+events and net ancestor differences, including a descendant with an identical sequence when
+one-event branches reverse. Node IDs describe known states even when their sequences coincide.
+
+The default three-subject study samples 240 cells at each of three times; each cell has IGH and
+IGK or IGL observations. Family abundance is prescribed, and draws are independent categorical
+samples. Probabilities and realized counts are separate; zero-count states remain in truth.
+No read/UMI counts, ambiguous cells or observation error are fabricated. Family membership,
+parents and cell-to-node assignments stay in `truth/`; opening the folder reads observations
+and Repertoire metadata only. The supplied `germline_alignment` is the **known rearranged
+ancestor including its junction**, not an inferred germline or a D-masked segment alignment.
+SIM calls and artificial coordinate regions cannot be interpreted as biological reference
+alleles or IMGT numbering. Pinned biological references remain wave 5, slice 5.
+
+The Python stdlib reference checker replays every edge, verifies translation and event effects,
+checks paired rows and artificial coordinates, recomputes closed-form probabilities and counts,
+and verifies all output hashes. Its reduced sample counts are committed with its Python version
+and source-file hashes. Go reads the same default study and agrees on all 4,320 rows, 2,160 cells,
+isotypes, paired junction clonotypes and net ancestor differences. The 252 states hold 998
+replacement and 298 silent events, including 72 deliberate reversals. This is agreement on
+artificial truth, not biological validation. A separate fixed-seed sampling check compares
+180,000 draws against their categorical probabilities. Byte digests cover both processor
+architectures and retain the pre-existing TRB digests. Bounds, parameter serialization,
+cancellation, no-overwrite behavior, offline generation and guided inspection are tested.

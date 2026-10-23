@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"clonoloom/internal/simulate"
 )
 
 func TestTheSimulateCommand(t *testing.T) {
@@ -46,5 +48,37 @@ func TestTheSimulateCommand(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(dir, "truth", "truth.json")); err != nil {
 		t.Error(err)
+	}
+}
+
+func TestBCellSimulateCommandAndFolder(t *testing.T) {
+	var out, errs bytes.Buffer
+	if code := runSimulate([]string{"--preset", "bcell-immunization", "--seed", "99", "--print-params"}, &out, &errs); code != 0 {
+		t.Fatal(code, errs.String())
+	}
+	var study simulate.Study
+	if err := json.Unmarshal(out.Bytes(), &study); err != nil || study.BCells == nil || study.Seed != 99 {
+		t.Fatal("parameters", err)
+	}
+	study.Name = "renamed"
+	study.BCells.Subjects, study.BCells.Families, study.BCells.CellsPerSample = 1, 2, 8
+	params, _ := json.Marshal(study)
+	path := filepath.Join(t.TempDir(), "params.json")
+	if err := os.WriteFile(path, params, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	dir := filepath.Join(t.TempDir(), "study")
+	out.Reset()
+	if code := runSimulate([]string{"--params", path, "--out", dir, "--quiet"}, &out, &errs); code != 0 || !strings.Contains(out.String(), "1 subjects, 3 samples, 48 rearrangements") {
+		t.Fatal(code, out.String(), errs.String())
+	}
+	items, err := walkFolder(dir)
+	if err != "" || len(items) != 4 {
+		t.Fatalf("folder: %v %v", items, err)
+	}
+	for _, item := range items {
+		if strings.Contains(item.Name, "truth") || strings.Contains(item.Name, "observations") {
+			t.Fatal("truth treated as data")
+		}
 	}
 }

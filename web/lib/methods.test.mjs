@@ -298,3 +298,25 @@ test('IMGT joins cite the annotation format without claiming germline reconstruc
   assert.doesNotMatch(text, /Adaptive Biotechnologies gene name/);
   assert.ok(references.some((r) => r.includes('10.1093/nar/gkn316')));
 });
+
+test('artificial B-cell methods identify their model even when the study is renamed', () => {
+  const dataset = { ...pbmc, credits: [], formats: ['AIRR Rearrangement TSV'], sources: [{ ...pbmc.sources[0], format: 'airr' }] };
+  const summary = { samples: [{ repertoire: { studyId: 'clonoloom-simulated-clonoloom-artificial-bcell-v1', studyTitle: 'A renamed study', timePoint: '14 day (simulated immunization)' } }] };
+  const { text } = methodsParagraph({ dataset, summary, program });
+  assert.match(text, /artificial paired B-cell sequences/);
+  assert.match(text, /deliberate back-mutations/);
+  assert.match(text, /No read counts, UMI counts, sequencing errors or additional biological variance were simulated/);
+  assert.doesNotMatch(text, /GRCh38|power-law|Ensembl|varying between samples beyond sampling/);
+});
+
+test('mixed simulations describe B-cell and TRB models separately, without giving B cells extra variance', () => {
+  const dataset = { ...pbmc, credits: [] };
+  const bcell = { repertoire: { studyId: 'clonoloom-simulated-clonoloom-artificial-bcell-v1', timePoint: '14 day (simulated immunization)' } };
+  const trb = { repertoire: { studyId: 'clonoloom-simulated-small', studyTitle: 'A TRB study' } };
+  for (const samples of [[bcell, trb], [trb, bcell]]) {
+    const { text } = methodsParagraph({ dataset, summary: { samples }, program });
+    assert.match(text, /artificial paired B-cell sequences/);
+    assert.match(text, /The T-cell receptor β data are simulated/);
+    assert.doesNotMatch(text, /varying between samples beyond sampling/);
+  }
+});

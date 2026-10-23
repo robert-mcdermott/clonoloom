@@ -79,3 +79,26 @@ Tracking in an isolated library: `node docs/capture/capture.mjs database --theme
 For the complete scientific suite with race detection, allow more than Go’s default ten minutes
 per package: `go test -race -timeout 20m ./...`. The simulated-truth checks generate their own
 repertoires, and the full validation package can exceed ten minutes on a busy machine.
+
+### Artificial B-cell families
+
+```sh
+uv run --no-project validation/reference/bcell_families.py
+# Or check an existing generated study without regenerating it:
+uv run --no-project validation/reference/bcell_families.py --study /tmp/bcell-study --output /tmp/bcell-check.json
+go test ./validation -run '^TestSimulatedBCellFamiliesAgainstIndependentCSV$' -v
+go test ./internal/simulate -run '^TestBCell' -v
+GOARCH=amd64 go test ./internal/simulate -run '^TestBCellStudyTruthAndBytes$' -v
+node docs/capture/capture.mjs immunization --theme both
+```
+
+The independent stdlib checker replays all ordered events and translations, checks every paired
+cell, coordinate, ancestry/isotype assignment, closed-form probability and realized count, and
+verifies the output manifest. `bcell-families.json` records CPython's version, sample hashes and
+reduced counts. The Go validation compares the reader, structural evidence checks and paired
+clonotype counts to those independent values for the default 9-sample, 2,160-cell study. Go tests
+also exercise repeated events/back-mutations, model exclusivity, bounds, seeds, parameter round
+trips, cancellation cleanup, overwrite refusal and 180,000 draws against their probabilities.
+The pinned byte digest must agree on arm64 and amd64. These tests validate an artificial
+benchmark, not SHM rates or inference on biological repertoires; model limits and citations are
+in `docs/SIMULATION.md` and `clonoloom-spec/research.md` §5.15.

@@ -199,7 +199,10 @@ computer. The [user guide](https://robert-mcdermott.github.io/clonoloom/docs/) w
 
 - `clonoloom simulate --out <new folder>` writes a simulated TRB study whose truth is known: AIRR
   rearrangement tables, their Repertoire metadata, and the truth beside them; presets `standard`,
-  `null` and `small` ([simulated studies](docs/SIMULATION.md)).
+  `null` and `small`, and the CAR-T, transplant and vaccination studies over time.
+  Wave 5 adds `--preset bcell-immunization`: artificial paired heavy/light chains with known
+  families, ancestors, mutation events, isotypes and sampled cells, also offered offline in
+  Example data. See [simulated studies](docs/SIMULATION.md) for each model and its limits.
 
 It takes `-h` for its settings.
 

@@ -51,10 +51,17 @@ type Study struct {
 	Recombination     Recombination `json:"recombination"`
 	// Series: a study over time (series.go), SamplesPerSubject then unused.
 	Series *Series `json:"series,omitempty"`
+	// BCells selects the artificial paired B-cell model; the TRB parameters above are unused.
+	BCells *BCellStudy `json:"bcells,omitempty"`
 }
 
 // Presets are the studies `clonoloom simulate` starts from.
 var Presets = map[string]Study{
+	"bcell-immunization": {
+		Name: "bcell-immunization", Title: "An artificial B-cell immunization study with known families and ancestors",
+		Seed:   20261027,
+		BCells: &BCellStudy{Subjects: 3, Families: 12, CellsPerSample: 240, MutationsPerBranch: 3},
+	},
 	"standard": {
 		Name: "standard", Title: "A simulated TRB study: three control subjects and three with expanded clones, two samples each",
 		Seed: 20261021,
@@ -187,6 +194,9 @@ var Presets = map[string]Study{
 
 // Check says what is wrong with a study's parameters.
 func (s Study) Check() error {
+	if s.BCells != nil {
+		return s.BCells.check(s)
+	}
 	if len(s.Groups) == 0 || s.SamplesPerSubject < 1 || len(s.Templates) == 0 {
 		return fmt.Errorf("a study needs groups, samples and templates")
 	}
@@ -377,6 +387,9 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 	}
 	if entries, err := os.ReadDir(dir); err == nil && len(entries) > 0 {
 		return Summary{}, fmt.Errorf("%s is not empty", dir)
+	}
+	if s.BCells != nil {
+		return runBCells(ctx, s, dir, version, progress)
 	}
 	if err := os.MkdirAll(filepath.Join(dir, "truth"), 0o755); err != nil {
 		return Summary{}, err

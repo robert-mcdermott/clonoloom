@@ -4,6 +4,21 @@
 
 ### Added
 
+- **Simulated B-cell families (wave 5, slice 3).** Add `bcell-immunization`: three artificial
+  subjects, paired heavy/light chains, known ancestors, seven-state families, ordered substitutions,
+  fixed isotype histories and sampled cell abundance at three time points. Record unobserved
+  states, probabilities, assignments, parameters and file hashes separately from AIRR observations.
+- Preserve back-mutations and distinguish accumulated events from net ancestor differences.
+  Fictional SIM genes and artificial regions are explicitly labeled; the simple model makes no
+  biological SHM-rate or affinity claims. No molecular counts or inferred families are invented.
+- Add atomic output and cancellation cleanup, an offline example with Subjects/Inputs steps,
+  model-specific methods, cited documentation and both-theme guide captures. Independent CSV and
+  event replay agree with reader, evidence and paired-clonotype checks. Version remains 0.4.0.
+- Validate 252 known states, 1,296 mutation events and 2,160 paired cells; retain distinct
+  descriptions when TRB and B-cell studies are opened together. Go race tests, vet, arm64/amd64
+  simulation bytes and released-project compatibility, six builds, 84 JavaScript tests,
+  14 accessibility checks, 108 site checks and isolated million-row budgets pass.
+
 - **IMGT/HighV-QUEST input (wave 5, slice 2).** Open extracted annotation folders or the four
   named tables together. Join by sequence number and ID, rejecting incomplete or conflicting
   bundles. Retain gapped queries, native annotations, optional Parameters and all source hashes.

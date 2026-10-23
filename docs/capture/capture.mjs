@@ -116,6 +116,21 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async immunization() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    const example = catalog.examples.find((e) => e.name === 'simulated-bcell-immunization');
+    for (const step of example.opens[0].steps) await act(step.action, step.args);
+    const page = await js('window.clonoloom.bcellsView.page()');
+    if (page.count !== 4320 || page.samples.length !== 27 || page.samples.some((s) => s.rows !== s.valid || s.rows !== s.regions)) throw new Error('Artificial B-cell evidence differs');
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.methods-text').textContent`);
+    if (!methods.includes('artificial paired B-cell') || methods.includes('GRCh38') || methods.includes('varying between samples beyond sampling')) throw new Error('Wrong simulation methods');
+    await act('close_dialogs');
+    await act('inspect_bcell_inputs', { select: 1 });
+    await waitFor(`document.querySelector('.inspector').textContent.includes('clonoloom-artificial-bcell-v1')`);
+  },
   async imgt() {
     await act('open_example', { example: 'synthetic-imgt-inputs', download: true });
     const catalog = await (await fetch(`${URL}api/examples`)).json();

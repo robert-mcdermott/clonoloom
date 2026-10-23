@@ -877,14 +877,14 @@ threshold-dependent result, not a replacement for those identifiers.
 Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slices 1 and 2 are implemented; later slices need their methods, data and acceptance criteria settled
+puts a simulation with known families before the analyses it validates. Slices 1–3 are implemented; later slices need their methods, data and acceptance criteria settled
 in detail before implementation.
 
 | Slice | Status | Scope |
 | --- | --- | --- |
 | 1. B-cell sequence evidence | Committed | Retain AIRR sequences, alignments and coordinates; inspect their availability and validity |
-| 2. IMGT/HighV-QUEST input | Implemented; awaiting commit | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
-| 3. Simulated B-cell families | To come | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
+| 2. IMGT/HighV-QUEST input | Committed | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
+| 3. Simulated B-cell families | Implemented; awaiting commit | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
 | 4. Clonal families | To come | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
 | 5. Germlines | To come | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
 | 6. Somatic hypermutation | To come | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
@@ -1070,6 +1070,72 @@ while scientific validation and builds competed for resources; the isolated reru
 a code change. No real IMGT-annotated cohort was used: the new reader's evidence is the published
 format contract and independently checked artificial fixtures. Version remains 0.4.0.
 
+
+### Slice 3: Simulated B-cell families
+
+**Serves E1 and the first immunization steps of E3; prerequisite truth for C4 and B1–B5.**
+Deliver a deterministic offline study with paired heavy/light observations and separate known
+ancestors, family membership, ordered mutations, isotype history and sampled abundance. No
+family, germline, mutation-rate or lineage inference is introduced in this slice.
+
+**Scope and decisions.** Add `bcell-immunization` to `clonoloom simulate` and Example data. The
+default is three artificial subjects, twelve families each, days −7, 14 and 28, 240 paired cells
+per sample and three accepted substitutions per chain per edge. Model
+`clonoloom-artificial-bcell-v1` uses artificial coding strings with fictional SIM calls and
+explicit contiguous region coordinates, without importing a reference allele set. Its fixed
+seven-state tree, forward M/G1/A1 transitions and family/node abundance weights are ClonoLoom's
+choices, fully described in `docs/SIMULATION.md`. They make a small inspectable benchmark, not a
+calibrated germinal-center or affinity model. A deliberately reversed event distinguishes path
+mutation counts from net ancestor differences. States with identical sequences remain separate.
+
+1. **Observations and units.** Write AIRR rows for one heavy and one kappa/lambda chain per cell,
+   with coding sequence, known ancestor alignment, artificial query regions, source IDs and
+   isotype calls. Reads/UMIs and D/CIGAR/reference-coordinate evidence remain absent. Count cells
+   once under the paired definition. Preserve ordinary junction clonotype IDs and behavior.
+2. **Known truth.** Keep all subject-specific states, parents, sequences and ordered events in
+   `truth/truth.json`; link observed cells to states in `truth/observations.tsv`. Record every
+   sample's expected node probabilities and realized cell counts, including unobserved states.
+   Serialize effective parameters, seed, model/version and file checksums. Keep truth out of
+   imported data. Atomic completion, cancellation cleanup and nonempty-output refusal follow
+   the existing local-output conventions.
+3. **User path.** Offer the study offline with Subjects and Inputs steps. Methods text identifies
+   the B-cell model from metadata even if the study is renamed; it must not describe TRB genes,
+   template/read sampling or extra biological variance. Add a guide capture in both themes and
+   document reproduction, artificial-region semantics and the scientific limits.
+4. **Independent validation.** Python stdlib CSV and genetic-code checks replay all events,
+   verify every observation and coordinate, and independently calculate sampling probabilities,
+   cell/isotype/paired-clonotype counts and net ancestor differences. Commit reduced expectations
+   and sample hashes. Go checks them through the real readers and paired definitions. Pin output
+   bytes on arm64 and amd64, retain old simulator digests, and test sampling, parameters, seeds,
+   cancellation and no-overwrite behavior. Run the race suite, vet, release compatibility, six
+   builds, JavaScript/accessibility checks, guided browser steps and site audit.
+
+**Sources and boundaries.** See research.md §5.15. Yaari et al. 2013
+(doi:10.3389/fimmu.2013.00358) explains the context dependence absent from this simple mutation
+model; Horns et al. 2016 (doi:10.7554/eLife.16578) describes biological class-switch order.
+Neither publication's model is reproduced. The ancestor alignment includes its artificial
+junction and is not a reconstructed/D-masked germline. Real reference sets, indels, selection,
+error/dropout, alternative trees and biological calibration stay outside this slice. Later
+analyses require additional hand cases, independent implementations and real-data checks.
+
+**Implemented.** The bounded deterministic model, paired AIRR/Repertoire output, complete state
+and event truth, sample probabilities and cell assignment, SHA-256 manifest, atomic output,
+offline example, guided steps, model-specific methods and documentation. Version stays 0.4.0.
+
+**Checked.** Independent replay agrees on 252 states, 1,296 events (998 replacement, 298 silent,
+including 72 deliberate reversals), and all 2,160 paired cells / 4,320 rows. Source/ancestor
+alignments, regions, metadata, paired clonotypes, isotypes and net differences agree through the
+real readers. All 180,000 categorical draws remain within 2.782 standard deviations of the
+documented probabilities. Parameter round trips, bounds, cancellation cleanup and overwrite
+refusal pass. The small study's pinned bytes agree on arm64 and amd64; old TRB digests and every
+released project fixture still pass.
+
+The full Go race suite passes (scientific validation 493.5 s), as do the final root-package rerun,
+vet, six platform builds, 84 JavaScript tests, 14 accessibility checks, guided steps and methods
+inspection in both themes, and the 108-check site audit with no problems. Mixed B-cell/TRB data
+keep separate methods descriptions. The site builds 28 pages with 26 screenshot sets. Isolated
+million-row budgets: read/validate 1.518 s, cached cohort reopen 123 ms, searched page 37.058 ms.
+No later slice or release preparation has been started. Version remains 0.4.0.
 
 ## Later waves (outlined)
 
