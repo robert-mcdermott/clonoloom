@@ -18,7 +18,9 @@ from scipy.io import mmread
 
 study = Path(sys.argv[1])
 truth = json.loads((study / 'truth/truth.json').read_text())
-assert truth['model'] == 'clonoloom-artificial-cell-states-v1'
+clouds = truth['model'] == 'clonoloom-artificial-cell-states-clouds-v1'
+assert clouds or truth['model'] == 'clonoloom-artificial-cell-states-v1'
+n = 360 if clouds else 120
 assert truth['study']['seed'] == 20261028
 observations = list(csv.DictReader((study / 'truth/observations.tsv').open(), delimiter='\t'))
 samples, sources = [], {}
@@ -26,7 +28,7 @@ pairs = {}
 for matrix in sorted(study.glob('expression/*/matrix.mtx')):
     folder, sample = matrix.parent, matrix.parent.name
     counts = mmread(matrix).toarray()
-    assert counts.shape == (24, 120)
+    assert counts.shape == (24, n)
     barcodes = (folder / 'barcodes.tsv').read_text().splitlines()
     cells = list(csv.DictReader((folder / 'cells.tsv').open(), delimiter='\t'))
     receptors = list(csv.DictReader((study / f'{sample}.tsv').open(), delimiter='\t'))
@@ -55,7 +57,7 @@ for matrix in sorted(study.glob('expression/*/matrix.mtx')):
         key = known[row['cell_id']]['clone_id'], row['locus']
         assert key not in pairs or pairs[key] == row['junction']
         pairs[key] = row['junction']
-    assert len(receptors) == 240 and len(rec) == 120
+    assert len(receptors) == 2*n and len(rec) == n
     samples.append({'name': sample, 'denseSHA256': hashlib.sha256(counts.astype('<u8').tobytes()).hexdigest(),
                     'geneUMIs': totals, 'genes': genes, 'matched': len(expr & rec),
                     'expressionOnly': len(expr-rec), 'receptorOnly': len(rec-expr),
@@ -63,5 +65,6 @@ for matrix in sorted(study.glob('expression/*/matrix.mtx')):
                                     'annotationOnly': len(ann.keys()-expr), 'withoutAnnotation': len(expr-ann.keys()),
                                     'mapped': len(expr & mapped), 'withoutCoordinates': len(expr-mapped)}})
 output = {'reference': f'SciPy {scipy.__version__} mmread; Python set joins and generating truth', 'sources': sources, 'samples': samples}
-Path(__file__).with_suffix('.json').write_text(json.dumps(output, indent=2)+'\n')
-print(f'{len(samples)} samples; 480 expression cells and 960 paired chain rows checked')
+destination = 'cell_states_clouds.json' if clouds else 'cell_states.json'
+Path(__file__).with_name(destination).write_text(json.dumps(output, indent=2)+'\n')
+print(f'{len(samples)} samples; {len(samples)*n} expression cells and {len(samples)*n*2} paired chain rows checked')

@@ -4,6 +4,12 @@
 
 ### Added
 
+- **Cells map feedback.** Show missing annotations in outlined neutral gray above overlapping
+  points, without changing source coordinates or categorical colors. Label both supplied axes.
+  Add a reproducible 360-cell Gaussian-cloud study example while preserving the original grid
+  preset and its source identities. Refine the remaining wave 6 acceptance criteria for source
+  axis provenance, repertoire overlays, linked selection and optional defined density contours.
+
 - **Known cell states and imported maps (wave 6, slice 2).** Generate a seeded paired
   TRA/TRB and expression study with three known states, 24 artificial genes, separate truth
   and deliberate missing evidence. Import an explicitly selected cell-annotation TSV with

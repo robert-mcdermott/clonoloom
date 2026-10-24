@@ -211,3 +211,28 @@ func TestExpressionWithoutGeneExpressionIsNotMeasured(t *testing.T) {
 		t.Fatal(page)
 	}
 }
+
+func TestExpressionStudyPresetSelection(t *testing.T) {
+	a, h := testApp(t)
+	a.examples.Dir = t.TempDir()
+	for _, preset := range []string{"cell-states", "cell-states-clouds"} {
+		if _, err := simulate.Run(context.Background(), simulate.Presets[preset], filepath.Join(a.examples.Dir, "simulated-"+preset), "validation", nil); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, tc := range []struct {
+		preset string
+		cells  int
+	}{{"", 120}, {"cell-states", 120}, {"cell-states-clouds", 360}} {
+		rec := postJSON(t, h, "/api/expression/open", `{"studyExample":true,"studyPreset":`+jsonString(tc.preset)+`}`)
+		var s expressionSummary
+		if rec.Code != 200 || json.Unmarshal(rec.Body.Bytes(), &s) != nil || s.Cells != tc.cells || s.Annotations.Mapped != tc.cells-2 {
+			t.Fatal(rec.Body)
+		}
+	}
+	for _, body := range []string{`{"studyPreset":"cell-states-clouds"}`, `{"studyExample":true,"studyPreset":"../../elsewhere"}`, `{"studyExample":true,"studyPreset":"unknown"}`, `{"studyExample":true,"studyPreset":"cell-states-clouds","path":"other"}`} {
+		if rec := postJSON(t, h, "/api/expression/open", body); rec.Code != 400 {
+			t.Fatal(rec.Body)
+		}
+	}
+}

@@ -367,3 +367,33 @@ Sampler references: Marsaglia and Tsang (2000), *A Simple Method for Generating 
 rejection method for generating Poisson random variables*,
 [doi:10.1016/0167-7152(93)90097-4](https://doi.org/10.1016/0167-7152(93)90097-4).
 The generative study design, numeric parameters and missingness rules are ClonoLoom choices.
+
+### Supplied Gaussian clouds
+
+`clonoloom simulate --preset cell-states-clouds --out my-cloud-study` is the larger visual
+example offered by Cells. It keeps the same seed and two-subject/two-sample structure, with
+360 expression cells per sample and ten uniform clones per subject. The first sample's state
+probabilities are therefore 0.4, 0.3, 0.3; the second sample's are 0.35, 0.35, 0.3. Realized
+counts vary by seeded draw. This is chosen artificial heterogeneity, not a fit to biological
+data. There are 1,440 expression cells and 2,880 paired receptor rows across the study.
+
+The optional `cellStates.layout: "gaussian"` selects model
+`clonoloom-artificial-cell-states-clouds-v1`. For each mapped cell, with zero-based state/sample,
+x = 8 × state + 1.5 Z₁ and y = 3 × sample + σ Z₂, where σ is [1.2, 2, 0.8] by state and
+Z₁,Z₂ are independent standard normal draws from the existing polar sampler. Layout stream
+50000 + 2 × subject + sample is independent of the biological draws. The legacy integer jitter
+draws are retained and discarded so changing only layout leaves receptor rows, counts, labels
+and missingness unchanged. Coordinates use 17 significant digits with products rounded before
+addition for processor agreement. No source coordinates are jittered by the display.
+
+Sampler reference: Marsaglia and Bray (1964), *A Convenient Method for Generating Normal
+Variables*, SIAM Review 6:260–264, [doi:10.1137/1006063](https://doi.org/10.1137/1006063).
+The layout centers, spreads, state probabilities and sample size are project choices. These
+clouds are supplied illustrative coordinates, not a UMAP/t-SNE computed from expression.
+
+The original `cell-states` preset remains unchanged, including generated source bytes. Empty
+layout preserves that behavior. Old saved inputs continue to reopen; the cloud study uses a
+separate example directory. Its first sample has 359 receptor matches, one expression-only and
+one receptor-only barcode, 359 matching annotation rows, one annotation-only row and 358 mapped
+cells. Run the same independent reference script on this study to generate
+`validation/reference/cell_states_clouds.json`; the original reference remains untouched.

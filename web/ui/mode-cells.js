@@ -71,7 +71,7 @@ export function mountCells(app, container) {
         if (state.status !== 'open') throw new Error(state.error ?? 'The receptor dataset cannot be reopened.');
       }
       if (run !== serial || !sameProject()) return;
-      const summary = await request('open', { path: options.path, cellsPath: options.cellsPath, example: options.example, studyExample: options.studyExample, expectedId: options.expectedId }, signal);
+      const summary = await request('open', { path: options.path, cellsPath: options.cellsPath, example: options.example, studyExample: options.studyExample, studyPreset: options.studyPreset, expectedId: options.expectedId }, signal);
       const record = expressionRecord(summary, options.dataset ?? '', options.sample ?? null);
       const page = await request('page', { id: summary.id, dataset: record.dataset, sample: record.sample, view: 'cells' }, signal);
       if (run !== serial || !sameProject()) return;
@@ -99,10 +99,10 @@ export function mountCells(app, container) {
   async function example(study = false) {
     try {
       const sameProject = store.sameProject();
-      const result = await app.actions.open_example({ example: study ? 'simulated-cell-states' : 'synthetic-expression', download: true });
+      const result = await app.actions.open_example({ example: study ? 'simulated-cell-states-clouds' : 'synthetic-expression', download: true });
       if (!sameProject()) return;
       await app.setMode('cells');
-      return await app.cellsView.inspect({ example: !study, studyExample: study, dataset: result.data.dataset, sample: 0 });
+      return await app.cellsView.inspect({ example: !study, studyExample: study, studyPreset: study ? 'cell-states-clouds' : undefined, dataset: result.data.dataset, sample: 0 });
     } catch (error) { message = error.message; status = 'error'; draw(); throw error; }
   }
   function draw() {

@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -90,9 +91,63 @@ func TestCellStatesReproducibilityAndCoverage(t *testing.T) {
 	}
 }
 
+func TestCellStateCloudLayoutPreservesBiologicalEvidence(t *testing.T) {
+	s := Presets["cell-states-clouds"]
+	dir := filepath.Join(t.TempDir(), "clouds")
+	first, err := Run(context.Background(), s, dir, "validation", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	copyDir := filepath.Join(t.TempDir(), "same")
+	if _, err := Run(context.Background(), s, copyDir, "validation", nil); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range first.Files {
+		a, _ := os.ReadFile(filepath.Join(dir, name))
+		b, _ := os.ReadFile(filepath.Join(copyDir, name))
+		if string(a) != string(b) {
+			t.Fatal("clouds not reproducible", name)
+		}
+	}
+	grid := *s.CellStates
+	grid.Layout = ""
+	s.CellStates = &grid
+	gridDir := filepath.Join(t.TempDir(), "grid")
+	if _, err := Run(context.Background(), s, gridDir, "validation", nil); err != nil {
+		t.Fatal(err)
+	}
+	for _, sample := range []string{"S01-1", "S01-2", "S02-1", "S02-2"} {
+		for _, name := range []string{sample + ".tsv", "expression/" + sample + "/matrix.mtx", "expression/" + sample + "/features.tsv", "expression/" + sample + "/barcodes.tsv"} {
+			a, _ := os.ReadFile(filepath.Join(dir, name))
+			b, _ := os.ReadFile(filepath.Join(gridDir, name))
+			if string(a) != string(b) {
+				t.Fatal("layout changed biological evidence", name)
+			}
+		}
+		path := filepath.Join(dir, "expression", sample)
+		in, err := expression.OpenWithCells(context.Background(), path, filepath.Join(path, "cells.tsv"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if in.Cells.Coverage.Mapped != 358 {
+			t.Fatal(in.Cells.Coverage)
+		}
+		seen := map[[2]float64]bool{}
+		for _, row := range in.Cells.Rows {
+			if row.Expression && row.Position != nil {
+				p := *row.Position
+				if math.IsNaN(p[0]) || math.IsNaN(p[1]) || p[0] == math.Trunc(p[0]) || seen[p] {
+					t.Fatal("invalid or quantized cloud", p)
+				}
+				seen[p] = true
+			}
+		}
+	}
+}
+
 func TestCellStatesParametersAndCancellation(t *testing.T) {
 	s := Presets["cell-states"]
-	for _, c := range []CellStateStudy{{0, 120, 12}, {21, 120, 12}, {2, 11, 12}, {2, 10001, 12}, {2, 120, 2}, {2, 120, 101}, {20, 10000, 12}} {
+	for _, c := range []CellStateStudy{{0, 120, 12, ""}, {21, 120, 12, ""}, {2, 11, 12, ""}, {2, 10001, 12, ""}, {2, 120, 2, ""}, {2, 120, 101, ""}, {20, 10000, 12, ""}, {2, 120, 12, "unknown"}} {
 		s.CellStates = &c
 		if s.Check() == nil {
 			t.Fatal(c)

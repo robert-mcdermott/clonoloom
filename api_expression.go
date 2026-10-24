@@ -57,9 +57,14 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 		ExpectedID   string `json:"expectedId"`
 		CellsPath    string `json:"cellsPath"`
 		StudyExample bool   `json:"studyExample"`
+		StudyPreset  string `json:"studyPreset"`
 	}
 	if err := json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(&body); err != nil {
 		writeError(w, 400, "Send a MEX directory path.")
+		return
+	}
+	if body.StudyPreset != "" && (!body.StudyExample || (body.StudyPreset != "cell-states" && body.StudyPreset != "cell-states-clouds")) {
+		writeError(w, 400, "studyPreset requires studyExample and must be cell-states or cell-states-clouds.")
 		return
 	}
 	if body.Example || body.StudyExample {
@@ -69,7 +74,10 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 		}
 		body.Path = filepath.Join(a.examples.Dir, "synthetic-expression")
 		if body.StudyExample {
-			body.Path = filepath.Join(a.examples.Dir, "simulated-cell-states", "expression", "S01-1")
+			if body.StudyPreset == "" {
+				body.StudyPreset = "cell-states"
+			}
+			body.Path = filepath.Join(a.examples.Dir, "simulated-"+body.StudyPreset, "expression", "S01-1")
 			body.CellsPath = filepath.Join(body.Path, "cells.tsv")
 		}
 	}

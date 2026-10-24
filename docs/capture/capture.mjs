@@ -122,10 +122,10 @@ const scenes = {
     await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use cell-state study').click(); return true; })()`);
     await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
     const state = await js('window.clonoloom.cellsView.state()');
-    if (state.page.links.matched !== 119 || state.page.summary.annotations.mapped !== 118 || state.page.cells[1].annotation || state.page.cells[2].annotation.position !== null || state.page.cells[3].annotation.values[0] !== '') throw new Error('Known missing evidence differs');
+    if (state.page.links.matched !== 359 || state.page.summary.annotations.mapped !== 358 || state.page.cells[1].annotation || state.page.cells[2].annotation.position !== null || state.page.cells[3].annotation.values[0] !== '') throw new Error('Known missing evidence differs');
     await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Annotations').click(); return true; })()`);
     await waitFor(`window.clonoloom.cellsView.state().page.annotations?.length === 50`);
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 7; i++) {
       await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Next').click(); return true; })()`);
       await waitFor(`window.clonoloom.cellsView.state().page.offset === ${(i + 1) * 50}`);
     }
@@ -145,19 +145,23 @@ const scenes = {
     // Exercise the visible optional-file form, then the map and keyboard-accessible table.
     await js(`(() => { document.querySelector('.view-body form').requestSubmit(); return true; })()`);
     await waitFor(`window.clonoloom.cellsView.state().status === 'ready'`);
-    await act('inspect_expression', { studyExample: true, sample: 0 });
+    await act('inspect_expression', { studyExample: true, studyPreset: 'cell-states-clouds', sample: 0 });
     await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Imported map').click(); return true; })()`);
-    await waitFor(`window.clonoloom.cellsView.state().page.map?.length === 118`);
+    await waitFor(`window.clonoloom.cellsView.state().page.map?.length === 358`);
     await js(`(() => {
       const choice = document.querySelector('[aria-label="Map annotation"]'); choice.value = '0'; choice.dispatchEvent(new Event('change'));
+      const missing = document.querySelector('circle.cell-map-missing');
+      if (!missing || getComputedStyle(missing).fill !== 'rgb(163, 163, 163)' || missing !== [...document.querySelectorAll('circle[data-cell]')].at(-1)) throw new Error('Missing annotation must be gray and drawn last');
+      missing.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('CELL00004-1')) throw new Error('Missing cell selection lost original index');
       document.querySelector('circle[data-cell]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
       if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('Coordinates:')) throw new Error('Map cell inspection failed');
       document.querySelector('table.data tbody button').click();
       if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('CELL00001-1')) throw new Error('Table inspection failed');
       return true;
     })()`);
-    await js(`document.querySelector('[aria-label="MEX directory"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states/expression/S01-1`)}`);
-    await js(`document.querySelector('[aria-label="Cell annotations"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states/expression/S01-1/cells.tsv`)}`);
+    await js(`document.querySelector('[aria-label="MEX directory"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1`)}`);
+    await js(`document.querySelector('[aria-label="Cell annotations"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1/cells.tsv`)}`);
     await js(`document.querySelector('#imported-cell-map').scrollIntoView({ block: 'start' })`);
   },
   async cells() {

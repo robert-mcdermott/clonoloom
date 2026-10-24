@@ -53,3 +53,13 @@ func cellStateInputExample() examples.Generated {
 		"Two artificial subjects, two samples each, paired TRA/TRB receptors and 24 artificial genes in three known states. Includes deliberate missing evidence, supplied layout coordinates and separate truth. Generated locally from a fixed seed; a controlled benchmark, not a fitted biological model.",
 		"Four samples of 120 expression cells, with paired receptor evidence and exact sample-scoped barcodes.", 1<<20)
 }
+
+func cellStateCloudExample() examples.Generated {
+	steps := []examples.Step{{Title: "Inspect supplied cell-state clouds", Action: "inspect_expression",
+		Args:  map[string]any{"studyExample": true, "studyPreset": "cell-states-clouds", "sample": 0},
+		Words: "S01-1 has 360 expression cells, 359 receptor matches and 358 mapped cells. Open Imported map and color by state: missing labels are neutral gray. Coordinates are illustrative Gaussian clouds, not UMAP or a fitted biological model. The separate legacy grid example remains available for exact overlap checks. Select each receptor sample explicitly; barcodes repeat across samples.",
+	}}
+	return simulatedExample("cell-states-clouds", steps, "A paired cell-state study with supplied Gaussian clouds",
+		"Two artificial subjects, two samples each, 360 expression cells per sample and ten clones per subject. Three states have supplied Gaussian coordinates with different spreads and unequal expected cell numbers. Separate truth, paired TRA/TRB chains and deliberately missing evidence. An illustrative benchmark, not an inferred embedding or a fitted biological model.",
+		"Four samples of 360 expression cells, with paired receptors and supplied continuous coordinates.", 3<<20)
+}

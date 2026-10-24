@@ -17,6 +17,15 @@ import (
 )
 
 func TestCellStatesAgainstIndependentTruth(t *testing.T) {
+	checkCellStatesTruth(t, "cell-states", "cell_states.json")
+}
+
+func TestCellStateCloudsAgainstIndependentTruth(t *testing.T) {
+	checkCellStatesTruth(t, "cell-states-clouds", "cell_states_clouds.json")
+}
+
+func checkCellStatesTruth(t *testing.T, preset, file string) {
+	t.Helper()
 	var ref struct {
 		Sources map[string]string
 		Samples []struct {
@@ -27,7 +36,7 @@ func TestCellStatesAgainstIndependentTruth(t *testing.T) {
 			Annotations                           expression.CellCoverage
 		}
 	}
-	raw, err := os.ReadFile("reference/cell_states.json")
+	raw, err := os.ReadFile(filepath.Join("reference", file))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,7 +44,7 @@ func TestCellStatesAgainstIndependentTruth(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := filepath.Join(t.TempDir(), "study")
-	if _, err = simulate.Run(context.Background(), simulate.Presets["cell-states"], dir, "validation", nil); err != nil {
+	if _, err = simulate.Run(context.Background(), simulate.Presets[preset], dir, "validation", nil); err != nil {
 		t.Fatal(err)
 	}
 	for name, digest := range ref.Sources {
@@ -85,5 +94,5 @@ func TestCellStatesAgainstIndependentTruth(t *testing.T) {
 			t.Fatal(links, err)
 		}
 	}
-	t.Log("four samples, all 11520 matrix values, 480 gene totals and exact source coverage agree")
+	t.Log(preset, "all four matrices, gene totals and exact source coverage agree")
 }

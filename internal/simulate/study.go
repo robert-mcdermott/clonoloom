@@ -58,7 +58,8 @@ type Study struct {
 
 // Presets are the studies `clonoloom simulate` starts from.
 var Presets = map[string]Study{
-	"cell-states": {Name: "cell-states", Title: "An artificial paired T-cell and expression study with known states", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 120, Clones: 12}},
+	"cell-states":        {Name: "cell-states", Title: "An artificial paired T-cell and expression study with known states", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 120, Clones: 12}},
+	"cell-states-clouds": {Name: "cell-states-clouds", Title: "An artificial paired T-cell and expression study with supplied Gaussian clouds", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 360, Clones: 10, Layout: "gaussian"}},
 	"bcell-immunization": {
 		Name: "bcell-immunization", Title: "An artificial B-cell immunization study with known families and ancestors",
 		Seed:   20261027,

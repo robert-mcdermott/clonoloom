@@ -206,3 +206,10 @@ expression barcodes. The source is saved and checked on reopening. To try the pa
 `studyExample` and `example` cannot be combined with each other or explicit paths. Other study
 samples use explicit `path`, `cellsPath` and receptor `sample`. The Cells view offers Annotations
 and Imported map; its coordinates are supplied evidence, never a computed embedding.
+
+For the larger cloud study, call
+`open_example {"example":"simulated-cell-states-clouds","download":true}`, then
+`inspect_expression {"studyExample":true,"studyPreset":"cell-states-clouds","sample":0}`.
+`studyPreset` requires `studyExample` and accepts only `cell-states` or `cell-states-clouds`.
+Omitting it preserves the original grid example. Saved records reopen their explicit paths;
+changing the preferred visible example never silently redirects an existing saved input.

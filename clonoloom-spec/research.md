@@ -1522,3 +1522,41 @@ totals/detection counts and linkage/annotation coverage. Go reconstructs the stu
 those numbers on both processors. Unit tests cover byte reproducibility, changed seeds,
 cancellation/staging, malformed input, optional-source identity, drift and missing values;
 browser scenes exercise explicit inputs, source-value tables, imported maps and saved reopening.
+
+### 5.23 Cells map rendering and exploration acceptance
+
+**Observed rendering issue.** The grid fixture placed multiple observations at exactly the same
+coordinates. The missing-label cell had a separate color, but a later state-colored point
+covered it. Missing values now use an outlined neutral gray drawn after categorized points;
+source indices remain unchanged for selection. No coordinate jitter or deduplication is added.
+An empty label is distinct from a literal `Missing annotation` label, including beyond the
+six-category palette limit. Legends retain missing values without taking a category color.
+Both source axes are explicit and retain equal scale. These are display policies, not inference.
+
+**A separate illustrative fixture.** The `cell-states-clouds` preset increases each sample to
+360 expression cells with ten clones per subject and optional `layout: "gaussian"`. Its new
+model ID and example directory preserve the original grid fixture and source identities.
+Continuous normal coordinates use a separate PCG stream and the existing polar normal sampler:
+Marsaglia and Bray (1964), SIAM Review 6:260–264,
+[doi:10.1137/1006063](https://doi.org/10.1137/1006063). Centers, spreads and sample sizes are chosen
+illustration parameters; this is not a biological fit or computed UMAP. `docs/SIMULATION.md`
+records every parameter. Tests require unchanged biological observations when only layout
+changes, reproducible source hashes on both processors, and independent SciPy/truth agreement.
+
+**Planned cell-size displays.** Size categories require explicit breakpoints and population.
+The [scirpy clonal_expansion documentation](https://scirpy.scverse.org/en/latest/generated/scirpy.tl.clonal_expansion.html)
+defines configurable inclusive breakpoints and optional grouping; its default (1,2) differs
+from the proposed (1,2,5). The latter yields 1, 2, 3–5 and >5 and is a ClonoLoom display choice,
+not a universal expansion threshold or significance test. Slice 6 must record cell counting,
+sample scope, selected definition/QC, mapped versus all-eligible population and unassigned cells.
+
+**Planned interaction and density.** The
+[documented linked selection workflow](https://www.10xgenomics.com/support/software/loupe-vdj-browser/latest/tutorials/lvb-integrated-analysis-loupe-browser)
+illustrates clonotype-to-map highlighting and phenotype-based exploration. Slice 6 acceptance
+now includes linked selection in both directions with a keyboard-accessible table alternative,
+exact sample/barcode identities and explicit missingness. Optional density overlays require
+an independently specified estimator, bandwidth, normalization and support criteria first;
+[clonalOverlay documentation](https://bioconductor.posit.co/packages/3.22/bioc/manuals/scRepertoire/man/scRepertoire.pdf)
+provides context for frequency-filtered contours, not an implementation to copy. Density on an
+embedding is descriptive and does not imply enrichment or antigen specificity. Only public
+method/interface documentation was consulted for these acceptance refinements.

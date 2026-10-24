@@ -1470,6 +1470,60 @@ The later slices are planning boundaries, not promises of unreviewed algorithms.
 before implementation. Differential expression with subjects as replicates remains wave 7;
 antigen capture remains parked. Maps are exploratory, never evidence of antigen specificity.
 
+### Cells feedback: concrete acceptance for the remaining slices
+
+The map must connect expression evidence to receptor definitions, not stop at state coloring.
+The following refines the existing slice boundaries after researcher review of the slice 2
+screenshot; it does not imply that the pending analyses already exist.
+
+- **Slice 4, imported embeddings:** retain the selected embedding name, source dimension names
+  and provenance. Display UMAP 1 / UMAP 2 only when the source identifies UMAP; otherwise use
+  the actual source names or neutral dimensions. The current TSV contract supplies only
+  `map_x`/`map_y`; neither filenames nor cloud appearance establish an embedding method.
+- **Slice 5, computed maps:** carry method, effective parameters, seed and axis names into the
+  immutable result. Maintain equal axis scale; show source or method labels on both axes.
+- **Slice 6, repertoire overlays:** provide continuous clonotype cell size and explicit size
+  categories (initial proposal 1, 2, 3–5, >5; configurable breakpoints), plus receptor evidence /
+  chain status. Count distinct cells using a saved clonotype definition and QC selection,
+  never chain rows. Record whether size refers to all eligible receptor cells in that sample
+  or only mapped cells; expose both coverage counts and the chosen population. Unassigned
+  clonotypes, absent receptor evidence, unlinked input, QC exclusion and unresolved pairing
+  must not be treated as zero-size clones. Distinguish single-chain, paired and multi-chain
+  evidence using the existing chain-selection rules, including mixed/ambiguous cases.
+- **Slice 6, linked exploration:** selecting a clonotype highlights its mapped cells and dims
+  other cells; selecting/brushing map cells lists their clonotypes and unresolved evidence in
+  the inspector. Preserve exact dataset/sample/barcode keys, selected definition/QC/result
+  IDs, reset/undo behavior and a keyboard-accessible table/filter alternative to brushing.
+  Sample/timepoint coloring or faceting must retain subject boundaries and missing metadata;
+  separate embeddings cannot be concatenated merely because both have two coordinates.
+- **Density overlay, optional after the core slice 6 interactions:** first define and cite the
+  estimator, bandwidth, grid, weighting/normalization, eligible population, contour levels
+  and minimum support. Compute in Go and record parameters. Density in embedding coordinates
+  is descriptive; it is not enrichment, physical density, statistical significance or proof
+  of antigen specificity. Do not add attractive contours without a defined calculation.
+- **Figures across views:** missing values have a neutral style distinct from valid categories
+  and literal strings resembling missing-value labels. Include overlap, empty/high-cardinality
+  categories, source axes, equal scaling and both-theme checks. Never jitter imported source
+  coordinates silently; retain every observation in an accessible source-value table.
+
+**Slice 2 follow-up implemented.** Missing annotations now use outlined neutral gray and draw
+last, fixing the hidden missing-label point in the grid screenshot. Explicit `map_x`/`map_y`
+axis labels retain equal scale. The new `cell-states-clouds` preset supplies 360 cells per
+sample with continuous Gaussian layout, unequal expected state sizes and differing spreads.
+It is the visible study example; the original preset, example, action default and seeded
+reference bytes remain available. This is still artificial supplied layout, not UMAP or fitted
+biology. See research §5.23 for methods and the acceptance rationale.
+
+**Follow-up checked.** Application/internal race tests and focused expression/cell-state
+scientific race tests pass. The original and cloud fixtures agree with independent SciPy
+references; the new reference checks all 34,560 matrix values and 1,440 cell totals. Native
+and amd64 checks, released-project replay, vet, six platform builds, 100 JavaScript tests
+and 14 contrast checks pass. The cell-state browser scene passes in both themes, including
+missing-point selection and saved reopening; both refreshed screenshots were inspected.
+The site builds 34 pages with 33 screenshot sets, with zero problems in 132 checks.
+Unrelated scientific regressions, fuzzing and performance budgets were not rerun for this
+follow-up. Version remains 0.5.0; changes await maintainer review and commit.
+
 ### Slice 1: MEX expression evidence
 
 **Serves D6, D11 and the linking foundation of M1.** Read a selected directory containing
@@ -1563,7 +1617,7 @@ both themes, including forms, malformed paths, pagination, imported-map selectio
 saving/reopening. Screenshots were inspected and legend spacing corrected. The site builds
 34 pages with 33 screenshot sets; 132 accessibility/viewport checks report zero problems.
 Existing performance budgets were not rerun for this evidence/simulation slice. Version stays
-0.5.0. Ready for the maintainer's commit; no commit, push, tag, release or publication performed.
+0.5.0. Committed by the maintainer as `152c061`; the feedback follow-up above is separate.
 
 ## Later waves (outlined)
 

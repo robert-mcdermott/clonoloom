@@ -43,6 +43,7 @@ func simulatedExamples() []examples.Generated {
 		imgtInputExample(),
 		expressionInputExample(),
 		cellStateInputExample(),
+		cellStateCloudExample(),
 		simulatedExample("bcell-immunization", bcellSteps, "An artificial B-cell immunization study with known families",
 			"Three subjects sampled before a simulated immunization and at days 14 and 28: paired heavy/light chains from twelve families per subject, with known ancestors, substitutions, isotypes and cell counts. Artificial coding sequences and SIM gene calls, not biological reference alleles; a simple benchmark, not a fitted model of affinity maturation. Truth is beside the observations in truth/.",
 			"Nine samples, 240 paired cells each. Inspect the supplied ancestor alignments and artificial region coordinates.", 6<<20),

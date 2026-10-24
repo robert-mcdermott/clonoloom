@@ -6,6 +6,8 @@ package simulate
 // doi:10.1016/0167-7152(93)90097-4). MEX follows Boisvert et al. 1996, NISTIR 5935 and
 // https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/cr-outputs-mex-matrices.
 // See docs/SIMULATION.md for every effective parameter and deliberate missingness rule.
+// Optional Gaussian layout reuses the polar normal sampler (Marsaglia & Bray 1964,
+// doi:10.1137/1006063), with an independent stream; it is not an expression embedding.
 import (
 	"context"
 	"crypto/sha256"
@@ -14,6 +16,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"sort"
+	"strconv"
 	"strings"
 
 	"clonoloom/internal/random"
@@ -27,9 +30,14 @@ type CellStateStudy struct {
 	Subjects       int `json:"subjects"`
 	CellsPerSample int `json:"cellsPerSample"`
 	Clones         int `json:"clones"`
+	// Empty retains the original grid fixture and its exact source bytes.
+	Layout string `json:"layout,omitempty"`
 }
 
 func (c CellStateStudy) check(s Study) error {
+	if c.Layout != "" && c.Layout != "gaussian" {
+		return fmt.Errorf("cellStates layout must be empty (legacy grid) or gaussian")
+	}
 	if s.BCells != nil || s.Series != nil || len(s.Groups) != 0 || s.SamplesPerSubject != 0 || len(s.Templates) != 0 || s.ReadsPerTemplate != 0 || s.ReadsSize != 0 || !reflect.DeepEqual(s.Recombination, Recombination{}) {
 		return fmt.Errorf("cellStates replaces the other models: omit their parameters")
 	}
@@ -87,6 +95,9 @@ func runCellStates(ctx context.Context, s Study, dir, version string, progress P
 	c := s.CellStates
 	summary := Summary{Dir: dir, Subjects: c.Subjects, Samples: c.Subjects * 2}
 	truth := cellStateTruth{Model: cellStateModel, Simulator: "ClonoLoom simulate " + version, Study: s, States: []string{"state A", "state B", "state C"}, Size: 4}
+	if c.Layout == "gaussian" {
+		truth.Model = "clonoloom-artificial-cell-states-clouds-v1"
+	}
 	for state := range 3 {
 		means := make([]int, 24)
 		for gene := range means {
@@ -123,6 +134,7 @@ func runCellStates(ctx context.Context, s Study, dir, version string, progress P
 			id := fmt.Sprintf("%s-%d", subjectID, sample+1)
 			progress(float64(subject*2+sample)/float64(summary.Samples), "Making "+id+"'s expression and paired receptors")
 			r := random.New(s.Seed, uint64(40000+subject*2+sample))
+			layout := random.New(s.Seed, uint64(50000+subject*2+sample))
 			var receptor, barcodes, features, entries, annotations strings.Builder
 			receptor.WriteString(strings.Join(cellStateColumns, "\t") + "\n")
 			annotations.WriteString("barcode\tstate\tmap_x\tmap_y\n")
@@ -176,6 +188,13 @@ func runCellStates(ctx context.Context, s Study, dir, version string, progress P
 					if hasCoordinates {
 						x = fmt.Sprint(state*10 + r.IntN(5) - 2)
 						y = fmt.Sprint(sample*3 + r.IntN(5) - 2)
+						if c.Layout == "gaussian" {
+							// Keep the original model's draws above: layout never changes biological
+							// observations at fixed size/clone parameters. Round products before sums.
+							px := float64(state*8) + float64(1.5*layout.Normal())
+							py := float64(sample*3) + float64([3]float64{1.2, 2, 0.8}[state]*layout.Normal())
+							x, y = strconv.FormatFloat(px, 'g', 17, 64), strconv.FormatFloat(py, 'g', 17, 64)
+						}
 					}
 					fmt.Fprintf(&annotations, "%s\t%s\t%s\t%s\n", barcode, label, x, y)
 				}
@@ -207,7 +226,7 @@ func runCellStates(ctx context.Context, s Study, dir, version string, progress P
 		return Summary{}, err
 	}
 	summary.Files = append(summary.Files, "repertoires.airr.json")
-	if err := write("README.md", fmt.Sprintf(`# %s
+	readme := fmt.Sprintf(`# %s
 
 Artificial study, model %s, seed %d; ClonoLoom %s.
 
@@ -228,7 +247,11 @@ Coordinates: x = 10*state + uniform integer -2..2; y = 3*sample + uniform intege
 (zero-based state/sample), drawn only for mapped cells. Fictional SIM calls and random
 stop-free 42-nt junctions; no real alleles. All data are artificial and unrestricted.
 See docs/SIMULATION.md for the sampler references and reproducibility contract.
-`, s.Title, cellStateModel, s.Seed, version, c.CellsPerSample, c.Clones)); err != nil {
+`, s.Title, truth.Model, s.Seed, version, c.CellsPerSample, c.Clones)
+	if c.Layout == "gaussian" {
+		readme = strings.Replace(readme, "Coordinates: x = 10*state + uniform integer -2..2; y = 3*sample + uniform integer -2..2\n(zero-based state/sample), drawn only for mapped cells.", "Supplied Gaussian layout: x = 8*state + 1.5*N(0,1); y = 3*sample + sigma*N(0,1),\nwith sigma [1.2,2,0.8] by state (zero-based state/sample). Independent layout stream\n50000 + 2*subject + sample; original integer jitter draws are retained and discarded\nto preserve all biological observations at fixed parameters. Layout is illustrative,\nnot fitted or computed from expression. Ten uniform clones give first-sample state\nprobabilities 0.4,0.3,0.3 in the preset; these probabilities depend on clone count.", 1)
+	}
+	if err := write("README.md", readme); err != nil {
 		return Summary{}, err
 	}
 	sort.Strings(summary.Files)
