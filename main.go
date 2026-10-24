@@ -76,7 +76,8 @@ type app struct {
 	files    *localFiles
 	store    *store
 	// datasets are the datasets open (api_datasets.go).
-	datasets *datasets
+	datasets   *datasets
+	expression expressionInputs
 	// clonotypes are the clonotype tables lately computed (api_clonotypes.go).
 	clonotypes *clonotypeTables
 	// examples are the example datasets, downloaded when asked (api_examples.go).
@@ -472,6 +473,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/browse", a.browse)
 	a.store.register(mux)
 	a.registerDatasets(mux)
+	a.registerExpression(mux)
 	a.registerQC(mux)
 	a.registerClonotypes(mux)
 	a.registerBCells(mux)

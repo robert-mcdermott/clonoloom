@@ -237,6 +237,6 @@ thereafter (on a 2024 laptop: Apple M-series or recent x86, 16 GB):
 | Internal model | The AIRR-C Rearrangement fields, in a columnar table with interned strings; junction (IMGT) rather than CDR3; IMGT gene nomenclature |
 | Reference data | Germline sets and model files downloaded on request with their license recorded; nothing under a non-commercial or no-derivatives license bundled (`research.md`, "Licenses") |
 | Reference tools | Validation only, run by scripts in `validation/reference/`; never linked, bundled or copied |
-| HDF5 | SituCraft's own reader of the subset AnnData and 10x matrices use (wave 6) |
+| HDF5 | Own bounded reader of the AnnData/10x subset (wave 6); SituCraft has a writer, not a reusable HDF5 reader |
 | Default port | 8860 (8860–8879) |
 | Remote control and screenshots | From wave 2, as in SituCraft: the documentation's capture scenes and headless runs drive the page through it |

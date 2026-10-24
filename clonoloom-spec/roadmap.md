@@ -9,15 +9,15 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–4 are complete; wave 5
-has a sequence of slices and a detailed plan for slice 1. Later slices are refined as they come.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has a sequence of slices and a detailed plan for
+slice 1. Later slices are refined as they come.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
-2–4 are merged and released as 0.2.0–0.4.0, and the 0.4.0 product site is published.
-Wave 5 is underway on `wave5`; slices 1–3 are committed. Slice 4 is implemented and validated,
-awaiting the maintainer's commit.
+2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
+Wave 6 is underway on `wave6`. Slice 1 is implemented and validated, awaiting the
+maintainer's commit. Version remains 0.5.0 until the release-preparation slice.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -878,8 +878,8 @@ threshold-dependent result, not a replacement for those identifiers.
 Implemented on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slices 1–8 are
-committed; slice 9 is implemented and validated, awaiting maintainer commit and release.
+puts a simulation with known families before the analyses it validates. All nine slices are
+committed and merged; 0.5.0 is released and its product site is published.
 
 | Slice | Status | Scope |
 | --- | --- | --- |
@@ -891,7 +891,7 @@ committed; slice 9 is implemented and validated, awaiting maintainer commit and 
 | 6. Somatic hypermutation | Committed | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
 | 7. Lineage trees | Committed | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
 | 8. Isotypes and class switching | Committed | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
-| 9. Examples and release 0.5.0 | Implemented; awaiting commit | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
+| 9. Examples and release 0.5.0 | Committed and released | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
 
 ### Slice 1: B-cell sequence evidence
 
@@ -1436,14 +1436,89 @@ were visually inspected. The link-preview image was regenerated and remains byte
 PowerShell syntax remains a CI check because pwsh is not installed locally; optional live
 publisher downloads and the maintainer-only VDJdb lookup were not requested or rerun.
 
-No commit, PR, merge, tag, release or site publication was performed. Version 0.5.0 is ready
-for the maintainer's commit and the established CI → PR/merge → release workflow.
+Committed, merged and released by the maintainer as 0.5.0; the product site is published.
+
+## 0.6.0: single-cell expression and receptors (wave 6)
+
+Keep expression in a separate sparse matrix, linked to receptor evidence by an explicit dataset
+and sample plus exact barcode. Never strip suffixes, match across samples, infer missing cells
+as zero expression, or treat cells as biological replicates. Preserve feature IDs, names and
+modalities separately. Imported coordinates and annotations remain source evidence; computed
+maps and statistical results are immutable artifacts with effective parameters and citations.
+
+SituCraft supplies useful sparse-matrix and AnnData patterns, but its HDF5 implementation is a
+writer and its AnnData reader uses Zarr. The earlier design's assumption of a reusable HDF5
+reader was incorrect. Reading HDF5 is explicit work here, using format documentation and
+independent fixtures; unsupported encodings must fail clearly, never return partial matrices.
+
+### Wave 6 sequence
+
+| Slice | Scope | Requirements |
+| --- | --- | --- |
+| 1 | MEX expression evidence: strict sparse counts, source fingerprints, exact sample/barcode linkage, Cells inspection and saved reopening | D6 (MEX), D11, M1 foundation |
+| 2 | Simulated paired receptor/expression study with known cell states; cell annotations and imported maps, explicit unmatched cells | E1, E3, M1 |
+| 3 | Bounded HDF5 reader and 10x feature-barcode HDF5 input, checked against independently generated compressed/chunked fixtures | D6 (10x HDF5) |
+| 4 | AnnData and MuData input: dense/CSR/CSC expression, observations, variables, embeddings and scirpy AIRR evidence; explicit modality and count-layer selection | D6 (h5ad/h5mu), M1 |
+| 5 | Expression preprocessing, neighborhoods and computed map; pin transformation, feature selection, distance, seed and all effective defaults; refine algorithms from primary methods first | M1, N7 |
+| 6 | Clonotype sizes on maps and phenotypes by clonotype, cluster/cell type and sample; explicit definitions, denominators and subject boundaries | M1, M2 |
+| 7 | Clonotype modularity on the expression graph, with defined null model, seeds, multiple testing and independent reference validation | M3 |
+| 8 | CoNGA-style receptor/expression graph comparison; paired-cell population, graph definitions, null and correction explicitly recorded | M3 |
+| 9 | AnnData export with receptor links, annotations, embeddings and provenance; independent round-trip validation | O3 |
+| 10 | Complete guided single-cell study, release fixture, documentation, performance/accessibility checks and release 0.6.0 preparation | E3, O2, N7 |
+
+The later slices are planning boundaries, not promises of unreviewed algorithms. Refine each
+before implementation. Differential expression with subjects as replicates remains wave 7;
+antigen capture remains parked. Maps are exploratory, never evidence of antigen specificity.
+
+### Slice 1: MEX expression evidence
+
+**Serves D6, D11 and the linking foundation of M1.** Read a selected directory containing
+`matrix.mtx[.gz]`, `barcodes.tsv[.gz]` and `features.tsv[.gz]` (or legacy `genes.tsv[.gz]`).
+Read integer-general coordinate matrices as nonnegative UMI counts. Preserve source order,
+feature type and IDs; names may repeat. Reject ambiguous companions, duplicate identifiers or
+coordinates, unsupported matrix encodings, malformed/truncated gzip, dimension mismatches,
+unsafe counts and resource-limit violations. Stream text; never allocate from an unchecked
+header or materialize a dense matrix. Keep zero-count barcodes and all feature modalities.
+
+Require an explicit receptor sample when linking; count distinct barcodes, not chain rows.
+Show matched, expression-only and receptor-only counts, missing receptor barcodes and bounded
+cell/feature pages. This is raw source coverage, before receptor QC or clonotype definitions.
+Gene-expression UMIs exclude other modalities. A matched barcode is not a called productive
+cell. Save the file fingerprints and binding in the project; reopening changed files must fail
+identity checks. Source files stay in place and unmodified. Remove a saved binding through undoable
+project edits. No normalization, cell-type assignment, map or inferential statistic in this slice.
+
+**Acceptance.** Hand-calculated sparse values and links, gzip/plain/legacy parity, malformed
+input and resource boundaries, cancellation, fuzzing, independent SciPy Matrix Market numbers,
+API paging and fingerprint drift, older project compatibility and arm64/amd64 agreement.
+Exercise visible controls, error handling and saved reopening in both themes. Run Go race/vet,
+JavaScript tests, six platform builds, contrast and site checks. Document limits and examples;
+keep version 0.5.0. The maintainer performs all Git and release operations.
+
+**Implemented.** The independent sparse expression model, streamed plain/gzip MEX reader,
+read-only source fingerprints, exact sample/barcode coverage, bounded API pages and Cells view
+are in place. Projects retain bindings and verify all three source hashes when reopened. The
+artificial example and remote action exercise repeated chains, nonproductive evidence, both
+unmatched populations, a missing receptor barcode and measured zero counts. Feature names may
+repeat; antibody counts are retained separately and a matrix without gene features reports
+unmeasured gene totals. Reading rules, limits, source citations and a development guide are
+written. The HDF5 assumption is corrected and the remaining wave is split into nine later slices.
+
+**Checked.** Application/internal race tests, focused native/amd64 expression checks,
+released-project replay and processor checks, vet, six platform builds, 97 JavaScript tests,
+199,350 fuzz executions and 14 contrast checks pass. SciPy independently agrees with every
+artificial matrix value and gene total; set-based reference coverage agrees. The browser scene
+passes in both themes, including the visible controls, errors, project saving/reopening and
+remove/undo. Both screenshots were inspected. The site builds 34 pages with 32 screenshot sets;
+132 accessibility/viewport checks across 33 pages find no problems. Scientific regression
+validation under the race detector passes (1,159.230 s). Existing performance budgets, which
+skip under the race detector, were not rerun for this reader/UI slice. Version remains 0.5.0.
+No commit, push, tag, release or site publication has been performed.
 
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 6 | 0.6.0 | Single cell | Expression linked by barcode, the map, phenotypes per clonotype, clonotype modularity and CoNGA-style analysis; AnnData, MuData and 10x matrices |
 | 7 | 0.7.0 | Cohorts and robustness | Study design, group comparisons with the subject as unit, robustness to the definition, GLIPH2-style groups, HLA association, contamination and batch QC, pseudobulk |
 | 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |
 | 9 | 0.9.0 | Suite and public data | ADC queries, overlap with public cohorts, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |

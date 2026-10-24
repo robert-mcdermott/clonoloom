@@ -3,14 +3,14 @@
 What ClonoLoom reads and writes, and how it reads each format. The research behind these choices,
 with sources, is in [clonoloom-spec/research.md](../clonoloom-spec/research.md).
 
-Every table can be gzipped (`.gz`); ClonoLoom recognizes gzip by its first bytes, not by the
+Every rearrangement table can be gzipped (`.gz`); ClonoLoom recognizes gzip by its first bytes, not by the
 name. Lines may end in LF or CRLF, and a UTF-8 byte-order mark is ignored. A file's format is
 decided from its header, whatever its name, except IMGT's multi-file bundle: its documented
 filenames identify table roles and headers are then checked.
 
-## What every reader produces
+## What every rearrangement reader produces
 
-Whatever the format, ClonoLoom reads rearrangements into one table with these fields (named as
+For repertoire formats, ClonoLoom reads rearrangements into one table with these fields (named as
 the AIRR Rearrangement schema names them):
 
 | Field | Meaning |
@@ -490,3 +490,28 @@ is `0`. `sources.csv` retains every parent-retained chain without duplicating ob
 Saved inspection does not require the input or parent files; exporting follows normal source
 access and data-use terms. Versioned isotype choices and normalized annotations travel in the
 analysis identity; unrelated active QC, clonotype and diversity settings do not.
+
+## 10x feature-barcode MEX (wave 6, slice 1; development)
+
+Expression is separate from rearrangement tables. **Cells** reads a selected MEX directory:
+`matrix.mtx[.gz]`, `features.tsv[.gz]` and `barcodes.tsv[.gz]`, or legacy two-column
+`genes.tsv[.gz]` in place of the three-column feature table. Plain/gzip may be mixed; two
+candidates for one role are ambiguous and rejected. No recursive raw/filtered choice is made.
+The Matrix Market header must be `%%MatrixMarket matrix coordinate integer general`.
+Features are rows, barcodes columns, coordinates one-based and values nonnegative integer UMIs.
+Source order and feature type are retained. Names may repeat; IDs, barcodes and coordinates may
+not. Explicit zeros are retained; missing coordinates within the matrix are zero, whereas a
+barcode absent from the matrix has no measured expression. Gene-expression totals include only
+`Gene Expression` features; with no such features, gene measurements are null, not zero.
+
+This reader follows the [10x MEX specification](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/cr-outputs-mex-matrices)
+and [NIST Matrix Market](https://math.nist.gov/MatrixMarket/formats.html). It requires UTF-8
+labels and LF/CRLF lines, without a byte-order mark. Counts and per-cell gene-expression totals
+must be at most 2^53−1. It limits features to 200,000, barcodes to 2,000,000, coordinates to
+10,000,000, label text to 64 MiB per companion, lines to 1 MiB, decompressed text to 512 MiB per
+file and source bytes to 1 GiB per file. Unsupported encodings and corrupt/truncated data fail.
+The source is streamed and fingerprinted read-only; a project saves its paths and SHA-256 values.
+Reopening verifies identity. Barcode links require an explicit receptor dataset/sample and keep
+suffixes exactly. Matching counts raw source evidence before QC, never inferred clonotypes.
+AnnData, MuData and 10x HDF5 are later wave 6 slices. See the development
+[Cells guide](site/pages/docs/cells.html) and `testdata/expression-mex/` for a synthetic example.

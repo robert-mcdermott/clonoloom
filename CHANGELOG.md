@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Added
+
+- **MEX expression evidence (wave 6, slice 1).** Read plain/gzipped 10x feature-barcode
+  matrices and legacy genes.tsv into a bounded sparse model. Preserve feature types, explicit
+  zeros and source fingerprints; reject malformed, ambiguous or duplicate evidence. Link exact
+  barcodes within an explicitly selected receptor sample, counting distinct barcodes separately
+  from chain rows and reporting both unmatched populations. Add Cells with bounded inspection,
+  gene-only UMI totals, null measurements when genes are absent, saved reopening with drift
+  detection, remote control and an offline artificial example. Independently validate sparse
+  values with SciPy and coverage with set-based counts. Plan the remaining wave 6 slices;
+  HDF5 readers, maps, phenotypes and graph comparisons follow later. Version stays 0.5.0.
+
 ## 0.5.0 (2026-10-23)
 
 ### Added

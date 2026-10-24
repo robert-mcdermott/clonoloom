@@ -186,3 +186,13 @@ Saved inspection uses pinned labels and requires neither parent nor source files
 
 `GET /api/export?what=result&artifact={id}` exports all tables, full JSON, manifest and notice,
 independent of page filters, under the normal source-access and data-use conditions.
+
+### Expression evidence (wave 6, slice 1; development)
+
+`inspect_expression` opens a MEX directory in Cells and saves its source fingerprints and
+binding. Give `path`, `dataset` (ID or name) and an explicit zero-based `sample` index. Give
+`dataset: ""` for expression-only inspection. The answer includes the expression ID and raw
+barcode coverage. To use the artificial example, first call
+`open_example {"example":"synthetic-expression","download":true}`, then
+`inspect_expression {"example":true,"sample":0}`. Counts are source coverage before QC or
+clonotyping. No expression analysis is inferred. A path and `example:true` are mutually exclusive.

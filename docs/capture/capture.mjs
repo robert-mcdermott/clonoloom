@@ -116,6 +116,58 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async cells() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use artificial example').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    const state = await js('window.clonoloom.cellsView.state()');
+    if (state.page.links.matched !== 2 || state.page.links.receptorOnly !== 1 || state.page.cells[0].geneUMIs !== 5 || state.page.cells[3].geneUMIs !== 0) throw new Error('Expression evidence differs');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Features').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.features.length === 3`);
+    if (!(await js(`document.querySelector('.view-body').textContent.includes('Antibody Capture')`))) throw new Error('Feature modality missing');
+    await js(`window.clonoloom.setMode('data')`);
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Reopen').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.cellsView.state().record.id')) !== state.record.id) throw new Error('Expression identity changed on reopen');
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const before = JSON.stringify(app.store.project.expression);
+      await app.cellsView.inspect({ path: '/does-not-exist' }).catch(() => {});
+      if (app.cellsView.state().status !== 'error' || JSON.stringify(app.store.project.expression) !== before) throw new Error('Invalid input changed saved evidence');
+      const record = app.store.project.expression[0];
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      return true;
+    })()`);
+    // Exercise the visible directory form and its explicit sample selector.
+    await js(`(() => {
+      const sample = document.querySelector('[aria-label="Receptor sample"]');
+      sample.value = ''; document.querySelector('.view-body form').requestSubmit();
+      if (!document.querySelector('[role="status"]').textContent.includes('explicitly')) throw new Error('Missing sample accepted');
+      sample.value = '0'; document.querySelector('.view-body form').requestSubmit(); return true;
+    })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const id = app.store.project.id;
+      await app.saveNow();
+      await app.openProject(id);
+      await app.setMode('cells');
+      const record = app.store.project.expression[0];
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      if (app.cellsView.state().page.links.matched !== 2) throw new Error('Saved project expression did not reopen');
+      return true;
+    })()`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Remove').click(); return true; })()`);
+    if ((await js('window.clonoloom.store.project.expression.length')) !== 0) throw new Error('Expression removal failed');
+    await js(`(() => { window.clonoloom.store.undo(); return true; })()`);
+    await waitFor('window.clonoloom.store.project.expression.length === 1');
+    await act('inspect_expression', { example: true, sample: 0 });
+    await js(`document.querySelector('[aria-label="MEX directory"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression`)}`);
+  },
+
   async isotypes() {
     await act('open_example', { example: 'simulated-bcell-immunization', download: true });
     await act('find_bcell_families', { threshold: 0.1 });

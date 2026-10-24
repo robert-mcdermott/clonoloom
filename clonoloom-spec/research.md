@@ -1438,3 +1438,43 @@ Public-data coverage checks also resolve the Ramos observation and all 56/437 as
 observations in the two pinned 10x PBMC fixtures. These C calls remain usable even where
 V/J allele evidence is insufficient for germline reconstruction. This tests evidence
 availability, not known biological class-switching truth.
+
+### 5.21 MEX expression evidence and exact barcode linkage (wave 6, slice 1)
+
+**Formats.** [10x Genomics, Cell Ranger Feature Barcode Matrices (MEX)](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/cr-outputs-mex-matrices)
+defines the feature/barcode companions and their orientation.
+[Boisvert et al., Matrix Market Exchange Formats, NISTIR 5935 (1996)](https://math.nist.gov/MatrixMarket/formats.html)
+defines coordinate matrices (doi:10.6028/NIST.IR.5935). Read feature × barcode integer/general counts, preserving feature
+IDs, names, modalities, barcode suffixes and explicit zero coordinates. Legacy genes.tsv has
+two columns and denotes Gene Expression; modern features.tsv has three. No expression value is
+computed in JavaScript. No normalization, graph, phenotype or biological inference is introduced.
+
+**ClonoLoom choices.** Keep a cell-compressed sparse matrix separate from receptor rows. Reject
+ambiguous companions, duplicate IDs/barcodes/coordinates, unsupported encodings and noninteger
+or negative counts. Do not sum repeated coordinates or choose one gene with a repeated name.
+Keep all modalities; gene totals and detected genes include only Gene Expression. With no gene
+features these measurements are null in the API. Retain measured zeros separately from missing
+barcodes. Bound counts and gene totals by 2^53−1 so JSON consumers preserve integers. Reader
+limits are documented in FORMATS.md. Stream and bound actual input before allocation; headers
+never determine a large allocation alone. Source bytes, role and reader version determine ID.
+
+Link against an explicitly selected receptor dataset/sample using exact barcode strings. Count
+distinct barcodes, not contigs; report chain rows, missing-barcode rows and both unmatched
+populations. This is before QC: nonproductive or low-confidence rows still contribute to raw
+coverage. No stripping of GEM-well suffixes, case folding, cross-sample fallback or assumption
+that a barcode is a productive singlet. These are data-handling policies, not a published test.
+
+**Sibling review.** SituCraft's cell_feature_matrix MEX reader uses a sparse representation and
+its AnnData reader supports Zarr. Its HDF5 code writes files; the roadmap's presumed existing
+HDF5 reader does not exist. ClonoLoom's streaming MEX parser is its own implementation. The
+HDF5/AnnData/MuData slices will use primary format documentation and independently produced
+fixtures, preserving the standard-library-only runtime.
+
+**Validation.** The artificial three-feature/four-barcode example has duplicated gene names,
+an antibody feature, unordered coordinates, an explicit zero and a zero-count barcode. SciPy
+1.17.0 `scipy.io.mmread` independently reads the dense 3×4 reference and gene totals (5, 4, 7, 0).
+Python sets tally two matches, two expression-only and one receptor-only barcode; one receptor
+row lacks a barcode. Files and values are pinned in `validation/reference/expression.json`,
+with the script beside it. Hand cases cover sample collisions, repeated chains, malformed
+counts, dimensions, duplicates, gzip corruption, cancellation and limits. Fuzzing probes the
+reader. This validates format and bookkeeping, not biological cell calling or phenotypes.

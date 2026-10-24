@@ -38,14 +38,7 @@ const MODES = [
   { id: 'tracking', label: 'Tracking', icon: 'threads', load: () => import('./ui/mode-tracking.js').then((m) => m.mountTracking) },
   { id: 'specificity', label: 'Specificity', icon: 'receptor', load: () => import('./ui/mode-specificity.js').then((m) => m.mountSpecificity) },
   { id: 'bcells', label: 'B cells', icon: 'lineage', load: () => import('./ui/mode-bcells.js').then((m) => m.mountBCells) },
-  {
-    id: 'cells', label: 'Cells', icon: 'cell',
-    load: async () => plannedMode({
-      title: 'Cells', icon: 'cell',
-      purpose: 'Single-cell receptors linked to gene expression: clonotypes on the cells\' map, phenotypes of expanded clonotypes, and whether receptor similarity goes with expression similarity.',
-      steps: ['Open V(D)J with its gene expression (AnnData or Cell Ranger).', 'Color the map by clonotype or size.', 'Compare expanded and other cells by type, subject by subject.'],
-    }),
-  },
+  { id: 'cells', label: 'Cells', icon: 'cell', load: () => import('./ui/mode-cells.js').then((m) => m.mountCells) },
   'sep',
   {
     id: 'cohort', label: 'Cohort', icon: 'samples',
