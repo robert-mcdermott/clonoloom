@@ -1,10 +1,11 @@
 # Simulated studies
 
-`clonoloom simulate` writes a bulk T-cell receptor β study whose truth is known: every clonotype of
-every subject, and the numbers an analysis estimates (diversity, the clonotypes a sample of its
-depth shows, the clonotypes subjects share). It is for checking methods, ClonoLoom's or anyone's,
+`clonoloom simulate` writes studies whose truth is known. The bulk T-cell receptor β studies
+record every clonotype of every subject, and the numbers an analysis estimates (diversity, the
+clonotypes a sample of its depth shows, the clonotypes subjects share). It is for checking methods, ClonoLoom's or anyone's,
 against the truth, and for learning ClonoLoom without data of your own. The Example data dialog
-offers five of them, made on your computer in a few seconds.
+offers six studies, including an artificial paired B-cell immunization study, made on your
+computer in a few seconds.
 
 ```sh
 clonoloom simulate                         # the standard study, into clonoloom-simulated-standard
@@ -13,7 +14,7 @@ clonoloom simulate --print-params > study.json   # the parameters, to edit
 clonoloom simulate --params study.json --out my-study
 ```
 
-The same parameters and seed give the same study, byte for byte, on every computer.
+The same parameters, seed and program version give the same study, byte for byte, on every computer.
 
 ## Presets
 
@@ -26,8 +27,11 @@ The same parameters and seed give the same study, byte for byte, on every comput
 | `transplant` | 2 recipients without graft-versus-host disease, 1 with | before the transplant, days 30, 100 and 365 (twice), and the donor's blood | tracking and attribution to a donor |
 | `null-series` | 4 of one kind | days 0, 14 and 28, twice each | expansion tests should find nothing |
 | `vaccine` | 3 vaccinated, 2 given a placebo | a week before the vaccination (twice), days 7, 14, 28 and 90 | receptors of known specificity: similar receptors, their expansion, and matching to a specificity database |
+| `bcell-immunization` | 3 artificial subjects, 12 B-cell families each | days −7, 14 and 28, 240 paired cells per sample | known ancestors, substitutions, isotypes and sampled abundance; see [Artificial B-cell families](#artificial-b-cell-families-wave-5-slice-3) |
 
-The last four are studies over time, below; the last has receptors of known specificity too.
+The four TRB series are described below; `vaccine` has receptors of known specificity too.
+The files and population statistics in the next sections describe the TRB presets; the B-cell
+model has its own truth schema, described at the end.
 
 ## What it writes
 
@@ -157,3 +161,144 @@ repertoires. The details, with their sources, are in
 [clonoloom-spec/research.md](../clonoloom-spec/research.md#52-simulated-studies-wave-2).
 
 Simulated data describe no person, and may be used and shared without restriction.
+
+## Artificial B-cell families (wave 5, slice 3)
+
+Wave 5 slice 5 versions the model as v2. It adds explicit V/J CIGARs and ungapped germline
+coordinates, exports `reference/germlines.fasta`, and gives the two distinct J backbones
+separate fictional allele names. The simulated nucleotide sequences, mutation events,
+sampling and family recovery are unchanged. Existing v1 files/results remain openable;
+regenerate an example to obtain the new reference evidence. Never use the artificial reference
+for biological sequences. Germlines currently offers the default example reference (seed
+20261027); other seeds need their own exported reference and are outside the current reference
+selector. The reference is generated from V/J backbones, without reading
+family ancestors or sampled observations.
+
+
+```sh
+clonoloom simulate --preset bcell-immunization --out bcell-study
+clonoloom simulate --preset bcell-immunization --print-params > bcell-params.json
+clonoloom simulate --params bcell-params.json --out another-study
+```
+
+The **artificial B-cell immunization** example is available offline. Its first guided steps show
+subjects in time and inspect a supplied sequence and ancestor alignment. The default is three
+subjects, twelve families per subject, days −7, 14 and 28, and 240 paired cells per sample:
+2,160 cells and 4,320 rearrangement rows. Each cell has one IGH and one IGK or IGL chain.
+Family identity is subject-specific and kept in truth only; ordinary junction clonotypes and
+their IDs retain their existing meaning. The next guided steps inspect paired nearest distances
+and infer families at an explicit threshold of 0.1. Both paired and heavy-only inference recover
+the exact 36 known families at that threshold; at 0.05 they yield 43 and 38 families respectively.
+The threshold is a demonstration for these artificial data, not a biological recommendation.
+The development SHM and lineage views analyze these saved projections; see below.
+
+This is a deliberately artificial benchmark, model `clonoloom-artificial-bcell-v2`. The sequences
+are generated coding strings, not biological antibody references. Gene calls containing `SIM`
+are fictional. These data test bookkeeping and recovery under a known model; they do not establish
+accuracy on real repertoires or calibrate a biological mutation rate.
+
+### Model and parameters
+
+`bcells` selects this model instead of the TRB model. Edit its `subjects` (1–20), `families` per
+subject (1–100), `cellsPerSample` (1–10,000), and `mutationsPerBranch` per chain (1–20). The whole
+study is limited to 100,000 sampled cells. Keep the TRB parameters zero/empty and omit `series`;
+nonzero TRB settings are rejected rather than silently ignored. `name`, `title` and `seed` remain
+editable. The truth stores the effective parameters, model identifier and program version.
+
+- **Ancestors:** 360-nt, stop-free sequences with uniformly sampled sense codons. Two shared
+  backbones per locus have independent family junctions. Families alternate kappa and lambda.
+  The junction is bases 283–321, with cysteine at 283–285 and tryptophan (IGH) or phenylalanine
+  (light) at 319–321. Random streams for backbones, families and samples are separate.
+- **Tree:** seven known states per family. N0 is the ancestor, N1/N2 its children, N3/N4 children
+  of N1, and N5/N6 children of N2. Each edge adds the requested substitutions to each chain.
+  Propose a uniform site and base; reject unchanged bases, anchor changes and stop codons.
+  Accepted events can revisit a site. N3's first event deliberately reverses N1's last event.
+  Each event's silent/replacement label compares its codon immediately before and after that
+  event. Net differences to the ancestor can be smaller than accumulated events, including zero.
+  Different nodes can have identical sequences; they remain distinct known states.
+- **Isotypes:** N0–N6 have IGHM, IGHM, IGHG1, IGHM, IGHG1, IGHG1, IGHA1. These fixed transitions
+  follow a subset of human constant-region order. There is no inferred switch rate or timing
+  within an edge, and no modeled IgM/IgD co-expression.
+- **Sampling:** within-family node weights at days −7, 14 and 28 are respectively
+  `[1,0,0,0,0,0,0]`, `[1,4,4,0,0,0,0]` and `[1,1,1,4,4,4,4]`, normalized separately. The first
+  `ceil(families/4)` families have abundance multipliers 1, 8 and 3; the others remain at 1.
+  Normalize across families and draw cells independently from this categorical distribution.
+  Every sample records all node probabilities and realized counts, including zeros. Families
+  expand and partly contract by construction; this is not a statistical call or evidence of
+  affinity. No extra biological variance, dropout, sequencing error, reads or UMIs are modeled.
+
+All choices above belong to ClonoLoom. Real SHM depends on sequence context (Yaari et al. 2013,
+*Front Immunol* 4:358, [doi:10.3389/fimmu.2013.00358](https://doi.org/10.3389/fimmu.2013.00358));
+that paper's S5F model is **not** implemented here. Biological class-switch context is described
+by Horns et al. 2016, *eLife* 5:e16578,
+[doi:10.7554/eLife.16578](https://doi.org/10.7554/eLife.16578); its inference method is not used.
+The benchmark does not model recombination, indels, motif targeting, selection or alternative
+topologies. Broader biological simulations and real-data validation remain necessary for later
+analyses.
+
+### Observations and truth
+
+| File | Meaning |
+| --- | --- |
+| `S01-pre.tsv`, `S01-d14.tsv`, `S01-d28.tsv`, … | AIRR observations. Each `cell_id` has two chains, each with its own `sequence_id`. Count cells once. Read/UMI counts and inferred family labels are absent. |
+| `repertoires.airr.json` | Sample, subject, time relative to simulated immunization, single-cell status and locus metadata. The study's model marker survives a renamed title/preset. |
+| `reference/germlines.fasta` | Artificial ungapped V/J segments; explicit fictional allele names. SHA-256 is recorded in reconstructed results. |
+| `truth/truth.json` | Parameters, model and version; all nodes with parent, family, subject, isotype, heavy/light sequences and ordered edge events; sample probabilities and cell counts; SHA-256 manifest for every other output. |
+| `truth/observations.tsv` | Exact sample/cell-to-node assignment, including repeated draws of a state. |
+| `README.md` | Model, limits, file meanings and how to reproduce the run. |
+
+`sequence_alignment` is the un-gapped observed coding string. `germline_alignment` is the **known
+rearranged ancestor**, including its artificial junction, not a reconstructed or D-masked
+reference. `germline_database` names the artificial model. The supplied V/J query spans are 1–285
+and 319–360. Artificial FWR1/CDR1/FWR2/CDR2/FWR3/CDR3/FWR4 spans are 1–78, 79–114, 115–165,
+166–195, 196–285, 286–318 and 319–360 (1-based closed); they are **not IMGT numbering**.
+D calls are missing; v2 supplies V/J CIGARs and reference-segment coordinates. These limits matter when using
+the truth to test germline reconstruction and mutation comparisons.
+
+A complete study is built in a temporary sibling folder before being promoted. Cancellation or
+failure leaves no partial output, and a nonempty destination is refused. The same parameters,
+seed and program version reproduce the same files on arm64 and amd64. To repeat a saved study,
+extract its `study` object from `truth/truth.json` and pass that JSON to `--params`.
+
+Independent validation (`validation/reference/bcell_families.py`, run with `uv`) replays all
+1,296 accepted events, including 72 deliberate reversals, and checks every paired observation,
+coordinate, isotype, probability, count and file hash. Go tests compare its reduced CSV counts
+with the app's readers, input checks and paired clonotypes. Tests also cover different seeds,
+round-tripped parameters, cancellation, bounds and overwrite refusal. Fixed-seed sampling is
+checked against the stated categorical probabilities. The old TRB simulations' pinned bytes
+remain unchanged.
+
+The wave 5 SHM comparison uses the v2 saved D-masked germlines. Each default-preset chain row
+has 327 evaluable bases and 109 evaluable codons, with all 33 intervening bases masked. Across
+4,320 source rows there are 9,941 net substitutions: 7,297 replacement and 2,360 silent in
+single-hit codons, plus 284 unclassified substitutions in 142 multi-hit codons. Endpoint
+codon counts are 7,439 replacement and 2,360 silent. These pooled source-row counts differ from
+mutation events on the generating tree: sampled descendants repeat changes, and reversals
+remove net differences. The independent `validation/reference/shm.py` compares observed
+sequences directly with known root sequences by the fixed artificial regions, including all
+43,200 row/region entries. It validates bookkeeping, not biological SHM accuracy.
+
+### Lineage validation (wave 5, slice 7)
+
+The guided workflow builds 72 separate family/locus trees on 327 shared V/J sites. Independent
+rooted-bipartition enumeration and four-state scoring agree with every Go minimum score and
+optimal-topology count: 1,093 changes in total, with ties in 71 searches. The known full generating
+tree supplies an upper bound, not a uniquely recoverable topology. Unobserved states, reversals
+and the masked junction prevent that claim. Observed isotype, timepoint and tissue labels are
+retained without inferring switching or migration. The simulator and its v2 truth are unchanged.
+
+### Isotype validation (wave 5, slice 8)
+
+The observed-isotype analysis uses the saved thresholded families directly; alignments and
+inferred trees are not required. The default v2 study has 2,160 assigned cells in 36 families.
+Every heavy C call resolves to IGHM, IGHG1 or IGHA1. Sample/class usage has 18 nonempty rows:
+pre samples contain IgM; day 14 contains IgM/IgG; day 28 contains all three classes. There are
+466 rows across both resolutions and sample/family-sample groups. Each of the three unordered
+gene pairs occurs in all 36 families. Sample observation and abundance denominators are 240.
+
+`validation/reference/isotypes.py` independently reads raw AIRR rows and generating-family
+truth, checks C labels against sampled nodes, and tallies cells and pairs. The Go test checks
+all counts and shares using source hashes and heavy-member digests. A separate serialization
+hash checks processor repeatability. These checks validate descriptive bookkeeping. The analysis
+does not reconstruct the truth's historical switches; incomplete sampling, unresolved calls
+and family-threshold uncertainty require separate interpretation in biological data.

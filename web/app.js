@@ -22,7 +22,7 @@ import { createProject, isEmptyProject, parseProject, rename, serializeProject }
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
-const VERSION = '0.4.0';
+const VERSION = '0.5.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -37,14 +37,7 @@ const MODES = [
   { id: 'repertoire', label: 'Repertoire', icon: 'repertoire', load: () => import('./ui/mode-repertoire.js').then((m) => m.mountRepertoire) },
   { id: 'tracking', label: 'Tracking', icon: 'threads', load: () => import('./ui/mode-tracking.js').then((m) => m.mountTracking) },
   { id: 'specificity', label: 'Specificity', icon: 'receptor', load: () => import('./ui/mode-specificity.js').then((m) => m.mountSpecificity) },
-  {
-    id: 'bcells', label: 'B cells', icon: 'lineage',
-    load: async () => plannedMode({
-      title: 'B cells', icon: 'lineage',
-      purpose: 'Clonal families with a threshold chosen from the data, germlines reconstructed, somatic hypermutation by region, isotypes and class switching, and lineage trees with their ancestors.',
-      steps: ['Open BCR data.', 'Cluster clonal families and check the threshold.', 'Explore mutations and trees.'],
-    }),
-  },
+  { id: 'bcells', label: 'B cells', icon: 'lineage', load: () => import('./ui/mode-bcells.js').then((m) => m.mountBCells) },
   {
     id: 'cells', label: 'Cells', icon: 'cell',
     load: async () => plannedMode({
@@ -193,6 +186,7 @@ async function start() {
     store.setUI({ focus }, ['focus']);
     // A result opens in its view.
     const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
+    if (['families', 'germlines', 'shm', 'lineages', 'isotypes'].includes(result?.kind) && store.ui.mode !== 'bcells') app.setMode('bcells');
     if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
     if (['tracking', 'expansion', 'classes', 'attribution'].includes(result?.kind) && store.ui.mode !== 'tracking') app.setMode('tracking');
     if (['tcrdist', 'pgen', 'neighborhoods', 'networks', 'specificity'].includes(result?.kind) && store.ui.mode !== 'specificity') app.setMode('specificity');
@@ -313,7 +307,9 @@ async function start() {
         if (!summary) {
           // Tables read through a mapping of their columns are read through it again.
           const mappings = Object.fromEntries(record.sources.filter((s) => s.mapping).map((s) => [s.path, s.mapping]));
-          summary = await openDataset({ paths: datasetFiles(record).map((s) => s.path), name: record.name, ...(Object.keys(mappings).length ? { mappings } : {}) });
+          summary = await openDataset(record.sources.some((s) => s.imgtGroup)
+            ? { inputs: datasetFiles(record), name: record.name }
+            : { paths: datasetFiles(record).map((s) => s.path), name: record.name, ...(Object.keys(mappings).length ? { mappings } : {}) });
         }
         if (summary.id !== record.id) {
           const state = { status: 'changed', summary, error: 'The files are not those the project recorded: their contents changed.' };

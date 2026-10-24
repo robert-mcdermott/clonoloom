@@ -5,9 +5,9 @@ description: A local-first workbench for T- and B-cell receptor repertoires: AIR
 ---
     <section class="hero">
       <div class="container hero-grid">
-        <a class="eyebrow" href="{{github}}/releases/tag/v{{version}}"><span class="pill">v{{version}}</span> Repertoire basics: diversity, rarefaction, gene usage and overlap, each with its uncertainty</a>
+        <a class="eyebrow" href="{{github}}/releases/tag/v{{version}}"><span class="pill">v{{version}}</span> B cells: families, germlines, mutations, lineage trees and observed isotypes</a>
         <h1>Immune repertoires <span class="accent">you can check</span></h1>
-        <p class="lede">ClonoLoom opens the output of your annotation pipeline (AIRR Community files, Cell Ranger V(D)J, immunoSEQ exports, MiXCR clone tables, OAS and OTS data units, tcrdist3 clone tables, or another tool's table), checks it, and groups it into clonotypes by a definition you can see. It measures each repertoire's diversity, compares samples at equal coverage, counts their genes and junctions, and measures how much they overlap, each number with its interval, and writes figures, exports and a methods paragraph others can check, keeping every step on record. It runs on your own computer as one self-contained program, installed with a single command: no account, Python or R, and your data never leave your machine.</p>
+        <p class="lede">ClonoLoom opens the output of your annotation pipeline (AIRR Community files, Cell Ranger V(D)J, immunoSEQ exports, MiXCR clone tables, OAS and OTS data units, joined IMGT/HighV-QUEST output, tcrdist3 clone tables, or another tool's table), checks it, and groups it into clonotypes by a definition you can see. It measures each repertoire's diversity, compares samples at equal coverage, counts their genes and junctions, and measures how much they overlap, each number with its interval, and writes figures, exports and a methods paragraph others can check, keeping every step on record. For B cells, it follows annotated sequences through thresholded families, reference germlines, mutations, lineage trees and observed isotypes. It runs on your own computer as one self-contained program, installed with a single command: no account, Python or R, and your data never leave your machine.</p>
         <shot name="diversity" alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis" window eager>A simulated TRB study of twelve samples, one of the examples: each sample's Shannon diversity with its 95% interval, the Hill profile and clonal space homeostasis.</shot>
         <div class="btn-row">
           <a class="btn btn-primary" href="install.html">
@@ -66,6 +66,21 @@ description: A local-first workbench for T- and B-cell receptor repertoires: AIR
           <h2 id="features-title">From the annotation pipeline to results others can check</h2>
           <p>Open a study's receptor data, check them, look at each sample's quality, define clonotypes, measure the repertoires and compare them, and write it up so that others can check it, each step kept on record.</p>
         </div>
+
+        <article class="feature">
+          <div class="feature-text">
+            <span class="kicker">B cells</span>
+            <h3>From sequence evidence to families and lineages</h3>
+            <p>Inspect AIRR or joined IMGT annotations, choose a family threshold within subjects, reconstruct D-masked germlines from pinned references, and measure substitutions with explicit denominators. Explore parsimony trees with their ties and ancestral ambiguity; summarize observed constant calls with cell counts and unresolved calls retained.</p>
+            <ul class="checklist">
+              <li>Source rows, parent checksums and cited methods stay with each result</li>
+              <li>Full CSV/JSON tables, germline and lineage FASTA, and Newick tree exports</li>
+              <li>Artificial known truth checks bookkeeping; trees and co-occurrence do not establish switching events</li>
+            </ul>
+            <a class="more-link" href="docs/simulation.html#immunization">Try the artificial immunization workflow</a>
+          </div>
+          <shot name="lineages" alt="An artificial B-cell lineage tree with observed labels, branch changes and topology uncertainty">One of the artificial study's 72 family/locus trees. Alternative optimal topologies remain explicit.</shot>
+        </article>
 
         <article class="feature">
           <div class="feature-text">
@@ -199,7 +214,7 @@ description: A local-first workbench for T- and B-cell receptor repertoires: AIR
           <a class="card" href="docs/simulation.html">
             <span class="icon-badge mint"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4 19a1 1 0 0 0 .9 1.5h14.2A1 1 0 0 0 20 19l-6-10V3"/></svg></span>
             <h3>Examples with known answers</h3>
-            <p>Public 10x Genomics, AIRR Community and immuneACCESS data, each with its license and citation, and simulated TRB studies made on your computer in seconds, whose every clonotype is known.</p>
+            <p>Public 10x Genomics, AIRR Community and immuneACCESS data, each with its license and citation, and simulated TRB and artificial B-cell studies made on your computer, with known generating truth.</p>
           </a>
           <a class="card" href="docs/remote-control.html">
             <span class="icon-badge"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M13 6l-2 12"/></svg></span>
@@ -240,6 +255,7 @@ description: A local-first workbench for T- and B-cell receptor repertoires: AIR
               <tr><td><strong>Neighborhoods</strong></td><td>tcrdist3 0.3's radii and enrichment on Dash et al.'s 415 human β chains against a weighted background</td><td class="agree">every centroid</td></tr>
               <tr><td><strong>Intervals</strong></td><td>Simulated repertoires whose truth is known: 200 samples of each, 330 pairs</td><td class="agree">diversity 91.5–99.5% where well sampled; usage 97.4–100%; overlap 95.2%</td></tr>
               <tr><td><strong>The simulator</strong></td><td>10x Genomics' 10k PBMC data's junction lengths and V usage</td><td class="agree">mean length within 0.1 amino acids</td></tr>
+              <tr><td><strong>B-cell workflow</strong></td><td>Independent graph, sequence, exhaustive-tree and direct-count calculations on artificial truth</td><td class="agree">36 families; 4,320 mutation rows; 72 trees; 2,160 cells in isotype summaries</td></tr>
               <tr><td><strong>Scale</strong></td><td>A million rearrangements; a cohort of 100 samples; a million clonotypes</td><td class="agree">read and checked in 1.5 s; reopened in 118 ms; a page in 37 ms</td></tr>
             </tbody>
           </table>
@@ -263,6 +279,7 @@ description: A local-first workbench for T- and B-cell receptor repertoires: AIR
               <tr><td><strong>0.2.0</strong></td><td>Repertoire basics: diversity, rarefaction and extrapolation, gene usage and junctions, and overlap, each with its uncertainty; figures, exports and other tools' tables; simulated studies and remote control</td></tr>
               <tr><td><strong>0.3.0</strong></td><td>Tracking: subjects and time points, clonotypes followed through a subject's samples, the clonotypes that expand or contract tested with false discoveries controlled (the beta-binomial test, its variance fitted on replicate samples), classes across time points, and attribution to an infusion product or a donor; the website</td></tr>
               <tr><td><strong>0.4.0</strong></td><td>Specificity: TCRdist and neighborhoods, generation probability, clonotype networks, matching to known epitopes, and invariant-population sequence rules</td></tr>
+              <tr><td><strong>0.5.0</strong></td><td>B cells: AIRR and joined IMGT sequence evidence, thresholded clonal families, D-masked germlines, somatic hypermutation, bounded parsimony lineages and observed isotype usage; a complete artificial immunization guide</td></tr>
             </tbody>
           </table>
         </div>

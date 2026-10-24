@@ -416,6 +416,84 @@ export function remoteActions(app) {
       return { message: `Found ${data.matches} chain–record matches in ${data.epitopes.length} epitope/antigen groups.`, data };
     },
 
+    async find_bcell_families({ dataset, mode = 'auto', scope = 'subject', threshold = null } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('families');
+      const view = app.familiesView;
+      await view.show(d.id, { mode, scope, threshold });
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'B-cell families');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.familyCount} families; ${done.page.result.eligible} eligible observations.`, data: { artifact: done.artifact, families: done.page.familyCount, representatives: done.page.representativeCount, eligible: done.page.result.eligible, excluded: done.page.result.excluded, withoutNeighbor: done.page.result.withoutNeighbor, options: done.page.result.familiesOptions } };
+    },
+
+    async reconstruct_bcell_germlines({ dataset, families, reference } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('germlines');
+      const view = app.germlinesView;
+      await view.show(d.id, { families, reference });
+      if (view.state().status === 'idle') throw new ActionError('Save a thresholded family result first.');
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'Germline reconstruction');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.result.reconstructed} reconstructed source rows.`, data: { artifact: done.artifact, reconstructed: done.page.result.reconstructed, rows: done.page.rowCount, familyLoci: done.page.familyCount, excluded: done.page.result.excluded, options: done.page.result.germlinesOptions } };
+    },
+
+    async measure_bcell_shm({ dataset, germlines } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('shm');
+      const view = app.shmView;
+      await view.show(d.id, { germlines });
+      if (view.state().status === 'idle') throw new ActionError('Save a germline result first.');
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'Somatic hypermutation');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.result.evaluated} source rows with evaluable bases.`, data: { artifact: done.artifact, evaluated: done.page.result.evaluated, rows: done.page.rowCount, excluded: done.page.result.excluded, codonExclusions: done.page.result.codonExclusions, options: done.page.result.shmOptions } };
+    },
+
+    async build_bcell_lineages({ dataset, germlines } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('lineages');
+      const view = app.lineagesView;
+      await view.show(d.id, { germlines });
+      if (view.state().status === 'idle') throw new ActionError('Save a germline result first.');
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'Lineage trees');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.result.built} family/locus trees built.`, data: { artifact: done.artifact, built: done.page.result.built, rows: done.page.rowCount, excluded: done.page.result.excluded, options: done.page.result.lineageOptions } };
+    },
+
+    async summarize_bcell_isotypes({ dataset, families } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells'); app.bcellsMode.show('isotypes');
+      const view = app.isotypesView;
+      await view.show(d.id, { families });
+      if (view.state().status === 'idle') throw new ActionError('Save a thresholded family result first.');
+      if (view.state().status === 'absent') await view.run();
+      const done = await waitFor(() => ['ready', 'failed'].includes(view.state().status) && view.state(), 30 * 60 * 1000, 'Isotypes');
+      if (done.status !== 'ready') throw new ActionError(done.error);
+      return { message: `${done.page.result.assigned} assigned observations summarized.`, data: { artifact: done.artifact, assigned: done.page.result.assigned, resolvedClass: done.page.result.resolvedClass, resolvedGene: done.page.result.resolvedGene, families: done.page.familyCount, excluded: done.page.result.excluded, issues: done.page.result.issues, options: done.page.result.isotypeOptions } };
+    },
+
+    async inspect_bcell_inputs({ dataset, select } = {}) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('bcells');
+      app.bcellsMode.show('inputs');
+      const view = await waitFor(() => app.bcellsView, 5000, 'B cells');
+      const page = await view.show(d.id);
+      if (select !== undefined) {
+        if (!Number.isInteger(select) || select < 1 || select > page.rows.length) throw new ActionError('Select a rearrangement on the first page, from 1.');
+        await view.inspect(page.rows[select - 1].id);
+      }
+      return { message: `${d.name}: ${page.count} B-cell rearrangements under the active filter.`, data: page };
+    },
+
     async flag_invariant({ dataset, species, population = '' } = {}) {
       const d = datasetOf(dataset);
       species = choose(species, ['human', 'mouse'], 'species');

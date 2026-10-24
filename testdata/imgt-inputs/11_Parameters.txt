@@ -1,0 +1,3 @@
+Synthetic format fixture
+IMGT/V-QUEST program version	Not run
+IMGT/V-QUEST reference directory release	None

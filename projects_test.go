@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"clonoloom/internal/clonotype"
+	"clonoloom/internal/examples"
 	"clonoloom/internal/invariant"
 	"clonoloom/internal/reads"
 )
@@ -37,9 +38,10 @@ type fixtureProject struct {
 		ID               string               `json:"id"`
 		Name             string               `json:"name"`
 		Sources          []struct {
-			Path    string         `json:"path"`
-			SHA256  string         `json:"sha256"`
-			Mapping *reads.Mapping `json:"mapping"`
+			Path      string         `json:"path"`
+			SHA256    string         `json:"sha256"`
+			Mapping   *reads.Mapping `json:"mapping"`
+			IMGTGroup string         `json:"imgtGroup"`
 		} `json:"sources"`
 		Metadata []struct {
 			Path   string `json:"path"`
@@ -124,29 +126,36 @@ func remakeFixture(t *testing.T, dir string, each func(t *testing.T, file string
 		t.Fatal(err)
 	}
 	a, handler := testApp(t)
+	// The release pins reference provenance as well as sequence bytes. In particular, a
+	// newer program's citation cannot replace the citation recorded in this project.
+	if raw, err := os.ReadFile(filepath.Join(dir, "reference.json")); err == nil {
+		var source examples.Source
+		if err := json.Unmarshal(raw, &source); err != nil {
+			t.Fatal(err)
+		}
+		if source.Name != simulatedGermlines {
+			t.Fatalf("unsupported fixture reference %q", source.Name)
+		}
+		a.examples = &examples.Library{Dir: filepath.Join(dir, "references"), Generated: []examples.Generated{{Source: source, Marker: "reference/germlines.fasta", Files: func(string) [][]string { return nil }}}}
+	} else if !os.IsNotExist(err) {
+		t.Fatal(err)
+	}
 	for _, ds := range p.Datasets {
-		var paths []string
-		mappings := map[string]*reads.Mapping{}
-		add := func(path, sum string, m *reads.Mapping) {
+		var inputs []reads.Input
+		add := func(path, sum string, m *reads.Mapping, group string) {
 			abs, _ := filepath.Abs(filepath.Join(dir, filepath.FromSlash(path)))
 			if got := fileSHA256(abs); got != sum {
 				t.Fatalf("%s: the fixture's file has changed (SHA-256 %s, the project records %s)", path, got, sum)
 			}
-			paths = append(paths, abs)
-			if m != nil {
-				mappings[abs] = m
-			}
+			inputs = append(inputs, reads.Input{Path: abs, Mapping: m, IMGTGroup: group})
 		}
 		for _, s := range ds.Sources {
-			add(s.Path, s.SHA256, s.Mapping)
+			add(s.Path, s.SHA256, s.Mapping, s.IMGTGroup)
 		}
 		for _, m := range ds.Metadata {
-			add(m.Path, m.SHA256, nil)
+			add(m.Path, m.SHA256, nil, "")
 		}
-		body := map[string]any{"paths": paths, "name": ds.Name}
-		if len(mappings) > 0 {
-			body["mappings"] = mappings
-		}
+		body := map[string]any{"inputs": inputs, "name": ds.Name}
 		rec := postJSON(t, handler, "/api/datasets/open", string(mustJSON(body)))
 		var s datasetSummary
 		json.Unmarshal(rec.Body.Bytes(), &s)

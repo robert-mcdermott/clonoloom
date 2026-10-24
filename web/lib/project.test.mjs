@@ -69,3 +69,22 @@ test('every release\'s saved project still opens, byte for byte (validation/proj
     for (const a of project.artifacts) assert.ok(project.datasets.some((d) => d.id === a.dataset), `${v}: ${a.id}`);
   }
 });
+
+test('the B-cell release retains analysis choices, IMGT grouping and its result chain', () => {
+  const project = parseProject(readFileSync(new URL('../../validation/projects/0.5.0/project.json', import.meta.url), 'utf8'));
+  const [study, imgt] = project.datasets;
+  assert.equal(study.rows, 120);
+  assert.equal(study.samples.length, 6);
+  assert.deepEqual(study.families, { mode: 'auto', scope: 'subject', threshold: 0.1 });
+  assert.equal(imgt.sources.length, 5);
+  assert.ok(imgt.sources.every((s) => s.imgtGroup === 'imgt-inputs'));
+  assert.deepEqual(project.artifacts.filter((a) => a.dataset === study.id).map((a) => a.kind), ['families', 'families', 'germlines', 'shm', 'lineages', 'isotypes']);
+  for (const a of project.artifacts) {
+    const manifest = JSON.parse(readFileSync(new URL(`../../validation/projects/0.5.0/artifacts/${a.id}/manifest.json`, import.meta.url), 'utf8'));
+    const parameters = manifest.lineage.parameters;
+    const options = parameters[a.kind];
+    for (const parent of [options?.families, options?.germlines].filter(Boolean)) {
+      assert.ok(project.artifacts.some((p) => p.id === parent && p.dataset === a.dataset), `${a.kind}: missing parent ${parent}`);
+    }
+  }
+});

@@ -1,0 +1,114 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "fam-fbd058b6ee55d260",
+  "kind": "families",
+  "name": "B-cell clonal families · Artificial immunization: three families",
+  "dataset": "d-71be04f19c62a88b",
+  "state": "complete",
+  "created": "2026-10-23T23:58:49.899226Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-71be04f19c62a88b",
+        "name": "Artificial immunization: three families"
+      }
+    ],
+    "job": {
+      "id": "jmvlmsf8o-2",
+      "kind": "families",
+      "spec": {
+        "dataset": "d-71be04f19c62a88b",
+        "definition": {
+          "chains": null,
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "subjects": {
+          "S01-d14": "S01",
+          "S01-d28": "S01",
+          "S01-pre": "S01",
+          "S02-d14": "S02",
+          "S02-d28": "S02",
+          "S02-pre": "S02"
+        },
+        "families": {
+          "mode": "paired",
+          "scope": "subject",
+          "threshold": 0.1
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Normalized nucleotide Hamming distance; single-linkage B-cell families",
+      "version": "1",
+      "citation": "Gupta et al. 2015, doi:10.1093/bioinformatics/btv359; Gupta et al. 2017, doi:10.4049/jimmunol.1601850. Paired maximum distance and conservative eligibility are ClonoLoom policies."
+    },
+    "parameters": {
+      "dataset": "d-71be04f19c62a88b",
+      "definition": {
+        "chains": null,
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "subjects": {
+        "S01-d14": "S01",
+        "S01-d28": "S01",
+        "S01-pre": "S01",
+        "S02-d14": "S02",
+        "S02-d28": "S02",
+        "S02-pre": "S02"
+      },
+      "families": {
+        "mode": "paired",
+        "scope": "subject",
+        "threshold": 0.1
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.5.0",
+        "commit": "2fea525a963ab0af44297c3c1a0bb7d37f4a89e5-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "families.json",
+      "role": "families",
+      "size": 63210,
+      "sha256": "e4a61086b5293b2ee4ed69d500d3c3a50109bedcc9c191f300471c9d58e34c15"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "eligible": 60,
+    "families": 3,
+    "observations": 60,
+    "representatives": 13
+  }
+}

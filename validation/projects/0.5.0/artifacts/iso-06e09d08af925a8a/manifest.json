@@ -1,0 +1,165 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "iso-06e09d08af925a8a",
+  "kind": "isotypes",
+  "name": "B-cell isotypes · Artificial immunization: three families",
+  "dataset": "d-71be04f19c62a88b",
+  "state": "complete",
+  "created": "2026-10-23T23:58:50.954659Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-71be04f19c62a88b",
+        "name": "Artificial immunization: three families"
+      },
+      {
+        "kind": "families",
+        "id": "fam-fbd058b6ee55d260",
+        "sha256": "e4a61086b5293b2ee4ed69d500d3c3a50109bedcc9c191f300471c9d58e34c15"
+      }
+    ],
+    "job": {
+      "id": "jmvlmsg20-6",
+      "kind": "isotypes",
+      "spec": {
+        "dataset": "d-71be04f19c62a88b",
+        "definition": {
+          "chains": null,
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "study": [
+          {
+            "name": "S01-d14",
+            "timepoint": "14 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-d28",
+            "timepoint": "28 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-pre",
+            "timepoint": "-7 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d14",
+            "timepoint": "14 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d28",
+            "timepoint": "28 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-pre",
+            "timepoint": "-7 day (simulated immunization)",
+            "tissue": "blood"
+          }
+        ],
+        "isotypes": {
+          "families": "fam-fbd058b6ee55d260",
+          "familySha256": "e4a61086b5293b2ee4ed69d500d3c3a50109bedcc9c191f300471c9d58e34c15"
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Observed constant-region usage and unordered family co-occurrence",
+      "version": "1",
+      "citation": "AIRR Rearrangement 2.0 c_call; Lefranc 2014, doi:10.3389/fimmu.2014.00022; Horns et al. 2016, doi:10.7554/eLife.16578; Hoehn et al. 2022, doi:10.1371/journal.pcbi.1009885. Counting and ambiguity policies are ClonoLoom choices; no switching inference."
+    },
+    "parameters": {
+      "dataset": "d-71be04f19c62a88b",
+      "definition": {
+        "chains": null,
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "study": [
+        {
+          "name": "S01-d14",
+          "timepoint": "14 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-d28",
+          "timepoint": "28 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-pre",
+          "timepoint": "-7 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d14",
+          "timepoint": "14 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d28",
+          "timepoint": "28 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-pre",
+          "timepoint": "-7 day (simulated immunization)",
+          "tissue": "blood"
+        }
+      ],
+      "isotypes": {
+        "families": "fam-fbd058b6ee55d260",
+        "familySha256": "e4a61086b5293b2ee4ed69d500d3c3a50109bedcc9c191f300471c9d58e34c15"
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.5.0",
+        "commit": "2fea525a963ab0af44297c3c1a0bb7d37f4a89e5-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "isotypes.json",
+      "role": "isotypes",
+      "size": 67724,
+      "sha256": "2280a07ff1ec967a005b1a7067a61ba6f03b2ade20ccd6a4b84bfdea436197be"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "assigned": 60,
+    "families": 3,
+    "resolvedClass": 60,
+    "resolvedGene": 60
+  }
+}

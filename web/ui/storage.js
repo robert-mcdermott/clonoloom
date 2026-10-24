@@ -190,3 +190,10 @@ export async function clonotypePresets() {
   if (!response.ok) throw await programError(response, 'The definitions could not be listed.');
   return (await response.json()).presets;
 }
+
+// A bounded page of B-cell input annotations, or one selected row's evidence.
+export async function bcellInputs(request) {
+  const response = await fetch('api/bcells/inputs', { method: 'POST', body: JSON.stringify(request), headers: { 'Content-Type': 'application/json' } });
+  if (!response.ok) throw await programError(response, 'The sequence evidence could not be read.');
+  return response.json();
+}

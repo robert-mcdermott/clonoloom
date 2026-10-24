@@ -116,6 +116,264 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async isotypes() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families', { threshold: 0.1 });
+    await js(`(() => { window.clonoloom.bcellsMode.show('isotypes'); return true; })()`);
+    await waitFor(`window.clonoloom.isotypesView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Summarize isotypes').click(); return true; })()`);
+    await waitFor(`window.clonoloom.isotypesView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.isotypesView.state()');
+    if (result.page.result.assigned !== 2160 || result.page.result.resolvedGene !== 2160 || result.page.familyCount !== 36 || result.page.count !== 18) throw new Error('Wrong isotype totals');
+    if (!result.page.rows.every((r) => r.total === 240 && r.timepoint && r.tissue)) throw new Error('Missing denominator or metadata');
+    await js(`window.clonoloom.isotypesView.showPage('pairs')`);
+    const pairs = await js('window.clonoloom.isotypesView.state().page.rows');
+    if (pairs.length !== 3 || pairs.some((p) => p.families !== 36)) throw new Error('Wrong co-occurrence');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'IGHA1 + IGHG1').click(); return true; })()`);
+    await waitFor(`window.clonoloom.isotypesView.state().page?.kind === 'families'`);
+    if ((await js('window.clonoloom.isotypesView.state().page.count')) !== 36) throw new Error('Pair filter lost families');
+    const family = await js('window.clonoloom.isotypesView.state().page.rows[0].id');
+    await js(`window.clonoloom.isotypesView.showPage('usage', {family:${JSON.stringify(family)},level:'gene'})`);
+    if (!(await js('window.clonoloom.isotypesView.state().page.rows.every((r) => r.family && r.level === "gene")'))) throw new Error('Missing family usage');
+    await js(`window.clonoloom.isotypesView.showPage('observations')`);
+    const first = await js('window.clonoloom.isotypesView.state().page.rows[0].id');
+    await js(`window.clonoloom.isotypesView.showPage('observations', {offset:50})`);
+    if ((await js('window.clonoloom.isotypesView.state().page.rows[0].id')) === first) throw new Error('Observation page did not advance');
+    await js(`(() => { const v=window.clonoloom.isotypesView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('Raw C call:')`);
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('eLife.16578') || !methods.includes(result.page.result.isotypeOptions.familySha256) || !methods.includes('unordered')) throw new Error('Missing isotype methods');
+    await act('close_dialogs');
+    await js(`(() => { window.clonoloom.isotypesView.showPage('usage'); window.clonoloom.bcellsMode.show('inputs'); return true; })()`);
+    await waitFor(`Boolean(window.clonoloom.bcellsView)`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.isotypesView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.isotypesView.state().artifact')) !== result.artifact) throw new Error('Saved isotypes did not reopen');
+  },
+  async lineages() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families', { threshold: 0.1 });
+    await act('reconstruct_bcell_germlines', { reference: 'simulated-bcell-immunization' });
+    await js(`(() => { window.clonoloom.bcellsMode.show('lineages'); return true; })()`);
+    await waitFor(`window.clonoloom.lineagesView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Build lineage trees').click(); return true; })()`);
+    await waitFor(`window.clonoloom.lineagesView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.lineagesView.state()');
+    if (result.page.result.built !== 72 || result.page.rowCount !== 4320 || result.page.rows.length !== 50) throw new Error('Wrong lineage totals');
+    await js(`window.clonoloom.lineagesView.openTree(${JSON.stringify(result.page.rows[0].id)})`);
+    const tree = await js('window.clonoloom.lineagesView.state().tree');
+    if ((await js(`getComputedStyle(document.querySelector('.lineage-plot path')).stroke`)) === 'none') throw new Error('Invisible tree edges');
+    if (tree.sites !== 327 || !tree.optimalTrees || !tree.nodes.some((n) => n.kind === 'inferred')) throw new Error('Wrong lineage detail');
+    const id = tree.nodes.find((n) => n.kind === 'inferred').id;
+    await js(`(() => { document.querySelector('[data-node="${id}"]').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); return true; })()`);
+    await waitFor(`window.clonoloom.lineagesView.state().node?.id === ${JSON.stringify(id)}`);
+    if ((await js('window.clonoloom.lineagesView.state().node.possible.length')) !== 327) throw new Error('Missing conditional states');
+    if (!(await js(`document.activeElement.hasAttribute('data-lineage-detail')`))) throw new Error('Node details lost keyboard focus');
+    await js(`(() => { const s=document.querySelector('[aria-label="Tree annotations"]'); s.value='timepoint'; s.dispatchEvent(new Event('change')); return true; })()`);
+    await js(`window.clonoloom.lineagesView.showPage('rows')`);
+    const row = await js('window.clonoloom.lineagesView.state().page.rows[0]');
+    if (!row.isotype || !row.timepoint || !row.tissue || !row.node) throw new Error('Missing observed annotations');
+    await js(`window.clonoloom.lineagesView.showPage('rows', '', '', 50)`);
+    if ((await js('window.clonoloom.lineagesView.state().page.rows[0].id')) === row.id) throw new Error('Lineage page did not advance');
+    await js(`(() => { const v=window.clonoloom.lineagesView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('Lineage source row')`);
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('0128004') || !methods.includes('not bootstrap support') || !methods.includes(result.page.result.lineageOptions.germlineSha256)) throw new Error('Missing lineage methods');
+    await act('close_dialogs');
+    await js(`(() => { window.clonoloom.lineagesView.openTree(${JSON.stringify(tree.id)}); window.clonoloom.bcellsMode.show('inputs'); return true; })()`);
+    await waitFor(`Boolean(window.clonoloom.bcellsView)`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.lineagesView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.lineagesView.state().artifact')) !== result.artifact) throw new Error('Saved lineage did not reopen');
+    await js(`window.clonoloom.lineagesView.openTree(${JSON.stringify(tree.id)})`);
+    await js(`(() => { document.querySelector('.lineage-plot').scrollIntoView({block:'center'}); return true; })()`);
+  },
+  async shm() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families', { threshold: 0.1 });
+    await act('reconstruct_bcell_germlines', { reference: 'simulated-bcell-immunization' });
+    await js(`(() => { window.clonoloom.bcellsMode.show('shm'); return true; })()`);
+    await waitFor(`window.clonoloom.shmView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Measure SHM').click(); return true; })()`);
+    await waitFor(`window.clonoloom.shmView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.shmView.state()');
+    if (result.page.result.evaluated !== 4320 || result.page.summaryCount !== 270 || result.page.rows.length !== 50 || Object.keys(result.page.result.codonExclusions).length) throw new Error('Wrong SHM summary');
+    await js(`window.clonoloom.shmView.showPage('rows')`);
+    const row = await js('window.clonoloom.shmView.state().page.rows[0]');
+    if (row.regions[0].evaluableBases !== 327 || row.regions[0].evaluableCodons !== 109 || row.regions[8].frequency !== null) throw new Error('Wrong SHM denominator');
+    await js(`window.clonoloom.shmView.showPage('rows', '', '', 50)`);
+    if ((await js('window.clonoloom.shmView.state().page.rows[0].id')) === row.id) throw new Error('SHM page did not advance');
+    await js(`(() => { const v=window.clonoloom.shmView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('Endpoint codons')`);
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('single-hit') || !methods.includes('No selection statistic') || !methods.includes(result.page.result.shmOptions.germlineSha256)) throw new Error('Missing SHM methods');
+    await act('close_dialogs');
+    await js(`(() => { window.clonoloom.shmView.showPage('rows'); window.clonoloom.bcellsMode.show('inputs'); return true; })()`);
+    await waitFor(`Boolean(window.clonoloom.bcellsView)`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.shmView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.shmView.state().artifact')) !== result.artifact) throw new Error('Saved SHM did not reopen');
+    await js(`window.clonoloom.shmView.showPage('rows')`);
+  },
+  async germlines() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families', { threshold: 0.1 });
+    await js(`(() => { window.clonoloom.bcellsMode.show('germlines'); return true; })()`);
+    await waitFor(`Boolean(document.querySelector('[aria-label="Reference"]'))`);
+    await js(`(() => { const select = document.querySelector('[aria-label="Reference"]'); select.value = 'simulated-bcell-immunization'; select.dispatchEvent(new Event('change')); return true; })()`);
+    await waitFor(`window.clonoloom.germlinesView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Reconstruct germlines').click(); return true; })()`);
+    await waitFor(`window.clonoloom.germlinesView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.germlinesView.state()');
+    if (result.page.result.reconstructed !== 4320 || result.page.familyCount !== 72 || result.page.rows.length !== 50) throw new Error('Wrong germline reconstruction');
+    await js(`window.clonoloom.germlinesView.showPage('rows')`);
+    const row = await js('window.clonoloom.germlinesView.state().page.rows[0]');
+    if (row.germline.slice(285,318) !== 'N'.repeat(33) || row.queryPositions.length !== 360) throw new Error('Wrong masking or coordinates');
+    await js(`(() => { const v=window.clonoloom.germlinesView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('not IMGT numbered')`);
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('D-masked germline reconstruction') || !methods.includes('btv359') || !methods.includes(result.page.result.germlinesOptions.files[0].sha256)) throw new Error('Missing germline methods or provenance');
+    await act('close_dialogs');
+    // A delayed row load cannot repaint a destroyed view.
+    await js(`(() => { window.clonoloom.germlinesView.showPage('rows'); window.clonoloom.bcellsMode.show('inputs'); return true; })()`);
+    await waitFor(`Boolean(window.clonoloom.bcellsView)`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.germlinesView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.germlinesView.state().artifact')) !== result.artifact) throw new Error('Saved germline result did not reopen');
+  },
+  async families() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    await act('find_bcell_families');
+    const diagnostic = await js('window.clonoloom.familiesView.state()');
+    if (diagnostic.page.familyCount !== 0 || diagnostic.page.representativeCount !== 133 || diagnostic.page.result.eligible !== 2160) throw new Error('Wrong distance diagnostics: ' + JSON.stringify({ counts: [diagnostic.page.familyCount, diagnostic.page.representativeCount, diagnostic.page.result.eligible], result: diagnostic.page.result }));
+    // Exercise the visible form, not just the remote handler.
+    await js(`(() => {
+      const input = document.querySelector('[aria-label="Family threshold"]'); input.value = '0.1';
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Apply threshold').click(); return true;
+    })()`);
+    await waitFor(`window.clonoloom.familiesView.state().status === 'absent'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Find clonal families').click(); return true; })()`);
+    await waitFor(`window.clonoloom.familiesView.state().status === 'ready'`);
+    const result = await js('window.clonoloom.familiesView.state()');
+    if (result.page.familyCount !== 36 || result.page.result.eligible !== 2160) throw new Error('Wrong family recovery');
+    if (await js(`document.querySelector('.plot').outerHTML.includes('NaN')`)) throw new Error('Invalid histogram');
+    await js(`window.clonoloom.familiesView.showPage('members', ${JSON.stringify(result.page.rows[0].id)})`);
+    await js(`(() => { const v = window.clonoloom.familiesView; v.inspect(v.state().page.rows[0]); return true; })()`);
+    await waitFor(`document.querySelector('.inspector').textContent.includes('SHA-256')`);
+    await js(`window.clonoloom.familiesView.showPage('nearest')`);
+    if ((await js('window.clonoloom.familiesView.state().page.rows.length')) !== 50) throw new Error('Unbounded nearest page');
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.dialog').textContent`);
+    if (!methods.includes('1601850') || !methods.includes('Paired maximum distance')) throw new Error('Family methods missing');
+    await act('close_dialogs');
+    // An older diagnostic is inspected by its identity, independent of current options.
+    await js(`(() => { window.clonoloom.focusItem({kind:'result', id:${JSON.stringify(diagnostic.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.familiesView.state().status === 'ready' && window.clonoloom.familiesView.state().page.familyCount === 0`);
+    await js(`(() => { window.clonoloom.focusItem({kind:'result', id:${JSON.stringify(result.artifact)}}); return true; })()`);
+    await waitFor(`window.clonoloom.familiesView.state().status === 'ready' && window.clonoloom.familiesView.state().page.familyCount === 36`);
+  },
+  async immunization() {
+    await act('open_example', { example: 'simulated-bcell-immunization', download: true });
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    const example = catalog.examples.find((e) => e.name === 'simulated-bcell-immunization');
+    for (const step of example.opens[0].steps) await act(step.action, step.args);
+    await act('close_dialogs');
+    const saved = await js('window.clonoloom.store.project.artifacts');
+    for (const kind of ['families', 'germlines', 'shm', 'lineages', 'isotypes']) {
+      if (!saved.some((a) => a.kind === kind)) throw new Error(`Guided study did not save ${kind}`);
+    }
+    await act('inspect_bcell_inputs', { select: 1 });
+    const page = await js('window.clonoloom.bcellsView.page()');
+    if (page.count !== 4320 || page.samples.length !== 27 || page.samples.some((s) => s.rows !== s.valid || s.rows !== s.regions)) throw new Error('Artificial B-cell evidence differs');
+    await act('show_methods');
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.methods-text').textContent`);
+    if (!methods.includes('artificial paired B-cell') || methods.includes('GRCh38') || methods.includes('varying between samples beyond sampling')) throw new Error('Wrong simulation methods');
+    const references = await js(`document.querySelector('.methods-references').textContent`);
+    for (const citation of ['10.4049/jimmunol.1601850', '10.1093/bioinformatics/btv359', '10.1093/sysbio/20.4.406', '10.1137/0128004', '10.1371/journal.pcbi.1009885']) {
+      if (!references.includes(citation)) throw new Error(`Guided methods omitted ${citation}`);
+    }
+    await act('close_dialogs');
+    await act('inspect_bcell_inputs', { select: 1 });
+    await waitFor(`document.querySelector('.inspector').textContent.includes('clonoloom-artificial-bcell-v2')`);
+  },
+  async imgt() {
+    await act('open_example', { example: 'synthetic-imgt-inputs', download: true });
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    const example = catalog.examples.find((e) => e.name === 'synthetic-imgt-inputs');
+    for (const step of example.opens[0].steps) await act(step.action, step.args);
+    const page = await js('window.clonoloom.bcellsView.page()');
+    if (page.count !== 3 || page.rows.some((r) => r.evidence.paired) || !page.rows[2].evidence.issues.length) throw new Error('IMGT evidence differs');
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const record = app.store.project.datasets[0];
+      if (record.sources.length !== 5 || record.sources.some((s) => !s.imgtGroup)) throw new Error('IMGT source provenance missing');
+      const response = await fetch('api/datasets/' + record.id, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Closing IMGT dataset failed');
+      app.datasetStates.delete(record.id);
+      const reopened = await app.ensureDataset(record);
+      if (reopened.status !== 'open') throw new Error('IMGT project reopen failed');
+      return true;
+    })()`);
+    await act('inspect_bcell_inputs', { select: 3 });
+    await waitFor(`document.querySelector('.inspector').textContent.includes('withheld')`);
+  },
+  async bcells() {
+    await act('open_example', { example: 'synthetic-bcell-inputs', download: true });
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    const example = catalog.examples.find((e) => e.name === 'synthetic-bcell-inputs');
+    for (const step of example.opens[0].steps) await act(step.action, step.args);
+    const page = await js('window.clonoloom.bcellsView.page()');
+    if (page.count !== 7 || page.rows[3].evidence.valid || !page.rows[0].evidence.valid) throw new Error('B-cell evidence summary differs');
+    // A selection that finishes after reloading must not restore stale inspector evidence.
+    await js(`(async () => {
+      const app = window.clonoloom, view = app.bcellsView;
+      const id = app.store.project.datasets[0].id;
+      const oldFetch = window.fetch;
+      let release;
+      const gate = new Promise((resolve) => { release = resolve; });
+      window.fetch = async (...args) => {
+        const response = oldFetch(...args);
+        if (String(args[0]).includes('bcells/inputs') && JSON.parse(args[1].body).id) await gate;
+        return response;
+      };
+      try {
+        const pending = view.inspect(view.page().rows[0].id);
+        await view.show(id);
+        release();
+        if (await pending !== undefined) throw new Error('Stale inspector response applied');
+      } finally { release(); window.fetch = oldFetch; }
+      const { saveFilter } = await import('./lib/filters.js');
+      app.store.commit(saveFilter(app.store.project, { dataset: id, name: 'Only light kappa', rules: { loci: ['IGK'] }, reason: 'Check evidence filtering' }), 'Filter evidence');
+      return true;
+    })()`);
+    await waitFor(`window.clonoloom.bcellsView.page()?.count === 1`);
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const { saveFilter } = await import('./lib/filters.js');
+      app.store.commit(saveFilter(app.store.project, { dataset: app.store.project.datasets[0].id, name: 'Only T cells', rules: { loci: ['TRB'] }, reason: 'Check empty B-cell inputs' }), 'Filter evidence');
+      return true;
+    })()`);
+    await waitFor(`window.clonoloom.bcellsView.page()?.count === 0`);
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const { useFilter } = await import('./lib/filters.js');
+      app.store.commit(useFilter(app.store.project, app.store.project.datasets[0].id, null), 'Restore inputs');
+      return true;
+    })()`);
+    await waitFor(`window.clonoloom.bcellsView.page()?.count === 7`);
+    await act('inspect_bcell_inputs', { select: 4 });
+    await waitFor(`document.querySelector('.inspector').textContent.includes('different lengths')`);
+  },
   // The start page of a first run.
   async start() {
     await waitFor(`Boolean(document.querySelector('.welcome'))`);

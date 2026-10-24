@@ -13,6 +13,9 @@ Go tests in this folder check whole results against independent references (`go 
 
 | Test | What it checks | Data |
 | --- | --- | --- |
+| `TestGermlinesAgainstIndependentCoordinates` | All 4,320 artificial D-masked projections and coordinate maps; 72 family/locus groups | `reference/germlines.json`, independent CSV/FASTA slicing and ancestor check in `reference/germlines.py` |
+| `TestGermlinePublicReferenceAndAIRRCoverage` | Checksums/parsing of 421 OGRDB alleles, Ramos AIRR reconstruction and explicit exclusion of gene-only 10x calls; format coverage, not known biological truth | On-request `ogrdb-human-2026-05-27`, `vdjserver-ramos-libra`, human 10x AIRR examples |
+| `TestClonalFamiliesAgainstIndependentGraph` | All 2,160 cell memberships and nearest-distance float bits, heavy/paired at four thresholds; exact recovery of 36 artificial families at 0.1 | `reference/clonal-families.json`, independent Python CSV and adjacency-graph traversal in `reference/clonal_families.py` |
 | `TestReadersAgreeWithIndependentReaders` | Every column ClonoLoom reads from every development file equals what an independent reader reads: the AIRR Community's `airr` library for AIRR files, pandas for Cell Ranger, immunoSEQ, MiXCR, OAS and OTS and tcrdist3 files; immunoSEQ gene names mapped as the dataset records them, a data unit's metadata as given | `reference/readers.json` (made by `reference/read_repertoires.py`), the files of `sources.json` |
 | `TestTCRdistEqualsTCRdist3` | Every TCRdist between Dash et al. 2017's 1,924 mouse and 415 human clones, α, β and paired and each loop's alone, equals tcrdist3's; every clone's neighbors and nearest, found with pruning in parallel, equal those of every distance | `reference/tcrdist3.json` (made by `reference/tcrdist3_distances.py`), `dash-2017-tcrdist3`, `tcrdist3-loops` |
 | `TestTCRdistNeighborsWithinBudget` | The neighbors of 100,000 paired TCRs (the OTS donors' chains paired at random) within 2 minutes on 10 cores and 8 GB (not under the race detector) | `ots-healthy-pbmc`, `tcrdist3-loops` |
@@ -79,3 +82,142 @@ Tracking in an isolated library: `node docs/capture/capture.mjs database --theme
 For the complete scientific suite with race detection, allow more than Go’s default ten minutes
 per package: `go test -race -timeout 20m ./...`. The simulated-truth checks generate their own
 repertoires, and the full validation package can exceed ten minutes on a busy machine.
+
+### Artificial B-cell families
+
+```sh
+uv run --no-project validation/reference/bcell_families.py
+# Or check an existing generated study without regenerating it:
+uv run --no-project validation/reference/bcell_families.py --study /tmp/bcell-study --output /tmp/bcell-check.json
+go test ./validation -run '^TestSimulatedBCellFamiliesAgainstIndependentCSV$' -v
+go test ./internal/simulate -run '^TestBCell' -v
+GOARCH=amd64 go test ./internal/simulate -run '^TestBCellStudyTruthAndBytes$' -v
+node docs/capture/capture.mjs immunization --theme both
+```
+
+The independent stdlib checker replays all ordered events and translations, checks every paired
+cell, coordinate, ancestry/isotype assignment, closed-form probability and realized count, and
+verifies the output manifest. `bcell-families.json` records CPython's version, sample hashes and
+reduced counts. The Go validation compares the reader, structural evidence checks and paired
+clonotype counts to those independent values for the default 9-sample, 2,160-cell study. Go tests
+also exercise repeated events/back-mutations, model exclusivity, bounds, seeds, parameter round
+trips, cancellation cleanup, overwrite refusal and 180,000 draws against their probabilities.
+The pinned byte digest must agree on arm64 and amd64. These tests validate an artificial
+benchmark, not SHM rates or inference on biological repertoires; model limits and citations are
+in `docs/SIMULATION.md` and `clonoloom-spec/research.md` §5.15.
+
+
+Regenerate the artificial clonal-family reference with:
+
+```sh
+go run . simulate --preset bcell-immunization --out /tmp/clonoloom-family-reference
+uv run --no-project validation/reference/clonal_families.py /tmp/clonoloom-family-reference validation/reference/clonal-families.json
+go test ./validation -run TestClonalFamiliesAgainstIndependentGraph
+```
+
+The reference reads source TSVs independently, computes all distances directly and traverses an
+adjacency graph breadth first. It reads truth only after clustering to assess exact recovery.
+No biological accuracy or recommended threshold follows from artificial recovery. Boundary,
+partition, ambiguity, missing-count, paired-cell, work-limit and cancellation cases are in
+`internal/bcell/families_test.go`; API tests cover identity, metadata precedence, bounded pages
+and complete exports. `node docs/capture/capture.mjs families --theme both` exercises the visible
+threshold form, source inspection, saved-result reopening and cited methods in a real browser.
+
+### Rebuilding the B-cell germline reference
+
+Use a fresh output directory with model v2; do not overwrite an existing study:
+
+```sh
+go run . simulate --preset bcell-immunization --quiet --out /tmp/clonoloom-germline-study
+uv run --no-project validation/reference/bcell_families.py --study /tmp/clonoloom-germline-study
+uv run --no-project validation/reference/clonal_families.py /tmp/clonoloom-germline-study validation/reference/clonal-families.json
+uv run --no-project validation/reference/germlines.py /tmp/clonoloom-germline-study
+node validation/fetch.mjs ogrdb-human-2026-05-27
+go test ./validation -run 'TestGermline' -v
+```
+
+The Python check constructs V/J projections from reference segments and explicit coordinates,
+then compares to truth outside the masked junction. It does not consume the Go reconstruction.
+All source-row sequences, masks and coordinate maps contribute to the reduced digest.
+Public reference files are downloaded data, never external implementation source.
+
+### Somatic hypermutation
+
+`TestSHMAgainstKnownAncestors` checks all 4,320 default v2 chain rows and 43,200 regional entries
+against `reference/shm.json`. The independent Python stdlib script compares final observed
+sequences directly with known roots, using the simulator's fixed regional contract and NCBI
+table 1; it never reads the Go reconstruction or SHM implementation. Source checksums and
+Python version are retained with the all-row digest. Regenerate after generating the default
+`bcell-immunization` study:
+
+```sh
+uv run --no-project validation/reference/shm.py /path/to/study
+```
+
+Hand-computed tests additionally cover clipping, reverse orientation, missing/invalid region
+coordinates and frame evidence, ambiguities, indels, stops, single-/multi-hit codons, partial
+regional codons, missing versus zero, source-row identity, cancellation and abundance-independent
+pooling. `FuzzSHMEvidence` bounds adversarial coordinates and sequence text. API tests check
+parent checksum pinning, resumed-work refusal, immutable identity, paging and complete exports.
+The `shm` capture scene exercises the visible run button, paging, row inspector, cited methods,
+view disposal and saved-result reopening in both themes; the immunization guide calls the new
+remote action. This is validation against known artificial truth, not biological calibration.
+
+### B-cell lineage trees
+
+`TestLineagesAgainstIndependentExactSearch` regenerates the default artificial v2 study and
+checks source hashes, every membership digest and all 72 family/locus minimum scores and tied
+optimal-tree counts against `reference/lineages.json`. The reference script independently
+enumerates rooted bipartitions and uses four-state dynamic programming on known roots and
+observed TSV sequences. It does not consume production projections or tree code. Regenerate:
+
+```sh
+uv run --no-project validation/reference/lineages.py /tmp/clonoloom-germline-study
+```
+
+There are 327 shared sites per tree, 1,093 changes total, and 71 searches with tied optima.
+The known generating tree's panel score bounds each result above; its topology is not asserted
+recoverable. Node edge sums, path distances, panel lengths, exact split counts and source-row
+coverage are checked. Core tests exhaust small topology counts and independently brute-force
+ancestral assignments, then check deterministic heuristics, cancellation, metadata mixtures,
+partial panels and work refusals. `FuzzLineageProjection` exercises hostile coordinate input.
+API tests check immutable metadata/parent identity, bounded pages, all exports and tampering.
+The `lineages` browser scene checks visible run controls, keyboard node selection, observed
+annotations, source paging/inspection, methods, view disposal and historical reopening in both
+themes. The immunization guide also exercises its remote action.
+
+The full selected-tree serialization (panels, graph, chosen/possible states, split counts and
+observed annotations) is separately pinned for arm64/amd64 repeatability. Public AIRR coverage
+also checks that the Ramos row builds a tree while all 56/437 gene-only heavy rows in the 10x
+PBMC fixtures preserve their reconstruction exclusions. Neither is a biological accuracy test.
+
+### Observed isotypes and family co-occurrence
+
+`TestIsotypesAgainstIndependentCellTallies` regenerates the default v2 study and compares all
+2,160 cells, 36 families and 466 sample/family usage rows against `reference/isotypes.json`.
+The reference script uses only Python stdlib, raw AIRR rows and generating-family truth:
+
+```sh
+uv run --no-project validation/reference/isotypes.py /tmp/clonoloom-germline-study
+```
+
+It checks one heavy row per sample/cell and C labels against truth nodes, without importing
+production family or isotype logic. Source hashes and membership digests pin the input. Tests
+check every count, denominator, observation/abundance share and unordered pair; each of the
+three pairs appears in all 36 families. A separate full-result digest pins processor stability.
+This validates bookkeeping, not switching inference or biological accuracy.
+
+Core tests cover allele/subclass ties, IgM/IgD ambiguity, unsupported and oversized calls,
+malformed allele suffixes, duplicate heavy contigs, light-chain exclusion, bulk missing versus
+zero abundance, distinct observation/abundance units, unspecified units, overflow,
+parent/source identity and cancellation. `FuzzIsotypeCalls` checks permutation invariance and
+class/gene consistency. API tests check parent checksums, annotation identity, unrelated-setting
+normalization, bounded/filterable pages, saved inspection and complete CSV/JSON exports. The
+`isotypes` browser scene checks visible run controls, pair-to-family navigation, family usage,
+observation paging, raw-call inspection, methods, disposal and saved reopening in both themes;
+the immunization guide exercises the remote action.
+
+Public-data coverage checks also resolve the Ramos observation and all 56/437 assigned
+observations in the two pinned 10x PBMC fixtures. These C calls remain usable even where
+V/J allele evidence is insufficient for germline reconstruction. This tests evidence
+availability, not known biological class-switching truth.

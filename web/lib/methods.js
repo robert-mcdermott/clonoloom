@@ -23,6 +23,7 @@ export const REFERENCES = {
   gem: 'Van Rhijn I, et al. Discovery of invariant T cells by next-generation sequencing of the human TCR alpha-chain repertoire. J Immunol. 2014;193:5338–5344. doi:10.4049/jimmunol.1401380',
   airr: 'Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. Front Immunol. 2018;9:2206. doi:10.3389/fimmu.2018.02206',
   miairr: 'Rubelt F, Busse CE, Bukhari SAC, et al. Adaptive Immune Receptor Repertoire Community recommendations for sharing immune-repertoire sequencing data. Nat Immunol. 2017;18:1274–1278. doi:10.1038/ni.3873',
+  imgtInput: 'Brochet X, Lefranc MP, Giudicelli V. IMGT/V-QUEST: the highly customized and integrated system for IG and TR standardized V-J and V-D-J sequence analysis. Nucleic Acids Res. 2008;36:W503–508. doi:10.1093/nar/gkn316',
   imgtNames: 'Lefranc MP. Immunoglobulin and T cell receptor genes: IMGT and the birth and rise of immunoinformatics. Front Immunol. 2014;5:22. doi:10.3389/fimmu.2014.00022',
   imgtJunction: 'Lefranc MP, Pommié C, Ruiz M, et al. IMGT unique numbering for immunoglobulin and T cell receptor variable domains and Ig superfamily V-like domains. Dev Comp Immunol. 2003;27:55–77. doi:10.1016/S0145-305X(02)00039-3',
   hgnc: 'Seal RL, Braschi B, Gray K, et al. Genenames.org: the HGNC resources in 2023. Nucleic Acids Res. 2023;51:D1003–D1009. doi:10.1093/nar/gkac888',
@@ -59,6 +60,7 @@ const UNIT_WORDS = { cells: 'cells', templates: 'templates', reads: 'reads', umi
 // The formats' names, as a methods section says them.
 const FORMATS = {
   airr: 'AIRR Rearrangement TSV',
+  'imgt-highvquest': 'IMGT/HighV-QUEST tables',
   'cellranger-contigs': '10x Genomics Cell Ranger contig annotations',
   'immunoseq-v3': 'Adaptive Biotechnologies immunoSEQ exports (v3 columns)',
   'immunoseq-v2': 'Adaptive Biotechnologies immunoSEQ exports (v2 columns)',
@@ -107,11 +109,17 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   }
 
   // Simulated data (clonoloom simulate): how they were made.
-  const simulated = (summary?.samples ?? []).map((s) => s.repertoire).find((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
+  const simulations = (summary?.samples ?? []).map((s) => s.repertoire).filter((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
+  const bcellModels = ['clonoloom-simulated-clonoloom-artificial-bcell-v1', 'clonoloom-simulated-clonoloom-artificial-bcell-v2'];
+  const bcellSimulation = simulations.some((r) => bcellModels.includes(r.studyId));
+  const simulated = simulations.find((r) => !bcellModels.includes(r.studyId));
+  if (bcellSimulation) {
+    sentences.push(`The artificial paired B-cell sequences were made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} (models ${[...new Set(simulations.filter((r) => bcellModels.includes(r.studyId)).map((r) => r.studyId.replace('clonoloom-simulated-', '')))].join(', ')}): fictional SIM gene calls, coding sequences with uniform proposed substitutions restricted to preserve junction anchors and avoid stop codons, a fixed seven-node family tree, deliberate back-mutations, and fixed forward isotype transitions. B cells were sampled independently at days -7, 14 and 28 of a simulated immunization from recorded family and node probabilities. Ancestors, ordered mutation events, isotypes and observed cell assignments are recorded in truth/. Supplied ancestor alignments and region coordinates are artificial; this is not a fitted SHM or affinity model. No read counts, UMI counts, sequencing errors or additional biological variance were simulated for these B cells.`);
+  }
   if (simulated) {
-    sentences.push(`The data are simulated (${simulated.studyTitle || simulated.studyId}): T-cell receptor β rearrangements made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} from GRCh38's gene segments at Ensembl's annotation ${cite('ensembl')}, with the V and J usage of 10x Genomics' 10k PBMC data, deletions and non-templated insertions at the junctions, and selection on junction length to that data's ${cite('selection')}; each subject's clones of power-law sizes, each sample templates drawn from them and sequenced into reads. Their truth is recorded beside them.`);
+    sentences.push(`${bcellSimulation ? 'The T-cell receptor β data' : 'The data'} are simulated (${simulated.studyTitle || simulated.studyId}): T-cell receptor β rearrangements made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} from GRCh38's gene segments at Ensembl's annotation ${cite('ensembl')}, with the V and J usage of 10x Genomics' 10k PBMC data, deletions and non-templated insertions at the junctions, and selection on junction length to that data's ${cite('selection')}; each subject's clones of power-law sizes, each sample templates drawn from them and sequenced into reads. Their truth is recorded beside them.`);
     // A study over time: its samples' time points and reference samples say so.
-    const repertoires = (summary?.samples ?? []).map((x) => x.repertoire).filter(Boolean);
+    const repertoires = simulations.filter((r) => !bcellModels.includes(r.studyId));
     const event = repertoires.map((r) => /\(([^()]+)\)$/.exec(r.timePoint ?? '')?.[1]).find(Boolean);
     if (event) {
       const tissues = repertoires.map((r) => r.tissue ?? '');
@@ -130,6 +138,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const program_ = `ClonoLoom ${program.version}${program.commit ? ` (commit ${program.commit.slice(0, 7)})` : ''} ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}`;
   sentences.push(`${files} (${joinList(formats)}) ${sources.length === 1 ? 'was' : 'were'} read with ${program_} by its own readers (reader version ${dataset.readerVersion}), which recorded ${sources.length === 1 ? 'its' : 'each file\'s'} SHA-256 checksum as ${sources.length === 1 ? 'it' : 'each'} was read.`);
   if (codes.includes('airr')) sentences.push(`AIRR files were read as the AIRR Community's Rearrangement schema defines them ${cite('airr')}.`);
+  if (codes.includes('airr') && (summary?.readerVersion ?? dataset.readerVersion ?? 1) >= 2) sentences.push('Supplied sequence, alignment, orientation and coordinate evidence was retained without reconstruction. Structural checks followed AIRR Rearrangement schema 2.0; missing evidence was not inferred and invalid annotations were preserved for inspection.');
   if (codes.includes('mixcr-clones')) sentences.push('MiXCR clone tables were read with each segment\'s best-scoring hits as its call, MiXCR\'s allele *00 (no allele resolved) dropped, and MiXCR\'s CDR3 (from the conserved cysteine to the phenylalanine or tryptophan, both included) as the junction.');
   if (codes.includes('oas-unit')) {
     // The database the units come from, as their loci say: OAS holds antibodies, OTS T-cell receptors.
@@ -141,6 +150,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     const from = t && !b ? ots() : b && !t ? oas() : `${oas()} and ${ots()}`;
     sentences.push(`Data units of ${from} were read with their metadata as their samples'; a paired unit's rows as single cells, each with its two chains, named by their contigs' barcode.`);
   }
+  if (codes.includes('imgt-highvquest')) sentences.push(`IMGT tables ${cite('imgtInput')} were joined by sequence number and sequence ID, counting annotated sequences without inferring reads or molecules. Oriented query sequences and IMGT gaps were retained. Query coordinates were mapped only when their region matched the Summary sequence without reported indel correction; native annotations and contributing file fingerprints were preserved. No germline alignment was reconstructed.`);
   if (codes.includes('tcrdist3-clones')) sentences.push(`tcrdist3's clone tables ${cite('tcrdist3')} were read with each clone of n cells as n cells with its chains, a sample for each subject and epitope.`);
   // Tables of other tools, read through the columns the user mapped.
   for (const s of sources.filter((x) => x.mapping)) {
@@ -164,7 +174,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   sentences.push(`The dataset holds ${plural(dataset.samples.length, 'sample')} and ${plural(dataset.rows, dataset.singleCell ? 'contig' : 'rearrangement')}${dataset.singleCell ? ' of single cells' : ''}, ${unitText}.`);
 
   // Gene names.
-  const mapped = (summary?.sources ?? []).reduce((n, s) => n + Object.keys(s.geneNames ?? {}).length, 0);
+  const mapped = (summary?.sources ?? []).filter((s) => s.format !== 'imgt-highvquest').reduce((n, s) => n + Object.keys(s.geneNames ?? {}).length, 0);
   sentences.push(`Gene calls were read in IMGT nomenclature ${cite('imgtNames')}, ambiguous calls kept as sets${mapped ? `; ${plural(mapped, 'Adaptive Biotechnologies gene name')} ${mapped === 1 ? 'was' : 'were'} mapped to IMGT's by ClonoLoom's rules and the HGNC list of human TR and IG genes ${cite('hgnc')}, each mapping recorded` : ''}.`);
 
   // Validation.
@@ -311,6 +321,33 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     const o = r.specificity;
     const distance = o.metric === 'exact' ? 'identical CDR3 amino-acid sequences' : `TCRdist ≤ ${o.radius} ${cite('dash')} with searched gaps ${cite('tcrdist3')}, ${o.cdr3Only ? 'CDR3s alone' : `including V-gene loops (SHA-256 ${r.loops?.sha256 ?? ''})`}`;
     sentences.push(`Retained chains (${r.describe || r.definition}) were matched at the same locus to ${r.database.reference} (${r.database.source}; SHA-256 ${r.database.sha256}; ${r.database.license}) ${cite(`specificityDatabase:${r.database.reference}`, r.database.citation)}, using ${distance}${o.genes ? ' and identical nonempty V/J call sets at the clonotype definition’s resolution' : ''}, receptor species ${o.species} and minimum database score ${o.minScore}. The ${r.matches} chain–record matches retained their evidence; each clonotype contributed once to each epitope/antigen group’s abundance, divided by all retained abundance per sample. These overlapping shares describe database evidence, not established specificity of paired receptors.`);
+  }
+
+  for (const r of results.filter((x) => x.kind === 'isotypes')) {
+    const o = r.isotypes ?? {};
+    sentences.push(`Observed isotype usage (${r.id}; ${r.assigned} assigned observations; class resolved for ${r.resolvedClass}, constant gene resolved for ${r.resolvedGene}; observation unit ${r.unit}, abundance unit ${r.abundanceUnit || 'unspecified'}) used saved families ${o.families}, SHA-256 ${o.familySha256}. Constant calls follow AIRR c_call ${cite('airr')} and IMGT nomenclature ${cite('imgtNomenclature', 'Lefranc MP. Immunoglobulin and T cell receptor genes: IMGT and the birth and rise of immunoinformatics. Front Immunol. 2014;5:22. doi:10.3389/fimmu.2014.00022')}. ${r.describe} Counting, ambiguity and missingness rules are ClonoLoom policies. Biological context follows ${cite('bcellSwitching', 'Horns F, Vollmers C, Croote D, et al. Lineage tracing of human B cells reveals the in vivo landscape of human antibody class switching. eLife. 2016;5:e16578. doi:10.7554/eLife.16578')}; no ancestral-trait or switching statistic from ${cite('bcellTraits', 'Hoehn KB, Pybus OG, Kleinstein SH. Phylogenetic analysis of migration, differentiation, and class switching in B cells. PLoS Comput Biol. 2022;18:e1009885. doi:10.1371/journal.pcbi.1009885')} was calculated.`);
+  }
+  for (const r of results.filter((x) => x.kind === 'lineages')) {
+    const o = r.lineages ?? {};
+    sentences.push(`B-cell lineage trees (${r.id}; ${r.built} family/locus trees) used saved germlines ${o.germlines}, SHA-256 ${o.germlineSha256}. Equal-cost nucleotide parsimony follows ${cite('fitch', 'Fitch WM. Toward Defining the Course of Evolution: Minimum Change for a Specific Tree Topology. Syst Zool. 1971;20:406–416. doi:10.1093/sysbio/20.4.406')}; conditional ancestral costs follow ${cite('sankoff', 'Sankoff D. Minimal Mutation Trees of Sequences. SIAM J Appl Math. 1975;28:35–42. doi:10.1137/0128004')}. ${r.describe} Panel selection, search bounds and deterministic tie handling are ClonoLoom policies. Observed annotations are pinned in the result. No class-switching or migration statistic from ${cite('bcellTraits', 'Hoehn KB, Pybus OG, Kleinstein SH. Phylogenetic analysis of migration, differentiation, and class switching in B cells. PLoS Comput Biol. 2022;18:e1009885. doi:10.1371/journal.pcbi.1009885')} was calculated.`);
+    const p = r.germlineProvenance ?? {};
+    sentences.push(`The germline parent used families ${p.families}, SHA-256 ${p.familySha256}.`);
+    for (const f of p.files ?? []) sentences.push(`Germline reference ${f.reference}, ${f.file}, SHA-256 ${f.sha256}, ${f.license}: ${cite(`germline:${f.reference}`, f.citation)}; ${f.source}.`);
+  }
+  for (const r of results.filter((x) => x.kind === 'shm')) {
+    const o = r.shm ?? {};
+    sentences.push(`Somatic hypermutation (${r.id}; ${r.evaluated} of ${r.rowCount} source rows with evaluable bases) compared sequences with saved D-masked germlines ${o.germlines}, SHA-256 ${o.germlineSha256}, following the comparison framework of ${cite('changeo', 'Gupta NT, Vander Heiden JA, Uduman M, et al. Change-O. Bioinformatics. 2015;31:3356–3358. doi:10.1093/bioinformatics/btv359')}. ${r.describe} These conservative evaluability and attribution rules are ClonoLoom policies. AIRR query coordinates ${cite('airr')} and NCBI genetic code table 1 ${cite('geneticCode', 'NCBI. The Genetic Codes, table 1. https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#SG1')} determine region and codon comparisons. Unclassified substitutions remain in nucleotide frequencies. No selection statistic was calculated.`);
+    const p = r.germlineProvenance ?? {};
+    sentences.push(`The germline parent used families ${p.families}, SHA-256 ${p.familySha256}.`);
+    for (const f of p.files ?? []) sentences.push(`Germline reference ${f.reference}, ${f.file}, SHA-256 ${f.sha256}, ${f.license}: ${cite(`germline:${f.reference}`, f.citation)}; ${f.source}.`);
+  }
+  for (const r of results.filter((x) => x.kind === 'germlines')) {
+    const o = r.germlines ?? {};
+    sentences.push(`D-masked germline reconstruction (${r.id}; ${r.reconstructed} of ${r.rowCount} assigned source rows) used saved families ${o.families}, SHA-256 ${o.familySha256}. ${r.describe} The masking framework follows ${cite('changeo', 'Gupta NT, Vander Heiden JA, Uduman M, et al. Change-O. Bioinformatics. 2015;31:3356–3358. doi:10.1093/bioinformatics/btv359')}; family allele intersection is a conservative ClonoLoom policy. Query coordinates follow AIRR Rearrangement schema 2.0 ${cite('airr')} on the oriented sequence; ungapped reference coordinates are retained separately. The supplied germline alignment was not used as the reconstructed reference. No mutation rate or lineage ancestor was inferred.`);
+    for (const f of o.files ?? []) sentences.push(`Germline reference ${f.reference}, ${f.file}, SHA-256 ${f.sha256}, ${f.license}: ${cite(`germline:${f.reference}`, f.citation)}; ${f.source}.`);
+  }
+  for (const r of results.filter((x) => x.kind === 'families')) {
+    sentences.push(`B-cell family analysis (${r.id}; ${r.eligible} eligible observations, ${r.representativeCount} distinct receptors, ${r.familyCount} families) used length-normalized nucleotide Hamming distances and V/J gene and junction-length partitions ${cite('changeo', 'Gupta NT, Vander Heiden JA, Uduman M, et al. Change-O: a toolkit for analyzing large-scale B cell immunoglobulin repertoire sequencing data. Bioinformatics. 2015;31:3356–3358. doi:10.1093/bioinformatics/btv359')} and ${r.families?.threshold == null ? 'nearest-distance diagnostics described by' : 'single linkage following'} ${cite('bcellFamilies', 'Gupta NT, Adams KD, Briggs AW, et al. Hierarchical Clustering Can Identify B Cell Clones with High Confidence in Ig Repertoire Sequencing Data. J Immunol. 2017;198:2489–2499. doi:10.4049/jimmunol.1601850')}. ${r.describe} The recorded QC filter was ${r.filterDescription || 'recorded in the result'}. Where present, cell IDs were scoped by sample; duplicate identical chains were collapsed, and ambiguous or missing evidence was excluded explicitly. Paired maximum distance is a conservative ClonoLoom policy, used only in paired mode. Source identities, exclusions, subject annotations and sample abundance are retained in the result; abundance does not weight the distance distribution.`);
   }
 
   for (const r of results.filter((x) => x.kind === 'networks')) {

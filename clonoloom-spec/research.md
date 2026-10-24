@@ -917,3 +917,524 @@ selects primary productive chains directly from Cell Ranger rows and applies the
 human predicates without calling ClonoLoom. All matched counts and both cell denominators
 agree; the compact count reference is checked by `validation/invariant_test.go`.
 Mouse nomenclature source: https://www.imgt.org/IMGTrepertoire/Proteins/taballeles/mouse/TRA/TRAV/Mu_TRAVall.html.
+
+
+### 5.13 B-cell input evidence (wave 5, slice 1)
+
+The first slice preserves annotations before interpreting them. Its contract is the
+[AIRR Rearrangement schema 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+(accessed 23 October 2026), alongside the existing older-schema readers; Vander Heiden et al.
+2018, *Front Immunol* 9:2206, doi:10.3389/fimmu.2018.02206. No external implementation's source
+was used.
+
+ClonoLoom retains 42 named fields as optional columns in a separate string store. Text is kept
+as supplied by the existing TSV field reader, including invalid numbers, case, gaps and ambiguity
+symbols. This is ClonoLoom's choice: conversion must not destroy the evidence that explains a
+finding. Checked values are temporary. A missing column costs no per-row storage. Raw evidence
+is not a license to use an invalid alignment in a later analysis.
+
+Query, reference and aligned-string positions have separate bounds; region endpoints belong to
+the query. No reference length is guessed. Intervals are checked before conversion to internal
+slice bounds. AIRR CIGAR spans exclude numbering spacers and use its restricted terminal S/N
+convention. Parsing limits accumulated lengths to signed 32-bit range and never expands a CIGAR
+into an allocation. The orientation flag is preserved without reorienting supplied alignments.
+Equal lengths and valid symbols are structural evidence only: numbering, germline correctness,
+codon mapping and biological interpretation require the later analysis's checks.
+
+Evidence warnings leave existing junction analyses available. The Inputs summary counts rows
+under QC filters, not cells, clones or abundance. Presence of region coordinates is separate from
+validity. Long sequences are fetched only for a selected row. Identity includes the source
+checksum/name, its ordinal among the dataset's sources, source line and supplied sequence ID, avoiding collisions between repeated IDs.
+
+The disposable table cache and reader versions advance to 2. The readers' identity version stays
+at 1 because existing counts, calls, junctions and chain selection have not changed; previously
+saved dataset and artifact IDs therefore remain valid. Future changes to those meanings must
+advance identity separately. The retained annotations add no new scientific result artifact.
+
+Independent Python CSV checks cover every retained value, including missing fields, in four
+10x B-cell AIRR datasets and the artificial input example (`validation/reference/bcell_inputs.py`,
+with its Python version and source checksums in `bcell-inputs.json`). Hand-calculated cases check
+coordinate boundaries, orientation, incomplete evidence, CIGAR offsets and overflow. Round trips
+check the cache and AIRR export, and release fixtures check existing results. These are input
+validation checks, not a validation of germline reconstruction or somatic hypermutation.
+
+### 5.14 IMGT/HighV-QUEST annotation input (wave 5, slice 2)
+
+The primary contract is the [IMGT/V-QUEST output documentation](https://www.imgt.org/IMGT_vquest/user_guide),
+consulted 2026-10-23, especially tables 1 (Summary), 2 (IMGT-gapped nt), 3 (nt sequences),
+6 (Junction) and 11 (Parameters). The guide identifies the same columns for HighV-QUEST's
+corresponding tabular files. Cite Brochet, Lefranc and Giudicelli (2008), *Nucleic Acids Research*
+36:W503–508, doi:10.1093/nar/gkn316. The implementation is independently written from this
+contract; no other implementation's source was inspected or copied.
+
+ClonoLoom's choices are explicit: require the four per-sequence tables, match the pair of supplied
+sequence number and sequence ID, and reject mismatched membership, duplicate numbers or conflicting
+gene calls. Numbers locate annotations within a run; they do not replace the supplied sequence ID
+or define a biological clone. A repeated ID with another number remains a distinct rearrangement.
+One row counts one annotated sequence, including unsuccessful annotations; this asserts no read,
+molecule or cell abundance. Unknown functionality remains missing, and tied calls remain sets.
+
+Summary contains the sequence in sense orientation even for reverse submissions. Consequently,
+ClonoLoom's retained/exported `sequence` is oriented and `rev_comp=F`; the original `Orientation`
+sign stays in `imgt_annotations`. This avoids exporting an already reversed query with a flag
+that would ask downstream consumers to reverse it again. Table 2 supplies a gapped query, not a
+reconstructed germline. Its dots are retained without padding or expansion.
+
+The guide says that insertion removal affects the other output tables while Summary retains
+insertions in capitals. ClonoLoom therefore withholds all query coordinate mappings for reported
+insertions/deletions. Otherwise each complete region must exactly match the indicated substring
+of the oriented Summary (case-insensitive, 1-based closed). Failed or incomplete matches retain
+native positions and a finding. This deliberately conservative rule does not claim that every
+IMGT partial/indel output can be converted to AIRR query coordinates. No numerical mutation
+statistics, reference sequence, CIGAR or N/P length is inferred. A restored frameshift translation
+is never silently used as an un-restored AA junction.
+
+The optional `imgt_annotations` evidence column holds bounded, per-row JSON with original calls,
+functionality/comments, strand, indel annotations, junction restoration fields, native coordinates
+and source table lines. Parameters remain text on their fingerprinted source record. All five
+files participate in cache and dataset identity. Reader version 3 invalidates old caches; the
+existing identity version and cache layout stay unchanged. Old non-IMGT results remain identical.
+Joining indexes identities/offsets and spools bounded lines into private temporary files removed
+on completion or error, so long annotations from four complete tables are not held in memory.
+
+Validation uses constructed sequences generated by `testdata/make-imgt-inputs.mjs`, with independent
+Python stdlib CSV joins (`validation/reference/imgt_inputs.py`) and hand-specified coordinate
+eligibility. Source checksums and reduced expectations are committed. Cases cover shuffled tables,
+repeated IDs, ties, reverse submission, corrected insertion, unsuccessful annotation, missing or
+conflicting identities, malformed widths/headers, gzip, cancellation, cache invalidation and AIRR
+round trips. Browser steps inspect the same cases and reopen the saved source groups. These are
+format-contract tests on artificial data; no real IMGT-annotated cohort or IMGT algorithm accuracy
+is claimed to have been validated in this slice.
+
+### 5.15 Artificial B-cell families (wave 5, slice 3)
+
+`internal/simulate/bcells.go` implements **ClonoLoom's own artificial benchmark**, version
+`clonoloom-artificial-bcell-v1`. It supplies truth for later family, mutation and lineage tests;
+it is not an implementation of a published germinal-center simulator. No external implementation
+source or reference allele set is used. The complete probability rules, fixed topology, coordinate
+geometry and parameter bounds are in `docs/SIMULATION.md` and each generated study's README.
+
+The scientific boundary is deliberate. Yaari et al. (2013), “Models of Somatic Hypermutation
+Targeting and Substitution Based on Synonymous Mutations from High-Throughput Immunoglobulin
+Sequencing Data”, *Front Immunol* 4:358,
+[doi:10.3389/fimmu.2013.00358](https://doi.org/10.3389/fimmu.2013.00358), establishes why a uniform
+mutation proposal is not a calibrated model of SHM. We do not implement S5F, infer selection,
+or use event counts as a biological mutation rate. Horns et al. (2016), “Lineage tracing of human
+B cells reveals the in vivo landscape of human antibody class switching”, *eLife* 5:e16578,
+[doi:10.7554/eLife.16578](https://doi.org/10.7554/eLife.16578), supplies biological context for
+irreversible switching along the human constant-region order. The fixed M→G1→A1 subset here
+asserts no measured switching probability, edge timing or inferred lineage. Both primary
+publications were checked on 2026-10-23; neither paper's computational model is reproduced.
+
+Each artificial family has a paired rearranged ancestor and six descendants in a fixed binary
+tree. Uniform sense-codon backbones are shared by fictional V calls, with independent family
+junctions; conserved junction anchors and reading frame are preserved. Accepted substitutions
+are recorded in order, with silent/replacement classified against the codon at that event.
+One edge deliberately reverses its parent's last event. This tests the distinction between edge
+events and net ancestor differences, including a descendant with an identical sequence when
+one-event branches reverse. Node IDs describe known states even when their sequences coincide.
+
+The default three-subject study samples 240 cells at each of three times; each cell has IGH and
+IGK or IGL observations. Family abundance is prescribed, and draws are independent categorical
+samples. Probabilities and realized counts are separate; zero-count states remain in truth.
+No read/UMI counts, ambiguous cells or observation error are fabricated. Family membership,
+parents and cell-to-node assignments stay in `truth/`; opening the folder reads observations
+and Repertoire metadata only. The supplied `germline_alignment` is the **known rearranged
+ancestor including its junction**, not an inferred germline or a D-masked segment alignment.
+SIM calls and artificial coordinate regions cannot be interpreted as biological reference
+alleles or IMGT numbering. Pinned biological references remain wave 5, slice 5.
+
+The Python stdlib reference checker replays every edge, verifies translation and event effects,
+checks paired rows and artificial coordinates, recomputes closed-form probabilities and counts,
+and verifies all output hashes. Its reduced sample counts are committed with its Python version
+and source-file hashes. Go reads the same default study and agrees on all 4,320 rows, 2,160 cells,
+isotypes, paired junction clonotypes and net ancestor differences. The 252 states hold 998
+replacement and 298 silent events, including 72 deliberate reversals. This is agreement on
+artificial truth, not biological validation. A separate fixed-seed sampling check compares
+180,000 draws against their categorical probabilities. Byte digests cover both processor
+architectures and retain the pre-existing TRB digests. Bounds, parameter serialization,
+cancellation, no-overwrite behavior, offline generation and guided inspection are tested.
+
+
+### 5.16 B-cell clonal families (wave 5, slice 4)
+
+The implemented method follows the published V/J/junction-length partitioning and normalized
+nucleotide Hamming/single-linkage framework in Gupta et al. (2015), *Change-O: a toolkit for
+analyzing large-scale B cell immunoglobulin repertoire sequencing data*, Bioinformatics
+31:3356–3358, [doi:10.1093/bioinformatics/btv359](https://doi.org/10.1093/bioinformatics/btv359),
+and Gupta et al. (2017), *Hierarchical Clustering Can Identify B Cell Clones with High Confidence
+in Ig Repertoire Sequencing Data*, J Immunol 198:2489–2499,
+[doi:10.4049/jimmunol.1601850](https://doi.org/10.4049/jimmunol.1601850).
+The primary publications and public [Change-O method documentation](https://changeo.readthedocs.io/en/1.3.1/methods/clustering.html)
+and [SHazaM distance documentation](https://shazam.readthedocs.io/en/stable/topics/distToNearest/)
+were checked on 2026-10-23. No external implementation source was inspected or copied.
+
+ClonoLoom independently computes mismatches divided by nucleotide junction length. V/J calls
+must resolve to one gene; ambiguous alleles of that gene are acceptable, unreadable calls are
+not. Junctions must be nonempty, productive, ACGT-only, a multiple of three and at most 1,000
+bases. The QC filter acts first. Subject scope requires explicit metadata/annotations; missing
+subjects are excluded, never pooled as an anonymous subject. Explicit sample scope is available.
+
+Paired mode is a **ClonoLoom policy**, not claimed equivalence to Change-O or SHazaM pairing:
+exactly one distinct heavy and one distinct IGK/IGL chain per sample-scoped cell, with duplicate
+identical chains collapsed. Multiple or invalid chains exclude the observation. Each chain must
+match its own locus/V/J/length partition; distance is the larger of the two normalized Hamming
+distances. Thus both chains must support an edge. Auto selects paired mode whenever the input
+table has cell IDs. Explicit heavy mode ignores light chains but still counts cells once.
+
+Each distinct compared receptor per scope contributes once to the distance-to-nearest histogram;
+identical observations retain their membership and abundance separately. A singleton partition
+has no comparable neighbor, recorded as null rather than zero. No mixture fit or automatic
+threshold is supplied. A user-selected threshold joins edges at distance ≤ threshold; connected
+components implement single linkage. Paths can join endpoints exceeding that threshold. Zero
+joins exact receptors; null computes distances without assigning families. A threshold suitable
+for the artificial example is not a biological recommendation. Inferred families neither prove
+ancestry nor replace junction clonotypes.
+
+The complete result records the filter, subjects, mode, threshold, source names/checksums/lines,
+sequence and cell IDs, exclusions, nearest neighbors and per-sample family abundance. Missing
+bulk abundance remains null; cells contribute one regardless of contig counts. Deterministic
+sorting fixes IDs, tie breaks and summation. All-pairs comparisons are bounded to 200 million
+base comparisons and 250,000 observations; exceeding either refuses the job without subsampling.
+Cancellation is checked during grouping and comparisons. UI pages are bounded independently of
+complete exports. Germline reconstruction, SHM and lineage inference remain separate slices.
+
+An independent Python standard-library CSV reader and breadth-first adjacency-graph calculation
+checks all 2,160 artificial cells at four thresholds in both modes. Digests cover every membership
+and nearest float bit pattern; source hashes and Python version accompany the reference. Heavy
+mode has 84 unique receptors; paired mode has 133. At threshold 0.05 these yield 38 and 43
+families; at 0.1 both recover the exact 36 true families. Truth is read only after inference for
+evaluation. These results do not establish performance on biological samples or recommend a
+threshold, and no fitted SHM model is implied.
+
+### 5.17 D-masked germline reconstruction (wave 5, slice 5)
+
+**Sources checked 2026-10-23.** Gupta et al. (2015), *Change-O*,
+[doi:10.1093/bioinformatics/btv359](https://doi.org/10.1093/bioinformatics/btv359), and its
+[public CreateGermlines documentation](https://changeo.readthedocs.io/en/stable/tools/CreateGermlines.html)
+describe reference reconstruction and masking the uncertain D/N/P region. The
+[AIRR Rearrangement schema 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+defines query orientation, 1-based closed intervals and CIGAR offsets/operations.
+Only publications, documentation and licensed reference data were consulted, not another
+implementation's source code. This method is independently implemented in Go.
+
+**ClonoLoom's choices.** A saved, explicitly thresholded family result defines membership and
+subject/sample boundaries. Within each family/locus, intersect every member's explicit V/J
+allele calls. Exactly one common allele per segment must remain and exist in the selected
+reference. Conflicts, unresolved ties, missing calls and gene-only calls are exclusions, not
+votes or opportunities to guess a genotype. This differs from Change-O's clone consensus:
+ClonoLoom does not use majority abundance, choose the longest representative, infer deletions
+from junction length, or transfer an inferred unmutated junction to other members.
+
+The raw query must be ungapped IUPAC nucleotide sequence with known orientation. Reverse
+complement it once when `rev_comp` is true. Project each selected ungapped V/J segment using
+its AIRR CIGAR: leading S/N establishes query/reference offsets, M or =/X consumes both,
+I consumes query only, D consumes reference only. Supplied sequence/germline endpoints must
+agree with those offsets and consumed spans. Check bounds before allocation; =/X assertions
+are checked where both symbols are unambiguous. Optional trailing S/N do not create columns.
+V and J query spans must be ordered and nonoverlapping. Query insertions and reference
+insertions relative to query remain '-' in the other alignment. Ambiguity symbols remain
+ambiguous. All intervening query bases get reference N, including light-chain junctions.
+
+Output is a new unnumbered alignment with V/J/N segment labels and per-column 1-based oriented
+query/reference coordinates. A reference coordinate belongs to its labeled segment; zero
+marks no reference position at query insertions/masked junctions, or no query position at
+reference deletions. Common family allele choices accompany individual member projections,
+which may have different lengths. No padding or cross-member sequence consensus is invented.
+The input's supplied germline alignment is never used as the reference. Names/lengths alone
+cannot prove the annotation used this reference; the user must choose compatible segment
+boundaries. Native IMGT gapped coordinates and missing CIGARs are unsupported in this slice.
+
+**References and provenance.** The human catalog contains OGRDB AIRR-C IGH_VDJ v10,
+IGKappa_VJ v5 and IGLambda_VJ v4, released 27 May 2026, from version-specific `ungapped_ex`
+endpoints. The 240/84/97 records include D alleles; reconstruction uses only V and J.
+Files are pinned by byte count and SHA-256 in `validation/sources.json`, downloaded only on
+request, and rehashed when preparing and running each job. OGRDB's
+[licensing statement](https://ogrdb.airr-community.org/render_page/licensing_statement.html)
+places this reference information under CC0; website software is not part of these data.
+The reference-set paper is [AIRR-C IG Reference Sets](https://doi.org/10.3389/fimmu.2023.1330153).
+Release records: [IGH v10](https://doi.org/10.5281/zenodo.20409587),
+[IGK v5](https://doi.org/10.5281/zenodo.20409594),
+[IGL v4](https://doi.org/10.5281/zenodo.20409602).
+
+Artifacts record the parent family checksum, reference files/checksums/license/citation and
+method version. Resume rejects changed bytes. Inspection of completed results needs neither
+open source data nor a downloaded reference. Exports retain complete rows, exclusions and
+coordinate maps, with FASTA limited to successful projections. Counts are source rows, not
+cells or abundance. Query/reference segments are bounded at 10,000 bases, reference input at
+10 MiB and reconstructed output at 50 million columns; limits fail without subsampling.
+
+**Artificial model v2 and validation.** The v1 simulator had distinct J backbones under one
+fictional J name. Model v2 gives each backbone its own J name, exports the independent V/J
+segments, and supplies explicit CIGARs and germline coordinates. Simulated sequences, mutation
+events and sampling are unchanged. Older datasets/results remain readable. Independent
+CSV/FASTA slicing (`validation/reference/germlines.py`, Python 3.13.3 via uv) checks all 4,320
+projections and every coordinate against generative ancestors outside the 33 masked junction
+bases. All 72 family/locus groups reconstruct; the existing independent graph calculation
+still recovers 36 families and the same nearest distances. Truth is not an inference input.
+Hand-derived tests cover clipping, offsets, reverse orientation, I/D operations, ambiguity,
+conflicting/tied calls, inconsistent coordinates, missing evidence, checksum changes and
+hostile lengths; fuzzing exercises the projection boundary.
+
+The public Ramos AIRR file gives one eligible heavy row and one successful projection with
+the pinned human reference. The 10x PBMC 1k/10k-v2 AIRR examples contribute 56/437 eligible
+heavy rows; all are correctly excluded for gene-only calls. These are format and coverage
+checks, not biological truth or a claim that the selected set matches every original
+annotation. SHM denominators, codon changes, selection and lineage inference remain later slices.
+
+### 5.18 Somatic hypermutation: observed divergence and codon attribution (wave 5, slice 6)
+
+**Sources consulted.** Gupta NT et al. (2015), *Change-O: a toolkit for analyzing large-scale
+B cell immunoglobulin repertoire sequencing data*, Bioinformatics 31:3356–3358,
+[doi:10.1093/bioinformatics/btv359](https://doi.org/10.1093/bioinformatics/btv359), establishes
+the D-masked sequence/germline comparison framework already used in §5.17.
+The public [SHazaM observedMutations documentation](https://shazam.readthedocs.io/en/stable/topics/observedMutations/)
+describes amino-acid identity for R/S and non-N denominators, with its own ambiguity modes and
+IMGT-aligned regional definitions. We consulted documentation only, not implementation source.
+ClonoLoom does **not** reproduce those modes or claim numerical equivalence to SHazaM.
+[AIRR Rearrangement schema 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+defines region coordinates on the query and distinguishes CDR3 from the junction including its
+flanking conserved residues. Translation uses [NCBI genetic code table 1](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#SG1),
+through the existing independent `internal/seq` implementation. Consulted 23 October 2026.
+
+**ClonoLoom's choices.** No empirical selection model is fitted. Nucleotide divergence is the
+number of unequal, aligned, unambiguous A/C/G/T pairs divided by all such pairs. The stored
+parent's D/N/P mask is excluded first; gaps and remaining ambiguous symbols are separately
+counted. Even an IUPAC pair that could agree is excluded. A zero denominator yields a missing
+frequency. Counts compare final sequence with reference; reversals and repeated changes cannot
+be reconstructed from these endpoints. They do not establish a rate or mutation history.
+
+A saved germline parent supplies immutable family membership, V/J projections and coordinate
+maps. Its file SHA-256 is checked when preparing and running an analysis. The result preserves
+family and reference hashes, source, license and citation without needing another download.
+Original source hashes/line/sequence ID identify each row; altered or duplicate identities fail.
+Every parent row remains represented, including reconstruction exclusions. Saved SHM inspection
+needs neither the parent file nor the original dataset; new computation needs both.
+
+Regions are the input's 1-based closed intervals on the oriented query, not fixed positions in
+the reconstructed alignment. Missing intervals remain unavailable. A malformed, partially
+supplied, overlapping or out-of-order interval invalidates the regional partition, while `all`,
+`V` and `J` comparisons remain valid. Coordinates outside the reconstructed coverage do not
+create bases. Unassigned query positions stay in totals; reference deletions have no query
+position and no regional gap assignment. Segment and region totals overlap and must not be
+summed. The CDR3 label itself does not impose a mask: V/J-covered CDR3 positions remain eligible
+if the saved reference supplies them.
+
+An ungapped reference FASTA does not establish codon phase. Codon comparisons require explicit
+`vj_in_frame=true`, a valid whole-codon CDR3 interval, exact query/junction agreement including
+the two flanking codons, and unambiguous translation with C and F/W anchors and no junction stop.
+The CDR3 start fixes query phase. This conservative input-consistency check does not independently
+validate the annotator's frame assignment. Any indel in the projection suppresses all codon
+inference, including in-frame indels; inferring how codons span them is deferred. Complete paired
+A/C/G/T codons must occupy consecutive query and reference positions within one V/J segment;
+regional codons also fit entirely in the interval. Truncated, masked or ambiguous codons are
+omitted. Stop-containing paired codons are separately counted and omitted from the codon
+denominator. Their otherwise valid nucleotide pairs still count toward base divergence.
+
+For single-hit evaluable codons, amino-acid identity defines silent versus replacement
+**substitutions**. Multi-hit codons have an endpoint amino-acid classification, recorded as
+replacement/silent **codons**, but their individual substitutions remain unclassified. We do
+not choose an order of changes or distribute fractional attribution across hypothetical paths.
+Unclassified substitutions also include differences outside evaluable codons. They remain in
+the nucleotide numerator. `replacement + silent + unclassified = substitutions`; endpoint codon
+counts are a different unit. Zero classified substitutions with no evaluable codons is not
+biological absence of mutation. Each row records codon exclusions and the phase anchor.
+
+Summaries pool source-row counts by sample, locus and region, divide pooled substitutions by
+pooled evaluable bases, and show available-row/codon-row coverage. They do not average per-row
+frequencies, weight by abundance, collapse contigs, combine heavy/light denominators or treat
+rows as independent subjects. No confidence intervals, selection statistic, family inference,
+lineage, error correction or group-level inference is introduced.
+
+**Independent validation.** `validation/reference/shm.py` uses only Python stdlib, known root
+sequences, final observed sequences, NCBI table 1 and the fixed artificial region contract.
+It does not consume the Go reconstruction or its SHM result. Every one of 43,200 row/region
+records is pinned by a digest; original TSV hashes and Python version accompany it. All 4,320
+rows have 327 evaluable bases and 109 evaluable codons. Pooled totals: 9,941 substitutions /
+1,412,640 bases, 7,297 single-hit R, 2,360 single-hit S, 284 unclassified substitutions in 142
+multi-hit codons. Endpoint codons: 7,439 R and 2,360 S; 470,880 codons evaluated. The ancestor
+comparison naturally nets deliberate reversals rather than summing historical events.
+
+Analytic tests use GCT/GCC (one silent), AAA/GAA (one replacement), TTA/CTG (two-hit synonymous
+endpoint), TTT/GGG (three-hit replacement endpoint) and AAA/TAA (stop exclusion). They cover
+clipping without resetting phase, reverse orientation, partial regional codons, ambiguity,
+indels, hostile bounds, missing frame, conflicting junctions, source identity and cancellation.
+This validates the stated conservative rules and artificial bookkeeping, not biological
+annotation accuracy or selection inference. Native IMGT and gene-only inputs still require the
+unsupported reconstruction evidence identified in §5.17; this slice does not fill it in.
+
+The pinned public Ramos AIRR row supplies evaluable bases and codons. The 56 and 437 assigned
+heavy rows in the 10x PBMC 1k and 10k-v2 fixtures remain excluded for gene-only calls inherited
+from germline reconstruction; SHM does not convert those exclusions into zero-mutation rows.
+These are coverage and provenance checks, not independently known biological mutation truth.
+
+### 5.19 Lineage trees: bounded parsimony and conditional ancestors (wave 5, slice 7)
+
+**Sources consulted.** Fitch WM (1971), *Toward Defining the Course of Evolution: Minimum
+Change for a Specific Tree Topology*, Syst Zool 20:406–416,
+[doi:10.1093/sysbio/20.4.406](https://doi.org/10.1093/sysbio/20.4.406), supplies the fixed-topology
+minimum-change framework. Sankoff D (1975), *Minimal Mutation Trees of Sequences*, SIAM J
+Appl Math 28:35–42, [doi:10.1137/0128004](https://doi.org/10.1137/0128004), supplies the
+sequence-state cost framework. Hoehn KB, Pybus OG, Kleinstein SH (2022), *Phylogenetic analysis
+of migration, differentiation, and class switching in B cells*, PLoS Comput Biol 18:e1009885,
+[doi:10.1371/journal.pcbi.1009885](https://doi.org/10.1371/journal.pcbi.1009885), is context for
+keeping observed traits distinct from inferred transitions. We implement no trait-transition
+statistic from that paper. Consulted 23 October 2026. Only papers and public method descriptions
+were consulted; no external tree implementation source was examined or copied.
+
+**ClonoLoom's policies.** Each immutable germline parent's family/locus is analyzed separately.
+Its SHA-256 and original source identities are checked before computation. The selected V/J
+alleles and per-column reference coordinates define homology. A complete-case panel retains
+only positions with paired A/C/G/T in every eligible row and a consistent reference base.
+Positions are ordered V then J, each by 1-based ungapped reference position. D/N/P, insertions,
+deletions, ambiguity and missing coverage do not become character states. `omitted` counts the
+union of mapped V/J reference positions minus this intersection; it does not count query
+insertions or masked junction bases. One poorly covered row can shorten the whole panel.
+No shared sites is an exclusion, not a zero-change tree. No full V(D)J ancestor is fabricated.
+
+Identical panel sequences collapse even when the source sequences differ outside the panel.
+All source identities and observed C calls, samples, timepoints and tissues remain attached.
+Rows matching the reference attach to the reference root. Distinct states, including that root,
+are the taxa; abundance does not weight the search. Reference root placement is an assumption,
+not evidence for a sampled ancestor. Heavy and light trees are not concatenated or reconciled.
+
+At most eight taxa are searched by inserting each successive tip into every edge of each
+unrooted binary tree. This visits each labeled topology once, up to 10,395 at eight taxa.
+Equal-cost unordered nucleotide changes are scored with Fitch sets, compressed by site pattern;
+constant columns contribute zero. The reference is a fixed tip used to orient the output root.
+Among globally minimal trees, choose the lexicographically smallest canonical rooted subtree
+encoding on sorted panel states. Record the number of tied optimal binary trees and the count
+containing each selected split. Counts include zero-edge binary resolutions. They are neither
+bootstrap support, posterior probabilities, nor an assertion that the selected resolution is
+biologically identifiable. The one-state tree is just its reference node.
+
+Nine through 64 taxa use stepwise addition in sorted, reverse-sorted and decreasing
+reference-distance order, each followed by strict-improvement nearest-neighbor interchange.
+Equal-score candidates use the same canonical tie break; equal-score plateaus are not traversed.
+At most 50,000 candidate scores and 200 million estimated pattern-node work units are allowed.
+A candidate's conservative work charge is `max(1, variable patterns) * max(1, 2*taxa-2)`,
+including partial addition trees. Exact enumeration must fit this bound in full. The heuristic
+requires capacity for the three addition passes before starting; NNI may exhaust the remaining
+budget and prevent later passes. `budgetLimited` records early termination. The reported
+`examined` counts addition and NNI candidate scores, not bookkeeping rescoring of incumbents.
+Heuristic scores are not proven global minima and have no exhaustive tie/split counts. More
+than 64 states or a work refusal excludes that group without silently subsampling or losing
+other groups. These search limits and algorithms are our own implementation choices.
+
+Conditional on the selected topology, four-state inside/outside costs enumerate each node's
+marginal optimal states at every panel site. IUPAC symbols encode these sets. They do not encode
+a joint assignment: arbitrarily combining allowed symbols can increase total cost. Separately,
+a top-down pass chooses one consistent minimum-cost assignment, preferring the parent's state
+then A/C/G/T. Integer edge lengths count changes in that assignment, including zero lengths.
+They are not mutation rates, times or all historical events. Inferred nodes may repeat observed
+states. The viewer draws topological depth, labels each edge's chosen change count, and exposes
+all nodes in an accessible table; Newick exports the same lengths and stable node IDs.
+
+Observed annotations never constrain topology or assign traits to unobserved nodes. Project
+sample annotations override imported metadata and are normalized and pinned in analysis identity;
+subject/reference flags are irrelevant to this derived analysis. Editing annotations requires a
+new result to change labels; saved inspection remains historical. Mixed or missing values stay
+explicit. This slice infers neither class switching, migration, event dates, selection, affinity
+nor likelihood trees. Context-dependent SHM, alignment uncertainty, sequencing errors and family
+threshold uncertainty are not modeled. Biological interpretation depends on those upstream inputs.
+
+**Independent validation.** `validation/reference/lineages.py` reads only known artificial
+families, root sequences and observed TSV sequences. It enumerates rooted bipartitions and
+scores them with independent four-state dynamic programming, rather than the production edge
+insertion and Fitch scorer. Pinned source hashes and membership digests connect its results to
+the Go family/germline pipeline. All 72 default-v2 family/locus trees agree in panel size (327),
+taxa, minimum score and optimal-topology count: 1,093 changes total; 71 searches have ties.
+Each score is at most the known generating tree's panel score. This is not a claim of recovering
+the generating topology: unobserved states, reversals and ties make that unidentifiable here.
+Small analytic trees check topology counts and brute-force every internal state assignment to
+verify marginal ambiguity and the consistent assignment's score. Tests also cover heuristic
+repeatability, cancellation, incomplete panels, metadata mixtures, parent/source identity,
+explicit exclusions, work limits and complete exports. Artificial agreement validates the
+implemented objective, not biological phylogeny accuracy.
+
+The public Ramos AIRR row produces one supported tree; the 56/437 gene-only heavy rows in the
+10x PBMC 1k/10k-v2 fixtures retain upstream reconstruction exclusions. This checks format and
+evidence coverage, not reference suitability or biological lineage accuracy.
+
+
+### 5.20 Isotypes: observed usage and family co-occurrence (wave 5, slice 8)
+
+**Sources and boundary.** AIRR Rearrangement schema 2.0 defines `c_call` as the constant-region
+gene call, including its allele when available ([schema](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)).
+IMGT nomenclature supplies the gene labels (Lefranc 2014, *Front Immunol* 5:22,
+[doi:10.3389/fimmu.2014.00022](https://doi.org/10.3389/fimmu.2014.00022)); the
+[IMGT mouse IGHC table](https://www.imgt.org/IMGTrepertoire/LocusGenes/genetable/autotable.php?group=IGHC&species=Mus+musculus)
+provides context for labels such as IGHG2A/B/C. No reference sequences are required or copied.
+Horns et al. (2016), “Lineage tracing of human B cells reveals the in vivo landscape of human
+antibody class switching,” *eLife* 5:e16578,
+[doi:10.7554/eLife.16578](https://doi.org/10.7554/eLife.16578), supplies biological context.
+Hoehn, Pybus and Kleinstein (2022), “Phylogenetic analysis of migration, differentiation, and
+class switching in B cells,” *PLoS Comput Biol* 18:e1009885,
+[doi:10.1371/journal.pcbi.1009885](https://doi.org/10.1371/journal.pcbi.1009885), distinguishes
+observed labels from phylogenetic trait inference. Neither paper's inference algorithm or
+statistic is reproduced. The following counting and ambiguity rules are ClonoLoom policies.
+
+**Parent and unit.** A saved, thresholded family result fixes the observation identity,
+assignment, QC exclusions, subject boundaries and abundance. Isotypes do not require alignments,
+germline reconstruction or a tree: usable C calls can exist without that evidence. Each
+assigned observation contributes once: a sample-scoped cell for single-cell inputs, or a heavy
+source row for bulk inputs. All parent-retained source rows and raw C calls remain inspectable. Light
+calls never determine isotype. Multiple retained heavy contigs do not multiply cell counts.
+
+**Resolution.** Use the existing gene parser, remove alleles and normalize case. Supported
+heavy constant labels are IGHM, IGHD, IGHE, IGHG, IGHG1–4, IGHG2A/B/C, IGHA and IGHA1/2.
+The output has separate class and constant-gene resolutions. A gene label does not establish
+species, ploidy, genomic order or a functional protein. Pseudogenes, other loci/segments and
+unrecognized tokens are unsupported. Calls over 4,096 bytes are unsupported, with raw evidence
+retained. The parser's documented separators and missing-token handling remain unchanged. A stricter
+constant-call suffix check accepts numeric alleles and optional finite parenthesized scores;
+malformed suffixes cannot conceal a second candidate (for example `IGHM*01/IGHD*01`).
+
+All retained heavy rows must agree at the reported resolution. Alleles of one gene collapse;
+ties between IGHG subclasses retain IgG class but no gene. Broad IGHG/IGHA labels retain class
+only. A missing heavy call alongside a resolved call remains unresolved. An unsupported token
+makes the observation unresolved even if another token is valid. Multi-class candidates,
+including IGHM/IGHD, remain unresolved; a call tie is not evidence of coexpression. One primary
+issue is reported in order: unsupported, missing, conflicting classes, conflicting subclasses,
+class-only call. Full raw calls permit inspection of any additional limitations.
+
+**Usage and missingness.** Calculate counts and shares separately per sample and per
+family/sample at both resolutions. The denominator is all assigned observations in that group,
+including unresolved calls. Parent-excluded observations are retained but outside the denominator.
+Only observed buckets are emitted; an absent sample/group is not a measured zero. Observation units (cells or heavy-chain rows) are separate from the parent's abundance unit
+(for example reads). In single-cell
+parents abundance is one per cell; in bulk it is the parent's count or missing. Any missing count
+makes that bucket's abundance and the group's abundance denominator unavailable, rather than
+summing just known values. Other fully observed bucket totals remain available but have no
+abundance share when the denominator is missing. A known zero denominator is zero with missing
+share. Negative, non-finite or overflowing assigned abundance fails explicitly. Observation
+shares remain defined independently of abundance. Sorted observation IDs fix floating-point
+summation order. Labels use pinned sample timepoint/tissue annotations; no inferential comparison
+or pooling of timepoints, tissues or subjects as independent replicates is performed.
+
+**Families and co-occurrence.** Report observations, resolved-class/gene coverage, samples and
+sorted observed labels per family. Count each unordered pair of resolved constant genes once
+per family, regardless of cell abundance. Report all families and those with at least one
+resolved gene alongside pair counts; the latter is coverage, not proof of complete sampling.
+Pairs overlap and are not additive. IgM/IgD-only co-occurrence is explicitly not switching
+evidence. No pair establishes a transition, its direction, timing, ancestor, rate or significance.
+The slice does not reconstruct class-switch events, assign ancestral traits, impose genomic
+ordering or apply the lineage search's chosen topology to C calls. Results depend on input
+annotation accuracy, sampling and the selected family threshold.
+
+**Independent validation.** `validation/reference/isotypes.py` uses only Python's standard
+library, raw AIRR rows and the simulation's generating-family truth. It checks one heavy row per
+sample/cell, compares each C label with its sampled truth node, then directly tallies classes,
+genes and unordered family pairs. It does not call the Go parser, family or isotype implementation.
+Source hashes and heavy-member digests connect the independent reference to the production
+pipeline. All 2,160 default-v2 cells, 36 families and 466 sample/family usage rows agree, including
+counts, denominators and observation/abundance shares. Each of the three gene pairs occurs in
+36 families. A separate complete-result digest checks arm64/amd64 serialization. The simulated
+calls are unambiguous; hand-calculated tests separately cover ambiguous, missing, unsupported,
+duplicate-contig and bulk missing/zero-count cases. This checks bookkeeping, not biological
+accuracy or recovery of the simulator's historical switching events.
+
+Public-data coverage checks also resolve the Ramos observation and all 56/437 assigned
+observations in the two pinned 10x PBMC fixtures. These C calls remain usable even where
+V/J allele evidence is insufficient for germline reconstruction. This tests evidence
+availability, not known biological class-switching truth.

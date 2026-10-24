@@ -10,6 +10,7 @@ import (
 	"math"
 	"sort"
 
+	"clonoloom/internal/bcell"
 	"clonoloom/internal/genes"
 	"clonoloom/internal/reads"
 	"clonoloom/internal/rep"
@@ -107,6 +108,18 @@ func Check(res *reads.Result) Report {
 	c := &checker{t: res.Table, sources: res.Sources, found: map[string]*collector{}}
 	c.readerProblems(res.Problems)
 	c.rows()
+	if c.t.EvidenceText != nil {
+		for row := 0; row < c.t.Len(); row++ {
+			seen := map[string]bool{}
+			for _, issue := range bcell.Check(c.t.EvidenceRow(row)).Issues {
+				if seen[issue.Code] {
+					continue
+				}
+				seen[issue.Code] = true
+				c.add(issue.Code, Warning, "Sequence evidence needs attention", issue.Message, "Inspect the supplied annotation in B cells; re-export consistent evidence before using it for sequence analysis. Junction-based analyses remain available.", c.t.Len(), c.example(row, issue.Field, issue.Value))
+			}
+		}
+	}
 	c.cells()
 	c.samples()
 	c.unit(res.Unit)
@@ -120,6 +133,8 @@ type kind struct {
 
 // readerKinds are the readers' problems as findings: severity, title and remedy.
 var readerKinds = map[string]kind{
+	"imgt-annotation":       {Warning, "IMGT annotation could not be mapped", "Inspect the native annotation and the original IMGT table; no gene call was inferred."},
+	"imgt-coordinate":       {Warning, "IMGT query coordinates withheld", "Inspect the native positions and indel annotations. Query coordinates require a region matching the oriented Summary sequence without reported indel correction."},
 	"airr-missing-required": {Warning, "Required AIRR columns are missing", "The file is not fully AIRR-compliant. ClonoLoom reads what it needs; tools that require the full schema may refuse it. Export again with the annotation tool's AIRR option."},
 	"no-junction":           {Fatal, "No junction column", "Clonotypes are defined from junctions: export the rearrangements with junction or junction_aa (CDR3 with its conserved residues)."},
 	"field-count":           {Warning, "Rows with the wrong number of fields", "A row with fewer fields than the header is not read. Check the file was not truncated or edited by a spreadsheet program."},

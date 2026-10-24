@@ -78,6 +78,12 @@ func same(t *testing.T, a, b *reads.Result) {
 	}
 	for i, st := range stores(a.Table) {
 		sa, sb := *st.s, *stores(b.Table)[i].s
+		if sa == nil || sb == nil {
+			if sa != sb {
+				t.Fatalf("%s: missing store differs", st.name)
+			}
+			continue
+		}
 		if sa.Len() != sb.Len() {
 			t.Fatalf("%s: %d and %d strings", st.name, sa.Len(), sb.Len())
 		}

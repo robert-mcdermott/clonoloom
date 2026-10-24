@@ -1,0 +1,837 @@
+{
+  "python": "3.13.3",
+  "method": "Rooted bipartition enumeration; four-state dynamic programming; known roots and fixed artificial V/J panel",
+  "model": "clonoloom-artificial-bcell-v2",
+  "sources": [
+    {
+      "file": "S01-d14.tsv",
+      "sha256": "bac435131364d95a646179b04434cfeb359a005e6f8d7fb6cc07dacf6a344241"
+    },
+    {
+      "file": "S01-d28.tsv",
+      "sha256": "657db76bf60be2cc0e0330287a4b4312716ef2c02abbedc000248913393f7739"
+    },
+    {
+      "file": "S01-pre.tsv",
+      "sha256": "a19725c5a4b2395c324442db74b3c935defe7f26980f7c0f1e45337d8c0b6f40"
+    },
+    {
+      "file": "S02-d14.tsv",
+      "sha256": "fab4dae86c4c88205d734bda27501363d206853343f1d18442ab39f7c953f505"
+    },
+    {
+      "file": "S02-d28.tsv",
+      "sha256": "28dc5fea53f3bee6a27a1e137271a76757e6109996eb0e6a108564d379d21c9b"
+    },
+    {
+      "file": "S02-pre.tsv",
+      "sha256": "233aab9e25ca1441458c6635a1faa96d6c24663133610c920935d933476a1395"
+    },
+    {
+      "file": "S03-d14.tsv",
+      "sha256": "3dd1685118155e326b7b801e08411d45c394faa5ef6ae4754b24b03c2833bdbc"
+    },
+    {
+      "file": "S03-d28.tsv",
+      "sha256": "45281dc14de49970335f9598753eb65329b38c2c3a1c30e3bb012c0fd595d8cb"
+    },
+    {
+      "file": "S03-pre.tsv",
+      "sha256": "c01a68dba00647a6cfec4f47c7137bf395444b94b90f9139101adfffa9708922"
+    }
+  ],
+  "trees": [
+    {
+      "family": "S01-F001",
+      "locus": "IGH",
+      "membersSHA256": "3fa137e1c426e67855e07038826e4303116943ec8361a18aa5b9c3e40327dbae",
+      "rows": 118,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S01-F001",
+      "locus": "IGK",
+      "membersSHA256": "8dff2a70f7a17cc695c71e939edf1aee281be696b9a544facd8fcc0a45bcc7b7",
+      "rows": 118,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S01-F002",
+      "locus": "IGH",
+      "membersSHA256": "30417a8c882f5205c4f15b5dcb73d1a989b6ef3540cd0574ff6278239236264d",
+      "rows": 112,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S01-F002",
+      "locus": "IGL",
+      "membersSHA256": "9bcefd48ab8b91d162f2a7ecc0cc2b43706e9d34f44492e067355e79a3da58f1",
+      "rows": 112,
+      "sites": 327,
+      "taxa": 7,
+      "score": 13,
+      "optimalTrees": 3,
+      "generatingTreeScore": 14
+    },
+    {
+      "family": "S01-F003",
+      "locus": "IGH",
+      "membersSHA256": "8285bedc8fe27ce9deff8d261b7a0b2f90a68343d86164fb29e3e167f25898f2",
+      "rows": 114,
+      "sites": 327,
+      "taxa": 6,
+      "score": 13,
+      "optimalTrees": 1,
+      "generatingTreeScore": 14
+    },
+    {
+      "family": "S01-F003",
+      "locus": "IGK",
+      "membersSHA256": "5f51181acb8ca3ba6089c25029e486e6b40a86754e486cf3dc9b3bae54387928",
+      "rows": 114,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S01-F004",
+      "locus": "IGH",
+      "membersSHA256": "8de3e29daa77ab1a3c4af2ce0f873ad0f0f6d8c4d38d2f94616b76927b32cddf",
+      "rows": 48,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S01-F004",
+      "locus": "IGL",
+      "membersSHA256": "5b0efc619aaeb9e23cd51285f1b7ccf356c0b9446cfa4431c9773d0ecf638c94",
+      "rows": 48,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S01-F005",
+      "locus": "IGH",
+      "membersSHA256": "d39a99d94947403c24c21fe9a1a8e342a063d64ffee557a824af11d85f5e710b",
+      "rows": 34,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S01-F005",
+      "locus": "IGK",
+      "membersSHA256": "399bc35348641794b259932030fc8d26f471f42d89e317285d8b7550b8c00bf5",
+      "rows": 34,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 9,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S01-F006",
+      "locus": "IGH",
+      "membersSHA256": "6b94dc16d4258a62503072ea631ee24250017db6e4b2245a1c9e313d2c1e7d8c",
+      "rows": 42,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S01-F006",
+      "locus": "IGL",
+      "membersSHA256": "ee515b29d937786658e34238877d776733fd65d6c5948029192ca6eb78fc6e76",
+      "rows": 42,
+      "sites": 327,
+      "taxa": 7,
+      "score": 17,
+      "optimalTrees": 3,
+      "generatingTreeScore": 18
+    },
+    {
+      "family": "S01-F007",
+      "locus": "IGH",
+      "membersSHA256": "1f4a70736c95b90a5dd626c381d239e12199d9f4137b582328a99ff90ea70eef",
+      "rows": 47,
+      "sites": 327,
+      "taxa": 7,
+      "score": 17,
+      "optimalTrees": 3,
+      "generatingTreeScore": 18
+    },
+    {
+      "family": "S01-F007",
+      "locus": "IGK",
+      "membersSHA256": "316c3e73e4c68b394fd467cf8a5e6508eef898beb688e3009dcbd5cba7ea7bd2",
+      "rows": 47,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S01-F008",
+      "locus": "IGH",
+      "membersSHA256": "7eda1ba1d371b31783c117465e029ce2016a0120794e854a3e29124cce59f22d",
+      "rows": 37,
+      "sites": 327,
+      "taxa": 6,
+      "score": 12,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S01-F008",
+      "locus": "IGL",
+      "membersSHA256": "3f2032f3bd123f75d10b99dbe8f5fe4ab2c2396979b28e68f47a179a430eaed0",
+      "rows": 37,
+      "sites": 327,
+      "taxa": 6,
+      "score": 11,
+      "optimalTrees": 3,
+      "generatingTreeScore": 13
+    },
+    {
+      "family": "S01-F009",
+      "locus": "IGH",
+      "membersSHA256": "e89fc1951974db67bbe7cb976cd7b135cad6e98745b439a2b9455e415f2ac846",
+      "rows": 46,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S01-F009",
+      "locus": "IGK",
+      "membersSHA256": "52a300ba72a8d76684d2464a793fde0907a1d28a9efbc213fc8e671e52d92f23",
+      "rows": 46,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 9,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S01-F010",
+      "locus": "IGH",
+      "membersSHA256": "6416899a526ad846911018673669b9c360574bde65d30d8cfa1a645f2fa33b16",
+      "rows": 45,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S01-F010",
+      "locus": "IGL",
+      "membersSHA256": "efeefe8dcf81b6825bfd882baef73a003c781c440dc9653554394d422e587a40",
+      "rows": 45,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 9,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S01-F011",
+      "locus": "IGH",
+      "membersSHA256": "01137112248ffe1090fbf4c7221e1f891f48213102eae564f88c8c2863a27f59",
+      "rows": 39,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S01-F011",
+      "locus": "IGK",
+      "membersSHA256": "4270a49b2bb9953a85acafb88f389d7e97f423d6272bec7ecb17baeedcedc2c1",
+      "rows": 39,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S01-F012",
+      "locus": "IGH",
+      "membersSHA256": "beaebf41d71565717c2f2657ad99ccb28ee96b2d9a07b1956d3cbc7d686e94b3",
+      "rows": 38,
+      "sites": 327,
+      "taxa": 7,
+      "score": 17,
+      "optimalTrees": 3,
+      "generatingTreeScore": 18
+    },
+    {
+      "family": "S01-F012",
+      "locus": "IGL",
+      "membersSHA256": "6bb895ca0bfcd8f0e56555930aa02a325a6d9d03f8b7294ec990823b19ade1f6",
+      "rows": 38,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F001",
+      "locus": "IGH",
+      "membersSHA256": "219206be5beb982fe0ecf088f6d52ea2708514fb2e1fc8f1e2b1f857c32d766c",
+      "rows": 121,
+      "sites": 327,
+      "taxa": 7,
+      "score": 13,
+      "optimalTrees": 9,
+      "generatingTreeScore": 14
+    },
+    {
+      "family": "S02-F001",
+      "locus": "IGK",
+      "membersSHA256": "41a644a71853f1bfeefb3df5763959657a75859e99eee745862809e3d795fb81",
+      "rows": 121,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F002",
+      "locus": "IGH",
+      "membersSHA256": "ec9f918c5744071b8f86b49591506c764379af5ca726435076253ee9fa4b8b03",
+      "rows": 117,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S02-F002",
+      "locus": "IGL",
+      "membersSHA256": "be4e34995e0634000f7a4266a9916d8bcc1030ea30951f25013ad5966f7c3f90",
+      "rows": 117,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F003",
+      "locus": "IGH",
+      "membersSHA256": "f08211b485d713a788aec85127a34930db433acc511d178c399663f77539c2dc",
+      "rows": 118,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S02-F003",
+      "locus": "IGK",
+      "membersSHA256": "407687d0348954b186368ffc8c0b376dccb6c60a2233406213045e41162eb982",
+      "rows": 118,
+      "sites": 327,
+      "taxa": 7,
+      "score": 17,
+      "optimalTrees": 3,
+      "generatingTreeScore": 18
+    },
+    {
+      "family": "S02-F004",
+      "locus": "IGH",
+      "membersSHA256": "4f7ae627e72bc1a3ca62e70857455c9af08db477022be667af9443b8906e7211",
+      "rows": 38,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F004",
+      "locus": "IGL",
+      "membersSHA256": "335e3655968965584954b34645a540a575c65e3349fad5700971b737998d3eaf",
+      "rows": 38,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S02-F005",
+      "locus": "IGH",
+      "membersSHA256": "3188f1d640f0cb7d7402adc8095f6003ab1998776cc5f239912501547a192666",
+      "rows": 39,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S02-F005",
+      "locus": "IGK",
+      "membersSHA256": "fe428c8ed911269581dae0f9306555caa7b9bfbe3fedc81fc44ef424ce2f82ad",
+      "rows": 39,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S02-F006",
+      "locus": "IGH",
+      "membersSHA256": "09d4b9ac7e05aa879c30a1e33cfb611e7172c5454f2fc8605b4e9de2508adf64",
+      "rows": 41,
+      "sites": 327,
+      "taxa": 7,
+      "score": 17,
+      "optimalTrees": 3,
+      "generatingTreeScore": 18
+    },
+    {
+      "family": "S02-F006",
+      "locus": "IGL",
+      "membersSHA256": "7cd52c2256309335fdcd0fae559a1bad266b1db4fabeddfb59f31ba800200e1e",
+      "rows": 41,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S02-F007",
+      "locus": "IGH",
+      "membersSHA256": "1de62536757d727120e05142eb1a04fdf856410eb2c58e8cebd5f7877e61792d",
+      "rows": 33,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F007",
+      "locus": "IGK",
+      "membersSHA256": "e30356428e84ec70afe78929e6b6dabc123b5661e1fe77382f504fd1f20bfa11",
+      "rows": 33,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F008",
+      "locus": "IGH",
+      "membersSHA256": "8e3990a8f5654f56042b1de67001eb4aca717a04ebe6fad8b215bad478306049",
+      "rows": 46,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F008",
+      "locus": "IGL",
+      "membersSHA256": "36bd2a72471bcfd83d973ca65d578f1143fce149ff6026809331f96736015e7e",
+      "rows": 46,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 9,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S02-F009",
+      "locus": "IGH",
+      "membersSHA256": "559477a00387ea84683aea9818e2dbc7017c28ab140b287a2ea6deaa9d78af97",
+      "rows": 48,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F009",
+      "locus": "IGK",
+      "membersSHA256": "0d93c9d251bb641326484f3e8ebad686cf74ca885b5f106665267a4034185c05",
+      "rows": 48,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F010",
+      "locus": "IGH",
+      "membersSHA256": "44c38e0d83f931cd192ea14acc25cc415e08b1d22fc13b2770e2a3ffeb7e12f6",
+      "rows": 37,
+      "sites": 327,
+      "taxa": 6,
+      "score": 13,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S02-F010",
+      "locus": "IGL",
+      "membersSHA256": "7a5a6f54b09c62f9c0e2863325fc24c509b5b4416867872b631c56adfe6c929e",
+      "rows": 37,
+      "sites": 327,
+      "taxa": 6,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S02-F011",
+      "locus": "IGH",
+      "membersSHA256": "5a2e01904e160b79df9563d40001be90dd0b5924ad2e6a56a627d15f359e2f72",
+      "rows": 36,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 9,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S02-F011",
+      "locus": "IGK",
+      "membersSHA256": "9dd5b99f513ba4f8485e657948d3e64029d3666c4cb514724ae8849cf42405ab",
+      "rows": 36,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S02-F012",
+      "locus": "IGH",
+      "membersSHA256": "77f9f569f625d94050cf88a590de92b02445c694fd6014ef1f13f97caf585748",
+      "rows": 46,
+      "sites": 327,
+      "taxa": 7,
+      "score": 17,
+      "optimalTrees": 3,
+      "generatingTreeScore": 18
+    },
+    {
+      "family": "S02-F012",
+      "locus": "IGL",
+      "membersSHA256": "1366ca3196094c64242fa14eb855450942d82d1a2d96fffb9a5530833deb5f65",
+      "rows": 46,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S03-F001",
+      "locus": "IGH",
+      "membersSHA256": "ae88b1fea5837ac1a64e30b0b5bf9e44834962970ddd87d3cee0cd411e0a4ff6",
+      "rows": 105,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F001",
+      "locus": "IGK",
+      "membersSHA256": "09b5d5d323dd06e018b30950abf0dff5b8f879ee9a493899607cefddab19538e",
+      "rows": 105,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F002",
+      "locus": "IGH",
+      "membersSHA256": "e8d0ed19c2b612cb13825a335c16502e1a46b6d60b5eebd158d30c13c6a9c18c",
+      "rows": 138,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F002",
+      "locus": "IGL",
+      "membersSHA256": "a94824358e977ce804fe4e7a766281cec701b5973a36254ab19f3119e44d0bdb",
+      "rows": 138,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F003",
+      "locus": "IGH",
+      "membersSHA256": "5b73afb7fce7e14bd9baeb26b48adcc8ef4c4298252f473da67efd47fa674124",
+      "rows": 130,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F003",
+      "locus": "IGK",
+      "membersSHA256": "ce60f1c58e934d08e2a04ee100b09db4311a7466fb693a94e4e2562c4f9371a9",
+      "rows": 130,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 9,
+      "generatingTreeScore": 14
+    },
+    {
+      "family": "S03-F004",
+      "locus": "IGH",
+      "membersSHA256": "ebd821a8302bf6f0cfe67c4aba472e0e63e4e6789f5eab8226e29c3a5d56527c",
+      "rows": 49,
+      "sites": 327,
+      "taxa": 7,
+      "score": 14,
+      "optimalTrees": 9,
+      "generatingTreeScore": 14
+    },
+    {
+      "family": "S03-F004",
+      "locus": "IGL",
+      "membersSHA256": "94593bd8c4f9f379fbc6c236547d2b0e9747e830a4805d0c63e87d6ac2c029f3",
+      "rows": 49,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F005",
+      "locus": "IGH",
+      "membersSHA256": "48e9b2fb79bc1bf25964b5ee7d9aa37d71beda9e62fca420a0da97ba8637e144",
+      "rows": 40,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S03-F005",
+      "locus": "IGK",
+      "membersSHA256": "90e26124bde4c3d98e16236c0b546623351286e6c459b86bdcccf86a5c37195c",
+      "rows": 40,
+      "sites": 327,
+      "taxa": 7,
+      "score": 17,
+      "optimalTrees": 3,
+      "generatingTreeScore": 18
+    },
+    {
+      "family": "S03-F006",
+      "locus": "IGH",
+      "membersSHA256": "d59affdaffc5b177f5e0baf9e4f6d6e6a02b53d483dc49da8c01eca51b8c247d",
+      "rows": 38,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F006",
+      "locus": "IGL",
+      "membersSHA256": "aafc8c04d6e3d55a5a9de7e48f384b168deec1b996384cf5a9bd324e4f11f482",
+      "rows": 38,
+      "sites": 327,
+      "taxa": 7,
+      "score": 13,
+      "optimalTrees": 3,
+      "generatingTreeScore": 14
+    },
+    {
+      "family": "S03-F007",
+      "locus": "IGH",
+      "membersSHA256": "6242f489dcffe3dffd5fbcd92bf16b5660a64467cca7fd955b258d410e33e311",
+      "rows": 33,
+      "sites": 327,
+      "taxa": 7,
+      "score": 17,
+      "optimalTrees": 3,
+      "generatingTreeScore": 18
+    },
+    {
+      "family": "S03-F007",
+      "locus": "IGK",
+      "membersSHA256": "175a6d34caebf41184b63f3f3eb5e0fd10804effbd1a8b571c904fa4e8c7cbea",
+      "rows": 33,
+      "sites": 327,
+      "taxa": 7,
+      "score": 13,
+      "optimalTrees": 3,
+      "generatingTreeScore": 14
+    },
+    {
+      "family": "S03-F008",
+      "locus": "IGH",
+      "membersSHA256": "f41e14f64b1d9f9c8497516c58f89ade7aa93334d97ca81d4eab3868ff772375",
+      "rows": 32,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F008",
+      "locus": "IGL",
+      "membersSHA256": "ca453e6662242c87580da0909a384e707f3510ca93e70c62b7ed093cf25f41fa",
+      "rows": 32,
+      "sites": 327,
+      "taxa": 7,
+      "score": 13,
+      "optimalTrees": 3,
+      "generatingTreeScore": 14
+    },
+    {
+      "family": "S03-F009",
+      "locus": "IGH",
+      "membersSHA256": "0b760ecf9c7adf4324708e2c579f03b04b3f74cca4ec3e962fd4a77ce25d5f36",
+      "rows": 30,
+      "sites": 327,
+      "taxa": 6,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F009",
+      "locus": "IGK",
+      "membersSHA256": "2e0519fa844b13232c39554cf738f0c3f40b0c114a7fdc80d0ff499e7388b49f",
+      "rows": 30,
+      "sites": 327,
+      "taxa": 6,
+      "score": 14,
+      "optimalTrees": 3,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S03-F010",
+      "locus": "IGH",
+      "membersSHA256": "5796e93a0b4dc6885c578efceb734c7c466358b1e2326e59217c5fde57910fdd",
+      "rows": 46,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F010",
+      "locus": "IGL",
+      "membersSHA256": "34697e25f3b89b23871fef4700c6d10425a643f65fd5b47f04f6745f8b05819d",
+      "rows": 46,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S03-F011",
+      "locus": "IGH",
+      "membersSHA256": "aed1a1faefb672415ad6563f30056baed369c632dfc39a7420e4c2908480e838",
+      "rows": 40,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 3,
+      "generatingTreeScore": 16
+    },
+    {
+      "family": "S03-F011",
+      "locus": "IGK",
+      "membersSHA256": "27cc2a95971fb36f505e6ab4669cc80d7e61a481a630729e2603f4e7aaa62165",
+      "rows": 40,
+      "sites": 327,
+      "taxa": 7,
+      "score": 15,
+      "optimalTrees": 9,
+      "generatingTreeScore": 15
+    },
+    {
+      "family": "S03-F012",
+      "locus": "IGH",
+      "membersSHA256": "031f3cb8c2724fb602fac97064bb523e2ef4716c8b08ec2427d601db4856f1d8",
+      "rows": 39,
+      "sites": 327,
+      "taxa": 7,
+      "score": 16,
+      "optimalTrees": 3,
+      "generatingTreeScore": 17
+    },
+    {
+      "family": "S03-F012",
+      "locus": "IGL",
+      "membersSHA256": "0465eda81848db10915da47b222c3edfd8c2e99e6303c22eb747344cec7c020b",
+      "rows": 39,
+      "sites": 327,
+      "taxa": 7,
+      "score": 17,
+      "optimalTrees": 3,
+      "generatingTreeScore": 18
+    }
+  ]
+}

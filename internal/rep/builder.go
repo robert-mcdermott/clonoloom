@@ -10,6 +10,7 @@ import (
 // Row is one rearrangement as a reader hands it to a Builder. Strings are as read (trimmed);
 // "" is missing, as are NaN counts and Missing flags.
 type Row struct {
+	Evidence             [EvidenceCount]string
 	Sample               string
 	RepertoireID         string
 	Locus                string
@@ -110,6 +111,20 @@ func (b *Builder) Append(r *Row) error {
 		return err
 	}
 	n := len(t.Sample)
+	for i, value := range r.Evidence {
+		var code uint32
+		if value != "" {
+			if t.EvidenceText == nil {
+				t.EvidenceText = NewStrings(true)
+			}
+			code, err = t.EvidenceText.Add(value)
+			if err != nil {
+				return err
+			}
+		}
+		t.Evidence[i] = appendOptionalCode(t.Evidence[i], n, code)
+	}
+
 	locus := r.Locus
 	if locus == "" {
 		locus = b.callLocus(r)
@@ -182,6 +197,9 @@ func (b *Builder) Table() *Table {
 	t.Junctions.Freeze()
 	t.JunctionsAA.Freeze()
 	t.IDs.Freeze()
+	if t.EvidenceText != nil {
+		t.EvidenceText.Freeze()
+	}
 	t.Sample = t.Sample[:len(t.Sample):len(t.Sample)]
 	return t
 }

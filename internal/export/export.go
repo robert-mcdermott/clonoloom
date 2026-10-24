@@ -148,8 +148,8 @@ func flag(c []rep.Flag, row int) string {
 }
 
 // RearrangementFields are the columns of the rearrangements' TSV: the AIRR Rearrangement schema's
-// required fields (sequence, alignments and CIGARs empty: ClonoLoom does not keep them; the source
-// files have them), the calls and junctions as read, the counts, and the clonotype each row belongs
+// required fields (including retained sequence evidence), calls and junctions as read, counts,
+// and the clonotype each row belongs
 // to under the definition (clone_id). templates holds an immunoSEQ export's templates, which the
 // schema has no field for.
 var RearrangementFields = []string{"sequence_id", "sequence", "rev_comp", "productive", "vj_in_frame", "stop_codon", "locus", "v_call", "d_call", "j_call", "c_call",
@@ -184,7 +184,26 @@ func Rearrangements(w io.Writer, rt *rep.Table, keep []bool, ct *clonotype.Table
 		return c[row]
 	}
 	var b strings.Builder
-	b.WriteString(strings.Join(RearrangementFields, "\t"))
+	fields := append([]string(nil), RearrangementFields...)
+	evidenceAt := make(map[int]int)
+	for i, name := range rep.EvidenceFields {
+		if rt.Evidence[i] == nil {
+			continue
+		}
+		at := -1
+		for j, f := range fields {
+			if f == name {
+				at = j
+				break
+			}
+		}
+		if at < 0 {
+			at = len(fields)
+			fields = append(fields, name)
+		}
+		evidenceAt[i] = at
+	}
+	b.WriteString(strings.Join(fields, "\t"))
 	b.WriteByte('\n')
 	for row := range rt.Len() {
 		if keep != nil && !keep[row] {
@@ -210,6 +229,12 @@ func Rearrangements(w io.Writer, rt *rep.Table, keep []bool, ct *clonotype.Table
 			str(rt.Dict, col(rt.V, row)), str(rt.Dict, col(rt.D, row)), str(rt.Dict, col(rt.J, row)), str(rt.Dict, col(rt.C, row)),
 			"", "", str(rt.Junctions, rt.Junction[row]), str(rt.JunctionsAA, rt.JunctionAA[row]), "", "", "",
 			number(reads), number(umis), number(templates), str(rt.Dict, col(rt.Cell, row)), cloneOf[uint32(row)], repertoire,
+		}
+		for len(values) < len(fields) {
+			values = append(values, "")
+		}
+		for field, at := range evidenceAt {
+			values[at] = rt.EvidenceValue(row, field)
 		}
 		for i, v := range values {
 			if i > 0 {

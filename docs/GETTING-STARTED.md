@@ -16,6 +16,13 @@ The guide is on ClonoLoom's website, a page a subject:
 - **Tracking:** [subjects and time points](https://robert-mcdermott.github.io/clonoloom/docs/subjects.html),
   [following clonotypes](https://robert-mcdermott.github.io/clonoloom/docs/tracking.html),
   [expanded and contracted clonotypes](https://robert-mcdermott.github.io/clonoloom/docs/tests.html).
+- **B cells:** [artificial immunization workflow](https://robert-mcdermott.github.io/clonoloom/docs/simulation.html#immunization);
+  [sequence evidence](https://robert-mcdermott.github.io/clonoloom/docs/bcell-inputs.html),
+  [families](https://robert-mcdermott.github.io/clonoloom/docs/bcell-families.html),
+  [germlines](https://robert-mcdermott.github.io/clonoloom/docs/bcell-germlines.html),
+  [SHM](https://robert-mcdermott.github.io/clonoloom/docs/bcell-shm.html),
+  [lineages](https://robert-mcdermott.github.io/clonoloom/docs/bcell-lineages.html) and
+  [isotypes](https://robert-mcdermott.github.io/clonoloom/docs/bcell-isotypes.html).
 - **Results:** [figures and exports](https://robert-mcdermott.github.io/clonoloom/docs/figures.html);
   [the record](https://robert-mcdermott.github.io/clonoloom/docs/record.html).
 - **Reference:** [simulated studies](https://robert-mcdermott.github.io/clonoloom/docs/simulation.html);

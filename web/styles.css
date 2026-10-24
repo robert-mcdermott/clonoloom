@@ -917,9 +917,9 @@ circle.plot-dim { fill: var(--text-3); opacity: 0.45; }
 
 /* The Specificity view (mode-specificity.js). */
 .specificity-view { display: flex; flex-direction: column; gap: 12px; }
-.specificity-view .options-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
-.specificity-view .options-row input.input { width: 80px; }
-.specificity-view .options-row .kv-inline { white-space: nowrap; }
+.specificity-view .options-row, .family-view .options-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.specificity-view .options-row input.input, .family-view .options-row input.input { width: 80px; }
+.specificity-view .options-row .kv-inline, .family-view .options-row .kv-inline { white-space: nowrap; }
 .specificity-view .summary-card p { margin: 0 0 6px; }
 .specificity-view table.selectable tbody tr:not(.detail) { cursor: pointer; }
 .specificity-view tr.detail > td { background: var(--panel-2); padding: 8px 10px 10px; }

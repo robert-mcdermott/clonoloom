@@ -1,0 +1,5 @@
+Sequence number	Sequence ID	V-DOMAIN Functionality	V-GENE and allele	J-GENE and allele	D-GENE and allele	V-D-J-REGION	V-J-REGION	V-REGION
+3	heavy	unproductive	Homsap IGHV3-23*01 F	Homsap IGHJ4*02 F		aaa...tgtgcttggccc		aaa...tgt
+1	heavy	productive	Homsap IGHV1-2*02 F, or Homsap IGHV1-2*01 F	Homsap IGHJ4*02 F	Homsap IGHD3-10*01 F	aaa...tgtgcttggccc		aaa...tgt
+4	failed	No results						
+2	light	productive (see comment)	Homsap IGKV1-39*01 F	Homsap IGKJ1*01 F			ggg...tgtcaatttaaa	ggg...tgt

@@ -25,6 +25,7 @@ import (
 	"clonoloom/internal/invariant"
 	"clonoloom/internal/overlap"
 	"clonoloom/internal/qc"
+	"clonoloom/internal/reads"
 )
 
 func (a *app) registerExports(mux *http.ServeMux) {
@@ -61,7 +62,7 @@ func (a *app) registerExports(mux *http.ServeMux) {
 			names := sampleNames(ds)
 			a.writeZip(w, ds.Name+"-"+what, func(z *zip.Writer) error {
 				if what == "rearrangements" {
-					notice.What = "The rearrangements of " + ds.Name + " as an AIRR Rearrangement TSV, the filter's rows only, each with its clonotype under the definition (clone_id)."
+					notice.What = "The rearrangements of " + ds.Name + " as an AIRR Rearrangement TSV, the filter's rows only, each with its clonotype under the definition (clone_id). Retained AIRR sequence evidence is exported as supplied, including invalid annotations; it is not a reconstructed germline or a mutation measurement. AIRR Rearrangement schema 2.0; Vander Heiden et al. 2018, doi:10.3389/fimmu.2018.02206."
 					keep, _ := qc.Apply(ds.Result.Table, filter)
 					f, err := z.Create("rearrangements.tsv")
 					if err != nil {
@@ -277,6 +278,66 @@ func (a *app) exportResult(w http.ResponseWriter, id string, accept bool) {
 		notice.What = fmt.Sprintf("Chain specificity evidence for %s. Database %s, SHA-256 %s, source %s, license %s, citation %s. Matches are evidence, not proof of receptor specificity. Epitope shares count each clonotype once per group and can overlap.", ds.Name, doc.Database.Reference, doc.Database.SHA256, doc.Database.Source, doc.Database.License, doc.Database.Citation)
 		files["matches.csv"] = func(f io.Writer) error { return export.SpecificityMatches(f, doc.Clonotypes, doc.Result) }
 		files["epitopes.csv"] = func(f io.Writer) error { return export.SpecificityShares(f, doc.Samples, doc.Result) }
+	case "isotypes":
+		var doc isotypeDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " usage.csv contains sample and family/sample totals at class and gene resolution; empty family_id denotes sample totals. Missing abundance is blank, measured zero is 0. observations.csv retains parent exclusions; sources.csv retains all raw C calls without duplicating observation abundance. cooccurrence.csv contains unordered gene pairs, not switching events. isotypes.json includes the family checksum and pinned annotations."
+		files["isotypes.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		for _, kind := range []string{"usage", "families", "cooccurrence", "observations", "sources"} {
+			files[kind+".csv"] = func(f io.Writer) error { return export.Isotypes(f, doc.IsotypeResult, kind) }
+		}
+	case "lineages":
+		var doc lineageDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " trees.csv indexes trees; nodes.csv retains chosen panel sequences and conditional IUPAC states; members.csv retains source identities and observed annotations. panel.fasta is the concatenated shared V/J panel, not a full rearrangement. trees.nwk uses stable node IDs and integer change lengths. lineages.json retains panel coordinate maps and parent/reference provenance."
+		files["lineages.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		files["trees.csv"] = func(f io.Writer) error { return export.LineageTrees(f, doc.LineageResult) }
+		files["nodes.csv"] = func(f io.Writer) error { return export.LineageNodes(f, doc.LineageResult) }
+		files["members.csv"] = func(f io.Writer) error { return export.LineageMembers(f, doc.LineageResult) }
+		files["panel.fasta"] = func(f io.Writer) error { return export.LineageFASTA(f, doc.LineageResult) }
+		files["trees.nwk"] = func(f io.Writer) error { return export.LineageNewick(f, doc.LineageResult) }
+	case "shm":
+		var doc shmDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " shm.csv contains all rows and regions, including missing evidence; summaries.csv pools source rows by sample, locus and region. shm.json includes parent and reference provenance."
+		files["shm.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		files["shm.csv"] = func(f io.Writer) error { return export.SHMRows(f, doc.SHMResult) }
+		files["summaries.csv"] = func(f io.Writer) error { return export.SHMSummaries(f, doc.SHMResult) }
+	case "germlines":
+		var doc germlineDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " germlines.csv contains every member and exclusion; germlines.fasta contains successful D-masked projections, not inferred ancestors. germlines.json retains coordinate mappings and reference provenance."
+		files["germlines.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		files["germlines.csv"] = func(f io.Writer) error { return export.GermlineRows(f, doc.GermlineResult) }
+		files["germlines.fasta"] = func(f io.Writer) error { return export.GermlineFASTA(f, doc.GermlineResult) }
+	case "families":
+		var doc familyDocument
+		if err := json.Unmarshal(raw, &doc); err != nil {
+			writeError(w, 500, err.Error())
+			return
+		}
+		notice.What = doc.Description + " members.csv repeats observation abundance for each source chain row: do not sum across those rows. families.json retains the complete result, including subjects and exclusions."
+		files["families.json"] = func(f io.Writer) error { _, err := f.Write(raw); return err }
+		files["manifest.json"] = func(f io.Writer) error { return json.NewEncoder(f).Encode(m) }
+		files["members.csv"] = func(f io.Writer) error { return export.FamilyMembers(f, doc.FamilyResult) }
+		files["nearest.csv"] = func(f io.Writer) error { return export.FamilyNearest(f, doc.FamilyResult) }
+		files["families.csv"] = func(f io.Writer) error { return export.FamilyAmounts(f, doc.FamilyResult) }
 	case "networks":
 		var doc networkDocument
 		if err := json.Unmarshal(raw, &doc); err != nil {
@@ -338,6 +399,12 @@ func (a *app) notice(ds *dataset, unit string, filter qc.Filter, definition, def
 	}
 	for _, c := range ds.Credits {
 		n.Credits = append(n.Credits, export.Credit{Title: c.Title, Source: c.Source, License: c.License, LicenseURL: c.LicenseURL, LicenseClass: c.LicenseClass, Citation: c.Citation})
+	}
+	for _, s := range ds.Result.Sources {
+		if s.Format == reads.FormatIMGT {
+			n.Method += " IMGT tables joined by sequence number and sequence ID; oriented queries retained, query coordinates checked against the Summary sequence, native annotations in imgt_annotations. No germline reconstructed. Brochet et al. 2008, doi:10.1093/nar/gkn316."
+			break
+		}
 	}
 	return n
 }

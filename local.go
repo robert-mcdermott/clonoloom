@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"clonoloom/internal/reads"
 )
 
 // An item named on the command line (or by a later launch), or found in a folder named there: a
@@ -91,6 +93,9 @@ func fileKind(name string) string {
 // dirKind classifies a folder ClonoLoom reads as one thing; "" means its contents are looked at.
 // A Cell Ranger run's folder, its outs/ and a multi run's per-sample vdj folders are one item each.
 func dirKind(path string) string {
+	if _, found, _ := reads.IMGTFiles(path); found {
+		return "imgt"
+	}
 	if isFile(filepath.Join(path, contigManifest)) {
 		return "cellranger"
 	}
@@ -209,11 +214,11 @@ func walkFolder(dir string) ([]localFile, string) {
 				return nil
 			}
 			// A simulated study's truth (clonoloom simulate) describes its data and is not data;
-			// nor is its specificity database, beside it.
+			// nor are its specificity database and germline reference, beside it.
 			if name == "truth" && isFile(filepath.Join(path, "truth.json")) {
 				return filepath.SkipDir
 			}
-			if name == "database" && isFile(filepath.Join(filepath.Dir(path), "truth", "truth.json")) {
+			if (name == "database" || name == "reference") && isFile(filepath.Join(filepath.Dir(path), "truth", "truth.json")) {
 				return filepath.SkipDir
 			}
 			if kind := dirKind(path); kind != "" {

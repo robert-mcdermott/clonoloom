@@ -13,6 +13,7 @@ import { prefs } from './storage.js';
 
 const KINDS = {
   folder: { label: 'Folder', icon: 'folder' },
+  imgt: { label: 'IMGT/HighV-QUEST output', icon: 'table' },
   cellranger: { label: 'Cell Ranger output', icon: 'chip' },
   table: { label: 'Table', icon: 'table' },
   metadata: { label: 'Metadata', icon: 'braces' },
@@ -123,7 +124,7 @@ export function pickPaths({ title = 'Open', confirm = 'Open', choose = 'open', m
       // The folder shown opens what it holds when it holds something ClonoLoom opens itself (not
       // only folders: opening the home folder would look through all of it).
       const holds = a.kind || entries().some((e) => e.kind !== 'folder' && e.kind !== 'file');
-      if ((choose === 'open' && holds) || (choose === 'folder' && !a.kind) || (choose === 'file' && a.kind === 'cellranger')) return { paths: [a.path], entries: [here], folder: true };
+      if ((choose === 'open' && holds) || (choose === 'folder' && !a.kind) || (choose === 'file' && ['cellranger', 'imgt'].includes(a.kind))) return { paths: [a.path], entries: [here], folder: true };
       return { paths: [], entries: [] };
     }
 
@@ -159,9 +160,9 @@ export function pickPaths({ title = 'Open', confirm = 'Open', choose = 'open', m
         return;
       }
       if (c.folder) {
-        const what = a.kind === 'cellranger' ? 'this Cell Ranger output' : 'this folder';
+        const what = ['cellranger', 'imgt'].includes(a.kind) ? 'this annotated output' : 'this folder';
         button.textContent = `${confirm} ${what}`;
-        note.textContent = a.kind === 'cellranger' ? `${a.name}: a Cell Ranger V(D)J output, opened as one dataset.`
+        note.textContent = ['cellranger', 'imgt'].includes(a.kind) ? `${a.name}: an annotated output, opened as one dataset.`
           : choose === 'open' ? `${a.name}: ClonoLoom opens the tables it holds as one dataset (a cohort's exports, say).` : `${a.name}.`;
         return;
       }
@@ -223,7 +224,7 @@ export function pickPaths({ title = 'Open', confirm = 'Open', choose = 'open', m
       clear(list);
       list.removeAttribute('aria-activedescendant');
       const a = state.answer;
-      banner.hidden = !(a && !state.error && a.kind === 'cellranger');
+      banner.hidden = !(a && !state.error && ['cellranger', 'imgt'].includes(a.kind));
       if (!banner.hidden) banner.replaceChildren(icon('chip'), h('span', `${a.name} is a Cell Ranger V(D)J output.${choose === 'folder' ? '' : ` ${confirm} it, or choose one of its files.`}`));
       const shown = Boolean(a && !state.error && entries().length);
       list.hidden = !shown;

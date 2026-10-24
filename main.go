@@ -37,7 +37,7 @@ import (
 //go:embed web/index.html web/styles.css web/app.js web/favicon.svg web/lib/*.js web/ui/*.js
 var content embed.FS
 
-var version = "0.4.0"
+var version = "0.5.0"
 
 // commit is the source revision the program was built from. Release builds set it with
 // -ldflags "-X main.commit=..."; otherwise it comes from the version-control stamp Go records
@@ -474,6 +474,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerDatasets(mux)
 	a.registerQC(mux)
 	a.registerClonotypes(mux)
+	a.registerBCells(mux)
 	a.registerExamples(mux)
 	a.registerReferences(mux)
 	a.registerJobs(mux)

@@ -5,7 +5,8 @@ with sources, is in [clonoloom-spec/research.md](../clonoloom-spec/research.md).
 
 Every table can be gzipped (`.gz`); ClonoLoom recognizes gzip by its first bytes, not by the
 name. Lines may end in LF or CRLF, and a UTF-8 byte-order mark is ignored. A file's format is
-decided from its header, whatever its name.
+decided from its header, whatever its name, except IMGT's multi-file bundle: its documented
+filenames identify table roles and headers are then checked.
 
 ## What every reader produces
 
@@ -24,8 +25,11 @@ the AIRR Rearrangement schema names them):
 | reads, UMIs | Reads and UMIs where the format gives them beside the count |
 | cell, clone | Single cell: the barcode, and the source's own clonotype or clone ID |
 
-A missing value stays missing: a count that was not given is not a count of one. The other
-columns of a file stay in the file; exports read them again from it.
+A missing value stays missing: a count that was not given is not a count of one. AIRR sequence evidence is retained separately: sequence, orientation, query and germline
+alignments, V/D/J CIGARs and their sequence/germline/alignment coordinates, FWR/CDR coordinates,
+N/P lengths and the named germline database. Original text (including invalid values) is
+inspectable and exportable. Other source columns stay in the source; exports do not re-read
+arbitrary columns.
 
 ### Abundance units
 
@@ -61,6 +65,69 @@ export, TRUST4, Cell Ranger (`airr_rearrangement.tsv`) and AIRR Data Commons dow
 API answers) named with the tables annotates their samples by `repertoire_id`: study, subject,
 species, sex, age, diagnosis, tissue, cell subset, time point, template and HLA. Schema 1.3's
 text fields and 2.0's objects are both read. YAML metadata arrives in a later release.
+
+### Sequence evidence (0.5.0)
+
+B cells → Inputs counts IGH/IGK/IGL rearrangements after the active QC filter, separately for
+sequence present, paired alignments, structurally valid evidence and supplied region coordinates.
+It neither groups rows into families nor computes a mutation rate. Missing evidence stays missing.
+
+AIRR coordinates are 1-based closed intervals in their named query, reference or alignment
+string. FWR/CDR coordinates use the query sequence, not an IMGT position in a padded alignment.
+Orientation is preserved; alignments are not reverse-complemented again. The validator checks
+positions, nucleotide symbols, paired alignment lengths and AIRR CIGAR operations. Findings
+retain source locations and do not discard otherwise usable junctions. Cell Ranger AIRR
+alignments may have unequal lengths; these are preserved and reported, never padded to match.
+
+AIRR export fills the retained evidence fields and appends available optional columns in a fixed
+order. It preserves invalid evidence for inspection; a file with such evidence remains invalid
+until corrected at its source. Abundance and clone IDs retain their existing export semantics.
+
+
+## IMGT/HighV-QUEST
+
+Open an extracted output folder, or select these four tab-separated files together (optionally
+with `.gz`): `1_Summary.txt`, `2_IMGT-gapped-nt-sequences.txt`, `3_Nt-sequences.txt` and
+`6_Junction.txt`. `.tsv` and a shared sample prefix before the numbered name also work.
+`11_Parameters.txt` is optional; its text and checksum are retained, with a 64 KiB limit.
+Other reports in the folder are not imported. Extract ZIP/TXZ downloads before opening them;
+Excel workbooks and individual detailed result files are not supported by this reader.
+
+The reader joins by **Sequence number and Sequence ID**, independently of table row order.
+Both must agree. Duplicate sequence numbers, missing rows, conflicting gene calls and incomplete
+bundles are errors. Repeated sequence IDs with distinct numbers remain distinct. A folder's name
+(or the shared filename prefix) names the sample. Uploaded unprefixed tables use `IMGT`; open one
+such run at a time. Every contributing table is fingerprinted, including Parameters. Stored group
+names survive cache reopening and project relocation. Source files remain unchanged.
+
+- V/D/J/C calls lose the species and functionality decorations; all tied gene/allele names remain
+  as a sorted set. Original calls are retained. Productive/unproductive map to T/F; unknown and
+  unsuccessful annotations remain missing. No reads, UMIs, cells or isotypes are inferred.
+  Each annotated row contributes one **sequence** (the same unit as a count-free AIRR table).
+- `6_Junction` supplies the un-restored nucleotide JUNCTION and, where supplied, its un-restored
+  `JUNCTION (AA)`. The Summary AA field is a fallback only without a frameshift marker and without
+  an out-of-frame junction. Corrected translations remain native annotations, not canonical AA
+  junctions. The conserved anchors are included; CDR3 alone is not substituted.
+- `sequence` is Summary's already oriented Sequence, preserved with case. Exported `rev_comp=F`
+  describes that oriented sequence, not the originally submitted strand. Native `Orientation`
+  retains the original sign. No second reverse complement is applied.
+- `sequence_alignment` is table 2's V-D-J-REGION, else V-J-REGION, else V-REGION, with IMGT dots
+  preserved. No padding, germline alignment, CIGAR, N/P length or germline database is invented.
+- V/D/J and FWR/CDR start/end pairs from table 3 become AIRR query coordinates only when the
+  uncorrected region exactly matches the Summary substring (case-insensitive, 1-based closed).
+  Reported insertions or deletions withhold all query mappings. Incomplete, inconsistent or
+  unmatched endpoints also remain native positions with a finding. IMGT-numbered alignment
+  positions are never confused with query coordinates.
+- `imgt_annotations`, an optional JSON-valued extension column, retains the sequence number,
+  contributing table lines, original calls, functionality/comments, orientation, Summary AA,
+  indel annotations, table 6's junction/frame/restoration fields and native region coordinates.
+  B cells → Inputs exposes it under **Native IMGT annotations**, and AIRR export/re-import retains
+  it. The Data inspector shows the supplied Parameters text. Remaining source columns stay in
+  their files; vendor mutation statistics are not imported as ClonoLoom results.
+
+The field contract is documented in [IMGT/V-QUEST's output guide](https://www.imgt.org/IMGT_vquest/user_guide)
+(tables 1, 2, 3, 6 and 11; Brochet et al. 2008, doi:10.1093/nar/gkn316).
+This reader does not run IMGT, reconstruct references or establish mutation readiness.
 
 ## Cell Ranger V(D)J (10x Genomics)
 
@@ -242,8 +309,8 @@ these columns:
 - `locus`, `c_call`, `duplicate_count` (reads), `umi_count`, `templates`, `cell_id`, `clone_id`
   and `repertoire_id`.
 
-The sequences, alignments and CIGARs are empty: ClonoLoom does not keep them, and the source
-files have them. `clone_id` is the row's clonotype under the definition. `templates` holds an
+Retained AIRR sequences, alignments, orientation and CIGARs are filled as supplied; optional
+evidence fields are appended when available. Other readers leave them missing. `clone_id` is the row's clonotype under the definition. `templates` holds an
 immunoSEQ export's templates, which the schema has no field for. The file reads back into the same
 clonotypes.
 
@@ -289,3 +356,137 @@ measured, the clonotype definition, the unit, the samples, the filter and ClonoL
 The public files the readers are checked on, their licenses and how to fetch them are listed in
 [validation/sources.json](../validation/sources.json); `node validation/fetch.mjs --list` prints
 them. `node validation/fetch.mjs --ci` fetches the openly licensed ones.
+
+### Reconstructed B-cell germlines (wave 5, slice 5)
+
+Germlines uses saved family membership, explicit allele calls, `sequence`, `rev_comp`, and
+V/J AIRR CIGARs against a selected ungapped V/J reference. Supplied sequence and germline
+endpoints must agree with CIGAR offsets. Native IMGT input, gene-only calls and missing CIGARs
+remain inspectable but are excluded from reconstruction; no alignment or reference offset is
+guessed. The chosen reference must match the annotation's segment boundaries.
+
+The new projected alignment is distinct from retained `sequence_alignment` and
+`germline_alignment`. CSV exports use `sequence_alignment`, `germline_alignment_d_mask` and
+`segment_labels`; JSON retains per-column query and reference positions, the parent family
+checksum and reference file records. Query coordinates refer to the oriented sequence;
+reference coordinates reset for V and J. Zero marks absent mappings. D/N/P junction bases
+are masked, including intervening light-chain bases. FASTA exports successful projections,
+with stable source-row IDs; CSV includes all exclusions. These result exports are not full
+AIRR input round trips. Mutation counts are a separate SHM result.
+
+### Somatic hypermutation (wave 5, slice 6)
+
+SHM consumes a saved germline artifact, with its checksum and reference provenance. Membership
+is fixed by that parent. Each source chain row is retained, including exclusions and duplicate
+contigs; counts are not weighted by reads, UMIs or cells. `shm.csv` has one row per source row
+and region; `summaries.csv` pools counts by sample/locus/region. These are descriptive totals,
+not independent replicates. The complete `shm.json` and manifest accompany the export.
+
+A substitution is an unequal paired A/C/G/T base. Its frequency is substitutions divided by
+paired A/C/G/T bases, or missing when there are none. Masked D/N/P columns, gap columns and
+ambiguity columns are counted separately, in that order. Missing regional evidence produces
+blank CSV statistics and an explicit JSON `unavailable` reason, not an observed zero.
+
+`all`, `V`, `J` and individual `fwr1`, `cdr1`, `fwr2`, `cdr2`, `fwr3`, `cdr3`, `fwr4` entries
+overlap and must not be added together. Regional intervals refer to the oriented raw query,
+not the alignment or reference. Missing intervals stay missing. Incomplete, reversed,
+out-of-bounds, overlapping or out-of-order intervals invalidate the regional partition while
+whole-alignment and V/J counts remain available. Uncovered bases remain in the totals; deletion
+gaps have no query-region assignment. CDR3 may include reference-covered V/J bases in real
+inputs; only the saved D/N/P mask determines which bases are excluded from comparison.
+
+Codon phase requires `vj_in_frame=T`, valid CDR3 bounds, a multiple-of-three CDR3 length,
+and exact agreement between the query span including the flanking codons and `junction`.
+The junction must translate without ambiguity/stops and retain the C and F/W anchors. Its
+CDR3 start anchors query phase; no phase is inferred from reference position 1. Any alignment
+indel suppresses codon inference for that row. Only complete paired A/C/G/T codons within one
+V/J segment and, for a regional count, one region are evaluable. Stop-containing codons are
+counted separately and excluded from the codon denominator, while their bases still contribute
+to nucleotide comparisons. Truncated or ambiguous codons do not support R/S attribution.
+
+Single-hit codons classify the sole substitution as replacement or silent using NCBI table 1.
+Multi-hit codons retain endpoint replacement/silent **codon** counts; their substitutions stay
+unclassified because their order is unknown. `unclassified = substitutions - replacement - silent`.
+Codon exclusion reasons and the evaluable-codon denominator accompany classification counts;
+zero classified substitutions without evaluable codons is not evidence for absence of SHM.
+These are net observed differences, not cumulative events, evolutionary rates, selection tests,
+or biological error correction. Reference choice and annotation accuracy remain prerequisites.
+
+### Lineage trees (wave 5, slice 7)
+
+`lineages.json` is a version-1 `clonoloom-lineages` artifact derived from checksum-verified
+`germlines.json`. `lineageOptions` pins the parent hash and search limits; `germlineProvenance`
+retains family and reference identities. `annotations` pins normalized sample timepoint/tissue
+values. Subject/reference flags, active QC and clonotype settings do not alter this derived
+analysis. Saved results can be inspected without the original input; new computation requires it.
+
+`trees` contains each family/locus summary and its complete panel, graph and Newick. `columns`
+is an ordered list of `{segment, position}` with 1-based ungapped V/J reference coordinates.
+Only paired canonical bases present in every included row enter this complete-case panel.
+`sites` is its length; `omitted` counts mapped V/J reference sites removed from the union, not
+masked junction positions or query insertions. `taxa` counts distinct panel states including
+the reference. `included` counts source rows, not abundance. Excluded groups retain reasons;
+zero integer fields on excluded groups must not be read as measurements.
+
+Nodes contain stable IDs, parent, kind (`reference`, `observed`, `inferred`), one chosen `sequence`
+and marginal `possible` IUPAC states conditional on the selected topology. Both strings are
+concatenated panel states, not full rearrangements. `changes` is the chosen assignment's edge
+length; `distance` sums those changes from the reference; `depth` counts edges. Zero edges are
+retained. `annotations` counts observed source rows by sample/isotype/timepoint/tissue. Inferred
+nodes have no observed traits. `members` maps every parent source row to its tree and node or
+exclusion, preserving source SHA-256, line, sequence ID and metadata. Identical panel states
+collapse without losing distinct original rows; rows matching the root attach to it.
+
+Search is exhaustive through eight taxa and a bounded addition/NNI heuristic through 64. Exact
+`optimalTrees` and node `splitTrees` count tied optimal binary resolutions, not probabilities or
+bootstrap support. Heuristic counts are absent, with `budgetLimited` marking early termination;
+no global optimality claim is made. `examined` counts candidate scores. Limits and deterministic
+choices are documented in research §5.19 and travel in the analysis identity.
+
+The result ZIP contains `trees.csv`, `nodes.csv`, `members.csv`, `panel.fasta`, `trees.nwk`, full
+`lineages.json`, `manifest.json` and `NOTICE.txt`. Tree scores are blank for excluded groups;
+unknown tie counts are blank. FASTA gives the consistent chosen panel assignment. JSON retains
+the coordinate map and possible states, also in node CSV. Newick uses stable node IDs and
+integer change lengths, one tree per line; its root ID joins to nodes.csv and that tree's ID.
+No class-switching, migration, event-date, selection or likelihood inference is encoded.
+
+### Isotypes (wave 5, slice 8)
+
+`isotypes.json` is version 1 of `clonoloom-isotypes`, derived from a checksum-verified,
+thresholded `families.json`. `isotypeOptions` pins the family artifact and SHA-256;
+`familiesOptions` and `familyFilter` record its choices. `annotations` pins sample timepoint
+and tissue labels; observation subject/scope comes from the parent. Parent-retained C calls come
+from the source dataset, without requiring germline alignments or a reference download.
+
+`observations` retains each parent observation, its retained source rows, raw C calls,
+class, constant gene, issue, exclusion and abundance. Class and gene can resolve differently:
+IGHG1/IGHG2 ties give IgG with an unresolved gene. IGHG/IGHA without a subclass resolve only
+class. All retained heavy calls must agree at the reported resolution; missing, unsupported
+or conflicting calls remain explicit. Light calls are provenance only. Alleles collapse;
+pseudogenes and unsupported labels do not become functional isotypes. See research §5.20
+for supported labels, the 4,096-byte call bound, numeric-allele/finite-score suffix checks
+and issue precedence.
+
+`usage` has sample totals (`family` empty) and family/sample totals at `class` and `gene`
+resolution. `observations`, `total` and `share` count assigned observations, including unresolved
+calls. Parent exclusions are outside this denominator. Single-cell parents count one per
+sample-scoped cell; bulk parents count one per heavy row. Only observed buckets are emitted.
+`unit` describes observations (cells or heavy-chain rows); `abundanceUnit` separately retains
+the parent count unit (for example reads; empty means unspecified). CSV usage includes both units.
+`abundance`, `totalAbundance` and `abundanceShare` are separate: missing counts propagate to
+bucket and group totals; a known zero denominator has a null share. Missing-count coverage
+is retained. No metadata group is treated as a biological replicate.
+
+`families` lists coverage, samples and resolved labels. `pairs` contains unordered constant-gene
+pairs, counted once per family, alongside all-family and any-resolved-gene coverage counts.
+These overlapping pair counts are not additive, switching events or transition estimates.
+IgM/IgD-only co-occurrence is explicitly not switching evidence. Missing/ambiguous observations
+cannot establish which events occurred or did not occur.
+
+Exports include `usage.csv`, `families.csv`, `cooccurrence.csv`, `observations.csv`, `sources.csv`,
+full `isotypes.json`, `manifest.json` and `NOTICE.txt`. They contain the complete artifact,
+independent of displayed filters or pages. CSV missing numeric values are blank; measured zero
+is `0`. `sources.csv` retains every parent-retained chain without duplicating observation abundance.
+Saved inspection does not require the input or parent files; exporting follows normal source
+access and data-use terms. Versioned isotype choices and normalized annotations travel in the
+analysis identity; unrelated active QC, clonotype and diversity settings do not.

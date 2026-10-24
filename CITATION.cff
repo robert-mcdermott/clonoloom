@@ -1,14 +1,14 @@
 cff-version: 1.2.0
 message: "If you use ClonoLoom in your research, please cite it as below."
 title: "ClonoLoom"
-abstract: "A local-first workbench for adaptive immune receptor repertoires (T- and B-cell receptor sequencing, bulk and single-cell): validated reading of AIRR-C, Cell Ranger and immunoSEQ data, quality control, explicit clonotype definitions, diversity and overlap with their uncertainty, clonal tracking with expansion tests, specificity analysis, B-cell clonal families and lineages, and cohort comparison with the subject as the unit, with every step recorded. It runs locally as one self-contained program, needs no other software, and keeps the user's data on their computer."
+abstract: "A local-first workbench for adaptive immune receptor repertoires (T- and B-cell receptor sequencing, bulk and single-cell): validated reading of AIRR-C, Cell Ranger and immunoSEQ data, quality control, explicit clonotype definitions, diversity and overlap with their uncertainty, clonal tracking with expansion tests, specificity analysis, B-cell clonal families, germline reconstruction, somatic hypermutation, parsimony lineages and observed isotypes, with every step recorded. It runs locally as one self-contained program, needs no other software, and keeps the user's data on their computer."
 type: software
 authors:
   - family-names: McDermott
     given-names: Robert
 repository-code: "https://github.com/robert-mcdermott/clonoloom"
 license: Apache-2.0
-version: 0.4.0
+version: 0.5.0
 keywords:
   - immune repertoire
   - AIRR-seq

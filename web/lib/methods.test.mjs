@@ -279,3 +279,92 @@ test('invariant methods cite only the explicitly selected species rules', () => 
   assert.match(mouse.text, /mouse MAIT and iNKT/);
   assert.ok(!mouse.references.some((r) => r.includes('1401380')));
 });
+
+
+test('sequence evidence methods distinguish additive reader versions from historical reads', () => {
+  const dataset = { ...pbmc, sources: [{ ...pbmc.sources[0], format: 'airr' }], readerVersion: 2 };
+  const current = methodsParagraph({ dataset, program });
+  assert.match(current.text, /retained without reconstruction/);
+  assert.match(current.references.join(' '), /02206/);
+  assert.doesNotMatch(methodsParagraph({ dataset: { ...dataset, readerVersion: 1 }, program }).text, /retained without reconstruction/);
+});
+
+test('IMGT joins cite the annotation format without claiming germline reconstruction or Adaptive mappings', () => {
+  const source = { ...pbmc.sources[0], format: 'imgt-highvquest', imgtGroup: 'study', geneNames: { 'Homsap IGHV1-2*01 F': 'IGHV1-2*01' } };
+  const dataset = { ...pbmc, sources: [source], credits: [], unit: 'sequences', singleCell: false, readerVersion: 3 };
+  const { text, references } = methodsParagraph({ dataset, summary: { sources: [source] }, program });
+  assert.match(text, /joined by sequence number and sequence ID/);
+  assert.match(text, /No germline alignment was reconstructed/);
+  assert.doesNotMatch(text, /Adaptive Biotechnologies gene name/);
+  assert.ok(references.some((r) => r.includes('10.1093/nar/gkn316')));
+});
+
+test('artificial B-cell methods identify their model even when the study is renamed', () => {
+  const dataset = { ...pbmc, credits: [], formats: ['AIRR Rearrangement TSV'], sources: [{ ...pbmc.sources[0], format: 'airr' }] };
+  const summary = { samples: [{ repertoire: { studyId: 'clonoloom-simulated-clonoloom-artificial-bcell-v1', studyTitle: 'A renamed study', timePoint: '14 day (simulated immunization)' } }] };
+  const { text } = methodsParagraph({ dataset, summary, program });
+  assert.match(text, /artificial paired B-cell sequences/);
+  assert.match(text, /deliberate back-mutations/);
+  assert.match(text, /No read counts, UMI counts, sequencing errors or additional biological variance were simulated/);
+  assert.doesNotMatch(text, /GRCh38|power-law|Ensembl|varying between samples beyond sampling/);
+});
+
+test('mixed simulations describe B-cell and TRB models separately, without giving B cells extra variance', () => {
+  const dataset = { ...pbmc, credits: [] };
+  const bcell = { repertoire: { studyId: 'clonoloom-simulated-clonoloom-artificial-bcell-v1', timePoint: '14 day (simulated immunization)' } };
+  const trb = { repertoire: { studyId: 'clonoloom-simulated-small', studyTitle: 'A TRB study' } };
+  for (const samples of [[bcell, trb], [trb, bcell]]) {
+    const { text } = methodsParagraph({ dataset, summary: { samples }, program });
+    assert.match(text, /artificial paired B-cell sequences/);
+    assert.match(text, /The T-cell receptor β data are simulated/);
+    assert.doesNotMatch(text, /varying between samples beyond sampling/);
+  }
+});
+
+
+test('family methods cite the inference and keep saved-result thresholds separate', () => {
+  const results = [null, 0, 0.1].map((threshold, i) => ({ id: `fam-${i}`, kind: 'families', eligible: 12, representativeCount: 5, familyCount: threshold === null ? 0 : 3, families: { mode: 'paired', scope: 'subject', threshold }, filter: { productiveOnly: true }, describe: threshold === null ? 'Distances only; no family threshold has been selected.' : `Single-linkage families at distance ≤ ${threshold}.` }));
+  const { text, references } = methodsParagraph({ dataset: pbmc, program, results });
+  assert.match(text, /Distances only; no family threshold/);
+  assert.match(text, /distance ≤ 0\./);
+  assert.match(text, /distance ≤ 0.1/);
+  assert.match(text, /Paired maximum distance is a conservative ClonoLoom policy/);
+  assert.match(references.join(' '), /1601850/);
+  assert.match(references.join(' '), /btv359/);
+});
+
+test('germline methods retain parent and reference checksums and do not infer an ancestor', () => {
+  const result = { id: 'grm-one', kind: 'germlines', reconstructed: 10, rowCount: 12, describe: 'D/N/P bases masked.', germlines: { families: 'fam-one', familySha256: 'family-hash', files: [{ reference: 'ref-one', file: 'segments.fasta', sha256: 'reference-hash', license: 'CC0', citation: 'Reference citation', source: 'https://example.org/data' }] } };
+  const { text, references } = methodsParagraph({ dataset: pbmc, program, results: [result] });
+  for (const phrase of ['fam-one', 'family-hash', 'reference-hash', '10 of 12', 'No mutation rate or lineage ancestor', 'CC0']) assert.ok(text.includes(phrase), phrase);
+  assert.match(references.join(' '), /btv359/);
+  assert.match(references.join(' '), /Reference citation/);
+});
+test('v2 artificial B-cell metadata preserves the model name and avoids TRB methods', () => {
+  const summary = { samples: [{ repertoire: { studyId: 'clonoloom-simulated-clonoloom-artificial-bcell-v2' } }] };
+  const { text } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, summary, program });
+  assert.match(text, /clonoloom-artificial-bcell-v2/);
+  assert.doesNotMatch(text, /GRCh38|Ensembl/);
+});
+
+test('SHM methods keep denominators, attribution policy and independent parent provenance', () => {
+  const result = { id: 'shm-one', kind: 'shm', evaluated: 2, rowCount: 3, describe: 'Paired A/C/G/T bases only. Single-hit R/S; multiple-hit codons remain unclassified substitutions.', shm: { germlines: 'grm-one', germlineSha256: 'germline-hash' }, germlineProvenance: { families: 'fam-one', familySha256: 'family-hash', files: [{ reference: 'ref-one', file: 'segments.fasta', sha256: 'reference-hash', license: 'CC0', citation: 'Reference citation', source: 'https://example.org/data' }] } };
+  const { text, references } = methodsParagraph({ dataset: pbmc, program, results: [result] });
+  for (const phrase of ['2 of 3', 'germline-hash', 'family-hash', 'reference-hash', 'Single-hit', 'Unclassified substitutions remain', 'No selection statistic', 'CC0']) assert.ok(text.includes(phrase), phrase);
+  assert.match(references.join(' '), /btv359/);
+  assert.match(references.join(' '), /genetic code|Genetic Codes/);
+});
+
+test('lineage methods cite parsimony and retain parent/reference identity and uncertainty', () => {
+  const r = { id: 'lin-one', kind: 'lineages', built: 2, describe: 'Heuristic scores are not proven global minima. Conditional IUPAC states.', lineages: { germlines: 'grm-one', germlineSha256: 'parent-hash' }, germlineProvenance: { families: 'fam-one', familySha256: 'family-hash', files: [{ reference: 'ref', file: 'segments.fasta', sha256: 'ref-hash', license: 'CC0', citation: 'Reference citation', source: 'https://example.org/data' }] } };
+  const out = methodsParagraph({ dataset: pbmc, results: [r], program });
+  for (const word of ['parent-hash', 'family-hash', 'ref-hash', 'Conditional IUPAC', 'not proven global minima', 'No class-switching']) assert.ok(out.text.includes(word), word);
+  for (const doi of ['10.1093/sysbio/20.4.406', '10.1137/0128004', '10.1371/journal.pcbi.1009885']) assert.ok(out.references.join('\n').includes(doi), doi);
+});
+
+test('isotype methods retain counting unit, ambiguity, parent identity and inference limits', () => {
+  const r = { id: 'iso-one', kind: 'isotypes', unit: 'heavy-chain rows', abundanceUnit: 'reads', assigned: 12, resolvedClass: 10, resolvedGene: 8, describe: 'Each assigned cell contributes once. Unresolved calls remain in the denominator. Pairs do not count switching events.', isotypes: { families: 'fam-one', familySha256: 'parent-hash' } };
+  const out = methodsParagraph({ dataset: pbmc, results: [r], program });
+  for (const word of ['12 assigned observations', 'class resolved for 10', 'constant gene resolved for 8', 'parent-hash', 'observation unit heavy-chain rows', 'abundance unit reads', 'Unresolved', 'once', 'no ancestral-trait or switching statistic']) assert.ok(out.text.includes(word), word);
+  for (const doi of ['10.3389/fimmu.2014.00022', '10.7554/eLife.16578', '10.1371/journal.pcbi.1009885']) assert.ok(out.references.join('\n').includes(doi), doi);
+});

@@ -1,0 +1,8 @@
+sequence_id	sequence	rev_comp	productive	locus	v_call	d_call	j_call	c_call	sequence_alignment	germline_alignment	junction	junction_aa	v_cigar	d_cigar	j_cigar	umi_count	repertoire_id	v_sequence_start	v_sequence_end	v_germline_start	v_germline_end	v_alignment_start	v_alignment_end	fwr1_start	fwr1_end	np1_length	germline_database
+complete	ACGTACGTACGT	F	T	IGH	IGHV1-2*01		IGHJ4*01	IGHM	ACGTACGTACGT	ACGTACGTACGT	TGTGCTTTT	CAF	12M			3	Synthetic evidence	1	12	1	12	1	12	1	6	0	synthetic: no biological reference
+partial		F	T	IGH	IGHV1-2*01		IGHJ4*01	IGHM			TGTGCTTTT	CAF				3	Synthetic evidence			1	12	1	12			0	synthetic: no biological reference
+ambiguous	ACGTNCGTACGT	F	T	IGK	IGKV1-5*01		IGKJ1*01	IGKC	ACGTNCGTACGT	ACGTACGTACGT	TGTGCTTTT	CAF	12M			3	Synthetic evidence	1	12	1	12	1	12	1	6	0	synthetic: no biological reference
+unequal	ACGTACGTACGT	F	T	IGL	IGLV1-40*01		IGLJ1*01	IGLC1	ACGTACGTACGT	ACGT	TGTGCTTTT	CAF	12M			3	Synthetic evidence	1	12	1	12	1	12	1	6	0	synthetic: no biological reference
+bad-coordinate	ACGTACGTACGT	F	T	IGH	IGHV1-2*01		IGHJ4*01	IGHM	ACGTACGTACGT	ACGTACGTACGT	TGTGCTTTT	CAF	12M			3	Synthetic evidence	1	12	1	12	1	12	1	999999999999999999999999	0	synthetic: no biological reference
+bad-cigar	ACGTACGTACGT	F	T	IGH	IGHV1-2*01		IGHJ4*01	IGHM	ACGTACGTACGT	ACGTACGTACGT	TGTGCTTTT	CAF	12H			3	Synthetic evidence	1	12	1	12	1	12	1	6	0	synthetic: no biological reference
+reverse	ACGTACGTACGT	T	T	IGH	IGHV1-2*01		IGHJ4*01	IGHM	ACGTACGTACGT	ACGTACGTACGT	TGTGCTTTT	CAF	12M			3	Synthetic evidence	1	12	1	12	1	12	1	6	0	synthetic: no biological reference

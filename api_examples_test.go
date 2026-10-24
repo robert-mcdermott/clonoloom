@@ -39,7 +39,7 @@ func listExamples(t *testing.T, handler http.Handler) exampleList {
 func TestExamplesDownloadAndOpenWithTheirCredits(t *testing.T) {
 	a, handler := testApp(t)
 	list := listExamples(t, handler)
-	if len(list.Examples) != 13 || list.Offline || len(list.Hosts) != 4 {
+	if len(list.Examples) != 16 || list.Offline || len(list.Hosts) != 4 {
 		t.Fatalf("%+v", list)
 	}
 	terms := ""
@@ -183,7 +183,47 @@ func TestGuidedStepsAreActions(t *testing.T) {
 			}
 		}
 	}
-	if steps != 20 {
+	if steps != 33 {
 		t.Errorf("%d steps", steps)
+	}
+}
+
+func TestBCellExampleIsMadeOfflineAndOpened(t *testing.T) {
+	a, handler := testApp(t)
+	a.examples.Offline = true
+	if rec := postJSON(t, handler, "/api/examples/simulated-bcell-immunization", `{}`); rec.Code != http.StatusOK {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	example := listExamples(t, handler).Examples[0]
+	deadline := time.Now().Add(30 * time.Second)
+	for {
+		for _, e := range listExamples(t, handler).Examples {
+			if e.Name == "simulated-bcell-immunization" {
+				example = e
+			}
+		}
+		if example.State == "ready" || example.Download != nil && example.Download.Error != "" || time.Now().After(deadline) {
+			break
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	if example.State != "ready" || len(example.Paths) != 1 || len(example.Paths[0]) != 10 {
+		t.Fatalf("%+v", example)
+	}
+	body, _ := json.Marshal(map[string]any{"paths": example.Paths[0]})
+	rec := postJSON(t, handler, "/api/datasets/open", string(body))
+	var ds datasetSummary
+	if rec.Code != 200 || json.Unmarshal(rec.Body.Bytes(), &ds) != nil || len(ds.Samples) != 9 || ds.Report.Fatal+ds.Report.Warnings != 0 {
+		t.Fatalf("%d %s", rec.Code, rec.Body)
+	}
+	rec = postJSON(t, handler, "/api/bcells/inputs", `{"dataset":"`+ds.ID+`","limit":2}`)
+	var page bcellPage
+	if rec.Code != 200 || json.Unmarshal(rec.Body.Bytes(), &page) != nil || page.Count != 4320 || len(page.Rows) != 2 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	for _, s := range page.Samples {
+		if s.Sequence != s.Rows || s.Paired != s.Rows || s.Valid != s.Rows || s.Regions != s.Rows {
+			t.Fatalf("incomplete artificial evidence: %+v", s)
+		}
 	}
 }

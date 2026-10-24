@@ -10,15 +10,22 @@ B-cell receptor sequencing, bulk and single-cell. It takes the output of an anno
 (Cell Ranger, immunoSEQ, MiXCR, IgBLAST through Change-O, TRUST4, or any AIRR Community file) to
 results others can check: the data validated, clonotypes defined explicitly, diversity and overlap
 measured with their uncertainty, clonotypes followed over time, receptors grouped by likely
-specificity, B-cell families traced, and figures, methods and certificates written, each step kept
+specificity, B-cell families traced, and figures, exports and cited methods written, each step kept
 on record.
 
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Release prepared:** 0.4.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-B-cell lineages, single-cell phenotypes and cohort comparisons come in later
+**Current release:** 0.5.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+Single-cell phenotypes and cohort comparisons come in later
 releases.
+
+**B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an
+explicit threshold, reconstruct D-masked germlines, measure somatic hypermutation, explore
+bounded parsimony trees and summarize observed isotypes. Families remain separate from junction
+clonotypes. The [artificial immunization guide](https://robert-mcdermott.github.io/clonoloom/docs/simulation.html#immunization)
+connects the workflow to known truth, exports and cited methods. Likelihood trees, selection
+and switching-event inference remain deferred.
 
 ## Features
 
@@ -39,6 +46,10 @@ releases.
 - **Measure repertoires with their uncertainty.** Hill numbers, Chao1, ACE, the estimated Shannon
   and Simpson diversity, clonality, Gini and clonal space homeostasis, each with a 95% interval.
   Rarefaction and extrapolation compare samples at equal coverage or size.
+- **Summarize B-cell isotypes.** Sample and family usage with explicit ambiguity and denominators, unordered constant-gene co-occurrence, raw-call inspection and complete exports. Co-occurrence is descriptive, not a switching-event inference. [Isotype guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-isotypes.html).
+- **Explore B-cell lineages.** Bounded parsimony trees, conditional ancestral sequences, topology ties and observed isotype/timepoint/tissue annotations, with complete provenance and Newick/FASTA exports. [Lineage guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-lineages.html).
+- **Measure somatic hypermutation.** Evaluable bases and codons, regional substitution frequencies, single-hit replacement/silent counts, multi-hit codon endpoints and explicit exclusions, derived from saved germlines. [SHM guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-shm.html).
+- **Reconstruct B-cell germlines.** Saved family/locus allele choices, checksum-pinned human OGRDB or artificial references, AIRR CIGAR projection and D/N/P masking, with explicit exclusions and complete provenance. [Germlines guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-germlines.html).
 - **See what the clonotypes are made of.** V, D, J and C genes and families, V–J pairs, junction
   lengths and amino acids by IMGT position; by clonotypes or abundance, by sample or condition.
 - **Compare samples.** Every pair's shared clonotypes, Jaccard, Sørensen–Dice and the overlap
@@ -193,7 +204,10 @@ computer. The [user guide](https://robert-mcdermott.github.io/clonoloom/docs/) w
 
 - `clonoloom simulate --out <new folder>` writes a simulated TRB study whose truth is known: AIRR
   rearrangement tables, their Repertoire metadata, and the truth beside them; presets `standard`,
-  `null` and `small` ([simulated studies](docs/SIMULATION.md)).
+  `null` and `small`, and the CAR-T, transplant and vaccination studies over time.
+  Wave 5 adds `--preset bcell-immunization`: artificial paired heavy/light chains with known
+  families, ancestors, mutation events, isotypes and sampled cells, also offered offline in
+  Example data. See [simulated studies](docs/SIMULATION.md) for each model and its limits.
 
 It takes `-h` for its settings.
 
@@ -225,7 +239,7 @@ node docs/site/build.mjs /tmp/site       # the website, every link checked (docs
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.4.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.5.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Example data

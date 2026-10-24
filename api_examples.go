@@ -39,6 +39,11 @@ func newExamples(dir string, offline bool) *examples.Library {
 // this computer in seconds.
 func simulatedExamples() []examples.Generated {
 	return []examples.Generated{
+		bcellInputExample(),
+		imgtInputExample(),
+		simulatedExample("bcell-immunization", bcellSteps, "An artificial B-cell immunization study with known families",
+			"Three subjects sampled before a simulated immunization and at days 14 and 28: paired heavy/light chains from twelve families per subject, with known ancestors, substitutions, isotypes and cell counts. Artificial coding sequences and SIM gene calls, not biological reference alleles; a simple benchmark, not a fitted model of affinity maturation. Truth is beside the observations in truth/.",
+			"Nine samples, 240 paired cells each. Inspect the supplied ancestor alignments and artificial region coordinates.", 6<<20),
 		simulatedExample("standard", nil, "A simulated TRB study with known truth",
 			"Bulk T-cell receptor β repertoires simulated by ClonoLoom: three control subjects and three whose repertoires hold a few expanded clones, two blood samples of each at different depths. Every clonotype of every subject is known (truth/), so diversity, rarefaction and overlap can be checked against the truth. Made on this computer in a few seconds.",
 			"The twelve samples, with their subjects and conditions, in templates.", 33<<20),
@@ -59,6 +64,19 @@ func simulatedExamples() []examples.Generated {
 
 // The guided steps of the studies over time.
 var (
+	bcellSteps = []examples.Step{
+		{Title: "See each subject's samples in time", Action: "describe_subjects",
+			Words: "Three artificial subjects, sampled at days -7, 14 and 28 of an immunization. Each sample holds 240 paired cells; the sampling probabilities and actual counts are recorded in truth/."},
+		{Title: "Inspect an artificial sequence and its ancestor", Action: "inspect_bcell_inputs", Args: map[string]any{"select": 1},
+			Words: "Every row retains a coding sequence, its known rearranged ancestor and artificial region coordinates. SIM calls are fictional. These are supplied annotations; mutation and lineage inference remain later steps. Count cells once, even though each has two sequence rows."},
+		{Title: "Inspect distances before choosing a threshold", Action: "find_bcell_families", Words: "Each distinct paired nucleotide receptor contributes once to nearest distances within its subject and both chains' V/J/length partitions. Missing neighbors are not zero; no families are assigned yet."},
+		{Title: "Find families at an explicit threshold", Action: "find_bcell_families", Args: map[string]any{"threshold": 0.1}, Words: "At 0.1 the artificial study recovers its 36 known families. This is a demonstration threshold, not a recommendation for biological data. Paired distance is the larger heavy/light distance; single-linkage endpoints can exceed the threshold."},
+		{Title: "Reconstruct D-masked germlines", Action: "reconstruct_bcell_germlines", Args: map[string]any{"reference": simulatedGermlines}, Words: "The v2 artificial reference reconstructs all 4,320 assigned chain rows across 72 family/locus groups. The 33 intervening bases are masked, including the light-chain junction. These are reference projections, not the known full ancestors; mutation statistics are a separate result."},
+		{Title: "Measure somatic hypermutation", Action: "measure_bcell_shm", Words: "Compare all 4,320 source chain rows with their D-masked references. Each has 327 evaluable bases and 109 evaluable codons. Inspect source rows for regional counts, single-hit replacement/silent substitutions and separately classified multi-hit codons. These net differences are not the simulator's historical event counts."},
+		{Title: "Build lineage trees", Action: "build_bcell_lineages", Words: "Build 72 family/locus parsimony trees on 327 shared V/J sites. Inspect an inferred node, its conditional IUPAC states and the observed isotype, timepoint and tissue annotations. Many optimal topologies tie; the selected tree is not established ancestry or evidence of switching or migration."},
+		{Title: "Summarize isotypes", Action: "summarize_bcell_isotypes", Words: "Count 2,160 cells in 36 saved families. Compare sample and family/sample class or constant-gene usage. Each unordered IGHM/IGHG1/IGHA1 pair occurs in all 36 families; these descriptive counts do not reconstruct switching events. Inspect a cell for its original heavy and light C calls."},
+		{Title: "Keep the methods and references", Action: "show_methods", Words: "The methods paragraph records the family threshold, reference checksums, evaluable panels, uncertainty and citations for every saved result. Export result tables from each view; germlines and lineages also offer FASTA, and lineages Newick. The project saves automatically; keep its source files available so these results can be reopened."},
+	}
 	carTSteps = []examples.Step{
 		{Title: "See each patient's samples in time", Action: "describe_subjects",
 			Words: "Three patients, sampled twice a week before the infusion and four times after it, each with the infusion product as its reference sample."},

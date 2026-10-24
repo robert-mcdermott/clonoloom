@@ -9,14 +9,15 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–4 are planned to the slice
-now; later waves are outlined and refined as they come.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–4 are complete; wave 5
+has a sequence of slices and a detailed plan for slice 1. Later slices are refined as they come.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
-2 and 3 are merged and released as 0.2.0 and 0.3.0; wave 4 (0.4.0) is implemented on `wave4`, with release preparation in slice 8;
-commit, CI, tag and publication remain maintainer actions.
+2–4 are merged and released as 0.2.0–0.4.0, and the 0.4.0 product site is published.
+Wave 5 is underway on `wave5`; slices 1–3 are committed. Slice 4 is implemented and validated,
+awaiting the maintainer's commit.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -557,7 +558,7 @@ queries make a public cohort more than one example's files.
 | 5. Neighborhoods and backgrounds | Done |
 | 6. Clonotype networks | Done |
 | 7. Specificity databases | Done |
-| 8. Invariant populations and the examples; release 0.4.0 | Implemented; release pending |
+| 8. Invariant populations and the examples; release 0.4.0 | Done; released and site published |
 
 ### Decisions for wave 4
 
@@ -865,13 +866,583 @@ queries make a public cohort more than one example's files.
      Release 0.4.0's project fixture, version files, pictures and pages are prepared.
      Go race checks, amd64 compatibility, six platform builds, 80 JavaScript tests,
      14 accessibility checks and 104 site audit checks pass.
-     Commit, CI, tag and publication are left to the maintainer.
+     Completed: merged, CI passed, 0.4.0 released and its product site published by the maintainer.
+
+## 0.5.0: B cells (wave 5)
+
+A researcher opens annotated B-cell repertoires, checks which sequences can support the
+analysis, and follows clonal families, their mutations and isotypes through a study. Junction
+clonotypes remain the existing, explicit definitions; a B-cell clonal family is a separate,
+threshold-dependent result, not a replacement for those identifiers.
+
+Implemented on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
+before building on it, keep the source's identity with derived results, and test against
+independent values. ClonoLoom continues to compute every reported number in Go. The order below
+puts a simulation with known families before the analyses it validates. Slices 1–8 are
+committed; slice 9 is implemented and validated, awaiting maintainer commit and release.
+
+| Slice | Status | Scope |
+| --- | --- | --- |
+| 1. B-cell sequence evidence | Committed | Retain AIRR sequences, alignments and coordinates; inspect their availability and validity |
+| 2. IMGT/HighV-QUEST input | Committed | Join the documented output tables by sequence identity, preserving aligned sequences and annotation provenance (D5) |
+| 3. Simulated B-cell families | Committed | An immunization study with known ancestors, families, mutations, isotypes and sampled abundance (E1) |
+| 4. Clonal families | Committed | Distance-to-nearest distributions, explicit thresholds, heavy/light pairing and subject boundaries (C4, B2) |
+| 5. Germlines | Committed | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
+| 6. Somatic hypermutation | Committed | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
+| 7. Lineage trees | Committed | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
+| 8. Isotypes and class switching | Committed | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
+| 9. Examples and release 0.5.0 | Implemented; awaiting commit | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
+
+### Slice 1: B-cell sequence evidence
+
+**Serves D5, D8, D11 and O3; prerequisite for B1 and B3.** These B-cell analyses remain planned
+after this slice. The deliverable is useful on its own: open an AIRR table, see which IGH, IGK
+and IGL rearrangements have sequence and alignment evidence, inspect a row and export the
+retained evidence. An absent or inconsistent alignment is a reason an analysis cannot use that
+row, not a reason to discard a valid junction from the existing repertoire analyses.
+
+**Why this comes first.** `internal/airr/schema.go` already types the alignment fields, but
+`internal/reads/airr.go` and `internal/rep` do not retain them. `internal/export` currently writes
+empty sequence, alignment and CIGAR fields. The B cells view is still a placeholder. Building
+mutation counts on this table would either lose the evidence or silently assume an alignment.
+
+1. **Retain a bounded set of AIRR evidence fields.** Extend `rep.Row`, `rep.Table` and its builder
+   with optional columns for `sequence`, `rev_comp`, `sequence_alignment`, `germline_alignment`,
+   `v_cigar`, `d_cigar`, `j_cigar`, the V/D/J sequence, germline and alignment start/end fields,
+   FWR1–4/CDR1–3 start/end fields, `np1_length`, `np2_length`, and `germline_database`.
+   Keep strings as supplied, including gaps and ambiguity symbols; interpretation uses a
+   separate checked representation. Store long sequences outside the gene-call dictionary.
+   Columns absent from the input allocate nothing; mixed files backfill missing values.
+   Existing non-AIRR readers continue to leave this evidence missing. Mapping OAS-specific
+   fields, legacy Change-O headers and raw IgBLAST output is outside this slice.
+2. **Keep coordinate systems distinct.** AIRR positions are 1-based closed intervals. Sequence,
+   germline and alignment coordinates name different strings; FWR/CDR coordinates refer to the
+   query sequence. Keep their names and values in the table and exports. Checked internal
+   slices may use zero-based half-open intervals, with the conversion in one tested place.
+   Missing, invalid and explicit zero lengths remain distinguishable. `rev_comp` is preserved;
+   do not reverse an already oriented alignment a second time. No positional mapping is inferred
+   by padding strings, assuming a full-length V gene, or treating the junction as a full VDJ.
+3. **Validate what is actually present.** Add stable findings with source, line, field, example
+   and remedy for invalid coordinates, reversed or out-of-bounds intervals, malformed CIGARs
+   and incompatible paired alignment lengths. Do not bounds-check germline coordinates against
+   the query or pretend the unprovided reference length is known. Parse CIGAR operations with
+   overflow and allocation bounds; apply AIRR's operation semantics rather than equating a
+   CIGAR span with a gapped string's length. Preserve the supplied evidence when invalid, but
+   refuse to use it as a checked alignment. A missing optional field is availability information,
+   not a warning for every row. Equal lengths alone do not establish IMGT numbering, valid
+   region mapping or a trustworthy germline. Cell Ranger's existing unequal alignment examples
+   must remain readable and show that limitation explicitly.
+4. **Cache and export without changing old results.** Extend the cache's column/store inventory,
+   decoding bounds and memory accounting. Increment `reads.ReaderVersion` and the cache layout
+   version when the retained layout changes; rebuild disposable caches from the checked sources.
+   Do not rewrite old artifacts or change the project archive version for an optional table
+   extension. Populate the AIRR export's existing evidence columns and append retained optional
+   coordinates deterministically, preserving missing values. Existing clone IDs, counts, filters
+   and single-cell chain selection stay the same. Correct the format guide's present claim that
+   exports re-read every other source column: arbitrary source-column round trips are not part
+   of this slice.
+5. **Make the evidence inspectable.** Replace the B cells placeholder with an Inputs part
+   (`api_bcells.go`, `web/ui/mode-bcells.js`, backed by a small `internal/bcell` package).
+   Show the active filter and definition, IGH/IGK/IGL row counts by sample, and separate counts
+   for sequence present, both alignments present, structurally valid paired alignments and
+   supplied region coordinates. Count rearrangements here, not cells or clonal families; any
+   abundance shown names its unit and denominator. These are evidence summaries, not a blanket
+   "ready for mutation" verdict. A paginated table opens the source sequence, alignments,
+   coordinates and findings in the inspector, linked by source identity and sequence ID even
+   when IDs repeat across files. Paginate from Go; do not send all sequences to the browser.
+   Reuse the existing dataset/filter and inspector patterns, with a remote action
+   `inspect_bcell_inputs` for the same summary and a bounded page. No new background job or
+   scientific artifact is needed for this deterministic inspection of an already opened table.
+6. **Example and documentation.** Supply a small labeled synthetic AIRR example with complete,
+   partial, ambiguous and invalid evidence, made by a committed script. Its guided steps open
+   B cells and inspect the reasons rows differ. Use the existing openly licensed B-cell AIRR
+   development files as real-format checks. Add the Inputs guide page and both-theme capture
+   scene, update `docs/FORMATS.md`, the README, remote-action documentation and requirements,
+   and add an unreleased changelog entry when implemented. Keep the released version at 0.4.0
+   until the wave's release-preparation slice.
+
+**Validation and exit criteria.**
+
+- Independent `airr`/CSV reads agree on every retained field and missing value in the selected
+  development files; commit the comparison script, tool version and reduced reference output.
+  Use `uv` for Python reference scripts. Synthetic coordinates have hand-calculated boundaries,
+  including reverse orientation, leading offsets, gaps, partial segments, ambiguity symbols,
+  missing endpoints, zero N/P lengths and hostile large integers/CIGAR operations.
+- Cache round trips retain every new column; old cache keys are not reused; corrupt optional
+  columns fail safely. AIRR export/re-import preserves the declared evidence fields. Source
+  checksums remain unchanged. Fuzz the new parsers and coordinate conversions.
+- Existing reader, QC, clonotype and export tests pass. Every released project fixture opens;
+  its existing artifact documents reproduce byte for byte on arm64 and amd64. A changed reader
+  version alone must not invalidate a saved scientific result whose inputs and method agree.
+- API and browser checks cover mixed T/B data, no B cells, missing evidence, filters, repeated
+  sequence IDs, paging, selection changes and remote inspection. The example's guided steps
+  work in both themes; accessibility checks and the site build pass.
+- Re-run the existing million-row read and page budgets and measure the added sequence memory
+  on a fixed synthetic AIRR dataset. Confirm no sequence columns are allocated for junction-only
+  inputs. Large reference regeneration stays outside per-commit CI; small reference checks run
+  in CI. Go race tests and `go vet`, JavaScript tests and six-platform builds remain required.
+
+**Implemented.** Optional raw evidence columns, bounded CIGAR and coordinate checks, stable
+findings, cache and AIRR round trips, paginated Inputs and its inspector, remote action and
+seven-row artificial example with guided steps. The new guide, captures, format notes and cited
+methods describe the distinction between structural evidence and biological inference.
+
+**Checked.** All 42 fields agree with independent CSV reads on 7 artificial and 7,733 public
+B-cell rows (four 10x datasets). Cache corruption and old versions are refused; absent evidence
+allocates no columns. API tests cover repeated IDs, mixed T/B data, missing evidence, filters,
+paging and invalid requests. Both-theme browser checks cover the example, filtered/empty results
+and stale inspector responses. Release fixtures and evidence checks pass on arm64 and amd64;
+Go race validation (including the full scientific package and a root-package rerun after the
+example catalog grew), `go vet`, 81 JavaScript tests, six platform builds, 14 accessibility
+checks and 108 site audit checks pass. The million-row page
+budget is 41 ms and cached cohort reopening 185 ms on this machine. The fixed 100,000-row
+sequence-memory case adds 30.9 MiB. CIGAR and interval fuzz runs pass.
+
+**Decided during implementation.** Keep raw numeric and orientation text as well as sequence
+strings, so that missing, zero and invalid annotations can be inspected and exported distinctly.
+Reader/cache version 2 rebuilds cached tables, while a separate identity version remains 1:
+additional annotations do not change existing junction analyses or their dataset/artifact IDs.
+The first Inputs part does not create an artifact; it inspects the current source and filter.
+Rows count under the QC filter rather than a clonotype definition's chain selection. Region
+presence and structural validity remain separate. IMGT input and all biological inference stay
+in later slices. The version remains 0.4.0 until release preparation.
+
+**Sources and boundary.** The field and coordinate contract is the
+[AIRR Rearrangement schema 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html),
+with the older supported schemas still accepted (Vander Heiden et al. 2018, *Front Immunol*
+9:2206, doi:10.3389/fimmu.2018.02206). Before implementing the coordinate checks, pin the schema
+version and document each supported field's string and orientation convention in `research.md`.
+Change-O's public [germline documentation](https://changeo.readthedocs.io/en/stable/examples/germlines.html)
+motivates retaining the evidence needed by later reconstruction, but slice 1 reconstructs no
+germline and computes no mutation rate. No new germline download, inferred allele, family
+threshold, selection statistic or lineage algorithm belongs here. Future reference comparisons
+use tools as external programs; their source is neither inspected nor copied into ClonoLoom.
+
+### Slice 2: IMGT/HighV-QUEST input
+
+**Serves D5, D8, D11 and O3.** Read annotated output without running annotation, reconstructing
+germlines or importing vendor mutation statistics as computed results. Use the documented table
+contract (research.md §5.14), retaining sequence evidence and the provenance needed by later slices.
+
+1. **Open one run as one sample.** Accept an extracted folder or explicitly selected tables
+   1, 2, 3 and 6, plus optional Parameters (11). Support gzip and prefixed names. Recognize output
+   folders in the picker. Check headers, exact row width and identities; join by sequence number
+   and sequence ID regardless of row order. Reject incomplete bundles, duplicate numbers,
+   mismatched identities and conflicting gene calls. Keep failed annotations as rows.
+2. **Map only justified fields.** Preserve ties, productive/unknown states, un-restored junctions,
+   the already oriented Summary sequence and table 2's gapped query. Map query coordinates only
+   when their uncorrected region matches the Summary substring. Retain original positions,
+   orientation, comments, corrected translations and contributing table lines in a native
+   annotation extension. Leave germline alignment, CIGAR and biological inference absent.
+3. **Preserve the whole input's identity.** Fingerprint every table and optional Parameters;
+   record sample grouping in source records, saved projects and cache keys. A companion change
+   must invalidate both the cache and dataset identity. Preserve old dataset/artifact IDs.
+   Use disk-backed identity indexes for reordered tables; remove temporary spools on all exits.
+4. **Make it inspectable.** Reuse B cells → Inputs, AIRR export and remote inspection. Show native
+   annotations in an expandable section and Parameters in Data. Add a locally generated,
+   explicitly artificial example with guided steps, format notes, cited methods and captures.
+
+**Acceptance checks.** Independent stdlib CSV joins and hand-specified coordinate expectations;
+shuffled rows, repeated IDs, heavy/light chains, ties, missing/failed annotations, reverse strand,
+indel correction and malformed input. Exercise gzip, cancellation, sources unchanged, cache and
+AIRR round trips, companion fingerprint changes, content-addressed relocation and project reopen.
+Fuzz the bounded index reader. Check the example in both themes, release compatibility on arm64
+and amd64, Go race tests and vet, JavaScript/accessibility checks, six builds and the site audit.
+Keep version 0.4.0. Extracted tabular output is the supported scope; archive/workbook import,
+reference reconstruction, N/P reconstruction and vendor mutation-statistics import are deferred.
+
+**Implemented.** The four-table identity join, optional Parameters, conservative coordinate
+mapping, native annotation evidence, cache/project integration, inspector, offline example,
+methods and documentation. No later biological analysis has been started.
+
+**Checked.** Independent CSV values agree for all four artificial fixture rows, including
+shuffled joins, repeated IDs, calls, sequences, mapped coordinates and missing evidence. AIRR
+round trips preserve the native annotation extension. Cache checks include changes in both gapped
+sequence and Parameters files. Gzip, hash-sharded library storage, legacy Functionality headers,
+prefixed cohorts, invalid grouping/mapping combinations and source-preserving relocation pass.
+The bounded reader fuzz run completed 498,261 executions without failure. Guided browser steps
+and project reopening pass in both themes. Existing release fixtures reproduce on arm64 and
+amd64. The full Go race suite and final changed-package checks, vet, six platform builds,
+82 JavaScript tests, 14 accessibility checks and 108 site audit checks pass.
+
+The isolated million-row budget reads and validates in 1.488 s, reopens the cached cohort in
+135 ms and answers the searched page in 39.847 ms. An earlier page timing exceeded the budget
+while scientific validation and builds competed for resources; the isolated rerun passed without
+a code change. No real IMGT-annotated cohort was used: the new reader's evidence is the published
+format contract and independently checked artificial fixtures. Version remains 0.4.0.
+
+
+### Slice 3: Simulated B-cell families
+
+**Serves E1 and the first immunization steps of E3; prerequisite truth for C4 and B1–B5.**
+Deliver a deterministic offline study with paired heavy/light observations and separate known
+ancestors, family membership, ordered mutations, isotype history and sampled abundance. No
+family, germline, mutation-rate or lineage inference is introduced in this slice.
+
+**Scope and decisions.** Add `bcell-immunization` to `clonoloom simulate` and Example data. The
+default is three artificial subjects, twelve families each, days −7, 14 and 28, 240 paired cells
+per sample and three accepted substitutions per chain per edge. Model
+`clonoloom-artificial-bcell-v1` uses artificial coding strings with fictional SIM calls and
+explicit contiguous region coordinates, without importing a reference allele set. Its fixed
+seven-state tree, forward M/G1/A1 transitions and family/node abundance weights are ClonoLoom's
+choices, fully described in `docs/SIMULATION.md`. They make a small inspectable benchmark, not a
+calibrated germinal-center or affinity model. A deliberately reversed event distinguishes path
+mutation counts from net ancestor differences. States with identical sequences remain separate.
+
+1. **Observations and units.** Write AIRR rows for one heavy and one kappa/lambda chain per cell,
+   with coding sequence, known ancestor alignment, artificial query regions, source IDs and
+   isotype calls. Reads/UMIs and D/CIGAR/reference-coordinate evidence remain absent. Count cells
+   once under the paired definition. Preserve ordinary junction clonotype IDs and behavior.
+2. **Known truth.** Keep all subject-specific states, parents, sequences and ordered events in
+   `truth/truth.json`; link observed cells to states in `truth/observations.tsv`. Record every
+   sample's expected node probabilities and realized cell counts, including unobserved states.
+   Serialize effective parameters, seed, model/version and file checksums. Keep truth out of
+   imported data. Atomic completion, cancellation cleanup and nonempty-output refusal follow
+   the existing local-output conventions.
+3. **User path.** Offer the study offline with Subjects and Inputs steps. Methods text identifies
+   the B-cell model from metadata even if the study is renamed; it must not describe TRB genes,
+   template/read sampling or extra biological variance. Add a guide capture in both themes and
+   document reproduction, artificial-region semantics and the scientific limits.
+4. **Independent validation.** Python stdlib CSV and genetic-code checks replay all events,
+   verify every observation and coordinate, and independently calculate sampling probabilities,
+   cell/isotype/paired-clonotype counts and net ancestor differences. Commit reduced expectations
+   and sample hashes. Go checks them through the real readers and paired definitions. Pin output
+   bytes on arm64 and amd64, retain old simulator digests, and test sampling, parameters, seeds,
+   cancellation and no-overwrite behavior. Run the race suite, vet, release compatibility, six
+   builds, JavaScript/accessibility checks, guided browser steps and site audit.
+
+**Sources and boundaries.** See research.md §5.15. Yaari et al. 2013
+(doi:10.3389/fimmu.2013.00358) explains the context dependence absent from this simple mutation
+model; Horns et al. 2016 (doi:10.7554/eLife.16578) describes biological class-switch order.
+Neither publication's model is reproduced. The ancestor alignment includes its artificial
+junction and is not a reconstructed/D-masked germline. Real reference sets, indels, selection,
+error/dropout, alternative trees and biological calibration stay outside this slice. Later
+analyses require additional hand cases, independent implementations and real-data checks.
+
+**Implemented.** The bounded deterministic model, paired AIRR/Repertoire output, complete state
+and event truth, sample probabilities and cell assignment, SHA-256 manifest, atomic output,
+offline example, guided steps, model-specific methods and documentation. Version stays 0.4.0.
+
+**Checked.** Independent replay agrees on 252 states, 1,296 events (998 replacement, 298 silent,
+including 72 deliberate reversals), and all 2,160 paired cells / 4,320 rows. Source/ancestor
+alignments, regions, metadata, paired clonotypes, isotypes and net differences agree through the
+real readers. All 180,000 categorical draws remain within 2.782 standard deviations of the
+documented probabilities. Parameter round trips, bounds, cancellation cleanup and overwrite
+refusal pass. The small study's pinned bytes agree on arm64 and amd64; old TRB digests and every
+released project fixture still pass.
+
+The full Go race suite passes (scientific validation 493.5 s), as do the final root-package rerun,
+vet, six platform builds, 84 JavaScript tests, 14 accessibility checks, guided steps and methods
+inspection in both themes, and the 108-check site audit with no problems. Mixed B-cell/TRB data
+keep separate methods descriptions. The site builds 28 pages with 26 screenshot sets. Isolated
+million-row budgets: read/validate 1.518 s, cached cohort reopen 123 ms, searched page 37.058 ms.
+No later slice or release preparation has been started. Version remains 0.4.0.
+
+### Slice 4: Clonal families
+
+**Serves C4 and B2.** Keep these inferred families separate from junction clonotypes. The
+settled method is length-normalized nucleotide Hamming distance and single-linkage connected
+components at an explicit inclusive threshold, following Gupta et al. (2015, 2017), with the
+conservative eligibility and paired policies documented in research §5.16.
+
+1. Compare productive ACGT nucleotide junctions with resolved V/J genes (same-gene allele ties
+   are acceptable), within equal V/J/length partitions and explicit subject boundaries. Do not
+   infer subject from a sample name. Missing subjects are excluded; sample scope is an explicit
+   alternative. QC applies first. A null threshold measures distances only; zero is exact identity.
+2. Auto selects paired mode for cell-indexed tables. Require exactly one distinct heavy and
+   one distinct kappa/lambda chain per sample-scoped cell. Collapse duplicate identical chains,
+   exclude ambiguous or missing evidence, and use the maximum normalized chain distance within
+   both chains' partitions. Heavy mode remains available. Bulk rows retain their count unit;
+   cells count once. Unknown abundance stays missing.
+3. Collapse identical compared receptors only within their scope for nearest distances. Each
+   contributes once, without abundance weighting. No comparable receptor is null. Use 20 bins
+   of width 0.05, with 1 included in the final bin. State transitivity and threshold sensitivity.
+4. Keep cancellable, resumable jobs and immutable artifacts with normalized options, subjects,
+   QC, source-row identities, membership, exclusions, nearest distances and per-sample abundance.
+   Retain existing clonotype IDs. Refuse more than 250,000 observations or 200 million compared
+   bases explicitly, without sampling. The UI reads pages of at most 200 rows (normally 50).
+5. Add B cells → Families, saved choices, source inspection, old-result reopening, figure and
+   CSV exports, methods citations, remote control and two guided steps. Export all rows and
+   source hashes, not only the current page. Keep membership abundance at observation level;
+   chain-row repeats must not be summed. Family IDs and artifact IDs record different scopes:
+   family IDs hash members/options; artifacts additionally identify files, filters and annotations.
+6. Validate boundary cases, subjects, missing evidence, duplicate chains, multi-chain cells,
+   transitive links, explicit zero, cancellation and work bounds. Compare every observed-cell
+   membership and nearest-distance bit pattern against an independent CSV/adjacency-graph
+   calculation for eight cases. At 0.1, both heavy and paired modes exactly recover all 36 known
+   artificial families. This validates artificial truth, not accuracy on biological repertoires.
+
+**Implemented and validated.** The complete Go race suite passes (scientific validation
+669.3 s), followed by the final API/core/export race rerun. Vet, six platform builds,
+arm64/amd64 family and released-project compatibility checks, and five seconds of distance
+fuzzing pass. All 87 JavaScript tests and 14 accessibility checks pass. Browser checks cover the
+visible threshold controls, metadata subjects, paginated members/nearest receptors, source
+inspection, methods and reopening an older result. All four affected B-cell guided workflows
+pass in both themes. The site builds 29 pages with 27 screenshot sets; its 112-check audit finds
+no problems. Isolated million-row budgets pass: read/validate 1.558 s, cached reopen 161 ms,
+searched page 40.444 ms. The reference checks every membership and nearest value at eight
+mode/threshold combinations. Explicit empty subject maps override metadata; unrelated clonotype
+and diversity choices do not change family identity.
+No germline, SHM, tree or class-switch implementation is included. Version remains 0.4.0.
+
+### Slice 5: Germline reconstruction
+
+**Serves B1.** Reconstruct from a saved, thresholded family result and a checksum-pinned
+ungapped V/J reference. Retain the family result's checksum, original row identities,
+reference bytes' checksums, versions, license and citation in the immutable result.
+
+- Resolve one V and J allele per family/locus by intersecting explicit member calls.
+  Conflicts, unresolved ties and absent alleles remain exclusions. Do not infer a genotype,
+  choose the first tie, borrow another subject's evidence or substitute a reference allele.
+- Project selected V/J segments using bounded AIRR CIGARs and oriented raw query sequence.
+  Check supplied query/reference endpoints against CIGAR offsets. Preserve insertions and
+  deletions as alignment gaps and retain per-column query/reference positions. Mask the
+  entire intervening D/N/P region with N, including the V–J junction in light chains.
+  Rows may cover different reference spans; keep their individual projections under the
+  common family allele selection rather than inventing one padded family alignment.
+- First biological catalog: human OGRDB IGH v10, IGK v5 and IGL v4 (27 May 2026), CC0,
+  downloaded only on request. No raw-sequence annotation, gapped IMGT projection, gene-only
+  allele inference, custom reference upload, SHM statistics or lineage reconstruction.
+  Missing CIGARs are an explicit unsupported-evidence state, including native IMGT input.
+- Version the artificial study as v2: export its independent V/J backbones and CIGARs;
+  correct the shared J name for distinct backbone sequences. Do not change its simulated
+  sequences or mutation histories. Existing v1 datasets/results remain immutable and openable.
+- Add a Germlines view, bounded pages/row inspection, complete JSON/CSV/FASTA exports,
+  methods and reference provenance, remote action and guided artificial workflow.
+
+**Acceptance.** Hand-calculated reverse orientation, offsets, indels, masking, ambiguity,
+missing evidence and hostile lengths; independent CSV/reference reconstruction of the
+artificial study; pinned public-reference parsing and real AIRR evidence checks; parent and
+reference tampering refusal; cache identity and released-project compatibility; browser
+workflow in both themes; Go race/vet, JavaScript, accessibility, builds and site checks.
+Keep version 0.4.0 until release preparation. No slice 6 mutation statistics in this slice.
+
+**Implemented.** Immutable germline jobs derive from checksum-verified saved families and
+on-request human OGRDB or generated artificial references. The Germlines view, bounded
+family/row pages, alignment inspector, source identity, complete CSV/FASTA/JSON exports,
+parent/reference lineage, cited methods and remote/guided workflow are in place. Native IMGT,
+gene-only calls and missing CIGARs remain explicit exclusions. Artificial model v2 supplies
+reference segments and unambiguous J names while preserving sequences and mutation histories.
+
+**Checked.** Independent Python 3.13.3 CSV/FASTA reconstruction agrees with all 4,320 projected
+alignments and coordinate maps in 72 family/locus groups. All 252 mutation histories and all
+observed sequences/ancestors are unchanged from v1; existing independent family memberships
+and nearest distances remain unchanged. All 421 pinned OGRDB records parse. The public Ramos
+heavy row reconstructs; 56/437 assigned heavy rows in 10x PBMC 1k/10k-v2 are explicitly excluded
+for gene-only calls, a coverage check rather than biological truth. Orientation, clipping,
+indels, ambiguity, invalid coordinates, missing evidence, byte bounds and checksum changes
+pass focused tests; projection fuzzing passes. Full Go race coverage, with affected-package
+reruns after fixes, and vet pass. arm64/amd64 germline, simulation and released-project checks,
+six platform builds, 89 JavaScript tests, 14 contrast checks, five browser workflows in both
+themes and 116 site audit checks pass. The site builds 30 pages with 28 screenshot sets.
+Isolated million-row budgets pass: read/validate 2.915 s, cached reopen 231 ms and searched
+page 82.289 ms. Version remains 0.4.0. Committed by the maintainer.
+
+### Slice 6: Somatic hypermutation
+
+**Serves B3.** Compare the saved D-masked germline parent with the original source chain rows.
+Pin the parent checksum and retain its family/reference provenance. Keep all rows, including
+exclusions. Current QC and clonotype settings must not change a derived result's identity.
+
+- Count unequal paired A/C/G/T bases; frequency is substitutions / evaluable paired bases,
+  missing at denominator zero. Report masks, gaps and ambiguities separately. These are net
+  differences, not historical event counts, mutation rates or sequencing-error corrections.
+- Keep whole-alignment, V/J and individual FWR/CDR results distinct. Use supplied oriented-query
+  coordinates. Missing regions stay missing; invalid/overlapping/out-of-order intervals suppress
+  the regional partition without discarding nucleotide totals. Uncovered positions stay in
+  totals; deletion gaps have no query-region assignment.
+- Check query codon phase from explicit in-frame V/J annotation and CDR3/junction agreement,
+  including conserved flanking codons. Never assume reference base 1 starts a codon. Suppress
+  codon inference for any indel-containing projection; omit partial, ambiguous, masked,
+  cross-segment and stop-containing codons. Regional codons must fit in the region.
+- Classify single-hit substitutions by NCBI table 1. For multi-hit codons report endpoint
+  replacement/silent codon counts but leave individual substitutions unclassified. Record
+  evaluable codons and stops separately. Do not infer mutation order or selection statistics.
+- Provide B cells → SHM, bounded pages, per-row region inspection, descriptive sample/locus
+  pooled counts, complete CSV/JSON exports, methods, remote control and a guided example.
+  Pool source rows without abundance weighting or deduplication; they are not subject replicates.
+
+**Acceptance.** Analytic coordinate/frame/ambiguity/indel/stop cases; every artificial row and
+region compared independently with known ancestors, including reversals and multi-hit codons;
+source and parent identity, missing versus zero, immutable options and complete exports;
+released-project and processor compatibility; Go race/vet, JavaScript, fuzz, browser workflows
+in both themes, accessibility/site checks, six platform builds and isolated performance budgets.
+Version remains 0.4.0. Trees and class switching remain in slices 7 and 8.
+
+**Implemented.** The core comparison, saved jobs and lineage, SHM view and regional inspector,
+source-row/sample summaries, complete exports, methods and remote/guided workflow are present.
+Detailed scientific choices and limitations are recorded in research §5.18 and FORMATS.
+
+**Checked.** Independent Python 3.13.3 ancestor comparisons agree for all 4,320
+source rows and 43,200 region entries: 9,941 substitutions / 1,412,640 evaluable bases; 7,297
+single-hit replacement, 2,360 silent, and 284 unclassified substitutions in 142 multi-hit codons.
+Endpoint counts are 7,439 replacement and 2,360 silent codons, with 470,880 evaluable codons.
+Source-file hashes and pooled summary denominators are checked. Analytic evidence/coordinate,
+indel, ambiguity, stop, partial-codon and attribution tests pass, along with source/parent
+identity, exports, cancellation and fuzzing (26,614 executions). The public Ramos row supports
+base/codon comparisons; 56/437 gene-only 10x heavy rows retain explicit germline exclusions.
+Full Go race coverage passes with loopback-enabled reruns of the two sandbox-blocked packages
+and focused reruns after test refinements; the scientific validation package completes in
+867.877 s. Vet, arm64/amd64 SHM and released-project compatibility, six platform builds,
+90 JavaScript tests and 14 contrast checks pass. Six B-cell browser workflows pass in both
+themes, including the guided SHM action, visible run control, paging, inspection, cited methods,
+view disposal and reopening. The site builds 31 pages with 29 screenshot sets; its 120-check
+audit across 30 pages finds no problems. Isolated million-row budgets pass: read/validate
+1.563 s, cached reopen 127 ms and searched page 41.742 ms. Version remains 0.4.0.
+Committed by the maintainer.
+
+### Slice 7: Lineage trees
+
+**Serves B4.** Build separate family/locus parsimony trees from checksum-pinned germlines.
+Scientific choices and citations are detailed in research §5.19. Version remains 0.4.0.
+
+- Intersect unambiguous, covered V/J reference positions across eligible rows; omit the
+  D/N/P mask, indels and ambiguity. Retain the panel map and all excluded source rows.
+- Collapse identical panel states without abundance weighting, retaining every source row
+  and observed C call, sample, timepoint and tissue. Fix the reference as the root state.
+- Enumerate every binary topology through eight taxa including the reference. Search 9–64
+  taxa by deterministic addition/NNI with explicit candidate/work bounds; mark heuristic
+  results and budget termination. Refuse larger groups rather than subsampling.
+- Choose a reproducible minimum topology and consistent ancestral assignment. Show conditional
+  IUPAC state sets and exact optimal-topology/split counts; never present them as probabilities.
+  Retain zero edges and acknowledge non-identifiable binary resolutions.
+- Add B cells → Lineages, an interactive/keyboard tree, observed annotation choices, node and
+  source inspection, accessible tables, complete CSV/JSON/FASTA/Newick exports, figure exports,
+  cited methods, remote control and the guided artificial study. Pin metadata in the result.
+- Do not infer class switching, migration, likelihood trees, selection or event dates.
+  Class-switching work remains slice 8; release preparation remains slice 9.
+
+**Acceptance.** Exact topology counts, brute-force ancestral ambiguity, deterministic heuristic
+and cancellation, partial/ambiguous panels, duplicate states and metadata mixtures; independent
+exhaustive calculation of all 72 artificial family/locus trees; immutable source/parent/metadata
+identity and complete exports; browser workflow in both themes; Go race/vet, processor and
+released-project compatibility, six builds, JavaScript, fuzz, accessibility/site and isolated
+performance checks.
+
+**Implemented.** Core parsimony and conditional-state reconstruction, immutable jobs and
+provenance, viewer and source inspection, exports, methods and remote/guided workflow are in place.
+Independent exact search agrees for all 72 trees and 4,320 rows, including all optimal-tree
+counts and 1,093 changes.
+
+**Checked.** Exact topology counts and brute-force ancestral ambiguity, deterministic heuristic
+search, cancellation, state/work bounds, partial panels, metadata mixtures and exclusions pass.
+Source/parent/annotation identity, historical metadata, pages and all export formats pass.
+The public Ramos row builds a tree; all 56/437 gene-only heavy rows in the 10x PBMC fixtures
+retain their upstream exclusions. These are evidence-coverage checks, not biological truth.
+The full Go race suite passes (scientific validation: 562.741 s), with focused reruns after
+final memory and test refinements. Coordinate maps are processed one row at a time rather
+than duplicating all saved alignments as maps. Vet, arm64/amd64 tree-serialization and released-project compatibility,
+six platform builds, 93 JavaScript tests, 517,526 projection fuzz cases and 14 contrast checks
+pass. Seven B-cell browser workflows pass in both themes, including keyboard node inspection,
+observed annotations, source paging, methods, disposal and saved reopening. The site builds
+32 pages with 30 screenshot sets; 124 audit checks across 31 pages find no problems.
+Isolated million-row budgets pass: read/validate 1.503 s, cached reopen 125 ms and searched
+page 47.415 ms. Version remains 0.4.0. Committed by the maintainer.
+
+### Slice 8: Isotypes and family co-occurrence
+
+**Serves B5's observational scope.** Summarize constant-region usage and family-level
+co-occurrence from a checksum-pinned, thresholded family result. Scientific choices and
+citations are in research §5.20. Version remains 0.4.0; release preparation is slice 9.
+
+- Count each assigned sample-scoped cell once in single-cell data, or each assigned heavy
+  source row once in bulk data. Retain original heavy and light C calls and source identities;
+  only heavy calls define isotype. Inherit membership, QC and subject scope from the parent.
+- Collapse allele ties. Resolve class separately from constant gene/subclass. All retained
+  heavy calls must agree at that resolution; missing, unsupported and conflicting calls remain
+  explicit. Do not choose the first candidate or treat IgM/IgD ambiguity as coexpression.
+- Show class and gene usage by sample and family/sample, with all assigned observations in
+  denominators, including unresolved calls. Keep parent exclusions outside the denominator.
+  Preserve missing abundance, measured zero and cell-versus-row counting; never multiply cell
+  abundance by contig count. Pin timepoint/tissue labels without pooling biological replicates.
+- Show family coverage and unordered pairs of resolved constant genes, counting each family
+  once per pair. Distinguish observations from switching inference: no event counts, direction,
+  timing, ancestral states, rates, significance or species-specific genomic ordering.
+- Add B cells → Isotypes, bounded pages, pair-to-family and family-to-observation navigation,
+  raw-call inspection, complete CSV/JSON exports, cited methods, remote action and guided study.
+
+**Acceptance.** Hand-calculated ambiguity, missing/zero abundance, duplicated contig, IgM/IgD,
+source-identity, scope and denominator checks; independent truth-file counts for the default
+artificial study; immutable parent/annotation identity and complete exports; browser workflow
+in both themes; Go race/vet, processor/released-project compatibility, six builds, JavaScript,
+fuzz, contrast/site and isolated performance checks.
+
+**Implemented.** The Go counting, saved jobs, usage/family/pair/observation pages, source inspector,
+exports, cited methods and remote/guided workflow are in place. Independent direct tallies agree
+for all 2,160 cells, 36 families and 466 usage rows. Each of the three unordered IGHM/IGHG1/IGHA1
+pairs occurs in all 36 families. This validates descriptive bookkeeping, not switching inference.
+
+**Checked.** Hand-calculated ambiguity, missing/zero abundance, duplicate contigs, IgM/IgD,
+subject/sample boundaries, empty evidence, cancellation and source identity pass. Observation
+units are distinct from abundance units, including unspecified bulk units. Malformed allele
+suffixes cannot conceal another candidate. API identity, annotations, bounded/filterable pages,
+parent tampering and complete exports pass. Public coverage resolves the Ramos observation and
+all 56/437 assigned observations in the pinned 10x PBMC fixtures, without requiring V/J alleles.
+These are coverage checks, not known biological switching truth.
+
+The application/internal race suite and complete scientific race run pass (scientific validation:
+501.008 s), with focused reruns for the final constant-call suffix guard. Vet, arm64/amd64
+serialization and released-project compatibility, six platform builds, 94 JavaScript tests,
+378,725 final fuzz cases and 14 contrast checks pass. Eight B-cell browser workflows pass in
+both themes; the isotype scene checks visible run controls, pair/family navigation, source
+paging and inspection, pinned metadata, cited methods, disposal and saved reopening. The site
+builds 33 pages with 31 screenshot sets; 128 audit checks across 32 pages find no problems.
+Isolated million-row budgets pass: read/validate 1.630 s, cached reopen 135 ms and searched page
+38.099 ms. Version remains 0.4.0. Committed by the maintainer.
+
+### Slice 9: Examples and release 0.5.0
+
+**Serves E3, O2 and N7.** Complete the artificial immunization guide through families,
+D-masked germlines, SHM, lineage trees, observed isotypes and cited methods. Prepare 0.5.0
+without changing the scientific scope: likelihood, selection and switching-event inference
+remain deferred.
+
+- Preserve a small release project with AIRR evidence, paired families across subjects,
+  reference bytes and provenance, the complete parent/result chain and joined IMGT inputs.
+  Reopen its datasets under their original identities and reproduce every document byte for
+  byte on arm64 and amd64. Preserve earlier fixtures unchanged.
+- Update version, changelog, citation, user guides and release overview. Explain how to
+  inspect evidence, choose a demonstration threshold, interpret limits and export results.
+- Refresh all captures in both themes and the site preview; check links, accessibility,
+  viewport overflow, release version agreement, installers and six platform builds.
+
+**Acceptance.** All released projects, full Go race/vet and scientific validation, JavaScript
+and contrast checks, guided browser workflows, site audit and isolated performance budgets.
+The maintainer executes the commit, PR/merge, tag, release and site publication.
+
+**Implemented.** The nine-step guide ends with cited methods; its worked example explains
+expected counts, interpretation limits, exports and returning to Tracking for the next step.
+The 0.5.0 compatibility fixture retains 60 paired cells (120 chain rows) across three families,
+six samples and two subjects, plus a joined synthetic IMGT bundle. Its seven results retain
+nearest-only and thresholded families, germlines, SHM, six family/locus trees and isotypes.
+Reference FASTA and catalog provenance are pinned; replay preserves IMGT grouping. Earlier
+release fixtures are unchanged. Program, web assets and citation now name 0.5.0; changelog,
+release overview, scientific validation, formats and user guides describe the completed scope.
+
+**Checked.** Application/internal and complete scientific Go race checks pass (scientific
+run: 788.685 s). Non-race scientific validation with every required CI dataset passes
+(261.504 s), with all six performance budgets run separately without competing validation
+or capture processes (87.704 s). The million-row read/validation takes 1.568 s, cached reopen
+129 ms and a searched page 37.348 ms. One million generation probabilities take 41.703 s;
+100,000 paired TCR neighborhoods take 34.591 s, both on ten processors.
+
+All four release projects reproduce on arm64 and amd64; 0.3.0 onward compare byte for byte.
+Vet, formatting, release-version agreement, six platform builds, shell installer syntax,
+95 JavaScript tests and 14 contrast checks pass. All 31 browser scenes pass in both themes,
+including the complete guide's saved result kinds and scientific citations. The site builds
+33 pages with 31 screenshot sets; its 128 accessibility/viewport checks find no problems,
+and eight focused checks cover the final guide wording. Captures and desktop/phone previews
+were visually inspected. The link-preview image was regenerated and remains byte-identical.
+PowerShell syntax remains a CI check because pwsh is not installed locally; optional live
+publisher downloads and the maintainer-only VDJdb lookup were not requested or rerun.
+
+No commit, PR, merge, tag, release or site publication was performed. Version 0.5.0 is ready
+for the maintainer's commit and the established CI → PR/merge → release workflow.
 
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 5 | 0.5.0 | B cells | Germline reconstruction, clonal families with thresholds from distance to nearest, mutation by region, parsimony trees, isotypes; immunization example |
 | 6 | 0.6.0 | Single cell | Expression linked by barcode, the map, phenotypes per clonotype, clonotype modularity and CoNGA-style analysis; AnnData, MuData and 10x matrices |
 | 7 | 0.7.0 | Cohorts and robustness | Study design, group comparisons with the subject as unit, robustness to the definition, GLIPH2-style groups, HLA association, contamination and batch QC, pseudobulk |
 | 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |

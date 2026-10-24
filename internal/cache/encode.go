@@ -20,7 +20,7 @@ import (
 // (an entry of another version is a different key, never read).
 var magic = []byte("CLOLTBL\x00")
 
-const formatVersion = 1
+const formatVersion = 2
 
 type header struct {
 	Format    string          `json:"format"`
@@ -56,7 +56,7 @@ type slot struct {
 }
 
 func slots(t *rep.Table) []slot {
-	return []slot{
+	out := []slot{
 		{name: "sample", u32: &t.Sample}, {name: "locus", u8: &t.Locus},
 		{name: "v", u32: &t.V}, {name: "d", u32: &t.D}, {name: "j", u32: &t.J}, {name: "c", u32: &t.C},
 		{name: "junction", u32: &t.Junction}, {name: "junctionAA", u32: &t.JunctionAA},
@@ -66,6 +66,10 @@ func slots(t *rep.Table) []slot {
 		{name: "isCell", i8: &t.IsCell}, {name: "highConfidence", i8: &t.HighConfidence}, {name: "fullLength", i8: &t.FullLength},
 		{name: "source", u16: &t.Source}, {name: "line", u32: &t.Line},
 	}
+	for i, name := range rep.EvidenceFields {
+		out = append(out, slot{name: "evidence." + name, u32: &t.Evidence[i]})
+	}
+	return out
 }
 
 // stores are the table's string stores, by name.
@@ -76,7 +80,7 @@ func stores(t *rep.Table) []struct {
 	return []struct {
 		name string
 		s    **rep.Strings
-	}{{"dict", &t.Dict}, {"junctions", &t.Junctions}, {"junctionsAA", &t.JunctionsAA}, {"ids", &t.IDs}}
+	}{{"dict", &t.Dict}, {"junctions", &t.Junctions}, {"junctionsAA", &t.JunctionsAA}, {"ids", &t.IDs}, {"evidence", &t.EvidenceText}}
 }
 
 func encode(k string, res *reads.Result) ([]byte, error) {
@@ -173,7 +177,7 @@ func load(path string) (*reads.Result, error) {
 	}
 	cols := map[string][]byte{}
 	for _, c := range h.Columns {
-		if c.Offset < 0 || c.Length < 0 || c.Offset+c.Length > len(body) {
+		if c.Offset < 0 || c.Length < 0 || c.Offset > len(body) || c.Length > len(body)-c.Offset {
 			return nil, errCorrupt
 		}
 		cols[c.Name] = body[c.Offset : c.Offset+c.Length]
@@ -254,6 +258,13 @@ func load(path string) (*reads.Result, error) {
 		}
 		if l >= 0 && l != h.Rows {
 			return nil, fmt.Errorf("%w: column %s", errCorrupt, s.name)
+		}
+	}
+	for _, column := range t.Evidence {
+		for _, code := range column {
+			if code != 0 && (t.EvidenceText == nil || uint64(code) > uint64(t.EvidenceText.Len())) {
+				return nil, errCorrupt
+			}
 		}
 	}
 	problems := h.Problems

@@ -1,5 +1,118 @@
 # Changelog
 
+## Unreleased
+
+## 0.5.0 (2026-10-23)
+
+### Added
+
+- **Examples and release preparation (wave 5, slice 9).** Complete the nine-step artificial
+  immunization guide through families, germlines, SHM, lineages, observed isotypes and cited
+  methods. Document expected results, uncertainty, exports and saved reopening. Preserve a
+  0.5.0 project with 60 paired artificial cells, joined IMGT evidence and seven results;
+  pin reference bytes and provenance and replay the full parent chain byte for byte.
+  Update the release overview, user guides, screenshots and version identifiers to 0.5.0.
+  Validate released-project replay on arm64/amd64, full race and non-race scientific checks,
+  six isolated performance budgets and platform builds, 95 JavaScript tests, all 31 browser
+  scenes in both themes, 14 contrast checks and the 128-check site audit.
+
+- **Isotypes and family co-occurrence (wave 5, slice 8).** Summarize heavy constant calls
+  by sample and family/sample from saved, checksum-pinned families. Count each cell or bulk
+  heavy observation once, distinguish class from gene/subclass resolution, and retain ambiguous
+  and malformed calls, parent exclusions and missing abundance. Keep observation and abundance
+  units distinct. Show unordered gene pairs with family coverage,
+  inspect original source calls, and export complete CSV/JSON tables with provenance. Add cited
+  methods, remote control and the guided artificial study. Independent truth-file tallies agree
+  for 2,160 cells, 36 families and 466 usage rows. Co-occurrence does not infer switching events,
+  direction, timing, ancestral traits, rates or significance.
+
+- **Lineage trees (wave 5, slice 7).** Build separate family/locus trees from saved
+  germlines on shared evaluable V/J panels. Collapse identical states while retaining
+  source rows and observed metadata. Search exactly through eight taxa and with bounded,
+  deterministic addition/NNI through 64; keep heuristic limits and exclusions explicit.
+  Show one consistent ancestral assignment, conditional IUPAC states and exact topology
+  tie/split counts without treating them as confidence probabilities. Add the interactive
+  tree, accessible node tables, source inspection, figure and CSV/JSON/FASTA/Newick exports,
+  pinned metadata/provenance, cited methods and remote/guided workflow. Independently check
+  all 72 artificial trees, including 1,093 changes and all optimal-topology counts.
+  No class-switching, migration, selection, event-date or likelihood inference is added.
+- **Somatic hypermutation (wave 5, slice 6).** Compare saved D-masked germlines
+  with source chain rows, retaining parent checksums and reference provenance.
+  Report evaluable bases/codons, regional substitution frequencies, single-hit
+  replacement/silent substitutions, endpoint codon changes and unclassified
+  substitutions. Missing coordinates/frame evidence, ambiguity, indels and stops
+  have explicit denominator and exclusion rules. Add SHM, row inspection, bounded
+  pages, complete CSV/JSON exports, descriptive sample/locus totals, cited methods,
+  remote control and the guided artificial workflow. Independently validate all
+  4,320 rows and 43,200 region records against known ancestors. No selection test,
+  historical mutation rate or lineage tree is inferred.
+- **D-masked germlines (wave 5, slice 5).** Reconstruct assigned B-cell source rows
+  using a saved family result, common explicit V/J alleles and checksum-pinned references.
+  Project ungapped-reference AIRR CIGARs onto oriented queries, preserve indels and coordinate
+  maps, and mask all intervening D/N/P bases. Report conflicting, ambiguous and unsupported
+  evidence rather than choosing an allele or padding an alignment. Human OGRDB IGH v10,
+  IGK v5 and IGL v4 are available as on-request CC0 reference downloads.
+  Add Germlines, row inspection, immutable lineage, complete JSON/CSV/FASTA exports,
+  cited methods, remote control and the guided artificial workflow.
+- **Artificial B-cell model v2.** Export V/J references and CIGAR/coordinate evidence;
+  distinguish J alleles for the two existing backbones. Simulated sequences, mutation
+  histories and family recovery remain unchanged. Existing v1 files remain openable.
+
+- **Clonal families (wave 5, slice 4).** Compare normalized nucleotide junction distances
+  within explicit subject or sample and V/J/length partitions. Inspect nearest-distance
+  distributions before selecting an inclusive single-linkage threshold. Null and zero differ.
+- Support heavy-only and conservative paired heavy/light comparisons, with explicit exclusions,
+  cell counts, missing abundance, deterministic identities and bounded cancellable work.
+  Keep inferred families separate from existing junction clonotypes.
+- Add B cells → Families, saved choices/results, paginated memberships and source inspection,
+  complete CSV exports, figure exports, cited methods, remote control and guided example steps.
+- Match every membership and nearest distance against independent graph calculations at four
+  thresholds in both modes. Recover all 36 known artificial families at 0.1; this demonstration
+  threshold is not a recommendation for biological data.
+- Complete Go race checks, vet, six builds, arm64/amd64 compatibility, distance fuzzing,
+  87 JavaScript tests, 14 accessibility checks, both-theme guided browser checks, the
+  112-check site audit and isolated million-row performance budgets.
+
+- **Simulated B-cell families (wave 5, slice 3).** Add `bcell-immunization`: three artificial
+  subjects, paired heavy/light chains, known ancestors, seven-state families, ordered substitutions,
+  fixed isotype histories and sampled cell abundance at three time points. Record unobserved
+  states, probabilities, assignments, parameters and file hashes separately from AIRR observations.
+- Preserve back-mutations and distinguish accumulated events from net ancestor differences.
+  Fictional SIM genes and artificial regions are explicitly labeled; the simple model makes no
+  biological SHM-rate or affinity claims. No molecular counts or inferred families are invented.
+- Add atomic output and cancellation cleanup, an offline example with Subjects/Inputs steps,
+  model-specific methods, cited documentation and both-theme guide captures. Independent CSV and
+  event replay agree with reader, evidence and paired-clonotype checks.
+- Validate 252 known states, 1,296 mutation events and 2,160 paired cells; retain distinct
+  descriptions when TRB and B-cell studies are opened together. Go race tests, vet, arm64/amd64
+  simulation bytes and released-project compatibility, six builds, 84 JavaScript tests,
+  14 accessibility checks, 108 site checks and isolated million-row budgets pass.
+
+- **IMGT/HighV-QUEST input (wave 5, slice 2).** Open extracted annotation folders or the four
+  named tables together. Join by sequence number and ID, rejecting incomplete or conflicting
+  bundles. Retain gapped queries, native annotations, optional Parameters and all source hashes.
+- Map query coordinates only against matching uncorrected Summary sequence; preserve original
+  positions and report withheld mappings after indel correction. Keep tied calls, unknown
+  functionality and failed annotations distinct; count sequences without inferring molecules.
+- Preserve grouped inputs through the cache, saved-project reopening and AIRR round trips.
+  Add an offline synthetic IMGT example, guided inspection, cited methods and both-theme images.
+  Independent CSV checks and boundary, fuzz, cache and browser tests cover the format contract.
+  Germline reconstruction and mutation followed in slices 5 and 6.
+
+- **B-cell sequence evidence (wave 5, slice 1).** B cells → Inputs shows the active filter
+  and definition, per-sample IGH/IGK/IGL rearrangement evidence counts, paginated rows and an
+  inspector of original sequence annotations and findings. Counts are rows, not cells or families.
+- Retain 42 AIRR fields, including sequences, alignments, orientation, CIGARs and coordinates.
+  Check structural consistency without realigning, padding, reconstructing germlines or measuring
+  mutation. Missing evidence remains missing; invalid values remain inspectable and exportable.
+- Preserve evidence in the table cache and AIRR exports. Rebuild old caches while retaining
+  existing dataset and artifact identities, since junction analyses are unchanged.
+- Add `inspect_bcell_inputs`, a locally generated synthetic example with guided steps, cited
+  methods, a guide and captures in both themes. Independent CSV values agree on all retained
+  fields across four public B-cell datasets; cache/export, boundary, fuzz, browser and saved-project
+  checks cover the new path. Go race validation, amd64 compatibility, six builds, 81 JavaScript
+  tests, 14 accessibility checks and 108 site audit checks pass.
+
 ## 0.4.0 (2026-10-22)
 
 Wave 4 of the [roadmap](clonoloom-spec/roadmap.md): specificity.

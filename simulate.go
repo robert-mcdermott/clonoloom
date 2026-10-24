@@ -1,6 +1,6 @@
 package main
 
-// clonoloom simulate: a simulated TRB study with its truth (internal/simulate), written as AIRR
+// clonoloom simulate: a simulated receptor study with its truth (internal/simulate), written as AIRR
 // rearrangement tables with their Repertoire metadata. It runs in the terminal and exits; nothing
 // is served. Adapted from SituCraft 0.9.0 simulate.go.
 
@@ -36,7 +36,7 @@ func runSimulate(args []string, stdout, stderr io.Writer) int {
 	printParams := flags.Bool("print-params", false, "print the study's parameters as JSON and exit")
 	quiet := flags.Bool("quiet", false, "print only the summary")
 	flags.Usage = func() {
-		fmt.Fprintln(stderr, "Usage: clonoloom simulate [flags]\n\nWrites a simulated T-cell receptor β study whose truth is known: each sample an AIRR rearrangement\ntable, their Repertoire metadata, and the truth in its truth/ folder.")
+		fmt.Fprintln(stderr, "Usage: clonoloom simulate [flags]\n\nWrites a simulated TRB or paired B-cell study whose truth is known: each sample an AIRR rearrangement\ntable, their Repertoire metadata, and the truth in its truth/ folder.")
 		flags.PrintDefaults()
 	}
 	if err := flags.Parse(args); err != nil {

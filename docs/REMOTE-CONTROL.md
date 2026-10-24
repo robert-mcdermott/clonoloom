@@ -95,3 +95,94 @@ act("open_data", paths=[table], mappings={table: {
   ClonoLoom does not take actions (reload it).
 
 Agents (an MCP server whose changes you accept or reject) come in a later release.
+
+### B-cell input evidence (wave 5)
+
+`inspect_bcell_inputs({dataset, select})` opens B cells → Inputs and returns evidence counts by
+sample and locus, plus the first page (at most 50 rearrangements) under the active QC filter.
+`dataset` uses the same dataset selector as the other actions; optional `select` is a one-based
+row on that page. It displays that row's original sequence annotations and findings in the
+inspector. The response contains bounded summaries, not all sequences. This inspection neither
+reconstructs a germline nor computes mutation or family membership.
+
+
+### B-cell clonal families
+
+`find_bcell_families` opens Families and keeps the result. Optional arguments: `dataset`,
+`mode` (`auto`, `heavy`, `paired`), `scope` (`subject`, `sample`), and `threshold` (0–1).
+Omitting the threshold measures nearest distances without assigning families; zero means exact
+identity. Subject scope uses Data annotations or supplied subject metadata. Paired distance is the larger normalized chain
+distance, within both chains' V/J/length partitions. The response reports eligibility, exclusions,
+receptor/family counts and the artifact identity. `inspect_bcell_inputs` returns to Inputs.
+
+### D-masked B-cell germlines
+
+`reconstruct_bcell_germlines` opens Germlines and computes or reuses an immutable result.
+Arguments: `dataset`, `families` (saved thresholded family artifact ID; the latest such result
+if omitted), and `reference` (`ogrdb-human-2026-05-27`, the default, or
+`simulated-bcell-immunization`). References must already be downloaded or generated;
+this action does not download anything. It returns the artifact ID, reconstructed/assigned
+source-row counts, family/locus count, exclusions and parent/reference provenance.
+
+HTTP clients use `POST /api/germlines` with `{dataset, germlines: {families, reference}, start}`.
+`start: false` checks availability. `GET /api/germlines/{id}` reads the full result;
+`GET /api/germlines/{id}/page?kind=families|rows&family=...&locus=...&offset=0&limit=50`
+reads bounded pages (maximum 200). Saved inspection needs neither open inputs nor a reference
+download; computing requires the original dataset and verified family/reference bytes.
+
+### Somatic hypermutation
+
+`measure_bcell_shm` opens B cells → SHM and computes or reuses a saved result. Pass `dataset`
+and optionally `germlines` (a saved germline artifact ID; latest for this dataset if omitted).
+The response includes the artifact ID, source-row/evaluated counts, exclusions, codon exclusions
+and effective options. It requires an open original dataset and a completed germline parent.
+
+HTTP: `POST /api/shm` with `{dataset, shm: {germlines}, start}`. `start: false` checks availability.
+The server resolves and pins `germlineSha256`; unrelated current QC, clonotype and diversity
+choices do not affect this derived result. `GET /api/shm/{id}` returns the complete document;
+`GET /api/shm/{id}/page?kind=summaries|rows&offset=0&limit=50` returns bounded pages (maximum 200).
+For `kind=rows`, optional `family` and `locus` filters select source rows. The saved document can
+be inspected without reopening sources or downloading references; new computation checks the
+parent bytes and source-row identities. `GET /api/export?what=result&artifact=...` exports all
+row/region statistics, pooled summaries, complete JSON, manifest and source notice.
+
+### Lineage trees (wave 5, slice 7)
+
+`build_bcell_lineages({dataset, germlines})` opens B cells → Lineages and computes or reuses
+an immutable result. Omit `germlines` to use the latest saved germline result for that dataset.
+The action uses current sample timepoint/tissue annotations and returns artifact ID, built-tree
+and source-row counts, exclusions and normalized limits. Annotations are pinned in identity.
+
+`POST /api/lineages` takes `{dataset, lineages:{germlines}, study?, start?}`. Omitted `study`
+uses imported repertoire timepoint/tissue; an explicit array overrides that metadata, with
+unspecified samples empty. Duplicate and unknown names are refused. `start:false` checks the
+cache without starting work. The server pins parent SHA-256 and fixed search limits.
+`GET /api/lineages/{id}` returns the complete result. `/page?kind=trees|rows&offset=0&limit=50`
+pages summaries or members (limit 1–200); row filters are `family`, `locus`, `tree`, `node`.
+`/page?kind=detail&tree=ID` returns one bounded tree with panel and nodes. Saved pages require
+neither original input nor parent availability. Export uses the standard result endpoint.
+
+### Isotypes (wave 5, slice 8)
+
+`summarize_bcell_isotypes({dataset, families})` opens B cells → Isotypes and computes or
+reuses the result. Omit `families` to use the latest saved thresholded family result for the
+dataset. It returns artifact ID, assigned observations, resolved class/gene counts, family
+count, exclusions, issues and pinned options. It does not infer class-switching events.
+
+`POST /api/isotypes` takes `{dataset, isotypes:{families}, study?, start?}`. The family parent
+fixes membership, QC and subject scope. Omitted `study` uses imported timepoint/tissue metadata;
+explicit project annotations override it, including explicit missing values. Duplicate/unknown
+sample annotations are refused. Normalized labels and the verified family checksum determine
+identity. `start:false` probes the cache. The default starts a cancellable job when needed.
+
+`GET /api/isotypes/{id}` returns the complete saved result.
+`/api/isotypes/{id}/page?kind=usage|families|pairs|observations&offset=0&limit=50` pages through
+it (limit 1–200). Usage defaults to sample-wide totals; `family` selects family/sample totals,
+`sample` selects a sample, and `level=class|gene` selects resolution. Observations accept
+`family` and `sample`. Families accept `family` and `left`/`right` constant-gene membership
+filters, allowing an unordered pair's supporting families to be inspected. Pairs are paged
+without filters. Page summaries omit full arrays; rows and count describe the selected view.
+Saved inspection uses pinned labels and requires neither parent nor source files.
+
+`GET /api/export?what=result&artifact={id}` exports all tables, full JSON, manifest and notice,
+independent of page filters, under the normal source-access and data-use conditions.
