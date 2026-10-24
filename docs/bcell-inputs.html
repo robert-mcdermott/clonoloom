@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>B-cell sequence evidence · ClonoLoom</title>
+  <meta name="description" content="Inspect the sequence, alignment and coordinate evidence supplied with B-cell AIRR or IMGT rearrangements before interpreting germlines or mutations." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/bcell-inputs.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="B-cell sequence evidence" />
+  <meta property="og:description" content="Inspect the sequence, alignment and coordinate evidence supplied with B-cell AIRR or IMGT rearrangements before interpreting germlines or mutations." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/bcell-inputs.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html">Specificity databases</a></li>
+        </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html" aria-current="page">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>B-cell sequence evidence</h1>
+      <p class="doc-lede">B cells → Inputs shows what the annotation pipeline supplied, what is missing and which structural checks need attention.</p>
+
+<h2 id="inputs">Inspect the inputs</h2>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/bcells-dark.webp" width="2000" height="1250" loading="lazy" alt="B-cell Inputs showing seven artificial rearrangements and the unequal query and germline alignment of a selected row" /><img class="shot-light" src="../assets/img/bcells-light.webp" width="2000" height="1250" loading="lazy" alt="B-cell Inputs showing seven artificial rearrangements and the unequal query and germline alignment of a selected row" /></div>
+        <figcaption>The synthetic example deliberately includes complete, partial, ambiguous and invalid evidence.</figcaption>
+      </figure>
+<p>Open an AIRR rearrangement table, choose <strong>B cells</strong>, then select a sequence ID. The inspector shows its source file and line, original sequence, alignments, orientation, coordinates and findings. Repeated sequence IDs from different files remain separate.</p>
+<p>The summary counts IGH, IGK and IGL <strong>rearrangements</strong> under the active QC filter. These are not counts of cells or clonal families. The clonotype definition is shown for context; it does not group these input rows. Change the filter in <a href="qc.html">QC</a>.</p>
+<h2 id="evidence">Presence and validity</h2>
+<ul>
+<li><strong>Sequence</strong>: the query sequence was supplied.</li>
+<li><strong>Both alignments</strong>: query and germline alignment strings were supplied.</li>
+<li><strong>Structurally valid</strong>: both strings are present and the evidence checks found no inconsistency. This does not establish a biological germline, IMGT numbering or a mutation rate.</li>
+<li><strong>Region coordinates</strong>: at least one FWR/CDR endpoint was supplied. Inspect it for incomplete or invalid intervals.</li>
+</ul>
+<p>Missing evidence is not filled in. Unequal alignments, invalid coordinates and malformed CIGARs remain visible with findings. The original junctions can still support repertoire analysis. ClonoLoom does not pad the strings, realign them or reverse an already oriented alignment.</p>
+<h2 id="example">Try the synthetic example</h2>
+<p>In <strong>Example data</strong>, open <strong>Synthetic B-cell sequence evidence</strong>. Follow its steps to compare a consistent artificial annotation with unequal alignments. These short sequences illustrate validation; they are not biological receptors. The example is generated locally and works offline.</p>
+<h2 id="imgt">IMGT/HighV-QUEST tables</h2>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/imgt-dark.webp" width="2000" height="1250" loading="lazy" alt="IMGT evidence joined from four reordered tables, showing withheld query coordinates after an artificial insertion correction" /><img class="shot-light" src="../assets/img/imgt-light.webp" width="2000" height="1250" loading="lazy" alt="IMGT evidence joined from four reordered tables, showing withheld query coordinates after an artificial insertion correction" /></div>
+        <figcaption>The synthetic IMGT example includes three B-cell annotations and an unsuccessful annotation without an identified locus.</figcaption>
+      </figure>
+<p>Open an extracted output folder containing <code>1_Summary.txt</code>, <code>2_IMGT-gapped-nt-sequences.txt</code>, <code>3_Nt-sequences.txt</code> and <code>6_Junction.txt</code>, or select those four files together. Gzip is supported. The optional <code>11_Parameters.txt</code> retains annotation settings. Tables are joined by sequence number and ID, even when their rows are reordered. Incomplete or conflicting bundles are rejected.</p>
+<p>IMGT already orients the Summary sequence. ClonoLoom preserves it and the IMGT-gapped query, and retains the submitted strand in <strong>Native IMGT annotations</strong>. Query coordinates are mapped only when an uncorrected region matches the Summary sequence. Insertion/deletion correction can prevent that mapping; original positions remain inspectable. A gapped query alone supplies no germline alignment.</p>
+<p>Try <strong>Synthetic IMGT annotation tables</strong> in Example data. Its steps compare a reverse submission with a corrected insertion. These artificial cases check the documented format, not IMGT's biological accuracy. The Data inspector lists every source fingerprint and the supplied Parameters text.</p>
+<p>See the <a href="https://www.imgt.org/IMGT_vquest/user_guide">IMGT output documentation</a> (Brochet et al. 2008, doi:10.1093/nar/gkn316). Extract archives before opening them; mutation-statistics reports and Excel workbooks are outside this reader.</p>
+<h2 id="immunization">An immunization study with known truth</h2>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/immunization-dark.webp" width="2000" height="1250" loading="lazy" alt="B-cell Inputs for the artificial immunization study, with paired chain evidence and the selected sequence's known ancestor" /><img class="shot-light" src="../assets/img/immunization-light.webp" width="2000" height="1250" loading="lazy" alt="B-cell Inputs for the artificial immunization study, with paired chain evidence and the selected sequence's known ancestor" /></div>
+        <figcaption>Nine samples, 2,160 paired cells and 4,320 sequence rows. The annotations and reference sequences are artificial.</figcaption>
+      </figure>
+<p>Wave 5 adds the offline <strong>artificial B-cell immunization</strong> example. Its guided steps show three subjects at days −7, 14 and 28, then inspect a supplied sequence and ancestor alignment. Each cell has one heavy and one kappa or lambda chain. The model records twelve families per subject, seven states per family, every mutation event, fixed isotype transitions and sampled cell assignments in <code>truth/</code>, which is excluded when opening the data.</p>
+<p>Calls containing <code>SIM</code> are fictional. The coding sequences, region coordinates, uniform mutation proposals and fixed trees form a simple benchmark, not a calibrated biological SHM or affinity model. Back-mutations make accumulated events differ from net differences to the ancestor. No molecule counts are invented. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/SIMULATION.md">simulation guide</a> for parameters, truth formats, references and limits. Clonal families are available in Families; <a href="bcell-germlines.html">D-masked germlines</a> are available for supported AIRR CIGAR evidence. <a href="bcell-lineages.html">Lineage trees</a> analyze shared V/J panels from those saved germlines.</p>
+<h2 id="exports">Export the evidence</h2>
+<p><strong>Export AIRR</strong> writes the retained evidence beside the existing rearrangement fields, with source and license notes. Invalid supplied values remain invalid in the export so they can be investigated. Correct them at the annotation source before later sequence analysis.</p>
+<h2 id="method">Method and limits</h2>
+<p>Checks follow the <a href="https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html">AIRR Rearrangement schema 2.0</a> (Vander Heiden et al. 2018, <em>Frontiers in Immunology</em> 9:2206, doi:10.3389/fimmu.2018.02206). Inputs does not reconstruct germlines or measure mutation. Germlines, <a href="bcell-shm.html">SHM</a> and <a href="bcell-lineages.html">Lineages</a> are separate analyses with explicit evidence requirements.</p>
+<p>Continue to <a href="bcell-families.html">Clonal families</a> to inspect nearest distances and choose an explicit threshold.</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="database.html"><span>Previous</span>Specificity databases</a>
+        <a class="next" href="bcell-families.html"><span>Next</span>Clonal families</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

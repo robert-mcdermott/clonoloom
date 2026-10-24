@@ -83,6 +83,15 @@
           <li><a href="networks.html">Clonotype networks</a></li>
           <li><a href="database.html">Specificity databases</a></li>
         </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
         <h4>Results</h4>
         <ul>
           <li><a href="figures.html">Figures and exports</a></li>
@@ -126,6 +135,7 @@
             <tr><td>5k mouse splenocytes, GEM-X 5′ v3 (Cell Ranger 9.0.0, multi)</td><td>27 MB</td><td>CC BY 4.0 (10x Genomics)</td><td>T cells, B cells</td></tr>
             <tr><td>The AIRR Community's test and example files (v2.0.0)</td><td>71 KB</td><td>CC BY 4.0 (AIRR Community)</td><td>a valid and an invalid AIRR file</td></tr>
             <tr><td>Emerson et al. 2017, three small samples (immunoSEQ export)</td><td>46 MB</td><td>immuneACCESS Terms of Use: research only, no redistribution</td><td>three subjects</td></tr>
+            <tr><td>An artificial B-cell immunization study with known families</td><td>none: made here in seconds</td><td>none (simulated)</td><td>2,160 paired cells across nine samples, with known ancestors, families and isotype labels</td></tr>
             <tr><td>A simulated TRB study with known truth</td><td>none: made here in seconds</td><td>none (simulated)</td><td>twelve samples of six subjects</td></tr>
             <tr><td>A simulated TRB study with no difference between its groups</td><td>none: made here in seconds</td><td>none (simulated)</td><td>twelve samples of six subjects</td></tr>
             <tr><td>A simulated CAR-T study with known truth</td><td>none: made here in seconds</td><td>none (simulated)</td><td>three patients before and after infusion, with their infusion products</td></tr>
@@ -137,8 +147,10 @@
       <p>Every downloaded file is checked against the checksum recorded when ClonoLoom was released. Data under a provider's terms of use (the immuneACCESS data) need you to read and accept the terms first. <strong>Open T cells</strong> (or B cells) then opens an example as a dataset, which carries its license and citation from then on. The simulated studies are labeled simulated wherever they are shown; see <a href="simulation.html">Simulated studies</a>.</p>
       <p>To follow the guide, download <strong>Human PBMC from a healthy donor, 1k cells</strong> and open its T cells; for the Repertoire pages, open <strong>A simulated TRB study with known truth</strong>; for the Tracking pages, the simulated CAR-T or transplant study. Those two come with <strong>guided steps</strong>, shown in the Tracking view: each step says what to look at, and <strong>Do it</strong> does it, as a script would (<a href="remote-control.html">Remote control</a>).</p>
 
+      <p>For B cells, generate <strong>An artificial B-cell immunization study with known families</strong>. Its nine guided steps, in the Tracking view, run from annotated inputs to families, germlines, mutations, trees, observed isotypes and cited methods. The <a href="simulation.html#immunization">worked example</a> gives expected counts and interpretation limits.</p>
+
       <h2 id="views">The window</h2>
-      <p>The rail on the left holds the views, in the order an analysis goes: <strong>Data</strong>, <strong>QC</strong>, <strong>Clonotypes</strong>, <strong>Repertoire</strong>, <strong>Tracking</strong> and <strong>Jobs</strong>, and the views later releases fill (each says what it will do). The project tree beside them lists the datasets and the results kept; the inspector on the right describes what is chosen; the status bar shows the library, the datasets and the clonotype definition in use. <strong>Search or run a command</strong> (⌘K or Ctrl+K) finds any command, and undo and redo cover every change. The theme button in the header chooses a light or dark theme (or the system's), and turns on color-vision-friendly colors.</p>
+      <p>The rail on the left holds the views, in the order an analysis goes: <strong>Data</strong>, <strong>QC</strong>, <strong>Clonotypes</strong>, <strong>Repertoire</strong>, <strong>Tracking</strong>, <strong>Specificity</strong>, <strong>B cells</strong> and <strong>Jobs</strong>, and the views later releases fill (each says what it will do). The project tree beside them lists the datasets and the results kept; the inspector on the right describes what is chosen; the status bar shows the library, the datasets and the clonotype definition in use. <strong>Search or run a command</strong> (⌘K or Ctrl+K) finds any command, and undo and redo cover every change. The theme button in the header chooses a light or dark theme (or the system's), and turns on color-vision-friendly colors.</p>
 
       <h2 id="next">Next</h2>
       <p><a href="opening-data.html">Opening data</a> covers your own files and other tools' tables, and how ClonoLoom checks them.</p>

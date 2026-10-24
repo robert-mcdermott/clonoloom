@@ -83,6 +83,15 @@
           <li><a href="networks.html">Clonotype networks</a></li>
           <li><a href="database.html">Specificity databases</a></li>
         </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
         <h4>Results</h4>
         <ul>
           <li><a href="figures.html">Figures and exports</a></li>
@@ -158,6 +167,8 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
       </ul>
       <h2 id="invariant">Invariant-population annotation</h2>
       <p><code>flag_invariant</code> takes <code>species: "human" | "mouse"</code>, an optional dataset, and optionally <code>population: "MAIT" | "iNKT" | "GEM"</code>. It records the species and shows Clonotypes, returning the first 20 rows plus complete sample totals, matched and evaluable abundance and shares. The <a href="clonotypes.html#invariant">published sequence rules</a> do not establish phenotype or specificity.</p>
+<h2 id="bcell-inputs">B-cell sequence evidence</h2>
+<p>In wave 5, <code>inspect_bcell_inputs</code> opens <a href="bcell-inputs.html">B cells → Inputs</a>, returning evidence counts and at most 50 rearrangement summaries under the active QC filter. Optional <code>dataset</code> chooses the dataset and <code>select</code> inspects a row on that page, numbered from 1. It does not infer a germline or measure mutation.</p>
 
       <nav class="doc-pager" aria-label="Pages">
         <a class="prev" href="simulation.html"><span>Previous</span>Simulated studies</a>

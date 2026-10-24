@@ -83,6 +83,15 @@
           <li><a href="networks.html">Clonotype networks</a></li>
           <li><a href="database.html">Specificity databases</a></li>
         </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
         <h4>Results</h4>
         <ul>
           <li><a href="figures.html">Figures and exports</a></li>
@@ -124,7 +133,7 @@
       <h2 id="reading">Reading a result</h2>
       <p>The radius is chosen so that almost no background receptor lies within it, so a large <em>neighborhood</em> at a large radius is the signal, not the radius alone. The relative rate depends on how large the background is beside the dataset, so compare neighborhoods within one result rather than across results of different sizes; χ² accounts for both counts but measures differences in either direction, so the ordering also uses the direction of the relative rate.</p>
       <p>The neighborhoods are of the dataset as you have defined and filtered it. Pooling many samples makes the CDR3s that several of them share abundant, so a pooled cohort gives many large, loose neighborhoods (the picture above, of a whole simulated study, is one); a single repertoire gives few and tight ones. The checks below were made on one sample.</p>
-      <p>Receptors this alike may recognize the same antigen, and a neighborhood is a hypothesis, not a specificity: it says these receptors are unusual together, not what they bind. Matching them to known epitopes comes in a later release.</p>
+      <p>Receptors this alike may recognize the same antigen, and a neighborhood is a hypothesis, not a specificity: it says these receptors are unusual together, not what they bind. Compare them with <a href="database.html">specificity database evidence</a>; a match alone still does not establish recognition.</p>
 
       <h2 id="checks">How it is checked</h2>
       <p>On Dash et al. 2017's 415 human epitope-specific β chains against a background of 5,204 OTS β chains with weights, every centroid's radius, its neighbors in the dataset and the background, and the rates, odds ratio and χ² computed from them equal tcrdist3 0.3's. On the simulated vaccination study, where every receptor's epitope is known, the twenty most enriched neighborhoods of a vaccinated subject's day-14 sample are all receptors of the vaccine's epitopes, and so is every one of the 149 receptors in them; in a subject given the placebo, which holds the same receptors but rare and unexpanded, none of the twenty is. Ten thousand receptors against a background of 100,000 take about 1.3 seconds on ten processors.</p>

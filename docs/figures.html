@@ -83,6 +83,15 @@
           <li><a href="networks.html">Clonotype networks</a></li>
           <li><a href="database.html">Specificity databases</a></li>
         </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
         <h4>Results</h4>
         <ul>
           <li><a href="figures.html" aria-current="page">Figures and exports</a></li>
@@ -126,11 +135,14 @@
       </div>
       <p>Each zip holds a <code>NOTICE.txt</code>: the files read and their SHA-256, the filter, the clonotype definition, the unit, the method, ClonoLoom's version and commit, and each public data set's license and citation. The columns of each file are in <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/FORMATS.md#what-clonoloom-writes">FORMATS.md</a>.</p>
 
+      <h2 id="bcells">B-cell results</h2>
+      <p>Each B-cell result view has <strong>Export result</strong>. Families export complete memberships, nearest distances and exclusions; germlines export projections and reference provenance; SHM exports row/region counts and descriptive summaries; lineages export trees, nodes, sources and annotations; isotypes export usage, families, unordered pairs and observations. Each bundle contains the full result JSON, manifest, source information and notice, regardless of the displayed page or selection. Germlines and lineages include FASTA; lineages also include Newick. Blank numeric CSV fields are missing, while <code>0</code> is a measured zero. Follow the <a href="simulation.html#immunization">artificial immunization workflow</a> for a complete example.</p>
+
       <h2 id="licenses">Data under terms of use</h2>
       <p>Rows of public data under a provider's terms of use (the immuneACCESS example), or under no stated license, are exported only after ClonoLoom shows those terms and you accept them, and the notice then says not to share them. Results computed from such data say to read the terms before sharing them. Your own data are yours: their notice says so.</p>
 
       <nav class="doc-pager" aria-label="Pages">
-        <a class="prev" href="database.html"><span>Previous</span>Specificity databases</a>
+        <a class="prev" href="bcell-isotypes.html"><span>Previous</span>Isotypes</a>
         <a class="next" href="record.html"><span>Next</span>The record</a>
       </nav>
     </main>
