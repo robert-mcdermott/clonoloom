@@ -28,18 +28,28 @@ type Input struct {
 	Cells   *CellAnnotations `json:"-"`
 }
 
-// Open reads just the selected MEX directory. It never chooses between raw and filtered data,
+// Open reads just the selected MEX directory or 10x HDF5 file. It never chooses raw/filtered data,
 // walks a tree, writes to the source, or silently chooses one of two possible companions.
 func Open(ctx context.Context, dir string) (*Input, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
 	if dir == "" {
-		return nil, fmt.Errorf("choose a MEX directory")
+		return nil, fmt.Errorf("choose a MEX directory or 10x HDF5 file")
 	}
 	abs, err := filepath.Abs(dir)
 	if err != nil {
 		return nil, err
+	}
+	info, err := os.Stat(abs)
+	if err != nil {
+		return nil, err
+	}
+	if info.Mode().IsRegular() {
+		return openHDF5(ctx, abs)
+	}
+	if !info.IsDir() {
+		return nil, fmt.Errorf("choose a regular HDF5 file or MEX directory")
 	}
 	in := &Input{Path: abs}
 	roles := []string{"matrix", "features", "barcodes"}

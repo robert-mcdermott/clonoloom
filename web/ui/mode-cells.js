@@ -17,7 +17,7 @@ export function mountCells(app, container) {
   let generation = store.state.generation;
   let active = null, answer = null, status = 'idle', message = '', controller = null, serial = 0, view = 'cells';
   let colorColumn = -1;
-  const path = h('input.input', { type: 'text', placeholder: '/path/to/filtered_feature_bc_matrix', 'aria-label': 'MEX directory', style: { width: '100%' } });
+  const path = h('input.input', { type: 'text', placeholder: '/path/to/filtered_feature_bc_matrix', 'aria-label': 'MEX directory or 10x HDF5 file', style: { width: '100%' } });
   const cellsPath = h('input.input', { type: 'text', placeholder: 'Optional /path/to/cells.tsv', 'aria-label': 'Cell annotations', style: { width: '100%' } });
   const datasets = h('select.input', { 'aria-label': 'Receptor dataset', onchange: drawSamples });
   const samples = h('select.input', { 'aria-label': 'Receptor sample' });
@@ -29,13 +29,14 @@ export function mountCells(app, container) {
     event.preventDefault();
     if (datasets.value && samples.value === '') { message = 'Choose the receptor sample explicitly.'; draw(); return; }
     inspect({ path: path.value, cellsPath: cellsPath.value, dataset: datasets.value, sample: datasets.value ? Number(samples.value) : null }).catch(() => {});
-  } }, h('label.field', h('span', 'MEX directory'), path),
+  } }, h('label.field', h('span', 'MEX directory or 10x HDF5 file'), path),
   h('label.field', h('span', 'Cell annotations and imported coordinates (optional TSV)'), cellsPath),
   h('div.btn-row', h('label.field', h('span', 'Receptor dataset'), datasets), h('label.field', h('span', 'Receptor sample'), samples), open, cancel));
   const root = h('div.view', h('div.workbench-head', h('h1', icon('cell'), 'Cells'), h('span.spacer'),
     h('button.btn', { type: 'button', onclick: () => example(true).catch(() => {}) }, 'Use cell-state study'),
-    h('button.btn', { type: 'button', onclick: () => example().catch(() => {}) }, 'Use artificial example')),
-  h('div.view-body', h('p', 'Read a 10x MEX count matrix and check its barcode coverage in one receptor sample.'), form, saved, output));
+    h('button.btn', { type: 'button', onclick: () => example().catch(() => {}) }, 'Use artificial example'),
+    h('button.btn', { type: 'button', onclick: () => example(false, true).catch(() => {}) }, 'Use HDF5 example')),
+  h('div.view-body', h('p', 'Read a 10x MEX or HDF5 count matrix and check its barcode coverage in one receptor sample.'), form, saved, output));
   container.append(root);
 
   function drawSamples() {
@@ -71,7 +72,7 @@ export function mountCells(app, container) {
         if (state.status !== 'open') throw new Error(state.error ?? 'The receptor dataset cannot be reopened.');
       }
       if (run !== serial || !sameProject()) return;
-      const summary = await request('open', { path: options.path, cellsPath: options.cellsPath, example: options.example, studyExample: options.studyExample, studyPreset: options.studyPreset, expectedId: options.expectedId }, signal);
+      const summary = await request('open', { path: options.path, cellsPath: options.cellsPath, example: options.example, hdf5Example: options.hdf5Example, studyExample: options.studyExample, studyPreset: options.studyPreset, expectedId: options.expectedId }, signal);
       const record = expressionRecord(summary, options.dataset ?? '', options.sample ?? null);
       const page = await request('page', { id: summary.id, dataset: record.dataset, sample: record.sample, view: 'cells' }, signal);
       if (run !== serial || !sameProject()) return;
@@ -96,13 +97,13 @@ export function mountCells(app, container) {
       answer = result; view = nextView; status = 'ready'; draw();
     } catch (error) { if (run === serial && sameProject()) { status = 'error'; message = error.message; draw(); } throw error; }
   }
-  async function example(study = false) {
+  async function example(study = false, hdf5 = false) {
     try {
       const sameProject = store.sameProject();
-      const result = await app.actions.open_example({ example: study ? 'simulated-cell-states-clouds' : 'synthetic-expression', download: true });
+      const result = await app.actions.open_example({ example: study ? 'simulated-cell-states-clouds' : hdf5 ? 'synthetic-expression-hdf5' : 'synthetic-expression', download: true });
       if (!sameProject()) return;
       await app.setMode('cells');
-      return await app.cellsView.inspect({ example: !study, studyExample: study, studyPreset: study ? 'cell-states-clouds' : undefined, dataset: result.data.dataset, sample: 0 });
+      return await app.cellsView.inspect({ example: !study && !hdf5, hdf5Example: hdf5, studyExample: study, studyPreset: study ? 'cell-states-clouds' : undefined, dataset: result.data.dataset, sample: 0 });
     } catch (error) { message = error.message; status = 'error'; draw(); throw error; }
   }
   function draw() {
@@ -137,7 +138,7 @@ export function mountCells(app, container) {
       h('span', `${count(answer.offset)} offset · ${count(answer.count)} ${view}`), h('button.btn.small', { type: 'button', disabled: status === 'loading' || answer.offset + 50 >= answer.count, onclick: () => page(view, answer.offset + 50).catch(() => {}) }, 'Next')));
     output.append(h('details', h('summary', 'Sources and reading rules'), h('p', `Reader version ${s.readerVersion}; ${s.id}. Raw integer counts; feature IDs are unique, names may repeat. Duplicate coordinates are rejected. Only Gene Expression features contribute to gene UMIs and detected genes.`),
       ...s.sources.map((source) => h('p', h('strong', `${source.role}: `), source.path, h('br'), h('code', { style: { overflowWrap: 'anywhere' } }, `SHA-256 ${source.sha256}`))),
-      h('p', h('a', { href: 'https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/cr-outputs-mex-matrices', target: '_blank', rel: 'noopener' }, '10x MEX specification'), ' · ', h('a', { href: 'https://math.nist.gov/MatrixMarket/formats.html', target: '_blank', rel: 'noopener' }, 'NIST Matrix Market format'))));
+      h('p', h('a', { href: 'https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/cr-outputs-mex-matrices', target: '_blank', rel: 'noopener' }, '10x MEX specification'), ' · ', h('a', { href: 'https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-h5-matrices', target: '_blank', rel: 'noopener' }, '10x HDF5 specification'), ' · ', h('a', { href: 'https://math.nist.gov/MatrixMarket/formats.html', target: '_blank', rel: 'noopener' }, 'NIST Matrix Market format'))));
   }
   const api = { inspect, page, example, state: () => ({ status, page: answer, record: active }) };
   app.cellsView = api;

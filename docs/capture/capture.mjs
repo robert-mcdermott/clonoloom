@@ -116,6 +116,38 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cells-hdf5'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use HDF5 example').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    const state = await js('window.clonoloom.cellsView.state()');
+    if (state.page.summary.sources.length !== 1 || state.page.summary.sources[0].role !== 'matrix-hdf5' || state.page.links.matched !== 2 || state.page.cells[0].geneUMIs !== 5 || state.page.cells[3].geneUMIs !== 0) throw new Error('HDF5 evidence differs');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Features').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.features.length === 3`);
+    if ((await js('window.clonoloom.cellsView.state().page.features[2].type')) !== 'Antibody Capture') throw new Error('HDF5 modality missing');
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.store.project.id;
+      await app.saveNow(); await app.openProject(id); await app.setMode('cells');
+      const record = app.store.project.expression[0];
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      if (app.cellsView.state().record.id !== ${JSON.stringify(state.record.id)}) throw new Error('HDF5 identity changed on project reopen');
+      const before = JSON.stringify(app.store.project.expression);
+      await app.cellsView.inspect({ path: ${JSON.stringify(join(ROOT, 'testdata/expression-hdf5/unsupported-filter.h5'))} }).catch(() => {});
+      if (app.cellsView.state().status !== 'error' || JSON.stringify(app.store.project.expression) !== before) throw new Error('Unsupported HDF5 replaced saved evidence');
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      return true;
+    })()`);
+    await js(`(() => {
+      const sample = document.querySelector('[aria-label="Receptor sample"]'); sample.value = '';
+      document.querySelector('.view-body form').requestSubmit();
+      if (!document.querySelector('[role="status"]').textContent.includes('explicitly')) throw new Error('Missing HDF5 sample accepted');
+      sample.value = '0'; document.querySelector('.view-body form').requestSubmit(); return true;
+    })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await act('inspect_expression', { hdf5Example: true, sample: 0 });
+    await js(`document.querySelector('[aria-label="MEX directory or 10x HDF5 file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression-hdf5/matrix.h5`)}`);
+  },
   async 'cell-states'() {
     await js(`window.clonoloom.setMode('cells')`);
     await waitFor('Boolean(window.clonoloom.cellsView)');
@@ -160,7 +192,7 @@ const scenes = {
       if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('CELL00001-1')) throw new Error('Table inspection failed');
       return true;
     })()`);
-    await js(`document.querySelector('[aria-label="MEX directory"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1`)}`);
+    await js(`document.querySelector('[aria-label="MEX directory or 10x HDF5 file"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1`)}`);
     await js(`document.querySelector('[aria-label="Cell annotations"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1/cells.tsv`)}`);
     await js(`document.querySelector('#imported-cell-map').scrollIntoView({ block: 'start' })`);
   },
@@ -213,7 +245,7 @@ const scenes = {
     await js(`(() => { window.clonoloom.store.undo(); return true; })()`);
     await waitFor('window.clonoloom.store.project.expression.length === 1');
     await act('inspect_expression', { example: true, sample: 0 });
-    await js(`document.querySelector('[aria-label="MEX directory"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression`)}`);
+    await js(`document.querySelector('[aria-label="MEX directory or 10x HDF5 file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression`)}`);
   },
 
   async isotypes() {

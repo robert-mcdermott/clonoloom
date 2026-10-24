@@ -12,6 +12,31 @@ import (
 //go:embed testdata/expression-mex/*.tsv testdata/expression-mex/*.mtx
 var expressionExampleData embed.FS
 
+//go:embed testdata/expression-hdf5/checksum.h5
+var expressionHDF5Data []byte
+
+func expressionHDF5Example() examples.Generated {
+	e := expressionInputExample()
+	e.Source.Name = "synthetic-expression-hdf5"
+	e.Source.Title = "Artificial HDF5 expression and receptor links"
+	e.Source.Description = "The same four artificial cells as the MEX example, stored as a compressed 10x HDF5 matrix with shuffle and chunk checksums. Compare counts, repeated feature names, antibody evidence, explicit zeros and exact receptor links."
+	e.Source.Source = "Made independently with h5py by testdata/make-expression-hdf5.py"
+	e.Source.Citation = "10x Genomics HDF5 feature-barcode documentation; The HDF Group File Format Specification 3.0"
+	e.Source.Opens[0].Summary = "Inspect a compressed HDF5 matrix in Cells."
+	e.Source.Opens[0].Steps[0].Args = map[string]any{"hdf5Example": true, "sample": 0}
+	e.Size += int64(len(expressionHDF5Data))
+	makeMEX := e.Make
+	e.Make = func(ctx context.Context, dir string, progress examples.Progress) error {
+		if err := makeMEX(ctx, dir, progress); err != nil {
+			return err
+		}
+		return os.WriteFile(filepath.Join(dir, "matrix.h5"), expressionHDF5Data, 0o644)
+	}
+	// Mark availability only once the matrix itself is present.
+	e.Marker = "matrix.h5"
+	return e
+}
+
 func expressionInputExample() examples.Generated {
 	entries, _ := expressionExampleData.ReadDir("testdata/expression-mex")
 	var size int64

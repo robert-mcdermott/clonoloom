@@ -1560,3 +1560,52 @@ an independently specified estimator, bandwidth, normalization and support crite
 provides context for frequency-filtered contours, not an implementation to copy. Density on an
 embedding is descriptive and does not imply enrichment or antigen specificity. Only public
 method/interface documentation was consulted for these acceptance refinements.
+
+### 5.24 Bounded 10x HDF5 expression input
+
+**Format sources.** The [10x feature-barcode HDF5 schema](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-h5-matrices)
+defines the feature-by-cell CSC arrays and feature/barcode datasets. The reader is implemented
+from The HDF Group's [File Format Specification 3.0](https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t3.html)
+and [earlier 1.1 structures](https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t11.html).
+SituCraft's Apache-2.0 HDF5 writer supplies the lookup3 metadata-checksum helper and a useful
+compact-object reference; it supplies no reader. No other implementation's source was copied
+or consulted. Go standard-library zlib performs deflate decoding; no native/runtime dependency
+is added. h5py is used only through its public API to generate independent validation data.
+
+**Evidence policy.** This is format decoding, not a statistical method. Require all eight
+10x vectors; retain source feature names/types, barcodes, explicit zeros and source order.
+Normalize only the internal ordering of CSC indices, moving counts with them. Reject duplicate
+coordinates, malformed pointers, negative/floating counts and integer/UMI overflow. Missing
+storage chunks are not measured zeros. Ignore unrelated annotations/attributes rather than
+guessing a count layer, barcode mapping, genome, raw/filtered input or cell type. Receptor
+linkage and optional annotation TSVs reuse the exact sample-scoped rules of slices 1–2.
+
+**Bounded format subset.** `docs/FORMATS.md` records accepted structures and limits. It covers
+the classic structures emitted by ordinary h5py files and compact HDF5 1.8-era headers/groups,
+including compressed B-tree chunks. Unsupported variable strings, dense groups, newer chunk
+indices, shared datatypes, external/virtual storage and required soft/external links fail
+explicitly. Slice 4 must extend this boundary with independent AnnData/MuData fixtures, not
+claim compatibility from a filename extension. File/array/metadata/read/traversal budgets,
+checked offsets and context cancellation bound malformed input. Fletcher32 requires end-around
+carry: all-one words retain 0xffff, unlike a naive modulo-65535 calculation. Independent raw
+chunk checks include all-zero/all-one words and odd byte lengths.
+
+**Provenance and validation.** Hash the selected file before and after parsing and record its
+whole-file SHA-256, size and path in a separate `clonoloom-expression-hdf5/1` identity domain.
+MEX-only and optional-annotation identities are unchanged. Equal observations in different
+encodings do not establish equal source identity; relocation of identical bytes does.
+`testdata/make-expression-hdf5.py` pins h5py 3.15.1, NumPy 2.4.2 and SciPy 1.17.0. It generates
+17 accepted fixtures, including internal chunk-tree nodes, compact arrays, continuations,
+filter masks, differing byte orders and empty counts, plus 18 invalid/unsupported files.
+The saved reference independently reconstructs every value and gene total, with labels,
+stored-entry counts and source hashes. Mutation tests exercise corrupt checksums, addresses,
+cycles and budgets; fuzzing checks malformed files. The browser exercises visible opening,
+explicit binding, unsupported input and saved reopening in both themes. The format example
+is artificial bookkeeping evidence, not an expression model or biological validation.
+
+An additional check used the public, CC BY 4.0
+[10x 1k PBMC v3 dataset](https://www.10xgenomics.com/datasets/1-k-pbm-cs-from-a-healthy-donor-v-3-chemistry-3-standard-3-0-0)
+(Cell Ranger 3.0.0): all 2,498,225 stored entries, 33,538 feature records, 1,222 barcodes and
+gene totals matched h5py/SciPy exactly. `expression_hdf5_public.py` and the optional Go test
+make this repeatable with explicitly selected local paths. Neither the donor data nor its
+derived arrays are bundled. The check supports decoding compatibility, not biological inference.

@@ -42,6 +42,7 @@ func simulatedExamples() []examples.Generated {
 		bcellInputExample(),
 		imgtInputExample(),
 		expressionInputExample(),
+		expressionHDF5Example(),
 		cellStateInputExample(),
 		cellStateCloudExample(),
 		simulatedExample("bcell-immunization", bcellSteps, "An artificial B-cell immunization study with known families",

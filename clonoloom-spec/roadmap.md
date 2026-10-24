@@ -16,8 +16,8 @@ slice 1. Later slices are refined as they come.
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
 2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
-Wave 6 is underway on `wave6`. Slice 1 is implemented and validated, awaiting the
-maintainer's commit. Version remains 0.5.0 until the release-preparation slice.
+Wave 6 is underway on `wave6`. Slices 1–2 and the cell-map feedback follow-up are committed;
+slice 3 adds 10x HDF5 expression input. Version remains 0.5.0 until the release-preparation slice.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -1522,7 +1522,7 @@ and 14 contrast checks pass. The cell-state browser scene passes in both themes,
 missing-point selection and saved reopening; both refreshed screenshots were inspected.
 The site builds 34 pages with 33 screenshot sets, with zero problems in 132 checks.
 Unrelated scientific regressions, fuzzing and performance budgets were not rerun for this
-follow-up. Version remains 0.5.0; changes await maintainer review and commit.
+follow-up. Version remains 0.5.0. Committed by the maintainer as `a081bd6`.
 
 ### Slice 1: MEX expression evidence
 
@@ -1618,6 +1618,60 @@ saving/reopening. Screenshots were inspected and legend spacing corrected. The s
 34 pages with 33 screenshot sets; 132 accessibility/viewport checks report zero problems.
 Existing performance budgets were not rerun for this evidence/simulation slice. Version stays
 0.5.0. Committed by the maintainer as `152c061`; the feedback follow-up above is separate.
+
+### Slice 3: bounded 10x HDF5 expression input
+
+**Serves D6 (10x HDF5) and D11.** Read an explicitly selected feature-barcode HDF5 file into
+the same sparse expression model as MEX. Require `/matrix/{shape,data,indices,indptr,barcodes}`
+and `/matrix/features/{id,name,feature_type}`. Preserve every feature modality, explicit zero,
+barcode and repeated feature name. Validate CSC dimensions, monotone pointers, exact integers,
+unique IDs/barcodes and duplicate coordinates before exposing any input. Sort paired sparse
+indices/values per cell; never sum duplicates or coerce float/negative counts. Do not select a
+genome, raw/filtered matrix, count layer or modality implicitly.
+
+**Reader boundary.** Implement from the primary HDF5 specification, using Go's standard library.
+Support 8-byte offsets/lengths; superblocks 0–3 without extensions; classic symbol-table and
+compact-link groups; object headers 1–2 with continuations; fixed ASCII/UTF-8 strings and full-width
+1/2/4/8-byte integers in either byte order; compact/contiguous arrays and v3 chunk layouts with
+v1 B-tree indices. Decode deflate and shuffle, verify Fletcher32 and metadata checksums, honor
+per-chunk filter masks. Every required dataset is a fully allocated vector (or empty vector).
+Bound file reads, metadata, decoded bytes, groups, traversal depth and chunk count before
+allocation. Unsupported encodings fail explicitly, including variable strings, dense groups,
+new chunk indices, external/virtual storage and soft/external links on required paths. MEX is
+the fallback for encodings outside this boundary. AnnData/MuData support expands the reader
+deliberately in slice 4; this slice does not claim to be a general HDF5 implementation.
+
+**Integration.** The existing Cells path field accepts a file or directory. Add an offline HDF5
+example and remote action selector, retain optional TSV annotations, exact receptor sample
+binding and undoable saved inputs. Fingerprint the entire HDF5 file before and after parsing;
+reject concurrent changes. Give it a separate versioned identity domain, so MEX identities and
+released projects remain unchanged. Hashes differ between encodings even when counts agree.
+
+**Acceptance.** Compare all values, labels, totals and stored-entry counts to pinned h5py/SciPy
+references. Include compressed/shuffled/checksummed multi-level chunk trees, metadata
+continuations, user blocks, big-endian/small integers, filter masks, empty count arrays and
+compact storage. Reject malformed CSC evidence, unsupported storage, checksum corruption,
+truncation and cycles. Exercise cancellation, limits, fuzzing, native/amd64 agreement, source
+relocation/drift, API linkage and visible file opening/saved reopening in both themes. Run Go
+race/vet, scientific regressions, JavaScript tests, six platform builds, contrast/site checks;
+refresh the Cells screenshots and format/method documentation. Version stays 0.5.0. The
+maintainer performs all Git and release operations.
+
+**Implemented.** The bounded HDF5 package and 10x CSC reader, Cells/API/remote integration,
+offline example, independent fixtures and documentation are in place. Source fingerprints,
+optional annotations and existing MEX behavior remain intact. Independent checksum checks
+caught and corrected Fletcher32's all-one-word edge case.
+
+**Checked.** All values, labels and gene totals agree with h5py/SciPy for 17 supported fixtures;
+18 invalid/unsupported inputs fail as specified. A separate public 10x PBMC file agrees on all
+2,498,225 stored entries, 33,538 features and 1,222 cells, with no real data added to the repository.
+Application/internal race tests and required-data scientific regressions pass (605.894 s for
+the latter); final focused race, native/amd64, released-project replay and processor checks
+pass. Vet, six platform builds, 100 JavaScript tests, 391,633 HDF5 fuzz executions across two
+runs, and 14 contrast checks pass. Cells, HDF5 Cells and cell-state browser scenes pass in both
+themes; all six refreshed screenshots were inspected. The site builds 34 pages with 34 screenshot
+sets and zero problems in 132 checks. Existing unrelated performance budgets, skipped under
+the race detector, were not rerun. Version stays 0.5.0; awaiting the maintainer's commit.
 
 ## Later waves (outlined)
 

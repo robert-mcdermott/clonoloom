@@ -2,7 +2,7 @@ package main
 
 // Raw expression evidence (wave 6, slice 1), separate from rearrangement datasets and analyses.
 // A project pins the expression ID and explicit receptor dataset/sample; a fresh open verifies
-// all three source fingerprints. Pages and coverage numbers are computed here, never in JS.
+// every source fingerprint. Pages and coverage numbers are computed here, never in JS.
 import (
 	"encoding/json"
 	"io"
@@ -54,25 +54,29 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Path         string `json:"path"`
 		Example      bool   `json:"example"`
+		HDF5Example  bool   `json:"hdf5Example"`
 		ExpectedID   string `json:"expectedId"`
 		CellsPath    string `json:"cellsPath"`
 		StudyExample bool   `json:"studyExample"`
 		StudyPreset  string `json:"studyPreset"`
 	}
 	if err := json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(&body); err != nil {
-		writeError(w, 400, "Send a MEX directory path.")
+		writeError(w, 400, "Send a MEX directory or 10x HDF5 file path.")
 		return
 	}
 	if body.StudyPreset != "" && (!body.StudyExample || (body.StudyPreset != "cell-states" && body.StudyPreset != "cell-states-clouds")) {
 		writeError(w, 400, "studyPreset requires studyExample and must be cell-states or cell-states-clouds.")
 		return
 	}
-	if body.Example || body.StudyExample {
-		if body.Path != "" || body.CellsPath != "" || body.Example && body.StudyExample {
+	if body.Example || body.StudyExample || body.HDF5Example {
+		if body.Path != "" || body.CellsPath != "" || body.Example && body.StudyExample || body.HDF5Example && (body.Example || body.StudyExample) {
 			writeError(w, 400, "Choose a path or the artificial example, not both.")
 			return
 		}
 		body.Path = filepath.Join(a.examples.Dir, "synthetic-expression")
+		if body.HDF5Example {
+			body.Path = filepath.Join(a.examples.Dir, "synthetic-expression-hdf5", "matrix.h5")
+		}
 		if body.StudyExample {
 			if body.StudyPreset == "" {
 				body.StudyPreset = "cell-states"
@@ -83,7 +87,7 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 	}
 	path, err := absPath(body.Path)
 	if err != nil || body.Path == "" {
-		writeError(w, 400, "Choose a MEX directory.")
+		writeError(w, 400, "Choose a MEX directory or 10x HDF5 file.")
 		return
 	}
 	a.expression.opening.Lock()

@@ -116,6 +116,75 @@ func TestExpressionEvidenceAndReopening(t *testing.T) {
 	}
 }
 
+func TestExpressionHDF5ExampleAndReopening(t *testing.T) {
+	a, h := testApp(t)
+	a.examples.Dir = t.TempDir()
+	example := expressionHDF5Example()
+	dir := filepath.Join(a.examples.Dir, example.Source.Name)
+	if err := example.Make(context.Background(), dir, nil); err != nil {
+		t.Fatal(err)
+	}
+	rec := postJSON(t, h, "/api/datasets/open", `{"paths":[`+jsonString(filepath.Join(dir, "receptors.tsv"))+`]}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var ds datasetSummary
+	json.Unmarshal(rec.Body.Bytes(), &ds)
+	rec = postJSON(t, h, "/api/expression/open", `{"hdf5Example":true}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var s expressionSummary
+	json.Unmarshal(rec.Body.Bytes(), &s)
+	if s.Cells != 4 || s.Entries != 6 || len(s.Sources) != 1 || s.Sources[0].Role != "matrix-hdf5" {
+		t.Fatal(s)
+	}
+	page := func() expressionPage {
+		t.Helper()
+		rec := postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"dataset":`+jsonString(ds.ID)+`,"sample":0}`)
+		if rec.Code != 200 {
+			t.Fatal(rec.Body)
+		}
+		var p expressionPage
+		json.Unmarshal(rec.Body.Bytes(), &p)
+		return p
+	}
+	p := page()
+	if p.Links.Matched != 2 || p.Links.ExpressionOnly != 2 || p.Links.ReceptorOnly != 1 || *p.Cells[0].GeneUMIs != 5 || *p.Cells[3].GeneUMIs != 0 {
+		t.Fatal(p)
+	}
+	if rec = postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(s.Path)+`,"expectedId":`+jsonString(s.ID)+`}`); rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	for _, body := range []string{`{"hdf5Example":true,"example":true}`, `{"hdf5Example":true,"studyExample":true}`, `{"hdf5Example":true,"path":"x"}`, `{"hdf5Example":true,"cellsPath":"x"}`} {
+		if rec = postJSON(t, h, "/api/expression/open", body); rec.Code != 400 {
+			t.Fatal(rec.Body)
+		}
+	}
+	// A different valid encoding has the same observations but a different source identity.
+	raw, err := os.ReadFile("testdata/expression-hdf5/contiguous.h5")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(s.Path, raw, 0600); err != nil {
+		t.Fatal(err)
+	}
+	rec = postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(s.Path)+`,"expectedId":`+jsonString(s.ID)+`}`)
+	if rec.Code != 409 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	page() // Rejected replacement did not evict the verified input.
+	rec = postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(s.Path)+`}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var changed expressionSummary
+	json.Unmarshal(rec.Body.Bytes(), &changed)
+	if changed.ID == s.ID {
+		t.Fatal("changed file identity retained")
+	}
+}
+
 func TestExpressionAnnotationsAndImportedMap(t *testing.T) {
 	app, h := testApp(t)
 	dir := filepath.Join(t.TempDir(), "study")

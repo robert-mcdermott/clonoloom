@@ -513,8 +513,56 @@ file and source bytes to 1 GiB per file. Unsupported encodings and corrupt/trunc
 The source is streamed and fingerprinted read-only; a project saves its paths and SHA-256 values.
 Reopening verifies identity. Barcode links require an explicit receptor dataset/sample and keep
 suffixes exactly. Matching counts raw source evidence before QC, never inferred clonotypes.
-AnnData, MuData and 10x HDF5 are later wave 6 slices. See the development
+AnnData and MuData are later wave 6 slices; 10x HDF5 is described below. See the development
 [Cells guide](site/pages/docs/cells.html) and `testdata/expression-mex/` for a synthetic example.
+
+## 10x feature-barcode HDF5 (wave 6, slice 3; development)
+
+Cells accepts an explicitly selected HDF5 file in the same path field as a MEX directory.
+The schema follows [10x's HDF5 documentation](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-h5-matrices):
+`/matrix/shape`, `data`, `indices`, `indptr`, `barcodes` and `features/id`, `features/name`,
+`features/feature_type`. Shape is features by cells; CSC pointers and indices are zero-based.
+All eight datasets are required vectors. Older genome-named groups, molecule-info files,
+AnnData and MuData are not this schema. Extra datasets/attributes are not interpreted as counts
+or annotations. IDs, names and modalities are preserved, with the same exact-label, integer,
+duplicate and population rules as MEX. Unsorted CSC indices are sorted with their counts;
+duplicates fail instead of being summed. Optional `cells.tsv` remains an explicit selection.
+
+The reader is implemented from the [HDF Group format specification](https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t3.html).
+Its supported subset is deliberately explicit:
+
+- Superblocks 0–3, 8-byte addresses/lengths, optional user block, no superblock extension or
+  external file driver; object headers 1–2 and bounded continuation blocks.
+- Classic symbol-table groups or compact hard links. Soft/external links are never followed;
+  a required dataset behind one fails. Dense/fractal-heap groups are unsupported.
+- Fixed-length ASCII/UTF-8 strings with declared padding and full-width signed/unsigned
+  1/2/4/8-byte integers in either byte order. Negative values, floats, variable-length strings,
+  compound/enum/reference types and custom bit layouts fail.
+- Compact and contiguous arrays; layout-v3 chunks indexed by v1 B-trees, including internal
+  nodes. Deflate, shuffle and Fletcher32 are supported, with reverse decoding order and
+  per-chunk masks. Metadata and Fletcher32 checksums are verified. Newer chunk indices,
+  unknown filters, external/virtual storage and missing/unallocated data fail. An empty vector
+  needs no allocation; a nonempty dataset is never silently filled from an HDF5 fill value.
+
+Resource policies: 1 GiB per file; 128 MiB per decoded array/read/chunk; 512 MiB total decoded
+arrays; 64 MiB total metadata and at most 4 MiB per metadata block; 2 GiB cumulative file reads
+and 1,000,000 read operations; 4,096 objects and 4,096 links per group, 65,536 messages per object/tree nodes per tree,
+64 continuation blocks, depth 32 and 262,144 chunks per array. Matrix limits remain 200,000
+features, 2,000,000 cells and 10,000,000 stored coordinates; feature labels and barcode labels
+are bounded at 64 MiB each. Counts and gene totals remain at most 2^53−1. Exceeding any bound
+fails the input, without sampling, partial values or dense matrix allocation. For unsupported
+encodings, supply the corresponding MEX files.
+
+The entire file is hashed before and after random-access parsing; changed size, modification
+time or bytes reject that read. The `matrix-hdf5` source records its path, size and SHA-256.
+Identity uses `clonoloom-expression-hdf5/1`, source size and hash; relocation retains identity,
+while another encoding of the same counts has a different source identity. Existing MEX and
+annotation identity domains are unchanged. Project reopening checks the recorded identity.
+
+`testdata/make-expression-hdf5.py` uses pinned h5py/NumPy/SciPy to write artificial fixtures
+and independently reconstruct every value in `validation/reference/expression_hdf5.json`.
+The compressed offline example has the same evidence as the MEX example. These are format
+tests, not a biological expression model or an HDF5 conformance claim.
 
 ### Cell annotations and imported coordinates (wave 6, slice 2; development)
 

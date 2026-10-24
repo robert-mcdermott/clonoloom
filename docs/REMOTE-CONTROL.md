@@ -189,7 +189,7 @@ independent of page filters, under the normal source-access and data-use conditi
 
 ### Expression evidence (wave 6, slice 1; development)
 
-`inspect_expression` opens a MEX directory in Cells and saves its source fingerprints and
+`inspect_expression` opens a MEX directory or 10x HDF5 file in Cells and saves its source fingerprints and
 binding. Give `path`, `dataset` (ID or name) and an explicit zero-based `sample` index. Give
 `dataset: ""` for expression-only inspection. The answer includes the expression ID and raw
 barcode coverage. To use the artificial example, first call
@@ -213,3 +213,12 @@ For the larger cloud study, call
 `studyPreset` requires `studyExample` and accepts only `cell-states` or `cell-states-clouds`.
 Omitting it preserves the original grid example. Saved records reopen their explicit paths;
 changing the preferred visible example never silently redirects an existing saved input.
+
+Slice 3 accepts a 10x feature-barcode HDF5 file in `path`. To use the compressed artificial
+example, call `open_example {"example":"synthetic-expression-hdf5","download":true}`, then
+`inspect_expression {"hdf5Example":true,"sample":0}`. `hdf5Example`, `example` and `studyExample`
+are mutually exclusive and cannot accompany explicit source paths. Saved records always
+reopen their selected paths. The response's source role is `matrix-hdf5`; counts and receptor
+coverage have the same semantics as MEX. `POST /api/expression/open` accepts the same HDF5
+path/example selector and optional `expectedId`; a changed source returns 409 without replacing
+the previously verified input. Reading boundaries and unsupported encodings are in `FORMATS.md`.

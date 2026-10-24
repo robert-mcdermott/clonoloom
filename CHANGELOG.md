@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **10x HDF5 expression evidence (wave 6, slice 3).** Read a selected feature-barcode HDF5
+  file into the existing sparse Cells model, retaining feature modalities, explicit zeros,
+  exact barcode links and optional annotations. Add a bounded standard-library reader for
+  classic/compact groups, contiguous/compact arrays and classic B-tree chunks with deflate,
+  shuffle and Fletcher32. Verify checksums and reject unsupported storage, malformed CSC,
+  unsafe counts and missing chunks. Fingerprint the complete file and verify saved reopening
+  without changing MEX identities. Add an offline compressed example, remote control, browser
+  checks and independently generated h5py/SciPy fixtures. AnnData/MuData follow in slice 4;
+  version stays 0.5.0.
+
 ### Added
 
 - **Cells map feedback.** Show missing annotations in outlined neutral gray above overlapping
