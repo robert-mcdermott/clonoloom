@@ -659,3 +659,22 @@ pandas 2.3.3 and scirpy 0.25.1. It uses public APIs, with no donor data or third
 `validation/reference/anndata.json` records source hashes and independent counts and AIRR
 values. The **Use AnnData example** button works offline; its `X_umap` coordinates are
 artificial illustration points, not a computed UMAP or a biological validation dataset.
+
+## Clonotype phenotype results (wave 6, slice 6; development)
+
+`GET /api/phenotypes/{id}` returns an `artifact` manifest and a `result` document with
+`format: "clonoloom-phenotypes"`, `version: 1`. It records expression and receptor source
+fingerprints, the receptor dataset, explicit sample/subject/timepoint, map parent (empty for
+imported coordinates), axes/source flag, methods and the `analysis` object. Analysis includes
+normalized definition and ID, QC rules and content-derived `filterId`, effective size population,
+inclusive breakpoints, annotation column, coverage, cells, clone coverage, phenotype groups and
+clone/phenotype associations. The manifest also records the project's filter version if supplied.
+
+Cells retain exact barcodes, supplied annotation values and coordinates (`null` when absent),
+assignment/chain states, candidate IDs and a unique clone where available. A cell's unavailable
+size is `null`, never zero. Clone coverage counts may legitimately be zero. Empty annotation
+strings mean missing values; literal names are never interpreted as missing. Group expansion
+shares are nullable; association rows include both integer denominators and their fractions.
+Source axes and positions are copied, never combined across maps or samples. Result identities
+pin the input, map checksum, dataset/sample, definition meaning, QC rules, metadata, options and
+method version. [Full population and denominator rules](PHENOTYPES.md).

@@ -116,6 +116,53 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cell-phenotypes'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`window.clonoloom.cellsView.example(true)`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await js(`(() => { const c = document.querySelector('[aria-label="Phenotype annotation"]'); c.value = 'state'; c.dispatchEvent(new Event('change')); [...document.querySelectorAll('button')].find((b) => b.textContent === 'Compute clonotype phenotypes').click(); return true; })()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellPhenotypesView?.state().status)`, 120000);
+    const state = await js('window.clonoloom.cellPhenotypesView.state()');
+    if (state.status !== 'ready' || state.answer.result.analysis.coverage.mapped !== 358 || state.answer.result.analysis.coverage.matched !== 359 || state.answer.result.analysis.cells.length !== 360 || state.answer.result.analysis.options.annotation !== 'state') throw new Error(`Phenotype result: ${state.error || JSON.stringify(state.answer?.result.analysis.coverage)}`);
+    const remote = await act('compute_cell_phenotypes', { annotation: 'state' });
+    if (remote.data.artifact !== state.artifact) throw new Error('Visible and remote phenotype controls differ');
+    await js(`(() => {
+      const app = window.clonoloom, id = app.cellPhenotypesView.state().artifact;
+      app.store.undo(); if (app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Phenotype undo failed'); app.store.redo();
+      const filter = document.querySelector('[aria-label="Filter phenotype table"]'); filter.value = 'CELL00001-1'; filter.dispatchEvent(new Event('change'));
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Select matching cells').click(); return true;
+    })()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length === 1');
+    await js(`(() => {
+      if (!document.querySelector('#inspector').textContent.includes('CELL00001-1')) throw new Error('Selected cells absent from inspector');
+      const plot = document.querySelector('.cell-overlay-plot'); if (!plot.querySelector('[opacity="0.14"]')) throw new Error('Other cells not dimmed');
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Reset cell selection').click(); return true;
+    })()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length === 0');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Undo cell selection').click(); return true; })()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length === 1');
+    await js(`document.querySelector('#clonotype-phenotypes').scrollIntoView({ block: 'start' })`);
+    const box = await js(`(() => { const r = document.querySelector('.cell-overlay-plot svg').getBoundingClientRect(); return { x:r.x+35, y:r.y+25, endX:r.right-35, endY:r.bottom-30 }; })()`);
+    await b.send('Input.dispatchMouseEvent', { type:'mousePressed', x:box.x, y:box.y, button:'left', clickCount:1 });
+    await b.send('Input.dispatchMouseEvent', { type:'mouseMoved', x:box.endX, y:box.endY, button:'left', buttons:1 });
+    await b.send('Input.dispatchMouseEvent', { type:'mouseReleased', x:box.endX, y:box.endY, button:'left', clickCount:1 });
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length > 1');
+    await js(`(() => { const app=window.clonoloom, r=app.cellPhenotypesView.state().answer.result; app.pendingCellClone={dataset:r.dataset,definition:r.analysis.definition,filter:r.analysis.filter,id:r.analysis.cells.find((c)=>c.clone).clone}; app.setMode('clonotypes'); return true; })()`);
+    await waitFor('Boolean(window.clonoloom.clonotypesView)');
+    await js(`window.clonoloom.clonotypesView.select(window.clonoloom.pendingCellClone.id)`);
+    await waitFor(`[...document.querySelectorAll('button')].some((b)=>b.textContent==='Show on a cell map')`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b)=>b.textContent==='Show on a cell map').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellPhenotypesView?.state().status === 'ready' && window.clonoloom.cellPhenotypesView.state().selected.length > 0`);
+    await js(`(async () => { const app=window.clonoloom,id=app.cellPhenotypesView.state().artifact; await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells'); await app.cellPhenotypesView.show(id); if(app.cellsView.state().record)throw new Error('Saved overlay required expression input'); return true; })()`);
+    // Reopen the source and attach a computed map; its population differs from the imported one.
+    await js(`window.clonoloom.cellsView.example(true)`);
+    const computed = await act('compute_expression_map');
+    const overlay = await act('compute_cell_phenotypes', { map: computed.data.artifact, population:'mapped', annotation:'state' });
+    if (overlay.data.coverage.mapped !== 359) throw new Error('Computed overlay reused imported positions');
+    await js(`(async () => { const app=window.clonoloom; await app.cellPhenotypesView.show(${JSON.stringify(state.artifact)}); const choice=document.querySelector('[aria-label="Overlay coloring"]');choice.value='annotation:0';choice.dispatchEvent(new Event('change'));const missing=document.querySelector('.cell-overlay-plot circle.cell-map-missing');if(!missing||getComputedStyle(missing).fill!=='rgb(163, 163, 163)')throw new Error('Overlay missing label not gray');choice.value='size';choice.dispatchEvent(new Event('change'));return true; })()`);
+    await js(`document.querySelector('#clonotype-phenotypes').scrollIntoView({ block: 'start' })`);
+  },
   async 'cell-analysis'() {
     await js(`window.clonoloom.setMode('cells')`);
     await waitFor('Boolean(window.clonoloom.cellsView)');

@@ -47,3 +47,17 @@ test('computed map identifies the method on both axes without claiming supplied 
   assert.doesNotMatch(result.svg, /Coordinates are not computed/);
   assert.equal(result.legend[0].className, 'cell-map-missing');
 });
+
+test('overlay styling uses saved sizes, dims unselected cells and preserves coordinates', () => {
+  const rows = [{ barcode: 'a', values: [], position: [0, 0], size: 1 }, { barcode: 'b', values: [], position: [2, 4], size: 5 }, { barcode: 'c', values: [], position: [0, 0], size: null }];
+  const before = JSON.stringify(rows);
+  const style = { label: (c) => c.size == null ? 'QC excluded' : String(c.size), missing: (c) => c.size == null, continuous: true, min: 1, max: 5, value: (c) => c.size, selected: new Set(['a']) };
+  const result = cellMap(rows, -1, null, style);
+  assert.match(result.svg, /hsl\(205 65% 75%\)/); assert.match(result.svg, /hsl\(205 65% 30%\)/);
+  assert.equal((result.svg.match(/opacity="0.14"/g) ?? []).length, 2);
+  assert.match(result.svg, /class="cell-map-missing" data-cell="2"/);
+  assert.equal(JSON.stringify(rows), before);
+  assert.match(result.legend[0].name, /1 to 5/);
+  const equal = cellMap([rows[0]], -1, null, { ...style, max: 1 });
+  assert.doesNotMatch(equal.svg, /NaN|Infinity/);
+});

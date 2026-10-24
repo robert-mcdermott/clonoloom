@@ -1,3 +1,4 @@
+import { mountCellPhenotypes } from './cell-phenotypes.js';
 import { mountCellAnalysis } from './cell-analysis.js';
 // Cells starts with raw expression evidence and exact sample-scoped barcode coverage. No
 // clonotype count or phenotype is inferred by inspection. Computed maps are separate artifacts.
@@ -50,6 +51,7 @@ export function mountCells(app, container) {
   h('div.view-body', h('p', 'Read a MEX, 10x HDF5, AnnData or MuData count matrix and check its barcode coverage in one receptor sample.'), form, saved, output));
   container.append(root);
   const analysis = mountCellAnalysis(app, root.querySelector('.view-body'), () => active);
+  const phenotypes = mountCellPhenotypes(app, root.querySelector('.view-body'), () => active);
 
   function drawSamples() {
     const d = store.project.datasets.find((x) => x.id === datasets.value);
@@ -119,7 +121,7 @@ export function mountCells(app, container) {
     } catch (error) { message = error.message; status = 'error'; draw(); throw error; }
   }
   function draw() {
-    analysis.update(new Set());
+    analysis.update(new Set()); phenotypes.update(new Set());
     drawSaved(); clear(output);
     open.disabled = status === 'loading'; cancel.hidden = status !== 'loading';
     output.append(h('p', { role: 'status' }, status === 'loading' ? 'Reading expression evidence…' : message));
@@ -172,8 +174,8 @@ export function mountCells(app, container) {
       }
       if (topics.has('datasets')) { const sample = samples.value; drawDatasets(); samples.value = sample; }
       drawSaved();
-      analysis.update(topics);
+      analysis.update(topics); phenotypes.update(topics);
     },
-    destroy() { analysis.destroy(); serial++; controller?.abort(); if (app.cellsView === api) delete app.cellsView; root.remove(); },
+    destroy() { phenotypes.destroy(); analysis.destroy(); serial++; controller?.abort(); if (app.cellsView === api) delete app.cellsView; root.remove(); },
   };
 }

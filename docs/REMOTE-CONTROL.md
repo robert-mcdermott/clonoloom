@@ -277,3 +277,16 @@ and either `ready:true` or a durable job ID. Standard Tasks endpoints handle can
 resumption. `GET /api/expression-map/{id}` verifies and returns the manifest and complete saved
 result, without requiring the source files. See [EXPRESSION.md](EXPRESSION.md) for methods,
 populations, numerical limits and the meaning of the exported graph.
+
+### Clonotype overlays and phenotypes (development)
+
+After `inspect_expression` opens an input with a receptor dataset/sample binding, call
+`compute_cell_phenotypes` with optional `map` (a computed expression-map artifact ID; empty for
+imported coordinates), `population` (`receptor` or `mapped`), `annotation` (a supplied column;
+empty for the whole expression sample), and `breakpoints` (default `[1,2,5]`). It uses the
+project's current clonotype definition, QC version and sample metadata, saves the immutable
+result, and returns its artifact ID, coverage and method description. `GET /api/phenotypes/{id}`
+exports the full result with provenance. The corresponding POST endpoint accepts explicit
+`id`, `map`, `dataset`, `sample`, `definition`, `filter`, `annotation` (sample metadata including
+its exact `name`), `options` and optional `start:false` for lookup. The `options.annotation`
+column is distinct from the request's sample `annotation` metadata. No samples are pooled.

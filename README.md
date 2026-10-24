@@ -32,7 +32,9 @@ scirpy AIRR evidence, exact sample-scoped barcode links,
 supplied cell annotations and imported maps in Cells, with a seeded paired receptor/expression
 study and known cell states. It also adds count normalization, PCA, exact expression
 neighborhoods and computed UMAP artifacts with cited methods and complete provenance
-([computed-map guide](docs/EXPRESSION.md)). These changes target 0.6.0 and are not in the
+([computed-map guide](docs/EXPRESSION.md)), plus sample-scoped clone sizes, linked map
+selection and supplied phenotype summaries with explicit denominators
+([phenotype guide](docs/PHENOTYPES.md)). These changes target 0.6.0 and are not in the
 published 0.5.0 binary. See the [development Cells guide](docs/site/pages/docs/cells.html).
 
 ## Features

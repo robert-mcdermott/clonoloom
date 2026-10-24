@@ -65,7 +65,8 @@ dataset. Their content checksum is verified on read. Source data are never chang
 
 This is exploratory expression structure. A map is not a cell-type assignment, receptor
 phenotype, proof of antigen specificity, differential-expression test or subject-level effect.
-Clonotype overlays and phenotype summaries are the next wave 6 slice.
+Saved maps can now be linked to one receptor sample through
+[clonotype overlays and phenotype summaries](PHENOTYPES.md).
 
 ## Methods and validation
 

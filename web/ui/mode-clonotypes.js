@@ -375,6 +375,7 @@ export function mountClonotypes(app, container) {
     return h('section.inspector-section',
       h('h3', icon('clonotypes'), 'Clonotype'),
       h('p.mono.small', { title: 'The ID is made from the definition and the clonotype\'s chains: the same clonotype has the same ID in every run.' }, c.id),
+      h('div.btn-row', h('button.btn.small', { type: 'button', onclick: async () => { app.pendingCellClone = { ...structuredClone(app.clonotypeContext.request), id: c.id }; await app.setMode('cells'); } }, 'Show on a cell map')),
       h('div.btn-row', h('button.btn.small', { type: 'button', title: 'Add this clonotype to the list the Tracking view follows through each subject\'s samples, and show it there', onclick: () => followOverTime(c.id) }, icon('threads'), 'Follow over time')),
       ...c.chains.map((ch) => h('dl.kv',
         h('dt', 'Locus'), h('dd', ch.locus),

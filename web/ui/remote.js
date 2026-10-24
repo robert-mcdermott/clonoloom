@@ -480,6 +480,14 @@ export function remoteActions(app) {
       return { message: `${done.page.result.assigned} assigned observations summarized.`, data: { artifact: done.artifact, assigned: done.page.result.assigned, resolvedClass: done.page.result.resolvedClass, resolvedGene: done.page.result.resolvedGene, families: done.page.familyCount, excluded: done.page.result.excluded, issues: done.page.result.issues, options: done.page.result.isotypeOptions } };
     },
 
+    async compute_cell_phenotypes(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellPhenotypesView, 5000, 'Clonotype phenotypes');
+      const result = await view.run(options);
+      if (!result) throw new ActionError('The project or expression input changed during the analysis.');
+      return { message: 'Clonotype phenotypes saved.', data: { artifact: result.artifact.id, coverage: result.result.analysis.coverage, description: result.result.description } };
+    },
+
     async compute_expression_map({ options = {} } = {}) {
       await app.setMode('cells');
       const view = await waitFor(() => app.cellAnalysisView, 5000, 'Computed expression map');

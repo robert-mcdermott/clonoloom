@@ -114,6 +114,7 @@ func (a *app) jobEvents(w http.ResponseWriter, r *http.Request) {
 // handleJobs registers how each kind of job is resumed from its spec.
 func (a *app) handleJobs() {
 	a.handleExpressionMapJobs()
+	a.handlePhenotypeJobs()
 	a.jobs.Handle("example", func(spec json.RawMessage) (jobs.Func, error) {
 		var s exampleSpec
 		if json.Unmarshal(spec, &s) != nil || s.Example == "" {

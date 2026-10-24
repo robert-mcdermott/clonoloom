@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- **Clonotype overlays and phenotypes (wave 6, slice 6).** Link one receptor sample to an
+  imported or computed expression map using exact barcodes and saved definition/QC rules.
+  Count distinct cells in explicit receptor-sample or mapped populations; retain both coverage
+  counts, configurable size categories and continuous coloring. Separate missing receptor
+  evidence, QC exclusions, ambiguous assignments and unavailable sizes. Add supplied-phenotype
+  counts and fractions with visible denominators and subject/timepoint boundaries. Save cited,
+  immutable artifacts with source and map checksums, remote control and complete JSON exports.
+  Add linked clonotype highlighting, brushing, searchable tables, selection undo and a guided
+  example. Validate against independent SQL tabulations and synthetic edge cases. Version
+  stays 0.5.0.
+
 - **Computed expression maps (wave 6, slice 5).** Add explicit gene-count normalization,
   variance-ranked feature selection, centered PCA, exact Euclidean neighbors, a saved fuzzy
   graph and seeded UMAP. Preserve excluded cells, missing annotations, source fingerprints,

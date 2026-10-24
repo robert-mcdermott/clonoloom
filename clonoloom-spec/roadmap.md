@@ -10,14 +10,14 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
 confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has a sequence of slices and a detailed plan for
-slices 1–5. Later slices are refined as they come.
+slices 1–6. Later slices are refined as they come.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
 2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
-Wave 6 is underway on `wave6`. Slices 1–4 and the cell-map feedback follow-up are committed;
-slice 5 adds expression preprocessing, exact neighborhoods and computed UMAP results. Version remains 0.5.0 until the release-preparation slice.
+Wave 6 is underway on `wave6`. Slices 1–5 and the cell-map feedback follow-up are committed;
+slice 6 adds clonotype overlays and descriptive phenotype summaries. Version remains 0.5.0 until the release-preparation slice.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -1789,7 +1789,7 @@ three-state counts assess neighborhood purity and map trustworthiness; reference
 and finite bandwidths checked after finding nonfinite values under compiled fast math. Check
 source drift, cache identity, cancellation, failed promotion, missing/zero values, bounds,
 worker independence, native/amd64 byte identity, both UI themes, saved reopening and undo.
-**Done, awaiting the maintainer's commit.** The application/internal race suite and complete
+**Done, committed as `ef6d893`.** The application/internal race suite and complete
 scientific validation pass (477.226 s for the latter). Both independent numerical cases agree;
 known-state neighbor purity is 1.0, and map trustworthiness is 0.9780 and 0.9642 versus the
 reference's 0.9774 and 0.9618. The optional public 10x 1k PBMC matrix completes in 1.74 s with
@@ -1803,7 +1803,69 @@ Vet, gofmt, six platform builds, 103 JavaScript tests and all 14 contrast checks
 Cells capture scenes pass in light/dark themes, including computed-result save/reopen, undo,
 annotation coloring and table navigation. Both new screenshots are visually inspected. The
 site builds 34 pages with 36 screenshot sets; all 132 audit checks pass. Version stays 0.5.0.
-Slice 6 has not started.
+
+### Slice 6: Clonotype overlays and phenotypes
+
+**Scope (M1, M2).** Bind one expression input and either its imported coordinates or one saved
+computed map to an explicit receptor dataset/sample. Reuse the normalized clonotype definition
+and QC mask. Count distinct sample/barcode cells, never chain rows, with no suffix stripping.
+Save both all uniquely assigned receptor cells in that sample and mapped assigned cells per
+clonotype; the user chooses the size population (default receptor sample). Configurable inclusive
+breakpoints default to 1, 2, 5. Missing receptor evidence, QC exclusion, unassigned clonotypes,
+ambiguous assignments and absence from the chosen size population remain distinct, never zero.
+Definitions that assign a cell to several locus-specific clonotypes cannot supply a unique clone
+size; report those cells as ambiguous. Conflicting vendor labels are also ambiguous.
+
+**Phenotypes.** Select a supplied annotation (cluster, cell type or state); do not infer labels.
+Count all expression barcodes, including those without coordinates, by annotation and clonotype.
+Keep missing labels as a separate group. Report assigned/sized cells, expanded cells (size > 1),
+mapped coverage, within-clonotype expression-cell fractions and within-group expression-cell
+fractions with their denominators. Expansion shares use sized cells only. Each result belongs
+to one sample and pins its supplied subject/timepoint; no pooled donors, cell-level significance,
+expression DE, batch correction or antigen-specificity claims. Sample/timepoint coloring is
+available within that one map; independently fitted maps are never concatenated.
+
+**Interaction and record.** Continuous size, size-bin, receptor/QC/assignment, chain-status and
+supplied-annotation coloring; neutral missing evidence; exact source axes and equal scale.
+Clonotype selection highlights mapped cells; map clicking/brushing and table selection list
+clonotypes and unresolved evidence in the inspector. Reset/undo selection and table filtering
+provide an accessible equivalent. Pin expression/map IDs, parent checksums, dataset fingerprints,
+definition ID, filter values, sample metadata, populations and method version in immutable job
+artifacts. Results reopen without source files and export their full JSON record.
+
+**Sources.** scirpy's documented `clonal_expansion` API describes sample-scoped sizes and inclusive
+breakpoints; Sturm et al. 2020, doi:10.1093/bioinformatics/btaa611. The 10x Loupe integrated V(D)J
+and gene-expression tutorial documents linked clone/phenotype exploration. These are method and
+interaction references, not shared implementations. Counting/ambiguity policies are ClonoLoom
+choices. Chain evidence uses QC's productive-contig receptor arms and >2 chains/locus threshold,
+with mixed receptor families and unresolved loci explicitly labeled.
+
+**Validation.** Hand-enumerated cells with duplicate contigs, repeated barcodes across samples,
+missing annotations/coordinates, QC exclusions, single/paired/multi/mixed chains, vendor conflicts,
+all-loci definitions and both size populations. Independent tabulation validates sizes/bins and
+phenotype fractions. Test artifact identity, altered inputs/parents, cancellation, saved reopening,
+linked selection, both themes, undo, accessible tables and processor determinism. Finish the
+application/scientific suites, browser capture and documentation checks before handoff.
+
+**Done, awaiting the maintainer's commit.** Imported and computed overlays, distinct-cell
+populations, explicit ambiguity/missingness, chain evidence and supplied-phenotype summaries
+are implemented. Immutable jobs pin source/map checksums, normalized definitions, QC content
+fingerprints and project filter versions, sample metadata, options and citations. Cells supports
+continuous/category coloring, clone links, pointer brushing, searchable/paged tables, selection
+reset/undo, result undo/redo, saved reopening and complete JSON export. The cloud study has a
+third guided step; the remote action is `compute_cell_phenotypes`.
+
+Independent SQL tabulations agree for both samples and both size populations, including every
+category, phenotype numerator and denominator. Hand-enumerated ambiguous assignments, repeated
+barcodes/contigs, QC exclusions, missing labels, mixed/unknown chains, empty populations,
+resource bounds and cancellation pass. Source drift and altered parent/result checksums are
+refused. Full application/internal race tests and scientific validation pass (498.369 s for the
+latter). Native/amd64 phenotype digests and released-project/processor compatibility checks
+agree. Vet, gofmt, six platform builds, 104 JavaScript tests and all 14 contrast checks pass.
+All six Cells capture scenes pass in both themes, including actual pointer brushing and
+Clonotypes-to-Cells navigation; both new screenshots are visually inspected. The site builds
+34 pages with 37 screenshot sets and passes all 132 audit checks. Version remains 0.5.0.
+Slice 7 has not started.
 
 ## Later waves (outlined)
 
