@@ -1,0 +1,104 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "fam-04b66774b9dd48e7",
+  "kind": "families",
+  "name": "B-cell clonal families · Synthetic IMGT annotations",
+  "dataset": "d-4c5637a5398762da",
+  "state": "complete",
+  "created": "2026-10-23T23:58:51.215969Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-4c5637a5398762da",
+        "name": "Synthetic IMGT annotations"
+      }
+    ],
+    "job": {
+      "id": "jmvlmsg9a-7",
+      "kind": "families",
+      "spec": {
+        "dataset": "d-4c5637a5398762da",
+        "definition": {
+          "chains": null,
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "subjects": {
+          "imgt-inputs": ""
+        },
+        "families": {
+          "mode": "heavy",
+          "scope": "sample",
+          "threshold": 0.1
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Normalized nucleotide Hamming distance; single-linkage B-cell families",
+      "version": "1",
+      "citation": "Gupta et al. 2015, doi:10.1093/bioinformatics/btv359; Gupta et al. 2017, doi:10.4049/jimmunol.1601850. Paired maximum distance and conservative eligibility are ClonoLoom policies."
+    },
+    "parameters": {
+      "dataset": "d-4c5637a5398762da",
+      "definition": {
+        "chains": null,
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "subjects": {
+        "imgt-inputs": ""
+      },
+      "families": {
+        "mode": "heavy",
+        "scope": "sample",
+        "threshold": 0.1
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.5.0",
+        "commit": "2fea525a963ab0af44297c3c1a0bb7d37f4a89e5-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "families.json",
+      "role": "families",
+      "size": 3163,
+      "sha256": "404c26846afd87e101eceb4da1500a987ea7b277e9b20dea728ee17ca4e3de13"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "eligible": 1,
+    "families": 1,
+    "observations": 2,
+    "representatives": 1
+  }
+}

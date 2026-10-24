@@ -10,25 +10,22 @@ B-cell receptor sequencing, bulk and single-cell. It takes the output of an anno
 (Cell Ranger, immunoSEQ, MiXCR, IgBLAST through Change-O, TRUST4, or any AIRR Community file) to
 results others can check: the data validated, clonotypes defined explicitly, diversity and overlap
 measured with their uncertainty, clonotypes followed over time, receptors grouped by likely
-specificity, B-cell families traced, and figures, methods and certificates written, each step kept
+specificity, B-cell families traced, and figures, exports and cited methods written, each step kept
 on record.
 
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Current release:** 0.4.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+**Current release:** 0.5.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
 Single-cell phenotypes and cohort comparisons come in later
 releases.
 
-**In development (wave 5):** B cells → Families adds nearest-distance diagnostics and
-explicit single-linkage thresholds, with subject boundaries and heavy/light pairing.
-Families retain source evidence and remain separate from junction clonotypes.
-
-**Sequence evidence:** B-cell Inputs retains AIRR sequence evidence, checks its
-coordinates and alignments, and lets you inspect and export the supplied annotations.
-IMGT/HighV-QUEST output tables can be opened together, with joined sequence evidence and
-annotation provenance.
-Germline reconstruction and mutation analysis are still planned.
+**B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an
+explicit threshold, reconstruct D-masked germlines, measure somatic hypermutation, explore
+bounded parsimony trees and summarize observed isotypes. Families remain separate from junction
+clonotypes. The [artificial immunization guide](https://robert-mcdermott.github.io/clonoloom/docs/simulation.html#immunization)
+connects the workflow to known truth, exports and cited methods. Likelihood trees, selection
+and switching-event inference remain deferred.
 
 ## Features
 
@@ -49,10 +46,10 @@ Germline reconstruction and mutation analysis are still planned.
 - **Measure repertoires with their uncertainty.** Hill numbers, Chao1, ACE, the estimated Shannon
   and Simpson diversity, clonality, Gini and clonal space homeostasis, each with a 95% interval.
   Rarefaction and extrapolation compare samples at equal coverage or size.
-- **Summarize B-cell isotypes (wave 5 development).** Sample and family usage with explicit ambiguity and denominators, unordered constant-gene co-occurrence, raw-call inspection and complete exports. Co-occurrence is descriptive, not a switching-event inference. [Isotype guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-isotypes.html).
-- **Explore B-cell lineages (wave 5 development).** Bounded parsimony trees, conditional ancestral sequences, topology ties and observed isotype/timepoint/tissue annotations, with complete provenance and Newick/FASTA exports. [Lineage guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-lineages.html).
-- **Measure somatic hypermutation (wave 5 development).** Evaluable bases and codons, regional substitution frequencies, single-hit replacement/silent counts, multi-hit codon endpoints and explicit exclusions, derived from saved germlines. [SHM guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-shm.html).
-- **Reconstruct B-cell germlines (wave 5 development).** Saved family/locus allele choices, checksum-pinned human OGRDB or artificial references, AIRR CIGAR projection and D/N/P masking, with explicit exclusions and complete provenance. [Germlines guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-germlines.html).
+- **Summarize B-cell isotypes.** Sample and family usage with explicit ambiguity and denominators, unordered constant-gene co-occurrence, raw-call inspection and complete exports. Co-occurrence is descriptive, not a switching-event inference. [Isotype guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-isotypes.html).
+- **Explore B-cell lineages.** Bounded parsimony trees, conditional ancestral sequences, topology ties and observed isotype/timepoint/tissue annotations, with complete provenance and Newick/FASTA exports. [Lineage guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-lineages.html).
+- **Measure somatic hypermutation.** Evaluable bases and codons, regional substitution frequencies, single-hit replacement/silent counts, multi-hit codon endpoints and explicit exclusions, derived from saved germlines. [SHM guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-shm.html).
+- **Reconstruct B-cell germlines.** Saved family/locus allele choices, checksum-pinned human OGRDB or artificial references, AIRR CIGAR projection and D/N/P masking, with explicit exclusions and complete provenance. [Germlines guide](https://robert-mcdermott.github.io/clonoloom/docs/bcell-germlines.html).
 - **See what the clonotypes are made of.** V, D, J and C genes and families, V–J pairs, junction
   lengths and amino acids by IMGT position; by clonotypes or abundance, by sample or condition.
 - **Compare samples.** Every pair's shared clonotypes, Jaccard, Sørensen–Dice and the overlap
@@ -242,7 +239,7 @@ node docs/site/build.mjs /tmp/site       # the website, every link checked (docs
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.4.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.5.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Example data

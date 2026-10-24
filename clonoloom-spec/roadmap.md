@@ -875,12 +875,11 @@ analysis, and follows clonal families, their mutations and isotypes through a st
 clonotypes remain the existing, explicit definitions; a B-cell clonal family is a separate,
 threshold-dependent result, not a replacement for those identifiers.
 
-Planned on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
+Implemented on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slices 1–7 are
-committed and slice 8 is implemented; later slices need their methods, data and acceptance
-criteria settled in detail before implementation.
+puts a simulation with known families before the analyses it validates. Slices 1–8 are
+committed; slice 9 is implemented and validated, awaiting maintainer commit and release.
 
 | Slice | Status | Scope |
 | --- | --- | --- |
@@ -891,8 +890,8 @@ criteria settled in detail before implementation.
 | 5. Germlines | Committed | Checksum-pinned reference sets and per-family reconstruction with D masking (B1) |
 | 6. Somatic hypermutation | Committed | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
 | 7. Lineage trees | Committed | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
-| 8. Isotypes and class switching | Implemented; awaiting commit | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
-| 9. Examples and release 0.5.0 | To come | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
+| 8. Isotypes and class switching | Committed | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
+| 9. Examples and release 0.5.0 | Implemented; awaiting commit | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
 
 ### Slice 1: B-cell sequence evidence
 
@@ -1389,7 +1388,56 @@ both themes; the isotype scene checks visible run controls, pair/family navigati
 paging and inspection, pinned metadata, cited methods, disposal and saved reopening. The site
 builds 33 pages with 31 screenshot sets; 128 audit checks across 32 pages find no problems.
 Isolated million-row budgets pass: read/validate 1.630 s, cached reopen 135 ms and searched page
-38.099 ms. Version remains 0.4.0. Awaiting maintainer commit; slice 9 has not started.
+38.099 ms. Version remains 0.4.0. Committed by the maintainer.
+
+### Slice 9: Examples and release 0.5.0
+
+**Serves E3, O2 and N7.** Complete the artificial immunization guide through families,
+D-masked germlines, SHM, lineage trees, observed isotypes and cited methods. Prepare 0.5.0
+without changing the scientific scope: likelihood, selection and switching-event inference
+remain deferred.
+
+- Preserve a small release project with AIRR evidence, paired families across subjects,
+  reference bytes and provenance, the complete parent/result chain and joined IMGT inputs.
+  Reopen its datasets under their original identities and reproduce every document byte for
+  byte on arm64 and amd64. Preserve earlier fixtures unchanged.
+- Update version, changelog, citation, user guides and release overview. Explain how to
+  inspect evidence, choose a demonstration threshold, interpret limits and export results.
+- Refresh all captures in both themes and the site preview; check links, accessibility,
+  viewport overflow, release version agreement, installers and six platform builds.
+
+**Acceptance.** All released projects, full Go race/vet and scientific validation, JavaScript
+and contrast checks, guided browser workflows, site audit and isolated performance budgets.
+The maintainer executes the commit, PR/merge, tag, release and site publication.
+
+**Implemented.** The nine-step guide ends with cited methods; its worked example explains
+expected counts, interpretation limits, exports and returning to Tracking for the next step.
+The 0.5.0 compatibility fixture retains 60 paired cells (120 chain rows) across three families,
+six samples and two subjects, plus a joined synthetic IMGT bundle. Its seven results retain
+nearest-only and thresholded families, germlines, SHM, six family/locus trees and isotypes.
+Reference FASTA and catalog provenance are pinned; replay preserves IMGT grouping. Earlier
+release fixtures are unchanged. Program, web assets and citation now name 0.5.0; changelog,
+release overview, scientific validation, formats and user guides describe the completed scope.
+
+**Checked.** Application/internal and complete scientific Go race checks pass (scientific
+run: 788.685 s). Non-race scientific validation with every required CI dataset passes
+(261.504 s), with all six performance budgets run separately without competing validation
+or capture processes (87.704 s). The million-row read/validation takes 1.568 s, cached reopen
+129 ms and a searched page 37.348 ms. One million generation probabilities take 41.703 s;
+100,000 paired TCR neighborhoods take 34.591 s, both on ten processors.
+
+All four release projects reproduce on arm64 and amd64; 0.3.0 onward compare byte for byte.
+Vet, formatting, release-version agreement, six platform builds, shell installer syntax,
+95 JavaScript tests and 14 contrast checks pass. All 31 browser scenes pass in both themes,
+including the complete guide's saved result kinds and scientific citations. The site builds
+33 pages with 31 screenshot sets; its 128 accessibility/viewport checks find no problems,
+and eight focused checks cover the final guide wording. Captures and desktop/phone previews
+were visually inspected. The link-preview image was regenerated and remains byte-identical.
+PowerShell syntax remains a CI check because pwsh is not installed locally; optional live
+publisher downloads and the maintainer-only VDJdb lookup were not requested or rerun.
+
+No commit, PR, merge, tag, release or site publication was performed. Version 0.5.0 is ready
+for the maintainer's commit and the established CI → PR/merge → release workflow.
 
 ## Later waves (outlined)
 

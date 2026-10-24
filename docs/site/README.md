@@ -54,7 +54,7 @@ MaveScape's.
 5. Preview the site:
 
    ```sh
-   python3 -m http.server 8874 --directory ../clonoloom-site
+   uv run --no-project python -m http.server 8874 --directory ../clonoloom-site
    ```
 
    Then open <http://localhost:8874>.

@@ -286,6 +286,11 @@ const scenes = {
     const catalog = await (await fetch(`${URL}api/examples`)).json();
     const example = catalog.examples.find((e) => e.name === 'simulated-bcell-immunization');
     for (const step of example.opens[0].steps) await act(step.action, step.args);
+    await act('close_dialogs');
+    const saved = await js('window.clonoloom.store.project.artifacts');
+    for (const kind of ['families', 'germlines', 'shm', 'lineages', 'isotypes']) {
+      if (!saved.some((a) => a.kind === kind)) throw new Error(`Guided study did not save ${kind}`);
+    }
     await act('inspect_bcell_inputs', { select: 1 });
     const page = await js('window.clonoloom.bcellsView.page()');
     if (page.count !== 4320 || page.samples.length !== 27 || page.samples.some((s) => s.rows !== s.valid || s.rows !== s.regions)) throw new Error('Artificial B-cell evidence differs');
@@ -293,6 +298,10 @@ const scenes = {
     await waitFor(`Boolean(document.querySelector('.methods-text'))`);
     const methods = await js(`document.querySelector('.methods-text').textContent`);
     if (!methods.includes('artificial paired B-cell') || methods.includes('GRCh38') || methods.includes('varying between samples beyond sampling')) throw new Error('Wrong simulation methods');
+    const references = await js(`document.querySelector('.methods-references').textContent`);
+    for (const citation of ['10.4049/jimmunol.1601850', '10.1093/bioinformatics/btv359', '10.1093/sysbio/20.4.406', '10.1137/0128004', '10.1371/journal.pcbi.1009885']) {
+      if (!references.includes(citation)) throw new Error(`Guided methods omitted ${citation}`);
+    }
     await act('close_dialogs');
     await act('inspect_bcell_inputs', { select: 1 });
     await waitFor(`document.querySelector('.inspector').textContent.includes('clonoloom-artificial-bcell-v2')`);

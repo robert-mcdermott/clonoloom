@@ -1,0 +1,99 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "shm-02e0e0b143128da1",
+  "kind": "shm",
+  "name": "Somatic hypermutation · Artificial immunization: three families",
+  "dataset": "d-71be04f19c62a88b",
+  "state": "complete",
+  "created": "2026-10-23T23:58:50.433816Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-71be04f19c62a88b",
+        "name": "Artificial immunization: three families"
+      },
+      {
+        "kind": "germlines",
+        "id": "grm-44972c265eb4aba6",
+        "sha256": "1e5c4d4e319fa5f09a67281f17c4ed40dfbd1a08578b2f661d5e2f385d44045c"
+      }
+    ],
+    "job": {
+      "id": "jmvlmsfn9-4",
+      "kind": "shm",
+      "spec": {
+        "dataset": "d-71be04f19c62a88b",
+        "definition": {
+          "chains": null,
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "shm": {
+          "germlines": "grm-44972c265eb4aba6",
+          "germlineSha256": "1e5c4d4e319fa5f09a67281f17c4ed40dfbd1a08578b2f661d5e2f385d44045c"
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Observed somatic divergence; conservative single-hit R/S attribution",
+      "version": "1",
+      "citation": "Gupta et al. 2015, doi:10.1093/bioinformatics/btv359; AIRR Rearrangement schema 2.0, https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html; NCBI genetic code table 1, https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#SG1. Evaluability and attribution policies are ClonoLoom's own."
+    },
+    "parameters": {
+      "dataset": "d-71be04f19c62a88b",
+      "definition": {
+        "chains": null,
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "shm": {
+        "germlines": "grm-44972c265eb4aba6",
+        "germlineSha256": "1e5c4d4e319fa5f09a67281f17c4ed40dfbd1a08578b2f661d5e2f385d44045c"
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.5.0",
+        "commit": "2fea525a963ab0af44297c3c1a0bb7d37f4a89e5-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "shm.json",
+      "role": "shm",
+      "size": 393094,
+      "sha256": "90a88b8cb22322add6e49c057d3d2910ba5bca0b205a0f9da89a59fc661c64a4"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "evaluated": 120,
+    "rows": 120
+  }
+}

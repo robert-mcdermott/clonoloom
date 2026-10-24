@@ -1,0 +1,172 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "lin-8f4ffe74bbf3069b",
+  "kind": "lineages",
+  "name": "B-cell lineage trees · Artificial immunization: three families",
+  "dataset": "d-71be04f19c62a88b",
+  "state": "complete",
+  "created": "2026-10-23T23:58:50.752128Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-71be04f19c62a88b",
+        "name": "Artificial immunization: three families"
+      },
+      {
+        "kind": "germlines",
+        "id": "grm-44972c265eb4aba6",
+        "sha256": "1e5c4d4e319fa5f09a67281f17c4ed40dfbd1a08578b2f661d5e2f385d44045c"
+      }
+    ],
+    "job": {
+      "id": "jmvlmsfuy-5",
+      "kind": "lineages",
+      "spec": {
+        "dataset": "d-71be04f19c62a88b",
+        "definition": {
+          "chains": null,
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "study": [
+          {
+            "name": "S01-d14",
+            "timepoint": "14 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-d28",
+            "timepoint": "28 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S01-pre",
+            "timepoint": "-7 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d14",
+            "timepoint": "14 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-d28",
+            "timepoint": "28 day (simulated immunization)",
+            "tissue": "blood"
+          },
+          {
+            "name": "S02-pre",
+            "timepoint": "-7 day (simulated immunization)",
+            "tissue": "blood"
+          }
+        ],
+        "lineages": {
+          "germlines": "grm-44972c265eb4aba6",
+          "germlineSha256": "1e5c4d4e319fa5f09a67281f17c4ed40dfbd1a08578b2f661d5e2f385d44045c",
+          "exactTaxa": 8,
+          "maxTaxa": 64,
+          "searchBudget": 50000,
+          "workBudget": 200000000
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Equal-cost nucleotide parsimony; exhaustive or deterministic addition/NNI; conditional ancestral states",
+      "version": "1",
+      "citation": "Fitch 1971, doi:10.1093/sysbio/20.4.406; Sankoff 1975, doi:10.1137/0128004; Hoehn et al. 2022, doi:10.1371/journal.pcbi.1009885. Panel, search limits and tie policies are ClonoLoom choices; no migration or switching statistics are inferred."
+    },
+    "parameters": {
+      "dataset": "d-71be04f19c62a88b",
+      "definition": {
+        "chains": null,
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "study": [
+        {
+          "name": "S01-d14",
+          "timepoint": "14 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-d28",
+          "timepoint": "28 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S01-pre",
+          "timepoint": "-7 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d14",
+          "timepoint": "14 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-d28",
+          "timepoint": "28 day (simulated immunization)",
+          "tissue": "blood"
+        },
+        {
+          "name": "S02-pre",
+          "timepoint": "-7 day (simulated immunization)",
+          "tissue": "blood"
+        }
+      ],
+      "lineages": {
+        "germlines": "grm-44972c265eb4aba6",
+        "germlineSha256": "1e5c4d4e319fa5f09a67281f17c4ed40dfbd1a08578b2f661d5e2f385d44045c",
+        "exactTaxa": 8,
+        "maxTaxa": 64,
+        "searchBudget": 50000,
+        "workBudget": 200000000
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.5.0",
+        "commit": "2fea525a963ab0af44297c3c1a0bb7d37f4a89e5-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "lineages.json",
+      "role": "lineages",
+      "size": 198493,
+      "sha256": "f59b4fd1d69b4790e4eb61266d52252d0ecc6e8619df350c55c4d1d177d0a3e8"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "built": 6,
+    "members": 120,
+    "trees": 6
+  }
+}

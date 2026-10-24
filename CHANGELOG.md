@@ -2,7 +2,19 @@
 
 ## Unreleased
 
+## 0.5.0 (2026-10-23)
+
 ### Added
+
+- **Examples and release preparation (wave 5, slice 9).** Complete the nine-step artificial
+  immunization guide through families, germlines, SHM, lineages, observed isotypes and cited
+  methods. Document expected results, uncertainty, exports and saved reopening. Preserve a
+  0.5.0 project with 60 paired artificial cells, joined IMGT evidence and seven results;
+  pin reference bytes and provenance and replay the full parent chain byte for byte.
+  Update the release overview, user guides, screenshots and version identifiers to 0.5.0.
+  Validate released-project replay on arm64/amd64, full race and non-race scientific checks,
+  six isolated performance budgets and platform builds, 95 JavaScript tests, all 31 browser
+  scenes in both themes, 14 contrast checks and the 128-check site audit.
 
 - **Isotypes and family co-occurrence (wave 5, slice 8).** Summarize heavy constant calls
   by sample and family/sample from saved, checksum-pinned families. Count each cell or bulk
@@ -56,7 +68,7 @@
   complete CSV exports, figure exports, cited methods, remote control and guided example steps.
 - Match every membership and nearest distance against independent graph calculations at four
   thresholds in both modes. Recover all 36 known artificial families at 0.1; this demonstration
-  threshold is not a recommendation for biological data. Version remains 0.4.0.
+  threshold is not a recommendation for biological data.
 - Complete Go race checks, vet, six builds, arm64/amd64 compatibility, distance fuzzing,
   87 JavaScript tests, 14 accessibility checks, both-theme guided browser checks, the
   112-check site audit and isolated million-row performance budgets.
@@ -70,7 +82,7 @@
   biological SHM-rate or affinity claims. No molecular counts or inferred families are invented.
 - Add atomic output and cancellation cleanup, an offline example with Subjects/Inputs steps,
   model-specific methods, cited documentation and both-theme guide captures. Independent CSV and
-  event replay agree with reader, evidence and paired-clonotype checks. Version remains 0.4.0.
+  event replay agree with reader, evidence and paired-clonotype checks.
 - Validate 252 known states, 1,296 mutation events and 2,160 paired cells; retain distinct
   descriptions when TRB and B-cell studies are opened together. Go race tests, vet, arm64/amd64
   simulation bytes and released-project compatibility, six builds, 84 JavaScript tests,
@@ -85,7 +97,7 @@
 - Preserve grouped inputs through the cache, saved-project reopening and AIRR round trips.
   Add an offline synthetic IMGT example, guided inspection, cited methods and both-theme images.
   Independent CSV checks and boundary, fuzz, cache and browser tests cover the format contract.
-  Germline reconstruction and mutation remain later slices; the version stays 0.4.0.
+  Germline reconstruction and mutation followed in slices 5 and 6.
 
 - **B-cell sequence evidence (wave 5, slice 1).** B cells → Inputs shows the active filter
   and definition, per-sample IGH/IGK/IGL rearrangement evidence counts, paginated rows and an
@@ -99,8 +111,7 @@
   methods, a guide and captures in both themes. Independent CSV values agree on all retained
   fields across four public B-cell datasets; cache/export, boundary, fuzz, browser and saved-project
   checks cover the new path. Go race validation, amd64 compatibility, six builds, 81 JavaScript
-  tests, 14 accessibility checks and 108 site audit checks pass. Versions remain 0.4.0 until
-  wave 5 release preparation.
+  tests, 14 accessibility checks and 108 site audit checks pass.
 
 ## 0.4.0 (2026-10-22)
 

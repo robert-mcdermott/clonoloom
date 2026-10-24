@@ -66,7 +66,7 @@ API answers) named with the tables annotates their samples by `repertoire_id`: s
 species, sex, age, diagnosis, tissue, cell subset, time point, template and HLA. Schema 1.3's
 text fields and 2.0's objects are both read. YAML metadata arrives in a later release.
 
-### Sequence evidence (wave 5, in development)
+### Sequence evidence (0.5.0)
 
 B cells → Inputs counts IGH/IGK/IGL rearrangements after the active QC filter, separately for
 sequence present, paired alignments, structurally valid evidence and supplied region coordinates.
@@ -372,7 +372,7 @@ checksum and reference file records. Query coordinates refer to the oriented seq
 reference coordinates reset for V and J. Zero marks absent mappings. D/N/P junction bases
 are masked, including intervening light-chain bases. FASTA exports successful projections,
 with stable source-row IDs; CSV includes all exclusions. These result exports are not full
-AIRR input round trips. No mutation count is calculated in this slice.
+AIRR input round trips. Mutation counts are a separate SHM result.
 
 ### Somatic hypermutation (wave 5, slice 6)
 

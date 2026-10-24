@@ -1,0 +1,5 @@
+Sequence number	Sequence ID	V-DOMAIN Functionality	V-GENE and allele	J-GENE and allele	D-GENE and allele	AA JUNCTION	JUNCTION frame	Orientation	V-DOMAIN Functionality comment	V-REGION insertions	V-REGION deletions	Sequence
+1	heavy	productive	Homsap IGHV1-2*02 F, or Homsap IGHV1-2*01 F	Homsap IGHJ4*02 F	Homsap IGHD3-10*01 F	CAW	in-frame	+				aaatgtgcttggccc
+2	light	productive (see comment)	Homsap IGKV1-39*01 F	Homsap IGKJ1*01 F		CQF	in-frame	-	artificial reverse submission			gggtgtcaatttaaa
+3	heavy	unproductive	Homsap IGHV3-23*01 F	Homsap IGHJ4*02 F		CA#W	out-of-frame	+	artificial corrected insertion	7, 1 nt		aaatgtAgcttggccc
+4	failed	No results							No rearrangement identified			NNNN
