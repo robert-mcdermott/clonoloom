@@ -258,3 +258,11 @@ selections determine the `clonoloom-expression-anndata/1` identity. Existing sou
 domains remain stable. Summaries contain provenance and population counts; large variable/AIRR
 values are paged, and maps retain the existing population limit. Source observations stay
 supplied evidence; computed preprocessing, neighborhoods and phenotypes remain separate results.
+
+
+Computed expression analyses (wave 6 slice 5) use separate `expression-map` jobs and artifacts,
+keyed by expression identity, normalized options and method version. They retain population
+exclusions, feature moments/loadings, PCA scores, exact directed neighbors, fuzzy graph weights,
+UMAP coordinates and complete methods. Source fingerprints are verified again when a job runs;
+completed results are checksum-verified and reopen without the sources. They are independent
+of receptor QC and clonotype definitions. See `docs/EXPRESSION.md` for explicit bounded methods.

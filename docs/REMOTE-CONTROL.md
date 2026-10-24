@@ -260,3 +260,20 @@ Generate `synthetic-anndata` through `open_example`, then use `{"anndataExample"
 to inspect its selected count layer, annotations, supplied map and AIRR records. This selector
 is exclusive with paths, explicit `anndata` choices and other example selectors. `expectedId`
 verifies the full source and selection on reopen; failed opens retain saved evidence.
+
+
+### Computed expression maps
+
+After `inspect_expression`, `compute_expression_map` analyzes the active expression input:
+
+```json
+{"options":{"minGenes":1,"minCells":1,"features":500,"components":30,"neighbors":15,"target":10000,"seed":20261024,"epochs":500,"minDist":0.5}}
+```
+
+Options are optional; the server resolves and records every default. Neighbors excludes self.
+The HTTP equivalent is `POST /api/expression-map` with `{id, options, start}`; `id` is the open
+expression ID and `start:false` only checks for a saved/running result. It returns an artifact ID
+and either `ready:true` or a durable job ID. Standard Tasks endpoints handle cancellation and
+resumption. `GET /api/expression-map/{id}` verifies and returns the manifest and complete saved
+result, without requiring the source files. See [EXPRESSION.md](EXPRESSION.md) for methods,
+populations, numerical limits and the meaning of the exported graph.

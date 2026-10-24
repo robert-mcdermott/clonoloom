@@ -480,6 +480,14 @@ export function remoteActions(app) {
       return { message: `${done.page.result.assigned} assigned observations summarized.`, data: { artifact: done.artifact, assigned: done.page.result.assigned, resolvedClass: done.page.result.resolvedClass, resolvedGene: done.page.result.resolvedGene, families: done.page.familyCount, excluded: done.page.result.excluded, issues: done.page.result.issues, options: done.page.result.isotypeOptions } };
     },
 
+    async compute_expression_map({ options = {} } = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellAnalysisView, 5000, 'Computed expression map');
+      const result = await view.run(options);
+      if (!result) throw new ActionError('The project or expression input changed during the analysis.');
+      return { message: 'Expression map saved.', data: { artifact: result.artifact.id, cells: result.result.analysis.cells.length, description: result.result.description } };
+    },
+
     async inspect_expression({ path, cellsPath, anndata, anndataExample = false, example = false, hdf5Example = false, studyExample = false, studyPreset, dataset, sample } = {}) {
       const d = dataset === '' ? null : datasetOf(dataset);
       if (d && (!Number.isInteger(sample) || sample < 0 || sample >= d.samples.length)) throw new ActionError('Give an explicit zero-based receptor sample index.');

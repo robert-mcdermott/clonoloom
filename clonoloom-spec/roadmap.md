@@ -10,14 +10,14 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
 confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has a sequence of slices and a detailed plan for
-slices 1–4. Later slices are refined as they come.
+slices 1–5. Later slices are refined as they come.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
 2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
-Wave 6 is underway on `wave6`. Slices 1–3 and the cell-map feedback follow-up are committed;
-slice 4 adds selected AnnData/MuData expression and AIRR evidence. Version remains 0.5.0 until the release-preparation slice.
+Wave 6 is underway on `wave6`. Slices 1–4 and the cell-map feedback follow-up are committed;
+slice 5 adds expression preprocessing, exact neighborhoods and computed UMAP results. Version remains 0.5.0 until the release-preparation slice.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -1749,7 +1749,61 @@ external-TSV refusal. Two bounded AnnData fuzz runs pass. Vet, gofmt, six platfo
 themes; eight screenshots are captured, with the new AnnData map inspected in both themes.
 The site builds 34 pages with 35 screenshot sets; all 132 audit checks pass. Existing unrelated
 performance budgets, skipped under race detection, were not rerun. Version stays 0.5.0;
-awaiting the maintainer's commit. Slice 5 has not started.
+committed by the maintainer as `3a7bdd1`. Slice 5 follows below.
+
+### Slice 5: Expression preprocessing, neighborhoods and computed map
+
+**Serves M1 and N7.** Turn a selected expression input into an immutable, reproducible analysis.
+Keep it independent of receptor QC/clonotyping, supplied layouts and annotation labels. Read
+primary methods before choosing the pipeline; adapt SituCraft 0.9.0's Apache-2.0 numerical
+patterns, with ClonoLoom's deterministic math and explicit bounded exact computation.
+
+**Settled method.** Retain positive Gene Expression cells with a configurable minimum detected
+feature count. Normalize against all gene counts before feature filtering to 10000 per cell,
+apply natural log1p, select up to 500 features by decreasing sample variance with ID ties, and
+center without variance scaling or clipping. This is explicitly variance ranking, not a named
+HVG recipe. Exact covariance PCA retains up to 30 nonzero components; exact Euclidean search
+finds 15 other neighbors per cell. Preserve the directed table and UMAP fuzzy-union graph.
+Compute UMAP from a PCA start with seed 20261024, minimum distance 0.5, spread 1, 500 epochs,
+five negative samples and serial optimization. Record all fixed rules, fitted curve parameters,
+requested settings and effective dimensions/counts. See research §5.26 and `docs/EXPRESSION.md`.
+
+**Bounds and semantics.** No hidden subsampling or approximate search: at most 100000 source
+barcodes, 10000 retained cells, 1000 selected features and two billion cell-by-feature-pair
+operations. Four retained cells and two nonzero PCs are required. Keep zero-count and
+below-threshold exclusions distinct. Preserve exact barcode/feature identities, missing
+annotations and all source fingerprints. Cells missing imported coordinates can still map.
+No batch correction, cluster calling, receptor phenotype or subject-level inference is added.
+
+**Implementation and acceptance.** A separate expression-map job verifies source identity,
+reports progress/cancellation and writes a checked immutable artifact. Project Results can
+reopen it without source files. Cells offers explicit settings, equal-scale computed UMAP axes,
+annotation coloring, missing values in gray, paged cell/exclusion/feature tables, cited methods
+and JSON download containing scores, loadings, graph and provenance. A guided step follows the
+cloud study's imported-map inspection. Later receptor overlays use this expression parent;
+map distances are never substituted for PCA-space neighborhoods.
+
+**Validation.** Independent pinned NumPy/SciPy/scikit-learn/umap-learn references cover transformed
+moments, variance ranking, PCA, exact neighbors, fuzzy weights and UMAP curve fitting. Artificial
+three-state counts assess neighborhood purity and map trustworthiness; reference JIT is disabled
+and finite bandwidths checked after finding nonfinite values under compiled fast math. Check
+source drift, cache identity, cancellation, failed promotion, missing/zero values, bounds,
+worker independence, native/amd64 byte identity, both UI themes, saved reopening and undo.
+**Done, awaiting the maintainer's commit.** The application/internal race suite and complete
+scientific validation pass (477.226 s for the latter). Both independent numerical cases agree;
+known-state neighbor purity is 1.0, and map trustworthiness is 0.9780 and 0.9642 versus the
+reference's 0.9774 and 0.9618. The optional public 10x 1k PBMC matrix completes in 1.74 s with
+1222 retained cells, 500 features, 30 PCs and 13678 undirected graph edges. This is a bounded
+pipeline exercise, not biological validation of a donor's cell types.
+
+Native and amd64 checks pin identical expression result bytes; released-project replay and
+existing processor invariants pass. Cancellation, source drift, altered-result rejection,
+worker independence, resource bounds, degenerate inputs and missing/zero semantics pass.
+Vet, gofmt, six platform builds, 103 JavaScript tests and all 14 contrast checks pass. All five
+Cells capture scenes pass in light/dark themes, including computed-result save/reopen, undo,
+annotation coloring and table navigation. Both new screenshots are visually inspected. The
+site builds 34 pages with 36 screenshot sets; all 132 audit checks pass. Version stays 0.5.0.
+Slice 6 has not started.
 
 ## Later waves (outlined)
 

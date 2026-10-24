@@ -83,7 +83,7 @@ func cellStateCloudExample() examples.Generated {
 	steps := []examples.Step{{Title: "Inspect supplied cell-state clouds", Action: "inspect_expression",
 		Args:  map[string]any{"studyExample": true, "studyPreset": "cell-states-clouds", "sample": 0},
 		Words: "S01-1 has 360 expression cells, 359 receptor matches and 358 mapped cells. Open Imported map and color by state: missing labels are neutral gray. Coordinates are illustrative Gaussian clouds, not UMAP or a fitted biological model. The separate legacy grid example remains available for exact overlap checks. Select each receptor sample explicitly; barcodes repeat across samples.",
-	}}
+	}, {Title: "Compute expression neighborhoods and UMAP", Action: "compute_expression_map", Args: map[string]any{}, Words: "Compute a new UMAP from S01-1 counts, independently of supplied coordinates. Color by state, inspect missing annotations, selected features and excluded cells, then read the saved method and download the graph/PCA/provenance JSON. Exact neighborhoods use PCA space; the map is exploratory and does not infer receptor specificity."}}
 	return simulatedExample("cell-states-clouds", steps, "A paired cell-state study with supplied Gaussian clouds",
 		"Two artificial subjects, two samples each, 360 expression cells per sample and ten clones per subject. Three states have supplied Gaussian coordinates with different spreads and unequal expected cell numbers. Separate truth, paired TRA/TRB chains and deliberately missing evidence. An illustrative benchmark, not an inferred embedding or a fitted biological model.",
 		"Four samples of 360 expression cells, with paired receptors and supplied continuous coordinates.", 3<<20)

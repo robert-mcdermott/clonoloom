@@ -1650,3 +1650,57 @@ populations, missing whole AIRR cells and scalar field values. Malformed selecti
 counts, pointers, codes, masks, coordinates and Awkward forms fail explicitly. Source drift,
 selection identity, relocation, cancellation, fuzzing and project reopening are checked. The
 small bundled example tests storage semantics; it is not a model of biological expression.
+
+
+### 5.26 Computed expression maps (wave 6, slice 5)
+
+**Primary methods.** Total-count normalization followed by natural log1p follows the documented
+[Scanpy normalization contract](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.normalize_total.html)
+and Wolf, Angerer and Theis, *Genome Biology* 2018;19:15,
+[doi:10.1186/s13059-017-1382-0](https://doi.org/10.1186/s13059-017-1382-0).
+PCA follows Jolliffe and Cadima, *Phil Trans R Soc A* 2016;374:20150202,
+[doi:10.1098/rsta.2015.0202](https://doi.org/10.1098/rsta.2015.0202), with Householder reduction
+and implicit-shift QL (Wilkinson and Reinsch, *Handbook for Automatic Computation II*, 1971;
+Golub and Van Loan, *Matrix Computations*, 4th ed., §8.3). UMAP follows McInnes, Healy and
+Melville, [arXiv:1802.03426](https://arxiv.org/abs/1802.03426) and its
+[documented graph/curve API](https://umap-learn.readthedocs.io/en/latest/api.html).
+
+**Policy and provenance.** Use only Gene Expression features. Normalize against each retained
+cell's complete gene total, then select positive-variance genes detected in the required number
+of retained cells by transformed sample variance; ties use feature ID. Center without scaling,
+clipping or whitening. This deliberate simple ranking is not a claim to implement Seurat/Scanpy
+HVG selection. Preserve gene means, variances, detections, loadings, eigenvalues and scores.
+Exact kNN uses Euclidean PCA distance, excludes self and resolves ties in source barcode order.
+The UMAP graph uses local connectivity 1, bandwidth 1 and fuzzy union a+b−ab. The table's k other
+neighbors correspond to UMAP's k+1 including self; coincident cells remain separate. The map
+always starts from the first two PCs, with recorded initialization noise and a serial seeded
+optimizer. Plot axes have equal scaling. Disconnected components are reported; their apparent
+separation is not an effect size. This does not cluster cells or infer antigen specificity.
+
+`internal/linalg`, `internal/graph` and `internal/embed` adapt numerical code from SituCraft 0.9.0
+under Apache-2.0, with ClonoLoom's deterministic random/math packages and an exact bounded
+pipeline. Published software is used only as an independent executable reference. Defaults,
+limits, rank threshold, bisection and optimizer constants, fitted a/b, effective neighbor and
+component counts, exclusion reasons and original source fingerprints accompany immutable
+artifacts. Supplied annotations and maps never enter the fitting calculations. Receptor data
+remain a separate explicitly sample-bound source for subsequent overlays.
+
+**Independent validation.** The pinned reference script uses NumPy 2.3.5, SciPy 1.17.0,
+scikit-learn 1.8.0, umap-learn 0.5.11 and Numba 0.63.1. It executes public APIs without reading
+or copying their implementations. Numba JIT is disabled: compiled smooth-kNN fitting produced
+infinite bandwidths on some fixture rows in this environment; the non-JIT reference explicitly
+asserts finite bandwidths. Compare means/variances to 1e-12, loadings/scores/distances to 1e-10,
+eigenvalues to 1e-11, fuzzy weights to 1e-5 (reference uses float32), and fitted curve parameters
+to 2e-5. Neighbor indices and selected feature IDs agree exactly in both cases. Layouts use
+different random streams and are assessed by rank trustworthiness (Venna and Kaski, ICANN 2001,
+pp. 485–491) and simulated-state neighbor purity, not coordinate equality. Worker and processor
+identity use a separately pinned digest of the complete deterministic result.
+
+
+The two synthetic reference cases have neighbor purity 1.0 for the known states. ClonoLoom map
+trustworthiness is 0.977976 and 0.964181, beside the reference's 0.977363 and 0.961835. These
+numbers assess this fixture, not general biological accuracy. An optional run on the public
+10x 1k PBMC v3 matrix cited in §5.24 retains all 1222 cells and uses 500 features, 30 PCs and
+13678 undirected graph edges in 1.74 s on the development machine. Set
+`CLONOLOOM_EXPRESSION_MAP_HDF5` to a local matrix to repeat that bounded pipeline check; donor
+counts and coordinates are not committed.

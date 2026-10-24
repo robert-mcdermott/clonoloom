@@ -126,7 +126,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| M1 | V(D)J linked to gene expression by barcode; clonotypes on a map (imported or computed) and phenotypes per clonotype | partial (wave 6, slices 1–4: exact sample-scoped barcode coverage, explicit unmatched populations, supplied annotations and source-aware imported maps, including selected AnnData/MuData modalities and unfiltered AIRR evidence; computed maps and clonotype phenotypes follow) |
+| M1 | V(D)J linked to gene expression by barcode; clonotypes on a map (imported or computed) and phenotypes per clonotype | partial (wave 6, slices 1–5: exact sample-scoped barcode coverage, explicit unmatched populations, supplied annotations and source-aware imported maps, including selected AnnData/MuData modalities and unfiltered AIRR evidence; slice 5 adds cited deterministic normalization, PCA, exact expression graphs and computed UMAP artifacts; clonotype overlays and phenotypes follow) |
 | M2 | Clonal expansion by cluster or cell type; clonotype size on the map | planned (wave 6) |
 | M3 | Clonotype modularity and CoNGA-style graph-versus-graph analysis | planned (wave 6) |
 | M4 | Antigen-capture (BEAM, dextramer) specificity calls per clonotype | parked |

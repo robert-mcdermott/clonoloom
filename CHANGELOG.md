@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Computed expression maps (wave 6, slice 5).** Add explicit gene-count normalization,
+  variance-ranked feature selection, centered PCA, exact Euclidean neighbors, a saved fuzzy
+  graph and seeded UMAP. Preserve excluded cells, missing annotations, source fingerprints,
+  effective parameters and cited methods in immutable results. Add cancellable/resumable jobs,
+  Cells settings and computed maps, accessible inspection tables, saved reopening, JSON export,
+  remote control and a guided artificial-study step. Independently validate feature moments,
+  PCA, neighbors, graph weights, curve fitting, simulated-state recovery and map quality;
+  pin processor-independent result bytes. Version stays 0.5.0.
+
 - **AnnData and MuData evidence (wave 6, slice 4).** Read explicitly selected dense/CSR/CSC
   count matrices, obs/var annotations, supplied embeddings and scirpy AIRR chain records.
   Preserve exact modality-local barcodes, nullable values, empty versus missing AIRR cells,

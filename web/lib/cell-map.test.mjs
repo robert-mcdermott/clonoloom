@@ -36,3 +36,14 @@ test('embedding axes use selected provenance and escape source names', () => {
   assert.match(cellMap([], -1, { axes: ['<script>', 'Y&Z'] }).svg, /&lt;script&gt;/);
   assert.match(cellMap([]).svg, /map_x/);
 });
+
+
+test('computed map identifies the method on both axes without claiming supplied coordinates', () => {
+  const result = cellMap([{ barcode: 'A', values: [''], position: [1, 2] }], 0, { axes: ['UMAP 1', 'UMAP 2'], supplied: false });
+  assert.match(result.svg, /UMAP 1 \(computed\)/);
+  assert.match(result.svg, /UMAP 2 \(computed\)/);
+  assert.match(result.svg, /Computed expression map/);
+  assert.match(result.description, /Neighborhoods are defined in PCA space/);
+  assert.doesNotMatch(result.svg, /Coordinates are not computed/);
+  assert.equal(result.legend[0].className, 'cell-map-missing');
+});

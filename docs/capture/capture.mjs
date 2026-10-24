@@ -116,6 +116,49 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cell-analysis'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use cell-state study').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Compute expression map').click(); return true; })()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellAnalysisView?.state().status)`, 120000);
+    let computed = await js('window.clonoloom.cellAnalysisView.state()');
+    if (computed.status !== 'ready' || computed.answer.result.analysis.cells.length !== 359 || computed.answer.result.analysis.excluded.length !== 1 || !computed.answer.result.analysis.graph.weights.length) throw new Error(`Computed map failed: ${JSON.stringify({status:computed.status,error:computed.error,cells:computed.answer?.result.analysis.cells.length,excluded:computed.answer?.result.analysis.excluded.map((c)=>({barcode:c.barcode,reason:c.reason}))})}`);
+    const remote = await act('compute_expression_map');
+    if (remote.data.artifact !== computed.artifact || remote.data.cells !== 359) throw new Error('Remote computed map differs from the visible controls');
+    await js(`(() => {
+      const app = window.clonoloom, id = app.cellAnalysisView.state().artifact;
+      if (!app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Computed map not kept');
+      app.store.undo();
+      if (app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Map undo failed');
+      app.store.redo(); return true;
+    })()`);
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.cellAnalysisView.state().artifact;
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells');
+      await app.cellAnalysisView.show(id);
+      if (app.cellsView.state().record !== null) throw new Error('Saved map required opening its input');
+      return true;
+    })()`);
+    await js(`(async () => {
+      const choice = document.querySelector('[aria-label="Computed map annotation"]'); choice.value = '0'; choice.dispatchEvent(new Event('change'));
+      const plot = document.querySelector('[aria-label="Computed expression map"]');
+      if (!plot.textContent.includes('UMAP 1 (computed)') || plot.textContent.includes('not computed')) throw new Error('Computed provenance mislabeled');
+      const missing = plot.querySelector('circle.cell-map-missing');
+      if (!missing || getComputedStyle(missing).fill !== 'rgb(163, 163, 163)') throw new Error('Computed missing annotation not gray');
+      missing.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (!document.querySelector('[aria-label="Selected computed cell"]').textContent.includes('CELL')) throw new Error('Computed selection failed');
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Selected features').click(); await Promise.resolve();
+      if (!document.body.textContent.includes('Log variance')) throw new Error('Feature table missing');
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Mapped cells').click(); await Promise.resolve();
+      const link = [...document.querySelectorAll('a')].find((a) => a.textContent === 'Download result and provenance');
+      if (!link?.download.endsWith('.json')) throw new Error('Result export missing');
+      document.querySelector('#computed-cell-map').scrollIntoView({ block: 'start' }); return true;
+    })()`);
+    computed = await js('window.clonoloom.cellAnalysisView.state()');
+    if (computed.answer.result.analysis.cells[0].barcode !== 'CELL00001-1') throw new Error('Saved map barcode order changed');
+  },
   async 'cells-anndata'() {
     await js(`window.clonoloom.setMode('cells')`);
     await waitFor('Boolean(window.clonoloom.cellsView)');
