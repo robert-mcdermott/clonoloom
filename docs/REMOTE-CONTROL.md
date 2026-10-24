@@ -196,3 +196,13 @@ barcode coverage. To use the artificial example, first call
 `open_example {"example":"synthetic-expression","download":true}`, then
 `inspect_expression {"example":true,"sample":0}`. Counts are source coverage before QC or
 clonotyping. No expression analysis is inferred. A path and `example:true` are mutually exclusive.
+
+Slice 2 adds optional `cellsPath` for a plain/gzip cell annotation TSV (see `FORMATS.md`). The
+response's `annotations` reports matching rows, annotation-only rows, missing rows and mapped
+expression barcodes. The source is saved and checked on reopening. To try the paired study:
+`open_example {"example":"simulated-cell-states","download":true}`, then
+`inspect_expression {"studyExample":true,"sample":0}`. This explicitly selects the generated
+`expression/S01-1` matrix and its `cells.tsv`; choose the matching first receptor sample.
+`studyExample` and `example` cannot be combined with each other or explicit paths. Other study
+samples use explicit `path`, `cellsPath` and receptor `sample`. The Cells view offers Annotations
+and Imported map; its coordinates are supplied evidence, never a computed embedding.

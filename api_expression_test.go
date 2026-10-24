@@ -1,12 +1,15 @@
 package main
 
 import (
+	"clonoloom/internal/expression"
+	"clonoloom/internal/simulate"
 	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -110,6 +113,77 @@ func TestExpressionEvidenceAndReopening(t *testing.T) {
 	app.handleExpressionOpen(out, req)
 	if out.Code != 403 {
 		t.Fatal(out.Code)
+	}
+}
+
+func TestExpressionAnnotationsAndImportedMap(t *testing.T) {
+	app, h := testApp(t)
+	dir := filepath.Join(t.TempDir(), "study")
+	if _, err := simulate.Run(context.Background(), simulate.Presets["cell-states"], dir, "validation", nil); err != nil {
+		t.Fatal(err)
+	}
+	items, problem := walkFolder(dir)
+	if problem != "" || len(items) != 5 {
+		t.Fatal("expression or truth leaked into receptor inputs", items, problem)
+	}
+	path := filepath.Join(dir, "expression", "S01-1")
+	cells := filepath.Join(path, "cells.tsv")
+	open := func(expected string) *httptest.ResponseRecorder {
+		return postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(path)+`,"cellsPath":`+jsonString(cells)+`,"expectedId":`+jsonString(expected)+`}`)
+	}
+	rec := open("")
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var s expressionSummary
+	json.Unmarshal(rec.Body.Bytes(), &s)
+	if s.Annotations.Mapped != 118 || s.Annotations.WithoutCoordinates != 2 || s.Annotations.WithoutAnnotation != 1 || s.Annotations.AnnotationOnly != 1 || len(s.Sources) != 4 {
+		t.Fatal(s)
+	}
+	page := func(view string, offset int) expressionPage {
+		t.Helper()
+		rec := postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"view":`+jsonString(view)+`,"offset":`+strconv.Itoa(offset)+`}`)
+		if rec.Code != 200 {
+			t.Fatal(rec.Body)
+		}
+		var p expressionPage
+		json.Unmarshal(rec.Body.Bytes(), &p)
+		return p
+	}
+	p := page("map", 100)
+	if len(p.Map) != 118 || p.Count != 120 || len(p.Annotations) != 20 || p.Annotations[19].Expression || p.Annotations[19].Barcode != "ANNOTATION-ONLY" {
+		t.Fatal(p)
+	}
+	p = page("cells", 0)
+	if p.Cells[1].Annotation != nil || p.Cells[2].Annotation.Position != nil || p.Cells[3].Annotation.Values[0] != "" {
+		t.Fatal(p.Cells[:4])
+	}
+	p = page("annotations", 999)
+	if p.Offset != 120 || len(p.Annotations) != 0 {
+		t.Fatal(p)
+	}
+	if open(s.ID).Code != 200 {
+		t.Fatal("unchanged files rejected")
+	}
+	raw, _ := os.ReadFile(cells)
+	os.WriteFile(cells, []byte(strings.Replace(string(raw), "state A", "state Z", 1)), 0600)
+	if rec := open(s.ID); rec.Code != 409 {
+		t.Fatal("changed annotations accepted", rec.Body)
+	}
+	// The rejected replacement retains the previous cached evidence. Map limits never silently
+	// truncate the population, and its full annotation pages remain available.
+	app.expression.mu.Lock()
+	app.expression.byID[s.ID].Cells.Coverage.Mapped = expression.MaxMapPoints + 1
+	app.expression.mu.Unlock()
+	rec = postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"view":"map"}`)
+	if rec.Code != 400 {
+		t.Fatal(rec.Body)
+	}
+	page("annotations", 0)
+	for _, body := range []string{`{"example":true,"studyExample":true}`, `{"studyExample":true,"cellsPath":"x"}`} {
+		if rec := postJSON(t, h, "/api/expression/open", body); rec.Code != 400 {
+			t.Fatal(rec.Body)
+		}
 	}
 }
 

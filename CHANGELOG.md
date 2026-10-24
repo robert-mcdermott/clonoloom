@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Known cell states and imported maps (wave 6, slice 2).** Generate a seeded paired
+  TRA/TRB and expression study with three known states, 24 artificial genes, separate truth
+  and deliberate missing evidence. Import an explicitly selected cell-annotation TSV with
+  optional supplied coordinates; retain unmatched rows, missing labels and missing coordinates.
+  Pin the optional source in the expression identity without changing MEX-only identities.
+  Add bounded annotation inspection, a supplied-coordinate map, accessible source-value tables,
+  saved reopening, remote control and an offline guided example. Independent SciPy and truth
+  checks cover every simulated matrix value and source population. Computed maps and clonotype
+  phenotypes remain later slices; version stays 0.5.0.
+
 - **MEX expression evidence (wave 6, slice 1).** Read plain/gzipped 10x feature-barcode
   matrices and legacy genes.tsv into a bounded sparse model. Preserve feature types, explicit
   zeros and source fingerprints; reject malformed, ambiguous or duplicate evidence. Link exact

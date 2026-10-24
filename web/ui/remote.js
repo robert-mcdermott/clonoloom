@@ -480,14 +480,14 @@ export function remoteActions(app) {
       return { message: `${done.page.result.assigned} assigned observations summarized.`, data: { artifact: done.artifact, assigned: done.page.result.assigned, resolvedClass: done.page.result.resolvedClass, resolvedGene: done.page.result.resolvedGene, families: done.page.familyCount, excluded: done.page.result.excluded, issues: done.page.result.issues, options: done.page.result.isotypeOptions } };
     },
 
-    async inspect_expression({ path, example = false, dataset, sample } = {}) {
+    async inspect_expression({ path, cellsPath, example = false, studyExample = false, dataset, sample } = {}) {
       const d = dataset === '' ? null : datasetOf(dataset);
       if (d && (!Number.isInteger(sample) || sample < 0 || sample >= d.samples.length)) throw new ActionError('Give an explicit zero-based receptor sample index.');
       await app.setMode('cells');
       const view = await waitFor(() => app.cellsView, 5000, 'Cells');
-      const page = await view.inspect({ path, example, dataset: d?.id ?? '', sample: d ? sample : null });
+      const page = await view.inspect({ path, cellsPath, example, studyExample, dataset: d?.id ?? '', sample: d ? sample : null });
       if (!page) throw new ActionError('The project changed while reading expression.');
-      return { message: 'Expression evidence opened.', data: { id: page.summary.id, links: page.links ?? null } };
+      return { message: 'Expression evidence opened.', data: { id: page.summary.id, links: page.links ?? null, annotations: page.summary.annotations ?? null } };
     },
 
     async inspect_bcell_inputs({ dataset, select } = {}) {

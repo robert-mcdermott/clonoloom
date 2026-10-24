@@ -21,10 +21,11 @@ type Source struct {
 	SHA256 string `json:"sha256"`
 }
 type Input struct {
-	ID      string   `json:"id"`
-	Path    string   `json:"path"`
-	Sources []Source `json:"sources"`
-	Matrix  *Matrix  `json:"-"`
+	ID      string           `json:"id"`
+	Path    string           `json:"path"`
+	Sources []Source         `json:"sources"`
+	Matrix  *Matrix          `json:"-"`
+	Cells   *CellAnnotations `json:"-"`
 }
 
 // Open reads just the selected MEX directory. It never chooses between raw and filtered data,

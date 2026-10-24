@@ -116,6 +116,50 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cell-states'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use cell-state study').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    const state = await js('window.clonoloom.cellsView.state()');
+    if (state.page.links.matched !== 119 || state.page.summary.annotations.mapped !== 118 || state.page.cells[1].annotation || state.page.cells[2].annotation.position !== null || state.page.cells[3].annotation.values[0] !== '') throw new Error('Known missing evidence differs');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Annotations').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.annotations?.length === 50`);
+    for (let i = 0; i < 2; i++) {
+      await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Next').click(); return true; })()`);
+      await waitFor(`window.clonoloom.cellsView.state().page.offset === ${(i + 1) * 50}`);
+    }
+    if (!(await js(`document.querySelector('.view-body').textContent.includes('ANNOTATION-ONLY')`))) throw new Error('Unmatched annotations hidden');
+    await js(`(async () => {
+      const app = window.clonoloom, record = app.cellsView.state().record;
+      const before = JSON.stringify(app.store.project.expression);
+      await app.cellsView.inspect({ ...record, cellsPath: record.path }).catch(() => {});
+      if (app.cellsView.state().status !== 'error' || before !== JSON.stringify(app.store.project.expression)) throw new Error('Invalid annotation file changed project');
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells');
+      const saved = app.store.project.expression[0];
+      if (!saved.cellsPath || saved.sources.length !== 4) throw new Error('Annotation provenance lost');
+      await app.cellsView.inspect({ ...saved, expectedId: saved.id });
+      return true;
+    })()`);
+    // Exercise the visible optional-file form, then the map and keyboard-accessible table.
+    await js(`(() => { document.querySelector('.view-body form').requestSubmit(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().status === 'ready'`);
+    await act('inspect_expression', { studyExample: true, sample: 0 });
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Imported map').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.map?.length === 118`);
+    await js(`(() => {
+      const choice = document.querySelector('[aria-label="Map annotation"]'); choice.value = '0'; choice.dispatchEvent(new Event('change'));
+      document.querySelector('circle[data-cell]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('Coordinates:')) throw new Error('Map cell inspection failed');
+      document.querySelector('table.data tbody button').click();
+      if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('CELL00001-1')) throw new Error('Table inspection failed');
+      return true;
+    })()`);
+    await js(`document.querySelector('[aria-label="MEX directory"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states/expression/S01-1`)}`);
+    await js(`document.querySelector('[aria-label="Cell annotations"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states/expression/S01-1/cells.tsv`)}`);
+    await js(`document.querySelector('#imported-cell-map').scrollIntoView({ block: 'start' })`);
+  },
   async cells() {
     await js(`window.clonoloom.setMode('cells')`);
     await waitFor('Boolean(window.clonoloom.cellsView)');

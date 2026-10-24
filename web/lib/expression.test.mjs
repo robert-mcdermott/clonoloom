@@ -29,3 +29,11 @@ test('unbound expression is explicit and partial bindings are refused', () => {
   const project = createProject(); project.expression = {};
   assert.throws(() => parseProject(serializeProject(project)), /expression is not a list/);
 });
+
+test('optional annotation sources survive saved reopening without changing old record shapes', () => {
+  assert.equal('cellsPath' in expressionRecord(summary), false);
+  const record = expressionRecord({ ...summary, sources: [...summary.sources, { role: 'cells', path: '/data/cells.tsv', sha256: 'xyz', size: 30 }] });
+  assert.equal(record.cellsPath, '/data/cells.tsv');
+  const project = saveExpression(createProject(), record);
+  assert.deepEqual(parseProject(serializeProject(project)).expression[0], record);
+});

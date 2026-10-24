@@ -1,7 +1,8 @@
 // Cells starts with raw expression evidence and exact sample-scoped barcode coverage. No
-// clonotype count, map, normalization or phenotype is inferred by this inspection view.
+// clonotype count, embedding, normalization or phenotype is inferred by this inspection view.
 import { h, icon, clear } from './dom.js';
 import { expressionRecord, saveExpression, removeExpression } from '../lib/expression.js';
+import { cellMap } from '../lib/cell-map.js';
 
 async function request(endpoint, body, signal) {
   const response = await fetch(`api/expression/${endpoint}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal });
@@ -15,7 +16,9 @@ export function mountCells(app, container) {
   const { store } = app;
   let generation = store.state.generation;
   let active = null, answer = null, status = 'idle', message = '', controller = null, serial = 0, view = 'cells';
+  let colorColumn = -1;
   const path = h('input.input', { type: 'text', placeholder: '/path/to/filtered_feature_bc_matrix', 'aria-label': 'MEX directory', style: { width: '100%' } });
+  const cellsPath = h('input.input', { type: 'text', placeholder: 'Optional /path/to/cells.tsv', 'aria-label': 'Cell annotations', style: { width: '100%' } });
   const datasets = h('select.input', { 'aria-label': 'Receptor dataset', onchange: drawSamples });
   const samples = h('select.input', { 'aria-label': 'Receptor sample' });
   const open = h('button.btn.primary', { type: 'submit' }, 'Open expression');
@@ -25,10 +28,12 @@ export function mountCells(app, container) {
   const form = h('form', { onsubmit: (event) => {
     event.preventDefault();
     if (datasets.value && samples.value === '') { message = 'Choose the receptor sample explicitly.'; draw(); return; }
-    inspect({ path: path.value, dataset: datasets.value, sample: datasets.value ? Number(samples.value) : null }).catch(() => {});
+    inspect({ path: path.value, cellsPath: cellsPath.value, dataset: datasets.value, sample: datasets.value ? Number(samples.value) : null }).catch(() => {});
   } }, h('label.field', h('span', 'MEX directory'), path),
+  h('label.field', h('span', 'Cell annotations and imported coordinates (optional TSV)'), cellsPath),
   h('div.btn-row', h('label.field', h('span', 'Receptor dataset'), datasets), h('label.field', h('span', 'Receptor sample'), samples), open, cancel));
   const root = h('div.view', h('div.workbench-head', h('h1', icon('cell'), 'Cells'), h('span.spacer'),
+    h('button.btn', { type: 'button', onclick: () => example(true).catch(() => {}) }, 'Use cell-state study'),
     h('button.btn', { type: 'button', onclick: () => example().catch(() => {}) }, 'Use artificial example')),
   h('div.view-body', h('p', 'Read a 10x MEX count matrix and check its barcode coverage in one receptor sample.'), form, saved, output));
   container.append(root);
@@ -66,11 +71,12 @@ export function mountCells(app, container) {
         if (state.status !== 'open') throw new Error(state.error ?? 'The receptor dataset cannot be reopened.');
       }
       if (run !== serial || !sameProject()) return;
-      const summary = await request('open', { path: options.path, example: options.example, expectedId: options.expectedId }, signal);
+      const summary = await request('open', { path: options.path, cellsPath: options.cellsPath, example: options.example, studyExample: options.studyExample, expectedId: options.expectedId }, signal);
       const record = expressionRecord(summary, options.dataset ?? '', options.sample ?? null);
       const page = await request('page', { id: summary.id, dataset: record.dataset, sample: record.sample, view: 'cells' }, signal);
       if (run !== serial || !sameProject()) return;
       active = record; answer = page; view = 'cells'; status = 'ready'; path.value = summary.path;
+      cellsPath.value = record.cellsPath ?? ''; colorColumn = -1;
       store.commit(saveExpression(store.project, record), options.expectedId ? 'Reopen expression input' : 'Open expression input', ['expression']);
       datasets.value = record.dataset; drawSamples(); samples.value = record.sample === null ? '' : String(record.sample);
       draw(); return page;
@@ -90,13 +96,13 @@ export function mountCells(app, container) {
       answer = result; view = nextView; status = 'ready'; draw();
     } catch (error) { if (run === serial && sameProject()) { status = 'error'; message = error.message; draw(); } throw error; }
   }
-  async function example() {
+  async function example(study = false) {
     try {
       const sameProject = store.sameProject();
-      const result = await app.actions.open_example({ example: 'synthetic-expression', download: true });
+      const result = await app.actions.open_example({ example: study ? 'simulated-cell-states' : 'synthetic-expression', download: true });
       if (!sameProject()) return;
       await app.setMode('cells');
-      return await app.cellsView.inspect({ example: true, dataset: result.data.dataset, sample: 0 });
+      return await app.cellsView.inspect({ example: !study, studyExample: study, dataset: result.data.dataset, sample: 0 });
     } catch (error) { message = error.message; status = 'error'; draw(); throw error; }
   }
   function draw() {
@@ -104,15 +110,28 @@ export function mountCells(app, container) {
     open.disabled = status === 'loading'; cancel.hidden = status !== 'loading';
     output.append(h('p', { role: 'status' }, status === 'loading' ? 'Reading expression evidence…' : message));
     if (!answer) return;
-    const s = answer.summary, link = answer.links;
+    const s = answer.summary, link = answer.links, annotations = s.annotations;
     output.append(h('h2', 'Source coverage'), h('p', `${count(s.cells)} expression barcodes · ${count(s.features)} features · ${count(s.entries)} stored coordinates, including explicit zeros.`),
       h('p', Object.entries(s.types).map(([type, n]) => `${type}: ${count(n)}`).join(' · ')));
     if (link) output.append(h('div.callout', h('div', h('p', `${count(link.matched)} matched · ${count(link.expressionOnly)} expression only · ${count(link.receptorOnly)} receptor only`),
       h('p', `${count(link.receptorCells)} distinct receptor barcodes in ${link.sampleName}; ${count(link.missingBarcodeRows)} receptor rows without a barcode.`))));
     output.append(h('p.muted', 'Exact barcode matches within the selected sample, before QC or clonotyping. Matching does not establish productivity, singlet status or cell type. Absent expression barcodes are missing, not zero counts.'),
-      h('div.btn-row', ...['cells', 'features'].map((v) => h(`button.btn${view === v ? '.primary' : ''}`, { type: 'button', disabled: status === 'loading', onclick: () => page(v).catch(() => {}) }, v === 'cells' ? 'Cells' : 'Features'))));
-    const headings = view === 'cells' ? ['Barcode', 'Gene-expression UMIs', 'Detected genes', 'Receptor chain rows'] : ['Feature ID', 'Name', 'Type'];
-    const rows = view === 'cells' ? answer.cells.map((c) => [c.barcode, count(c.geneUMIs), count(c.genes), c.chainRows === undefined ? 'Not linked' : count(c.chainRows)]) : answer.features.map((f) => [f.id, f.name, f.type]);
+      h('div.btn-row', ...['cells', 'features', ...(annotations ? ['annotations', 'map'] : [])].map((v) => h(`button.btn${view === v ? '.primary' : ''}`, { type: 'button', disabled: status === 'loading', onclick: () => page(v).catch(() => {}) }, { cells: 'Cells', features: 'Features', annotations: 'Annotations', map: 'Imported map' }[v]))));
+    if (annotations) output.append(h('p', `${count(annotations.matched)} expression barcodes with annotation rows · ${count(annotations.withoutAnnotation)} without rows · ${count(annotations.annotationOnly)} annotation only. ${count(annotations.mapped)} expression barcodes have coordinates; ${count(annotations.withoutCoordinates)} do not.`));
+    const selected = h('p', { role: 'status', 'aria-label': 'Selected cell' });
+    const describe = (row) => { selected.textContent = `${row.barcode} · ${row.expression ? 'Expression present' : 'No expression barcode'} · ${annotations.columns.map((name, i) => `${name}: ${row.values[i] || 'Missing'}`).join(' · ')} · Coordinates: ${row.position?.join(', ') ?? 'Missing'}`; };
+    if (view === 'map') {
+      const points = answer.map ?? [], figure = cellMap(points, colorColumn);
+      const choice = h('select.input', { 'aria-label': 'Map annotation', onchange: (e) => { colorColumn = Number(e.target.value); draw(); } }, h('option', { value: '-1', selected: colorColumn === -1 }, 'One color'), ...annotations.columns.map((name, i) => h('option', { value: String(i), selected: colorColumn === i }, name)));
+      output.append(h('h2#imported-cell-map', 'Imported map'), h('p', `${count(annotations.mapped)} expression barcodes with supplied coordinates · ${count(annotations.withoutCoordinates)} without coordinates.`),
+        h('label.field', h('span', 'Color by supplied annotation'), choice), h('div', { html: figure.svg, onclick: (event) => { const i = event.target.closest('[data-cell]')?.dataset.cell; if (i !== undefined) describe(points[Number(i)]); } }),
+        h('div.plot-legend', ...figure.legend.map((entry) => h('span', h(`span.swatch.${entry.className}`), entry.name))), h('p.muted', figure.description));
+      if (!points.length) output.append(h('p', 'No expression barcodes have supplied coordinates.'));
+    }
+    const annotationRows = view === 'annotations' || view === 'map';
+    const headings = annotationRows ? ['Barcode', 'Expression', ...annotations.columns, 'map_x', 'map_y'] : view === 'cells' ? ['Barcode', 'Gene-expression UMIs', 'Detected genes', 'Receptor chain rows', ...(annotations?.columns ?? [])] : ['Feature ID', 'Name', 'Type'];
+    const rows = annotationRows ? (answer.annotations ?? []).map((r) => [h('button.btn.small', { type: 'button', onclick: () => describe(r) }, r.barcode), r.expression ? 'Present' : 'Missing', ...r.values.map((v) => v || 'Missing'), ...(r.position ?? ['Missing', 'Missing'])]) : view === 'cells' ? answer.cells.map((c) => [c.barcode, count(c.geneUMIs), count(c.genes), c.chainRows === undefined ? 'Not linked' : count(c.chainRows), ...(annotations?.columns ?? []).map((_, i) => c.annotation?.values[i] || 'Missing')]) : answer.features.map((f) => [f.id, f.name, f.type]);
+    output.append(selected);
     output.append(h('div', { style: { overflowX: 'auto' } }, h('table.data', h('thead', h('tr', ...headings.map((title) => h('th', { scope: 'col' }, title)))), h('tbody', ...rows.map((row) => h('tr', ...row.map((value) => h('td', value))))))));
     output.append(h('div.btn-row', h('button.btn.small', { type: 'button', disabled: status === 'loading' || answer.offset === 0, onclick: () => page(view, Math.max(0, answer.offset - 50)).catch(() => {}) }, 'Previous'),
       h('span', `${count(answer.offset)} offset · ${count(answer.count)} ${view}`), h('button.btn.small', { type: 'button', disabled: status === 'loading' || answer.offset + 50 >= answer.count, onclick: () => page(view, answer.offset + 50).catch(() => {}) }, 'Next')));
@@ -126,7 +145,7 @@ export function mountCells(app, container) {
   return {
     update(topics) {
       if (generation !== store.state.generation) {
-        generation = store.state.generation; serial++; controller?.abort(); active = null; answer = null; status = 'idle'; message = ''; path.value = ''; drawDatasets(); draw();
+        generation = store.state.generation; serial++; controller?.abort(); active = null; answer = null; status = 'idle'; message = ''; path.value = ''; cellsPath.value = ''; drawDatasets(); draw();
       }
       if (active && !(store.project.expression ?? []).some((r) => r.id === active.id && r.dataset === active.dataset && r.sample === active.sample)) {
         serial++; controller?.abort(); active = null; answer = null; status = 'idle'; draw();

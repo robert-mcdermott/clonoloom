@@ -20,19 +20,23 @@ type expressionInputs struct {
 }
 
 type expressionSummary struct {
-	ID            string              `json:"id"`
-	Path          string              `json:"path"`
-	Sources       []expression.Source `json:"sources"`
-	ReaderVersion int                 `json:"readerVersion"`
-	Cells         int                 `json:"cells"`
-	Features      int                 `json:"features"`
-	Entries       int                 `json:"entries"`
-	Types         map[string]int      `json:"types"`
-	Unit          string              `json:"unit"`
+	ID            string                   `json:"id"`
+	Path          string                   `json:"path"`
+	Sources       []expression.Source      `json:"sources"`
+	ReaderVersion int                      `json:"readerVersion"`
+	Cells         int                      `json:"cells"`
+	Features      int                      `json:"features"`
+	Entries       int                      `json:"entries"`
+	Types         map[string]int           `json:"types"`
+	Unit          string                   `json:"unit"`
+	Annotations   *expression.CellCoverage `json:"annotations,omitempty"`
 }
 
 func summarizeExpression(in *expression.Input) expressionSummary {
-	s := expressionSummary{in.ID, in.Path, in.Sources, expression.ReaderVersion, len(in.Matrix.Barcodes), len(in.Matrix.Features), in.Matrix.Entries, map[string]int{}, "UMIs"}
+	s := expressionSummary{ID: in.ID, Path: in.Path, Sources: in.Sources, ReaderVersion: expression.ReaderVersion, Cells: len(in.Matrix.Barcodes), Features: len(in.Matrix.Features), Entries: in.Matrix.Entries, Types: map[string]int{}, Unit: "UMIs"}
+	if in.Cells != nil {
+		s.Annotations = &in.Cells.Coverage
+	}
 	for _, f := range in.Matrix.Features {
 		s.Types[f.Type]++
 	}
@@ -48,20 +52,26 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var body struct {
-		Path       string `json:"path"`
-		Example    bool   `json:"example"`
-		ExpectedID string `json:"expectedId"`
+		Path         string `json:"path"`
+		Example      bool   `json:"example"`
+		ExpectedID   string `json:"expectedId"`
+		CellsPath    string `json:"cellsPath"`
+		StudyExample bool   `json:"studyExample"`
 	}
 	if err := json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(&body); err != nil {
 		writeError(w, 400, "Send a MEX directory path.")
 		return
 	}
-	if body.Example {
-		if body.Path != "" {
+	if body.Example || body.StudyExample {
+		if body.Path != "" || body.CellsPath != "" || body.Example && body.StudyExample {
 			writeError(w, 400, "Choose a path or the artificial example, not both.")
 			return
 		}
 		body.Path = filepath.Join(a.examples.Dir, "synthetic-expression")
+		if body.StudyExample {
+			body.Path = filepath.Join(a.examples.Dir, "simulated-cell-states", "expression", "S01-1")
+			body.CellsPath = filepath.Join(body.Path, "cells.tsv")
+		}
 	}
 	path, err := absPath(body.Path)
 	if err != nil || body.Path == "" {
@@ -70,7 +80,14 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 	}
 	a.expression.opening.Lock()
 	defer a.expression.opening.Unlock()
-	in, err := expression.Open(r.Context(), path)
+	if body.CellsPath != "" {
+		body.CellsPath, err = absPath(body.CellsPath)
+		if err != nil {
+			writeError(w, 400, err.Error())
+			return
+		}
+	}
+	in, err := expression.OpenWithCells(r.Context(), path, body.CellsPath)
 	if err != nil {
 		writeError(w, 400, err.Error())
 		return
@@ -87,18 +104,21 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 }
 
 type expressionCell struct {
-	Barcode   string  `json:"barcode"`
-	GeneUMIs  *uint64 `json:"geneUMIs"`
-	Genes     *int    `json:"genes"`
-	ChainRows *int    `json:"chainRows,omitempty"`
+	Barcode    string                     `json:"barcode"`
+	GeneUMIs   *uint64                    `json:"geneUMIs"`
+	Genes      *int                       `json:"genes"`
+	ChainRows  *int                       `json:"chainRows,omitempty"`
+	Annotation *expression.CellAnnotation `json:"annotation,omitempty"`
 }
 type expressionPage struct {
-	Summary  expressionSummary    `json:"summary"`
-	Links    *expression.Links    `json:"links,omitempty"`
-	Offset   int                  `json:"offset"`
-	Count    int                  `json:"count"`
-	Cells    []expressionCell     `json:"cells"`
-	Features []expression.Feature `json:"features"`
+	Summary     expressionSummary           `json:"summary"`
+	Links       *expression.Links           `json:"links,omitempty"`
+	Offset      int                         `json:"offset"`
+	Count       int                         `json:"count"`
+	Cells       []expressionCell            `json:"cells"`
+	Features    []expression.Feature        `json:"features"`
+	Annotations []expression.CellAnnotation `json:"annotations,omitempty"`
+	Map         []expression.CellAnnotation `json:"map,omitempty"`
 }
 
 func (a *app) handleExpressionPage(w http.ResponseWriter, r *http.Request) {
@@ -117,8 +137,8 @@ func (a *app) handleExpressionPage(w http.ResponseWriter, r *http.Request) {
 	if body.View == "" {
 		body.View = "cells"
 	}
-	if body.View != "cells" && body.View != "features" {
-		writeError(w, 400, "View must be cells or features.")
+	if body.View != "cells" && body.View != "features" && body.View != "annotations" && body.View != "map" {
+		writeError(w, 400, "View must be cells, features, annotations or map.")
 		return
 	}
 	if body.Offset < 0 || body.Limit < 0 || body.Limit > 200 {
@@ -154,11 +174,42 @@ func (a *app) handleExpressionPage(w http.ResponseWriter, r *http.Request) {
 		page.Links = &links
 	}
 	m := in.Matrix
+	if body.View == "annotations" || body.View == "map" {
+		if in.Cells == nil {
+			writeError(w, 400, "Select a cell annotation table first.")
+			return
+		}
+		if body.View == "map" {
+			if in.Cells.Coverage.Mapped > expression.MaxMapPoints {
+				writeError(w, 400, "Imported maps are limited to 20000 expression barcodes with coordinates; inspect the complete annotation table instead.")
+				return
+			}
+			for i, row := range in.Cells.Rows {
+				if i%4096 == 0 {
+					if err := r.Context().Err(); err != nil {
+						writeError(w, 400, err.Error())
+						return
+					}
+				}
+				if row.Expression && row.Position != nil {
+					page.Map = append(page.Map, row)
+				}
+			}
+		}
+		page.Count = len(in.Cells.Rows)
+		start := min(body.Offset, page.Count)
+		page.Offset = start
+		end := start + min(body.Limit, page.Count-start)
+		page.Annotations = in.Cells.Rows[start:end]
+		writeJSON(w, page)
+		return
+	}
 	page.Count = len(m.Barcodes)
 	if body.View == "features" {
 		page.Count = len(m.Features)
 	}
 	start := min(body.Offset, page.Count)
+	page.Offset = start
 	end := start + min(body.Limit, page.Count-start)
 	for i := start; i < end; i++ {
 		if body.View == "features" {
@@ -166,6 +217,11 @@ func (a *app) handleExpressionPage(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		row := expressionCell{Barcode: m.Barcodes[i]}
+		if in.Cells != nil {
+			if index, ok := in.Cells.ByBarcode[row.Barcode]; ok {
+				row.Annotation = &in.Cells.Rows[index]
+			}
+		}
 		if page.Summary.Types["Gene Expression"] > 0 {
 			row.GeneUMIs = &m.GeneUMIs[i]
 			row.Genes = &m.Genes[i]

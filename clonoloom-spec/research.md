@@ -1478,3 +1478,47 @@ row lacks a barcode. Files and values are pinned in `validation/reference/expres
 with the script beside it. Hand cases cover sample collisions, repeated chains, malformed
 counts, dimensions, duplicates, gzip corruption, cancellation and limits. Fuzzing probes the
 reader. This validates format and bookkeeping, not biological cell calling or phenotypes.
+
+### 5.22 Known cell states, annotations and imported maps (wave 6, slice 2)
+
+**Purpose.** A controlled paired TRA/TRB and count-matrix study supplies known clone/state
+relationships and explicit missing evidence for the rest of wave 6. Model
+`clonoloom-artificial-cell-states-v1` uses three artificial states, 24 genes, uniform clones,
+state-dependent negative-binomial counts and supplied illustrative coordinates. All means,
+dispersion, sample effects and missingness cases are project choices; this is not an inferred
+model of single-cell biology. The complete distributions, seeds, stream order and output
+contract are in `docs/SIMULATION.md`. Fictional junctions and SIM calls use no external alleles.
+
+**Methods.** Reuse the project's deterministic gamma–Poisson random sampler. Gamma generation:
+Marsaglia and Tsang (2000), *ACM TOMS* 26:363–372,
+[doi:10.1145/358407.358414](https://doi.org/10.1145/358407.358414). Poisson generation: Hörmann
+(1993), *Statistics & Probability Letters* 15:43–48,
+[doi:10.1016/0167-7152(93)90097-4](https://doi.org/10.1016/0167-7152(93)90097-4).
+Count storage follows the 10x/NIST MEX references in §5.21. No UMAP or clustering algorithm is
+implemented in this slice, and supplied state labels do not infer phenotype or specificity.
+SituCraft's own simulator provides a useful separation of observations and truth; this study's
+model and implementation are ClonoLoom's, reusing its existing sampler and simulation conventions.
+
+**Annotation contract.** Explicitly opt into one plain/gzip TSV: `barcode`, arbitrary text
+columns (at most 32), optional paired `map_x`/`map_y`. Preserve source row/header order and empty
+values, reject duplicates and malformed coordinates, join exact matrix barcodes, retain
+annotation-only rows. Go computes the complete coverage and mapped population; JS displays
+coordinates at equal axis scale. The 20,000-point map limit rejects larger populations rather
+than silently sampling. Table limits are 2,000,000 rows, 4,000,000 values and 64 MiB of text.
+These are format/resource policies, not published statistical methods.
+
+**Provenance.** An optional source extends the original MEX identity with its actual-byte hash
+and size under a separately versioned contract. Old MEX-only IDs remain unchanged; nearby files
+are never discovered implicitly. Projects pin paths and fingerprints, including annotations;
+changed sources fail reopening. Source coverage and supplied maps remain evidence inspection,
+not inferred-result artifacts. Zero counts, missing expression, missing annotation rows, missing
+labels and missing coordinates remain distinct. Barcodes repeating in separate samples never
+establish cross-sample cell identity; cells are not independent biological replicates.
+
+**Independent checks.** `validation/reference/cell_states.py` uses SciPy 1.17.0 `mmread`, CSV
+and sets, without calling ClonoLoom expression/linking code. It verifies all four generated
+matrices against separate observation truth and pins source hashes, dense-value hashes, gene
+totals/detection counts and linkage/annotation coverage. Go reconstructs the study and checks
+those numbers on both processors. Unit tests cover byte reproducibility, changed seeds,
+cancellation/staging, malformed input, optional-source identity, drift and missing values;
+browser scenes exercise explicit inputs, source-value tables, imported maps and saved reopening.

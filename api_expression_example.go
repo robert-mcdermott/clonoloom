@@ -42,3 +42,14 @@ func expressionInputExample() examples.Generated {
 		}, Files: func(string) [][]string { return [][]string{{"receptors.tsv"}} },
 	}
 }
+
+func cellStateInputExample() examples.Generated {
+	steps := []examples.Step{{
+		Title: "Inspect known cell states and supplied coordinates", Action: "inspect_expression",
+		Args:  map[string]any{"studyExample": true, "sample": 0},
+		Words: "Inspect S01-1: 120 expression barcodes, 119 receptor matches, one expression-only and one receptor-only barcode. The selected cells.tsv has 119 matching rows, one annotation-only row and 118 mapped expression cells. Open Imported map; color by state and inspect missing labels. This artificial layout is not UMAP or evidence of specificity. Other samples have separate matrices and repeated barcodes; select each sample explicitly.",
+	}}
+	return simulatedExample("cell-states", steps, "A paired T-cell and expression study with known states",
+		"Two artificial subjects, two samples each, paired TRA/TRB receptors and 24 artificial genes in three known states. Includes deliberate missing evidence, supplied layout coordinates and separate truth. Generated locally from a fixed seed; a controlled benchmark, not a fitted biological model.",
+		"Four samples of 120 expression cells, with paired receptor evidence and exact sample-scoped barcodes.", 1<<20)
+}

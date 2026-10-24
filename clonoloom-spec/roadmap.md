@@ -1513,7 +1513,57 @@ remove/undo. Both screenshots were inspected. The site builds 34 pages with 32 s
 132 accessibility/viewport checks across 33 pages find no problems. Scientific regression
 validation under the race detector passes (1,159.230 s). Existing performance budgets, which
 skip under the race detector, were not rerun for this reader/UI slice. Version remains 0.5.0.
-No commit, push, tag, release or site publication has been performed.
+Committed by the maintainer as `9f5738b`.
+
+### Slice 2: known cell states and imported maps
+
+**Serves E1, E3 and the imported-evidence part of M1.** Add an explicitly selected plain/gzip
+TSV with first column `barcode`, optional paired `map_x`/`map_y` columns and up to 32 other
+annotation columns. Empty fields mean missing; coordinate pairs must be both absent or finite
+within ±1e12. Reject duplicate barcodes/headers, malformed rows and excessive input. Join exact
+barcodes to the selected matrix, retain annotation-only rows, and report missing annotations
+and coordinates separately. Pin the optional file in the expression identity; MEX-only IDs and
+old saved inputs remain unchanged. Never discover an annotation file implicitly.
+
+Show bounded annotation pages and a supplied-coordinate map (up to 20,000 matched points;
+larger maps fail explicitly). Coordinates are source evidence, not a computed UMAP. Keep the
+table as an accessible alternative with source values and missingness. Scientific counts and
+map populations come from Go; JS only lays out and displays the supplied points.
+
+Add the `cell-states` artificial study: two samples per subject, paired fictional TRA/TRB
+receptors, three known states, 24 artificial genes, seeded negative-binomial counts and supplied
+layout coordinates. Record parameters, sample/barcode/clone/state truth and source hashes.
+Deliberately include expression-only, receptor-only, annotation-only, missing-label/map and
+zero-count cases. Keep truth separate from observations and subject/sample identity explicit.
+Offer the preset offline with a guided first-sample inspection. This is a controlled software
+benchmark with chosen parameters, not a fitted biological model or evidence of specificity.
+
+**Acceptance.** Strict parser, cancellation, malformed/gzip/limit and drift checks; exact joins,
+missingness and source-order pages; seeded byte reproducibility, changed-seed and processor
+agreement; independent SciPy and truth/set tallies; project reopening and remote controls;
+visible form/map/table checks in both themes. Run relevant race tests, scientific regressions,
+vet, JS tests, six builds, contrast and site checks. Keep version 0.5.0; maintainer performs Git.
+
+**Implemented.** The explicit annotation reader, fingerprinted optional source, complete
+coverage and bounded annotation/map APIs are in place. Cells displays supplied labels and
+coordinates, missing evidence, annotation-only rows and an accessible source-value table;
+saved reopening checks all selected sources. The `cell-states` CLI preset and offline guided
+example generate four default samples with 480 expression cells, 960 paired AIRR chain rows,
+separate observation truth and source manifests. Simulation, format, remote-control and
+development-guide documentation describe the chosen model and cite its sampler/format sources.
+MEX-only identities and released projects remain compatible. Computed maps and clonotype
+phenotypes remain later slices.
+
+**Checked.** Application/internal race tests, focused scientific race tests, full required-data
+scientific regressions (246.975 s), released-project replay, native/amd64 checks, vet, six
+platform builds, 99 JavaScript tests and 14 contrast checks pass. SciPy and independent truth
+tallies agree on all 11,520 generated matrix values, 480 gene totals and source coverage.
+Annotation fuzzing passes 169,189 executions. The Cells and cell-state browser scenes pass in
+both themes, including forms, malformed paths, pagination, imported-map selection and project
+saving/reopening. Screenshots were inspected and legend spacing corrected. The site builds
+34 pages with 33 screenshot sets; 132 accessibility/viewport checks report zero problems.
+Existing performance budgets were not rerun for this evidence/simulation slice. Version stays
+0.5.0. Ready for the maintainer's commit; no commit, push, tag, release or publication performed.
 
 ## Later waves (outlined)
 

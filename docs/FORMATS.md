@@ -515,3 +515,26 @@ Reopening verifies identity. Barcode links require an explicit receptor dataset/
 suffixes exactly. Matching counts raw source evidence before QC, never inferred clonotypes.
 AnnData, MuData and 10x HDF5 are later wave 6 slices. See the development
 [Cells guide](site/pages/docs/cells.html) and `testdata/expression-mex/` for a synthetic example.
+
+### Cell annotations and imported coordinates (wave 6, slice 2; development)
+
+An explicitly selected plain/gzip TSV can accompany one expression matrix. The first column
+is `barcode`; other columns are text annotations except reserved `map_x` and `map_y`, which
+must occur together. Header order is preserved. Up to 32 annotation columns are supported.
+Empty annotation fields mean missing; literal `NA` is a label, not a missing-value sentinel.
+Coordinates are either both empty or a finite pair within ±1e12. Zero is a valid coordinate.
+No quoting, escaped tabs, multiline fields or BOM; LF/CRLF and valid UTF-8 are accepted.
+Labels must have no surrounding whitespace, NUL, tab or newline. Headers and barcodes must
+be unique; malformed rows, partial coordinates and corrupt gzip fail the whole import.
+
+The table joins by exact barcode to the selected matrix. All rows remain available, including
+annotation-only barcodes. Missing rows, missing values and missing coordinates are distinct.
+The map contains only expression barcodes with coordinates, at most 20,000; larger populations
+fail explicitly rather than being sampled. The complete table remains pageable. Reader limits
+are 2,000,000 rows, 4,000,000 annotation values, 64 MiB of text and the MEX line/source limits.
+
+The selected source's path, byte size and SHA-256 hash are saved. The combined identity hashes
+the MEX identity, annotation byte size and hash under `clonoloom-expression-cells/1`. Files are
+never discovered implicitly, so adding an unselected file leaves existing MEX-only identities
+unchanged. A changed selected annotation file fails saved reopening. Coordinates are imported
+evidence; no UMAP, normalization, clustering or cell-type assignment is performed.

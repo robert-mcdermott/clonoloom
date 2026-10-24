@@ -27,8 +27,9 @@ clonotypes. The [artificial immunization guide](https://robert-mcdermott.github.
 connects the workflow to known truth, exports and cited methods. Likelihood trees, selection
 and switching-event inference remain deferred.
 
-Development on `wave6` adds MEX expression inspection and exact sample-scoped barcode links
-in Cells, with an offline artificial example. These changes target 0.6.0 and are not in the
+Development on `wave6` adds MEX expression inspection, exact sample-scoped barcode links,
+supplied cell annotations and imported maps in Cells, with a seeded paired receptor/expression
+study and known cell states. These changes target 0.6.0 and are not in the
 published 0.5.0 binary. See the [development Cells guide](docs/site/pages/docs/cells.html).
 
 ## Features

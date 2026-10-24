@@ -214,11 +214,11 @@ func walkFolder(dir string) ([]localFile, string) {
 				return nil
 			}
 			// A simulated study's truth (clonoloom simulate) describes its data and is not data;
-			// nor are its specificity database and germline reference, beside it.
+			// nor are its specificity database, germline reference and expression matrices.
 			if name == "truth" && isFile(filepath.Join(path, "truth.json")) {
 				return filepath.SkipDir
 			}
-			if (name == "database" || name == "reference") && isFile(filepath.Join(filepath.Dir(path), "truth", "truth.json")) {
+			if (name == "database" || name == "reference" || name == "expression") && isFile(filepath.Join(filepath.Dir(path), "truth", "truth.json")) {
 				return filepath.SkipDir
 			}
 			if kind := dirKind(path); kind != "" {
