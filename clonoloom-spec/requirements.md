@@ -128,7 +128,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | --- | --- | --- |
 | M1 | V(D)J linked to gene expression by barcode; clonotypes on a map (imported or computed) and phenotypes per clonotype | done (wave 6, slices 1–6: exact sample-scoped links, imported/computed maps, immutable clonotype overlays, supplied phenotypes and explicit missingness; raw AnnData/MuData AIRR evidence remains separate from the receptor dataset) |
 | M2 | Clonal expansion by cluster or cell type; clonotype size on the map | done (wave 6, slice 6: distinct-cell receptor/mapped sizes, configurable categories, descriptive supplied-annotation counts and fractions, sample/subject boundaries, linked selection and complete provenance; no cell-level significance tests) |
-| M3 | Clonotype modularity and CoNGA-style graph-versus-graph analysis | planned (wave 6) |
+| M3 | Clonotype modularity and CoNGA-style graph-versus-graph analysis | partial (wave 6, slice 7: clonotype modularity; CoNGA follows in slice 8) |
 | M4 | Antigen-capture (BEAM, dextramer) specificity calls per clonotype | parked |
 | M5 | Pseudobulk differential expression between expanded and other clonotypes per cell type, subject as the unit | planned (wave 7) |
 

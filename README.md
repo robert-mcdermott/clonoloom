@@ -34,7 +34,9 @@ study and known cell states. It also adds count normalization, PCA, exact expres
 neighborhoods and computed UMAP artifacts with cited methods and complete provenance
 ([computed-map guide](docs/EXPRESSION.md)), plus sample-scoped clone sizes, linked map
 selection and supplied phenotype summaries with explicit denominators
-([phenotype guide](docs/PHENOTYPES.md)). These changes target 0.6.0 and are not in the
+([phenotype guide](docs/PHENOTYPES.md)), and clonotype connectivity tests on the saved
+expression graph with defined nulls and multiple-testing correction
+([modularity guide](docs/MODULARITY.md)). These changes target 0.6.0 and are not in the
 published 0.5.0 binary. See the [development Cells guide](docs/site/pages/docs/cells.html).
 
 ## Features

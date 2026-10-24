@@ -480,9 +480,23 @@ export function remoteActions(app) {
       return { message: `${done.page.result.assigned} assigned observations summarized.`, data: { artifact: done.artifact, assigned: done.page.result.assigned, resolvedClass: done.page.result.resolvedClass, resolvedGene: done.page.result.resolvedGene, families: done.page.familyCount, excluded: done.page.result.excluded, issues: done.page.result.issues, options: done.page.result.isotypeOptions } };
     },
 
+    async compute_clonotype_modularity(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellModularityView, 5000, 'Clonotype modularity');
+      const result = await view.run({ ...options, phenotypes: options.phenotypes ?? app.cellPhenotypesView?.state().artifact });
+      if (!result) throw new ActionError('The project changed during the analysis.');
+      return { message: 'Clonotype modularity saved.', data: { artifact: result.artifact.id, tested: result.result.analysis.tested, eligible: result.result.analysis.eligible, description: result.result.description } };
+    },
+
     async compute_cell_phenotypes(options = {}) {
       await app.setMode('cells');
       const view = await waitFor(() => app.cellPhenotypesView, 5000, 'Clonotype phenotypes');
+      if (options.map === 'latest') {
+        const input = app.cellsView?.state().record;
+        const map = store.project.artifacts.filter((r) => r.kind === 'expression-map' && r.expression === input?.id).at(-1);
+        if (!map) throw new ActionError('Compute an expression map for the open input first.');
+        options = { ...options, map: map.id };
+      }
       const result = await view.run(options);
       if (!result) throw new ActionError('The project or expression input changed during the analysis.');
       return { message: 'Clonotype phenotypes saved.', data: { artifact: result.artifact.id, coverage: result.result.analysis.coverage, description: result.result.description } };

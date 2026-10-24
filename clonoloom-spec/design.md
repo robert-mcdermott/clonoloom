@@ -266,3 +266,14 @@ exclusions, feature moments/loadings, PCA scores, exact directed neighbors, fuzz
 UMAP coordinates and complete methods. Source fingerprints are verified again when a job runs;
 completed results are checksum-verified and reopen without the sources. They are independent
 of receptor QC and clonotype definitions. See `docs/EXPRESSION.md` for explicit bounded methods.
+
+Clonotype modularity (wave 6 slice 7) consumes a complete `phenotypes` artifact made with a
+computed map and that exact `expression-map` graph. `internal/modularity` validates the graph,
+induces its uniquely assigned population, computes size-conditioned edge tests and BY adjustment.
+It does not reopen raw sources or refit the graph. Parent IDs/checksums, effective settings and
+method version determine a separate `modularity` job/artifact. The worker verifies hashes again,
+stages JSON, checks cancellation and promotes only a readable result. Resume recreates work
+from the pinned spec. Completed results are self-contained for inspection; reproducing the graph
+test also uses the exported expression-map parent. JS lays out supplied null frequencies and
+observed/expected markers, filters tables and links the parent overlay; Go computes statistics.
+See `docs/MODULARITY.md` for the inferential assumptions and populations.

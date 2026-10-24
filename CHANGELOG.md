@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **Clonotype modularity (wave 6, slice 7).** Test one sample's predefined clonotypes on a
+  checksum-pinned expression-neighbor graph. Count induced binary edges among uniquely
+  assigned retained cells, with analytic size-matched expectations, exhaustive small nulls,
+  seeded Monte Carlo tails and Benjamini–Yekutieli correction. Preserve untested/excluded cells,
+  null frequencies, seeds and method provenance. Add cancellable/resumable jobs, saved reopening,
+  a discrete null-frequency plot, accessible tables, parent-overlay links, JSON export, remote
+  control and a guided artificial study. Independently validate exact subgraphs, Monte Carlo
+  frequencies and adjusted p-values. State exchangeability and confounding limits explicitly;
+  graph connectivity does not establish antigen specificity. Version stays 0.5.0.
+
 - **Clonotype overlays and phenotypes (wave 6, slice 6).** Link one receptor sample to an
   imported or computed expression map using exact barcodes and saved definition/QC rules.
   Count distinct cells in explicit receptor-sample or mapped populations; retain both coverage

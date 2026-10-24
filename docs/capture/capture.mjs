@@ -116,6 +116,24 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cell-modularity'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`window.clonoloom.cellsView.example(true)`);
+    await act('compute_expression_map');
+    const overlay = await act('compute_cell_phenotypes', { map:'latest', annotation:'state' });
+    await js(`(() => { const c=document.querySelector('[aria-label="Modularity phenotype parent"]'); c.value=${JSON.stringify(overlay.data.artifact)}; c.dispatchEvent(new Event('change')); [...document.querySelectorAll('button')].find((b)=>b.textContent==='Compute clonotype modularity').click(); return true; })()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellModularityView?.state().status)`,120000);
+    const state=await js('window.clonoloom.cellModularityView.state()');
+    if(state.status!=='ready'||state.answer.result.analysis.eligible!==358||state.answer.result.analysis.tested!==10) throw new Error(`Modularity failed: ${JSON.stringify({status:state.status,error:state.error,eligible:state.answer?.result.analysis.eligible,tested:state.answer?.result.analysis.tested})}`);
+    const remote=await act('compute_clonotype_modularity');
+    if(remote.data.artifact!==state.artifact) throw new Error('Visible and remote modularity differ');
+    await js(`(() => {const app=window.clonoloom,id=app.cellModularityView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Modularity undo failed');app.store.redo();const r=app.cellModularityView.state().answer.result.analysis;const c=r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0];app.cellModularityView.selectClone(c.id);const plot=document.querySelector('.modularity-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==c.observed)throw new Error('Observed marker differs from result');const f=document.querySelector('[aria-label="Filter modularity clones"]');f.value=c.id;f.dispatchEvent(new Event('change'));if(app.cellModularityView.state().answer.result.analysis.tested!==10)throw new Error('Filtering changed test family');return true;})()`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b)=>b.textContent==='Open parent phenotype overlay').click();return true;})()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length > 1');
+    await js(`(async()=>{const app=window.clonoloom,id=app.cellModularityView.state().artifact;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellModularityView.show(id);if(app.cellsView.state().record)throw new Error('Saved modularity required open expression source');const r=app.cellModularityView.state().answer.result.analysis;app.cellModularityView.selectClone(r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0].id);return true;})()`);
+    await js(`document.querySelector('#clonotype-modularity').scrollIntoView({block:'start'})`);
+  },
   async 'cell-phenotypes'() {
     await js(`window.clonoloom.setMode('cells')`);
     await waitFor('Boolean(window.clonoloom.cellsView)');

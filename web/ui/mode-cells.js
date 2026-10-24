@@ -1,4 +1,5 @@
 import { mountCellPhenotypes } from './cell-phenotypes.js';
+import { mountCellModularity } from './cell-modularity.js';
 import { mountCellAnalysis } from './cell-analysis.js';
 // Cells starts with raw expression evidence and exact sample-scoped barcode coverage. No
 // clonotype count or phenotype is inferred by inspection. Computed maps are separate artifacts.
@@ -52,6 +53,7 @@ export function mountCells(app, container) {
   container.append(root);
   const analysis = mountCellAnalysis(app, root.querySelector('.view-body'), () => active);
   const phenotypes = mountCellPhenotypes(app, root.querySelector('.view-body'), () => active);
+  const modularity = mountCellModularity(app, root.querySelector('.view-body'));
 
   function drawSamples() {
     const d = store.project.datasets.find((x) => x.id === datasets.value);
@@ -174,8 +176,8 @@ export function mountCells(app, container) {
       }
       if (topics.has('datasets')) { const sample = samples.value; drawDatasets(); samples.value = sample; }
       drawSaved();
-      analysis.update(topics); phenotypes.update(topics);
+      analysis.update(topics); phenotypes.update(topics); modularity.update(topics);
     },
-    destroy() { phenotypes.destroy(); analysis.destroy(); serial++; controller?.abort(); if (app.cellsView === api) delete app.cellsView; root.remove(); },
+    destroy() { modularity.destroy(); phenotypes.destroy(); analysis.destroy(); serial++; controller?.abort(); if (app.cellsView === api) delete app.cellsView; root.remove(); },
   };
 }

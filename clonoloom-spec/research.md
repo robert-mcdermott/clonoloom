@@ -1704,3 +1704,35 @@ numbers assess this fixture, not general biological accuracy. An optional run on
 13678 undirected graph edges in 1.74 s on the development machine. Set
 `CLONOLOOM_EXPRESSION_MAP_HDF5` to a local matrix to repeat that bounded pipeline check; donor
 counts and coordinates are not committed.
+
+### 5.27 Clonotype modularity (wave 6, slice 7)
+
+The [scirpy API](https://scirpy.scverse.org/en/latest/generated/scirpy.tl.clonotype_modularity.html)
+defines an edge-count log2 ratio with pseudocount one and size-matched subgraphs. This is distinct
+from Newman Q and from CoNGA's comparison of receptor and expression neighborhoods. ClonoLoom
+uses an induced binary graph of uniquely assigned cells in one sample, retaining isolated
+vertices. Its analytic expectation M s(s−1)/(N(N−1)) follows from each edge's probability of
+having both endpoints in a uniformly chosen size-s subset. This policy removes simulation noise
+from the score and is not a claim to replicate scirpy's random mean or fitted tail.
+
+Read [Phipson & Smyth 2010](https://doi.org/10.2202/1544-6115.1585) and
+[Hemerik & Goeman 2018](https://doi.org/10.1007/s11749-017-0571-1) for nonzero random-permutation
+p-values and invariance assumptions. Enumerate all subsets through 10000, otherwise draw uniform
+subsets independently with replacement between draws. Use inclusive upper tails, exact tail/B
+or Monte Carlo (tail+1)/(B+1); no negative-binomial tail extrapolation. Record each occupied edge
+count and its frequency. Seeded PCG size-keyed streams preserve deterministic results.
+
+[Benjamini & Yekutieli 2001](https://doi.org/10.1214/aos/1013699998) supplies the harmonic-factor
+step-up adjustment under arbitrary dependence. Apply it to all clones with 2 <= s < N, including
+zero-edge clones. Shared expression graphs/nulls do not establish BH independence/PRDS. BY is
+conditional on valid individual tests; it cannot repair nonexchangeability or repeated analysis
+selection. This null does not stratify cell type, batch, receptor family, component or degree.
+These may explain connectivity and preclude stronger biological claims. Cells are not independent
+subjects; no specificity, causal or subject-level inference is supplied.
+
+The plot shows discrete null frequencies, a zero baseline and observed/analytic-expected markers;
+it is not an effect confidence interval or a density on UMAP. Complete methods and distinctions
+are in [MODULARITY.md](../docs/MODULARITY.md). Independent Python itertools enumerates subsets and
+set-based edges; SciPy 1.17.0's public BY API supplies adjusted p-values. Exact scores, means,
+tails and histograms agree; a separate exhaustive 15504-subset case checks Monte Carlo sampling.
+No third-party implementation source was read or copied for this method.

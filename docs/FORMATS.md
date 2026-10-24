@@ -678,3 +678,26 @@ shares are nullable; association rows include both integer denominators and thei
 Source axes and positions are copied, never combined across maps or samples. Result identities
 pin the input, map checksum, dataset/sample, definition meaning, QC rules, metadata, options and
 method version. [Full population and denominator rules](PHENOTYPES.md).
+
+## Clonotype modularity results (wave 6, slice 7; development)
+
+`GET /api/modularity/{id}` returns `{artifact, result}`. The result has
+`format: "clonoloom-modularity"`, `version: 1`, its description, the complete `phenotypes`
+parent document, computed `map` ID, `expressionExcluded` count and `analysis`. The manifest pins
+both parent hashes, method/software versions and options. The phenotype parent retains raw
+source fingerprints, exact sample binding, normalized definition, QC and supplied metadata.
+The separate map artifact holds the weighted graph; export it too for independent recomputation.
+
+Analysis contains effective `{permutations, seed}`, graph/eligible cell and edge counts, tested
+family size, the BY harmonic factor, explicit rules, graph-row `cells`, sorted `clones` and one
+`nulls` entry per tested size. Cells retain barcode, unique clone or empty string, and parent
+assignment status. Each clone has `cells`, `observed`, `expected`, `score`, `p`, `adjusted`,
+inclusive `tail` count and optional untested `reason`. Singleton and whole-population clones
+have null expected/score/p/adjusted/tail fields; these are not zero-valued test results.
+
+Nulls contain size, `Exhaustive` or `Monte Carlo` method, actual draw count, analytic expectation
+and sorted `{edges, count}` histogram bins. Absent integer bins have zero frequency; observed
+values can exceed all sampled null values. Monte Carlo tails use an added observed configuration,
+not a fabricated extra histogram bin. Graph counts use induced, positive undirected edges once;
+weights and UMAP coordinates are not test inputs. Identity includes both parent IDs/hashes,
+normalized options and method version. [Full method and limits](MODULARITY.md).

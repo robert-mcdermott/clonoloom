@@ -290,3 +290,22 @@ exports the full result with provenance. The corresponding POST endpoint accepts
 `id`, `map`, `dataset`, `sample`, `definition`, `filter`, `annotation` (sample metadata including
 its exact `name`), `options` and optional `start:false` for lookup. The `options.annotation`
 column is distinct from the request's sample `annotation` metadata. No samples are pooled.
+
+### Clonotype modularity (development)
+
+`compute_cell_phenotypes` also accepts `map:"latest"` to choose the latest saved computed map
+for the open expression input; it fails if none exists. The returned artifact still pins its
+actual map ID and checksum. The cloud-study guide uses this to prepare a modularity parent.
+
+`compute_clonotype_modularity` accepts `{phenotypes, options}`. `phenotypes` is a saved phenotype
+artifact made with a computed map; omission uses the displayed phenotype result. Imported-map
+parents fail explicitly. Options are `{permutations:9999, seed:20261024}` by default; exact null
+spaces of at most 10000 subsets are enumerated regardless of the Monte Carlo draw setting.
+
+The HTTP equivalent is `POST /api/modularity` with `{phenotypes, options, start}`. Parent IDs are
+explicit here. `start:false` looks up the deterministic result/running job without starting work.
+The response has `artifact` and `ready`, with `job` when submitted. Tasks handles cancellation
+and resumption. Both saved parents are verified; raw source files need not be reopened.
+`GET /api/modularity/{id}` verifies and returns the complete saved manifest/result without
+requiring parents or sources. See [MODULARITY.md](MODULARITY.md) for the tested population,
+exchangeability assumption, binary edges, exact/Monte Carlo tails, BY correction and work bounds.

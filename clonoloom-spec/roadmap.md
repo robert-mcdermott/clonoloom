@@ -10,14 +10,14 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
 confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has a sequence of slices and a detailed plan for
-slices 1–6. Later slices are refined as they come.
+slices 1–7. Later slices are refined as they come.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
 2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
-Wave 6 is underway on `wave6`. Slices 1–5 and the cell-map feedback follow-up are committed;
-slice 6 adds clonotype overlays and descriptive phenotype summaries. Version remains 0.5.0 until the release-preparation slice.
+Wave 6 is underway on `wave6`. Slices 1–6 and the cell-map feedback follow-up are committed;
+slice 7 adds clonotype modularity on the saved expression graph. Version remains 0.5.0 until the release-preparation slice.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -1847,7 +1847,7 @@ phenotype fractions. Test artifact identity, altered inputs/parents, cancellatio
 linked selection, both themes, undo, accessible tables and processor determinism. Finish the
 application/scientific suites, browser capture and documentation checks before handoff.
 
-**Done, awaiting the maintainer's commit.** Imported and computed overlays, distinct-cell
+**Done, committed as `3aaa344`.** Imported and computed overlays, distinct-cell
 populations, explicit ambiguity/missingness, chain evidence and supplied-phenotype summaries
 are implemented. Immutable jobs pin source/map checksums, normalized definitions, QC content
 fingerprints and project filter versions, sample metadata, options and citations. Cells supports
@@ -1865,7 +1865,71 @@ agree. Vet, gofmt, six platform builds, 104 JavaScript tests and all 14 contrast
 All six Cells capture scenes pass in both themes, including actual pointer brushing and
 Clonotypes-to-Cells navigation; both new screenshots are visually inspected. The site builds
 34 pages with 37 screenshot sets and passes all 132 audit checks. Version remains 0.5.0.
-Slice 7 has not started.
+
+### Slice 7: Clonotype modularity on the expression graph
+
+**Scope (M3).** Test predefined clonotypes on one saved computed expression graph, using a
+checksum-pinned phenotype parent for its exact sample/barcode assignments, normalized
+clonotype definition, QC and metadata. Keep uniquely assigned retained cells and their induced
+binary graph, including isolated vertices. Every positive fuzzy-union edge counts once;
+weight magnitudes and two-dimensional UMAP coordinates do not enter this statistic. Imported
+maps alone cannot supply it. Preserve excluded assignments and expression cells outside the graph.
+
+**Settled method.** Use the documented scirpy connectivity score
+`log2((observed + 1)/(expected + 1))`, distinct from Newman modularity Q. Compute expectation
+analytically as `M s(s−1)/(N(N−1))` on the fixed induced graph. The null assigns a clone uniformly
+to size-s vertex subsets, conditional on graph and size, within one sample. Enumerate every
+subset when choose(N,s) <= 10000; otherwise draw 9999 independent uniform subsets by default,
+with replacement between draws and PCG seed 20261024, size-keyed streams. Use inclusive
+upper-tail tests: tail/draws for enumeration, (tail+1)/(draws+1) for Monte Carlo. No parametric
+tail extrapolation. Benjamini–Yekutieli adjusts the complete family of clones with 2 <= s < N,
+including zero-edge clones, because shared graphs/null draws do not justify independence.
+Singleton and whole-population clones have explicit untested/null fields.
+
+**Interpretation and bounds.** Exchangeability is an assumption, not a finding: this null does
+not condition on cell type, batch, receptor family or degree. It tests exploratory within-sample
+connectivity, not antigen specificity, causality or subject-level effects. No pooled donors.
+Correction does not cover repeated choices of graph, QC, definition or sample. Retain null
+histograms and attainable Monte Carlo resolution. Limits: 10000 graph cells, 99–99999 requested
+draws, and a conservative 500 million work-unit bound; refuse excess rather than subsample.
+
+**Delivery and validation.** Immutable jobs verify both parents and reopen without raw sources;
+saved results reopen without parents. Cells displays observed/expected edges, score, raw and
+adjusted p-values, untested reasons, a discrete null-frequency plot with zero baseline and
+accessible tables. The plot is a null distribution, not an effect confidence interval. Keep
+methods, definitions, population, source fingerprints, hashes, seeds and limits in JSON export.
+Add remote control, a guided artificial-study step, docs and screenshots. Independently enumerate
+subsets with Python itertools and check BY with SciPy's public API; compare Monte Carlo
+frequencies to exhaustive truth. Check graph validation, degeneracy, exclusion, cancellation,
+changed parents, processor identity, saved reopening, undo, both themes and regression suites.
+
+**Done, awaiting the maintainer's commit.** Sample-scoped induced graph tests, analytic expected
+edges, exhaustive/seeded null distributions, inclusive nonzero p-values and BY adjustment are
+implemented. Results retain complete phenotype evidence, both parent hashes, effective options,
+method citations, graph memberships, null frequencies and explicit untested states. Jobs verify
+parent formats/versions and hashes, support cancellation/resumption and refuse changed parents.
+Saved results reopen without sources or parents. Cells offers a discrete zero-based null plot,
+accessible tables, unchanged test families under filtering, parent-overlay highlighting,
+project undo/redo and full JSON export. Remote control and the fourth cloud-study guide step
+exercise the same workflow.
+
+Independent Python enumeration agrees on every exact histogram, edge count, expectation, score,
+tail and SciPy BY adjustment; 99999 Monte Carlo draws agree with the exhaustive 15504-subset
+reference within the declared probability tolerance. Hand-counted exclusions, isolated cells,
+singleton/whole-population clones, empty/complete graphs, malformed CSR, work limits and
+cancellation pass. Native/amd64 result digests agree, as do released-project replay and existing
+processor checks. The artificial cloud workflow has 359 retained graph cells, 358 eligible
+receptor-linked cells, 3963 induced edges and 10 tested clones; the unmatched cell remains an
+explicit exclusion. These fixtures validate the method, not biological specificity.
+
+The final application/internal race suite and full required-data scientific suite pass
+(484.031 s for the latter). An initial assembly check found a fused operation in progress
+reporting; explicit rounding fixes it, and the full final run is clean. Vet, gofmt, six platform
+builds, 106 JavaScript tests and all 14 contrast checks pass. All seven Cells capture scenes
+pass in both themes; final modularity screenshots are refreshed and inspected. The site builds
+34 pages with 38 screenshot sets and passes all 132 audit checks. Existing unrelated performance
+budgets, skipped under race detection, were not rerun. Version remains 0.5.0. Slice 8 has not
+started.
 
 ## Later waves (outlined)
 

@@ -274,3 +274,25 @@ sources/parents, altered artifacts, saved reopening and missing-versus-zero sema
 `cell-phenotypes` capture scene exercises both map sources, visible and remote controls,
 selection, actual pointer brushing, table filtering, clone links, selection undo, result undo/redo
 and reopening in both themes. These validate descriptive bookkeeping, not biological inference.
+
+### Clonotype modularity
+
+`TestModularityAgainstExhaustiveReference` compares observed/expected edge counts, log2 scores,
+every exact null frequency, inclusive tails and BY adjustments to independent enumeration and
+SciPy 1.17.0. The 20-cell size-five case exhausts all 15504 subsets independently and compares
+99999 seeded Monte Carlo draws to each exact frequency (absolute probability tolerance 0.01).
+The exact cases agree to 1e-14. Discrete super-uniformity is checked at four alpha levels.
+
+```sh
+uv run --no-project validation/reference/modularity.py
+go test ./internal/modularity ./validation -run 'TestModularity|TestKnownEdges|TestDegenerateGraphs'
+```
+
+Core tests cover induced populations, isolated vertices, ignored positive weight magnitudes,
+singletons and whole-population clones, empty/complete graphs, nonzero Monte Carlo p-values,
+invalid CSR graphs, bounds and cancellation. Complete Monte Carlo result bytes are pinned for
+native/amd64 agreement. API checks cover parent identity/checksums, changed parents, standalone
+reopening, method-version refusal and job handlers. The `cell-modularity` browser scene exercises
+visible/remote equivalence, filtering without changing the family, plot markers, parent-map
+highlighting, project undo/redo and saved reopening in both themes. Synthetic benchmarks do not
+establish biological specificity. See [MODULARITY.md](../docs/MODULARITY.md).
