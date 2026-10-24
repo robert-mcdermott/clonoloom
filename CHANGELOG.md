@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **AnnData and MuData evidence (wave 6, slice 4).** Read explicitly selected dense/CSR/CSC
+  count matrices, obs/var annotations, supplied embeddings and scirpy AIRR chain records.
+  Preserve exact modality-local barcodes, nullable values, empty versus missing AIRR cells,
+  feature metadata and embedding provenance. Pin all selections and source fingerprints in
+  saved inputs; refuse ambiguous selections, normalized/fractional counts and malformed data.
+  Extend the bounded HDF5 reader with attributes, variable strings, numeric matrices and
+  boolean enums. Add variable/AIRR inspection pages, source-aware axes, an offline example,
+  remote control and independent AnnData/MuData/Awkward fixtures. Computed maps and clonotype
+  phenotypes remain later slices; version stays 0.5.0.
+
 - **10x HDF5 expression evidence (wave 6, slice 3).** Read a selected feature-barcode HDF5
   file into the existing sparse Cells model, retaining feature modalities, explicit zeros,
   exact barcode links and optional annotations. Add a bounded standard-library reader for
@@ -9,7 +19,7 @@
   shuffle and Fletcher32. Verify checksums and reject unsupported storage, malformed CSC,
   unsafe counts and missing chunks. Fingerprint the complete file and verify saved reopening
   without changing MEX identities. Add an offline compressed example, remote control, browser
-  checks and independently generated h5py/SciPy fixtures. AnnData/MuData follow in slice 4;
+  checks and independently generated h5py/SciPy fixtures. AnnData/MuData are added in slice 4;
   version stays 0.5.0.
 
 ### Added

@@ -240,3 +240,21 @@ thereafter (on a 2024 laptop: Apple M-series or recent x86, 16 GB):
 | HDF5 | Own bounded reader of the AnnData/10x subset (wave 6); SituCraft has a writer, not a reusable HDF5 reader |
 | Default port | 8860 (8860–8879) |
 | Remote control and screenshots | From wave 2, as in SituCraft: the documentation's capture scenes and headless runs drive the page through it |
+
+
+### Selected AnnData/MuData evidence (wave 6, slice 4)
+
+The expression input owns the selected sparse count matrix, its source observation annotations,
+variable annotations, one supplied embedding and optional unfiltered AIRR records. MuData
+selection is modality-local; exact barcodes link selected expression and AIRR populations.
+Neither global MuData row indices nor imported clonotype/chain-index analysis objects determine
+ClonoLoom results. `internal/hdf5` handles bounded storage decoding; `internal/expression`
+validates AnnData schema and scientific count/missing-value policies. No Python runtime is
+required by the application. Python public APIs generate independent test fixtures only.
+
+`anndata` in the open request and saved expression record pins count layer, modality, embedding,
+AIRR modality/key and optional feature-name/type columns. The whole source file and those
+selections determine the `clonoloom-expression-anndata/1` identity. Existing source identity
+domains remain stable. Summaries contain provenance and population counts; large variable/AIRR
+values are paged, and maps retain the existing population limit. Source observations stay
+supplied evidence; computed preprocessing, neighborhoods and phenotypes remain separate results.

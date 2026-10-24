@@ -222,3 +222,41 @@ reopen their selected paths. The response's source role is `matrix-hdf5`; counts
 coverage have the same semantics as MEX. `POST /api/expression/open` accepts the same HDF5
 path/example selector and optional `expectedId`; a changed source returns 409 without replacing
 the previously verified input. Reading boundaries and unsupported encodings are in `FORMATS.md`.
+
+
+Slice 4 adds explicit AnnData/MuData selections to `inspect_expression` and
+`POST /api/expression/open`. For example:
+
+```json
+{
+  "path": "/data/study.h5mu",
+  "anndata": {
+    "modality": "gex",
+    "layer": "layers/counts",
+    "embedding": "X_umap",
+    "airrModality": "receptors",
+    "airrKey": "airr",
+    "featureName": "gene_name",
+    "featureType": "feature_type"
+  }
+}
+```
+
+Only `layer` is mandatory for AnnData; MuData also requires `modality`, and `airrModality`
+when `airrKey` is supplied. All choices are persisted. No omitted layer/modality/map/AIRR
+key is inferred. An external `cellsPath` cannot accompany AnnData/MuData. Source counts must
+be nonnegative integral values; selecting a normalized layer is not a count conversion.
+The summary's `anndata` records selections, indices, variable columns, embedding provenance
+and AIRR population counts. `unit` is `counts`; UMI semantics are not inferred.
+
+`POST /api/expression/page` adds `airr` and `airr-cells` views (same offset/limit rules).
+`airr` returns scalar source fields with null for missing, barcode and one-based chain number.
+`airr-cells` returns all AIRR observation barcodes, a nullable chain count and expression
+presence; null is a missing AIRR record, zero is a present empty chain list. Feature pages
+include `variableValues` aligned to the summary's `variableColumns`. Existing receptor
+bindings still require an explicit dataset and sample and are separate from AIRR observations.
+
+Generate `synthetic-anndata` through `open_example`, then use `{"anndataExample":true}`
+to inspect its selected count layer, annotations, supplied map and AIRR records. This selector
+is exclusive with paths, explicit `anndata` choices and other example selectors. `expectedId`
+verifies the full source and selection on reopen; failed opens retain saved evidence.

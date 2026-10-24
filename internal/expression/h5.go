@@ -7,10 +7,13 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"sort"
+	"strings"
 
 	"clonoloom/internal/hdf5"
 )
@@ -151,6 +154,9 @@ func (b cscBlock) Swap(i, j int) {
 }
 
 func openHDF5(ctx context.Context, path string) (*Input, error) {
+	return openSelectedHDF5(ctx, path, nil)
+}
+func openSelectedHDF5(ctx context.Context, path string, selection *AnnDataSelection) (*Input, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -180,7 +186,17 @@ func openHDF5(ctx context.Context, path string) (*Input, error) {
 	if err != nil {
 		return nil, err
 	}
-	m, err := Read10xHDF5(ctx, f, stat.Size())
+	var in *Input
+	if selection != nil || strings.EqualFold(filepath.Ext(path), ".h5ad") || strings.EqualFold(filepath.Ext(path), ".h5mu") {
+		if selection == nil {
+			selection = &AnnDataSelection{}
+		}
+		in, err = ReadAnnData(ctx, f, stat.Size(), *selection)
+	} else {
+		var m *Matrix
+		m, err = Read10xHDF5(ctx, f, stat.Size())
+		in = &Input{Matrix: m}
+	}
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", path, err)
 	}
@@ -196,5 +212,14 @@ func openHDF5(ctx context.Context, path string) (*Input, error) {
 		return nil, fmt.Errorf("HDF5 source changed while reading; reopen it")
 	}
 	h := sha256.Sum256([]byte(fmt.Sprintf("clonoloom-expression-hdf5/1\n%d\n%s", stat.Size(), before)))
-	return &Input{ID: "x-" + hex.EncodeToString(h[:]), Path: path, Sources: []Source{{Role: "matrix-hdf5", Path: path, Size: stat.Size(), SHA256: before}}, Matrix: m}, nil
+	role := "matrix-hdf5"
+	if selection != nil {
+		raw, _ := json.Marshal(selection)
+		h = sha256.Sum256([]byte(fmt.Sprintf("clonoloom-expression-anndata/1\n%d\n%s\n%s", stat.Size(), before, raw)))
+		role = "anndata"
+	}
+	in.ID = "x-" + hex.EncodeToString(h[:])
+	in.Path = path
+	in.Sources = []Source{{Role: role, Path: path, Size: stat.Size(), SHA256: before}}
+	return in, nil
 }

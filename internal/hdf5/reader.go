@@ -34,6 +34,7 @@ type Reader struct {
 	nodes                        int
 	objects                      map[uint64][]message
 	groups                       map[uint64]map[string]uint64
+	heaps                        map[uint64]map[uint32][]byte
 }
 
 type message struct {
@@ -527,6 +528,9 @@ func (f *Reader) group(at uint64) (map[string]uint64, error) {
 }
 
 func (f *Reader) resolve(path string) (uint64, error) {
+	if path == "" || path == "/" {
+		return f.root, nil
+	}
 	parts := strings.Split(strings.Trim(path, "/"), "/")
 	if len(parts) > 32 {
 		return 0, fmt.Errorf("HDF5 path depth limit")
@@ -544,7 +548,7 @@ func (f *Reader) resolve(path string) (uint64, error) {
 		}
 		next, ok := g[part]
 		if !ok {
-			return 0, fmt.Errorf("HDF5 required path /%s is missing (expected a 10x feature-barcode matrix)", strings.Join(parts, "/"))
+			return 0, fmt.Errorf("HDF5 required path /%s is missing", strings.Join(parts, "/"))
 		}
 		if next == undefined {
 			return 0, fmt.Errorf("unsupported HDF5 soft/external link at %s", part)

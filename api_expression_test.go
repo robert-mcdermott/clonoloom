@@ -305,3 +305,85 @@ func TestExpressionStudyPresetSelection(t *testing.T) {
 		}
 	}
 }
+
+func TestAnnDataSelectionPagesAndReopening(t *testing.T) {
+	a, h := testApp(t)
+	dir := filepath.Join(a.examples.Dir, "synthetic-anndata")
+	if e := annDataExample().Make(context.Background(), dir, nil); e != nil {
+		t.Fatal(e)
+	}
+	rec := postJSON(t, h, "/api/expression/open", `{"anndataExample":true}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	var s expressionSummary
+	if e := json.Unmarshal(rec.Body.Bytes(), &s); e != nil {
+		t.Fatal(e)
+	}
+	if s.Unit != "counts" || s.AnnData == nil || s.AnnData.Selection.Layer != "layers/counts" || s.AnnData.AIRR.Chains != 3 {
+		t.Fatalf("%+v", s)
+	}
+	for _, view := range []string{"cells", "features", "annotations", "map", "airr", "airr-cells"} {
+		rec = postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"view":`+jsonString(view)+`,"offset":1,"limit":1}`)
+		if rec.Code != 200 {
+			t.Fatal(view, rec.Code, rec.Body)
+		}
+		var p expressionPage
+		if e := json.Unmarshal(rec.Body.Bytes(), &p); e != nil {
+			t.Fatal(e)
+		}
+		switch view {
+		case "features":
+			if len(p.VariableValues) != 1 || p.VariableValues[0][0] != "Shared" {
+				t.Fatal(p)
+			}
+		case "airr":
+			if len(p.AIRR) != 1 || p.AIRR[0].Chain != 2 || p.AIRR[0].Values[2] != nil {
+				t.Fatal(p)
+			}
+		case "airr-cells":
+			if len(p.AIRRCells) != 1 || p.AIRRCells[0].Chains == nil || *p.AIRRCells[0].Chains != 0 {
+				t.Fatal(p)
+			}
+		}
+	}
+	selection, _ := json.Marshal(s.AnnData.Selection)
+	body := `{"path":` + jsonString(s.Path) + `,"anndata":` + string(selection) + `,"expectedId":` + jsonString(s.ID) + `}`
+	rec = postJSON(t, h, "/api/expression/open", body)
+	if rec.Code != 200 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	rec = postJSON(t, h, "/api/expression/open", strings.Replace(body, `"layers/counts"`, `"X"`, 1))
+	if rec.Code != 409 {
+		t.Fatal("selection changes must change identity", rec.Code, rec.Body)
+	}
+	for _, bad := range []string{`{"path":` + jsonString(s.Path) + `}`, `{"path":` + jsonString(s.Path) + `,"anndata":{"layer":"layers/normalized"}}`, `{"anndataExample":true,"hdf5Example":true}`, `{"anndataExample":true,"anndata":{"layer":"X"}}`, `{"path":` + jsonString(s.Path) + `,"anndata":` + string(selection) + `,"cellsPath":"testdata/expression-mex/cells.tsv"}`} {
+		rec = postJSON(t, h, "/api/expression/open", bad)
+		if rec.Code != 400 {
+			t.Fatal(rec.Code, rec.Body)
+		}
+	}
+	rec = postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"view":"airr"}`)
+	if rec.Code != 200 {
+		t.Fatal("bad opens evicted valid input", rec.Body)
+	}
+	raw, e := os.ReadFile(s.Path)
+	if e != nil {
+		t.Fatal(e)
+	}
+	raw[len(raw)-1] ^= 1
+	if e = os.WriteFile(s.Path, raw, 0600); e != nil {
+		t.Fatal(e)
+	}
+	rec = postJSON(t, h, "/api/expression/open", body)
+	if rec.Code == 200 {
+		t.Fatal("changed source accepted")
+	}
+	req := httptest.NewRequest("POST", "/api/expression/open", strings.NewReader(body))
+	req.RemoteAddr = "203.0.113.1:9999"
+	rr := httptest.NewRecorder()
+	h.ServeHTTP(rr, req)
+	if rr.Code != 403 {
+		t.Fatal(rr.Code)
+	}
+}

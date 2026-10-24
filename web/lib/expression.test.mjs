@@ -37,3 +37,12 @@ test('optional annotation sources survive saved reopening without changing old r
   const project = saveExpression(createProject(), record);
   assert.deepEqual(parseProject(serializeProject(project)).expression[0], record);
 });
+
+test('AnnData selections survive project serialization without aliasing the response', () => {
+  const selection = { modality: 'gex', layer: 'layers/counts', embedding: 'X_umap', airrModality: 'receptors', airrKey: 'airr', featureName: 'gene_name', featureType: 'feature_type' };
+  const record = expressionRecord({ ...summary, anndata: { selection } });
+  assert.deepEqual(record.anndata, selection); assert.notEqual(record.anndata, selection);
+  const restored = parseProject(serializeProject(saveExpression(createProject(), record)));
+  assert.deepEqual(restored.expression[0].anndata, selection);
+  assert.equal('anndata' in expressionRecord(summary), false);
+});

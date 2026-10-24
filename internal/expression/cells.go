@@ -147,9 +147,26 @@ func ReadCells(ctx context.Context, r io.Reader, m *Matrix) (*CellAnnotations, e
 // OpenWithCells opts in to one annotation source. Empty path preserves the original MEX ID,
 // even if a file named cells.tsv has subsequently appeared beside the matrix.
 func OpenWithCells(ctx context.Context, dir, cellsPath string) (*Input, error) {
-	in, err := Open(ctx, dir)
+	return OpenSelected(ctx, dir, cellsPath, nil)
+}
+
+func OpenSelected(ctx context.Context, dir, cellsPath string, selection *AnnDataSelection) (*Input, error) {
+	var in *Input
+	var err error
+	if selection == nil {
+		in, err = Open(ctx, dir)
+	} else {
+		var abs string
+		abs, err = filepath.Abs(dir)
+		if err == nil {
+			in, err = openSelectedHDF5(ctx, abs, selection)
+		}
+	}
 	if err != nil || cellsPath == "" {
 		return in, err
+	}
+	if in.AnnData != nil {
+		return nil, fmt.Errorf("AnnData supplies observations; omit the external cell TSV")
 	}
 	abs, err := filepath.Abs(cellsPath)
 	if err != nil {

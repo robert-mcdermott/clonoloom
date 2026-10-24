@@ -513,7 +513,7 @@ file and source bytes to 1 GiB per file. Unsupported encodings and corrupt/trunc
 The source is streamed and fingerprinted read-only; a project saves its paths and SHA-256 values.
 Reopening verifies identity. Barcode links require an explicit receptor dataset/sample and keep
 suffixes exactly. Matching counts raw source evidence before QC, never inferred clonotypes.
-AnnData and MuData are later wave 6 slices; 10x HDF5 is described below. See the development
+AnnData/MuData and 10x HDF5 are described below. See the development
 [Cells guide](site/pages/docs/cells.html) and `testdata/expression-mex/` for a synthetic example.
 
 ## 10x feature-barcode HDF5 (wave 6, slice 3; development)
@@ -535,9 +535,11 @@ Its supported subset is deliberately explicit:
   external file driver; object headers 1–2 and bounded continuation blocks.
 - Classic symbol-table groups or compact hard links. Soft/external links are never followed;
   a required dataset behind one fails. Dense/fractal-heap groups are unsupported.
-- Fixed-length ASCII/UTF-8 strings with declared padding and full-width signed/unsigned
-  1/2/4/8-byte integers in either byte order. Negative values, floats, variable-length strings,
-  compound/enum/reference types and custom bit layouts fail.
+- Fixed-length ASCII/UTF-8 strings with declared padding, variable strings through bounded
+  global heaps (added in slice 4), and full-width signed/unsigned 1/2/4/8-byte integers in either
+  byte order. 10x counts remain integer datatypes; negative/floating counts fail. The additional
+  numeric/attribute types supported for AnnData are described below. Compound/reference types
+  and custom bit layouts remain unsupported.
 - Compact and contiguous arrays; layout-v3 chunks indexed by v1 B-trees, including internal
   nodes. Deflate, shuffle and Fletcher32 are supported, with reverse decoding order and
   per-chunk masks. Metadata and Fletcher32 checksums are verified. Newer chunk indices,
@@ -550,7 +552,7 @@ and 1,000,000 read operations; 4,096 objects and 4,096 links per group, 65,536 m
 64 continuation blocks, depth 32 and 262,144 chunks per array. Matrix limits remain 200,000
 features, 2,000,000 cells and 10,000,000 stored coordinates; feature labels and barcode labels
 are bounded at 64 MiB each. Counts and gene totals remain at most 2^53−1. Exceeding any bound
-fails the input, without sampling, partial values or dense matrix allocation. For unsupported
+fails the input, without sampling or partial values. A 10x sparse matrix is never densified. For unsupported
 encodings, supply the corresponding MEX files.
 
 The entire file is hashed before and after random-access parsing; changed size, modification
@@ -586,3 +588,74 @@ the MEX identity, annotation byte size and hash under `clonoloom-expression-cell
 never discovered implicitly, so adding an unselected file leaves existing MEX-only identities
 unchanged. A changed selected annotation file fails saved reopening. Coordinates are imported
 evidence; no UMAP, normalization, clustering or cell-type assignment is performed.
+
+## AnnData and MuData (wave 6, slice 4; development)
+
+The Cells path field also accepts `.h5ad` and `.h5mu`. Open **AnnData / MuData selections**
+and supply the **Count matrix** (`X` or `layers/<name>`). MuData also requires an **Expression
+modality**; optionally select **Supplied embedding**, **AIRR key** and **AIRR modality**.
+Feature name/type columns are optional, explicit var-column choices. No count layer, modality,
+embedding or AIRR key is guessed. The format metadata must identify an AnnData or MuData
+object; a filename alone does not establish compatibility. The selected modality's obs and
+var are authoritative; global MuData annotations/maps and obsmap/varmap are not substituted.
+
+The schema follows [AnnData's on-disk format](https://anndata.readthedocs.io/en/stable/fileformat-prose.html)
+and [MuData's embedded AnnData contract](https://mudata.readthedocs.io/en/latest/io/output.html).
+Supported encodings/versions: anndata and MuData 0.1.0; dataframe, array, string-array and
+categorical 0.2.0; CSR/CSC, nullable-integer, nullable-boolean, nullable-string-array and
+awkward-array 0.1.0. Unknown selected encodings or versions fail.
+
+- **Counts:** obs × var dense arrays or CSR/CSC. Validate all dimensions, pointer/index lengths,
+  monotonicity, bounds and duplicate coordinates. Nonnegative integer datatypes and finite,
+  exactly integral float32/64 values are accepted up to 2^53−1, including totals. Negative,
+  fractional, NaN, infinite, boolean and unsafe counts fail. X can contain normalized data:
+  explicit selection is essential, and integral values alone cannot prove preprocessing history.
+  The UI says **counts**, not UMIs. Sparse zeros remain stored coordinates. Dense input is bounded
+  to 10 million supplied coordinates, including zeros; zero values are implicit internally.
+- **Obs/var:** declared `_index` and `column-order`, with unique nonempty indices; exact text,
+  numeric, boolean, categorical and nullable values. Category code −1, nullable mask true and
+  numeric NaN mean missing. Empty annotation strings also display as missing; literal `NA`,
+  `None` and `Missing annotation` remain categories. Signed/unsigned integer annotation text
+  remains exact, even beyond JavaScript's safe integer range. At most 32 obs/128 var columns,
+  4 million annotation values and 64 MiB label text per frame. Features use var index as ID;
+  without selected name/type columns, names equal IDs and type is Gene Expression. Missing
+  values in a selected feature-name/type column fail. The full variable columns remain inspectable.
+- **Embedding:** one selected dense obsm array with exactly two coordinates per observation.
+  Both NaN means missing; otherwise both must be finite within ±10^12. The selected path and
+  source key are retained. Axis labels derive from `X_umap`/`X_tsne` when those source keys
+  identify the map; other keys retain their own name with dimensions 1/2. This does not verify
+  that a producer actually ran that method. Coordinates remain supplied evidence, equal-scale
+  and unmodified; the existing 20,000-point display limit applies. No maps are concatenated.
+- **AIRR:** [scirpy's cell-aligned `obsm` representation](https://scirpy.scverse.org/en/latest/data-structure.html),
+  decoded through the [Awkward form/length/buffer contract](https://awkward-array.org/doc/main/reference/generated/ak.to_buffers.html).
+  Select the key and MuData modality explicitly. Retain every selected scalar field and chain
+  in source order, with missing fields distinct from empty text. Keep missing whole-cell records
+  distinct from empty chain lists. **AIRR evidence** pages chains; **AIRR cells** pages all
+  source observations, including no-chain and missing records. Cross-modality coverage uses
+  exact barcodes in those selected modalities; it is observation coverage, not a count of
+  productive/paired receptors. No suffix stripping, row-position matching, imported clonotype
+  adoption or execution of Python objects occurs. The supported built-in forms are ListOffset,
+  Record, Numpy scalar, Indexed/IndexedOption, Unmasked and Empty; optional indices use −1 for
+  missing. Strings use uint8 character buffers. At most 16 form levels, 256 forms, 128 fields,
+  1 million chains, 4 million field values and 64 MiB field text. Other selected forms fail.
+
+The HDF5 subset above additionally supports inline attributes v1–3, scalar metadata,
+rank-two arrays and classic B-tree chunks, IEEE float32/64, signed codes, exact integer labels,
+and FALSE/TRUE boolean enums. Variable string heaps count toward metadata budgets. Arbitrary
+enums, shared datatypes, dense groups/attributes, newer chunk indices and external/virtual
+storage remain unsupported. Required unsupported data fails rather than becoming missing or
+zero. AnnData requires its own observations; an external annotation TSV cannot be attached too.
+Unselected layers, embeddings and analysis dictionaries are not read as evidence.
+
+The `anndata` source records the entire file's path, size and SHA-256. Hashes before and after
+parsing must agree. Identity uses `clonoloom-expression-anndata/1`, bytes and all selections;
+relocation preserves it, changing selection or source does not. Saved reopening verifies it.
+Existing MEX and 10x identities are unchanged. Python is only used for independent fixtures;
+the distributed application remains a standard-library Go binary.
+
+`testdata/make-anndata.py` writes and independently reads synthetic fixtures with pinned
+AnnData 0.12.6, MuData 0.3.2, Awkward 2.8.12, h5py 3.15.1, NumPy 2.4.2, SciPy 1.17.0 and
+pandas 2.3.3 and scirpy 0.25.1. It uses public APIs, with no donor data or third-party implementation source.
+`validation/reference/anndata.json` records source hashes and independent counts and AIRR
+values. The **Use AnnData example** button works offline; its `X_umap` coordinates are
+artificial illustration points, not a computed UMAP or a biological validation dataset.

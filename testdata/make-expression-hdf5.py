@@ -103,7 +103,8 @@ bad('shape', 'shape', np.array([3, 5], dtype='u8'), 'shape does not match')
 bad('duplicate-barcode', 'barcodes', np.array(['AA-1'] * 4, dtype='S4'), 'duplicate barcode')
 bad('unsafe-count', 'data', np.array([11, 3, 2**53, 0, 4, 7], dtype='u8'), 'count exceeds')
 bad('unsafe-total', 'data', np.array([11, 2**53-1, 2, 0, 4, 7], dtype='u8'), 'total exceeds')
-bad('variable-string', 'barcodes', np.array(['AA-1', 'BB-1', 'CC-1', 'DD-1'], dtype=h5py.string_dtype()), 'datatype class')
+values = dict(base); values['barcodes'] = np.array(['AA-1', 'BB-1', 'CC-1', 'DD-1'], dtype=h5py.string_dtype())
+write('variable-string', values=values); valid.append('variable-string')
 
 def replace_data(g, mode):
     del g['data']

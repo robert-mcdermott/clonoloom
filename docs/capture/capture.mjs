@@ -116,6 +116,43 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cells-anndata'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use AnnData example').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    const state = await js('window.clonoloom.cellsView.state()');
+    if (state.page.summary.anndata.selection.layer !== 'layers/counts' || state.page.cells[0].geneUMIs !== 5 || state.page.summary.anndata.airr.chains !== 3) throw new Error('AnnData evidence differs');
+    await js(`window.clonoloom.cellsView.page('features')`);
+    if ((await js('window.clonoloom.cellsView.state().page.variableValues[1][0]')) !== 'Shared') throw new Error('Variable annotations lost');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'AIRR evidence').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.airr?.length === 3`);
+    if ((await js('window.clonoloom.cellsView.state().page.airr[1].values[2]')) !== null) throw new Error('Missing AIRR field changed');
+    await js(`window.clonoloom.cellsView.page('airr-cells')`);
+    if ((await js('window.clonoloom.cellsView.state().page.airrCells[1].chains')) !== 0) throw new Error('Empty AIRR list changed');
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.store.project.id;
+      await app.saveNow(); await app.openProject(id); await app.setMode('cells');
+      const record = app.store.project.expression[0];
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      if (app.cellsView.state().record.id !== ${JSON.stringify(state.record.id)}) throw new Error('AnnData identity changed on reopen');
+      const before = JSON.stringify(app.store.project.expression);
+      await app.cellsView.inspect({ ...record, anndata: { ...record.anndata, layer: 'layers/normalized' } }).catch(() => {});
+      if (app.cellsView.state().status !== 'error' || JSON.stringify(app.store.project.expression) !== before) throw new Error('Normalized layer replaced saved count evidence');
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      return true;
+    })()`);
+    // Submit the visible fields after reopening: saved modality/layer/embedding selections
+    // must reach the server, not just the remote action.
+    await js(`document.querySelector('.view-body form').requestSubmit()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await act('inspect_expression', { anndataExample: true, sample: 0 });
+    await js(`window.clonoloom.cellsView.page('map')`);
+    await js(`(() => { const c = document.querySelector('[aria-label="Map annotation"]'); c.value='0'; c.dispatchEvent(new Event('change')); return true; })()`);
+    if (!(await js(`document.querySelector('[aria-label="Imported cell map"]').textContent.includes('UMAP 1 (supplied)')`))) throw new Error('Embedding axes missing');
+    await js(`document.querySelector('[aria-label="MEX directory, 10x HDF5, AnnData or MuData file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-anndata/cells.h5ad`)}`);
+    await js(`document.querySelector('#imported-cell-map').scrollIntoView({ block: 'start' })`);
+  },
   async 'cells-hdf5'() {
     await js(`window.clonoloom.setMode('cells')`);
     await waitFor('Boolean(window.clonoloom.cellsView)');
@@ -146,7 +183,7 @@ const scenes = {
     })()`);
     await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
     await act('inspect_expression', { hdf5Example: true, sample: 0 });
-    await js(`document.querySelector('[aria-label="MEX directory or 10x HDF5 file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression-hdf5/matrix.h5`)}`);
+    await js(`document.querySelector('[aria-label="MEX directory, 10x HDF5, AnnData or MuData file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression-hdf5/matrix.h5`)}`);
   },
   async 'cell-states'() {
     await js(`window.clonoloom.setMode('cells')`);
@@ -192,7 +229,7 @@ const scenes = {
       if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('CELL00001-1')) throw new Error('Table inspection failed');
       return true;
     })()`);
-    await js(`document.querySelector('[aria-label="MEX directory or 10x HDF5 file"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1`)}`);
+    await js(`document.querySelector('[aria-label="MEX directory, 10x HDF5, AnnData or MuData file"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1`)}`);
     await js(`document.querySelector('[aria-label="Cell annotations"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1/cells.tsv`)}`);
     await js(`document.querySelector('#imported-cell-map').scrollIntoView({ block: 'start' })`);
   },
@@ -245,7 +282,7 @@ const scenes = {
     await js(`(() => { window.clonoloom.store.undo(); return true; })()`);
     await waitFor('window.clonoloom.store.project.expression.length === 1');
     await act('inspect_expression', { example: true, sample: 0 });
-    await js(`document.querySelector('[aria-label="MEX directory or 10x HDF5 file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression`)}`);
+    await js(`document.querySelector('[aria-label="MEX directory, 10x HDF5, AnnData or MuData file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression`)}`);
   },
 
   async isotypes() {

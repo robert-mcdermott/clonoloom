@@ -20,20 +20,25 @@ type expressionInputs struct {
 }
 
 type expressionSummary struct {
-	ID            string                   `json:"id"`
-	Path          string                   `json:"path"`
-	Sources       []expression.Source      `json:"sources"`
-	ReaderVersion int                      `json:"readerVersion"`
-	Cells         int                      `json:"cells"`
-	Features      int                      `json:"features"`
-	Entries       int                      `json:"entries"`
-	Types         map[string]int           `json:"types"`
-	Unit          string                   `json:"unit"`
-	Annotations   *expression.CellCoverage `json:"annotations,omitempty"`
+	ID            string                      `json:"id"`
+	Path          string                      `json:"path"`
+	Sources       []expression.Source         `json:"sources"`
+	ReaderVersion int                         `json:"readerVersion"`
+	Cells         int                         `json:"cells"`
+	Features      int                         `json:"features"`
+	Entries       int                         `json:"entries"`
+	Types         map[string]int              `json:"types"`
+	Unit          string                      `json:"unit"`
+	Annotations   *expression.CellCoverage    `json:"annotations,omitempty"`
+	AnnData       *expression.AnnDataEvidence `json:"anndata,omitempty"`
 }
 
 func summarizeExpression(in *expression.Input) expressionSummary {
 	s := expressionSummary{ID: in.ID, Path: in.Path, Sources: in.Sources, ReaderVersion: expression.ReaderVersion, Cells: len(in.Matrix.Barcodes), Features: len(in.Matrix.Features), Entries: in.Matrix.Entries, Types: map[string]int{}, Unit: "UMIs"}
+	if in.AnnData != nil {
+		s.AnnData = in.AnnData
+		s.Unit = "counts"
+	}
 	if in.Cells != nil {
 		s.Annotations = &in.Cells.Coverage
 	}
@@ -52,13 +57,15 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var body struct {
-		Path         string `json:"path"`
-		Example      bool   `json:"example"`
-		HDF5Example  bool   `json:"hdf5Example"`
-		ExpectedID   string `json:"expectedId"`
-		CellsPath    string `json:"cellsPath"`
-		StudyExample bool   `json:"studyExample"`
-		StudyPreset  string `json:"studyPreset"`
+		Path           string                       `json:"path"`
+		AnnData        *expression.AnnDataSelection `json:"anndata"`
+		AnnDataExample bool                         `json:"anndataExample"`
+		Example        bool                         `json:"example"`
+		HDF5Example    bool                         `json:"hdf5Example"`
+		ExpectedID     string                       `json:"expectedId"`
+		CellsPath      string                       `json:"cellsPath"`
+		StudyExample   bool                         `json:"studyExample"`
+		StudyPreset    string                       `json:"studyPreset"`
 	}
 	if err := json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(&body); err != nil {
 		writeError(w, 400, "Send a MEX directory or 10x HDF5 file path.")
@@ -68,12 +75,16 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 		writeError(w, 400, "studyPreset requires studyExample and must be cell-states or cell-states-clouds.")
 		return
 	}
-	if body.Example || body.StudyExample || body.HDF5Example {
-		if body.Path != "" || body.CellsPath != "" || body.Example && body.StudyExample || body.HDF5Example && (body.Example || body.StudyExample) {
+	if body.Example || body.StudyExample || body.HDF5Example || body.AnnDataExample {
+		if body.Path != "" || body.CellsPath != "" || body.AnnData != nil || body.AnnDataExample && (body.Example || body.StudyExample || body.HDF5Example) || body.Example && body.StudyExample || body.HDF5Example && (body.Example || body.StudyExample) {
 			writeError(w, 400, "Choose a path or the artificial example, not both.")
 			return
 		}
 		body.Path = filepath.Join(a.examples.Dir, "synthetic-expression")
+		if body.AnnDataExample {
+			body.Path = filepath.Join(a.examples.Dir, "synthetic-anndata", "cells.h5ad")
+			body.AnnData = &expression.AnnDataSelection{Layer: "layers/counts", Embedding: "X_umap", AIRRKey: "airr", FeatureName: "gene_name", FeatureType: "feature_type"}
+		}
 		if body.HDF5Example {
 			body.Path = filepath.Join(a.examples.Dir, "synthetic-expression-hdf5", "matrix.h5")
 		}
@@ -99,7 +110,7 @@ func (a *app) handleExpressionOpen(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	in, err := expression.OpenWithCells(r.Context(), path, body.CellsPath)
+	in, err := expression.OpenSelected(r.Context(), path, body.CellsPath, body.AnnData)
 	if err != nil {
 		writeError(w, 400, err.Error())
 		return
@@ -123,14 +134,17 @@ type expressionCell struct {
 	Annotation *expression.CellAnnotation `json:"annotation,omitempty"`
 }
 type expressionPage struct {
-	Summary     expressionSummary           `json:"summary"`
-	Links       *expression.Links           `json:"links,omitempty"`
-	Offset      int                         `json:"offset"`
-	Count       int                         `json:"count"`
-	Cells       []expressionCell            `json:"cells"`
-	Features    []expression.Feature        `json:"features"`
-	Annotations []expression.CellAnnotation `json:"annotations,omitempty"`
-	Map         []expression.CellAnnotation `json:"map,omitempty"`
+	Summary        expressionSummary           `json:"summary"`
+	Links          *expression.Links           `json:"links,omitempty"`
+	Offset         int                         `json:"offset"`
+	Count          int                         `json:"count"`
+	Cells          []expressionCell            `json:"cells"`
+	Features       []expression.Feature        `json:"features"`
+	Annotations    []expression.CellAnnotation `json:"annotations,omitempty"`
+	VariableValues [][]string                  `json:"variableValues,omitempty"`
+	AIRR           []expression.AIRRRow        `json:"airr,omitempty"`
+	AIRRCells      []expression.AIRRCell       `json:"airrCells,omitempty"`
+	Map            []expression.CellAnnotation `json:"map,omitempty"`
 }
 
 func (a *app) handleExpressionPage(w http.ResponseWriter, r *http.Request) {
@@ -149,8 +163,8 @@ func (a *app) handleExpressionPage(w http.ResponseWriter, r *http.Request) {
 	if body.View == "" {
 		body.View = "cells"
 	}
-	if body.View != "cells" && body.View != "features" && body.View != "annotations" && body.View != "map" {
-		writeError(w, 400, "View must be cells, features, annotations or map.")
+	if body.View != "cells" && body.View != "features" && body.View != "annotations" && body.View != "map" && body.View != "airr" && body.View != "airr-cells" {
+		writeError(w, 400, "View must be cells, features, annotations, map, airr or airr-cells.")
 		return
 	}
 	if body.Offset < 0 || body.Limit < 0 || body.Limit > 200 {
@@ -186,6 +200,28 @@ func (a *app) handleExpressionPage(w http.ResponseWriter, r *http.Request) {
 		page.Links = &links
 	}
 	m := in.Matrix
+	if body.View == "airr" || body.View == "airr-cells" {
+		if in.AnnData == nil || in.AnnData.AIRR == nil {
+			writeError(w, 400, "Select an AIRR obsm key first.")
+			return
+		}
+		if body.View == "airr-cells" {
+			rows := in.AnnData.AIRR.CellRows
+			page.Count = len(rows)
+			page.Offset = min(body.Offset, len(rows))
+			end := page.Offset + min(body.Limit, len(rows)-page.Offset)
+			page.AIRRCells = rows[page.Offset:end]
+			writeJSON(w, page)
+			return
+		}
+		rows := in.AnnData.AIRR.Rows
+		page.Count = len(rows)
+		page.Offset = min(body.Offset, len(rows))
+		end := page.Offset + min(body.Limit, len(rows)-page.Offset)
+		page.AIRR = rows[page.Offset:end]
+		writeJSON(w, page)
+		return
+	}
 	if body.View == "annotations" || body.View == "map" {
 		if in.Cells == nil {
 			writeError(w, 400, "Select a cell annotation table first.")
@@ -226,6 +262,9 @@ func (a *app) handleExpressionPage(w http.ResponseWriter, r *http.Request) {
 	for i := start; i < end; i++ {
 		if body.View == "features" {
 			page.Features = append(page.Features, m.Features[i])
+			if in.AnnData != nil {
+				page.VariableValues = append(page.VariableValues, in.AnnData.VariableValues[i])
+			}
 			continue
 		}
 		row := expressionCell{Barcode: m.Barcodes[i]}

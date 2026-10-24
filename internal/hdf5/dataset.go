@@ -6,7 +6,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-	"unicode/utf8"
 )
 
 type contextStream struct {
@@ -50,6 +49,50 @@ func typeInfo(b []byte) (datatype, error) {
 		}
 		t.big = flags&1 != 0
 		t.signed = flags&8 != 0
+	case 1:
+		if (t.width != 4 && t.width != 8) || flags&^uint64(0xff21) != 0 {
+			return t, fmt.Errorf("unsupported HDF5 float layout")
+		}
+		offset, precision := c.u16(), c.u16()
+		exponent, exponentBits, mantissa, mantissaBits, bias := c.u8(), c.u8(), c.u8(), c.u8(), c.u32()
+		sign := byte(flags >> 8)
+		if offset != 0 || uint64(precision) != t.width*8 || flags&0x30 != 0x20 || mantissa != 0 || (t.width == 4 && (sign != 31 || exponent != 23 || exponentBits != 8 || mantissaBits != 23 || bias != 127)) || (t.width == 8 && (sign != 63 || exponent != 52 || exponentBits != 11 || mantissaBits != 52 || bias != 1023)) {
+			return t, fmt.Errorf("unsupported HDF5 non-IEEE float")
+		}
+		t.big = flags&1 != 0
+	case 8:
+		// h5py booleans are the two-member FALSE/TRUE enumeration, not arbitrary enum labels.
+		if flags != 2 || t.width != 1 {
+			return t, fmt.Errorf("unsupported HDF5 enumeration")
+		}
+		parent := c.take(12)
+		base, err := typeInfo(parent)
+		if err != nil || base.class != 0 || base.width != 1 {
+			return t, fmt.Errorf("unsupported HDF5 enum base")
+		}
+		for _, name := range []string{"FALSE", "TRUE"} {
+			start := len(c.b)
+			end := bytes.IndexByte(c.b, 0)
+			if end < 0 || string(c.take(uint64(end))) != name || c.u8() != 0 {
+				return t, fmt.Errorf("unsupported HDF5 boolean labels")
+			}
+			if v>>4 < 3 {
+				c.take(uint64((8 - (start-len(c.b))%8) % 8))
+			}
+		}
+		if c.u8() != 0 || c.u8() != 1 {
+			return t, fmt.Errorf("unsupported HDF5 boolean values")
+		}
+	case 9:
+		if t.width != 16 || flags&15 != 1 || flags>>12 != 0 || (flags>>4)&15 > 2 || (flags>>8)&15 > 1 {
+			return t, fmt.Errorf("unsupported HDF5 variable-length datatype")
+		}
+		parent, e := typeInfo(c.take(12))
+		if e != nil || parent.class != 0 || parent.width != 1 || parent.signed {
+			return t, fmt.Errorf("unsupported HDF5 string parent")
+		}
+		t.charset = byte(flags >> 8)
+		t.padding = byte((flags >> 4) & 15)
 	case 3:
 		t.padding = byte(flags & 15)
 		t.charset = byte((flags >> 4) & 15)
@@ -184,21 +227,21 @@ func (f *Reader) unfilter(data []byte, pipeline []filter, mask uint32, expected,
 	return data, nil
 }
 
-func (f *Reader) vector(path string, limit uint64) (datatype, uint64, []byte, error) {
+func (f *Reader) array(path string, limit uint64) (datatype, []uint64, []byte, error) {
 	var t datatype
 	at, err := f.resolve(path)
 	if err != nil {
-		return t, 0, nil, err
+		return t, nil, nil, err
 	}
 	messages, err := f.object(at)
 	if err != nil {
-		return t, 0, nil, err
+		return t, nil, nil, err
 	}
 	var space, typ, layout, pipe []byte
 	seen := map[uint16]bool{}
 	for _, m := range messages {
 		if seen[m.kind] && (m.kind == 1 || m.kind == 3 || m.kind == 8 || m.kind == 11) {
-			return t, 0, nil, fmt.Errorf("duplicate HDF5 dataset message")
+			return t, nil, nil, fmt.Errorf("duplicate HDF5 dataset message")
 		}
 		seen[m.kind] = true
 		switch m.kind {
@@ -212,111 +255,110 @@ func (f *Reader) vector(path string, limit uint64) (datatype, uint64, []byte, er
 			pipe = m.data
 		case 4, 5, 12, 13, 14, 18, 21, 22: // Fill declarations, attributes and timestamps do not change fully allocated values.
 		default:
-			return t, 0, nil, fmt.Errorf("unsupported HDF5 dataset message %d (external/virtual storage is not read)", m.kind)
+			return t, nil, nil, fmt.Errorf("unsupported HDF5 dataset message %d (external/virtual storage is not read)", m.kind)
 		}
 	}
-	c := cursor{b: space}
-	v, rank, flags := c.u8(), c.u8(), c.u8()
-	if rank != 1 || flags&^byte(1) != 0 || (v != 1 && v != 2) {
-		return t, 0, nil, fmt.Errorf("HDF5 %s requires a one-dimensional simple dataspace", path)
-	}
-	if v == 1 {
-		c.take(5)
-	} else {
-		if c.u8() != 1 {
-			return t, 0, nil, fmt.Errorf("HDF5 null/scalar dataspace is unsupported")
-		}
-	}
-	n := c.u64()
-	if flags&1 != 0 {
-		c.take(8)
-	}
-	if c.err != nil {
-		return t, 0, nil, c.err
-	}
-	if n > limit {
-		return t, 0, nil, fmt.Errorf("HDF5 %s exceeds element limit %d", path, limit)
+	shape, n, err := dataspace(space, limit)
+	if err != nil {
+		return t, nil, nil, err
 	}
 	t, err = typeInfo(typ)
 	if err != nil {
-		return t, 0, nil, err
+		return t, nil, nil, err
 	}
 	if n > MaxArray/t.width {
-		return t, 0, nil, fmt.Errorf("HDF5 dataset exceeds 128 MiB decoded limit")
+		return t, nil, nil, fmt.Errorf("HDF5 dataset exceeds 128 MiB decoded limit")
 	}
 	size := n * t.width
 	f.decoded += size
 	if f.decoded > 512<<20 {
-		return t, 0, nil, fmt.Errorf("HDF5 decoded input exceeds 512 MiB")
+		return t, nil, nil, fmt.Errorf("HDF5 decoded input exceeds 512 MiB")
 	}
 	var pipeline []filter
 	if pipe != nil {
 		pipeline, err = filters(pipe)
 		if err != nil {
-			return t, 0, nil, err
+			return t, nil, nil, err
 		}
 	}
-	c = cursor{b: layout}
+	c := cursor{b: layout}
 	v, kind := c.u8(), c.u8()
 	if v != 3 && v != 4 {
-		return t, 0, nil, fmt.Errorf("unsupported HDF5 layout version %d", v)
+		return t, nil, nil, fmt.Errorf("unsupported HDF5 layout version %d", v)
 	}
 	var data []byte
 	switch kind {
 	case 0:
 		if len(pipeline) > 0 {
-			return t, 0, nil, fmt.Errorf("HDF5 filters require chunked storage")
+			return t, nil, nil, fmt.Errorf("HDF5 filters require chunked storage")
 		}
 		bytes := uint64(c.u16())
 		if bytes != size {
-			return t, 0, nil, fmt.Errorf("HDF5 compact size mismatch")
+			return t, nil, nil, fmt.Errorf("HDF5 compact size mismatch")
 		}
 		data = c.take(bytes)
 	case 1:
 		if len(pipeline) > 0 {
-			return t, 0, nil, fmt.Errorf("HDF5 filters require chunked storage")
+			return t, nil, nil, fmt.Errorf("HDF5 filters require chunked storage")
 		}
 		addr, bytes := c.u64(), c.u64()
 		if bytes != size {
-			return t, 0, nil, fmt.Errorf("HDF5 contiguous size mismatch")
+			return t, nil, nil, fmt.Errorf("HDF5 contiguous size mismatch")
 		}
 		if size > 0 {
 			data, err = f.at(addr, size)
 		}
 	case 2:
 		if v != 3 {
-			return t, 0, nil, fmt.Errorf("unsupported HDF5 v4 chunk index; use classic v1 B-tree chunks or MEX")
+			return t, nil, nil, fmt.Errorf("unsupported HDF5 v4 chunk index; use classic v1 B-tree chunks or MEX")
 		}
 		dims := c.u8()
 		tree := c.u64()
-		chunk, elem := uint64(c.u32()), uint64(c.u32())
-		if c.err != nil {
-			return t, 0, nil, c.err
+		if int(dims) != len(shape)+1 || len(shape) == 0 {
+			return t, nil, nil, fmt.Errorf("invalid HDF5 chunk rank")
 		}
-		if dims != 2 || chunk == 0 || elem != t.width || chunk > MaxArray/elem {
-			return t, 0, nil, fmt.Errorf("invalid HDF5 vector chunk dimensions")
+		chunks := make([]uint64, len(shape))
+		chunkElements := uint64(1)
+		expectedChunks := uint64(1)
+		for i := range chunks {
+			chunks[i] = uint64(c.u32())
+			if chunks[i] == 0 || chunks[i] > MaxArray/chunkElements {
+				return t, nil, nil, fmt.Errorf("invalid HDF5 chunk dimensions")
+			}
+			chunkElements *= chunks[i]
+			parts := (shape[i] + chunks[i] - 1) / chunks[i]
+			if parts > 262144 || (parts > 0 && expectedChunks > 262144/parts) {
+				return t, nil, nil, fmt.Errorf("HDF5 chunk count exceeds 262144")
+			}
+			expectedChunks *= parts
 		}
-		chunkBytes := chunk * elem
+		elem := uint64(c.u32())
+		if c.err != nil || elem != t.width || chunkElements > MaxArray/elem {
+			return t, nil, nil, fmt.Errorf("invalid HDF5 chunk element width")
+		}
+		chunkBytes := chunkElements * elem
 		data = make([]byte, int(size))
 		seen := map[uint64]bool{}
-		chunks := (n + chunk - 1) / chunk
-		if chunks > 262144 {
-			return t, 0, nil, fmt.Errorf("HDF5 chunk count exceeds 262144")
-		}
 		if tree == undefined {
 			if n != 0 {
-				return t, 0, nil, fmt.Errorf("HDF5 unallocated dataset is not count evidence")
+				return t, nil, nil, fmt.Errorf("HDF5 unallocated dataset is not count evidence")
 			}
 		} else {
-			err = f.tree(tree, 1, 24, func(key []byte, addr uint64) error {
-				stored := uint64(le.Uint32(key))
-				mask := le.Uint32(key[4:])
-				start := le.Uint64(key[8:])
-				last := le.Uint64(key[16:])
-				if start >= n || start%chunk != 0 || last != 0 || seen[start] || uint64(len(seen)) >= chunks {
+			err = f.tree(tree, 1, 8+8*int(dims), func(key []byte, addr uint64) error {
+				stored, mask := uint64(le.Uint32(key)), le.Uint32(key[4:])
+				starts := make([]uint64, len(shape))
+				flat := uint64(0)
+				for i := range starts {
+					starts[i] = le.Uint64(key[8+i*8:])
+					if starts[i] >= shape[i] || starts[i]%chunks[i] != 0 {
+						return fmt.Errorf("invalid HDF5 chunk coordinate")
+					}
+					flat = flat*shape[i] + starts[i]
+				}
+				if le.Uint64(key[8+len(shape)*8:]) != 0 || seen[flat] || uint64(len(seen)) >= expectedChunks {
 					return fmt.Errorf("invalid/duplicate HDF5 chunk coordinate")
 				}
-				seen[start] = true
+				seen[flat] = true
 				if stored > chunkBytes+65536 || stored > MaxArray {
 					return fmt.Errorf("HDF5 stored chunk exceeds size bound")
 				}
@@ -328,20 +370,54 @@ func (f *Reader) vector(path string, limit uint64) (datatype, uint64, []byte, er
 				if e != nil {
 					return e
 				}
-				copy(data[int(start*elem):], raw[:min(chunkBytes, (n-start)*elem)])
+				for j := uint64(0); j < chunkElements; j++ {
+					if j%65536 == 0 {
+						if e = f.ctx.Err(); e != nil {
+							return e
+						}
+					}
+					at, remain, inside := uint64(0), j, true
+					coords := make([]uint64, len(shape))
+					for k := len(shape) - 1; k >= 0; k-- {
+						coords[k] = starts[k] + remain%chunks[k]
+						remain /= chunks[k]
+					}
+					for k, x := range coords {
+						if x >= shape[k] {
+							inside = false
+							break
+						}
+						at = at*shape[k] + x
+					}
+					if inside {
+						copy(data[at*elem:(at+1)*elem], raw[j*elem:(j+1)*elem])
+					}
+				}
 				return nil
 			})
-			if err == nil && uint64(len(seen)) != chunks {
+			if err == nil && uint64(len(seen)) != expectedChunks {
 				err = fmt.Errorf("HDF5 missing chunks are not silently filled")
 			}
 		}
+
 	default:
-		return t, 0, nil, fmt.Errorf("unsupported HDF5 storage layout %d", kind)
+		return t, nil, nil, fmt.Errorf("unsupported HDF5 storage layout %d", kind)
 	}
 	if c.err != nil {
-		return t, 0, nil, c.err
+		return t, nil, nil, c.err
 	}
-	return t, n, data, err
+	return t, shape, data, err
+}
+
+func (f *Reader) vector(path string, limit uint64) (datatype, uint64, []byte, error) {
+	t, shape, b, err := f.array(path, limit)
+	if err != nil {
+		return t, 0, nil, err
+	}
+	if len(shape) != 1 {
+		return t, 0, nil, fmt.Errorf("HDF5 %s requires a one-dimensional simple dataspace", path)
+	}
+	return t, shape[0], b, nil
 }
 
 // Integers returns a vector of nonnegative, full-width integers in source order. Floats and
@@ -352,7 +428,7 @@ func (f *Reader) Integers(path string, limit uint64) ([]uint64, error) {
 		return nil, fmt.Errorf("%s: %w", path, err)
 	}
 	if t.class != 0 {
-		return nil, fmt.Errorf("%s: expected HDF5 integer datatype", path)
+		return nil, fmt.Errorf("%s: expected HDF5 integer datatype class 0", path)
 	}
 	if n > MaxArray/8 {
 		return nil, fmt.Errorf("HDF5 decoded integer vector exceeds 128 MiB")
@@ -392,48 +468,7 @@ func (f *Reader) Integers(path string, limit uint64) ([]uint64, error) {
 func (f *Reader) Strings(path string, limit uint64) ([]string, error) {
 	t, n, b, err := f.vector(path, limit)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", path, err)
+		return nil, err
 	}
-	if t.class != 3 {
-		return nil, fmt.Errorf("%s: expected HDF5 fixed string datatype", path)
-	}
-	if n > MaxArray/16 {
-		return nil, fmt.Errorf("HDF5 decoded string vector exceeds 128 MiB")
-	}
-	out := make([]string, int(n))
-	var total int
-	for i := range out {
-		if i%4096 == 0 {
-			if err = f.ctx.Err(); err != nil {
-				return nil, err
-			}
-		}
-		s := b[i*int(t.width) : (i+1)*int(t.width)]
-		if t.padding == 2 {
-			s = bytes.TrimRight(s, " ")
-		} else {
-			if end := bytes.IndexByte(s, 0); end >= 0 {
-				if len(bytes.Trim(s[end:], "\x00")) != 0 {
-					return nil, fmt.Errorf("HDF5 nonzero string padding")
-				}
-				s = s[:end]
-			}
-		}
-		if !utf8.Valid(s) {
-			return nil, fmt.Errorf("HDF5 invalid UTF-8 string")
-		}
-		if t.charset == 0 {
-			for _, v := range s {
-				if v >= 128 {
-					return nil, fmt.Errorf("HDF5 non-ASCII byte in ASCII string")
-				}
-			}
-		}
-		total += len(s)
-		if total > 64<<20 {
-			return nil, fmt.Errorf("HDF5 string values exceed 64 MiB")
-		}
-		out[i] = string(s)
-	}
-	return out, nil
+	return f.strings(t, n, b)
 }

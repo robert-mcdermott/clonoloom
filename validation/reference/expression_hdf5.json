@@ -2779,6 +2779,65 @@
           "type": "Antibody Capture"
         }
       ]
+    },
+    "variable-string.h5": {
+      "sha256": "4a177f23842628efe39a97a5211a8bcf034154b451091f3325a8fc9009d42d2d",
+      "featureByCell": [
+        [
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          3,
+          4,
+          7,
+          0
+        ],
+        [
+          11,
+          0,
+          0,
+          0
+        ]
+      ],
+      "geneUMIs": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "entries": 6,
+      "barcodes": [
+        "AA-1",
+        "BB-1",
+        "CC-1",
+        "DD-1"
+      ],
+      "features": [
+        {
+          "id": "g1",
+          "name": "Shared name",
+          "type": "Gene Expression"
+        },
+        {
+          "id": "g2",
+          "name": "Shared name",
+          "type": "Gene Expression"
+        },
+        {
+          "id": "ab1",
+          "name": "Artificial antibody",
+          "type": "Antibody Capture"
+        }
+      ]
     }
   },
   "invalid": {
@@ -2791,7 +2850,6 @@
     "duplicate-barcode.h5": "duplicate barcode",
     "unsafe-count.h5": "count exceeds",
     "unsafe-total.h5": "total exceeds",
-    "variable-string.h5": "datatype class",
     "soft-link.h5": "soft/external link",
     "external-link.h5": "soft/external link",
     "unallocated.h5": "undefined",

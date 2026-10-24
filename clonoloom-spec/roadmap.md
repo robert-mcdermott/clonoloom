@@ -10,14 +10,14 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
 confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has a sequence of slices and a detailed plan for
-slice 1. Later slices are refined as they come.
+slices 1–4. Later slices are refined as they come.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
 2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
-Wave 6 is underway on `wave6`. Slices 1–2 and the cell-map feedback follow-up are committed;
-slice 3 adds 10x HDF5 expression input. Version remains 0.5.0 until the release-preparation slice.
+Wave 6 is underway on `wave6`. Slices 1–3 and the cell-map feedback follow-up are committed;
+slice 4 adds selected AnnData/MuData expression and AIRR evidence. Version remains 0.5.0 until the release-preparation slice.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -1671,7 +1671,85 @@ pass. Vet, six platform builds, 100 JavaScript tests, 391,633 HDF5 fuzz executio
 runs, and 14 contrast checks pass. Cells, HDF5 Cells and cell-state browser scenes pass in both
 themes; all six refreshed screenshots were inspected. The site builds 34 pages with 34 screenshot
 sets and zero problems in 132 checks. Existing unrelated performance budgets, skipped under
-the race detector, were not rerun. Version stays 0.5.0; awaiting the maintainer's commit.
+the race detector, were not rerun. Version stays 0.5.0; committed as `78001bb`.
+
+### Slice 4: selected AnnData and MuData evidence
+
+**Serves D6 (AnnData/MuData), D11 and M1's imported-evidence foundation.** Read one `.h5ad`
+or one explicitly selected `.h5mu` expression modality, with an explicit `X` or `layers/<name>`
+count selection. Never infer that X is raw counts, choose a modality from its name, join global
+MuData observations by row number, or combine unrelated embeddings. The selected matrix must
+contain nonnegative exact integer values, with each count and gene total at most 2^53−1. Numeric
+float storage is accepted only for finite integral values. AnnData units remain **counts**;
+UMI semantics are not inferred. Dense arrays and CSR/CSC arrays become the existing sparse
+cell-major model. Validate dimensions, pointers, indices and duplicate coordinates; sparse
+explicit zeros remain evidence. Dense storage counts every supplied coordinate, retaining zero
+values implicitly in memory.
+
+**Annotations and maps.** Read the selected modality's obs/var index and declared column order,
+including categorical codes, nullable integer/boolean/string arrays, text and numeric columns.
+Keep exact barcode/index values, missingness and variable annotations. Require unique indices;
+feature names may repeat. Feature IDs come from var's index; optional name/type columns are
+explicit choices. Otherwise names equal IDs and the selected expression matrix is Gene
+Expression. Up to 32 obs and 128 var columns, 4 million values and 64 MiB text per frame.
+Select one two-dimensional dense obsm embedding. Record its source path and derive axis labels
+from its key (`X_umap`: UMAP 1/2; `X_tsne`: t-SNE 1/2; otherwise key 1/2), without inventing a
+method for generic keys. Keep supplied values and equal axis scaling. Both NaN means missing
+coordinates; partial/nonfinite/oversized pairs fail. No source embeddings are concatenated.
+
+**Scirpy AIRR evidence.** Select an obsm key and, for MuData, its modality explicitly. Decode
+AnnData's Awkward form/length/buffer encoding into unfiltered per-cell chain records. Keep
+source field order, exact text/numbers, missing fields, whole missing cell records and empty
+chain lists separately. Join the selected modalities only by exact barcode and report both
+unmatched populations. Inspect both chain records and the full AIRR cell population through
+paged views. Imported chain indices, clonotypes, Python behavior and analysis results are not
+executed or adopted as ClonoLoom results. This slice retains supplied evidence; linking computed
+clonotypes and phenotype analyses remains slice 6.
+
+**Reader boundary and provenance.** Extend the own standard-library HDF5 reader with inline
+attributes, bounded global heaps for variable strings, IEEE float32/64, boolean enums, scalar
+metadata and rank-two arrays/chunks. Existing file/read/metadata/decoded/traversal budgets
+remain; unsupported dense groups/attributes, newer chunk indices, shared types, external/virtual
+storage and required soft/external links fail. Awkward supports numeric/string scalars,
+ListOffset, Record, Indexed/IndexedOption, Unmasked and Empty forms, with at most 16 nesting
+levels, 256 forms, 128 fields, 1 million chains, 4 million values and 64 MiB field text. Unsupported
+forms fail without evaluating code. Hash the entire source before/after parsing and include all
+selections in `clonoloom-expression-anndata/1`. Relocation preserves identity; changed bytes or
+selections do not. MEX/10x identities stay unchanged. AnnData supplies its own observations and
+cannot also attach the external annotation TSV.
+
+**Acceptance.** Independently write/read dense, CSR, CSC and compressed AnnData/MuData fixtures
+through public Python APIs. Compare every count, label, annotation, map coordinate and AIRR
+field; exercise reordered/unequal modality populations, empty matrices, signed/unsigned/floating
+count storage, edge chunks, missing values, malformed schema, count rejection, source drift,
+selection identity, cancellation and fuzzing. Exercise the visible selections, remote action,
+saved reopening and failed-open preservation in both themes. Update primary format citations,
+user/API documentation and screenshots. Run race tests, scientific regressions, released-project
+replay, native/amd64 checks, vet, six builds, JS, contrast and site checks. Keep version 0.5.0;
+the maintainer performs Git operations.
+
+**Implemented.** Reader, Cells/API/remote selections, source-aware map labels, variable/AIRR
+pages, saved provenance and an offline guided AnnData example are in place. Independent
+fixture and adversarial validation is in place. The source-observation policy also rejects an
+external cell TSV with an AnnData/MuData input.
+
+**Checked.** All count values, observation/variable annotations, map coordinates and AIRR fields
+agree with independent public-API references for 13 supported AnnData/MuData fixtures;
+21 invalid/ambiguous inputs fail as specified. Scirpy's own AIRR cell conversion reads the
+synthetic evidence and writes an additional validated fixture. Nullable string/boolean/integer
+values, exact large-integer labels, compressed edge chunks, missing whole-cell AIRR records and
+unequal/reordered modalities are covered. The expanded 10x suite passes 18 supported and 17
+invalid cases; variable strings are now supported without changing old source identities.
+
+Application/internal race tests and the required-data scientific suite pass (542.455 s for
+the full scientific run). Final focused race and native/amd64 checks pass, including released
+project replay, processor agreement, source drift, selection identity, cancellation and the
+external-TSV refusal. Two bounded AnnData fuzz runs pass. Vet, gofmt, six platform builds,
+102 JavaScript tests and 14 contrast checks pass. All four Cells browser scenes pass in both
+themes; eight screenshots are captured, with the new AnnData map inspected in both themes.
+The site builds 34 pages with 35 screenshot sets; all 132 audit checks pass. Existing unrelated
+performance budgets, skipped under race detection, were not rerun. Version stays 0.5.0;
+awaiting the maintainer's commit. Slice 5 has not started.
 
 ## Later waves (outlined)
 

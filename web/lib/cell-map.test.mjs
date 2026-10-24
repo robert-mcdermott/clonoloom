@@ -29,3 +29,10 @@ test('missing values remain gray above overlaps without changing source order or
   assert.match(many.svg, /class="cell-map-missing" data-cell="0"/);
   assert.ok(!cellMap(rows).svg.includes('class="cell-map-missing"'));
 });
+
+test('embedding axes use selected provenance and escape source names', () => {
+  const plot = cellMap([], -1, { axes: ['UMAP 1', 'UMAP 2'], path: '/obsm/X_umap', supplied: true });
+  assert.match(plot.svg, /UMAP 1 \(supplied\)/); assert.match(plot.svg, /UMAP 2 \(supplied\)/);
+  assert.match(cellMap([], -1, { axes: ['<script>', 'Y&Z'] }).svg, /&lt;script&gt;/);
+  assert.match(cellMap([]).svg, /map_x/);
+});

@@ -88,3 +88,38 @@ func cellStateCloudExample() examples.Generated {
 		"Two artificial subjects, two samples each, 360 expression cells per sample and ten clones per subject. Three states have supplied Gaussian coordinates with different spreads and unequal expected cell numbers. Separate truth, paired TRA/TRB chains and deliberately missing evidence. An illustrative benchmark, not an inferred embedding or a fitted biological model.",
 		"Four samples of 360 expression cells, with paired receptors and supplied continuous coordinates.", 3<<20)
 }
+
+//go:embed testdata/anndata/gzip-csr.h5ad
+var annDataExampleData []byte
+
+func annDataExample() examples.Generated {
+	e := expressionInputExample()
+	e.Source.Name = "synthetic-anndata"
+	e.Source.Title = "Artificial AnnData counts, annotations and AIRR evidence"
+	e.Source.Description = "Four artificial cells with a selected count layer, categorical and nullable observations, variable annotations, supplied coordinates and unfiltered AIRR chain records. Coordinates are illustrative, not a computed UMAP."
+	e.Source.Source = "Made independently through AnnData and Awkward public writer APIs by testdata/make-anndata.py"
+	e.Source.Citation = "AnnData on-disk format; scirpy data structure; Awkward ak.to_buffers documentation"
+	e.Source.Opens[0].Summary = "Inspect selected AnnData counts and supplied evidence in Cells."
+	e.Source.Opens[0].Steps[0].Title = "Inspect AnnData evidence"
+	e.Source.Opens[0].Steps[0].Args = map[string]any{"anndataExample": true, "sample": 0}
+	e.Source.Opens[0].Steps[0].Words = "The selected layers/counts has four barcodes and three features. Only two Gene Expression features contribute to counts (5, 4, 7, 0). Inspect nullable observations, repeated feature names, a missing coordinate pair and three supplied AIRR chains. The source calls its illustrative map X_umap; ClonoLoom does not compute these coordinates or infer clonotypes."
+	e.Size = int64(len(annDataExampleData)) + 512
+	e.Marker = "cells.h5ad"
+	e.Make = func(ctx context.Context, dir string, progress examples.Progress) error {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			return err
+		}
+		receptor := "sequence_id\tsequence\trev_comp\tproductive\tv_call\td_call\tj_call\tsequence_alignment\tgermline_alignment\tjunction\tjunction_aa\tv_cigar\td_cigar\tj_cigar\tcell_id\tlocus\tumi_count\n" +
+			"artificial-1\t\tF\tT\t\t\t\t\t\t\tCASSF\t\t\t\tCELL1\tTRA\t2\n" +
+			"artificial-2\t\tF\t\t\t\t\t\t\t\tCASRF\t\t\t\tCELL1\tTRB\t1\n" +
+			"artificial-3\t\tF\tF\t\t\t\t\t\t\t\t\t\t\tCELL3\tTRB\t\n"
+		if err := os.WriteFile(filepath.Join(dir, "receptors.tsv"), []byte(receptor), 0644); err != nil {
+			return err
+		}
+		return os.WriteFile(filepath.Join(dir, "cells.h5ad"), annDataExampleData, 0644)
+	}
+	return e
+}

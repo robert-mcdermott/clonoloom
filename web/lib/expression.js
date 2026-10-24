@@ -7,7 +7,7 @@ export function expressionRecord(summary, dataset = '', sample = null) {
     throw new Error('Choose both a receptor dataset and sample, or neither.');
   }
   const cellsPath = summary.sources.find((s) => s.role === 'cells')?.path;
-  return { id: summary.id, path: summary.path, sources: summary.sources.map((s) => ({ ...s })), readerVersion: summary.readerVersion, dataset, sample, ...(cellsPath ? { cellsPath } : {}) };
+  return { id: summary.id, path: summary.path, sources: summary.sources.map((s) => ({ ...s })), readerVersion: summary.readerVersion, dataset, sample, ...(cellsPath ? { cellsPath } : {}), ...(summary.anndata ? { anndata: { ...summary.anndata.selection } } : {}) };
 }
 
 export function saveExpression(project, record, now = new Date().toISOString()) {

@@ -1609,3 +1609,44 @@ An additional check used the public, CC BY 4.0
 gene totals matched h5py/SciPy exactly. `expression_hdf5_public.py` and the optional Go test
 make this repeatable with explicitly selected local paths. Neither the donor data nor its
 derived arrays are bundled. The check supports decoding compatibility, not biological inference.
+
+
+### 5.25 AnnData/MuData count and AIRR evidence
+
+**Primary format sources.** [AnnData on-disk encodings](https://anndata.readthedocs.io/en/stable/fileformat-prose.html)
+define dense/sparse matrices, data frames, categoricals, nullable arrays and Awkward storage.
+[MuData's output contract](https://mudata.readthedocs.io/en/latest/io/output.html) stores each
+modality as AnnData under `/mod`. [Scirpy's data structure](https://scirpy.scverse.org/en/latest/data-structure.html)
+places unfiltered per-cell AIRR chain lists in `obsm`; the
+[Awkward `ak.to_buffers` contract](https://awkward-array.org/doc/main/reference/generated/ak.to_buffers.html)
+specifies forms, lengths and named numeric buffers. HDF5 attributes, variable strings/global
+heaps, numeric datatypes and multidimensional storage follow the HDF Group's specification
+cited in 5.24. SituCraft's Apache-2.0 AnnData/Zarr data-frame reader was consulted for its
+missing-value and source-column conventions. No external reader implementation was copied
+or consulted; validation packages are used solely through documented public APIs.
+
+**ClonoLoom policies.** Count-layer/modality/map/AIRR selections are explicit and identity-bearing.
+Do not assume X contains raw counts or infer a UMI unit. Accept nonnegative, finite integral
+numeric values only, validate duplicate coordinates and dimensions, preserve sparse explicit
+zeros, and bound dense input before converting to the existing sparse representation. Retain
+obs/var annotations and missingness, with explicit choices for feature-name/type columns.
+The selected modality's observation index establishes row alignment; cross-modality joins use
+exact barcode strings, never global MuData row positions or stripped suffixes. Empty expression
+and zero-count cells are distinct from absent barcodes.
+
+**Supplied embedding and repertoire evidence.** Read one selected two-column obsm matrix.
+Record its path, derive axis labels from the source key and retain equal scaling; a producer's
+key identifies provenance but does not prove that a particular embedding method ran. Both-NaN
+coordinates are missing; partial/nonfinite pairs fail. No coordinates are recomputed or merged.
+Decode only built-in Awkward layouts and scalar AIRR fields. Preserve nullable fields, whole
+missing cell records, empty chain lists, all chains and their source order. Descriptive form
+parameters never register executable Python behavior. Imported chain indices and clonotypes
+remain outside this input contract; future analyses must compute their own declared results.
+
+**Validation.** Pinned AnnData, MuData, Awkward, h5py, NumPy, SciPy, pandas and scirpy write/read artificial
+fixtures independently. References include dense/CSR/CSC counts, byte orders, compressed edge
+chunks, nullable/categorical annotations, signed integer text, map values, reordered modality
+populations, missing whole AIRR cells and scalar field values. Malformed selections, schema,
+counts, pointers, codes, masks, coordinates and Awkward forms fail explicitly. Source drift,
+selection identity, relocation, cancellation, fuzzing and project reopening are checked. The
+small bundled example tests storage semantics; it is not a model of biological expression.

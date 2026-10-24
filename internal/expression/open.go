@@ -26,6 +26,7 @@ type Input struct {
 	Sources []Source         `json:"sources"`
 	Matrix  *Matrix          `json:"-"`
 	Cells   *CellAnnotations `json:"-"`
+	AnnData *AnnDataEvidence `json:"-"`
 }
 
 // Open reads just the selected MEX directory or 10x HDF5 file. It never chooses raw/filtered data,
