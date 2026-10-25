@@ -54,6 +54,12 @@ func TestServesTheAppWithSecurityHeaders(t *testing.T) {
 	if !strings.Contains(rec.Body.String(), "ClonoLoom") {
 		t.Fatal("index.html not served")
 	}
+	// Catch stale browser cache keys in CI, before the release's version check.
+	for _, asset := range []string{"styles.css", "app.js"} {
+		if !strings.Contains(rec.Body.String(), asset+"?v="+version+`"`) {
+			t.Errorf("index.html must load %s with the current version %s", asset, version)
+		}
+	}
 	if csp := rec.Header().Get("Content-Security-Policy"); !strings.Contains(csp, "script-src 'self'") || !strings.Contains(csp, "connect-src 'self'") {
 		t.Fatalf("missing CSP: %q", csp)
 	}
