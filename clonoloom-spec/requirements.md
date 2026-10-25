@@ -136,9 +136,9 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| G1 | Study design: subjects, groups, timepoints, pairing; checked to support the requested test | planned (wave 7) |
+| G1 | Study design: subjects, groups, timepoints, pairing; checked to support the requested test | partial (wave 7, slice 1: explicit two-group independent/paired subject designs, exclusions, repeated-sample and batch-confounding checks; later slices add inferential tests and model estimability) |
 | G2 | Group comparisons of per-sample metrics with the test chosen from the design; nonparametric counterparts; effect sizes and intervals; Benjamini–Hochberg | planned (wave 7) |
-| G3 | The subject is the unit; cells and sequences are never replicates | partial (wave 2: overlap's pairs of one subject and of two, and public clonotypes by subject; wave 3, slice 3: every sample's subject checked before tracking, which is within a subject; every wave) |
+| G3 | The subject is the unit; cells and sequences are never replicates | partial (wave 2: overlap's pairs of one subject and of two, and public clonotypes by subject; wave 3, slice 3: every sample's subject checked before tracking, which is within a subject; wave 7, slice 1: explicit subject counts and refusal of pseudoreplication in cohort designs; every wave) |
 | G4 | Feature tables (receptor, sample, cohort) exported for external modeling | planned (wave 7) |
 
 ## Output, record and reproducibility

@@ -43,6 +43,12 @@ func flagArg(description string) map[string]any {
 var datasetArg = textArg("A dataset of the project by name or id; the one in focus, else the first, if not given.")
 
 var remoteActions = []remoteAction{
+	{Name: "check_cohort_design", Title: "Check a cohort design", Description: "Shows Cohort and checks explicit groups, subjects, pairing and exclusions. Optionally saves a versioned design snapshot; computes no inferential test.", InputSchema: schema(map[string]any{
+		"dataset": datasetArg,
+		"spec":    map[string]any{"type": "object", "description": "{unit: subject, layout: independent|paired, groupField: condition|timepoint|tissue|cellSubset, levels: [reference, comparison], exclude: {sample: reason}}. Exact group labels; no automatic pooling."},
+		"name":    textArg("The saved design's name."),
+		"save":    flagArg("Save a checked usable design in the project (default false)."),
+	}, "spec")},
 	{Name: "get_state", Title: "Describe the project", Description: "The open project: its datasets (format, unit, rows, samples, findings, filter, clonotype definition, license and citation of public data), the view shown, the item in focus, and the example datasets with whether each is downloaded.", InputSchema: schema(map[string]any{})},
 	{Name: "new_project", Title: "Start a new project", Description: "Starts a new, empty project (the open one is saved).", InputSchema: schema(map[string]any{
 		"name": textArg("The new project's name."),
@@ -57,8 +63,8 @@ var remoteActions = []remoteAction{
 		"opening":  textArg("What of it to open, such as \"T cells\" (its first if not given)."),
 		"download": flagArg("Download it first if it is not downloaded (openly licensed data only)."),
 	}, "example")},
-	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, tracking, specificity, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
-		"view":    textArg("start, data, qc, clonotypes, repertoire, tracking, specificity or jobs."),
+	{Name: "show", Title: "Show a view", Description: "Shows a view (start, data, qc, clonotypes, repertoire, tracking, specificity, cohort, jobs), with a dataset in focus.", InputSchema: schema(map[string]any{
+		"view":    textArg("start, data, qc, clonotypes, repertoire, tracking, specificity, cohort or jobs."),
 		"dataset": datasetArg,
 	}, "view")},
 	{Name: "set_definition", Title: "Define clonotypes", Description: "Chooses a dataset's clonotype definition: a preset by name, or one stated in full.", InputSchema: schema(map[string]any{

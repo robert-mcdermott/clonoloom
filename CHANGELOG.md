@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **Cohort study designs (wave 7, slice 1).** Check explicit independent or paired
+  two-group designs with subjects as the unit, complete sample membership, recorded
+  exclusions and source-bound identity. Refuse repeated observations as independent
+  replicates, incomplete pairs and fully batch-confounded groups; preserve missingness
+  and sampling-context warnings. Add Cohort tables, named saved versions, annotation-change
+  detection, JSON export, undo and remote control. Clarify same-time samples in Tracking.
+  This slice checks study structure; statistical comparisons follow in later slices.
+
 ## 0.6.0 (2026-10-24)
 
 ### Added

@@ -24,7 +24,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const count = (n, noun) => `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`;
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', jobs: 'jobs' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', cohort: 'cohort', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.
@@ -185,6 +185,16 @@ export function remoteActions(app) {
       const next = annotate(store.project, edits, 'Annotated by a program');
       if (next !== store.project) store.commit(next, `Annotate samples of ${d.name}`);
       return { message: `${d.name}: ${count(edits.length, 'value')} set on ${count(Object.keys(samples).length, 'sample')}.`, data: { dataset: d.id, values: edits.length } };
+    },
+
+    async check_cohort_design({ dataset, spec, name, save }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.cohortView, 5000, 'the Cohort view');
+      await view.choose(d.id);
+      const result = await view.configure({ spec, name, save });
+      return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
     },
 
     async describe_subjects({ dataset }) {

@@ -24,6 +24,8 @@ act("annotate_samples", samples={"S01-1": {"timepoint": "day 0"}, "S01-2": {"tim
 diversity = act("measure_diversity")["data"]
 print(act("show_methods")["data"]["text"])</code></pre></div>
 
+      <h2 id="cohort">Check a cohort design</h2>
+      <p><code>check_cohort_design</code> checks an explicit subject-level design. Send <code>spec: {unit: "subject", layout: "independent", groupField: "condition", levels: ["control", "expanded"], exclude: {sample: "reason"}}</code>, plus optional <code>dataset</code>, <code>name</code> and <code>save: true</code>. Use <code>layout: "paired"</code> for within-subject observations. The answer includes sample membership, subject counts, findings and citations; it performs no statistical test. See <a href="cohort-design.html">Cohort study design</a>.</p>
       <h2 id="actions">The actions</h2>
       <div class="table-wrap">
         <table>

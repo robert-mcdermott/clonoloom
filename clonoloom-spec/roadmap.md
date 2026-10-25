@@ -9,15 +9,13 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has ten implemented slices; slice 10 prepares release 0.6.0.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are complete. Wave 7 is planned below; slice 1 starts the cohort design checks.
 
-**Progress** is marked here as each slice is committed: done, with what it settled or changed from
-the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
-release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
-2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
-Wave 6 is underway on `wave6`. Slices 1–9 and the cell-map feedback follow-up are committed.
-Slice 10 completes the guided study, compatibility fixture and release checks. Version is 0.6.0;
-commit, merge, tag, release and site publication remain with the maintainer.
+**Progress** is marked here as each slice is committed: done, next or to come. Each
+requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
+**Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
+released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
+`wave7`. Slice 1 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2102,13 +2100,100 @@ screenshots are refreshed, and the new study plus map/graph-test visuals are ins
 The site builds 35 pages with 41 screenshot sets and passes 136 accessibility/overflow checks.
 The link-preview image is regenerated; its bytes are unchanged because its crop is unchanged.
 
-No commit, tag, release or site publication was performed. Wave 7 has not started.
+The maintainer committed and merged wave 6, published release 0.6.0, and published the site.
+The release cache-key omission was corrected with a host regression check before publication.
+
+## 0.7.0: cohorts and robustness (wave 7)
+
+The subject is the independent unit. A cohort result must first state the biological
+question, sampled population, groups, pairing, exclusions, abundance unit, definition,
+QC and multiplicity family. Cells, chains, libraries and repeated samples cannot inflate
+replication. Passing structural checks is not a claim of adequate power, randomization,
+independence or absence of confounding.
+
+### Wave 7 sequence
+
+| Slice | Scope and requirements | Acceptance before the next slice |
+| --- | --- | --- |
+| 1 | Explicit two-group study designs (G1, G3 foundation) | Independent/paired subjects, exact group labels, explicit sample exclusions, refusal of repeated samples/incomplete pairs, batch-confounding check, named saved snapshots, table inspection, remote control and artificial example |
+| 2 | Subject feature tables (G4; G2 inputs) | Source-pinned per-subject metrics with units, definition/QC and missingness, exports, explicit sample selection; do not average diversity across libraries or silently pool counts |
+| 3 | Group comparisons (G2, G3) | Design-driven independent/paired tests and nonparametric counterparts, effect sizes and intervals, explicit BH family; subject points and within-subject links, correct interval labels, no cell-level tests; extend multi-group designs only with validated estimability checks |
+| 4 | Replicated count models (T4 remainder) | Explicit offsets, design matrices and contrasts, rank/estimability checks, negative-binomial dispersion policy, repeated-subject handling, independently validated calibration and nonconvergence; no substitution of Poisson tests |
+| 5 | Definition robustness (C5) | Recompute pinned key results under declared alternative definitions; effect direction/size/uncertainty and failed analyses shown; no verdict based solely on crossing a significance threshold |
+| 6 | Motifs and GLIPH2-style groups (R7, S3) | Document published global/local sequence rules, background matching, motif tests and scores; distinguish adaptations, disclose selection/multiplicity, independent reference validation; groups are hypotheses, not proven specificity |
+| 7 | Convergence and HLA association (S6) | Unique subjects as observations, explicit typed-subject universe and allele resolution/missingness, hypergeometric tails and declared multiplicity; population structure and ascertainment limitations |
+| 8 | Contamination evidence (Q4) | Cross-subject nucleotide matches with explicit abundance/coverage; separate plausible public/high-Pgen receptors; flags are evidence for investigation, never proof of contamination |
+| 9 | Batch QC (Q5) | Subject/sample denominators, robust z-score policy including zero MAD and small groups, distributions and exclusions; separate a QC flag from correction or biological inference |
+| 10 | Pseudobulk count evidence (M5 foundation) | Exact raw-count sums per subject × supplied cell type × declared expansion category, feature/modality identity, sample/time boundaries, minimum-cell rule, missing versus zero, export and independent aggregation oracle |
+| 11 | Pseudobulk differential expression (M5) | Within-subject category comparisons with explicit count design/offsets, estimability, filtering/dispersion/multiplicity and replicate-aware uncertainty; expanded means a stated size category, not antigen specificity; independent null/positive controls |
+| 12 | Complete cohort study and release 0.7.0 | Guided artificial null/positive/unbalanced/confounded studies, all results saved and replayable, methods and references, reviewed figures, full scientific/platform/accessibility/performance checks and compatibility fixture |
+
+Each later statistical slice rechecks its primary papers and publishes its exact methods,
+limits and independent reference fixtures before implementation is considered complete.
+A method that cannot be independently validated is not advertised as implemented. Runtime
+remains standard-library Go and vanilla JavaScript; external tools are validation only.
+No incompatible-licensed implementation source is inspected or copied.
+
+### Decisions for wave 7
+
+- Start with one opened dataset (which may contain many source files) and two explicitly
+  chosen levels, reference then comparison. Subject IDs must be globally meaningful within
+  that dataset. Multi-dataset merging and arbitrary formula models are not implicit.
+- Slice 1 never infers that two libraries are technical replicates or pools repeated samples.
+  Exclude samples explicitly with reasons to select a justified observation. Later count
+  aggregation needs its own recorded biological and technical policy.
+- Independent designs require disjoint subjects; paired designs require one sample per
+  subject at each chosen level, with no automatic complete-case deletion. Two subjects per
+  group or two complete pairs is a structural minimum, not a power recommendation.
+- Groups use exact trimmed annotation labels. Existing Tracking time parsing is unchanged;
+  cohort time labels such as `week 4` and `day 28` are not silently equated.
+- Named design versions keep all effective design annotations, choices, exclusions, checks,
+  citations and a Go-computed content identity bound to the source-derived dataset ID.
+  Annotation edits mark old designs changed; old snapshots remain inspectable/exportable.
+- Slice 1 detects complete separation of groups by recorded batch, and warns when batch
+  annotations are missing or sampling contexts differ. It does not fit adjusted models or
+  certify that all confounding has been ruled out.
+- Adapt the siblings' named-design and undo workflows; all scientific rules/counts remain
+  in Go. The first visual is an accessible membership/count table, not an inferential plot.
+
+### Slice 1: study design before cohort inference
+
+**Implemented and validated; awaiting commit.** Requirements G1 and G3 (bounded first implementation).
+Add the Cohort view and `POST /api/cohort/design`, requiring the complete sample set of an
+opened dataset, with a bounded strict request schema. Validate exact source sample names,
+subject grouping, exclusions, independent/paired structure and recorded batch overlap.
+Report every sample's disposition and Go-computed group/subject counts. Save named versions
+in the project, with undo, changed-annotation detection, JSON export and remote control.
+Use the artificial standard study to demonstrate why twelve samples from six subjects are
+not twelve independent replicates and how a justified single observation per subject is selected.
+
+Validation: hand-specified independent/paired/missing/repeated/confounded controls; exhaustive
+small membership assignments checked against independent SQL aggregation; deterministic saved
+identity under row reordering; endpoint dataset membership and strict request failures; project
+round-trip, immutable saved snapshots, annotation changes and undo; real-browser example,
+both-theme captures and accessibility. No inferential statistics are added in this slice.
+
+**Validation completed:** application/internal race suites pass (root 14.918 s), including
+release-project replay; all 116 JavaScript tests pass. The required-data scientific suite
+passes in 158.662 s, excluding unchanged performance-budget tests; no existing inferential
+algorithm or budgeted data path changed. Focused race checks validate
+all 6,561 independent SQL assignments in both layouts (13,122 checks), including membership,
+counts, complete pairs and finding counts. Bounds, malformed requests, duplicate/unknown
+samples, exact labels and source/annotation/contrast identity changes are covered.
+
+All six CGO-free platform builds and Go vet pass. The real-browser walkthrough passes in
+both themes for independent and paired designs, repeated-subject refusal, explicit exclusions,
+named saving, undo/redo, project reopening, annotation changes and complete JSON export with
+sources unavailable. Both empty and populated Cohort views pass axe WCAG A/AA checks; both
+screenshots are captured and visually reviewed. All 14 contrast checks pass. The generated
+site builds 36 pages and the 35 audited pages pass 140 theme/viewport checks without violations
+or overflow. Formatting and diff checks pass. Version remains 0.6.0 until release preparation;
+new work is recorded under Unreleased. No commit, push, tag, release or site publication.
 
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 7 | 0.7.0 | Cohorts and robustness | Study design, group comparisons with the subject as unit, robustness to the definition, GLIPH2-style groups, HLA association, contamination and batch QC, pseudobulk |
 | 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |
 | 9 | 0.9.0 | Suite and public data | ADC queries, overlap with public cohorts, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |
 | 10 | 1.0.0 | Hardening | Budgets met, accessibility audit, documentation complete, external beta feedback addressed |

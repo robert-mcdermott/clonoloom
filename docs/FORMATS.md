@@ -715,3 +715,15 @@ The file includes parent documents/manifests, source fingerprints, definitions, 
 metadata, method citations and software provenance in `uns/clonoloom`. Download includes its
 manifest and source NOTICE. See [ANNDATA-EXPORT.md](ANNDATA-EXPORT.md) for the complete schema,
 independent round-trip validation, reading example and explicit resource limits.
+
+## Cohort design snapshots
+
+Projects may contain `cohortDesigns`: named, numbered versions of a checked two-group
+subject design. Each record binds its dataset identity, source and metadata fingerprints,
+save time, and a complete `clonoloom-cohort-design` version 1 result. Results contain
+canonical inputs, a SHA-256 design ID, every sample's disposition, distinct-subject and
+sample counts, findings, descriptions and citations. Excluded samples retain annotations
+and reasons. Structural checks do not perform statistical inference or pool samples.
+The JSON export preserves the entire record; it is not a fitted model or an AIRR file.
+Old projects without this optional field continue to open. Source files are needed for new
+checks but not to inspect a saved snapshot. Group levels are ordered reference/comparison.

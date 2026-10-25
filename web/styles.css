@@ -960,3 +960,14 @@ textarea.tracking-list { width: 100%; font-family: var(--mono); font-size: 12px;
 .cell-map-scale { background: linear-gradient(to right, hsl(205 65% 75%), hsl(205 65% 30%)); }
 .cell-map-brush { fill: var(--accent); fill-opacity: .12; stroke: var(--accent); stroke-width: 1.5; pointer-events: none; }
 .cell-overlay-plot { max-width: 850px; }
+/* Cohort design: tables expose the actual subjects and sample membership. */
+.cohort-view > .card { padding: 18px; margin-bottom: 16px; }
+.cohort-controls { display: flex; flex-wrap: wrap; gap: 16px; margin: 14px 0; }
+.cohort-controls .field { display: grid; gap: 6px; min-width: 160px; }
+.cohort-view .table-wrap { overflow-x: auto; }
+.cohort-view caption { text-align: left; padding: 10px 0; font-weight: 600; }
+.cohort-view td { vertical-align: top; }
+.cohort-view .btn-row > .input { width: 220px; max-width: 100%; }
+.cohort-view .callout { display: block; }
+.cohort-view .callout p { margin-top: 4px; }
+.cohort-saved { margin: 10px 0; }

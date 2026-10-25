@@ -127,6 +127,61 @@ async function checkAccessibility() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cohort-design'() {
+    await act('new_project', { name: 'Artificial cohort design' });
+    await act('show', { view: 'cohort' });
+    await checkAccessibility();
+    await act('open_example', { example: 'simulated-standard', download: true });
+    const spec = { unit: 'subject', layout: 'independent', groupField: 'condition', levels: ['control', 'expanded'], exclude: {} };
+    const repeated = (await act('check_cohort_design', { spec })).data;
+    if (repeated.ok || repeated.subjects !== 6 || repeated.included !== 12 || !repeated.findings.some((f) => f.code === 'cohort-repeated-samples')) throw new Error('Repeated observations treated as independent subjects');
+    for (let i = 1; i <= 6; i++) spec.exclude[`S${String(i).padStart(2, '0')}-2`] = 'Teaching selection: first simulated observation per subject';
+    const checked = (await act('check_cohort_design', { spec, name: 'First simulated observations', save: true })).data;
+    if (!checked.ok || checked.subjects !== 6 || checked.included !== 6 || checked.excluded !== 6 || checked.groups.some((g) => g.subjects !== 3)) throw new Error('Incorrect subject-level cohort counts');
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.store.project.cohortDesigns[0].id;
+      app.store.undo(); if (app.store.project.cohortDesigns?.length) throw new Error('Design undo failed');
+      app.store.redo(); if (app.store.project.cohortDesigns[0].id !== id) throw new Error('Design redo failed');
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cohort');
+      return true;
+    })()`);
+    await waitFor('window.clonoloom.cohortView && !window.clonoloom.cohortView.state().busy');
+    if (!await js(`document.querySelector('.cohort-saved summary')?.textContent.includes('annotations as saved')`)) throw new Error('Saved design did not reopen');
+    const times = Object.fromEntries(checked.input.samples.map((s) => [s.name, { timepoint: s.name.endsWith('-1') ? 'day 0' : 'day 7' }]));
+    await act('annotate_samples', { samples: times });
+    const pairedSpec = { unit: 'subject', layout: 'paired', groupField: 'timepoint', levels: ['day 0', 'day 7'], exclude: {} };
+    const paired = (await act('check_cohort_design', { spec: pairedSpec })).data;
+    if (!paired.ok || paired.completePairs !== 6 || paired.subjects !== 6) throw new Error('Paired subject counts are wrong');
+    const unpaired = (await act('check_cohort_design', { spec: { ...pairedSpec, layout: 'independent' } })).data;
+    if (unpaired.ok || !unpaired.findings.some((f) => f.code === 'cohort-shared-subject')) throw new Error('Repeated subjects accepted as independent');
+    await act('annotate_samples', { samples: Object.fromEntries(checked.input.samples.map((s) => [s.name, { timepoint: s.timepoint }])) });
+    // An unavailable source must not hide the saved snapshot or prevent its export.
+    await js(`(async () => {
+      const app = window.clonoloom, original = app.ensureDataset;
+      app.ensureDataset = async () => ({ status: 'failed', error: 'Source unavailable (validation control)' });
+      try { await app.cohortView.choose(app.store.project.datasets[0].id); }
+      finally { app.ensureDataset = original; }
+      if (!document.querySelector('.cohort-saved summary').textContent.includes('current annotations unavailable')) throw new Error('Unavailable annotations mislabeled');
+      const create = URL.createObjectURL; let blob;
+      URL.createObjectURL = (value) => { blob = value; return create(value); };
+      try { [...document.querySelectorAll('.cohort-saved button')].find((b) => b.textContent === 'Export saved JSON').click(); }
+      finally { URL.createObjectURL = create; }
+      const exported = JSON.parse(await blob.text());
+      if (JSON.stringify(exported) !== JSON.stringify(app.store.project.cohortDesigns[0])) throw new Error('Export changed the saved record');
+      await app.cohortView.choose(app.store.project.datasets[0].id);
+      return true;
+    })()`);
+    await act('annotate_samples', { samples: { 'S01-1': { subject: 'changed-subject' } } });
+    await waitFor(`document.querySelector('.cohort-saved summary')?.textContent.includes('annotations changed')`);
+    await act('annotate_samples', { samples: { 'S01-1': { subject: 'S01' } } });
+    await act('check_cohort_design', { spec });
+    // Exercise the visible controls, including clearing and restoring an exclusion.
+    await js(`(() => { const input = document.querySelector('[aria-label="Exclusion reason for S01-2"]'); input.value = ''; input.dispatchEvent(new Event('change')); [...document.querySelectorAll('button')].find((b) => b.textContent === 'Check design').click(); return true; })()`);
+    await waitFor('window.clonoloom.cohortView.state().result !== null');
+    if (await js('window.clonoloom.cohortView.state().result.ok')) throw new Error('Visible exclusion edit did not affect design');
+    await act('check_cohort_design', { spec });
+    await checkAccessibility();
+  },
   async 'cell-study'() {
     await act('new_project', { name: 'Artificial single-cell study' });
     await act('open_example', { example: 'simulated-cell-states-clouds', download: true });

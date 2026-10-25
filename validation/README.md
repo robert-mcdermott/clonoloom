@@ -296,3 +296,13 @@ reopening, method-version refusal and job handlers. The `cell-modularity` browse
 visible/remote equivalence, filtering without changing the family, plot markers, parent-map
 highlighting, project undo/redo and saved reopening in both themes. Synthetic benchmarks do not
 establish biological specificity. See [MODULARITY.md](../docs/MODULARITY.md).
+
+### Cohort design membership
+
+`uv run --no-project validation/reference/cohort_design.py` independently tabulates every
+absent/A/B assignment of eight observations (two for each of four subjects) using SQLite.
+`TestCohortDesignAgainstExhaustiveSQL` checks the 6,561 membership cases for both independent
+and paired designs: sample counts, unique subjects, complete pairs and structural usability.
+The oracle imports no ClonoLoom code. This validates membership arithmetic, not statistical
+power or biological independence. Hand controls cover missingness, repeated observations,
+batch separation, exact time labels, canonical identity and invalid specifications.

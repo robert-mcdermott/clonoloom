@@ -1,0 +1,35 @@
+---
+title: Cohort study design
+description: Check independent or paired subject-level designs, inspect sample exclusions, and save the design before comparing groups in ClonoLoom.
+lede: Start with the biological units. A study with twelve samples from six subjects has six subjects, not twelve independent replicates. The Cohort view makes the selected groups, pairing, exclusions and sample membership explicit before statistical comparisons.
+---
+<h2 id="choose">Choose the comparison</h2>
+<p>Open the study's files together as one dataset and annotate its samples in <strong>Data</strong>. Subject identifiers must identify the same individual consistently across the whole dataset. Choose <strong>Cohort</strong>, the group field (condition, time point, tissue or cell subset), a reference level and a comparison level. The contrast is comparison minus reference. Labels match exactly after surrounding whitespace is removed: <code>day 28</code> and <code>week 4</code> remain different labels here.</p>
+<ul>
+<li><strong>Independent subjects:</strong> each subject belongs to one selected group and contributes exactly one selected sample. At least two subjects are required in each group.</li>
+<li><strong>Paired within subjects:</strong> each subject contributes exactly one sample at each selected level. At least two complete subject pairs are required.</li>
+</ul>
+<p>These are structural minimums, not recommendations for statistical power. The checks cannot establish randomization or biological independence: for example, individuals sharing an experimental cage may require a different model. Cells, chains, sequencing libraries and repeated samples do not add independent subjects.</p>
+
+<h2 id="check">Inspect every sample</h2>
+<p><strong>Check design</strong> reports sample and distinct-subject counts in a table. Repeated samples within one subject/group block use. Enter explicit exclusion reasons to select scientifically justified observations; there is no automatic pooling or choice of the first sample. Missing group or subject annotations block use unless the sample is explicitly excluded. Samples with other group labels remain in the report as outside the selected contrast.</p>
+<p>Paired designs refuse incomplete pairs instead of silently dropping subjects. Group and batch are inseparable when every recorded batch contains only one group; this also blocks use. Missing batch information and mixed time, tissue or cell-subset annotations produce warnings. Passing checks does not rule out confounding, and no adjustment is performed.</p>
+<p>All population counts come from the Go host. The tables show membership rather than distributions or uncertainty: no p-values, effect sizes or expression tests are computed in this first cohort slice.</p>
+<shot name="cohort-design" alt="Cohort design for the artificial TRB study, showing two independent groups with three subjects each after explicit exclusion of the second sample from each subject">A teaching selection from the simulated standard study. The second observations are excluded by a stated rule; this is not a recommendation to discard repeated observations in real studies.</shot>
+
+<h2 id="example">Try the artificial study</h2>
+<ol>
+<li>Open <strong>A simulated TRB study with known truth</strong> from Example data.</li>
+<li>Choose Cohort, independent subjects, condition, reference <code>control</code> and comparison <code>expanded</code>. Check the design. Twelve samples belong to six subjects, and the repeated samples block use.</li>
+<li>For this teaching example, exclude <code>S01-2</code> through <code>S06-2</code>, each with the reason <em>Teaching selection: first simulated observation per subject</em>. Check again: six included samples, three subjects in each group, six exclusions. Batch is not supplied, so that limitation remains visible.</li>
+<li>Name and save the design. Change a subject annotation in Data: the saved version reports that annotations changed. Its original record stays intact.</li>
+</ol>
+<p>The simulated condition called <code>expanded</code> is an input label, not a statistical finding. For a real study, decide selection and aggregation rules from the scientific question before inspecting outcomes.</p>
+
+<h2 id="record">Save and inspect the record</h2>
+<p><strong>Save design</strong> rechecks the current annotations and creates a named version in the project. It records the source-derived dataset identity, all design annotations (subject, condition, time point, tissue, cell subset and batch, including excluded samples), reference direction, pairing, exclusions, findings, descriptions and citations. A SHA-256 identity identifies the canonical design inputs. Save versions can be undone and redone. Saved snapshots remain inspectable and exportable even when source files are unavailable; checking a new design requires reopening those sources.</p>
+<p><strong>Export saved JSON</strong> includes the complete membership and source record. Later analyses must bind the exact saved design and recheck test-specific assumptions. This design snapshot is not a fitted model or an analysis artifact.</p>
+<p>Scripts use <code>check_cohort_design</code>, with the same checks and optional save operation; see <a href="remote-control.html">Remote control</a>.</p>
+
+<h2 id="sources">Scientific basis and validation</h2>
+<p>The independent-unit rule follows <a href="https://doi.org/10.1186/1471-2202-11-5">Lazic (2010), on pseudoreplication</a>. The single-cell consequence is demonstrated by <a href="https://doi.org/10.1038/s41467-021-25960-2">Squair et al. (2021)</a>. The two-group scope, exact labels, explicit exclusions and minimum counts are ClonoLoom's declared policies. Hand-specified controls and independent SQLite tabulations of all 6,561 assignments of two observations for four subjects validate the counts and independent/paired refusal rules.</p>

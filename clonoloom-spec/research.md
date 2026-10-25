@@ -1833,3 +1833,33 @@ binary using the pinned public AnnData/SciPy APIs, compares every raw count and 
 MEX, every label against cells.tsv, every assignment and coordinate against its saved parent,
 and then rewrites/reopens the object. This supplements the independently specified small export
 oracle, numerical references and synthetic null controls; it is not a biological performance claim.
+
+### 5.30 Cohort study design (wave 7, slice 1)
+
+[Lazic SE (2010), BMC Neuroscience 11:5](https://doi.org/10.1186/1471-2202-11-5)
+explains pseudoreplication when correlated or repeated observations are treated as independent.
+[Squair et al. (2021), Nature Communications 12:5692](https://doi.org/10.1038/s41467-021-25960-2)
+provides empirical single-cell evidence for preserving biological replication in differential
+expression. These support the unit-of-inference contract, not a particular group test in slice 1.
+
+ClonoLoom's choices: one dataset, explicitly selected reference/comparison labels,
+independent or paired subject design, no automatic pooling or deletion of incomplete pairs,
+and at least two subjects per group or complete pairs. Exact trimmed labels preserve the
+user's time/tissue semantics. Duplicate subject/group samples block use until explicitly
+resolved; same-time observations alone do not establish their technical/biological relationship.
+Every input sample remains in the report, including out-of-contrast levels and exclusions.
+Unannotated samples block use unless explicitly excluded. The dataset ID fingerprints the
+sources; the design ID fingerprints sorted complete annotations and the effective specification.
+
+Every batch containing only one chosen group means the group effect is inseparable from
+unrestricted batch effects. This conservative check blocks that design; incomplete batch
+annotations warn rather than impute. Mixed sampling contexts warn. Passing checks does not
+establish independence (subjects may share a cage/cluster), randomization, sufficient power,
+or freedom from unmeasured confounding. Such designs require an appropriate external model.
+No p-values, effect sizes, covariate adjustment, power calculation or expression analysis is
+performed here. Later slices must validate the actual test-specific design and null model.
+
+The view shows exact subject/sample counts and membership tables. No aggregate error bars,
+cell-level replicate plots or inferred group geometry are drawn. Independent SQL aggregation
+and exhaustive small membership assignments validate counts and refusal rules. Sibling Apache-2.0
+named-design/undo patterns were consulted; the scientific checks are implemented in Go.
