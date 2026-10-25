@@ -412,3 +412,10 @@ test('a renamed or unknown simulation does not imply the TRB model', () => {
   assert.match(text, /consult each study's saved parameters and truth/);
   assert.doesNotMatch(text, /GRCh38|power-law|negative-binomial|fictional SIM/);
 });
+
+test('cohort feature methods use saved observations and source parameters', () => {
+  const result = { id: 'cf-pinned', kind: 'cohort-features', method: 'Subject feature table', describe: 'Design Pre, version 2: 6 subjects, 6 observations; parent div-original, unit umis, no pooling.', citation: 'Jost 2006, doi:10.1111/j.2006.0030-1299.14714.x' };
+  const out = methodsParagraph({ dataset: pbmc, definition: { name: 'Current paired definition' }, program, results: [result] });
+  assert.match(out.text, /Saved Subject feature table result cf-pinned: Design Pre, version 2: 6 subjects, 6 observations; parent div-original, unit umis, no pooling/);
+  assert.ok(out.references.some((r) => r.includes('Jost 2006')));
+});

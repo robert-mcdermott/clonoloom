@@ -377,7 +377,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
 
   // These descriptions and citations are computed in Go and kept with each immutable result.
   // Do not reconstruct scientific parameters from current controls or a plot selection.
-  for (const r of results.filter((r) => ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export'].includes(r.kind))) {
+  for (const r of results.filter((r) => ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export', 'cohort-features'].includes(r.kind))) {
     sentences.push(`Saved ${r.method || r.kind} result ${r.id}: ${r.describe || 'See the saved result for its effective parameters.'}${r.citation ? ` ${cite(`cell-method:${r.citation}`, r.citation)}` : ''}`);
   }
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

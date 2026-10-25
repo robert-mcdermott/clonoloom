@@ -84,6 +84,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/cohort-features.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/database.html",
   "theme": "light",
   "width": "desktop",
@@ -329,6 +336,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/cohort-features.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/database.html",
   "theme": "dark",
   "width": "desktop",
@@ -574,6 +588,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/cohort-features.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/database.html",
   "theme": "light",
   "width": "phone",
@@ -813,6 +834,13 @@
  },
  {
   "page": "docs/cohort-design.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/cohort-features.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

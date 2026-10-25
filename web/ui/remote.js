@@ -95,6 +95,8 @@ export function remoteActions(app) {
           project: { id: project.id, name: project.name },
           view: ui.mode,
           focus: ui.focus ?? null,
+          cohortDesigns: (project.cohortDesigns ?? []).map((d) => ({ id: d.id, name: d.name, revision: d.revision, dataset: d.dataset, design: d.result.id })),
+          artifacts: project.artifacts.map((r) => ({ id: r.id, kind: r.kind, name: r.name, dataset: r.dataset })),
           datasets: project.datasets.map((d) => ({
             id: d.id, name: d.name, formats: d.formats, unit: datasetUnit(d) || null, singleCell: d.singleCell, rows: d.rows, samples: d.samples,
             findings: d.findings, files: d.sources.map((s) => s.path), metadata: (d.metadata ?? []).map((m) => m.path),
@@ -195,6 +197,14 @@ export function remoteActions(app) {
       await view.choose(d.id);
       const result = await view.configure({ spec, name, save });
       return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
+    },
+
+    async build_cohort_features(options = {}) {
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.cohortFeaturesView, 5000, 'Subject feature table');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before features were saved.');
+      return { message: 'Subject feature table saved.', data: { artifact: result.artifact.id, subjects: result.result.design.subjects, observations: result.result.table.rows.length, description: result.result.description } };
     },
 
     async describe_subjects({ dataset }) {

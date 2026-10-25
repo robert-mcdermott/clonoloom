@@ -43,6 +43,7 @@ func flagArg(description string) map[string]any {
 var datasetArg = textArg("A dataset of the project by name or id; the one in focus, else the first, if not given.")
 
 var remoteActions = []remoteAction{
+	{Name: "build_cohort_features", Title: "Build subject feature table", Description: "Join an explicit saved design version to a saved diversity result from its dataset; retain raw subject/group observations, units, missingness and provenance without pooling or testing.", InputSchema: schema(map[string]any{"design": textArg("Saved project cohort design record ID, including its version suffix."), "diversity": textArg("Saved diversity artifact ID from the same dataset.")}, "design", "diversity")},
 	{Name: "check_cohort_design", Title: "Check a cohort design", Description: "Shows Cohort and checks explicit groups, subjects, pairing and exclusions. Optionally saves a versioned design snapshot; computes no inferential test.", InputSchema: schema(map[string]any{
 		"dataset": datasetArg,
 		"spec":    map[string]any{"type": "object", "description": "{unit: subject, layout: independent|paired, groupField: condition|timepoint|tissue|cellSubset, levels: [reference, comparison], exclude: {sample: reason}}. Exact group labels; no automatic pooling."},

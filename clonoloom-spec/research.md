@@ -1863,3 +1863,41 @@ The view shows exact subject/sample counts and membership tables. No aggregate e
 cell-level replicate plots or inferred group geometry are drawn. Independent SQL aggregation
 and exhaustive small membership assignments validate counts and refusal rules. Sibling Apache-2.0
 named-design/undo patterns were consulted; the scientific checks are implemented in Go.
+
+### 5.31 Subject feature tables (wave 7, slice 2)
+
+[Jost (2006), Entropy and diversity](https://doi.org/10.1111/j.2006.0030-1299.14714.x)
+distinguishes raw entropy/indices from effective diversity. The version 1 catalog therefore
+labels Shannon entropy in nats separately from observed Hill numbers in effective clonotypes.
+[Chao & Jost (2012)](https://doi.org/10.1890/11-1952.1) defines sample coverage;
+[Chao et al. (2014)](https://doi.org/10.1890/13-0133.1) develops the sampling framework.
+The existing diversity engine and its independent reference validation remain unchanged (§5.3).
+These are sampling-sensitive point estimates, not depth-standardized outcomes. Coverage
+estimates abundance completeness, not the fraction of all clonotypes discovered.
+
+ClonoLoom's policy is an exact sample-name join between one checked, saved design and one
+checksum-pinned diversity parent from the same dataset. One selected sample contributes one
+subject/group row. Paired observations retain subject IDs; no new replicate is inferred.
+No libraries are averaged, no counts pooled and no missing values imputed. Selection reasons,
+out-of-contrast/excluded annotations, definition, QC and units remain in the artifact. Source
+fingerprints and provider notices bind the initial operation; saved reads and exports require
+neither sources nor parent files. The canonical design is rechecked server-side, and the
+worker rechecks the parent hash. All numeric values are copied in Go, without JS statistics.
+
+The 13-column catalog contains assigned abundance (after QC/definition, not raw depth),
+observed richness, Shannon H, Hill q=1/q=2, normalized Shannon evenness/clonality, Simpson
+concentration, Gini–Simpson, Gini on observed positive clones without finite-S rescaling,
+maximum share, top-10 share and sample coverage. Empty samples keep abundance/richness zero;
+other columns are null. S=1 makes H/log(S) and its complement undefined. Fractional
+abundances make coverage unavailable. Unexpected absent parent estimates remain explicitly
+missing. Parent bootstrap intervals remain archived but are not used as subject-level error
+bars. No group tests or group summaries are drawn in this slice.
+
+Independent Python stdlib calculations from raw abundances check every catalog column;
+Gini uses the pairwise absolute-difference definition instead of the engine's ranked sum.
+Empty, singleton, equal, skewed, fractional, scaled and top-ten-boundary fixtures exercise
+meaningful edge cases. API tests cover input identity, complete sample-set matching, metadata,
+job replay, cancellation, parent/result tampering and source-free export. Browser validation
+checks undo/redo, saved-result routing, changed current annotations, methods, table controls,
+source-free download and WCAG A/AA. This is the first sample/subject portion of G4; receptor,
+gene-usage and other feature families remain future work.

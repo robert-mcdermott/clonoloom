@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Subject feature tables (wave 7, slice 2).** Join an explicit saved design version to
+  a checksum-pinned diversity result, keeping one selected sample per subject/group.
+  Export 13 features with defined units, null/zero distinctions and missing-value reasons;
+  retain the full design, exclusions, parent measurements, definition, QC and source notices.
+  Add an accessible paginated table, remote action, methods, undo/redo and source-free
+  reopening/export. Preserve paired identity without pooling, averaging or group testing.
+  Validate raw-abundance references, durable replay, checksum refusals and browser workflows.
+  Make long dialog bodies keyboard-scrollable for complete methods inspection.
+
+
 - **Cohort study designs (wave 7, slice 1).** Check explicit independent or paired
   two-group designs with subjects as the unit, complete sample membership, recorded
   exclusions and source-bound identity. Refuse repeated observations as independent

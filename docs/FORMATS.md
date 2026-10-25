@@ -727,3 +727,30 @@ and reasons. Structural checks do not perform statistical inference or pool samp
 The JSON export preserves the entire record; it is not a fitted model or an AIRR file.
 Old projects without this optional field continue to open. Source files are needed for new
 checks but not to inspect a saved snapshot. Group levels are ordered reference/comparison.
+
+## Subject feature tables
+
+`cohort-features` artifacts contain `cohort-features.json`, format
+`clonoloom-cohort-features` version 1. `selection` names the project design record,
+name, revision, canonical design ID and full input; `design` is its server-rechecked
+snapshot. `parent` is the complete saved diversity document; `parentManifest` preserves
+its lineage. `table.catalog` lists the ordered 13 features with IDs, names, units and
+formulas. `table.rows` contains each included sample's full design annotations, group
+and `values` in catalog order, each `{value, missing}`. Null is missing, never zero;
+`missing` is empty for an available value. All excluded annotations remain in `design`.
+
+The result manifest pins the design identity and diversity ID/SHA-256. Its durable job
+spec records the complete selection, parent hash, method version and source NOTICE.
+The result identity excludes only the NOTICE creation timestamp. New tables require an
+opened source dataset and exact complete sample-set agreement; saved tables need neither
+sources nor parents. The worker verifies the selected parent again before promotion.
+
+`POST /api/cohort-features` accepts `{design: {record, name, revision, id, input}, diversity,
+start?}`. `input` is the saved cohort input, not trusted cached checks. `start:false` probes
+without starting a job. `GET /api/cohort-features/{id}` returns manifest and result;
+`GET /api/cohort-features/{id}/download` produces the CSV, catalog, full result JSON,
+manifest and NOTICE ZIP. Restricted provider terms require `accept=1`, as for other exports.
+CSV is wide, one selected subject/group observation per row, with each numeric feature
+followed by its `_missing` reason column. Units/formulas are in `catalog.json`; definition,
+QC, input fingerprints and citations travel in the full JSON and NOTICE. No averaging,
+pooling, depth standardization, imputation or group inference occurs here.

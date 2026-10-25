@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slice 1 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slice 1 is committed. Slice 2 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2158,7 +2158,7 @@ No incompatible-licensed implementation source is inspected or copied.
 
 ### Slice 1: study design before cohort inference
 
-**Implemented and validated; awaiting commit.** Requirements G1 and G3 (bounded first implementation).
+**Committed.** Requirements G1 and G3 (bounded first implementation).
 Add the Cohort view and `POST /api/cohort/design`, requiring the complete sample set of an
 opened dataset, with a bounded strict request schema. Validate exact source sample names,
 subject grouping, exclusions, independent/paired structure and recorded batch overlap.
@@ -2189,6 +2189,49 @@ screenshots are captured and visually reviewed. All 14 contrast checks pass. The
 site builds 36 pages and the 35 audited pages pass 140 theme/viewport checks without violations
 or overflow. Formatting and diff checks pass. Version remains 0.6.0 until release preparation;
 new work is recorded under Unreleased. No commit, push, tag, release or site publication.
+
+### Slice 2: source-pinned subject features
+
+**Implemented and validated; awaiting commit.** G4 (first sample/subject catalog) and G2 inputs.
+Bind one explicitly selected saved design version to one verified diversity artifact. Recheck
+canonical design inputs and exact complete sample coverage server-side; pin parent bytes before
+the job and verify them again in the worker. Keep one sample per subject/group, including paired
+subject identity, without averaging libraries or pooling counts. Catalog 13 existing measures
+with units and definitions; distinguish zero abundance/richness from empty, singleton and
+fractional-count missingness. Preserve the full design/exclusions, parent measurements and
+manifest, source notices, definition, QC, options and software/method provenance.
+
+Use an accessible, searchable, paginated observation table with a feature selector; no group
+summary or inferential plot. Save immutable artifacts, undo/redo, route from Results, expose
+remote control and include saved descriptions in Methods. Export exact wide CSV, catalog, JSON,
+manifest and NOTICE; saved evidence must reopen and export without sources or parent artifacts.
+Initial creation requires opening the source dataset to bind fingerprints and provider terms.
+This is a bounded sample/subject diversity catalog; receptor/usage and other feature families
+remain outside the first G4 implementation. Group comparisons begin in slice 3.
+
+Validation covers independent raw-abundance formulas, missingness/zero and unit controls,
+explicit selection and pairing, malformed/changed inputs, durable replay/cancellation,
+checksum tampering, source-free export, CSV/JSON round trips, browser controls, undo/reopen,
+methods and both-theme accessibility/captures. Full application/scientific/platform checks
+and documentation audit are complete.
+
+**Validation completed:** application/internal race tests pass, including release-project
+replay. All 117 JavaScript tests pass. The required-data scientific suite passes in
+160.806 s, excluding unchanged performance-budget tests; existing numeric engines and
+budgeted data paths are unchanged. Focused race checks pass the exhaustive 13,122 design
+membership comparisons and independent raw-abundance feature reference. Additional API
+controls verify provider-term acknowledgments/NOTICE retention and changed-parent worker
+failure without promotion.
+
+Go vet and all six CGO-free platform builds pass. Both-theme browser workflows pass visible
+and remote selection equivalence, filtering, saved annotation isolation, undo/redo, sidebar
+routing, project reopening, source-free ZIP export and cited Methods. Long methods dialogs
+are keyboard-scrollable; accessibility checks wait for entrance animations to settle.
+Both Cohort views and the methods modal pass WCAG A/AA; all 14 contrast checks pass.
+The complete six-subject table screenshots are visually reviewed in both themes. The site
+builds 37 pages with 43 screenshot sets; all 36 audited pages pass 144 theme/viewport checks
+with no violations or overflow. Formatting and diff checks pass. Version stays 0.6.0 until
+release preparation. No commit, push, tag, release or site publication; slice 3 has not begun.
 
 ## Later waves (outlined)
 

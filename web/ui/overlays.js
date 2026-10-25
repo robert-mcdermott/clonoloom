@@ -127,7 +127,7 @@ export function closeDialogs() {
 // A modal dialog. content: element(s); buttons: [{ label, primary, danger, onClick → false keeps open }].
 export function showDialog({ title, content, buttons = [{ label: 'Close' }], width = '', onClose, dismissable = true }) {
   const scrim = h('div.scrim');
-  const body = h('div.dialog-body', content);
+  const body = h('div.dialog-body', { tabIndex: 0 }, content);
   const foot = buttons.length ? h('div.dialog-foot') : null;
   const dialog = h(`div.dialog${width ? `.${width}` : ''}`, { role: 'dialog', 'aria-modal': 'true', 'aria-label': title },
     h('div.dialog-head', h('h2', title), dismissable ? h('button.icon-button', { type: 'button', title: 'Close', 'aria-label': 'Close', onclick: () => close() }, icon('close')) : null),

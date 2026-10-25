@@ -114,6 +114,8 @@ async function showPlaces() {
 }
 
 async function checkAccessibility() {
+  // Modal/toast entrance opacity is not the resting contrast of the UI.
+  await sleep(250);
   const axe = join(DATA, 'axe-core/axe.min.js');
   if (!existsSync(axe)) throw new Error('The study accessibility check needs axe-core (node validation/fetch.mjs axe-core)');
   await js(`(0, eval)(${JSON.stringify(readFileSync(axe, 'utf8'))}); true`);
@@ -127,9 +129,76 @@ async function checkAccessibility() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cohort-features'() {
+    await act('new_project', { name: 'Artificial subject feature study' });
+    await act('open_example', { example: 'simulated-standard', download: true });
+    await act('measure_diversity', { replicates: 20 });
+    const spec = { unit: 'subject', layout: 'independent', groupField: 'condition', levels: ['control', 'expanded'], exclude: {} };
+    for (let i = 1; i <= 6; i++) spec.exclude[`S${String(i).padStart(2, '0')}-2`] = 'Teaching selection: first simulated observation per subject';
+    await act('check_cohort_design', { spec, name: 'First simulated observations', save: true });
+    const state = (await act('get_state')).data;
+    const options = { design: state.cohortDesigns[0].id, diversity: state.artifacts.find((r) => r.kind === 'diversity').id };
+    const result = (await act('build_cohort_features', options)).data;
+    if (result.subjects !== 6 || result.observations !== 6) throw new Error('Subject features changed the replication unit');
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.cohortFeaturesView.state().artifact;
+      const saved = JSON.stringify(app.cohortFeaturesView.state().answer.result);
+      app.store.undo(); if (app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Feature undo failed');
+      app.store.redo(); if (!app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Feature redo failed');
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('data');
+      app.focusItem({kind:'result',id});
+      return { id, saved };
+    })()`).then((v) => { globalThis.featureSnapshot = v; });
+    await waitFor(`window.clonoloom.cohortFeaturesView?.state().status === 'ready'`);
+    if (await js(`JSON.stringify(window.clonoloom.cohortFeaturesView.state().answer.result)`) !== globalThis.featureSnapshot.saved) throw new Error('Feature reopening changed evidence');
+    // Current annotation edits must not rewrite the selected saved design.
+    await act('annotate_samples', { samples: { 'S01-1': { subject: 'changed-subject' } } });
+    const repeated = (await act('build_cohort_features', options)).data;
+    if (repeated.artifact !== result.artifact) throw new Error('Current annotations silently changed saved features');
+    await act('annotate_samples', { samples: { 'S01-1': { subject: 'S01' } } });
+    await js(`(async () => {
+      const app = window.clonoloom, original = app.ensureDataset, create = URL.createObjectURL;
+      let blob; app.ensureDataset = async () => { throw new Error('Sources unavailable'); };
+      URL.createObjectURL = (value) => { blob = value; return create(value); };
+      try {
+        await app.cohortFeaturesView.show(${JSON.stringify(result.artifact)});
+        await app.cohortFeaturesView.download();
+        const bytes = new Uint8Array(await blob.arrayBuffer());
+        if (bytes[0] !== 80 || bytes[1] !== 75) throw new Error('Feature ZIP download failed');
+      } finally { app.ensureDataset = original; URL.createObjectURL = create; }
+      const select = document.querySelector('[aria-label="Displayed feature"]');
+      select.value = 'hill1'; select.dispatchEvent(new Event('change'));
+      if (!document.querySelector('.cohort-features table caption').textContent.includes('Hill diversity q=1')) throw new Error('Feature selector failed');
+      return true;
+    })()`);
+    await js(`(() => {
+      const choose = (label, value) => { const input = document.querySelector('[aria-label="' + label + '"]'); input.value = value; input.dispatchEvent(new Event('change')); };
+      choose('Feature design version', ${JSON.stringify(options.design)});
+      choose('Diversity parent', ${JSON.stringify(options.diversity)});
+      [...document.querySelectorAll('.cohort-features button')].find((b) => b.textContent === 'Build subject feature table').click();
+      return true;
+    })()`);
+    await waitFor(`window.clonoloom.cohortFeaturesView.state().status === 'ready'`);
+    if (await js(`window.clonoloom.cohortFeaturesView.state().artifact`) !== result.artifact) throw new Error('Visible feature choices differ from remote result');
+    await js(`(() => {
+      const input = document.querySelector('[aria-label="Find feature observations"]'); input.value = 'S01'; input.dispatchEvent(new Event('change'));
+      if (document.querySelectorAll('.cohort-features table')[0].querySelectorAll('tbody tr').length !== 1) throw new Error('Observation filter failed');
+      const reset = document.querySelector('[aria-label="Find feature observations"]'); reset.value = ''; reset.dispatchEvent(new Event('change')); return true;
+    })()`);
+    await act('show_methods');
+    if (!await js(`document.querySelector('.methods-text').textContent.includes('Subject feature table')`)) throw new Error('Methods omitted subject features');
+    await clearToasts();
+    await checkAccessibility();
+    await act('close_dialogs');
+    await act('show', { view: 'cohort' });
+    await js(`(async () => { await window.clonoloom.cohortFeaturesView.show(${JSON.stringify(result.artifact)}); const root = document.querySelector('.cohort-features'); root.closest('.workbench-scroll').scrollTop = root.querySelector('.feature-result-title').offsetTop - 65; return true; })()`);
+    await clearToasts();
+    await checkAccessibility();
+  },
   async 'cohort-design'() {
     await act('new_project', { name: 'Artificial cohort design' });
     await act('show', { view: 'cohort' });
+    await clearToasts();
     await checkAccessibility();
     await act('open_example', { example: 'simulated-standard', download: true });
     const spec = { unit: 'subject', layout: 'independent', groupField: 'condition', levels: ['control', 'expanded'], exclude: {} };
@@ -180,6 +249,7 @@ const scenes = {
     await waitFor('window.clonoloom.cohortView.state().result !== null');
     if (await js('window.clonoloom.cohortView.state().result.ok')) throw new Error('Visible exclusion edit did not affect design');
     await act('check_cohort_design', { spec });
+    await clearToasts();
     await checkAccessibility();
   },
   async 'cell-study'() {

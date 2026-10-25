@@ -306,3 +306,17 @@ and paired designs: sample counts, unique subjects, complete pairs and structura
 The oracle imports no ClonoLoom code. This validates membership arithmetic, not statistical
 power or biological independence. Hand controls cover missingness, repeated observations,
 batch separation, exact time labels, canonical identity and invalid specifications.
+
+### Subject feature tables
+
+`uv run --no-project validation/reference/cohort_features.py` generates independent
+raw-abundance expectations using Python's standard library. The oracle includes empty,
+single-clone, equal, skewed, fractional, scaled and top-ten-boundary cases; Gini is computed
+by pairwise absolute differences instead of the production engine's sorted-rank sum.
+`TestCohortFeaturesAgainstRawAbundanceReference` checks all 13 table columns to relative/absolute
+1e-12, including exact missingness. Unit tests exercise explicit sample selection, paired
+identity, complete parent coverage and CSV/JSON null-versus-zero semantics. API tests cover
+durable replay, cancellation, exact provenance, malformed requests, checksum changes and
+source-free export. The `cohort-features` capture scene checks browser undo/redo, source-free
+reopening/download, saved annotation isolation, feature selection, Methods and both-theme
+WCAG A/AA. This table performs no new fit or hypothesis test.

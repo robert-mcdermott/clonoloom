@@ -2,6 +2,7 @@
 // workflow; all scientific checks and counts are computed by ClonoLoom's Go host.
 import { h, icon, clear, downloadBlob } from './dom.js';
 import { toast } from './overlays.js';
+import { mountCohortFeatures } from './cohort-features.js';
 import { GROUP_FIELDS, cohortSamples, cohortSpec, cohortDesigns, saveCohortDesign, cohortDesignChanged } from '../lib/cohort.js';
 
 export function mountCohort(app, container) {
@@ -10,9 +11,11 @@ export function mountCohort(app, container) {
   let samples = [], spec = cohortSpec(), result = null, error = '', busy = false, search = '', name = 'Design';
   let generation = 0, sourceProject = null, loaded = false;
   const body = h('div.view-body.cohort-view');
+  const featuresBody = h('div.view-body.cohort-view');
   const select = h('select.input.small', { 'aria-label': 'Dataset', onchange: (e) => choose(e.target.value) });
   container.append(h('div.view', h('div.workbench-head', h('h1', icon('samples'), 'Cohort'), h('span.spacer'), h('label.kv-inline', h('span.muted', 'Dataset'), select),
-    h('button.btn.small', { type: 'button', onclick: () => app.setMode('data') }, 'Annotate samples')), h('div.workbench-scroll', body)));
+    h('button.btn.small', { type: 'button', onclick: () => app.setMode('data') }, 'Annotate samples')), h('div.workbench-scroll', body, featuresBody)));
+  const features = mountCohortFeatures(app, featuresBody);
   const dataset = () => store.project.datasets.find((d) => d.id === chosen);
   const reportError = (e) => { error = e.message; render(); };
   const change = (patch) => { if (busy) return; spec = { ...spec, ...patch }; result = null; error = ''; render(); };
@@ -127,7 +130,7 @@ export function mountCohort(app, container) {
   app.cohortView = view;
   load().catch((e) => toast(e.message, { kind: 'error' }));
   return {
-    update(topics) { if (topics.has('project') && sourceProject !== store.project) load().catch(reportError); },
-    destroy() { generation++; if (app.cohortView === view) delete app.cohortView; },
+    update(topics) { features.update(topics); if (topics.has('project') && sourceProject !== store.project) load().catch(reportError); },
+    destroy() { generation++; features.destroy(); if (app.cohortView === view) delete app.cohortView; },
   };
 }
