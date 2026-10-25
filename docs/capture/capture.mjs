@@ -113,9 +113,48 @@ async function showPlaces() {
   })()`);
 }
 
+async function checkAccessibility() {
+  const axe = join(DATA, 'axe-core/axe.min.js');
+  if (!existsSync(axe)) throw new Error('The study accessibility check needs axe-core (node validation/fetch.mjs axe-core)');
+  await js(`(0, eval)(${JSON.stringify(readFileSync(axe, 'utf8'))}); true`);
+  const violations = await js(`(async () => {
+    const result = await axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] }, resultTypes: ['violations'] });
+    return result.violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target) }));
+  })()`);
+  if (violations.length) throw new Error(`Study accessibility: ${JSON.stringify(violations)}`);
+}
+
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cell-study'() {
+    await act('new_project', { name: 'Artificial single-cell study' });
+    await act('open_example', { example: 'simulated-cell-states-clouds', download: true });
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    const example = catalog.examples.find((e) => e.name === 'simulated-cell-states-clouds');
+    for (const step of example.opens[0].steps) await act(step.action, step.args);
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.methods-text').textContent`);
+    const references = await js(`document.querySelector('.methods-references').textContent`);
+    for (const phrase of ['cell-states-clouds', 'negative-binomial', 'PCA / UMAP', 'Clone sizes', 'Clonotype modularity', 'Receptor / expression neighborhoods', 'AnnData export']) {
+      if (!methods.includes(phrase)) throw new Error(`Study methods omitted ${phrase}`);
+    }
+    if (/GRCh38|Ensembl|power-law|sequenced into reads/.test(methods)) throw new Error('Unrelated simulation model in study methods');
+    for (const ref of ['1802.03426', 's41587-021-00989-2', 'fileformat-prose']) if (!references.includes(ref)) throw new Error(`Missing study reference ${ref}`);
+    await act('close_dialogs');
+    await js(`(async () => {
+      const app = window.clonoloom;
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells');
+      const views = { 'expression-map': 'cellAnalysisView', phenotypes: 'cellPhenotypesView', modularity: 'cellModularityView', conga: 'cellCongaView', 'anndata-export': 'cellAnnDataView' };
+      for (const r of app.store.project.artifacts) {
+        await app[views[r.kind]].show(r.id);
+        if (app[views[r.kind]].state().status !== 'ready') throw new Error('Saved result did not reopen: ' + r.kind);
+      }
+      return true;
+    })()`);
+    await js(`document.querySelector('#computed-cell-map').scrollIntoView({ block: 'start' })`);
+    await checkAccessibility();
+  },
   async 'cell-anndata-export'() {
     await js(`window.clonoloom.setMode('cells')`);
     await waitFor('Boolean(window.clonoloom.cellsView)');
@@ -687,6 +726,7 @@ const scenes = {
   // The start page of a first run.
   async start() {
     await waitFor(`Boolean(document.querySelector('.welcome'))`);
+    await checkAccessibility();
   },
   // The Example data dialog of a first run: nothing downloaded yet.
   async examples() {

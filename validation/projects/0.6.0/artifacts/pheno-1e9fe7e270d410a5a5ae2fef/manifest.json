@@ -1,0 +1,153 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "pheno-1e9fe7e270d410a5a5ae2fef",
+  "kind": "phenotypes",
+  "name": "Clonotype phenotypes · S01-1",
+  "dataset": "d-8d1404a8ae498dab",
+  "state": "complete",
+  "created": "2026-10-25T06:34:59.299828Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-8d1404a8ae498dab",
+        "name": "Simulated study (cell-states-clouds)"
+      },
+      {
+        "kind": "expression",
+        "id": "x-c7f5f2882f8a481393d9be8209787893a576daad709415c94bb02f50bbdbab0a"
+      },
+      {
+        "kind": "expression-map",
+        "id": "emap-0fe86973e058204c90fc7cdd",
+        "sha256": "137b1ed9de900b3cd2a283206589c44c587cb3619e313edf0801f43be0f1f694"
+      }
+    ],
+    "job": {
+      "id": "jmvngdqhi-3",
+      "kind": "phenotypes",
+      "spec": {
+        "id": "x-c7f5f2882f8a481393d9be8209787893a576daad709415c94bb02f50bbdbab0a",
+        "map": "emap-0fe86973e058204c90fc7cdd",
+        "dataset": "d-8d1404a8ae498dab",
+        "sample": 0,
+        "definition": {
+          "name": "Paired αβ: amino-acid junctions, V and J genes",
+          "chains": [
+            "TRA",
+            "TRB"
+          ],
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "annotation": {
+          "name": "S01-1",
+          "subject": "S01",
+          "tissue": "blood"
+        },
+        "options": {
+          "population": "receptor",
+          "breakpoints": [
+            1,
+            2,
+            5
+          ],
+          "annotation": "state"
+        },
+        "input": {
+          "id": "x-c7f5f2882f8a481393d9be8209787893a576daad709415c94bb02f50bbdbab0a",
+          "path": "/var/folders/lc/lsy0fn113r9394qmn0xmj5zc0000gn/T/clonoloom-capture-QPPEMz/examples/simulated-cell-states-clouds/expression/S01-1",
+          "cellsPath": "/var/folders/lc/lsy0fn113r9394qmn0xmj5zc0000gn/T/clonoloom-capture-QPPEMz/examples/simulated-cell-states-clouds/expression/S01-1/cells.tsv",
+          "options": {
+            "minGenes": 0,
+            "minCells": 0,
+            "features": 0,
+            "components": 0,
+            "neighbors": 0,
+            "target": 0,
+            "seed": 0,
+            "epochs": 0,
+            "minDist": null
+          },
+          "method": 0
+        },
+        "mapSha256": "137b1ed9de900b3cd2a283206589c44c587cb3619e313edf0801f43be0f1f694",
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Sample-scoped clonotype sizes and descriptive phenotype counts",
+      "version": "1",
+      "citation": "Sturm G et al. Scirpy. Bioinformatics. 2020;36:4817–4818. doi:10.1093/bioinformatics/btaa611; scirpy.tl.clonal_expansion API (sample groups and inclusive breakpoints); 10x Genomics, Integrated V(D)J and Gene Expression Analysis in Loupe Browser. Distinct-cell counting, ambiguity and denominator rules are ClonoLoom policies; no inferential test."
+    },
+    "parameters": {
+      "id": "x-c7f5f2882f8a481393d9be8209787893a576daad709415c94bb02f50bbdbab0a",
+      "map": "emap-0fe86973e058204c90fc7cdd",
+      "dataset": "d-8d1404a8ae498dab",
+      "sample": 0,
+      "definition": {
+        "name": "Paired αβ: amino-acid junctions, V and J genes",
+        "chains": [
+          "TRA",
+          "TRB"
+        ],
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "annotation": {
+        "name": "S01-1",
+        "subject": "S01",
+        "tissue": "blood"
+      },
+      "options": {
+        "population": "receptor",
+        "breakpoints": [
+          1,
+          2,
+          5
+        ],
+        "annotation": "state"
+      }
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.6.0",
+        "commit": "6c4f06e157d1fed84ca60f0f796f980257e876cd-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "phenotypes.json",
+      "role": "phenotypes",
+      "size": 90579,
+      "sha256": "86e9944833fb02ee264baef94ba80fb6303316d618f7a79e8c858eee5c4abb35"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "receptor": 360,
+    "eligible": 360,
+    "matched": 359,
+    "expressionOnly": 1,
+    "receptorOnly": 1,
+    "missingBarcodeRows": 0,
+    "mapped": 359,
+    "assigned": 359,
+    "sized": 359,
+    "status": {
+      "Assigned": 359,
+      "No receptor evidence": 1
+    }
+  }
+}

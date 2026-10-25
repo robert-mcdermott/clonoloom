@@ -37,4 +37,5 @@ For expression-derived maps, open **Cells → Use cell-state study**, then **Com
 map**. The UMAP is fitted from counts independently of the example's supplied coordinates.
 Inspect retained/excluded cells, change preprocessing settings explicitly and reopen the saved
 result from Results. [Computed expression maps](EXPRESSION.md) explains the method, defaults,
-limits and provenance. Clonotype overlays follow in the next wave 6 slice.
+limits and provenance. Continue through clone sizes, phenotypes, graph tests, cited methods and AnnData export in the
+[complete single-cell study](https://robert-mcdermott.github.io/clonoloom/docs/cell-study.html).

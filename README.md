@@ -16,9 +16,8 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Current release:** 0.5.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-Single-cell phenotypes and cohort comparisons come in later
-releases.
+**Current release:** 0.6.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+Subject-level cohort comparisons and pseudobulk remain planned for a later release.
 
 **B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an
 explicit threshold, reconstruct D-masked germlines, measure somatic hypermutation, explore
@@ -27,21 +26,14 @@ clonotypes. The [artificial immunization guide](https://robert-mcdermott.github.
 connects the workflow to known truth, exports and cited methods. Likelihood trees, selection
 and switching-event inference remain deferred.
 
-Development on `wave6` adds MEX, 10x HDF5 and selected AnnData/MuData expression inspection,
-scirpy AIRR evidence, exact sample-scoped barcode links,
-supplied cell annotations and imported maps in Cells, with a seeded paired receptor/expression
-study and known cell states. It also adds count normalization, PCA, exact expression
-neighborhoods and computed UMAP artifacts with cited methods and complete provenance
-([computed-map guide](docs/EXPRESSION.md)), plus sample-scoped clone sizes, linked map
-selection and supplied phenotype summaries with explicit denominators
-([phenotype guide](docs/PHENOTYPES.md)), and clonotype connectivity tests on the saved
-expression graph with defined nulls and multiple-testing correction
-([modularity guide](docs/MODULARITY.md)), plus paired-clonotype receptor/expression
-neighborhood comparisons with explicit tie handling and conditional overlap tests
-([CoNGA-style comparison guide](docs/CONGA.md)), and raw-count AnnData export with exact receptor
-links, missing annotations, saved embeddings and provenance
-([AnnData export guide](docs/ANNDATA-EXPORT.md)). These changes target 0.6.0 and are not in the
-published 0.5.0 binary. See the [development Cells guide](docs/site/pages/docs/cells.html).
+**Single cells:** inspect MEX, 10x HDF5 and selected AnnData/MuData counts, annotations,
+embeddings and scirpy AIRR evidence. Link exact barcodes within one receptor sample; compute
+[PCA and UMAP](docs/EXPRESSION.md), inspect [clone sizes and supplied phenotypes](docs/PHENOTYPES.md),
+and test [clonotype connectivity](docs/MODULARITY.md) or compare
+[receptor and expression neighborhoods](docs/CONGA.md) under explicit nulls. Export
+[raw-count AnnData with receptor links](docs/ANNDATA-EXPORT.md), preserving missing values,
+embeddings and provenance. The [complete artificial single-cell study](https://robert-mcdermott.github.io/clonoloom/docs/cell-study.html)
+connects these steps to known populations, scientific limits and cited methods.
 
 ## Features
 
@@ -255,7 +247,7 @@ node docs/site/build.mjs /tmp/site       # the website, every link checked (docs
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.5.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.6.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Example data

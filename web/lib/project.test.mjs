@@ -66,7 +66,31 @@ test('every release\'s saved project still opens, byte for byte (validation/proj
     const project = parseProject(text);
     assert.equal(serializeProject(project), text, v);
     assert.ok(project.datasets.length && project.artifacts.length, v);
-    for (const a of project.artifacts) assert.ok(project.datasets.some((d) => d.id === a.dataset), `${v}: ${a.id}`);
+    for (const a of project.artifacts) {
+      assert.ok(a.kind === 'expression-map'
+        ? project.expression.some((e) => e.id === a.expression)
+        : project.datasets.some((d) => d.id === a.dataset), `${v}: ${a.id}`);
+    }
+  }
+});
+
+test('the single-cell release retains all five results and every pinned parent', () => {
+  const root = new URL('../../validation/projects/0.6.0/', import.meta.url);
+  const project = parseProject(readFileSync(new URL('project.json', root), 'utf8'));
+  assert.equal(project.datasets.length, 1);
+  assert.equal(project.datasets[0].samples.length, 4);
+  assert.equal(project.expression.length, 1);
+  assert.equal(project.expression[0].sample, 0);
+  assert.equal(project.expression[0].sources.length, 4);
+  assert.deepEqual(project.artifacts.map((a) => a.kind), ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export']);
+  const seen = new Set([project.datasets[0].id, project.expression[0].id]);
+  for (const a of project.artifacts) {
+    const manifest = JSON.parse(readFileSync(new URL(`artifacts/${a.id}/manifest.json`, root), 'utf8'));
+    for (const parent of manifest.lineage.parents) {
+      assert.ok(seen.has(parent.id), `${a.kind}: missing or later parent ${parent.id}`);
+      if (!['dataset', 'expression'].includes(parent.kind)) assert.match(parent.sha256, /^[a-f0-9]{64}$/);
+    }
+    seen.add(a.id);
   }
 });
 

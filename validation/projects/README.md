@@ -17,8 +17,9 @@ and make its results again. `go test -run TestEveryReleasesProjectStillOpens .` 
 | 0.2.0 | A small simulated study (two samples) and a VDJtools table read through a mapping | Diversity (two), rarefaction, gene usage, overlap |
 | 0.3.0 | A small simulated CAR-T series: two patients, two samples a week before the infusion and four after it, with their infusion products (14 samples, gzipped, 330 KB) | Diversity, tracking (each product's 10 largest), tests (the week before against two weeks after, the beta-binomial test fitted on the replicates), classes (against the week before), attribution |
 | 0.4.0 | Twelve synthetic paired T cells exercising invariant rules, and 80 simulated beta-chain rows from the 0.2.0 fixture | TCRdist on CDR3s, Hamming networks, generation probabilities under ClonoLoom’s model; saved human invariant rules and sample counts |
-
 | 0.5.0 | 60 paired artificial B cells in six samples of two subjects, and joined synthetic IMGT annotations | Nearest distances, thresholded families, germlines, SHM, lineages, isotypes; a separate IMGT family result |
+
+| 0.6.0 | Four artificial paired receptor/expression samples, per-sample matrices, annotations and separate truth | Computed expression map, phenotypes, modularity, receptor/expression comparison, AnnData export |
 
 ## What a fixture holds
 
@@ -96,3 +97,34 @@ citation as recorded at release time. Replay uses this provenance, not a future 
 catalog citation, and verifies the reference through the resulting artifact identity and bytes.
 The API test reopens IMGT files with their saved grouping and recreates parents before their
 children; the JavaScript test retains all project fields and checks the saved choices and links.
+
+### 0.6.0
+
+Created by `node validation/create-project-0.6.mjs` through the actual seven guided browser
+steps in an isolated library. The complete `cell-states-clouds` study retains two subjects,
+four samples, 1440 expression cells, 2880 receptor chain rows, four matrices, annotations and
+separate truth. Analysis uses S01-1 only: 360 input cells, 359 retained PCA/UMAP cells,
+358 uniquely assigned retained cells and ten paired clones. Five saved results form the chain:
+expression map, phenotypes, modularity, receptor/expression neighborhoods (k = 2, 4, CDR3-only),
+and raw-count AnnData. `cells.h5ad.gz` stores the binary alongside the JSON result documents.
+
+`projects_cells_test.go` runs the current durable workers with each manifest's original job
+specification. `locations.json` maps the original generation directory to `data/`; project
+reopening paths are relative. Replay verifies source hashes and identities before restoring
+only recorded source paths and receptor file modification timestamps for comparison. No counts,
+annotations, geometry, assignments or statistics are replaced. Verified original parent files
+and manifests are then installed for each child, preserving original job IDs, timestamps,
+software version and build identity. AnnData embeds that recorded provenance, so its complete
+binary can be compared byte for byte too. These provenance fields describe the original release,
+not when or where the compatibility test runs. All 23 generated source/truth files are also checked against the study's recorded hashes.
+The JavaScript check retains every project
+field and verifies sample binding, expression identity and the complete ordered parent chain.
+
+Independently check the complete export with:
+
+```sh
+uv run --offline --no-project validation/reference/single_cell_release.py
+```
+
+This uses pinned AnnData/h5py/SciPy public APIs to compare raw MEX counts, annotations, receptor
+links and every supplied/computed embedding row, then verifies an AnnData rewrite.

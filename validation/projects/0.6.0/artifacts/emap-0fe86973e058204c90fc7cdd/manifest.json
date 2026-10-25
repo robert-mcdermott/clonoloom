@@ -1,0 +1,115 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "emap-0fe86973e058204c90fc7cdd",
+  "kind": "expression-map",
+  "name": "Expression map · S01-1",
+  "state": "complete",
+  "created": "2026-10-25T06:34:59.145269Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "expression",
+        "id": "x-c7f5f2882f8a481393d9be8209787893a576daad709415c94bb02f50bbdbab0a"
+      }
+    ],
+    "job": {
+      "id": "jmvngdpyc-2",
+      "kind": "expression-map",
+      "spec": {
+        "id": "x-c7f5f2882f8a481393d9be8209787893a576daad709415c94bb02f50bbdbab0a",
+        "path": "/var/folders/lc/lsy0fn113r9394qmn0xmj5zc0000gn/T/clonoloom-capture-QPPEMz/examples/simulated-cell-states-clouds/expression/S01-1",
+        "cellsPath": "/var/folders/lc/lsy0fn113r9394qmn0xmj5zc0000gn/T/clonoloom-capture-QPPEMz/examples/simulated-cell-states-clouds/expression/S01-1/cells.tsv",
+        "options": {
+          "minGenes": 1,
+          "minCells": 1,
+          "features": 500,
+          "components": 30,
+          "neighbors": 15,
+          "target": 10000,
+          "seed": 20261024,
+          "epochs": 500,
+          "minDist": 0.5
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Expression normalization, PCA, exact neighbors and UMAP",
+      "version": "1",
+      "citation": "Wolf FA, Angerer P, Theis FJ. SCANPY. Genome Biol. 2018;19:15. doi:10.1186/s13059-017-1382-0; Jolliffe IT, Cadima J. Principal component analysis: a review and recent developments. Phil Trans R Soc A. 2016;374:20150202. doi:10.1098/rsta.2015.0202; McInnes L, Healy J, Melville J. UMAP. 2018. doi:10.48550/arXiv.1802.03426. Variance ranking and PCA initialization are ClonoLoom choices."
+    },
+    "parameters": {
+      "options": {
+        "minGenes": 1,
+        "minCells": 1,
+        "features": 500,
+        "components": 30,
+        "neighbors": 15,
+        "target": 10000,
+        "seed": 20261024,
+        "epochs": 500,
+        "minDist": 0.5
+      },
+      "rules": {
+        "cellOrder": "source barcode order",
+        "curveFit": "300 points in [0,3]; Levenberg–Marquardt; a=b=1; 500 iterations; 30 damping trials; relative improvement 1e-14; initial damping 1e-3; damping factor 10; floor 1e-12",
+        "distance": "Euclidean in retained PCA scores",
+        "featureOrder": "feature ID",
+        "features": "Gene Expression only; decreasing sample variance of log-normalized counts; ties by feature ID",
+        "gradientClip": 4,
+        "graph": "UMAP fuzzy union a+b-a*b; local connectivity 1; bandwidth 1",
+        "graphPruning": "weights below maximum weight / epochs are omitted from UMAP optimization only; at 10 epochs use maximum weight / 500",
+        "graphTarget": "log2(other neighbors + 1)",
+        "initialAxisRange": 10,
+        "initialNoiseSD": 0.0001,
+        "initialScale": "largest absolute PCA coordinate to 10, then noise, then each axis to [0,10]",
+        "learningRate": 1,
+        "map": "UMAP; two dimensions; PCA initialization; serial SGD; PCG stream 0",
+        "maxCells": 10000,
+        "maxCovarianceWork": 2000000000,
+        "maxFeatures": 1000,
+        "maxSourceCells": 100000,
+        "minKDistanceScale": 0.001,
+        "minimumCells": 4,
+        "minimumRank": 2,
+        "negativeRate": 5,
+        "neighbors": "exact; excludes self; ties by source barcode order; capped at retained cells minus one",
+        "normalization": "ln(1 + count / (all Gene Expression counts in cell / target)); before feature filtering",
+        "pca": "Householder tridiagonalization and implicit-shift QL; largest absolute loading positive",
+        "pcaMachineEpsilon": 2.220446049250313e-16,
+        "pcaMaxQLIterations": 61,
+        "rankTolerance": 1e-12,
+        "repulsion": 1,
+        "repulsionDistanceOffset": 0.001,
+        "scaling": "center selected features; no variance scaling, clipping, whitening, regression or batch correction",
+        "smoothKIterations": 64,
+        "smoothKTolerance": 0.00001,
+        "spread": 1
+      }
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.6.0",
+        "commit": "6c4f06e157d1fed84ca60f0f796f980257e876cd-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "expression-map.json",
+      "role": "expression-map",
+      "size": 532012,
+      "sha256": "137b1ed9de900b3cd2a283206589c44c587cb3619e313edf0801f43be0f1f694"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "cells": 359,
+    "components": 24,
+    "edges": 3992,
+    "excluded": 1,
+    "features": 24
+  }
+}

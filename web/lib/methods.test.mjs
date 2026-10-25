@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { methodsParagraph, joinList } from './methods.js';
+import { cellResultsForDataset, methodsParagraph, joinList } from './methods.js';
 
 const program = { version: '0.1.0', commit: '96a92f4c0ffee' };
 
@@ -367,4 +367,48 @@ test('isotype methods retain counting unit, ambiguity, parent identity and infer
   const out = methodsParagraph({ dataset: pbmc, results: [r], program });
   for (const word of ['12 assigned observations', 'class resolved for 10', 'constant gene resolved for 8', 'parent-hash', 'observation unit heavy-chain rows', 'abundance unit reads', 'Unresolved', 'once', 'no ancestral-trait or switching statistic']) assert.ok(out.text.includes(word), word);
   for (const doi of ['10.3389/fimmu.2014.00022', '10.7554/eLife.16578', '10.1371/journal.pcbi.1009885']) assert.ok(out.references.join('\n').includes(doi), doi);
+});
+
+test('paired cell-state simulations never inherit the unrelated TRB generative model', () => {
+  for (const model of ['cell-states', 'cell-states-clouds']) {
+    const summary = { samples: [{ repertoire: { studyId: `clonoloom-simulated-${model}`, timePoint: '14 (immunization)' } }] };
+    const { text } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, summary, program });
+    for (const phrase of [model, 'negative-binomial', 'fictional SIM', 'Supplied grid or Gaussian', 'not fitted biology']) assert.ok(text.includes(phrase), phrase);
+    assert.doesNotMatch(text, /GRCh38|Ensembl|power-law|sequenced into reads|varying between samples beyond sampling/);
+  }
+});
+
+test('Cells methods preserve saved settings, IDs and citations independently of current controls', () => {
+  const results = ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export'].map((kind) => ({ id: `${kind}-saved`, kind, method: kind, describe: `Saved ${kind} parameters and population.`, citation: `${kind} primary reference` }));
+  const out = methodsParagraph({ dataset: pbmc, program, results });
+  for (const r of results) {
+    assert.ok(out.text.includes(r.id)); assert.ok(out.text.includes(r.describe));
+    assert.ok(out.references.some((ref) => ref.includes(r.citation)));
+  }
+  assert.doesNotMatch(methodsParagraph({ dataset: pbmc, program }).text, /Saved expression-map/);
+});
+
+test('expression methods follow explicit sample bindings and saved parents, never unrelated inputs', () => {
+  const project = { expression: [{ id: 'x1', dataset: 'd1', sample: 0 }], artifacts: [
+    { id: 'map1', kind: 'expression-map', expression: 'x1' },
+    { id: 'map2', kind: 'expression-map', expression: 'x2' },
+    { id: 'map3', kind: 'expression-map', expression: 'x3' },
+    { id: 'p2', kind: 'phenotypes', dataset: 'd1', expression: 'x2' },
+    { id: 'p3', kind: 'phenotypes', dataset: 'd2', expression: 'x3' },
+  ] };
+  assert.deepEqual(cellResultsForDataset(project, 'd1').map((r) => r.id), ['map1', 'map2', 'p2']);
+  assert.deepEqual(cellResultsForDataset(project, 'missing'), []);
+  const fixture = JSON.parse(readFileSync(new URL('../../validation/projects/0.6.0/project.json', import.meta.url), 'utf8'));
+  assert.deepEqual(cellResultsForDataset(fixture, fixture.datasets[0].id).map((r) => r.kind), ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export']);
+  const summary = { samples: [{ repertoire: { studyId: 'clonoloom-simulated-cell-states-clouds' } }] };
+  const out = methodsParagraph({ dataset: fixture.datasets[0], summary, results: cellResultsForDataset(fixture, fixture.datasets[0].id), program });
+  for (const phrase of ['359 cells', 'Benjamini', 'Bonferroni', 'raw', 'sample S01-1']) assert.ok(out.text.includes(phrase), phrase);
+  assert.doesNotMatch(out.text, /GRCh38|power-law/);
+});
+
+test('a renamed or unknown simulation does not imply the TRB model', () => {
+  const summary = { samples: [{ repertoire: { studyId: 'clonoloom-simulated-my-paired-study', studyTitle: 'My renamed simulation' } }] };
+  const { text } = methodsParagraph({ dataset: { ...pbmc, credits: [] }, summary, program });
+  assert.match(text, /consult each study's saved parameters and truth/);
+  assert.doesNotMatch(text, /GRCh38|power-law|negative-binomial|fictional SIM/);
 });

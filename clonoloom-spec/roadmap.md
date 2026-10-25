@@ -9,15 +9,15 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has a sequence of slices and a detailed plan for
-slices 1–7. Later slices are refined as they come.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has ten implemented slices; slice 10 prepares release 0.6.0.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
 2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
-Wave 6 is underway on `wave6`. Slices 1–6 and the cell-map feedback follow-up are committed;
-slice 7 adds clonotype modularity on the saved expression graph. Version remains 0.5.0 until the release-preparation slice.
+Wave 6 is underway on `wave6`. Slices 1–9 and the cell-map feedback follow-up are committed.
+Slice 10 completes the guided study, compatibility fixture and release checks. Version is 0.6.0;
+commit, merge, tag, release and site publication remain with the maintainer.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2018,7 +2018,7 @@ verification, cache identity, cancellation/resumption and portable download with
 supports preparing, keeping, undoing, reopening and downloading exports; the remote action and
 sixth cloud-study guide step exercise the same path. Keep the application version at 0.5.0.
 
-**Done, awaiting the maintainer's commit.** AnnData/h5py independently read every sparse count,
+**Done, committed as `6c4f06e`.** AnnData/h5py independently read every sparse count,
 cell/feature identity, Unicode label, missing code and embedding row; AnnData's own writer
 rewrites the object without changing those values. The oracle pins AnnData 0.12.6, h5py 3.15.1,
 NumPy 2.4.2, SciPy 1.17.0 and pandas 2.3.3. Its deterministic Go fixture hash is
@@ -2039,8 +2039,70 @@ All nine Cells scenes pass in both themes, including visible/remote export equiv
 download, undo/redo and source-free saved reopening. Both export screenshots were visually
 inspected. The site builds 34 pages with 40 screenshot sets and passes all 132 accessibility/
 overflow checks. Unrelated performance budgets, skipped under race detection, were not rerun.
-Version remains 0.5.0; slice 10 has not started.
+Version remained 0.5.0 for slice 9.
 
+
+### Slice 10: complete study and release 0.6.0 preparation
+
+**Scope (E3, O2, N7).** Finish the artificial single-cell workflow and its methods, retain a
+portable release project and the complete result chain, reconcile documentation and release
+identifiers, refresh visuals, and validate scientific correctness, performance and accessibility.
+The maintainer owns commit, PR/merge, tag, release and product-site publication.
+
+**Settled contract.** Keep supplied Gaussian coordinates distinct from computed PCA/UMAP.
+Document all populations and missingness: S01-1 has 360 expression cells, 359 retained map cells,
+358 uniquely assigned retained cells, ten paired clone profiles and 20 comparison tests at
+k = 2, 4. All 360 cells remain in raw-count AnnData. Uniform connectivity and conditional
+neighbor-overlap nulls are exploratory; corrected tests do not remove confounding or establish
+antigen specificity. Subject-level inference remains wave 7. No scientific algorithm changes.
+
+**Implementation.** Seven guided steps now end with cited methods. Correct the cell-state
+simulator's methods, which previously inherited the unrelated TRB model; include saved Cells
+results through explicit expression bindings or this dataset's saved phenotype/graph/export
+results. Preserve their Go-generated descriptions, effective choices and citations. Check
+both simulation variants, real fixture metadata, empty methods and unrelated dataset isolation.
+Unknown or renamed simulation identifiers no longer inherit a TRB generative-model claim.
+The complete-study accessibility audit found invalid tablist separators and empty list semantics;
+fix those and preserve native button roles inside list-item wrappers.
+
+The 0.6.0 fixture is generated through the actual guide in an isolated library: all four
+samples, matrices, annotations, separate truth and five saved results. Current durable workers
+remake the chain under the same IDs. Source paths and file mtimes are restored to original
+provenance only after content/identity checks; scientific values are never substituted.
+Verified original parent manifests preserve their job IDs, timestamps and software identity.
+The complete AnnData binary, including that provenance, is compared byte for byte. Independent
+AnnData/SciPy validation checks the release matrix, labels, links and all embedding rows, then
+rewrites it through AnnData and checks again.
+
+Version identifiers, changelog, citation, format references and product-site sources move to
+0.6.0. The worked study explains expected results, plots, null assumptions, source retention,
+exports and reopening; earlier release fixtures and simulation identities remain unchanged.
+
+**Done, awaiting the maintainer's commit.** Full application/internal race tests pass (root
+17.070 s); final focused release/source/example checks pass after the fixture validation changes.
+The complete required-data scientific suite passes with race detection (790.910 s) and without
+it (257.710 s, performance tests separated). All released projects replay; the 0.6.0 chain and
+AnnData binary agree on native arm64 and amd64. Both the small independent export oracle and
+the full-release AnnData read/rewrite check pass. All 23 study source/truth hashes agree.
+
+Six isolated performance budgets pass (69.308 s total): one million rows read/validated in
+1.5 s at 58 bytes per row plus junctions; a 100-sample cached cohort reopened in 122 ms; a
+searched clonotype page in 38.304 ms; 10,000 receptor neighborhoods in 1.141 s; one million
+Pgen values in 30.826 s; 100,000 paired-TCR neighborhoods in 27.025 s (last three on 10
+processors). The separate public 10x expression-map check passes in 4.75 s: 1222 cells,
+500 selected features, 30 PCs and 13678 graph edges, with finite coordinates and complete
+population accounting. These are local measurements, not universal hardware promises.
+
+Vet, formatting/diff checks, six CGO-free platform builds, 113 JavaScript tests, 14 contrast
+checks and shell-installer syntax pass. PowerShell is not installed locally; its parser check
+remains CI's responsibility. All 41 browser scenes pass in both themes. The complete study
+checks all guided actions, methods/citations and saved-result reopening; axe-core finds no
+WCAG A/AA violations in populated and empty projects after the navigation fixes. All 82
+screenshots are refreshed, and the new study plus map/graph-test visuals are inspected.
+The site builds 35 pages with 41 screenshot sets and passes 136 accessibility/overflow checks.
+The link-preview image is regenerated; its bytes are unchanged because its crop is unchanged.
+
+No commit, tag, release or site publication was performed. Wave 7 has not started.
 
 ## Later waves (outlined)
 

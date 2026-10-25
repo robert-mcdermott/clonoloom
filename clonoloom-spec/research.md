@@ -1807,3 +1807,29 @@ Independent public AnnData/h5py reader and rewrite validation checks a reordered
 fixture with a zero-count cell, excluded map row, missing/literal annotations, Unicode and counts
 beyond float32 precision. No incompatible-licensed implementation source was inspected or copied.
 See [AnnData export schema and validation](../docs/ANNDATA-EXPORT.md).
+
+### Wave 6 release review (0.6.0)
+
+The release walkthrough keeps three distinct geometries visible: supplied illustrative
+coordinates, computed UMAP coordinates and the PCA neighborhoods used for graph statistics.
+The source review reconfirmed the [UMAP paper](https://arxiv.org/abs/1802.03426),
+[scirpy's documented modularity API](https://scirpy.scverse.org/en/latest/generated/scirpy.tl.clonotype_modularity.html),
+[CoNGA paper](https://doi.org/10.1038/s41587-021-00989-2) and
+[AnnData on-disk specification](https://anndata.readthedocs.io/en/stable/fileformat-prose.html).
+No external implementation source was consulted. No scientific algorithm changes in slice 10:
+ClonoLoom's declared population, tie, null and correction policies remain as settled above.
+
+The generated methods previously treated paired cell-state metadata as the older TRB simulation
+and omitted saved Cells results. It now names the actual paired-state study and its artificial
+negative-binomial/SIM-receptor assumptions, distinguishes illustrative coordinates from computed
+maps, and quotes Go-generated saved descriptions/citations for all five Cells result kinds.
+Regression checks use the release fixture's actual metadata and explicit dataset/input bindings;
+unknown/renamed study identifiers do not imply a generative model.
+The complete guide retains missing values and the correct populations; significance does not
+establish antigen specificity or remove confounding, and cells remain observations within subjects.
+
+The independent `validation/reference/single_cell_release.py` reads the complete 0.6.0 AnnData
+binary using the pinned public AnnData/SciPy APIs, compares every raw count and identity against
+MEX, every label against cells.tsv, every assignment and coordinate against its saved parent,
+and then rewrites/reopens the object. This supplements the independently specified small export
+oracle, numerical references and synthetic null controls; it is not a biological performance claim.

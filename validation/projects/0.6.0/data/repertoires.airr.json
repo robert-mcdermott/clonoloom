@@ -1,0 +1,196 @@
+{
+  "Repertoire": [
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.6.0"
+        }
+      ],
+      "repertoire_id": "S01-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRA"
+            },
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-1",
+          "single_cell": true,
+          "template_class": "RNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-cell-states-clouds",
+        "study_title": "An artificial paired T-cell and expression study with supplied Gaussian clouds"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "artificial cell states"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.6.0"
+        }
+      ],
+      "repertoire_id": "S01-2",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRA"
+            },
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-2",
+          "single_cell": true,
+          "template_class": "RNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-cell-states-clouds",
+        "study_title": "An artificial paired T-cell and expression study with supplied Gaussian clouds"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "artificial cell states"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.6.0"
+        }
+      ],
+      "repertoire_id": "S02-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRA"
+            },
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-1",
+          "single_cell": true,
+          "template_class": "RNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-cell-states-clouds",
+        "study_title": "An artificial paired T-cell and expression study with supplied Gaussian clouds"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "artificial cell states"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.6.0"
+        }
+      ],
+      "repertoire_id": "S02-2",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRA"
+            },
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-2",
+          "single_cell": true,
+          "template_class": "RNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-cell-states-clouds",
+        "study_title": "An artificial paired T-cell and expression study with supplied Gaussian clouds"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "artificial cell states"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    }
+  ]
+}

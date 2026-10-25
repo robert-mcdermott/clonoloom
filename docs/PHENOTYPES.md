@@ -4,7 +4,7 @@ In **Cells**, open expression evidence with an explicit receptor dataset and sam
 **Clonotypes and phenotypes**, choose imported coordinates or a saved computed map of that
 same expression input. Choose a supplied annotation such as cluster, cell type or state,
 a size population and inclusive size breakpoints, then **Compute clonotype phenotypes**.
-The cell-state study includes a guided example. This feature is in development for 0.6.0.
+The cell-state study includes a guided example. Available in ClonoLoom 0.6.0.
 
 ## What is counted
 

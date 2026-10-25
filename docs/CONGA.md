@@ -1,6 +1,6 @@
 # Receptor / expression neighborhood comparison
 
-Development feature for 0.6.0 (wave 6, slice 8); application version remains 0.5.0.
+Available in ClonoLoom 0.6.0.
 
 ## Workflow
 

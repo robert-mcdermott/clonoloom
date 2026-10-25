@@ -397,3 +397,14 @@ separate example directory. Its first sample has 359 receptor matches, one expre
 one receptor-only barcode, 359 matching annotation rows, one annotation-only row and 358 mapped
 cells. Run the same independent reference script on this study to generate
 `validation/reference/cell_states_clouds.json`; the original reference remains untouched.
+
+### Complete guided workflow (0.6.0)
+
+The cloud example's seven steps cover source inspection, computed expression PCA/UMAP,
+clonotype phenotypes, graph modularity, receptor/expression neighborhood comparison,
+AnnData export and cited methods. The [worked study](https://robert-mcdermott.github.io/clonoloom/docs/cell-study.html)
+states expected populations, missingness, null assumptions, exports and saved reopening.
+The release fixture retains all four samples and separate truth; analysis uses S01-1 only.
+Its 360 input cells yield 359 retained map cells, 358 uniquely assigned retained cells,
+ten clone profiles and 20 comparison tests at k = 2, 4. All 360 cells remain in the raw-count
+export. Those numbers check a fixed artificial workflow, not biological accuracy.

@@ -22,7 +22,7 @@ import { createProject, isEmptyProject, parseProject, rename, serializeProject }
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
-const VERSION = '0.5.0';
+const VERSION = '0.6.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -142,7 +142,7 @@ async function start() {
     clear(rail);
     for (const mode of MODES) {
       if (mode === 'sep') {
-        rail.append(h('span.rail-sep', { role: 'separator' }));
+        rail.append(h('span.rail-sep', { role: 'presentation', 'aria-hidden': 'true' }));
         continue;
       }
       if (mode.hidden) continue;

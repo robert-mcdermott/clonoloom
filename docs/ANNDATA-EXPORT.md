@@ -1,6 +1,6 @@
 # AnnData export with receptor links
 
-Development for 0.6.0 (wave 6, slice 9); the published 0.5.0 application does not include this.
+Available in ClonoLoom 0.6.0.
 
 In **Cells**, compute or open **Clonotype phenotypes**, then choose that result under
 **AnnData export** and press **Prepare AnnData export**. Both supplied-coordinate phenotypes

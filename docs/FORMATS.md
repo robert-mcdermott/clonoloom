@@ -491,7 +491,7 @@ Saved inspection does not require the input or parent files; exporting follows n
 access and data-use terms. Versioned isotype choices and normalized annotations travel in the
 analysis identity; unrelated active QC, clonotype and diversity settings do not.
 
-## 10x feature-barcode MEX (wave 6, slice 1; development)
+## 10x feature-barcode MEX (0.6.0)
 
 Expression is separate from rearrangement tables. **Cells** reads a selected MEX directory:
 `matrix.mtx[.gz]`, `features.tsv[.gz]` and `barcodes.tsv[.gz]`, or legacy two-column
@@ -513,10 +513,10 @@ file and source bytes to 1 GiB per file. Unsupported encodings and corrupt/trunc
 The source is streamed and fingerprinted read-only; a project saves its paths and SHA-256 values.
 Reopening verifies identity. Barcode links require an explicit receptor dataset/sample and keep
 suffixes exactly. Matching counts raw source evidence before QC, never inferred clonotypes.
-AnnData/MuData and 10x HDF5 are described below. See the development
+AnnData/MuData and 10x HDF5 are described below. See the
 [Cells guide](site/pages/docs/cells.html) and `testdata/expression-mex/` for a synthetic example.
 
-## 10x feature-barcode HDF5 (wave 6, slice 3; development)
+## 10x feature-barcode HDF5 (0.6.0)
 
 Cells accepts an explicitly selected HDF5 file in the same path field as a MEX directory.
 The schema follows [10x's HDF5 documentation](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-h5-matrices):
@@ -566,7 +566,7 @@ and independently reconstruct every value in `validation/reference/expression_hd
 The compressed offline example has the same evidence as the MEX example. These are format
 tests, not a biological expression model or an HDF5 conformance claim.
 
-### Cell annotations and imported coordinates (wave 6, slice 2; development)
+### Cell annotations and imported coordinates (0.6.0)
 
 An explicitly selected plain/gzip TSV can accompany one expression matrix. The first column
 is `barcode`; other columns are text annotations except reserved `map_x` and `map_y`, which
@@ -589,7 +589,7 @@ never discovered implicitly, so adding an unselected file leaves existing MEX-on
 unchanged. A changed selected annotation file fails saved reopening. Coordinates are imported
 evidence; no UMAP, normalization, clustering or cell-type assignment is performed.
 
-## AnnData and MuData (wave 6, slice 4; development)
+## AnnData and MuData (0.6.0)
 
 The Cells path field also accepts `.h5ad` and `.h5mu`. Open **AnnData / MuData selections**
 and supply the **Count matrix** (`X` or `layers/<name>`). MuData also requires an **Expression
@@ -660,7 +660,7 @@ pandas 2.3.3 and scirpy 0.25.1. It uses public APIs, with no donor data or third
 values. The **Use AnnData example** button works offline; its `X_umap` coordinates are
 artificial illustration points, not a computed UMAP or a biological validation dataset.
 
-## Clonotype phenotype results (wave 6, slice 6; development)
+## Clonotype phenotype results (0.6.0)
 
 `GET /api/phenotypes/{id}` returns an `artifact` manifest and a `result` document with
 `format: "clonoloom-phenotypes"`, `version: 1`. It records expression and receptor source
@@ -679,7 +679,7 @@ Source axes and positions are copied, never combined across maps or samples. Res
 pin the input, map checksum, dataset/sample, definition meaning, QC rules, metadata, options and
 method version. [Full population and denominator rules](PHENOTYPES.md).
 
-## Clonotype modularity results (wave 6, slice 7; development)
+## Clonotype modularity results (0.6.0)
 
 `GET /api/modularity/{id}` returns `{artifact, result}`. The result has
 `format: "clonoloom-modularity"`, `version: 1`, its description, the complete `phenotypes`
@@ -703,7 +703,7 @@ weights and UMAP coordinates are not test inputs. Identity includes both parent 
 normalized options and method version. [Full method and limits](MODULARITY.md).
 
 
-## AnnData export (wave 6, slice 9; development)
+## AnnData export (0.6.0)
 
 Cells prepares a checksum-verified `.h5ad` from a saved phenotype result. `X` is raw integer
 CSR with every input cell and feature modality; excluded cells retain their counts and have

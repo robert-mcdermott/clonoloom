@@ -1,6 +1,38 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 (2026-10-24)
+
+### Added
+
+- **Complete single-cell study and release preparation (wave 6, slice 10).** Connect the
+  seven guided steps through supplied coordinates, computed maps, phenotype links, graph tests,
+  AnnData export and cited methods. Correct the cell-state simulator's methods description and
+  include saved Cells results with their recorded parameters and references; leave unknown
+  simulation models unspecified. Repair sidebar list/button and decorative tab-separator
+  semantics found by the complete-study accessibility check. Preserve the full
+  four-sample artificial study and five-result chain as the 0.6.0 compatibility fixture, including
+  exact replay of the AnnData bytes with recorded provenance. Update release identifiers, guides,
+  screenshots and the product-site sources; validate scientific references, release compatibility,
+  performance, accessibility and supported builds. Pass full race/non-race scientific suites,
+  arm64/amd64 release replay, six isolated performance budgets and platform builds, 113 JavaScript
+  tests, 41 browser scenes in both themes, 14 contrast checks and 136 site audit checks.
+
+- **AnnData export with receptor links (wave 6, slice 9).** Write bounded int64 CSR raw counts
+  for all expression cells and selected feature modalities, including explicit zero counts and
+  excluded cells. Preserve sample-scoped receptor assignments, annotations, missing values,
+  separate supplied/computed embeddings, parent documents and manifests, source fingerprints
+  and NOTICE. Add verified durable jobs, portable downloads and saved reopening. Independently
+  read and rewrite the export with AnnData/h5py, including Unicode, exact integers and missing
+  coordinate rows. The versioned ClonoLoom receptor-link schema is not scirpy's raw AIRR encoding.
+
+- **Receptor and expression neighborhoods (wave 6, slice 8).** Compare paired clonotypes using
+  mean expression PCs and explicit paired TCRdist settings. Exclude shared alpha/beta CDR3s,
+  retain cutoff ties, use actual degrees for conditional hypergeometric tails and correct across
+  every testable clone and neighborhood size with Bonferroni. Preserve untested cases, extreme
+  log tails, source-compatible receptor snapshots and parent/reference hashes. Add observed/
+  expected plots, accessible tables and parent-overlay links. Validate geometry and probabilities
+  independently with SciPy and exhaustive controls. This CoNGA-style comparison does not implement
+  the complete CoNGA pipeline or establish antigen specificity; confounding remains explicit.
 
 - **Clonotype modularity (wave 6, slice 7).** Test one sample's predefined clonotypes on a
   checksum-pinned expression-neighbor graph. Count induced binary edges among uniquely
@@ -10,7 +42,7 @@
   a discrete null-frequency plot, accessible tables, parent-overlay links, JSON export, remote
   control and a guided artificial study. Independently validate exact subgraphs, Monte Carlo
   frequencies and adjusted p-values. State exchangeability and confounding limits explicitly;
-  graph connectivity does not establish antigen specificity. Version stays 0.5.0.
+  graph connectivity does not establish antigen specificity.
 
 - **Clonotype overlays and phenotypes (wave 6, slice 6).** Link one receptor sample to an
   imported or computed expression map using exact barcodes and saved definition/QC rules.
@@ -20,8 +52,7 @@
   counts and fractions with visible denominators and subject/timepoint boundaries. Save cited,
   immutable artifacts with source and map checksums, remote control and complete JSON exports.
   Add linked clonotype highlighting, brushing, searchable tables, selection undo and a guided
-  example. Validate against independent SQL tabulations and synthetic edge cases. Version
-  stays 0.5.0.
+  example. Validate against independent SQL tabulations and synthetic edge cases.
 
 - **Computed expression maps (wave 6, slice 5).** Add explicit gene-count normalization,
   variance-ranked feature selection, centered PCA, exact Euclidean neighbors, a saved fuzzy
@@ -30,7 +61,7 @@
   Cells settings and computed maps, accessible inspection tables, saved reopening, JSON export,
   remote control and a guided artificial-study step. Independently validate feature moments,
   PCA, neighbors, graph weights, curve fitting, simulated-state recovery and map quality;
-  pin processor-independent result bytes. Version stays 0.5.0.
+  pin processor-independent result bytes.
 
 - **AnnData and MuData evidence (wave 6, slice 4).** Read explicitly selected dense/CSR/CSC
   count matrices, obs/var annotations, supplied embeddings and scirpy AIRR chain records.
@@ -39,8 +70,7 @@
   saved inputs; refuse ambiguous selections, normalized/fractional counts and malformed data.
   Extend the bounded HDF5 reader with attributes, variable strings, numeric matrices and
   boolean enums. Add variable/AIRR inspection pages, source-aware axes, an offline example,
-  remote control and independent AnnData/MuData/Awkward fixtures. Computed maps and clonotype
-  phenotypes remain later slices; version stays 0.5.0.
+  remote control and independent AnnData/MuData/Awkward fixtures.
 
 - **10x HDF5 expression evidence (wave 6, slice 3).** Read a selected feature-barcode HDF5
   file into the existing sparse Cells model, retaining feature modalities, explicit zeros,
@@ -49,10 +79,7 @@
   shuffle and Fletcher32. Verify checksums and reject unsupported storage, malformed CSC,
   unsafe counts and missing chunks. Fingerprint the complete file and verify saved reopening
   without changing MEX identities. Add an offline compressed example, remote control, browser
-  checks and independently generated h5py/SciPy fixtures. AnnData/MuData are added in slice 4;
-  version stays 0.5.0.
-
-### Added
+  checks and independently generated h5py/SciPy fixtures.
 
 - **Cells map feedback.** Show missing annotations in outlined neutral gray above overlapping
   points, without changing source coordinates or categorical colors. Label both supplied axes.
@@ -67,8 +94,7 @@
   Pin the optional source in the expression identity without changing MEX-only identities.
   Add bounded annotation inspection, a supplied-coordinate map, accessible source-value tables,
   saved reopening, remote control and an offline guided example. Independent SciPy and truth
-  checks cover every simulated matrix value and source population. Computed maps and clonotype
-  phenotypes remain later slices; version stays 0.5.0.
+  checks cover every simulated matrix value and source population.
 
 - **MEX expression evidence (wave 6, slice 1).** Read plain/gzipped 10x feature-barcode
   matrices and legacy genes.tsv into a bounded sparse model. Preserve feature types, explicit
@@ -77,8 +103,7 @@
   from chain rows and reporting both unmatched populations. Add Cells with bounded inspection,
   gene-only UMI totals, null measurements when genes are absent, saved reopening with drift
   detection, remote control and an offline artificial example. Independently validate sparse
-  values with SciPy and coverage with set-based counts. Plan the remaining wave 6 slices;
-  HDF5 readers, maps, phenotypes and graph comparisons follow later. Version stays 0.5.0.
+  values with SciPy and coverage with set-based counts.
 
 ## 0.5.0 (2026-10-23)
 

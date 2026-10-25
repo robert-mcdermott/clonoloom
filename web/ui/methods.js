@@ -5,7 +5,7 @@
 import { h, icon } from './dom.js';
 import { showDialog, toast } from './overlays.js';
 import { clonotypePage, datasetQC } from './storage.js';
-import { methodsParagraph } from '../lib/methods.js';
+import { cellResultsForDataset, methodsParagraph } from '../lib/methods.js';
 import { datasetFilter } from '../lib/filters.js';
 import { datasetDefinition } from '../lib/definitions.js';
 import { resultsOf } from '../lib/results.js';
@@ -43,6 +43,7 @@ export async function showMethods(app, dataset) {
   // A dataset recorded before its files were known as public data takes their credits now.
   const credited = dataset.credits?.length ? dataset : { ...dataset, credits: summary.credits ?? [] };
   const results = ['diversity', 'rarefaction', 'usage', 'overlap', 'tracking', 'expansion', 'classes', 'attribution', 'tcrdist', 'pgen', 'neighborhoods', 'families', 'germlines', 'shm', 'lineages', 'isotypes'].flatMap((kind) => resultsOf(store.project, dataset.id, kind));
+  results.push(...cellResultsForDataset(store.project, dataset.id));
   const { text, references } = methodsParagraph({ dataset: credited, summary, filter, filterResult, definition, clonotypes, results, program: { version: app.version, commit: app.commit } });
   const all = `${text}\n\nReferences\n${references.join('\n')}`;
   showDialog({

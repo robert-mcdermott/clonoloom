@@ -187,7 +187,7 @@ Saved inspection uses pinned labels and requires neither parent nor source files
 `GET /api/export?what=result&artifact={id}` exports all tables, full JSON, manifest and notice,
 independent of page filters, under the normal source-access and data-use conditions.
 
-### Expression evidence (wave 6, slice 1; development)
+### Expression evidence (0.6.0)
 
 `inspect_expression` opens a MEX directory or 10x HDF5 file in Cells and saves its source fingerprints and
 binding. Give `path`, `dataset` (ID or name) and an explicit zero-based `sample` index. Give
@@ -278,7 +278,7 @@ resumption. `GET /api/expression-map/{id}` verifies and returns the manifest and
 result, without requiring the source files. See [EXPRESSION.md](EXPRESSION.md) for methods,
 populations, numerical limits and the meaning of the exported graph.
 
-### Clonotype overlays and phenotypes (development)
+### Clonotype overlays and phenotypes (0.6.0)
 
 After `inspect_expression` opens an input with a receptor dataset/sample binding, call
 `compute_cell_phenotypes` with optional `map` (a computed expression-map artifact ID; empty for
@@ -291,7 +291,7 @@ exports the full result with provenance. The corresponding POST endpoint accepts
 its exact `name`), `options` and optional `start:false` for lookup. The `options.annotation`
 column is distinct from the request's sample `annotation` metadata. No samples are pooled.
 
-### Clonotype modularity (development)
+### Clonotype modularity (0.6.0)
 
 `compute_cell_phenotypes` also accepts `map:"latest"` to choose the latest saved computed map
 for the open expression input; it fails if none exists. The returned artifact still pins its
@@ -310,7 +310,7 @@ and resumption. Both saved parents are verified; raw source files need not be re
 requiring parents or sources. See [MODULARITY.md](MODULARITY.md) for the tested population,
 exchangeability assumption, binary edges, exact/Monte Carlo tails, BY correction and work bounds.
 
-### Receptor / expression comparison (development)
+### Receptor / expression comparison (0.6.0)
 
 `compare_receptor_expression` accepts `{phenotypes, options}`. Omitted `phenotypes` uses the
 displayed phenotype result. It must use a computed map and paired primary αβ amino-acid
@@ -329,7 +329,7 @@ support cancellation/resumption without reopening raw expression/receptor files.
 conditional null, tie handling, Bonferroni family and bounds: [CONGA.md](CONGA.md).
 
 
-### AnnData export (development)
+### AnnData export (0.6.0)
 
 `export_anndata` accepts `{phenotypes}`; omission uses the displayed phenotype result. It
 prepares and saves the export, returning its artifact ID and population. Download it in Cells.
