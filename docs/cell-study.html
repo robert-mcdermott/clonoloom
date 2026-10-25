@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A complete single-cell study · ClonoLoom</title>
+  <meta name="description" content="Work from artificial paired receptor and expression evidence to maps, phenotype summaries, graph tests, cited methods and AnnData export." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/cell-study.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="A complete single-cell study" />
+  <meta property="og:description" content="Work from artificial paired receptor and expression evidence to maps, phenotype summaries, graph tests, cited methods and AnnData export." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/cell-study.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html">Specificity databases</a></li>
+        </ul>
+        <h4>Cells</h4>
+        <ul>
+          <li><a href="cell-study.html" aria-current="page">A complete study</a></li>
+          <li><a href="cells.html">Expression evidence</a></li>
+        </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>A complete single-cell study</h1>
+      <p class="doc-lede">Follow one sample through seven guided steps, checking populations and missing evidence at each step. The known truth tests the workflow; it does not establish biological discoveries.</p>
+
+<h2 id="start">Start with the artificial study</h2>
+<p>Open <strong>Examples → A paired cell-state study with supplied Gaussian clouds</strong>, generate it locally, and open its receptor data. Follow the seven guided steps. No reference download is required. The preset <code>cell-states-clouds</code> uses seed 20261028 and model <code>clonoloom-artificial-cell-states-clouds-v1</code>: two subjects, two samples each, 360 expression cells per sample, ten paired TRA/TRB clones per subject and 24 artificial genes. Gene calls are fictional SIM calls. Data and separate truth may be shared without restriction.</p>
+<p>The first sample, <code>S01-1</code>, is used throughout. Repeated barcodes in other samples never join across sample boundaries. Counts follow a chosen negative-binomial state model; supplied Gaussian clouds illustrate the known states. Neither is fitted to biological data. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/SIMULATION.md">complete generative rules</a>.</p>
+<h2 id="steps">Follow the seven steps</h2>
+<ol>
+<li><strong>Inspect supplied cell-state clouds.</strong> Check 360 expression cells, 359 raw receptor matches, one expression-only and one receptor-only barcode. There are 359 matching annotation rows, one annotation-only row and 358 supplied coordinate pairs. Missing labels are gray. These source coordinates are not UMAP; their axes are <code>map_x</code> and <code>map_y</code>.</li>
+<li><strong>Compute expression neighborhoods and UMAP.</strong> The all-zero cell is excluded, leaving 359 retained cells. Inspect selected genes, PCA and the graph in the saved result. Normalization uses all Gene Expression features; variable genes are ranked by sample variance, centered without scaling, then reduced by PCA. The exact PCA neighborhoods drive the graph and seeded UMAP. Source coordinates and labels do not enter the fit.</li>
+<li><strong>Link clonotypes and supplied phenotypes.</strong> Keep the paired definition, sample and QC visible. Inspect 358 uniquely assigned retained cells in ten clones. Switch between clone size, size category, pairing and state; select a clone or brush cells to inspect its members. The phenotype population still includes all 360 expression cells, including the cell excluded from the map. Receptor-sample and mapped size populations have different denominators.</li>
+<li><strong>Test clonotype connectivity.</strong> Inspect ten tested clones on the induced binary expression graph. Read observed internal edges, the analytic size-matched expectation, the discrete null-frequency plot and Benjamini–Yekutieli adjusted p-values. Small nulls are enumerated; larger ones use the recorded Monte Carlo seed and draw count. Isolates stay in the population. This is connectivity in the PCA-neighbor graph, not proximity on UMAP.</li>
+<li><strong>Compare receptor and expression neighborhoods.</strong> Ten paired-clonotype mean-PC profiles produce 20 tests at requested neighborhood sizes 2 and 4. This fictional offline example explicitly uses CDR3-only TCRdist. Inspect shared-chain exclusions, inclusive cutoff ties, actual degrees, observed/expected overlap and Bonferroni adjustment across all testable clone–size pairs. An untestable comparison is missing, not zero overlap.</li>
+<li><strong>Export linked cells as AnnData.</strong> Prepare and download the ZIP from Cells. It contains <code>cells.h5ad</code>, the export record, manifest and NOTICE. The matrix retains all 360 cells, 24 features and 7514 stored sparse entries. There are 358 supplied and 359 computed coordinate pairs. The zero-count cell remains; its computed coordinates are NaN. The three embeddings keep supplied coordinates, all saved PCs and computed UMAP distinct.</li>
+<li><strong>Read the study methods and references.</strong> The paragraph identifies the artificial model and each saved analysis with its parameters and citations. Copy it with its references, then close the dialog. Save the project and reopen each kept result from Results to verify its identity.</li>
+</ol>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cell-study-dark.webp" width="2000" height="1250" loading="lazy" alt="Computed UMAP of the artificial single-cell study, with all five results saved in the project" /><img class="shot-light" src="../assets/img/cell-study-light.webp" width="2000" height="1250" loading="lazy" alt="Computed UMAP of the artificial single-cell study, with all five results saved in the project" /></div>
+        <figcaption>The map retains 359 cells, while AnnData keeps all 360 input cells. Supplied coordinates, computed maps and graph statistics remain separate saved evidence.</figcaption>
+      </figure>
+<h2 id="interpretation">Interpret the plots and tests</h2>
+<p>Both map axes have equal scale. Missing annotations remain neutral gray, and missing coordinates are not placed at zero. State labels in this benchmark are supplied truth-derived annotations; the application does not infer those labels. UMAP is an exploratory view: distances between islands, island sizes and their orientation are not effect sizes or evidence of antigen specificity.</p>
+<p>Modularity tests a uniform size-matched grouping null. Receptor/expression comparison tests a conditional neighbor-overlap null. Cell state, receptor genes retained in expression PCs and other confounding can violate exchangeability or directly couple the two representations. Adjusted p-values address the stated test family; they do not remove those biases. Viewing fewer rows or selecting points does not redefine that family. Cells are observations, not independent subjects; subject-level comparisons and pseudobulk are deferred.</p>
+<p>The expected counts above are regression checks for this preset and seed. Artificial clone–state associations validate bookkeeping and known calculations, not biological performance. The original integer-grid preset remains available as an overlap/missingness test.</p>
+<h2 id="save">Save, inspect and reuse</h2>
+<p>A project records source locations and saved results; it is not a self-contained archive of every source file. Keep the generated study directory and application library. Existing saved results reopen without rerunning their analyses; recomputing or preparing a new export requires the verified source inputs. Download complete JSON records as well as figures, retaining graph edges, memberships, null frequencies, parameters, hashes and citations.</p>
+<p>Read exported AnnData using the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/ANNDATA-EXPORT.md">documented ClonoLoom columns and provenance</a>. The export is a receptor-link schema, not scirpy raw AIRR chains. Reimporting it as a new expression source does not recreate the original saved analyses. Raw counts require explicit downstream preprocessing.</p>
+<h2 id="methods">Methods and independent checks</h2>
+<p>The workflow follows cited <a href="https://doi.org/10.1186/s13059-017-1382-0">Scanpy preprocessing principles</a>, <a href="https://doi.org/10.1098/rsta.2015.0202">PCA</a>, <a href="https://arxiv.org/abs/1802.03426">UMAP</a>, the <a href="https://scirpy.scverse.org/en/latest/generated/scirpy.tl.clonotype_modularity.html">documented scirpy connectivity score</a>, and a declared <a href="https://doi.org/10.1038/s41587-021-00989-2">CoNGA-style graph comparison</a>. ClonoLoom-specific population, tie, expectation and correction choices are recorded rather than claimed to reproduce a complete external pipeline.</p>
+<p>SciPy and independent tabulations check counts, PCA/neighbors, phenotype denominators and graph-test probabilities. AnnData and h5py independently read and rewrite the exported schema. The <a href="https://github.com/robert-mcdermott/clonoloom/tree/main/validation/projects/0.6.0">release fixture</a> retains the four-sample study, separate truth and all five results. Current workers reproduce each document and the AnnData binary, preserving recorded provenance after checking relocated sources. See <a href="../science.html#single-cells">Science</a> and the <a href="cells.html">Cells reference guide</a>.</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="database.html"><span>Previous</span>Specificity databases</a>
+        <a class="next" href="cells.html"><span>Next</span>Expression evidence</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

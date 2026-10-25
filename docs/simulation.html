@@ -83,6 +83,11 @@
           <li><a href="networks.html">Clonotype networks</a></li>
           <li><a href="database.html">Specificity databases</a></li>
         </ul>
+        <h4>Cells</h4>
+        <ul>
+          <li><a href="cell-study.html">A complete study</a></li>
+          <li><a href="cells.html">Expression evidence</a></li>
+        </ul>
         <h4>B cells</h4>
         <ul>
           <li><a href="bcell-inputs.html">Sequence evidence</a></li>
@@ -179,6 +184,9 @@
       </figure>
       <p>Generate <strong>A simulated vaccination study with known specificities</strong> in Examples. Its six steps show subjects, test the week before against day 14, class transient clonotypes, follow them, match the generated database by exact CDR3 and V/J, then follow a matched vaccine epitope. The database is intentionally incomplete: the matching receptors represent only part of the simulated response, and some chance matches remain.</p>
       <p>The <strong>Epitope-specific TCRs of Dash et al. 2017</strong> example has two steps for each of its mouse and human openings: compare paired CDR3s at TCRdist 24 and connect all-chain matches into a network. Samples retain the known tetramer epitope and donor. The steps explicitly compare CDR3s alone, so they need no separate reference download. To include V-gene loops, download them in Reference data and change the comparison. Connected components can span distant endpoints through intermediate receptors; inspect the epitope labels rather than treating a component as proof of shared specificity.</p>
+
+      <h2 id="single-cells">Paired receptors and expression</h2>
+      <p>The <strong>A paired cell-state study with supplied Gaussian clouds</strong> example connects raw counts, imported coordinates, computed PCA/UMAP, clone sizes, phenotype summaries, graph tests and AnnData export. Follow the <a href="cell-study.html">seven-step single-cell study</a> for expected counts, interpretation and saved reopening. Its four samples deliberately repeat barcodes, so joins always select one receptor sample. Supplied clouds illustrate known states; computed maps fit counts independently. Fictional receptors and chosen expression distributions test the workflow, not antigen specificity or a fitted biological model.</p>
 
       <nav class="doc-pager" aria-label="Pages">
         <a class="prev" href="record.html"><span>Previous</span>The record</a>

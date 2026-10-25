@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Expression evidence and barcode links · ClonoLoom</title>
+  <meta name="description" content="Inspect a MEX, 10x HDF5, AnnData or MuData count matrix and its exact barcode coverage in one receptor sample." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/cells.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Expression evidence and barcode links" />
+  <meta property="og:description" content="Inspect a MEX, 10x HDF5, AnnData or MuData count matrix and its exact barcode coverage in one receptor sample." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/cells.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html">Specificity databases</a></li>
+        </ul>
+        <h4>Cells</h4>
+        <ul>
+          <li><a href="cell-study.html">A complete study</a></li>
+          <li><a href="cells.html" aria-current="page">Expression evidence</a></li>
+        </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Expression evidence and barcode links</h1>
+      <p class="doc-lede">Cells reads sparse expression evidence in place, preserves its sources and checks which barcodes match the selected receptor sample.</p>
+
+<h2 id="open">Open a matrix</h2>
+<p>Available in 0.6.0. Start with the <a href="cell-study.html">complete artificial single-cell study</a> to connect source inspection, maps, clonotypes, graph tests and AnnData export.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cells-dark.webp" width="2000" height="1250" loading="lazy" alt="Cells showing four artificial expression barcodes, two matched receptor barcodes and gene-expression UMI counts" /><img class="shot-light" src="../assets/img/cells-light.webp" width="2000" height="1250" loading="lazy" alt="Cells showing four artificial expression barcodes, two matched receptor barcodes and gene-expression UMI counts" /></div>
+        <figcaption>The artificial example distinguishes paired chains, nonproductive evidence, unmatched barcodes and a zero-count cell.</figcaption>
+      </figure>
+<p>Open the receptor data in <strong>Data</strong>, then choose <strong>Cells</strong>. Enter the directory containing <code>matrix.mtx</code>, <code>features.tsv</code> and <code>barcodes.tsv</code>, optionally gzipped. Legacy two-column <code>genes.tsv</code> is also accepted. Select a receptor dataset and explicitly choose its sample, then press <strong>Open expression</strong>. Choose <strong>Expression only</strong> to inspect the matrix without a receptor binding.</p>
+<p>For HDF5, enter the complete path to a 10x feature-barcode file such as <code>filtered_feature_bc_matrix.h5</code> in <strong>MEX directory, 10x HDF5, AnnData or MuData file</strong>. The same sample binding, optional annotations, coverage and saved reopening apply. Select the actual matrix file or directory: ClonoLoom does not choose between raw and filtered matrices, unpack archives, or search a whole Cell Ranger output tree. AnnData and MuData use explicit selections described below.</p>
+<h2 id="hdf5">Try the HDF5 example</h2>
+<p>Press <strong>Use HDF5 example</strong> to inspect the same four artificial cells as the MEX example, stored in a compressed HDF5 file with shuffle and chunk checksums. The gene-expression totals are 5, 4, 7 and 0; the 11 antibody counts are kept separately. Two expression barcodes match receptor evidence. Sources and reading rules shows the single HDF5 file and its SHA-256.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cells-hdf5-dark.webp" width="2000" height="1250" loading="lazy" alt="Cells inspecting a compressed artificial HDF5 matrix with exact receptor matches and a measured zero-count cell" /><img class="shot-light" src="../assets/img/cells-hdf5-light.webp" width="2000" height="1250" loading="lazy" alt="Cells inspecting a compressed artificial HDF5 matrix with exact receptor matches and a measured zero-count cell" /></div>
+        <figcaption>HDF5 and MEX preserve the same observations, with distinct fingerprints for their source files.</figcaption>
+      </figure>
+<h2 id="anndata">Read AnnData or MuData</h2>
+<p>Enter a <code>.h5ad</code> or <code>.h5mu</code> file and expand <strong>AnnData / MuData selections</strong>. Set <strong>Count matrix</strong> to <code>X</code> or <code>layers/counts</code> (using the actual layer name). MuData also requires the <strong>Expression modality</strong>, such as <code>gex</code>. No layer or modality is chosen automatically. X often contains normalized data: only nonnegative, finite integer values are accepted, and integral values alone cannot prove that the matrix contains raw counts. AnnData values are labeled <strong>counts</strong>; UMI semantics are not inferred.</p>
+<p>The selected modality's observations and variables remain in source order. Categorical, nullable, text, numeric and boolean annotations retain missing values. <strong>Features</strong> also shows variable annotations. Feature IDs come from the variable index; use the optional <strong>Feature name column</strong> and <strong>Feature type column</strong> to select source columns. Without them, names equal IDs and the selected expression matrix is treated as Gene Expression. Repeated names are allowed; duplicate IDs and barcodes fail. Leave the external TSV field empty for AnnData/MuData.</p>
+<p>Choose one <strong>Supplied embedding</strong> by its <code>obsm</code> key, such as <code>X_umap</code>. It must have two coordinates per selected expression observation. Both NaN means missing; partial or infinite pairs fail. Axes retain the source key, with UMAP 1/2 or t-SNE 1/2 when that key identifies the map. The source path is shown, the axis scales are equal, and coordinates are not computed or changed by ClonoLoom. Other modality/global maps are not combined.</p>
+<p>To inspect scirpy chain records, select the <strong>AIRR key</strong> (usually <code>airr</code>) and, for MuData, the <strong>AIRR modality</strong>. <strong>AIRR evidence</strong> shows every selected scalar field and unfiltered chain; <strong>AIRR cells</strong> retains the complete source population, including empty chain lists and missing records. Exact barcodes link the two selected modalities even when their orders and populations differ. Observation coverage is distinct from productive or paired receptor coverage. Imported clonotype assignments and chain indices are not adopted as ClonoLoom results.</p>
+<p>Press <strong>Use AnnData example</strong> for four artificial cells with a selected count layer, repeated feature names, missing annotations, one missing coordinate pair and three AIRR chains. Its source calls the illustrative coordinates <code>X_umap</code>; these points are not a computed UMAP or a biological model.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cells-anndata-dark.webp" width="2000" height="1250" loading="lazy" alt="Imported AnnData map with source-aware axes and nullable observation values" /><img class="shot-light" src="../assets/img/cells-anndata-light.webp" width="2000" height="1250" loading="lazy" alt="Imported AnnData map with source-aware axes and nullable observation values" /></div>
+        <figcaption>Selected source coordinates and annotations remain inspectable without inferring a new embedding.</figcaption>
+      </figure>
+<p>All selections and the file fingerprint survive saved reopening. Changed selections or source bytes require a new input. Dense, CSR and CSC counts are supported within the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/FORMATS.md">documented format and resource limits</a>; unsupported HDF5 storage and Awkward forms fail explicitly. These readers follow the <a href="https://anndata.readthedocs.io/en/stable/fileformat-prose.html">AnnData on-disk specification</a>, <a href="https://mudata.readthedocs.io/en/latest/io/output.html">MuData's modality storage</a> and <a href="https://scirpy.scverse.org/en/latest/data-structure.html">scirpy's AIRR structure</a>.</p>
+<h2 id="coverage">Read the coverage</h2>
+<p><strong>Matched</strong> counts exact barcode strings present in both the matrix and the selected receptor sample. <strong>Expression only</strong> and <strong>Receptor only</strong> retain the two unmatched populations. Multiple receptor chains count once as a barcode; chain rows remain visible beside each expression barcode. Rows with no receptor barcode are reported separately.</p>
+<p>No suffix is stripped and no match crosses samples. These are source counts before QC or clonotyping. Matching does not establish productivity, singlet status or cell type. Absent expression barcodes have missing expression, not zero counts. A barcode present in the matrix can have measured zero counts.</p>
+<p><strong>Cells</strong> shows gene-expression UMIs and detected genes, excluding antibody and other feature types. A matrix with no Gene Expression features says <strong>Not measured</strong>. <strong>Features</strong> preserves IDs, names and types; names may repeat, IDs may not. Pages hold at most 50 entries in the interface. Raw inspection does not normalize counts or infer phenotypes. Computed maps are a separate analysis below.</p>
+<h2 id="annotations">Add annotations and an imported map</h2>
+<p>Enter an optional plain or gzipped TSV path in <strong>Cell annotations and imported coordinates</strong> before opening. The first column must be <code>barcode</code>; other columns are supplied text annotations, with optional <code>map_x</code> and <code>map_y</code> together. For example:</p>
+<pre><code>barcode	state	map_x	map_y
+AA-1	state A	0	-2
+BB-1	state B	1	3</code></pre>
+<p>Empty fields mean missing. A coordinate pair must be either completely empty or two finite numbers within ±10<sup>12</sup>. Labels and barcodes are exact, case-sensitive strings. No file is discovered automatically. This table describes one selected expression matrix; it does not join across receptor samples.</p>
+<p><strong>Annotations</strong> retains every supplied row, including barcodes absent from expression. Coverage reports expression barcodes without annotation rows and without coordinates separately. Empty labels remain missing, even when the row exists. <strong>Imported map</strong> shows only expression barcodes with supplied coordinates; it never invents coordinates or silently samples the population. Maps above 20,000 such barcodes fail explicitly; the complete annotation table remains available. Select a point or its barcode button in the table to inspect source values. Color by an annotation; missing values use outlined neutral gray and draw last so other categories do not cover them. More than six nonmissing labels use one color; missing values remain gray and exact labels remain in the table. Coincident cells can overlap, and every source row remains inspectable.</p>
+<p>The supplied <code>map_x</code> and <code>map_y</code> axes are labeled separately and have the same display scale. The TSV does not supply an embedding method, so these axes are not relabeled UMAP or t-SNE. Coordinates are supplied evidence, not a computed UMAP, measured physical distance or proof of cell type or antigen specificity. Computed expression maps and clonotype phenotype overlays are available separately below.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cell-states-dark.webp" width="2000" height="1250" loading="lazy" alt="Imported map of the artificial cell-state study, with supplied state labels and a source-value table" /><img class="shot-light" src="../assets/img/cell-states-light.webp" width="2000" height="1250" loading="lazy" alt="Imported map of the artificial cell-state study, with supplied state labels and a source-value table" /></div>
+        <figcaption>The artificial layout shows known states. Missing coordinates remain absent, and the table retains annotation-only rows.</figcaption>
+      </figure>
+<h2 id="study">Try the paired cell-state study</h2>
+<p>Press <strong>Use cell-state study</strong>, or open its example and follow the guided step. Two artificial subjects have two samples each: 360 expression barcodes per sample, 24 artificial genes, three known states and paired fictional TRA/TRB receptors. Counts use a seeded negative-binomial model with chosen means and dispersion. Layout coordinates are supplied Gaussian clouds with differing spreads and unequal expected state sizes; this is a software benchmark, not a fitted biological model.</p>
+<p>The guided inspection selects <code>S01-1</code>: 359 receptor matches, one expression-only barcode and one receptor-only barcode. Its annotation table has 359 matching rows, one annotation-only row and 358 mapped expression barcodes. Cell 2 lacks annotations, cell 3 lacks coordinates, cell 4 lacks its state label, and the final expression barcode has measured zero counts. The separate truth files retain the generating states.</p>
+<p>For another sample, select its receptor sample explicitly and enter <code>expression/&lt;sample&gt;</code> and that directory's <code>cells.tsv</code>. Barcodes deliberately repeat across samples. Generate the same study from the command line with <code>clonoloom simulate --preset cell-states-clouds --out my-study</code>. The generated README and truth manifest record the model and sources.</p>
+<p>The original <code>cell-states</code> grid preset and its 120-cell example remain available, with their original source bytes and saved reopening behavior. The new cloud study has a separate directory. Neither example is a computed embedding. Clonotype size overlays, chain-status coloring and linked selection are available below.</p>
+<h2 id="example">Try the artificial example</h2>
+<p>Press <strong>Use artificial example</strong>, or open <strong>Artificial expression and receptor links</strong> in Example data and follow its step. Four expression barcodes match two of three distinct receptor barcodes. AA-1 has two chain rows; BB-1 is nonproductive but still matches raw evidence. EE-1 is absent from expression and one receptor row has no barcode. Gene-expression UMIs are 5, 4, 7 and 0; AA-1 also has 11 antibody UMIs. The two gene names deliberately repeat. These are synthetic bookkeeping cases, not a biological expression model.</p>
+<h2 id="sources">Save and reopen</h2>
+<p>Each input records the three MEX sources or one HDF5 source, plus an optional annotation source: paths, sizes, SHA-256 hashes, reader version and receptor dataset/sample binding. <strong>Saved inputs → Reopen</strong> reads the files again and refuses changed contents, including annotations and coordinates. Move the files by entering their new paths with the same binding; identical bytes retain the same input identity. Different encodings of the same counts have different source identities. MEX-only identities remain unchanged when unrelated annotation files appear beside them. Remove an input through the undoable <strong>Remove</strong> button. Sources remain in place and are never modified or copied into the project.</p>
+<p>One matrix is retained in memory at a time. Reopen a saved input to switch matrices. Source coverage is an inspection, not a saved scientific analysis artifact. Older projects remain readable.</p>
+<h2 id="limits">Reading rules and limits</h2>
+<p>The reader accepts Matrix Market coordinate/integer/general counts with feature rows and barcode columns. Coordinates are one-based; counts are nonnegative. It rejects duplicate coordinates, duplicate feature IDs or barcodes, incomplete or ambiguous companion sets, malformed gzip and inconsistent dimensions. Explicit zeros are retained. A count or per-cell gene-expression total may not exceed 2<sup>53</sup>−1.</p>
+<p>Limits are 200,000 features, 2,000,000 barcodes and 10,000,000 stored coordinates; 64 MiB of labels per companion, 1 MiB per line, 512 MiB decompressed text per file and 1 GiB per source file. Larger or unsupported inputs fail with an explanation. The sparse reader never allocates a dense expression matrix.</p>
+<p>HDF5 requires the 10x <code>/matrix</code> schema, integer CSC counts and fixed-length feature/barcode strings. The supported subset includes classic or compact groups, contiguous/compact arrays and classic B-tree chunks with deflate, shuffle and Fletcher32 checksums. Each decoded array is limited to 128 MiB, total decoded arrays to 512 MiB, and metadata to 64 MiB. Variable-length strings, dense groups, newer chunk indices, unknown filters, external links/storage and incomplete chunk coverage fail explicitly; use the corresponding MEX files instead. Older genome-group files, molecule-info files, AnnData and MuData are not accepted as feature-barcode matrices.</p>
+<p>Annotation limits are 32 text columns plus barcode and two map columns, 2,000,000 rows, 4,000,000 annotation values and 64 MiB of text, with the same line and source limits. Duplicate headers or barcodes, uneven rows, invalid UTF-8 and partial/nonfinite coordinates are rejected. Quoted or multiline TSV fields are unsupported; empty fields are the only missing-value notation.</p>
+<p>Format references: <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/cr-outputs-mex-matrices">10x Genomics MEX documentation</a> and <a href="https://math.nist.gov/MatrixMarket/formats.html">NIST Matrix Market</a> (Boisvert et al., 1996, NISTIR 5935). Duplicate rejection, exact sample-scoped linkage and numeric limits are ClonoLoom policies. Independent SciPy parsing checks every value of the artificial matrix; set-based tallies check coverage.</p>
+<p>The HDF5 reader follows <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-h5-matrices">10x's HDF5 schema</a> and the <a href="https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t3.html">HDF Group file format specification</a>. Independently generated h5py files and SciPy reconstructions check supported encodings, every count and gene total. The documented subset and resource limits are ClonoLoom policies, not claims of full HDF5 compatibility.</p>
+
+<h2>Compute a map from expression counts</h2>
+<p>Open the cell-state study, then select <strong>Compute expression map</strong>. ClonoLoom normalizes gene counts, applies natural log1p, selects features by variance, computes centered PCA and exact Euclidean neighbors, and fits a seeded UMAP. Supplied coordinates and annotation labels never enter this fit. Cells without imported coordinates can still be mapped.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cell-analysis-dark.webp" width="2000" height="1250" loading="lazy" alt="Computed expression UMAP with supplied state coloring and missing annotations in gray" /><img class="shot-light" src="../assets/img/cell-analysis-light.webp" width="2000" height="1250" loading="lazy" alt="Computed expression UMAP with supplied state coloring and missing annotations in gray" /></div>
+        <figcaption>An exploratory UMAP computed from artificial counts; its graph, PCA and methods are saved separately from imported coordinates.</figcaption>
+      </figure>
+<p>Expand <strong>Preprocessing and map settings</strong> to choose cell/gene thresholds, feature and component counts, neighborhood size, normalization target, seed and UMAP settings. The defaults use 500 variance-ranked features, up to 30 PCs and 15 other neighbors. This variance ranking is not a named highly-variable-gene recipe. No batch correction or receptor QC is applied. All expression cells passing the stated thresholds are eligible.</p>
+<p>The result preserves exact barcodes, exclusions, selected features and loadings, PCA scores, directed neighbors, fuzzy graph weights, computed coordinates and source fingerprints. Read <strong>Method, settings and provenance</strong>, inspect the paged tables, or download the complete JSON. Jobs can be cancelled in Cells or Tasks. Saved maps reopen from Results without their source files.</p>
+<p>Maps have equal axis scaling and report disconnected graph components. Neighborhoods are defined in PCA space; apparent separation on UMAP is not a biological effect size. Clonotype overlays and phenotype summaries can use this saved map as their parent. The implementation follows <a href="https://doi.org/10.1186/s13059-017-1382-0">Scanpy's normalization framework</a>, <a href="https://doi.org/10.1098/rsta.2015.0202">PCA</a> and <a href="https://arxiv.org/abs/1802.03426">UMAP</a>, with explicit ClonoLoom feature-ranking and initialization policies. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/EXPRESSION.md">complete methods and bounds</a>.</p>
+
+<h2 id="phenotypes">Clonotypes and phenotypes</h2>
+<p>Open expression evidence with an explicit receptor dataset and sample. Under <strong>Clonotypes and phenotypes</strong>, choose imported coordinates or a saved computed map, a supplied annotation and a size population, then <strong>Compute clonotype phenotypes</strong>. The active definition and QC rules are pinned in the result. Settings configure the next computation; historical results keep their own choices.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cell-phenotypes-dark.webp" width="2000" height="1250" loading="lazy" alt="Clonotype cell sizes on an artificial imported map with explicit sample coverage and unavailable evidence in gray" /><img class="shot-light" src="../assets/img/cell-phenotypes-light.webp" width="2000" height="1250" loading="lazy" alt="Clonotype cell sizes on an artificial imported map with explicit sample coverage and unavailable evidence in gray" /></div>
+        <figcaption>Distinct-cell clone sizes use one sample's receptor population; the imported cloud coordinates are illustrative.</figcaption>
+      </figure>
+<p><strong>All eligible receptor cells in sample</strong> includes uniquely assigned receptor cells without expression or coordinates. <strong>Mapped eligible cells only</strong> counts uniquely assigned cells with coordinates in the selected map. Clone coverage reports both, plus expression coverage. Size categories default to 1, 2, 3–5 and greater than 5 cells; inclusive breakpoints are configurable. Duplicate contigs never inflate cell counts.</p>
+<p>Missing receptor evidence, QC exclusion, unassigned clones, ambiguous assignments and absence from the chosen size population have no numeric size. Multiple locus-specific memberships and conflicting vendor IDs remain ambiguous. Productive chain evidence follows QC's receptor arms and more-than-two-contigs-per-locus rule; mixed families and unresolved loci are explicit. These labels do not diagnose cell types or doublets.</p>
+<p>Phenotype summaries use all expression cells, including missing labels and cells without coordinates. Expanded shares divide cells with size greater than one by cells with an available size. Within-clone fractions divide by all expression cells assigned to that clone; within-group fractions divide by all expression cells with that annotation. Integer denominators and mapped coverage are shown. Each result records one sample, subject and timepoint. Samples are not pooled, cells are not biological replicates, and no enrichment or antigen-specificity inference is made.</p>
+<p>Select a clone in Clone coverage or press <strong>Show on a cell map</strong> in the Clonotypes inspector. Matching saved definition/QC rules are required. Click or brush map cells to inspect their clones and unresolved evidence; the searchable table and <strong>Select matching cells</strong> provide a keyboard alternative. Reset and undo highlighting without changing counts. Color by continuous size, category, chain/assignment evidence, supplied annotations or sample metadata. Missing values stay gray; axes preserve their source and equal scale.</p>
+<p>Saved results reopen without sources and export their complete JSON record. Jobs can be cancelled or resumed; expression fingerprints and computed-map checksums are verified. Limits are 100000 expression cells and 20000 mapped cells, with no subsampling. The independent SQL reference checks both size populations, every category, phenotype count and fraction. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/PHENOTYPES.md">complete phenotype methods and workflow</a>.</p>
+<p>References: <a href="https://doi.org/10.1093/bioinformatics/btaa611">Sturm et al., Scirpy (2020)</a>, the <a href="https://scirpy.scverse.org/en/latest/generated/scirpy.tl.clonal_expansion.html">scirpy clonal-expansion API</a>, and <a href="https://www.10xgenomics.com/support/software/loupe-vdj-browser/latest/tutorials/lvb-integrated-analysis-loupe-browser">10x's integrated V(D)J tutorial</a>. Counting, ambiguity and denominator policies are ClonoLoom choices.</p>
+
+<h2 id="modularity">Clonotype modularity</h2>
+<p>Compute an expression map and a phenotype overlay using that map. Under <strong>Clonotype modularity</strong>, choose the saved phenotype parent and compute. The cloud-study guide includes this workflow. One sample's uniquely assigned retained cells form the induced graph population, including isolated vertices; unresolved cells are excluded with their reasons retained. Positive fuzzy-union edges count once. UMAP distances and weight magnitudes are not used.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cell-modularity-dark.webp" width="2000" height="1250" loading="lazy" alt="Clonotype modularity on an artificial expression graph, showing observed edges against a size-matched null and adjusted p-values" /><img class="shot-light" src="../assets/img/cell-modularity-light.webp" width="2000" height="1250" loading="lazy" alt="Clonotype modularity on an artificial expression graph, showing observed edges against a size-matched null and adjusted p-values" /></div>
+        <figcaption>The selected clone's observed connectivity is compared with uniform groups of the same size. Artificial data exercise the method, not antigen specificity.</figcaption>
+      </figure>
+<p>The score is <code>log2((observed + 1)/(expected + 1))</code>, with analytic expected edges <code>M s(s−1)/(N(N−1))</code>. Small null spaces are exhaustively enumerated; larger ones use seeded Monte Carlo subsets with <code>(tail + 1)/(draws + 1)</code> upper-tail p-values. Ties count. Benjamini–Yekutieli adjusts all testable clones, including zero-edge clones. Singletons and clones occupying the entire population are explicitly untested.</p>
+<p>The plot has integer edge counts horizontally and subset frequencies vertically, starting at zero. Solid and dashed lines mark observed and expected edges. It is a null distribution, not a biological confidence interval. Inspect its frequency table, raw and adjusted p-values, population sizes and untested reasons. Filtering does not change the tested family. Open the parent overlay to highlight a clone, or export the full record. Completed results reopen without parents or source files.</p>
+<p>The null assumes exchangeable clone membership within this sample; it does not condition on cell type, batch, receptor family or degree. Connectivity can reflect those factors. This is exploratory, not evidence of specificity, causality or subject-level effects. Monte Carlo resolution and conservative adjustment can limit power. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/MODULARITY.md">full methods, bounds and validation</a>, the <a href="https://scirpy.scverse.org/en/latest/generated/scirpy.tl.clonotype_modularity.html">scirpy score definition</a>, <a href="https://doi.org/10.2202/1544-6115.1585">Phipson and Smyth</a>, <a href="https://doi.org/10.1007/s11749-017-0571-1">Hemerik and Goeman</a>, and <a href="https://doi.org/10.1214/aos/1013699998">Benjamini and Yekutieli</a>.</p>
+
+<h2 id="comparison">Receptor / expression neighborhoods</h2>
+<p>Choose a computed-map phenotype parent with paired primary αβ amino-acid clonotypes, then compare its receptor and expression neighborhoods. Keep the original receptor dataset open to prepare a new result. Each clonotype contributes one mean expression-PC profile, regardless of cell abundance. Full TCRdist requires an explicit human/mouse choice and the V-loop reference; CDR3-only mode explicitly omits germline loops. The fictional cloud-study guide uses CDR3-only distances and neighborhood sizes 2 and 4.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cell-conga-dark.webp" width="2000" height="1250" loading="lazy" alt="Receptor and expression neighborhood comparison with observed overlap bars, conditional expected markers and a table of corrected probabilities" /><img class="shot-light" src="../assets/img/cell-conga-light.webp" width="2000" height="1250" loading="lazy" alt="Receptor and expression neighborhood comparison with observed overlap bars, conditional expected markers and a table of corrected probabilities" /></div>
+        <figcaption>Artificial paired clonotypes exercise a CoNGA-style comparison. Shared neighbors are counts, not evidence of antigen specificity.</figcaption>
+      </figure>
+<p>Self and clones sharing an exact α or β CDR3 are excluded from both candidate pools. Exact directed nearest-neighbor sets include every cutoff tie. Expression distances use all saved PCs, never UMAP coordinates. The conditional hypergeometric test uses actual neighbor counts and candidate population; Bonferroni covers every testable clone and requested size, including zero overlaps. Insufficient populations remain explicitly untested. The original multi-graph CoNGA score is not reproduced.</p>
+<p>Solid bars show observed overlap and dashed markers show conditional expected counts on a zero-based axis. The table gives raw and adjusted p-values; exact neighbor identities and cell eligibility remain accessible. This is not a confidence interval. Filtering and selecting clones do not change the tested family. Open the parent overlay to inspect a clone, or download the complete saved record. Completed results reopen without sources or parents.</p>
+<p>The null assumes independent, exchangeable neighbor labels; cell type, batch and chain groups are not controlled. Saved PCs may contain receptor genes, directly coupling the modalities; inspect the saved feature list. Correction cannot repair a violated null. Results are exploratory within one sample, not specificity, causality or subject-level effects. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/CONGA.md">full method, bounds and validation</a>, <a href="https://doi.org/10.1038/s41587-021-00989-2">Schattgen et al., CoNGA</a>, <a href="https://doi.org/10.1038/nature22383">Dash et al., TCRdist</a>, <a href="https://doi.org/10.7554/eLife.68605">Mayer-Blackwell et al., TCRdist3</a> and <a href="https://doi.org/10.1080/01621459.1961.10482090">Dunn, simultaneous comparisons</a>.</p>
+
+<h2 id="anndata-export">Export linked cells as AnnData</h2>
+<p>Under <strong>AnnData export</strong>, choose saved clonotype phenotypes and press <strong>Prepare AnnData export</strong>. Keep the original receptor dataset open and the expression sources available for preparation. The saved export can then be reopened and downloaded without those files. <strong>Download AnnData and NOTICE</strong> includes <code>cells.h5ad</code>, the export record, checksum manifest and provider terms.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cell-anndata-export-dark.webp" width="2000" height="1250" loading="lazy" alt="AnnData export retaining all 360 artificial cells, 24 features and separate supplied and computed embeddings" /><img class="shot-light" src="../assets/img/cell-anndata-export-light.webp" width="2000" height="1250" loading="lazy" alt="AnnData export retaining all 360 artificial cells, 24 features and separate supplied and computed embeddings" /></div>
+        <figcaption>The cell excluded from PCA remains in the raw-count matrix, with missing computed coordinates.</figcaption>
+      </figure>
+<p><code>X</code> contains raw integer counts for every input cell and feature modality. Exact barcodes retain their receptor sample binding, saved assignments, chain status and clone sizes. Missing annotations stay missing. Supplied coordinates, saved PCA scores and computed UMAP coordinates have distinct names; unavailable rows are NaN, never zero coordinates. This export preserves the population regardless of the current plot selection.</p>
+<p>The complete saved phenotype and map documents, parent manifests, source fingerprints, definition, QC, sample metadata and method citations are in <code>uns/clonoloom</code>. Receptor links use a documented ClonoLoom schema, not scirpy’s raw AIRR-chain representation. The <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/ANNDATA-EXPORT.md">AnnData export guide</a> gives the schema, independent reader validation, limits and a reading example. AnnData’s own reader and writer validate the resulting object.</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="cell-study.html"><span>Previous</span>A complete study</a>
+        <a class="next" href="bcell-inputs.html"><span>Next</span>Sequence evidence</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>
