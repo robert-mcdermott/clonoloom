@@ -327,3 +327,19 @@ sequences from the original dataset snapshot and pins the loop reference when us
 support cancellation/resumption without reopening raw expression/receptor files.
 `GET /api/conga/{id}` returns a checksum-verified standalone result. Full methods, population,
 conditional null, tie handling, Bonferroni family and bounds: [CONGA.md](CONGA.md).
+
+
+### AnnData export (development)
+
+`export_anndata` accepts `{phenotypes}`; omission uses the displayed phenotype result. It
+prepares and saves the export, returning its artifact ID and population. Download it in Cells.
+Imported or computed-map phenotypes are accepted. Keep original expression sources available
+and reopen the original receptor dataset before preparing a new export.
+
+HTTP: `POST /api/anndata-export` with `{phenotypes, start}`; `start:false` resolves the saved
+export/running job without submitting work. Jobs support cancellation/resumption, capture
+linked clone definitions and verify expression-source and parent hashes. `GET
+/api/anndata-export/{id}` returns the checked export record. `GET
+/api/anndata-export/{id}/download` returns a ZIP with `cells.h5ad`, export record, manifest and
+NOTICE; restricted source terms require `accept=1` after acknowledgment. These GET endpoints
+work without parent/source files. See [ANNDATA-EXPORT.md](ANNDATA-EXPORT.md) for the schema.

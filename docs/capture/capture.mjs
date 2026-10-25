@@ -116,6 +116,21 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cell-anndata-export'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`window.clonoloom.cellsView.example(true)`);
+    await act('compute_expression_map');
+    const overlay = await act('compute_cell_phenotypes', {map:'latest', annotation:'state'});
+    await js(`(() => {const p=document.querySelector('[aria-label="Export phenotype parent"]');p.value=${JSON.stringify(overlay.data.artifact)};p.dispatchEvent(new Event('change'));[...document.querySelectorAll('button')].find((b)=>b.textContent==='Prepare AnnData export').click();return true;})()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellAnnDataView?.state().status)`,120000);
+    const state = await js('window.clonoloom.cellAnnDataView.state()');
+    if(state.status!=='ready'||state.answer.result.cells!==360||state.answer.result.embeddings.length!==3)throw new Error(`AnnData export failed: ${JSON.stringify(state)}`);
+    const remote = await act('export_anndata');
+    if(remote.data.artifact!==state.artifact)throw new Error('Visible and remote export differ');
+    await js(`(async()=>{const app=window.clonoloom,id=app.cellAnnDataView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Export undo failed');app.store.redo();const response=await fetch('api/anndata-export/'+id+'/download');if(!response.ok||!response.headers.get('Content-Type').includes('zip'))throw new Error('Export download failed');const zip=new Uint8Array(await response.arrayBuffer());if(zip[0]!==80||zip[1]!==75)throw new Error('Invalid download');await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellAnnDataView.show(id);if(app.cellsView.state().record)throw new Error('Saved export required expression source');return true;})()`);
+    await js(`document.querySelector('#anndata-export').scrollIntoView({block:'start'})`);
+  },
   async 'cell-conga'() {
     await js(`window.clonoloom.setMode('cells')`);
     await waitFor('Boolean(window.clonoloom.cellsView)');

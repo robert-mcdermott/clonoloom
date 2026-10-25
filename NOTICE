@@ -7,8 +7,9 @@ ClonoLoom's host, interface shell, installers and workflows are adapted from its
 SituCraft, MaveScape, CytoWeave and Proteoscope (https://github.com/robert-mcdermott), by the same
 author under the same license.
 
-The HDF5 metadata checksum helper is adapted from SituCraft's HDF5 writer under the same
-Apache-2.0 license. It implements Bob Jenkins' public-domain lookup3/hashlittle checksum.
+The HDF5 metadata checksum helper and export writer are adapted from SituCraft's HDF5 writer
+under the same Apache-2.0 license. The writer is extended for AnnData data types and encodings.
+They implement Bob Jenkins' public-domain lookup3/hashlittle checksum.
 
 This product includes data derived from:
 - the HUGO Gene Nomenclature Committee's gene names (https://www.genenames.org; CC0): the names of

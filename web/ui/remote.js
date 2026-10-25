@@ -496,6 +496,15 @@ export function remoteActions(app) {
       return { message: 'Clonotype modularity saved.', data: { artifact: result.artifact.id, tested: result.result.analysis.tested, eligible: result.result.analysis.eligible, description: result.result.description } };
     },
 
+    async export_anndata(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellAnnDataView, 5000, 'AnnData export');
+      const phenotypes = options.phenotypes ?? app.cellPhenotypesView?.state().artifact;
+      const result = await view.run({ phenotypes });
+      if (!result) throw new ActionError('The project changed during the export.');
+      return { message: 'AnnData export saved; download it from Cells.', data: { artifact: result.artifact.id, cells: result.result.cells, features: result.result.features, embeddings: result.result.embeddings } };
+    },
+
     async compute_cell_phenotypes(options = {}) {
       await app.setMode('cells');
       const view = await waitFor(() => app.cellPhenotypesView, 5000, 'Clonotype phenotypes');

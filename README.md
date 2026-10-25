@@ -38,7 +38,9 @@ selection and supplied phenotype summaries with explicit denominators
 expression graph with defined nulls and multiple-testing correction
 ([modularity guide](docs/MODULARITY.md)), plus paired-clonotype receptor/expression
 neighborhood comparisons with explicit tie handling and conditional overlap tests
-([CoNGA-style comparison guide](docs/CONGA.md)). These changes target 0.6.0 and are not in the
+([CoNGA-style comparison guide](docs/CONGA.md)), and raw-count AnnData export with exact receptor
+links, missing annotations, saved embeddings and provenance
+([AnnData export guide](docs/ANNDATA-EXPORT.md)). These changes target 0.6.0 and are not in the
 published 0.5.0 binary. See the [development Cells guide](docs/site/pages/docs/cells.html).
 
 ## Features

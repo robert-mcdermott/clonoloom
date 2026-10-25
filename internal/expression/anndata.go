@@ -265,7 +265,7 @@ func ReadAnnData(ctx context.Context, r io.ReaderAt, size int64, selection AnnDa
 	if selection.Layer != "X" && !(strings.HasPrefix(selection.Layer, "layers/") && member(strings.TrimPrefix(selection.Layer, "layers/"))) {
 		return nil, fmt.Errorf("select a count matrix explicitly: X or layers/<name>; values must be nonnegative integer counts")
 	}
-	obs, e := readFrame(f, base+"/obs", MaxCells, 32)
+	obs, e := readFrame(f, base+"/obs", MaxCells, 64)
 	if e != nil {
 		return nil, e
 	}

@@ -616,7 +616,7 @@ awkward-array 0.1.0. Unknown selected encodings or versions fail.
   numeric, boolean, categorical and nullable values. Category code −1, nullable mask true and
   numeric NaN mean missing. Empty annotation strings also display as missing; literal `NA`,
   `None` and `Missing annotation` remain categories. Signed/unsigned integer annotation text
-  remains exact, even beyond JavaScript's safe integer range. At most 32 obs/128 var columns,
+  remains exact, even beyond JavaScript's safe integer range. At most 64 obs/128 var columns (32 obs for the separate AIRR modality),
   4 million annotation values and 64 MiB label text per frame. Features use var index as ID;
   without selected name/type columns, names equal IDs and type is Gene Expression. Missing
   values in a selected feature-name/type column fail. The full variable columns remain inspectable.
@@ -701,3 +701,17 @@ values can exceed all sampled null values. Monte Carlo tails use an added observ
 not a fabricated extra histogram bin. Graph counts use induced, positive undirected edges once;
 weights and UMAP coordinates are not test inputs. Identity includes both parent IDs/hashes,
 normalized options and method version. [Full method and limits](MODULARITY.md).
+
+
+## AnnData export (wave 6, slice 9; development)
+
+Cells prepares a checksum-verified `.h5ad` from a saved phenotype result. `X` is raw integer
+CSR with every input cell and feature modality; excluded cells retain their counts and have
+NaN computed embeddings. Namespaced observation columns preserve exact sample-scoped receptor
+assignments, chain status and clone sizes. Supplied annotations use categorical missing code −1;
+UTF-8 values and original column-name mappings survive. Source and computed coordinates are
+separate. This is ClonoLoom's versioned receptor-link contract, not scirpy's raw AIRR-chain form.
+The file includes parent documents/manifests, source fingerprints, definitions, QC, sample
+metadata, method citations and software provenance in `uns/clonoloom`. Download includes its
+manifest and source NOTICE. See [ANNDATA-EXPORT.md](ANNDATA-EXPORT.md) for the complete schema,
+independent round-trip validation, reading example and explicit resource limits.

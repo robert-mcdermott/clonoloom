@@ -52,6 +52,7 @@ func (a *app) registerExpression(mux *http.ServeMux) {
 	a.registerPhenotypes(mux)
 	a.registerModularity(mux)
 	a.registerConga(mux)
+	a.registerAnnData(mux)
 	mux.HandleFunc("POST /api/expression/open", a.handleExpressionOpen)
 	mux.HandleFunc("POST /api/expression/page", a.handleExpressionPage)
 }

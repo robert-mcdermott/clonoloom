@@ -1969,7 +1969,7 @@ clone abundance, missing/ambiguous evidence, cancellation, source drift and save
 Run race/scientific regressions, processor checks, six builds, JavaScript, browser/contrast/site
 checks. Keep version 0.5.0; the maintainer performs every Git operation.
 
-**Done, awaiting the maintainer's commit.** The bounded comparison, immutable job/API, Cells
+**Done, committed as `c4b29dd`.** The bounded comparison, immutable job/API, Cells
 controls, observed/expected plot, accessible tables, remote action and fifth cloud-study step
 are implemented. New results pin source-compatible receptor snapshots, both parent hashes and
 the full-distance reference when used; saved results reopen without sources or parents. Missing
@@ -1996,7 +1996,51 @@ themes, including visible/remote equivalence, unchanged test families under filt
 links, undo/redo and saved reopening. Final comparison screenshots are refreshed and visually
 inspected. The site builds 34 pages with 39 screenshot sets and passes all 132 audit checks;
 four focused Cells checks pass after the final methods wording. Unrelated performance budgets,
-skipped under race detection, were not rerun. Version remains 0.5.0; slice 9 has not started.
+skipped under race detection, were not rerun. Version remains 0.5.0.
+
+### Slice 9: AnnData export with receptor links
+
+**Scope (O3).** Export a verified phenotype parent, with either supplied coordinates or a pinned
+computed expression map, as a portable AnnData file. Preserve raw cell × feature counts, exact
+barcodes, all selected modalities, annotations and sample-scoped receptor assignments. Retain
+excluded cells with missing computed coordinates; no refitting or biological inference.
+
+**Settled contract.** Follow the AnnData/HDF5 specifications and SituCraft's compatible HDF5
+writer conventions. Use int64 CSR, UTF-8 strings, categorical missing codes, distinct supplied
+and computed embeddings, explicit map inclusion/exclusion, and versioned ClonoLoom receptor
+links. Save complete parent documents/manifests, clone-chain definitions, ambiguity candidates,
+source fingerprints, sample metadata, QC, parameters and citations in uns/clonoloom. Do not
+claim scirpy raw AIRR-chain compatibility. Original reader text/missing semantics are retained;
+original pandas dtypes and unselected input layers/modalities are not exported.
+
+**Implementation.** Bounded Go writer and export package; durable checksum-pinned jobs, source
+verification, cache identity, cancellation/resumption and portable download with NOTICE. Cells
+supports preparing, keeping, undoing, reopening and downloading exports; the remote action and
+sixth cloud-study guide step exercise the same path. Keep the application version at 0.5.0.
+
+**Done, awaiting the maintainer's commit.** AnnData/h5py independently read every sparse count,
+cell/feature identity, Unicode label, missing code and embedding row; AnnData's own writer
+rewrites the object without changing those values. The oracle pins AnnData 0.12.6, h5py 3.15.1,
+NumPy 2.4.2, SciPy 1.17.0 and pandas 2.3.3. Its deterministic Go fixture hash is
+`48c3ed862e5084897a3ad527800e8955fb137b79400e265aa96a3ca6ea7c38a0` on native arm64 and amd64.
+
+Tests cover long Unicode/global-heap boundaries, datatypes, empty arrays, counts beyond float32
+precision, supplied variable annotations, reordered parent rows, 32 supplied observation columns,
+missing receptor evidence, matrix/annotation/embedding bounds, invalid source positions and
+cancellation. API checks cover changed sources/parents, checked downloads without original
+sources, cached results, versioned resumption and provider-term acknowledgment. The application
+and internal race suite passes; the complete required-data scientific race suite passes in
+524.173 s. Focused final export/API race checks and amd64 checks pass after the last validation
+and empty-receptor-snapshot refinements. Released-project compatibility and processor identity
+checks pass. Vet, formatting/diff checks, six CGO-free platform builds, 108 JavaScript tests
+and 14 contrast checks pass.
+
+All nine Cells scenes pass in both themes, including visible/remote export equivalence, ZIP
+download, undo/redo and source-free saved reopening. Both export screenshots were visually
+inspected. The site builds 34 pages with 40 screenshot sets and passes all 132 accessibility/
+overflow checks. Unrelated performance budgets, skipped under race detection, were not rerun.
+Version remains 0.5.0; slice 10 has not started.
+
 
 ## Later waves (outlined)
 

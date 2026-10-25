@@ -117,6 +117,7 @@ func (a *app) handleJobs() {
 	a.handlePhenotypeJobs()
 	a.handleModularityJobs()
 	a.handleCongaJobs()
+	a.handleAnnDataJobs()
 	a.jobs.Handle("example", func(spec json.RawMessage) (jobs.Func, error) {
 		var s exampleSpec
 		if json.Unmarshal(spec, &s) != nil || s.Example == "" {

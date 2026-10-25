@@ -1775,3 +1775,35 @@ biological density or significance map is implied. Independent aligned, permuted
 fixtures test graph identities, actual degrees, overlap, expectation, tails and adjustment;
 existing reference validation covers the full receptor distance engine. No third-party
 implementation source was read or copied for this slice.
+
+
+### 5.29 AnnData export with receptor links (wave 6, slice 9)
+
+The [AnnData on-disk specification](https://anndata.readthedocs.io/en/stable/fileformat-prose.html)
+is the primary storage contract: obs/var dataframes, cell × feature CSR, cell-aligned obsm,
+categorical missing codes and UTF-8 variable-length strings. The
+[HDF Group File Format Specification 3.0](https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t3.html)
+defines atomic datatypes, object headers, contiguous datasets and global heaps. SituCraft's
+Apache-2.0 compact HDF5 writer provides the storage foundation; new scalar/array types and
+AnnData encoding attributes follow those specifications. Its AnnData/Zarr writer was consulted
+for naming and encoding patterns, not used as an HDF5 reader.
+
+The biological interpretation is inherited from the saved expression and phenotype methods,
+not recomputed by export. ClonoLoom policies: preserve every expression barcode, all selected
+feature modalities, exact integer counts and source order; require exact receptor sample/barcode
+binding and unchanged source identities. Keep supplied and computed coordinates separate;
+excluded cells retain raw counts and missing computed positions/scores. Missing assignments
+and annotations cannot become zero sizes, invented coordinates or ordinary categories.
+Ambiguity candidates and chain definitions remain explicit; no raw contig schema is fabricated.
+No sample pooling, receptor-only zero-count cells, normalization or inferred cell types.
+
+Complete saved documents and parent manifests carry selected features, PCA/graph/UMAP parameters,
+null-model citations, QC/definition versions, sample metadata and source hashes. Their coordinate
+population must be aligned by barcode, not row position. All embeddings are exploratory;
+export does not validate UMAP distances as biological distances or create independent subjects.
+The schema is explicitly a ClonoLoom receptor-link contract, not scirpy's obsm AIRR format.
+
+Independent public AnnData/h5py reader and rewrite validation checks a reordered synthetic
+fixture with a zero-count cell, excluded map row, missing/literal annotations, Unicode and counts
+beyond float32 precision. No incompatible-licensed implementation source was inspected or copied.
+See [AnnData export schema and validation](../docs/ANNDATA-EXPORT.md).
