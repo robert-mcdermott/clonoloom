@@ -1,0 +1,1150 @@
+{
+  "generatedBy": "SQLite 3.47.1; distinct-cell joins and GROUP BY",
+  "inputs": {
+    "S1": [
+      {
+        "barcode": "C0-0",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C1-0",
+        "position": [
+          0.0,
+          1.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C2-0",
+        "position": [
+          0.0,
+          2.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C2-1",
+        "position": null,
+        "values": [
+          ""
+        ]
+      },
+      {
+        "barcode": "C3-0",
+        "position": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C3-1",
+        "position": null,
+        "values": [
+          ""
+        ]
+      },
+      {
+        "barcode": "C3-2",
+        "position": [
+          2.0,
+          3.0
+        ],
+        "values": [
+          "Missing"
+        ]
+      },
+      {
+        "barcode": "C3-3",
+        "position": null,
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C4-0",
+        "position": [
+          0.0,
+          4.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C4-1",
+        "position": null,
+        "values": [
+          ""
+        ]
+      },
+      {
+        "barcode": "C4-2",
+        "position": [
+          2.0,
+          4.0
+        ],
+        "values": [
+          "Missing"
+        ]
+      },
+      {
+        "barcode": "C4-3",
+        "position": null,
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C4-4",
+        "position": [
+          4.0,
+          4.0
+        ],
+        "values": [
+          ""
+        ]
+      },
+      {
+        "barcode": "qc",
+        "position": [
+          1.0,
+          1.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "none",
+        "position": [
+          2.0,
+          2.0
+        ],
+        "values": [
+          ""
+        ]
+      }
+    ],
+    "S2": [
+      {
+        "barcode": "C0-0",
+        "position": [
+          0.0,
+          0.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C0-1",
+        "position": null,
+        "values": [
+          ""
+        ]
+      },
+      {
+        "barcode": "C1-0",
+        "position": [
+          0.0,
+          1.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C2-0",
+        "position": [
+          0.0,
+          2.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C2-1",
+        "position": null,
+        "values": [
+          ""
+        ]
+      },
+      {
+        "barcode": "C3-0",
+        "position": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C3-1",
+        "position": null,
+        "values": [
+          ""
+        ]
+      },
+      {
+        "barcode": "C3-2",
+        "position": [
+          2.0,
+          3.0
+        ],
+        "values": [
+          "Missing"
+        ]
+      },
+      {
+        "barcode": "C3-3",
+        "position": null,
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C4-0",
+        "position": [
+          0.0,
+          4.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C4-1",
+        "position": null,
+        "values": [
+          ""
+        ]
+      },
+      {
+        "barcode": "C4-2",
+        "position": [
+          2.0,
+          4.0
+        ],
+        "values": [
+          "Missing"
+        ]
+      },
+      {
+        "barcode": "C4-3",
+        "position": null,
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "C4-4",
+        "position": [
+          4.0,
+          4.0
+        ],
+        "values": [
+          ""
+        ]
+      },
+      {
+        "barcode": "qc",
+        "position": [
+          1.0,
+          1.0
+        ],
+        "values": [
+          "A"
+        ]
+      },
+      {
+        "barcode": "none",
+        "position": [
+          2.0,
+          2.0
+        ],
+        "values": [
+          ""
+        ]
+      }
+    ]
+  },
+  "results": [
+    {
+      "associations": [
+        {
+          "cells": 1,
+          "clone": "CAAF",
+          "cloneExpression": 1,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CCCF",
+          "cloneExpression": 1,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CDDF",
+          "cloneExpression": 2,
+          "groupExpression": 5,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 1,
+          "clone": "CDDF",
+          "cloneExpression": 2,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 5,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 2,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 2,
+          "mapped": 1,
+          "value": "Missing"
+        },
+        {
+          "cells": 2,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 5,
+          "mapped": 1,
+          "value": ""
+        },
+        {
+          "cells": 2,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 2,
+          "mapped": 1,
+          "value": "Missing"
+        }
+      ],
+      "cells": [
+        {
+          "barcode": "C0-0",
+          "bin": "1",
+          "clone": "CAAF",
+          "size": 1
+        },
+        {
+          "barcode": "C1-0",
+          "bin": "2",
+          "clone": "CCCF",
+          "size": 2
+        },
+        {
+          "barcode": "C2-0",
+          "bin": "3\u20135",
+          "clone": "CDDF",
+          "size": 3
+        },
+        {
+          "barcode": "C2-1",
+          "bin": "3\u20135",
+          "clone": "CDDF",
+          "size": 3
+        },
+        {
+          "barcode": "C3-0",
+          "bin": "3\u20135",
+          "clone": "CEEF",
+          "size": 5
+        },
+        {
+          "barcode": "C3-1",
+          "bin": "3\u20135",
+          "clone": "CEEF",
+          "size": 5
+        },
+        {
+          "barcode": "C3-2",
+          "bin": "3\u20135",
+          "clone": "CEEF",
+          "size": 5
+        },
+        {
+          "barcode": "C3-3",
+          "bin": "3\u20135",
+          "clone": "CEEF",
+          "size": 5
+        },
+        {
+          "barcode": "C4-0",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 6
+        },
+        {
+          "barcode": "C4-1",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 6
+        },
+        {
+          "barcode": "C4-2",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 6
+        },
+        {
+          "barcode": "C4-3",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 6
+        },
+        {
+          "barcode": "C4-4",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 6
+        },
+        {
+          "barcode": "none",
+          "bin": "",
+          "clone": null,
+          "size": null
+        },
+        {
+          "barcode": "qc",
+          "bin": "",
+          "clone": null,
+          "size": null
+        }
+      ],
+      "groups": [
+        {
+          "assigned": 4,
+          "cells": 5,
+          "clonotypes": 3,
+          "expanded": 4,
+          "mapped": 2,
+          "sized": 4,
+          "value": ""
+        },
+        {
+          "assigned": 7,
+          "cells": 8,
+          "clonotypes": 5,
+          "expanded": 6,
+          "mapped": 6,
+          "sized": 7,
+          "value": "A"
+        },
+        {
+          "assigned": 2,
+          "cells": 2,
+          "clonotypes": 2,
+          "expanded": 2,
+          "mapped": 2,
+          "sized": 2,
+          "value": "Missing"
+        }
+      ],
+      "population": "receptor",
+      "sample": "S1"
+    },
+    {
+      "associations": [
+        {
+          "cells": 1,
+          "clone": "CAAF",
+          "cloneExpression": 1,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CCCF",
+          "cloneExpression": 1,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CDDF",
+          "cloneExpression": 2,
+          "groupExpression": 5,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 1,
+          "clone": "CDDF",
+          "cloneExpression": 2,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 5,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 2,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 2,
+          "mapped": 1,
+          "value": "Missing"
+        },
+        {
+          "cells": 2,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 5,
+          "mapped": 1,
+          "value": ""
+        },
+        {
+          "cells": 2,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 2,
+          "mapped": 1,
+          "value": "Missing"
+        }
+      ],
+      "cells": [
+        {
+          "barcode": "C0-0",
+          "bin": "1",
+          "clone": "CAAF",
+          "size": 1
+        },
+        {
+          "barcode": "C1-0",
+          "bin": "1",
+          "clone": "CCCF",
+          "size": 1
+        },
+        {
+          "barcode": "C2-0",
+          "bin": "1",
+          "clone": "CDDF",
+          "size": 1
+        },
+        {
+          "barcode": "C2-1",
+          "bin": "1",
+          "clone": "CDDF",
+          "size": 1
+        },
+        {
+          "barcode": "C3-0",
+          "bin": "2",
+          "clone": "CEEF",
+          "size": 2
+        },
+        {
+          "barcode": "C3-1",
+          "bin": "2",
+          "clone": "CEEF",
+          "size": 2
+        },
+        {
+          "barcode": "C3-2",
+          "bin": "2",
+          "clone": "CEEF",
+          "size": 2
+        },
+        {
+          "barcode": "C3-3",
+          "bin": "2",
+          "clone": "CEEF",
+          "size": 2
+        },
+        {
+          "barcode": "C4-0",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "C4-1",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "C4-2",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "C4-3",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "C4-4",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "none",
+          "bin": "",
+          "clone": null,
+          "size": null
+        },
+        {
+          "barcode": "qc",
+          "bin": "",
+          "clone": null,
+          "size": null
+        }
+      ],
+      "groups": [
+        {
+          "assigned": 4,
+          "cells": 5,
+          "clonotypes": 3,
+          "expanded": 3,
+          "mapped": 2,
+          "sized": 4,
+          "value": ""
+        },
+        {
+          "assigned": 7,
+          "cells": 8,
+          "clonotypes": 5,
+          "expanded": 4,
+          "mapped": 6,
+          "sized": 7,
+          "value": "A"
+        },
+        {
+          "assigned": 2,
+          "cells": 2,
+          "clonotypes": 2,
+          "expanded": 2,
+          "mapped": 2,
+          "sized": 2,
+          "value": "Missing"
+        }
+      ],
+      "population": "mapped",
+      "sample": "S1"
+    },
+    {
+      "associations": [
+        {
+          "cells": 1,
+          "clone": "CAAF",
+          "cloneExpression": 2,
+          "groupExpression": 6,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 1,
+          "clone": "CAAF",
+          "cloneExpression": 2,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CCCF",
+          "cloneExpression": 1,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CDDF",
+          "cloneExpression": 2,
+          "groupExpression": 6,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 1,
+          "clone": "CDDF",
+          "cloneExpression": 2,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 6,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 2,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 2,
+          "mapped": 1,
+          "value": "Missing"
+        },
+        {
+          "cells": 2,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 6,
+          "mapped": 1,
+          "value": ""
+        },
+        {
+          "cells": 2,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 2,
+          "mapped": 1,
+          "value": "Missing"
+        }
+      ],
+      "cells": [
+        {
+          "barcode": "C0-0",
+          "bin": "2",
+          "clone": "CAAF",
+          "size": 2
+        },
+        {
+          "barcode": "C0-1",
+          "bin": "2",
+          "clone": "CAAF",
+          "size": 2
+        },
+        {
+          "barcode": "C1-0",
+          "bin": "3\u20135",
+          "clone": "CCCF",
+          "size": 3
+        },
+        {
+          "barcode": "C2-0",
+          "bin": "3\u20135",
+          "clone": "CDDF",
+          "size": 4
+        },
+        {
+          "barcode": "C2-1",
+          "bin": "3\u20135",
+          "clone": "CDDF",
+          "size": 4
+        },
+        {
+          "barcode": "C3-0",
+          "bin": ">5",
+          "clone": "CEEF",
+          "size": 6
+        },
+        {
+          "barcode": "C3-1",
+          "bin": ">5",
+          "clone": "CEEF",
+          "size": 6
+        },
+        {
+          "barcode": "C3-2",
+          "bin": ">5",
+          "clone": "CEEF",
+          "size": 6
+        },
+        {
+          "barcode": "C3-3",
+          "bin": ">5",
+          "clone": "CEEF",
+          "size": 6
+        },
+        {
+          "barcode": "C4-0",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 7
+        },
+        {
+          "barcode": "C4-1",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 7
+        },
+        {
+          "barcode": "C4-2",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 7
+        },
+        {
+          "barcode": "C4-3",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 7
+        },
+        {
+          "barcode": "C4-4",
+          "bin": ">5",
+          "clone": "CFFF",
+          "size": 7
+        },
+        {
+          "barcode": "none",
+          "bin": "",
+          "clone": null,
+          "size": null
+        },
+        {
+          "barcode": "qc",
+          "bin": "",
+          "clone": null,
+          "size": null
+        }
+      ],
+      "groups": [
+        {
+          "assigned": 5,
+          "cells": 6,
+          "clonotypes": 4,
+          "expanded": 5,
+          "mapped": 2,
+          "sized": 5,
+          "value": ""
+        },
+        {
+          "assigned": 7,
+          "cells": 8,
+          "clonotypes": 5,
+          "expanded": 7,
+          "mapped": 6,
+          "sized": 7,
+          "value": "A"
+        },
+        {
+          "assigned": 2,
+          "cells": 2,
+          "clonotypes": 2,
+          "expanded": 2,
+          "mapped": 2,
+          "sized": 2,
+          "value": "Missing"
+        }
+      ],
+      "population": "receptor",
+      "sample": "S2"
+    },
+    {
+      "associations": [
+        {
+          "cells": 1,
+          "clone": "CAAF",
+          "cloneExpression": 2,
+          "groupExpression": 6,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 1,
+          "clone": "CAAF",
+          "cloneExpression": 2,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CCCF",
+          "cloneExpression": 1,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CDDF",
+          "cloneExpression": 2,
+          "groupExpression": 6,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 1,
+          "clone": "CDDF",
+          "cloneExpression": 2,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 6,
+          "mapped": 0,
+          "value": ""
+        },
+        {
+          "cells": 2,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CEEF",
+          "cloneExpression": 4,
+          "groupExpression": 2,
+          "mapped": 1,
+          "value": "Missing"
+        },
+        {
+          "cells": 2,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 6,
+          "mapped": 1,
+          "value": ""
+        },
+        {
+          "cells": 2,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 8,
+          "mapped": 1,
+          "value": "A"
+        },
+        {
+          "cells": 1,
+          "clone": "CFFF",
+          "cloneExpression": 5,
+          "groupExpression": 2,
+          "mapped": 1,
+          "value": "Missing"
+        }
+      ],
+      "cells": [
+        {
+          "barcode": "C0-0",
+          "bin": "1",
+          "clone": "CAAF",
+          "size": 1
+        },
+        {
+          "barcode": "C0-1",
+          "bin": "1",
+          "clone": "CAAF",
+          "size": 1
+        },
+        {
+          "barcode": "C1-0",
+          "bin": "1",
+          "clone": "CCCF",
+          "size": 1
+        },
+        {
+          "barcode": "C2-0",
+          "bin": "1",
+          "clone": "CDDF",
+          "size": 1
+        },
+        {
+          "barcode": "C2-1",
+          "bin": "1",
+          "clone": "CDDF",
+          "size": 1
+        },
+        {
+          "barcode": "C3-0",
+          "bin": "2",
+          "clone": "CEEF",
+          "size": 2
+        },
+        {
+          "barcode": "C3-1",
+          "bin": "2",
+          "clone": "CEEF",
+          "size": 2
+        },
+        {
+          "barcode": "C3-2",
+          "bin": "2",
+          "clone": "CEEF",
+          "size": 2
+        },
+        {
+          "barcode": "C3-3",
+          "bin": "2",
+          "clone": "CEEF",
+          "size": 2
+        },
+        {
+          "barcode": "C4-0",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "C4-1",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "C4-2",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "C4-3",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "C4-4",
+          "bin": "3\u20135",
+          "clone": "CFFF",
+          "size": 3
+        },
+        {
+          "barcode": "none",
+          "bin": "",
+          "clone": null,
+          "size": null
+        },
+        {
+          "barcode": "qc",
+          "bin": "",
+          "clone": null,
+          "size": null
+        }
+      ],
+      "groups": [
+        {
+          "assigned": 5,
+          "cells": 6,
+          "clonotypes": 4,
+          "expanded": 3,
+          "mapped": 2,
+          "sized": 5,
+          "value": ""
+        },
+        {
+          "assigned": 7,
+          "cells": 8,
+          "clonotypes": 5,
+          "expanded": 4,
+          "mapped": 6,
+          "sized": 7,
+          "value": "A"
+        },
+        {
+          "assigned": 2,
+          "cells": 2,
+          "clonotypes": 2,
+          "expanded": 2,
+          "mapped": 2,
+          "sized": 2,
+          "value": "Missing"
+        }
+      ],
+      "population": "mapped",
+      "sample": "S2"
+    }
+  ],
+  "sources": {
+    "S1-cells.tsv": "93ff2fc3868f4dd78128facb7c6431c521bb03a22863cd769b3de66438ef37da",
+    "S1.tsv": "647038a85e629cf58679aeeeb208b921caef236e056e9607a5abc7e49f036512",
+    "S2-cells.tsv": "7e0ed7b5b7fdf9ecb114d2b2b2d431810ff7c126b1c2515455e88cc13a592aa6",
+    "S2.tsv": "344fc3f2beaad2da91afb894fca7fdb2ed469560362af60fc393a81f68a7a6ef"
+  }
+}

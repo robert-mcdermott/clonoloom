@@ -9,15 +9,15 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–4 are complete; wave 5
-has a sequence of slices and a detailed plan for slice 1. Later slices are refined as they come.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has ten implemented slices; slice 10 prepares release 0.6.0.
 
 **Progress** is marked here as each slice is committed: done, with what it settled or changed from
 the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
 release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
-2–4 are merged and released as 0.2.0–0.4.0, and the 0.4.0 product site is published.
-Wave 5 is underway on `wave5`; slices 1–3 are committed. Slice 4 is implemented and validated,
-awaiting the maintainer's commit.
+2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
+Wave 6 is underway on `wave6`. Slices 1–9 and the cell-map feedback follow-up are committed.
+Slice 10 completes the guided study, compatibility fixture and release checks. Version is 0.6.0;
+commit, merge, tag, release and site publication remain with the maintainer.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -878,8 +878,8 @@ threshold-dependent result, not a replacement for those identifiers.
 Implemented on `wave5`. As in SituCraft's reader and reference slices, preserve and check the input
 before building on it, keep the source's identity with derived results, and test against
 independent values. ClonoLoom continues to compute every reported number in Go. The order below
-puts a simulation with known families before the analyses it validates. Slices 1–8 are
-committed; slice 9 is implemented and validated, awaiting maintainer commit and release.
+puts a simulation with known families before the analyses it validates. All nine slices are
+committed and merged; 0.5.0 is released and its product site is published.
 
 | Slice | Status | Scope |
 | --- | --- | --- |
@@ -891,7 +891,7 @@ committed; slice 9 is implemented and validated, awaiting maintainer commit and 
 | 6. Somatic hypermutation | Committed | Evaluable bases and codons, mutation by region, replacement and silent counts (B3) |
 | 7. Lineage trees | Committed | Maximum parsimony, ancestral sequences and a viewer with stated uncertainty and limits (B4) |
 | 8. Isotypes and class switching | Committed | Usage and family-level isotype observations; distinguish observations from inferred switching (B5) |
-| 9. Examples and release 0.5.0 | Implemented; awaiting commit | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
+| 9. Examples and release 0.5.0 | Committed and released | Complete guided immunization workflow, compatibility fixture, captures and release validation (E3, O2, N7) |
 
 ### Slice 1: B-cell sequence evidence
 
@@ -1436,14 +1436,678 @@ were visually inspected. The link-preview image was regenerated and remains byte
 PowerShell syntax remains a CI check because pwsh is not installed locally; optional live
 publisher downloads and the maintainer-only VDJdb lookup were not requested or rerun.
 
-No commit, PR, merge, tag, release or site publication was performed. Version 0.5.0 is ready
-for the maintainer's commit and the established CI → PR/merge → release workflow.
+Committed, merged and released by the maintainer as 0.5.0; the product site is published.
+
+## 0.6.0: single-cell expression and receptors (wave 6)
+
+Keep expression in a separate sparse matrix, linked to receptor evidence by an explicit dataset
+and sample plus exact barcode. Never strip suffixes, match across samples, infer missing cells
+as zero expression, or treat cells as biological replicates. Preserve feature IDs, names and
+modalities separately. Imported coordinates and annotations remain source evidence; computed
+maps and statistical results are immutable artifacts with effective parameters and citations.
+
+SituCraft supplies useful sparse-matrix and AnnData patterns, but its HDF5 implementation is a
+writer and its AnnData reader uses Zarr. The earlier design's assumption of a reusable HDF5
+reader was incorrect. Reading HDF5 is explicit work here, using format documentation and
+independent fixtures; unsupported encodings must fail clearly, never return partial matrices.
+
+### Wave 6 sequence
+
+| Slice | Scope | Requirements |
+| --- | --- | --- |
+| 1 | MEX expression evidence: strict sparse counts, source fingerprints, exact sample/barcode linkage, Cells inspection and saved reopening | D6 (MEX), D11, M1 foundation |
+| 2 | Simulated paired receptor/expression study with known cell states; cell annotations and imported maps, explicit unmatched cells | E1, E3, M1 |
+| 3 | Bounded HDF5 reader and 10x feature-barcode HDF5 input, checked against independently generated compressed/chunked fixtures | D6 (10x HDF5) |
+| 4 | AnnData and MuData input: dense/CSR/CSC expression, observations, variables, embeddings and scirpy AIRR evidence; explicit modality and count-layer selection | D6 (h5ad/h5mu), M1 |
+| 5 | Expression preprocessing, neighborhoods and computed map; pin transformation, feature selection, distance, seed and all effective defaults; refine algorithms from primary methods first | M1, N7 |
+| 6 | Clonotype sizes on maps and phenotypes by clonotype, cluster/cell type and sample; explicit definitions, denominators and subject boundaries | M1, M2 |
+| 7 | Clonotype modularity on the expression graph, with defined null model, seeds, multiple testing and independent reference validation | M3 |
+| 8 | CoNGA-style receptor/expression graph comparison; paired-cell population, graph definitions, null and correction explicitly recorded | M3 |
+| 9 | AnnData export with receptor links, annotations, embeddings and provenance; independent round-trip validation | O3 |
+| 10 | Complete guided single-cell study, release fixture, documentation, performance/accessibility checks and release 0.6.0 preparation | E3, O2, N7 |
+
+The later slices are planning boundaries, not promises of unreviewed algorithms. Refine each
+before implementation. Differential expression with subjects as replicates remains wave 7;
+antigen capture remains parked. Maps are exploratory, never evidence of antigen specificity.
+
+### Cells feedback: concrete acceptance for the remaining slices
+
+The map must connect expression evidence to receptor definitions, not stop at state coloring.
+The following refines the existing slice boundaries after researcher review of the slice 2
+screenshot; it does not imply that the pending analyses already exist.
+
+- **Slice 4, imported embeddings:** retain the selected embedding name, source dimension names
+  and provenance. Display UMAP 1 / UMAP 2 only when the source identifies UMAP; otherwise use
+  the actual source names or neutral dimensions. The current TSV contract supplies only
+  `map_x`/`map_y`; neither filenames nor cloud appearance establish an embedding method.
+- **Slice 5, computed maps:** carry method, effective parameters, seed and axis names into the
+  immutable result. Maintain equal axis scale; show source or method labels on both axes.
+- **Slice 6, repertoire overlays:** provide continuous clonotype cell size and explicit size
+  categories (initial proposal 1, 2, 3–5, >5; configurable breakpoints), plus receptor evidence /
+  chain status. Count distinct cells using a saved clonotype definition and QC selection,
+  never chain rows. Record whether size refers to all eligible receptor cells in that sample
+  or only mapped cells; expose both coverage counts and the chosen population. Unassigned
+  clonotypes, absent receptor evidence, unlinked input, QC exclusion and unresolved pairing
+  must not be treated as zero-size clones. Distinguish single-chain, paired and multi-chain
+  evidence using the existing chain-selection rules, including mixed/ambiguous cases.
+- **Slice 6, linked exploration:** selecting a clonotype highlights its mapped cells and dims
+  other cells; selecting/brushing map cells lists their clonotypes and unresolved evidence in
+  the inspector. Preserve exact dataset/sample/barcode keys, selected definition/QC/result
+  IDs, reset/undo behavior and a keyboard-accessible table/filter alternative to brushing.
+  Sample/timepoint coloring or faceting must retain subject boundaries and missing metadata;
+  separate embeddings cannot be concatenated merely because both have two coordinates.
+- **Density overlay, optional after the core slice 6 interactions:** first define and cite the
+  estimator, bandwidth, grid, weighting/normalization, eligible population, contour levels
+  and minimum support. Compute in Go and record parameters. Density in embedding coordinates
+  is descriptive; it is not enrichment, physical density, statistical significance or proof
+  of antigen specificity. Do not add attractive contours without a defined calculation.
+- **Figures across views:** missing values have a neutral style distinct from valid categories
+  and literal strings resembling missing-value labels. Include overlap, empty/high-cardinality
+  categories, source axes, equal scaling and both-theme checks. Never jitter imported source
+  coordinates silently; retain every observation in an accessible source-value table.
+
+**Slice 2 follow-up implemented.** Missing annotations now use outlined neutral gray and draw
+last, fixing the hidden missing-label point in the grid screenshot. Explicit `map_x`/`map_y`
+axis labels retain equal scale. The new `cell-states-clouds` preset supplies 360 cells per
+sample with continuous Gaussian layout, unequal expected state sizes and differing spreads.
+It is the visible study example; the original preset, example, action default and seeded
+reference bytes remain available. This is still artificial supplied layout, not UMAP or fitted
+biology. See research §5.23 for methods and the acceptance rationale.
+
+**Follow-up checked.** Application/internal race tests and focused expression/cell-state
+scientific race tests pass. The original and cloud fixtures agree with independent SciPy
+references; the new reference checks all 34,560 matrix values and 1,440 cell totals. Native
+and amd64 checks, released-project replay, vet, six platform builds, 100 JavaScript tests
+and 14 contrast checks pass. The cell-state browser scene passes in both themes, including
+missing-point selection and saved reopening; both refreshed screenshots were inspected.
+The site builds 34 pages with 33 screenshot sets, with zero problems in 132 checks.
+Unrelated scientific regressions, fuzzing and performance budgets were not rerun for this
+follow-up. Version remains 0.5.0. Committed by the maintainer as `a081bd6`.
+
+### Slice 1: MEX expression evidence
+
+**Serves D6, D11 and the linking foundation of M1.** Read a selected directory containing
+`matrix.mtx[.gz]`, `barcodes.tsv[.gz]` and `features.tsv[.gz]` (or legacy `genes.tsv[.gz]`).
+Read integer-general coordinate matrices as nonnegative UMI counts. Preserve source order,
+feature type and IDs; names may repeat. Reject ambiguous companions, duplicate identifiers or
+coordinates, unsupported matrix encodings, malformed/truncated gzip, dimension mismatches,
+unsafe counts and resource-limit violations. Stream text; never allocate from an unchecked
+header or materialize a dense matrix. Keep zero-count barcodes and all feature modalities.
+
+Require an explicit receptor sample when linking; count distinct barcodes, not chain rows.
+Show matched, expression-only and receptor-only counts, missing receptor barcodes and bounded
+cell/feature pages. This is raw source coverage, before receptor QC or clonotype definitions.
+Gene-expression UMIs exclude other modalities. A matched barcode is not a called productive
+cell. Save the file fingerprints and binding in the project; reopening changed files must fail
+identity checks. Source files stay in place and unmodified. Remove a saved binding through undoable
+project edits. No normalization, cell-type assignment, map or inferential statistic in this slice.
+
+**Acceptance.** Hand-calculated sparse values and links, gzip/plain/legacy parity, malformed
+input and resource boundaries, cancellation, fuzzing, independent SciPy Matrix Market numbers,
+API paging and fingerprint drift, older project compatibility and arm64/amd64 agreement.
+Exercise visible controls, error handling and saved reopening in both themes. Run Go race/vet,
+JavaScript tests, six platform builds, contrast and site checks. Document limits and examples;
+keep version 0.5.0. The maintainer performs all Git and release operations.
+
+**Implemented.** The independent sparse expression model, streamed plain/gzip MEX reader,
+read-only source fingerprints, exact sample/barcode coverage, bounded API pages and Cells view
+are in place. Projects retain bindings and verify all three source hashes when reopened. The
+artificial example and remote action exercise repeated chains, nonproductive evidence, both
+unmatched populations, a missing receptor barcode and measured zero counts. Feature names may
+repeat; antibody counts are retained separately and a matrix without gene features reports
+unmeasured gene totals. Reading rules, limits, source citations and a development guide are
+written. The HDF5 assumption is corrected and the remaining wave is split into nine later slices.
+
+**Checked.** Application/internal race tests, focused native/amd64 expression checks,
+released-project replay and processor checks, vet, six platform builds, 97 JavaScript tests,
+199,350 fuzz executions and 14 contrast checks pass. SciPy independently agrees with every
+artificial matrix value and gene total; set-based reference coverage agrees. The browser scene
+passes in both themes, including the visible controls, errors, project saving/reopening and
+remove/undo. Both screenshots were inspected. The site builds 34 pages with 32 screenshot sets;
+132 accessibility/viewport checks across 33 pages find no problems. Scientific regression
+validation under the race detector passes (1,159.230 s). Existing performance budgets, which
+skip under the race detector, were not rerun for this reader/UI slice. Version remains 0.5.0.
+Committed by the maintainer as `9f5738b`.
+
+### Slice 2: known cell states and imported maps
+
+**Serves E1, E3 and the imported-evidence part of M1.** Add an explicitly selected plain/gzip
+TSV with first column `barcode`, optional paired `map_x`/`map_y` columns and up to 32 other
+annotation columns. Empty fields mean missing; coordinate pairs must be both absent or finite
+within ±1e12. Reject duplicate barcodes/headers, malformed rows and excessive input. Join exact
+barcodes to the selected matrix, retain annotation-only rows, and report missing annotations
+and coordinates separately. Pin the optional file in the expression identity; MEX-only IDs and
+old saved inputs remain unchanged. Never discover an annotation file implicitly.
+
+Show bounded annotation pages and a supplied-coordinate map (up to 20,000 matched points;
+larger maps fail explicitly). Coordinates are source evidence, not a computed UMAP. Keep the
+table as an accessible alternative with source values and missingness. Scientific counts and
+map populations come from Go; JS only lays out and displays the supplied points.
+
+Add the `cell-states` artificial study: two samples per subject, paired fictional TRA/TRB
+receptors, three known states, 24 artificial genes, seeded negative-binomial counts and supplied
+layout coordinates. Record parameters, sample/barcode/clone/state truth and source hashes.
+Deliberately include expression-only, receptor-only, annotation-only, missing-label/map and
+zero-count cases. Keep truth separate from observations and subject/sample identity explicit.
+Offer the preset offline with a guided first-sample inspection. This is a controlled software
+benchmark with chosen parameters, not a fitted biological model or evidence of specificity.
+
+**Acceptance.** Strict parser, cancellation, malformed/gzip/limit and drift checks; exact joins,
+missingness and source-order pages; seeded byte reproducibility, changed-seed and processor
+agreement; independent SciPy and truth/set tallies; project reopening and remote controls;
+visible form/map/table checks in both themes. Run relevant race tests, scientific regressions,
+vet, JS tests, six builds, contrast and site checks. Keep version 0.5.0; maintainer performs Git.
+
+**Implemented.** The explicit annotation reader, fingerprinted optional source, complete
+coverage and bounded annotation/map APIs are in place. Cells displays supplied labels and
+coordinates, missing evidence, annotation-only rows and an accessible source-value table;
+saved reopening checks all selected sources. The `cell-states` CLI preset and offline guided
+example generate four default samples with 480 expression cells, 960 paired AIRR chain rows,
+separate observation truth and source manifests. Simulation, format, remote-control and
+development-guide documentation describe the chosen model and cite its sampler/format sources.
+MEX-only identities and released projects remain compatible. Computed maps and clonotype
+phenotypes remain later slices.
+
+**Checked.** Application/internal race tests, focused scientific race tests, full required-data
+scientific regressions (246.975 s), released-project replay, native/amd64 checks, vet, six
+platform builds, 99 JavaScript tests and 14 contrast checks pass. SciPy and independent truth
+tallies agree on all 11,520 generated matrix values, 480 gene totals and source coverage.
+Annotation fuzzing passes 169,189 executions. The Cells and cell-state browser scenes pass in
+both themes, including forms, malformed paths, pagination, imported-map selection and project
+saving/reopening. Screenshots were inspected and legend spacing corrected. The site builds
+34 pages with 33 screenshot sets; 132 accessibility/viewport checks report zero problems.
+Existing performance budgets were not rerun for this evidence/simulation slice. Version stays
+0.5.0. Committed by the maintainer as `152c061`; the feedback follow-up above is separate.
+
+### Slice 3: bounded 10x HDF5 expression input
+
+**Serves D6 (10x HDF5) and D11.** Read an explicitly selected feature-barcode HDF5 file into
+the same sparse expression model as MEX. Require `/matrix/{shape,data,indices,indptr,barcodes}`
+and `/matrix/features/{id,name,feature_type}`. Preserve every feature modality, explicit zero,
+barcode and repeated feature name. Validate CSC dimensions, monotone pointers, exact integers,
+unique IDs/barcodes and duplicate coordinates before exposing any input. Sort paired sparse
+indices/values per cell; never sum duplicates or coerce float/negative counts. Do not select a
+genome, raw/filtered matrix, count layer or modality implicitly.
+
+**Reader boundary.** Implement from the primary HDF5 specification, using Go's standard library.
+Support 8-byte offsets/lengths; superblocks 0–3 without extensions; classic symbol-table and
+compact-link groups; object headers 1–2 with continuations; fixed ASCII/UTF-8 strings and full-width
+1/2/4/8-byte integers in either byte order; compact/contiguous arrays and v3 chunk layouts with
+v1 B-tree indices. Decode deflate and shuffle, verify Fletcher32 and metadata checksums, honor
+per-chunk filter masks. Every required dataset is a fully allocated vector (or empty vector).
+Bound file reads, metadata, decoded bytes, groups, traversal depth and chunk count before
+allocation. Unsupported encodings fail explicitly, including variable strings, dense groups,
+new chunk indices, external/virtual storage and soft/external links on required paths. MEX is
+the fallback for encodings outside this boundary. AnnData/MuData support expands the reader
+deliberately in slice 4; this slice does not claim to be a general HDF5 implementation.
+
+**Integration.** The existing Cells path field accepts a file or directory. Add an offline HDF5
+example and remote action selector, retain optional TSV annotations, exact receptor sample
+binding and undoable saved inputs. Fingerprint the entire HDF5 file before and after parsing;
+reject concurrent changes. Give it a separate versioned identity domain, so MEX identities and
+released projects remain unchanged. Hashes differ between encodings even when counts agree.
+
+**Acceptance.** Compare all values, labels, totals and stored-entry counts to pinned h5py/SciPy
+references. Include compressed/shuffled/checksummed multi-level chunk trees, metadata
+continuations, user blocks, big-endian/small integers, filter masks, empty count arrays and
+compact storage. Reject malformed CSC evidence, unsupported storage, checksum corruption,
+truncation and cycles. Exercise cancellation, limits, fuzzing, native/amd64 agreement, source
+relocation/drift, API linkage and visible file opening/saved reopening in both themes. Run Go
+race/vet, scientific regressions, JavaScript tests, six platform builds, contrast/site checks;
+refresh the Cells screenshots and format/method documentation. Version stays 0.5.0. The
+maintainer performs all Git and release operations.
+
+**Implemented.** The bounded HDF5 package and 10x CSC reader, Cells/API/remote integration,
+offline example, independent fixtures and documentation are in place. Source fingerprints,
+optional annotations and existing MEX behavior remain intact. Independent checksum checks
+caught and corrected Fletcher32's all-one-word edge case.
+
+**Checked.** All values, labels and gene totals agree with h5py/SciPy for 17 supported fixtures;
+18 invalid/unsupported inputs fail as specified. A separate public 10x PBMC file agrees on all
+2,498,225 stored entries, 33,538 features and 1,222 cells, with no real data added to the repository.
+Application/internal race tests and required-data scientific regressions pass (605.894 s for
+the latter); final focused race, native/amd64, released-project replay and processor checks
+pass. Vet, six platform builds, 100 JavaScript tests, 391,633 HDF5 fuzz executions across two
+runs, and 14 contrast checks pass. Cells, HDF5 Cells and cell-state browser scenes pass in both
+themes; all six refreshed screenshots were inspected. The site builds 34 pages with 34 screenshot
+sets and zero problems in 132 checks. Existing unrelated performance budgets, skipped under
+the race detector, were not rerun. Version stays 0.5.0; committed as `78001bb`.
+
+### Slice 4: selected AnnData and MuData evidence
+
+**Serves D6 (AnnData/MuData), D11 and M1's imported-evidence foundation.** Read one `.h5ad`
+or one explicitly selected `.h5mu` expression modality, with an explicit `X` or `layers/<name>`
+count selection. Never infer that X is raw counts, choose a modality from its name, join global
+MuData observations by row number, or combine unrelated embeddings. The selected matrix must
+contain nonnegative exact integer values, with each count and gene total at most 2^53−1. Numeric
+float storage is accepted only for finite integral values. AnnData units remain **counts**;
+UMI semantics are not inferred. Dense arrays and CSR/CSC arrays become the existing sparse
+cell-major model. Validate dimensions, pointers, indices and duplicate coordinates; sparse
+explicit zeros remain evidence. Dense storage counts every supplied coordinate, retaining zero
+values implicitly in memory.
+
+**Annotations and maps.** Read the selected modality's obs/var index and declared column order,
+including categorical codes, nullable integer/boolean/string arrays, text and numeric columns.
+Keep exact barcode/index values, missingness and variable annotations. Require unique indices;
+feature names may repeat. Feature IDs come from var's index; optional name/type columns are
+explicit choices. Otherwise names equal IDs and the selected expression matrix is Gene
+Expression. Up to 32 obs and 128 var columns, 4 million values and 64 MiB text per frame.
+Select one two-dimensional dense obsm embedding. Record its source path and derive axis labels
+from its key (`X_umap`: UMAP 1/2; `X_tsne`: t-SNE 1/2; otherwise key 1/2), without inventing a
+method for generic keys. Keep supplied values and equal axis scaling. Both NaN means missing
+coordinates; partial/nonfinite/oversized pairs fail. No source embeddings are concatenated.
+
+**Scirpy AIRR evidence.** Select an obsm key and, for MuData, its modality explicitly. Decode
+AnnData's Awkward form/length/buffer encoding into unfiltered per-cell chain records. Keep
+source field order, exact text/numbers, missing fields, whole missing cell records and empty
+chain lists separately. Join the selected modalities only by exact barcode and report both
+unmatched populations. Inspect both chain records and the full AIRR cell population through
+paged views. Imported chain indices, clonotypes, Python behavior and analysis results are not
+executed or adopted as ClonoLoom results. This slice retains supplied evidence; linking computed
+clonotypes and phenotype analyses remains slice 6.
+
+**Reader boundary and provenance.** Extend the own standard-library HDF5 reader with inline
+attributes, bounded global heaps for variable strings, IEEE float32/64, boolean enums, scalar
+metadata and rank-two arrays/chunks. Existing file/read/metadata/decoded/traversal budgets
+remain; unsupported dense groups/attributes, newer chunk indices, shared types, external/virtual
+storage and required soft/external links fail. Awkward supports numeric/string scalars,
+ListOffset, Record, Indexed/IndexedOption, Unmasked and Empty forms, with at most 16 nesting
+levels, 256 forms, 128 fields, 1 million chains, 4 million values and 64 MiB field text. Unsupported
+forms fail without evaluating code. Hash the entire source before/after parsing and include all
+selections in `clonoloom-expression-anndata/1`. Relocation preserves identity; changed bytes or
+selections do not. MEX/10x identities stay unchanged. AnnData supplies its own observations and
+cannot also attach the external annotation TSV.
+
+**Acceptance.** Independently write/read dense, CSR, CSC and compressed AnnData/MuData fixtures
+through public Python APIs. Compare every count, label, annotation, map coordinate and AIRR
+field; exercise reordered/unequal modality populations, empty matrices, signed/unsigned/floating
+count storage, edge chunks, missing values, malformed schema, count rejection, source drift,
+selection identity, cancellation and fuzzing. Exercise the visible selections, remote action,
+saved reopening and failed-open preservation in both themes. Update primary format citations,
+user/API documentation and screenshots. Run race tests, scientific regressions, released-project
+replay, native/amd64 checks, vet, six builds, JS, contrast and site checks. Keep version 0.5.0;
+the maintainer performs Git operations.
+
+**Implemented.** Reader, Cells/API/remote selections, source-aware map labels, variable/AIRR
+pages, saved provenance and an offline guided AnnData example are in place. Independent
+fixture and adversarial validation is in place. The source-observation policy also rejects an
+external cell TSV with an AnnData/MuData input.
+
+**Checked.** All count values, observation/variable annotations, map coordinates and AIRR fields
+agree with independent public-API references for 13 supported AnnData/MuData fixtures;
+21 invalid/ambiguous inputs fail as specified. Scirpy's own AIRR cell conversion reads the
+synthetic evidence and writes an additional validated fixture. Nullable string/boolean/integer
+values, exact large-integer labels, compressed edge chunks, missing whole-cell AIRR records and
+unequal/reordered modalities are covered. The expanded 10x suite passes 18 supported and 17
+invalid cases; variable strings are now supported without changing old source identities.
+
+Application/internal race tests and the required-data scientific suite pass (542.455 s for
+the full scientific run). Final focused race and native/amd64 checks pass, including released
+project replay, processor agreement, source drift, selection identity, cancellation and the
+external-TSV refusal. Two bounded AnnData fuzz runs pass. Vet, gofmt, six platform builds,
+102 JavaScript tests and 14 contrast checks pass. All four Cells browser scenes pass in both
+themes; eight screenshots are captured, with the new AnnData map inspected in both themes.
+The site builds 34 pages with 35 screenshot sets; all 132 audit checks pass. Existing unrelated
+performance budgets, skipped under race detection, were not rerun. Version stays 0.5.0;
+committed by the maintainer as `3a7bdd1`. Slice 5 follows below.
+
+### Slice 5: Expression preprocessing, neighborhoods and computed map
+
+**Serves M1 and N7.** Turn a selected expression input into an immutable, reproducible analysis.
+Keep it independent of receptor QC/clonotyping, supplied layouts and annotation labels. Read
+primary methods before choosing the pipeline; adapt SituCraft 0.9.0's Apache-2.0 numerical
+patterns, with ClonoLoom's deterministic math and explicit bounded exact computation.
+
+**Settled method.** Retain positive Gene Expression cells with a configurable minimum detected
+feature count. Normalize against all gene counts before feature filtering to 10000 per cell,
+apply natural log1p, select up to 500 features by decreasing sample variance with ID ties, and
+center without variance scaling or clipping. This is explicitly variance ranking, not a named
+HVG recipe. Exact covariance PCA retains up to 30 nonzero components; exact Euclidean search
+finds 15 other neighbors per cell. Preserve the directed table and UMAP fuzzy-union graph.
+Compute UMAP from a PCA start with seed 20261024, minimum distance 0.5, spread 1, 500 epochs,
+five negative samples and serial optimization. Record all fixed rules, fitted curve parameters,
+requested settings and effective dimensions/counts. See research §5.26 and `docs/EXPRESSION.md`.
+
+**Bounds and semantics.** No hidden subsampling or approximate search: at most 100000 source
+barcodes, 10000 retained cells, 1000 selected features and two billion cell-by-feature-pair
+operations. Four retained cells and two nonzero PCs are required. Keep zero-count and
+below-threshold exclusions distinct. Preserve exact barcode/feature identities, missing
+annotations and all source fingerprints. Cells missing imported coordinates can still map.
+No batch correction, cluster calling, receptor phenotype or subject-level inference is added.
+
+**Implementation and acceptance.** A separate expression-map job verifies source identity,
+reports progress/cancellation and writes a checked immutable artifact. Project Results can
+reopen it without source files. Cells offers explicit settings, equal-scale computed UMAP axes,
+annotation coloring, missing values in gray, paged cell/exclusion/feature tables, cited methods
+and JSON download containing scores, loadings, graph and provenance. A guided step follows the
+cloud study's imported-map inspection. Later receptor overlays use this expression parent;
+map distances are never substituted for PCA-space neighborhoods.
+
+**Validation.** Independent pinned NumPy/SciPy/scikit-learn/umap-learn references cover transformed
+moments, variance ranking, PCA, exact neighbors, fuzzy weights and UMAP curve fitting. Artificial
+three-state counts assess neighborhood purity and map trustworthiness; reference JIT is disabled
+and finite bandwidths checked after finding nonfinite values under compiled fast math. Check
+source drift, cache identity, cancellation, failed promotion, missing/zero values, bounds,
+worker independence, native/amd64 byte identity, both UI themes, saved reopening and undo.
+**Done, committed as `ef6d893`.** The application/internal race suite and complete
+scientific validation pass (477.226 s for the latter). Both independent numerical cases agree;
+known-state neighbor purity is 1.0, and map trustworthiness is 0.9780 and 0.9642 versus the
+reference's 0.9774 and 0.9618. The optional public 10x 1k PBMC matrix completes in 1.74 s with
+1222 retained cells, 500 features, 30 PCs and 13678 undirected graph edges. This is a bounded
+pipeline exercise, not biological validation of a donor's cell types.
+
+Native and amd64 checks pin identical expression result bytes; released-project replay and
+existing processor invariants pass. Cancellation, source drift, altered-result rejection,
+worker independence, resource bounds, degenerate inputs and missing/zero semantics pass.
+Vet, gofmt, six platform builds, 103 JavaScript tests and all 14 contrast checks pass. All five
+Cells capture scenes pass in light/dark themes, including computed-result save/reopen, undo,
+annotation coloring and table navigation. Both new screenshots are visually inspected. The
+site builds 34 pages with 36 screenshot sets; all 132 audit checks pass. Version stays 0.5.0.
+
+### Slice 6: Clonotype overlays and phenotypes
+
+**Scope (M1, M2).** Bind one expression input and either its imported coordinates or one saved
+computed map to an explicit receptor dataset/sample. Reuse the normalized clonotype definition
+and QC mask. Count distinct sample/barcode cells, never chain rows, with no suffix stripping.
+Save both all uniquely assigned receptor cells in that sample and mapped assigned cells per
+clonotype; the user chooses the size population (default receptor sample). Configurable inclusive
+breakpoints default to 1, 2, 5. Missing receptor evidence, QC exclusion, unassigned clonotypes,
+ambiguous assignments and absence from the chosen size population remain distinct, never zero.
+Definitions that assign a cell to several locus-specific clonotypes cannot supply a unique clone
+size; report those cells as ambiguous. Conflicting vendor labels are also ambiguous.
+
+**Phenotypes.** Select a supplied annotation (cluster, cell type or state); do not infer labels.
+Count all expression barcodes, including those without coordinates, by annotation and clonotype.
+Keep missing labels as a separate group. Report assigned/sized cells, expanded cells (size > 1),
+mapped coverage, within-clonotype expression-cell fractions and within-group expression-cell
+fractions with their denominators. Expansion shares use sized cells only. Each result belongs
+to one sample and pins its supplied subject/timepoint; no pooled donors, cell-level significance,
+expression DE, batch correction or antigen-specificity claims. Sample/timepoint coloring is
+available within that one map; independently fitted maps are never concatenated.
+
+**Interaction and record.** Continuous size, size-bin, receptor/QC/assignment, chain-status and
+supplied-annotation coloring; neutral missing evidence; exact source axes and equal scale.
+Clonotype selection highlights mapped cells; map clicking/brushing and table selection list
+clonotypes and unresolved evidence in the inspector. Reset/undo selection and table filtering
+provide an accessible equivalent. Pin expression/map IDs, parent checksums, dataset fingerprints,
+definition ID, filter values, sample metadata, populations and method version in immutable job
+artifacts. Results reopen without source files and export their full JSON record.
+
+**Sources.** scirpy's documented `clonal_expansion` API describes sample-scoped sizes and inclusive
+breakpoints; Sturm et al. 2020, doi:10.1093/bioinformatics/btaa611. The 10x Loupe integrated V(D)J
+and gene-expression tutorial documents linked clone/phenotype exploration. These are method and
+interaction references, not shared implementations. Counting/ambiguity policies are ClonoLoom
+choices. Chain evidence uses QC's productive-contig receptor arms and >2 chains/locus threshold,
+with mixed receptor families and unresolved loci explicitly labeled.
+
+**Validation.** Hand-enumerated cells with duplicate contigs, repeated barcodes across samples,
+missing annotations/coordinates, QC exclusions, single/paired/multi/mixed chains, vendor conflicts,
+all-loci definitions and both size populations. Independent tabulation validates sizes/bins and
+phenotype fractions. Test artifact identity, altered inputs/parents, cancellation, saved reopening,
+linked selection, both themes, undo, accessible tables and processor determinism. Finish the
+application/scientific suites, browser capture and documentation checks before handoff.
+
+**Done, committed as `3aaa344`.** Imported and computed overlays, distinct-cell
+populations, explicit ambiguity/missingness, chain evidence and supplied-phenotype summaries
+are implemented. Immutable jobs pin source/map checksums, normalized definitions, QC content
+fingerprints and project filter versions, sample metadata, options and citations. Cells supports
+continuous/category coloring, clone links, pointer brushing, searchable/paged tables, selection
+reset/undo, result undo/redo, saved reopening and complete JSON export. The cloud study has a
+third guided step; the remote action is `compute_cell_phenotypes`.
+
+Independent SQL tabulations agree for both samples and both size populations, including every
+category, phenotype numerator and denominator. Hand-enumerated ambiguous assignments, repeated
+barcodes/contigs, QC exclusions, missing labels, mixed/unknown chains, empty populations,
+resource bounds and cancellation pass. Source drift and altered parent/result checksums are
+refused. Full application/internal race tests and scientific validation pass (498.369 s for the
+latter). Native/amd64 phenotype digests and released-project/processor compatibility checks
+agree. Vet, gofmt, six platform builds, 104 JavaScript tests and all 14 contrast checks pass.
+All six Cells capture scenes pass in both themes, including actual pointer brushing and
+Clonotypes-to-Cells navigation; both new screenshots are visually inspected. The site builds
+34 pages with 37 screenshot sets and passes all 132 audit checks. Version remains 0.5.0.
+
+### Slice 7: Clonotype modularity on the expression graph
+
+**Scope (M3).** Test predefined clonotypes on one saved computed expression graph, using a
+checksum-pinned phenotype parent for its exact sample/barcode assignments, normalized
+clonotype definition, QC and metadata. Keep uniquely assigned retained cells and their induced
+binary graph, including isolated vertices. Every positive fuzzy-union edge counts once;
+weight magnitudes and two-dimensional UMAP coordinates do not enter this statistic. Imported
+maps alone cannot supply it. Preserve excluded assignments and expression cells outside the graph.
+
+**Settled method.** Use the documented scirpy connectivity score
+`log2((observed + 1)/(expected + 1))`, distinct from Newman modularity Q. Compute expectation
+analytically as `M s(s−1)/(N(N−1))` on the fixed induced graph. The null assigns a clone uniformly
+to size-s vertex subsets, conditional on graph and size, within one sample. Enumerate every
+subset when choose(N,s) <= 10000; otherwise draw 9999 independent uniform subsets by default,
+with replacement between draws and PCG seed 20261024, size-keyed streams. Use inclusive
+upper-tail tests: tail/draws for enumeration, (tail+1)/(draws+1) for Monte Carlo. No parametric
+tail extrapolation. Benjamini–Yekutieli adjusts the complete family of clones with 2 <= s < N,
+including zero-edge clones, because shared graphs/null draws do not justify independence.
+Singleton and whole-population clones have explicit untested/null fields.
+
+**Interpretation and bounds.** Exchangeability is an assumption, not a finding: this null does
+not condition on cell type, batch, receptor family or degree. It tests exploratory within-sample
+connectivity, not antigen specificity, causality or subject-level effects. No pooled donors.
+Correction does not cover repeated choices of graph, QC, definition or sample. Retain null
+histograms and attainable Monte Carlo resolution. Limits: 10000 graph cells, 99–99999 requested
+draws, and a conservative 500 million work-unit bound; refuse excess rather than subsample.
+
+**Delivery and validation.** Immutable jobs verify both parents and reopen without raw sources;
+saved results reopen without parents. Cells displays observed/expected edges, score, raw and
+adjusted p-values, untested reasons, a discrete null-frequency plot with zero baseline and
+accessible tables. The plot is a null distribution, not an effect confidence interval. Keep
+methods, definitions, population, source fingerprints, hashes, seeds and limits in JSON export.
+Add remote control, a guided artificial-study step, docs and screenshots. Independently enumerate
+subsets with Python itertools and check BY with SciPy's public API; compare Monte Carlo
+frequencies to exhaustive truth. Check graph validation, degeneracy, exclusion, cancellation,
+changed parents, processor identity, saved reopening, undo, both themes and regression suites.
+
+**Done; committed by the maintainer as `7a991b9`.** Sample-scoped induced graph tests, analytic expected
+edges, exhaustive/seeded null distributions, inclusive nonzero p-values and BY adjustment are
+implemented. Results retain complete phenotype evidence, both parent hashes, effective options,
+method citations, graph memberships, null frequencies and explicit untested states. Jobs verify
+parent formats/versions and hashes, support cancellation/resumption and refuse changed parents.
+Saved results reopen without sources or parents. Cells offers a discrete zero-based null plot,
+accessible tables, unchanged test families under filtering, parent-overlay highlighting,
+project undo/redo and full JSON export. Remote control and the fourth cloud-study guide step
+exercise the same workflow.
+
+Independent Python enumeration agrees on every exact histogram, edge count, expectation, score,
+tail and SciPy BY adjustment; 99999 Monte Carlo draws agree with the exhaustive 15504-subset
+reference within the declared probability tolerance. Hand-counted exclusions, isolated cells,
+singleton/whole-population clones, empty/complete graphs, malformed CSR, work limits and
+cancellation pass. Native/amd64 result digests agree, as do released-project replay and existing
+processor checks. The artificial cloud workflow has 359 retained graph cells, 358 eligible
+receptor-linked cells, 3963 induced edges and 10 tested clones; the unmatched cell remains an
+explicit exclusion. These fixtures validate the method, not biological specificity.
+
+The final application/internal race suite and full required-data scientific suite pass
+(484.031 s for the latter). An initial assembly check found a fused operation in progress
+reporting; explicit rounding fixes it, and the full final run is clean. Vet, gofmt, six platform
+builds, 106 JavaScript tests and all 14 contrast checks pass. All seven Cells capture scenes
+pass in both themes; final modularity screenshots are refreshed and inspected. The site builds
+34 pages with 38 screenshot sets and passes all 132 audit checks. Existing unrelated performance
+budgets, skipped under race detection, were not rerun. Version remains 0.5.0.
+
+### Slice 8: Receptor / expression neighborhood comparison
+
+**Scope (M3).** A bounded CoNGA-style comparison of paired αβ clonotypes in one sample, using
+checksum-pinned computed-map phenotype evidence and all retained expression PCs. New requests
+capture the original open receptor dataset's required clonotype sequences; durable jobs then
+need no raw expression/receptor files. Full TCRdist requires explicit organism and a pinned
+V-loop reference. CDR3-only is an explicit approximation, including in the fictional offline guide.
+No imported-coordinate distances, donor pooling or treatment inference.
+
+**Settled method.** Refine from Schattgen et al. (2022), Dash et al. (2017), TCRdist3 conventions
+and conditional hypergeometric probability. Use one mean-PC profile per uniquely assigned,
+paired clonotype; clone size does not multiply graph vertices. Require primary TRA/TRB amino-acid
+clones resolving V/J genes or alleles; preserve invalid/missing evidence reasons. For each focal
+clone, exclude self and any identical α or β CDR3 from both candidate pools. Construct exact,
+directed k-nearest sets on mean PCs and paired receptor distances, including every cutoff tie.
+Test overlap with an inclusive hypergeometric tail conditional on the actual two degrees and
+candidate population. Correct every testable clone-by-k row with Bonferroni, including zero
+matches and degenerate tied sets. Keep all scales; never silently choose the best. Insufficient
+candidates produce explicit untested rows. Stable log tails preserve probabilities below float
+range. These declared policies are not an exact reproduction of the original multi-graph score.
+
+**Interpretation.** Independent, exchangeable neighbor labels are assumptions, not established
+properties of a biological dataset. The null does not condition on cell type, batch or chain
+groups; correction cannot repair nonexchangeability. Results are exploratory within one sample,
+not specificity, causality or subject-level effects. Repeated analysis choices are outside the
+correction. Means can hide within-clone heterogeneity; keep parent-overlay exploration.
+
+**Delivery and validation.** Save sequences, clone memberships, mean PCs, neighbor identities,
+actual degrees, exclusions, expectations, probabilities/log probabilities, source/parent/reference
+fingerprints and cited method parameters. Expose a zero-based observed-count / expected-marker
+plot and accessible complete tables; it is not a confidence interval or density. Add remote
+control, a cloud-study guide step, docs and both-theme screenshots. Bounds: 10000 retained cells,
+2000 assigned clones, eight scales, k <= 200, two million stored neighbor entries, 500 million
+conservative distance work units; refuse excess without subsampling. Validate against independent
+SciPy geometry/tails and exhaustive set enumeration, including tied/null controls, shared chains,
+clone abundance, missing/ambiguous evidence, cancellation, source drift and saved reopening.
+Run race/scientific regressions, processor checks, six builds, JavaScript, browser/contrast/site
+checks. Keep version 0.5.0; the maintainer performs every Git operation.
+
+**Done, committed as `c4b29dd`.** The bounded comparison, immutable job/API, Cells
+controls, observed/expected plot, accessible tables, remote action and fifth cloud-study step
+are implemented. New results pin source-compatible receptor snapshots, both parent hashes and
+the full-distance reference when used; saved results reopen without sources or parents. Missing
+full-distance references never fall back automatically. Both neighbor sets, actual degrees,
+clone means/memberships, cell exclusions, conditional tails and all-scale adjustments are kept.
+Untested overlaps/statistics are null. The visible method notes include nonexchangeability and
+possible direct coupling through receptor genes retained in the inherited PCs.
+
+Independent SciPy geometry and tail probabilities agree with every reference neighbor identity,
+mean profile, degree, overlap, expectation and Bonferroni value. Exhaustive subsets confirm small
+upper tails and super-uniform null probabilities; extreme tails retain finite log values.
+Concentrated-neighborhood and fully tied controls, shared-chain exclusions, clone abundance,
+source-order invariance, missing loops/evidence, malformed inputs, work/output bounds and
+cancellation pass. The cloud workflow retains 358 paired cells among 359 expression-PC cells,
+10 clonotype profiles and 20 tests at k = 2, 4. These artificial checks validate the specified
+calculation, not biological specificity or general null exchangeability.
+
+Application/internal race tests and the full required-data scientific suite pass (475.803 s
+for the latter). Final focused race/assembly/reference checks cover the explicit null export;
+API checks cover missing-reference refusal and saved-job integrity. Native/amd64 deterministic
+results, released-project replay and processor checks agree. Vet, gofmt, six platform builds,
+108 JavaScript tests and 14 contrast checks pass. All eight Cells browser scenes pass in both
+themes, including visible/remote equivalence, unchanged test families under filtering, overlay
+links, undo/redo and saved reopening. Final comparison screenshots are refreshed and visually
+inspected. The site builds 34 pages with 39 screenshot sets and passes all 132 audit checks;
+four focused Cells checks pass after the final methods wording. Unrelated performance budgets,
+skipped under race detection, were not rerun. Version remains 0.5.0.
+
+### Slice 9: AnnData export with receptor links
+
+**Scope (O3).** Export a verified phenotype parent, with either supplied coordinates or a pinned
+computed expression map, as a portable AnnData file. Preserve raw cell × feature counts, exact
+barcodes, all selected modalities, annotations and sample-scoped receptor assignments. Retain
+excluded cells with missing computed coordinates; no refitting or biological inference.
+
+**Settled contract.** Follow the AnnData/HDF5 specifications and SituCraft's compatible HDF5
+writer conventions. Use int64 CSR, UTF-8 strings, categorical missing codes, distinct supplied
+and computed embeddings, explicit map inclusion/exclusion, and versioned ClonoLoom receptor
+links. Save complete parent documents/manifests, clone-chain definitions, ambiguity candidates,
+source fingerprints, sample metadata, QC, parameters and citations in uns/clonoloom. Do not
+claim scirpy raw AIRR-chain compatibility. Original reader text/missing semantics are retained;
+original pandas dtypes and unselected input layers/modalities are not exported.
+
+**Implementation.** Bounded Go writer and export package; durable checksum-pinned jobs, source
+verification, cache identity, cancellation/resumption and portable download with NOTICE. Cells
+supports preparing, keeping, undoing, reopening and downloading exports; the remote action and
+sixth cloud-study guide step exercise the same path. Keep the application version at 0.5.0.
+
+**Done, committed as `6c4f06e`.** AnnData/h5py independently read every sparse count,
+cell/feature identity, Unicode label, missing code and embedding row; AnnData's own writer
+rewrites the object without changing those values. The oracle pins AnnData 0.12.6, h5py 3.15.1,
+NumPy 2.4.2, SciPy 1.17.0 and pandas 2.3.3. Its deterministic Go fixture hash is
+`48c3ed862e5084897a3ad527800e8955fb137b79400e265aa96a3ca6ea7c38a0` on native arm64 and amd64.
+
+Tests cover long Unicode/global-heap boundaries, datatypes, empty arrays, counts beyond float32
+precision, supplied variable annotations, reordered parent rows, 32 supplied observation columns,
+missing receptor evidence, matrix/annotation/embedding bounds, invalid source positions and
+cancellation. API checks cover changed sources/parents, checked downloads without original
+sources, cached results, versioned resumption and provider-term acknowledgment. The application
+and internal race suite passes; the complete required-data scientific race suite passes in
+524.173 s. Focused final export/API race checks and amd64 checks pass after the last validation
+and empty-receptor-snapshot refinements. Released-project compatibility and processor identity
+checks pass. Vet, formatting/diff checks, six CGO-free platform builds, 108 JavaScript tests
+and 14 contrast checks pass.
+
+All nine Cells scenes pass in both themes, including visible/remote export equivalence, ZIP
+download, undo/redo and source-free saved reopening. Both export screenshots were visually
+inspected. The site builds 34 pages with 40 screenshot sets and passes all 132 accessibility/
+overflow checks. Unrelated performance budgets, skipped under race detection, were not rerun.
+Version remained 0.5.0 for slice 9.
+
+
+### Slice 10: complete study and release 0.6.0 preparation
+
+**Scope (E3, O2, N7).** Finish the artificial single-cell workflow and its methods, retain a
+portable release project and the complete result chain, reconcile documentation and release
+identifiers, refresh visuals, and validate scientific correctness, performance and accessibility.
+The maintainer owns commit, PR/merge, tag, release and product-site publication.
+
+**Settled contract.** Keep supplied Gaussian coordinates distinct from computed PCA/UMAP.
+Document all populations and missingness: S01-1 has 360 expression cells, 359 retained map cells,
+358 uniquely assigned retained cells, ten paired clone profiles and 20 comparison tests at
+k = 2, 4. All 360 cells remain in raw-count AnnData. Uniform connectivity and conditional
+neighbor-overlap nulls are exploratory; corrected tests do not remove confounding or establish
+antigen specificity. Subject-level inference remains wave 7. No scientific algorithm changes.
+
+**Implementation.** Seven guided steps now end with cited methods. Correct the cell-state
+simulator's methods, which previously inherited the unrelated TRB model; include saved Cells
+results through explicit expression bindings or this dataset's saved phenotype/graph/export
+results. Preserve their Go-generated descriptions, effective choices and citations. Check
+both simulation variants, real fixture metadata, empty methods and unrelated dataset isolation.
+Unknown or renamed simulation identifiers no longer inherit a TRB generative-model claim.
+The complete-study accessibility audit found invalid tablist separators and empty list semantics;
+fix those and preserve native button roles inside list-item wrappers.
+
+The 0.6.0 fixture is generated through the actual guide in an isolated library: all four
+samples, matrices, annotations, separate truth and five saved results. Current durable workers
+remake the chain under the same IDs. Source paths and file mtimes are restored to original
+provenance only after content/identity checks; scientific values are never substituted.
+Verified original parent manifests preserve their job IDs, timestamps and software identity.
+The complete AnnData binary, including that provenance, is compared byte for byte. Independent
+AnnData/SciPy validation checks the release matrix, labels, links and all embedding rows, then
+rewrites it through AnnData and checks again.
+
+Version identifiers, changelog, citation, format references and product-site sources move to
+0.6.0. The worked study explains expected results, plots, null assumptions, source retention,
+exports and reopening; earlier release fixtures and simulation identities remain unchanged.
+
+**Done, awaiting the maintainer's commit.** Full application/internal race tests pass (root
+17.070 s); final focused release/source/example checks pass after the fixture validation changes.
+The complete required-data scientific suite passes with race detection (790.910 s) and without
+it (257.710 s, performance tests separated). All released projects replay; the 0.6.0 chain and
+AnnData binary agree on native arm64 and amd64. Both the small independent export oracle and
+the full-release AnnData read/rewrite check pass. All 23 study source/truth hashes agree.
+
+Six isolated performance budgets pass (69.308 s total): one million rows read/validated in
+1.5 s at 58 bytes per row plus junctions; a 100-sample cached cohort reopened in 122 ms; a
+searched clonotype page in 38.304 ms; 10,000 receptor neighborhoods in 1.141 s; one million
+Pgen values in 30.826 s; 100,000 paired-TCR neighborhoods in 27.025 s (last three on 10
+processors). The separate public 10x expression-map check passes in 4.75 s: 1222 cells,
+500 selected features, 30 PCs and 13678 graph edges, with finite coordinates and complete
+population accounting. These are local measurements, not universal hardware promises.
+
+Vet, formatting/diff checks, six CGO-free platform builds, 113 JavaScript tests, 14 contrast
+checks and shell-installer syntax pass. PowerShell is not installed locally; its parser check
+remains CI's responsibility. All 41 browser scenes pass in both themes. The complete study
+checks all guided actions, methods/citations and saved-result reopening; axe-core finds no
+WCAG A/AA violations in populated and empty projects after the navigation fixes. All 82
+screenshots are refreshed, and the new study plus map/graph-test visuals are inspected.
+The site builds 35 pages with 41 screenshot sets and passes 136 accessibility/overflow checks.
+The link-preview image is regenerated; its bytes are unchanged because its crop is unchanged.
+
+No commit, tag, release or site publication was performed. Wave 7 has not started.
 
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 6 | 0.6.0 | Single cell | Expression linked by barcode, the map, phenotypes per clonotype, clonotype modularity and CoNGA-style analysis; AnnData, MuData and 10x matrices |
 | 7 | 0.7.0 | Cohorts and robustness | Study design, group comparisons with the subject as unit, robustness to the definition, GLIPH2-style groups, HLA association, contamination and batch QC, pseudobulk |
 | 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |
 | 9 | 0.9.0 | Suite and public data | ADC queries, overlap with public cohorts, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |

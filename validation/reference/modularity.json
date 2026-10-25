@@ -1,0 +1,441 @@
+{
+  "reference": "Python itertools exhaustive subsets; SciPy 1.17.0 false_discovery_control(method=by)",
+  "cases": [
+    {
+      "name": "clique-and-path",
+      "n": 12,
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          10,
+          11
+        ]
+      ],
+      "labels": [
+        "A",
+        "A",
+        "A",
+        "A",
+        "B",
+        "C",
+        "D",
+        "B",
+        "C",
+        "D",
+        "B",
+        "C"
+      ],
+      "eligible": 12,
+      "inducedEdges": 13,
+      "clones": [
+        {
+          "id": "A",
+          "cells": 4,
+          "observed": 6,
+          "expected": 1.1818181818181819,
+          "score": 1.6818240399737452,
+          "p": 0.00202020202020202,
+          "adjusted": 0.01683501683501683
+        },
+        {
+          "id": "B",
+          "cells": 3,
+          "observed": 0,
+          "expected": 0.5909090909090909,
+          "score": -0.6698513983076693,
+          "p": 1.0,
+          "adjusted": 1.0
+        },
+        {
+          "id": "C",
+          "cells": 3,
+          "observed": 0,
+          "expected": 0.5909090909090909,
+          "score": -0.6698513983076693,
+          "p": 1.0,
+          "adjusted": 1.0
+        },
+        {
+          "id": "D",
+          "cells": 2,
+          "observed": 0,
+          "expected": 0.19696969696969696,
+          "score": -0.2593866288186495,
+          "p": 1.0,
+          "adjusted": 1.0
+        }
+      ],
+      "nulls": [
+        {
+          "size": 2,
+          "draws": 66,
+          "expected": 0.19696969696969696,
+          "histogram": [
+            {
+              "edges": 0,
+              "count": 53
+            },
+            {
+              "edges": 1,
+              "count": 13
+            }
+          ]
+        },
+        {
+          "size": 3,
+          "draws": 220,
+          "expected": 0.5909090909090909,
+          "histogram": [
+            {
+              "edges": 0,
+              "count": 104
+            },
+            {
+              "edges": 1,
+              "count": 106
+            },
+            {
+              "edges": 2,
+              "count": 6
+            },
+            {
+              "edges": 3,
+              "count": 4
+            }
+          ]
+        },
+        {
+          "size": 4,
+          "draws": 495,
+          "expected": 1.1818181818181819,
+          "histogram": [
+            {
+              "edges": 0,
+              "count": 85
+            },
+            {
+              "edges": 1,
+              "count": 276
+            },
+            {
+              "edges": 2,
+              "count": 96
+            },
+            {
+              "edges": 3,
+              "count": 37
+            },
+            {
+              "edges": 6,
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "isolated-and-excluded",
+      "n": 8,
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          0,
+          7
+        ]
+      ],
+      "labels": [
+        "A",
+        "A",
+        "A",
+        "B",
+        "C",
+        "B",
+        "D",
+        ""
+      ],
+      "eligible": 7,
+      "inducedEdges": 5,
+      "clones": [
+        {
+          "id": "A",
+          "cells": 3,
+          "observed": 3,
+          "expected": 0.7142857142857143,
+          "score": 1.2223924213364477,
+          "p": 0.02857142857142857,
+          "adjusted": 0.08571428571428572
+        },
+        {
+          "id": "B",
+          "cells": 2,
+          "observed": 0,
+          "expected": 0.23809523809523808,
+          "score": -0.3081222953623318,
+          "p": 1.0,
+          "adjusted": 1.0
+        },
+        {
+          "id": "C",
+          "cells": 1,
+          "observed": 0,
+          "expected": null,
+          "score": null,
+          "p": null,
+          "adjusted": null
+        },
+        {
+          "id": "D",
+          "cells": 1,
+          "observed": 0,
+          "expected": null,
+          "score": null,
+          "p": null,
+          "adjusted": null
+        }
+      ],
+      "nulls": [
+        {
+          "size": 2,
+          "draws": 21,
+          "expected": 0.23809523809523808,
+          "histogram": [
+            {
+              "edges": 0,
+              "count": 16
+            },
+            {
+              "edges": 1,
+              "count": 5
+            }
+          ]
+        },
+        {
+          "size": 3,
+          "draws": 35,
+          "expected": 0.7142857142857143,
+          "histogram": [
+            {
+              "edges": 0,
+              "count": 13
+            },
+            {
+              "edges": 1,
+              "count": 20
+            },
+            {
+              "edges": 2,
+              "count": 1
+            },
+            {
+              "edges": 3,
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "monte-carlo-target",
+      "n": 20,
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "labels": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "2",
+        "2",
+        "2",
+        "2",
+        "2",
+        "3",
+        "3",
+        "3",
+        "3",
+        "3"
+      ],
+      "eligible": 20,
+      "inducedEdges": 10,
+      "clones": [
+        {
+          "id": "0",
+          "cells": 5,
+          "observed": 10,
+          "expected": 0.5263157894736842,
+          "score": 2.8493781369533107,
+          "p": 6.449948400412796e-05,
+          "adjusted": 0.0005374957000343996
+        },
+        {
+          "id": "1",
+          "cells": 5,
+          "observed": 0,
+          "expected": 0.5263157894736842,
+          "score": -0.6100534816839864,
+          "p": 1.0,
+          "adjusted": 1.0
+        },
+        {
+          "id": "2",
+          "cells": 5,
+          "observed": 0,
+          "expected": 0.5263157894736842,
+          "score": -0.6100534816839864,
+          "p": 1.0,
+          "adjusted": 1.0
+        },
+        {
+          "id": "3",
+          "cells": 5,
+          "observed": 0,
+          "expected": 0.5263157894736842,
+          "score": -0.6100534816839864,
+          "p": 1.0,
+          "adjusted": 1.0
+        }
+      ],
+      "nulls": [
+        {
+          "size": 5,
+          "draws": 15504,
+          "expected": 0.5263157894736842,
+          "histogram": [
+            {
+              "edges": 0,
+              "count": 9828
+            },
+            {
+              "edges": 1,
+              "count": 4550
+            },
+            {
+              "edges": 3,
+              "count": 1050
+            },
+            {
+              "edges": 6,
+              "count": 75
+            },
+            {
+              "edges": 10,
+              "count": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

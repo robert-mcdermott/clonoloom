@@ -1,0 +1,250 @@
+{
+  "model": "clonoloom-artificial-cell-states-clouds-v1",
+  "simulator": "ClonoLoom simulate 0.6.0",
+  "study": {
+    "name": "cell-states-clouds",
+    "title": "An artificial paired T-cell and expression study with supplied Gaussian clouds",
+    "seed": 20261028,
+    "groups": null,
+    "samplesPerSubject": 0,
+    "templates": null,
+    "readsPerTemplate": 0,
+    "readsSize": 0,
+    "recombination": {
+      "vDeletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "d5Deletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "d3Deletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "jDeletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "vdInsertions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "composition": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "djInsertions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "composition": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "d2WithJ2": 0,
+      "selectLengths": false
+    },
+    "cellStates": {
+      "subjects": 2,
+      "cellsPerSample": 360,
+      "clones": 10,
+      "layout": "gaussian"
+    }
+  },
+  "states": [
+    "state A",
+    "state B",
+    "state C"
+  ],
+  "means": [
+    [
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      16
+    ]
+  ],
+  "size": 4,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "2b511116f3951eef6cd51907d7ce2dd3015f6879f68111848bd9f3c7cb0daa45"
+    },
+    {
+      "path": "S01-1.tsv",
+      "sha256": "187abe6e9bb49f90c4292c5debbfb0309c036e1e45bbc433a6bef8229e278ab3"
+    },
+    {
+      "path": "S01-2.tsv",
+      "sha256": "926d0d7ab14cbe3b3229fdc43d8df0b0a8c069e5ac3feef3f635169f20c1c1e3"
+    },
+    {
+      "path": "S02-1.tsv",
+      "sha256": "7847cc5d671cb931df93ff68e6592d8b5ffc75bae03cb97630cab04251d5bd4b"
+    },
+    {
+      "path": "S02-2.tsv",
+      "sha256": "8db3a7d467ed640cbd72afb6938d9585cef35e1139fc672ac8f120ae954b6231"
+    },
+    {
+      "path": "expression/S01-1/barcodes.tsv",
+      "sha256": "085b8ab52b9f54a91459a9d87254b4730ecfe6b29c3fc90cebf3f9eb08a05356"
+    },
+    {
+      "path": "expression/S01-1/cells.tsv",
+      "sha256": "4d9cb9da241b9c5c48e1900c85432aa95b50bb598696ea8f34b5605c3b98c05c"
+    },
+    {
+      "path": "expression/S01-1/features.tsv",
+      "sha256": "e77583668a99a4c025e38d4df03e8a2469d3d9a97b18a72c8b5a20362655b08b"
+    },
+    {
+      "path": "expression/S01-1/matrix.mtx",
+      "sha256": "3846c9cb746f355366f467c47bd86461237a6fbf74cb060bf0cea22aba8eab1c"
+    },
+    {
+      "path": "expression/S01-2/barcodes.tsv",
+      "sha256": "085b8ab52b9f54a91459a9d87254b4730ecfe6b29c3fc90cebf3f9eb08a05356"
+    },
+    {
+      "path": "expression/S01-2/cells.tsv",
+      "sha256": "45529956b6d4d746cdf31fa5c60adf4b575ef233e0066392988c6040f977a55f"
+    },
+    {
+      "path": "expression/S01-2/features.tsv",
+      "sha256": "e77583668a99a4c025e38d4df03e8a2469d3d9a97b18a72c8b5a20362655b08b"
+    },
+    {
+      "path": "expression/S01-2/matrix.mtx",
+      "sha256": "6f15928c0a49cb81e949307299a06c3ed785a1ccc31f9eb105f36ed5e7753d55"
+    },
+    {
+      "path": "expression/S02-1/barcodes.tsv",
+      "sha256": "085b8ab52b9f54a91459a9d87254b4730ecfe6b29c3fc90cebf3f9eb08a05356"
+    },
+    {
+      "path": "expression/S02-1/cells.tsv",
+      "sha256": "e4589e1a04d57124711ee87a0d4ecd8ff73146c2b86ef367d8c6c14337236e82"
+    },
+    {
+      "path": "expression/S02-1/features.tsv",
+      "sha256": "e77583668a99a4c025e38d4df03e8a2469d3d9a97b18a72c8b5a20362655b08b"
+    },
+    {
+      "path": "expression/S02-1/matrix.mtx",
+      "sha256": "51d3bf2836df2a173fc2189b845a52d256414343dfb986d91f7a61adc54e4d94"
+    },
+    {
+      "path": "expression/S02-2/barcodes.tsv",
+      "sha256": "085b8ab52b9f54a91459a9d87254b4730ecfe6b29c3fc90cebf3f9eb08a05356"
+    },
+    {
+      "path": "expression/S02-2/cells.tsv",
+      "sha256": "27c9d508fc78989ca90cbd125cb75f471035bb8111adae3a28e30f0826313977"
+    },
+    {
+      "path": "expression/S02-2/features.tsv",
+      "sha256": "e77583668a99a4c025e38d4df03e8a2469d3d9a97b18a72c8b5a20362655b08b"
+    },
+    {
+      "path": "expression/S02-2/matrix.mtx",
+      "sha256": "e6dad1668c8eafe6e17b06c66a2e83cf5aa1e97b0cacfd6cf97306d91476b6e7"
+    },
+    {
+      "path": "repertoires.airr.json",
+      "sha256": "09ab08603353c45fd01ec3371fd678f85b6f95b728d0eb00a2f21cd44a648757"
+    },
+    {
+      "path": "truth/observations.tsv",
+      "sha256": "540d90926824543fbc5f471160bfbf0a06acde99e5ddf6e4d8365cb7d62f3f9c"
+    }
+  ]
+}

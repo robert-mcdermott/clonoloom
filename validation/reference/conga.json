@@ -1,0 +1,2444 @@
+{
+  "reference": "SciPy 1.17.0; itertools exhaustive subsets; BLOSUM62 restricted alphabet arithmetic",
+  "cases": [
+    {
+      "name": "aligned",
+      "nodes": [
+        {
+          "id": "C0",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAAAAAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASAAAATF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C1",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAAASAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASAAASTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              1,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C2",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAASSAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASAASSTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              3,
+              0
+            ],
+            [
+              5,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C3",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVASSSAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASASSSTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              5,
+              0
+            ],
+            [
+              7,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C4",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCCCCAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCCCCTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              7,
+              0
+            ],
+            [
+              9,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C5",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCCCTAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCCCTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              9,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C6",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCCTTAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCCTTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              11,
+              0
+            ],
+            [
+              13,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C7",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCTTTAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCTTTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              13,
+              0
+            ],
+            [
+              15,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C8",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAAAAAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASTTTTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              15,
+              0
+            ],
+            [
+              17,
+              0
+            ]
+          ]
+        }
+      ],
+      "means": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          2.0,
+          0.0
+        ],
+        [
+          4.0,
+          0.0
+        ],
+        [
+          6.0,
+          0.0
+        ],
+        [
+          8.0,
+          0.0
+        ],
+        [
+          10.0,
+          0.0
+        ],
+        [
+          12.0,
+          0.0
+        ],
+        [
+          14.0,
+          0.0
+        ],
+        [
+          16.0,
+          0.0
+        ]
+      ],
+      "candidates": [
+        7,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        7
+      ],
+      "tests": [
+        {
+          "node": 0,
+          "k": 1,
+          "expression": [
+            1
+          ],
+          "receptor": [
+            1
+          ],
+          "overlap": 1,
+          "expected": 0.14285714285714285,
+          "p": 0.14285714285714285,
+          "adjusted": 1
+        },
+        {
+          "node": 0,
+          "k": 2,
+          "expression": [
+            1,
+            2
+          ],
+          "receptor": [
+            1,
+            2
+          ],
+          "overlap": 2,
+          "expected": 0.5714285714285714,
+          "p": 0.04761904761904761,
+          "adjusted": 1
+        },
+        {
+          "node": 0,
+          "k": 3,
+          "expression": [
+            1,
+            2,
+            3
+          ],
+          "receptor": [
+            1,
+            2,
+            3
+          ],
+          "overlap": 3,
+          "expected": 1.2857142857142858,
+          "p": 0.028571428571428567,
+          "adjusted": 0.7714285714285714
+        },
+        {
+          "node": 1,
+          "k": 1,
+          "expression": [
+            0,
+            2
+          ],
+          "receptor": [
+            0,
+            2
+          ],
+          "overlap": 2,
+          "expected": 0.5,
+          "p": 0.03571428571428571,
+          "adjusted": 0.9642857142857142
+        },
+        {
+          "node": 1,
+          "k": 2,
+          "expression": [
+            0,
+            2
+          ],
+          "receptor": [
+            0,
+            2
+          ],
+          "overlap": 2,
+          "expected": 0.5,
+          "p": 0.03571428571428571,
+          "adjusted": 0.9642857142857142
+        },
+        {
+          "node": 1,
+          "k": 3,
+          "expression": [
+            0,
+            2,
+            3
+          ],
+          "receptor": [
+            0,
+            2,
+            3
+          ],
+          "overlap": 3,
+          "expected": 1.125,
+          "p": 0.017857142857142856,
+          "adjusted": 0.4821428571428571
+        },
+        {
+          "node": 2,
+          "k": 1,
+          "expression": [
+            1,
+            3
+          ],
+          "receptor": [
+            1,
+            3
+          ],
+          "overlap": 2,
+          "expected": 0.5,
+          "p": 0.03571428571428571,
+          "adjusted": 0.9642857142857142
+        },
+        {
+          "node": 2,
+          "k": 2,
+          "expression": [
+            1,
+            3
+          ],
+          "receptor": [
+            1,
+            3
+          ],
+          "overlap": 2,
+          "expected": 0.5,
+          "p": 0.03571428571428571,
+          "adjusted": 0.9642857142857142
+        },
+        {
+          "node": 2,
+          "k": 3,
+          "expression": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "receptor": [
+            0,
+            1,
+            3
+          ],
+          "overlap": 3,
+          "expected": 1.5,
+          "p": 0.07142857142857144,
+          "adjusted": 1
+        },
+        {
+          "node": 3,
+          "k": 1,
+          "expression": [
+            2,
+            4
+          ],
+          "receptor": [
+            2
+          ],
+          "overlap": 1,
+          "expected": 0.25,
+          "p": 0.25,
+          "adjusted": 1
+        },
+        {
+          "node": 3,
+          "k": 2,
+          "expression": [
+            2,
+            4
+          ],
+          "receptor": [
+            1,
+            2
+          ],
+          "overlap": 1,
+          "expected": 0.5,
+          "p": 0.46428571428571425,
+          "adjusted": 1
+        },
+        {
+          "node": 3,
+          "k": 3,
+          "expression": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "receptor": [
+            0,
+            1,
+            2
+          ],
+          "overlap": 2,
+          "expected": 1.5,
+          "p": 0.5,
+          "adjusted": 1
+        },
+        {
+          "node": 4,
+          "k": 1,
+          "expression": [
+            3,
+            5
+          ],
+          "receptor": [
+            5
+          ],
+          "overlap": 1,
+          "expected": 0.25,
+          "p": 0.25,
+          "adjusted": 1
+        },
+        {
+          "node": 4,
+          "k": 2,
+          "expression": [
+            3,
+            5
+          ],
+          "receptor": [
+            5,
+            6
+          ],
+          "overlap": 1,
+          "expected": 0.5,
+          "p": 0.46428571428571425,
+          "adjusted": 1
+        },
+        {
+          "node": 4,
+          "k": 3,
+          "expression": [
+            2,
+            3,
+            5,
+            6
+          ],
+          "receptor": [
+            5,
+            6,
+            7
+          ],
+          "overlap": 2,
+          "expected": 1.5,
+          "p": 0.5,
+          "adjusted": 1
+        },
+        {
+          "node": 5,
+          "k": 1,
+          "expression": [
+            4,
+            6
+          ],
+          "receptor": [
+            4,
+            6
+          ],
+          "overlap": 2,
+          "expected": 0.5,
+          "p": 0.03571428571428571,
+          "adjusted": 0.9642857142857142
+        },
+        {
+          "node": 5,
+          "k": 2,
+          "expression": [
+            4,
+            6
+          ],
+          "receptor": [
+            4,
+            6
+          ],
+          "overlap": 2,
+          "expected": 0.5,
+          "p": 0.03571428571428571,
+          "adjusted": 0.9642857142857142
+        },
+        {
+          "node": 5,
+          "k": 3,
+          "expression": [
+            3,
+            4,
+            6,
+            7
+          ],
+          "receptor": [
+            4,
+            6,
+            7
+          ],
+          "overlap": 3,
+          "expected": 1.5,
+          "p": 0.07142857142857144,
+          "adjusted": 1
+        },
+        {
+          "node": 6,
+          "k": 1,
+          "expression": [
+            5,
+            7
+          ],
+          "receptor": [
+            5,
+            7
+          ],
+          "overlap": 2,
+          "expected": 0.5,
+          "p": 0.03571428571428571,
+          "adjusted": 0.9642857142857142
+        },
+        {
+          "node": 6,
+          "k": 2,
+          "expression": [
+            5,
+            7
+          ],
+          "receptor": [
+            5,
+            7
+          ],
+          "overlap": 2,
+          "expected": 0.5,
+          "p": 0.03571428571428571,
+          "adjusted": 0.9642857142857142
+        },
+        {
+          "node": 6,
+          "k": 3,
+          "expression": [
+            4,
+            5,
+            7,
+            8
+          ],
+          "receptor": [
+            4,
+            5,
+            7
+          ],
+          "overlap": 3,
+          "expected": 1.5,
+          "p": 0.07142857142857144,
+          "adjusted": 1
+        },
+        {
+          "node": 7,
+          "k": 1,
+          "expression": [
+            6,
+            8
+          ],
+          "receptor": [
+            6
+          ],
+          "overlap": 1,
+          "expected": 0.25,
+          "p": 0.25,
+          "adjusted": 1
+        },
+        {
+          "node": 7,
+          "k": 2,
+          "expression": [
+            6,
+            8
+          ],
+          "receptor": [
+            5,
+            6
+          ],
+          "overlap": 1,
+          "expected": 0.5,
+          "p": 0.46428571428571425,
+          "adjusted": 1
+        },
+        {
+          "node": 7,
+          "k": 3,
+          "expression": [
+            5,
+            6,
+            8
+          ],
+          "receptor": [
+            5,
+            6,
+            8
+          ],
+          "overlap": 3,
+          "expected": 1.125,
+          "p": 0.017857142857142856,
+          "adjusted": 0.4821428571428571
+        },
+        {
+          "node": 8,
+          "k": 1,
+          "expression": [
+            7
+          ],
+          "receptor": [
+            1
+          ],
+          "overlap": 0,
+          "expected": 0.14285714285714285,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 8,
+          "k": 2,
+          "expression": [
+            6,
+            7
+          ],
+          "receptor": [
+            1,
+            2,
+            7
+          ],
+          "overlap": 1,
+          "expected": 0.8571428571428571,
+          "p": 0.7142857142857142,
+          "adjusted": 1
+        },
+        {
+          "node": 8,
+          "k": 3,
+          "expression": [
+            5,
+            6,
+            7
+          ],
+          "receptor": [
+            1,
+            2,
+            7
+          ],
+          "overlap": 1,
+          "expected": 1.2857142857142858,
+          "p": 0.8857142857142857,
+          "adjusted": 1
+        }
+      ]
+    },
+    {
+      "name": "permuted",
+      "nodes": [
+        {
+          "id": "C0",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAAAAAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASAAAATF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C1",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAAASAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASAAASTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              9,
+              0
+            ],
+            [
+              11,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C2",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAASSAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASAASSTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              3,
+              0
+            ],
+            [
+              5,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C3",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVASSSAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASASSSTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              13,
+              0
+            ],
+            [
+              15,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C4",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCCCCAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCCCCTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              7,
+              0
+            ],
+            [
+              9,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C5",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCCCTAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCCCTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              1,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C6",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCCTTAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCCTTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              11,
+              0
+            ],
+            [
+              13,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C7",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCTTTAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCTTTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              5,
+              0
+            ],
+            [
+              7,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C8",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAAAAAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASTTTTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              15,
+              0
+            ],
+            [
+              17,
+              0
+            ]
+          ]
+        }
+      ],
+      "means": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          10.0,
+          0.0
+        ],
+        [
+          4.0,
+          0.0
+        ],
+        [
+          14.0,
+          0.0
+        ],
+        [
+          8.0,
+          0.0
+        ],
+        [
+          2.0,
+          0.0
+        ],
+        [
+          12.0,
+          0.0
+        ],
+        [
+          6.0,
+          0.0
+        ],
+        [
+          16.0,
+          0.0
+        ]
+      ],
+      "candidates": [
+        7,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        7
+      ],
+      "tests": [
+        {
+          "node": 0,
+          "k": 1,
+          "expression": [
+            5
+          ],
+          "receptor": [
+            1
+          ],
+          "overlap": 0,
+          "expected": 0.14285714285714285,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 0,
+          "k": 2,
+          "expression": [
+            2,
+            5
+          ],
+          "receptor": [
+            1,
+            2
+          ],
+          "overlap": 1,
+          "expected": 0.5714285714285714,
+          "p": 0.523809523809524,
+          "adjusted": 1
+        },
+        {
+          "node": 0,
+          "k": 3,
+          "expression": [
+            2,
+            5,
+            7
+          ],
+          "receptor": [
+            1,
+            2,
+            3
+          ],
+          "overlap": 1,
+          "expected": 1.2857142857142858,
+          "p": 0.8857142857142857,
+          "adjusted": 1
+        },
+        {
+          "node": 1,
+          "k": 1,
+          "expression": [
+            4,
+            6
+          ],
+          "receptor": [
+            0,
+            2
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 1,
+          "k": 2,
+          "expression": [
+            4,
+            6
+          ],
+          "receptor": [
+            0,
+            2
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 1,
+          "k": 3,
+          "expression": [
+            3,
+            4,
+            6,
+            7
+          ],
+          "receptor": [
+            0,
+            2,
+            3
+          ],
+          "overlap": 1,
+          "expected": 1.5,
+          "p": 0.9285714285714286,
+          "adjusted": 1
+        },
+        {
+          "node": 2,
+          "k": 1,
+          "expression": [
+            5,
+            7
+          ],
+          "receptor": [
+            1,
+            3
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 2,
+          "k": 2,
+          "expression": [
+            5,
+            7
+          ],
+          "receptor": [
+            1,
+            3
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 2,
+          "k": 3,
+          "expression": [
+            0,
+            4,
+            5,
+            7
+          ],
+          "receptor": [
+            0,
+            1,
+            3
+          ],
+          "overlap": 1,
+          "expected": 1.5,
+          "p": 0.9285714285714286,
+          "adjusted": 1
+        },
+        {
+          "node": 3,
+          "k": 1,
+          "expression": [
+            6,
+            8
+          ],
+          "receptor": [
+            2
+          ],
+          "overlap": 0,
+          "expected": 0.25,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 3,
+          "k": 2,
+          "expression": [
+            6,
+            8
+          ],
+          "receptor": [
+            1,
+            2
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 3,
+          "k": 3,
+          "expression": [
+            1,
+            6,
+            8
+          ],
+          "receptor": [
+            0,
+            1,
+            2
+          ],
+          "overlap": 1,
+          "expected": 1.125,
+          "p": 0.8214285714285714,
+          "adjusted": 1
+        },
+        {
+          "node": 4,
+          "k": 1,
+          "expression": [
+            1,
+            7
+          ],
+          "receptor": [
+            5
+          ],
+          "overlap": 0,
+          "expected": 0.25,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 4,
+          "k": 2,
+          "expression": [
+            1,
+            7
+          ],
+          "receptor": [
+            5,
+            6
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 4,
+          "k": 3,
+          "expression": [
+            1,
+            2,
+            6,
+            7
+          ],
+          "receptor": [
+            5,
+            6,
+            7
+          ],
+          "overlap": 2,
+          "expected": 1.5,
+          "p": 0.5,
+          "adjusted": 1
+        },
+        {
+          "node": 5,
+          "k": 1,
+          "expression": [
+            0,
+            2
+          ],
+          "receptor": [
+            4,
+            6
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 5,
+          "k": 2,
+          "expression": [
+            0,
+            2
+          ],
+          "receptor": [
+            4,
+            6
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 5,
+          "k": 3,
+          "expression": [
+            0,
+            2,
+            7
+          ],
+          "receptor": [
+            4,
+            6,
+            7
+          ],
+          "overlap": 1,
+          "expected": 1.125,
+          "p": 0.8214285714285714,
+          "adjusted": 1
+        },
+        {
+          "node": 6,
+          "k": 1,
+          "expression": [
+            1,
+            3
+          ],
+          "receptor": [
+            5,
+            7
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 6,
+          "k": 2,
+          "expression": [
+            1,
+            3
+          ],
+          "receptor": [
+            5,
+            7
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 6,
+          "k": 3,
+          "expression": [
+            1,
+            3,
+            4,
+            8
+          ],
+          "receptor": [
+            4,
+            5,
+            7
+          ],
+          "overlap": 1,
+          "expected": 1.5,
+          "p": 0.9285714285714286,
+          "adjusted": 1
+        },
+        {
+          "node": 7,
+          "k": 1,
+          "expression": [
+            2,
+            4
+          ],
+          "receptor": [
+            6
+          ],
+          "overlap": 0,
+          "expected": 0.25,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 7,
+          "k": 2,
+          "expression": [
+            2,
+            4
+          ],
+          "receptor": [
+            5,
+            6
+          ],
+          "overlap": 0,
+          "expected": 0.5,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 7,
+          "k": 3,
+          "expression": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "receptor": [
+            5,
+            6,
+            8
+          ],
+          "overlap": 1,
+          "expected": 1.5,
+          "p": 0.9285714285714286,
+          "adjusted": 1
+        },
+        {
+          "node": 8,
+          "k": 1,
+          "expression": [
+            3
+          ],
+          "receptor": [
+            1
+          ],
+          "overlap": 0,
+          "expected": 0.14285714285714285,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 8,
+          "k": 2,
+          "expression": [
+            3,
+            6
+          ],
+          "receptor": [
+            1,
+            2,
+            7
+          ],
+          "overlap": 0,
+          "expected": 0.8571428571428571,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 8,
+          "k": 3,
+          "expression": [
+            1,
+            3,
+            6
+          ],
+          "receptor": [
+            1,
+            2,
+            7
+          ],
+          "overlap": 1,
+          "expected": 1.2857142857142858,
+          "p": 0.8857142857142857,
+          "adjusted": 1
+        }
+      ]
+    },
+    {
+      "name": "all-expression-tied",
+      "nodes": [
+        {
+          "id": "C0",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAAAAAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASAAAATF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C1",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAAASAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASAAASTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C2",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAASSAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASAASSTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C3",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVASSSAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASASSSTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C4",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCCCCAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCCCCTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C5",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCCCTAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCCCTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C6",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCCTTAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCCTTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C7",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVCTTTAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASCTTTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C8",
+          "chains": [
+            {
+              "locus": "TRA",
+              "junction": "CAVAAAAAF",
+              "v": "TRAV1",
+              "j": "TRAJ1"
+            },
+            {
+              "locus": "TRB",
+              "junction": "CASTTTTTF",
+              "v": "TRBV1",
+              "j": "TRBJ1"
+            }
+          ],
+          "scores": [
+            [
+              -1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      ],
+      "means": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "candidates": [
+        7,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        7
+      ],
+      "tests": [
+        {
+          "node": 0,
+          "k": 1,
+          "expression": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "receptor": [
+            1
+          ],
+          "overlap": 1,
+          "expected": 1.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 0,
+          "k": 2,
+          "expression": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "receptor": [
+            1,
+            2
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 0,
+          "k": 3,
+          "expression": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "receptor": [
+            1,
+            2,
+            3
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 1,
+          "k": 1,
+          "expression": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            0,
+            2
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 1,
+          "k": 2,
+          "expression": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            0,
+            2
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 1,
+          "k": 3,
+          "expression": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            0,
+            2,
+            3
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 2,
+          "k": 1,
+          "expression": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            1,
+            3
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 2,
+          "k": 2,
+          "expression": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            1,
+            3
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 2,
+          "k": 3,
+          "expression": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            0,
+            1,
+            3
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 3,
+          "k": 1,
+          "expression": [
+            0,
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            2
+          ],
+          "overlap": 1,
+          "expected": 1.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 3,
+          "k": 2,
+          "expression": [
+            0,
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            1,
+            2
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 3,
+          "k": 3,
+          "expression": [
+            0,
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            0,
+            1,
+            2
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 4,
+          "k": 1,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            5
+          ],
+          "overlap": 1,
+          "expected": 1.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 4,
+          "k": 2,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            5,
+            6
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 4,
+          "k": 3,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            5,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            5,
+            6,
+            7
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 5,
+          "k": 1,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            4,
+            6
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 5,
+          "k": 2,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            4,
+            6
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 5,
+          "k": 3,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            6,
+            7,
+            8
+          ],
+          "receptor": [
+            4,
+            6,
+            7
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 6,
+          "k": 1,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            7,
+            8
+          ],
+          "receptor": [
+            5,
+            7
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 6,
+          "k": 2,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            7,
+            8
+          ],
+          "receptor": [
+            5,
+            7
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 6,
+          "k": 3,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            7,
+            8
+          ],
+          "receptor": [
+            4,
+            5,
+            7
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 7,
+          "k": 1,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            8
+          ],
+          "receptor": [
+            6
+          ],
+          "overlap": 1,
+          "expected": 1.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 7,
+          "k": 2,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            8
+          ],
+          "receptor": [
+            5,
+            6
+          ],
+          "overlap": 2,
+          "expected": 2.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 7,
+          "k": 3,
+          "expression": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            8
+          ],
+          "receptor": [
+            5,
+            6,
+            8
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 8,
+          "k": 1,
+          "expression": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "receptor": [
+            1
+          ],
+          "overlap": 1,
+          "expected": 1.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 8,
+          "k": 2,
+          "expression": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "receptor": [
+            1,
+            2,
+            7
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        },
+        {
+          "node": 8,
+          "k": 3,
+          "expression": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "receptor": [
+            1,
+            2,
+            7
+          ],
+          "overlap": 3,
+          "expected": 3.0,
+          "p": 1.0,
+          "adjusted": 1
+        }
+      ]
+    }
+  ],
+  "tails": [
+    {
+      "n": 7,
+      "a": 2,
+      "b": 3,
+      "x": 0,
+      "logP": 0.0
+    },
+    {
+      "n": 7,
+      "a": 2,
+      "b": 3,
+      "x": 1,
+      "logP": -0.3364722366212141
+    },
+    {
+      "n": 7,
+      "a": 2,
+      "b": 3,
+      "x": 2,
+      "logP": -1.945910149055314
+    },
+    {
+      "n": 99,
+      "a": 10,
+      "b": 12,
+      "x": 8,
+      "logP": -15.934978706891199
+    },
+    {
+      "n": 1999,
+      "a": 200,
+      "b": 200,
+      "x": 200,
+      "logP": -646.5447480126368
+    },
+    {
+      "n": 2000,
+      "a": 1000,
+      "b": 1000,
+      "x": 1000,
+      "logP": -1382.26799353748
+    },
+    {
+      "n": 2000,
+      "a": 2000,
+      "b": 1000,
+      "x": 1000,
+      "logP": 0.0
+    }
+  ]
+}

@@ -1,0 +1,392 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "h5ad-d83c4a041a812500b03bee96",
+  "kind": "anndata-export",
+  "name": "AnnData export · S01-1",
+  "dataset": "d-8d1404a8ae498dab",
+  "state": "complete",
+  "created": "2026-10-25T06:35:00.296701Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "phenotypes",
+        "id": "pheno-1e9fe7e270d410a5a5ae2fef",
+        "sha256": "86e9944833fb02ee264baef94ba80fb6303316d618f7a79e8c858eee5c4abb35"
+      },
+      {
+        "kind": "expression-map",
+        "id": "emap-0fe86973e058204c90fc7cdd",
+        "sha256": "137b1ed9de900b3cd2a283206589c44c587cb3619e313edf0801f43be0f1f694"
+      }
+    ],
+    "job": {
+      "id": "jmvngdr8h-6",
+      "kind": "anndata-export",
+      "spec": {
+        "phenotypes": "pheno-1e9fe7e270d410a5a5ae2fef",
+        "phenotypesSha256": "86e9944833fb02ee264baef94ba80fb6303316d618f7a79e8c858eee5c4abb35",
+        "map": "emap-0fe86973e058204c90fc7cdd",
+        "mapSha256": "137b1ed9de900b3cd2a283206589c44c587cb3619e313edf0801f43be0f1f694",
+        "input": {
+          "id": "x-c7f5f2882f8a481393d9be8209787893a576daad709415c94bb02f50bbdbab0a",
+          "path": "/var/folders/lc/lsy0fn113r9394qmn0xmj5zc0000gn/T/clonoloom-capture-QPPEMz/examples/simulated-cell-states-clouds/expression/S01-1",
+          "cellsPath": "/var/folders/lc/lsy0fn113r9394qmn0xmj5zc0000gn/T/clonoloom-capture-QPPEMz/examples/simulated-cell-states-clouds/expression/S01-1/cells.tsv",
+          "options": {
+            "minGenes": 0,
+            "minCells": 0,
+            "features": 0,
+            "components": 0,
+            "neighbors": 0,
+            "target": 0,
+            "seed": 0,
+            "epochs": 0,
+            "minDist": null
+          },
+          "method": 0
+        },
+        "receptors": [
+          {
+            "id": "c-e70d699bf479ad51",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CAVDVCPDFARVGF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CESRSPCGQASIAF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-49c7be97a6a19b3a",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CGLPRIEGRLHQVF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CFKGRRAQTRAQSF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-c565b3c7edca1340",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CIGSSSKSILQVYF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CVVYKGLWFHLRRF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-4996705424a42899",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CLRYFCGLGTSYLF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CQDTNPAIYLYIGF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-1bfa62411406a76e",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CLTRTLGKATRRVF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CNAVLCPPARPTLF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-13df6e52e99e9a49",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CMGVFWSGGGNYFF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CLLLSLGNATSLGF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-127285632f5ee4a2",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CPFEVMCSRITTDF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CAGKSGILKKLAIF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-1d1cb5bb783700bb",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CPSACSTSLTTLTF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CFRIATNSSEPGPF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-ab080195830b041b",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CSSPRRPKVMDARF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CRIESYTGTREHRF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-d209d0ce5d29372f",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CSTGRRHAEEMDTF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CYAGCFIRFGGLSF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          }
+        ],
+        "notice": {
+          "What": "Raw sparse integer counts for all input cells and feature modalities, with exact barcode/sample receptor links, assignment and chain status, clone sizes, supplied annotations, and saved embeddings. Missing annotations use categorical code -1; unavailable PCA/UMAP rows are NaN, never zero coordinates. Source and computed coordinates have distinct names. No expression refitting, new biological inference or scirpy raw-chain encoding. Original annotation labels and the complete saved phenotype/map documents, parent manifests, definitions, QC, sample metadata and source fingerprints are in uns/clonoloom. Imported annotations retain their reader's text/missing-value semantics, not original pandas dtypes.",
+          "Dataset": "Simulated study (cell-states-clouds)",
+          "DatasetID": "d-8d1404a8ae498dab",
+          "Files": [
+            {
+              "Name": "S01-1.tsv",
+              "SHA256": "187abe6e9bb49f90c4292c5debbfb0309c036e1e45bbc433a6bef8229e278ab3"
+            },
+            {
+              "Name": "S01-2.tsv",
+              "SHA256": "926d0d7ab14cbe3b3229fdc43d8df0b0a8c069e5ac3feef3f635169f20c1c1e3"
+            },
+            {
+              "Name": "S02-1.tsv",
+              "SHA256": "7847cc5d671cb931df93ff68e6592d8b5ffc75bae03cb97630cab04251d5bd4b"
+            },
+            {
+              "Name": "S02-2.tsv",
+              "SHA256": "8db3a7d467ed640cbd72afb6938d9585cef35e1139fc672ac8f120ae954b6231"
+            },
+            {
+              "Name": "expression matrix: matrix.mtx",
+              "SHA256": "3846c9cb746f355366f467c47bd86461237a6fbf74cb060bf0cea22aba8eab1c"
+            },
+            {
+              "Name": "expression features: features.tsv",
+              "SHA256": "e77583668a99a4c025e38d4df03e8a2469d3d9a97b18a72c8b5a20362655b08b"
+            },
+            {
+              "Name": "expression barcodes: barcodes.tsv",
+              "SHA256": "085b8ab52b9f54a91459a9d87254b4730ecfe6b29c3fc90cebf3f9eb08a05356"
+            },
+            {
+              "Name": "expression cells: cells.tsv",
+              "SHA256": "4d9cb9da241b9c5c48e1900c85432aa95b50bb598696ea8f34b5605c3b98c05c"
+            }
+          ],
+          "Samples": 1,
+          "Unit": "cells",
+          "Filter": "none",
+          "Definition": "paired TRA and TRB chains by amino-acid junction, V gene and J gene; single cells by their primary chain of each locus (most UMIs), cells with one chain grouped with cells of the same chain alone",
+          "DefinitionID": "def-973613256b71",
+          "Method": "AnnData on-disk format specification: https://anndata.readthedocs.io/en/stable/fileformat-prose.html (anndata 0.1.0, dataframe/array/string/categorical 0.2.0, CSR 0.1.0); HDF Group, HDF5 File Format Specification 3.0. ClonoLoom's receptor-link and provenance schema version 1.",
+          "Derived": false,
+          "Credits": null,
+          "Version": "0.6.0",
+          "Commit": "6c4f06e157d1fed84ca60f0f796f980257e876cd-dirty",
+          "Made": "2026-10-24T23:35:00.257156-07:00"
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "AnnData export with sample-scoped receptor links",
+      "version": "1",
+      "citation": "AnnData on-disk format specification: https://anndata.readthedocs.io/en/stable/fileformat-prose.html (anndata 0.1.0, dataframe/array/string/categorical 0.2.0, CSR 0.1.0); HDF Group, HDF5 File Format Specification 3.0. ClonoLoom's receptor-link and provenance schema version 1."
+    },
+    "parameters": {
+      "matrix": "raw counts",
+      "observations": "all expression cells",
+      "phenotypes": "pheno-1e9fe7e270d410a5a5ae2fef"
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.6.0",
+        "commit": "6c4f06e157d1fed84ca60f0f796f980257e876cd-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "anndata-export.json",
+      "role": "anndata-export",
+      "size": 3445,
+      "sha256": "8dc255c35b5b0287a3fc194e9267b011d9c57bbeb6531e533380d5eee5e42445"
+    },
+    {
+      "path": "cells.h5ad",
+      "role": "anndata",
+      "size": 926141,
+      "sha256": "630d00c8c5ced79d9bce49e997851317ae49845423a5252cf3f2b20018985ff3"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "format": "clonoloom-anndata-export",
+    "version": 1,
+    "description": "Raw sparse integer counts for all input cells and feature modalities, with exact barcode/sample receptor links, assignment and chain status, clone sizes, supplied annotations, and saved embeddings. Missing annotations use categorical code -1; unavailable PCA/UMAP rows are NaN, never zero coordinates. Source and computed coordinates have distinct names. No expression refitting, new biological inference or scirpy raw-chain encoding. Original annotation labels and the complete saved phenotype/map documents, parent manifests, definitions, QC, sample metadata and source fingerprints are in uns/clonoloom. Imported annotations retain their reader's text/missing-value semantics, not original pandas dtypes.",
+    "phenotypes": "pheno-1e9fe7e270d410a5a5ae2fef",
+    "dataset": "d-8d1404a8ae498dab",
+    "expression": "x-c7f5f2882f8a481393d9be8209787893a576daad709415c94bb02f50bbdbab0a",
+    "cells": 360,
+    "features": 24,
+    "entries": 7514,
+    "embeddings": [
+      "X_supplied",
+      "X_clonoloom_pca",
+      "X_clonoloom_umap"
+    ],
+    "notice": {
+      "What": "Raw sparse integer counts for all input cells and feature modalities, with exact barcode/sample receptor links, assignment and chain status, clone sizes, supplied annotations, and saved embeddings. Missing annotations use categorical code -1; unavailable PCA/UMAP rows are NaN, never zero coordinates. Source and computed coordinates have distinct names. No expression refitting, new biological inference or scirpy raw-chain encoding. Original annotation labels and the complete saved phenotype/map documents, parent manifests, definitions, QC, sample metadata and source fingerprints are in uns/clonoloom. Imported annotations retain their reader's text/missing-value semantics, not original pandas dtypes.",
+      "Dataset": "Simulated study (cell-states-clouds)",
+      "DatasetID": "d-8d1404a8ae498dab",
+      "Files": [
+        {
+          "Name": "S01-1.tsv",
+          "SHA256": "187abe6e9bb49f90c4292c5debbfb0309c036e1e45bbc433a6bef8229e278ab3"
+        },
+        {
+          "Name": "S01-2.tsv",
+          "SHA256": "926d0d7ab14cbe3b3229fdc43d8df0b0a8c069e5ac3feef3f635169f20c1c1e3"
+        },
+        {
+          "Name": "S02-1.tsv",
+          "SHA256": "7847cc5d671cb931df93ff68e6592d8b5ffc75bae03cb97630cab04251d5bd4b"
+        },
+        {
+          "Name": "S02-2.tsv",
+          "SHA256": "8db3a7d467ed640cbd72afb6938d9585cef35e1139fc672ac8f120ae954b6231"
+        },
+        {
+          "Name": "expression matrix: matrix.mtx",
+          "SHA256": "3846c9cb746f355366f467c47bd86461237a6fbf74cb060bf0cea22aba8eab1c"
+        },
+        {
+          "Name": "expression features: features.tsv",
+          "SHA256": "e77583668a99a4c025e38d4df03e8a2469d3d9a97b18a72c8b5a20362655b08b"
+        },
+        {
+          "Name": "expression barcodes: barcodes.tsv",
+          "SHA256": "085b8ab52b9f54a91459a9d87254b4730ecfe6b29c3fc90cebf3f9eb08a05356"
+        },
+        {
+          "Name": "expression cells: cells.tsv",
+          "SHA256": "4d9cb9da241b9c5c48e1900c85432aa95b50bb598696ea8f34b5605c3b98c05c"
+        }
+      ],
+      "Samples": 1,
+      "Unit": "cells",
+      "Filter": "none",
+      "Definition": "paired TRA and TRB chains by amino-acid junction, V gene and J gene; single cells by their primary chain of each locus (most UMIs), cells with one chain grouped with cells of the same chain alone",
+      "DefinitionID": "def-973613256b71",
+      "Method": "AnnData on-disk format specification: https://anndata.readthedocs.io/en/stable/fileformat-prose.html (anndata 0.1.0, dataframe/array/string/categorical 0.2.0, CSR 0.1.0); HDF Group, HDF5 File Format Specification 3.0. ClonoLoom's receptor-link and provenance schema version 1.",
+      "Derived": false,
+      "Credits": null,
+      "Version": "0.6.0",
+      "Commit": "6c4f06e157d1fed84ca60f0f796f980257e876cd-dirty",
+      "Made": "2026-10-24T23:35:00.257156-07:00"
+    }
+  }
+}

@@ -60,17 +60,16 @@ export function mountSidebar(app) {
     for (const section of SECTIONS) {
       const items = section.items(project, app);
       if (!items.length && section.hideWhenEmpty) continue;
-      const list = h('div', { role: 'list' });
+      const list = h('div', { role: items.length ? 'list' : null });
       for (const item of items) {
         const id = item.id ?? item.url;
         const selected = ui.focus?.kind === section.kind && ui.focus?.id === id;
-        list.append(h(`button.dataset-row${selected ? '.selected' : ''}`, {
+        list.append(h('div', { role: 'listitem' }, h(`button.dataset-row${selected ? '.selected' : ''}`, {
           type: 'button',
-          role: 'listitem',
           'aria-current': selected ? 'true' : null,
           title: section.label(item),
           onclick: () => app.focusItem({ kind: section.kind, id }),
-        }, icon(section.itemIcon?.(item, app) ?? section.icon), h('span.label', section.label(item)), h('span.meta', section.meta(item))));
+        }, icon(section.itemIcon?.(item, app) ?? section.icon), h('span.label', section.label(item)), h('span.meta', section.meta(item)))));
       }
       if (!items.length) {
         list.append(h('p.tree-empty', section.empty));

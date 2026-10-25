@@ -1,0 +1,389 @@
+package main
+
+import (
+	"clonoloom/internal/expression"
+	"clonoloom/internal/simulate"
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"testing"
+)
+
+func TestExpressionEvidenceAndReopening(t *testing.T) {
+	app, h := testApp(t)
+	dir := t.TempDir()
+	example := expressionInputExample()
+	if err := example.Make(context.Background(), dir, nil); err != nil {
+		t.Fatal(err)
+	}
+	var ds datasetSummary
+	rec := postJSON(t, h, "/api/datasets/open", `{"paths":[`+jsonString(filepath.Join(dir, "receptors.tsv"))+`]}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	json.Unmarshal(rec.Body.Bytes(), &ds)
+	open := func(expected string) expressionSummary {
+		t.Helper()
+		rec := postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(dir)+`,"expectedId":`+jsonString(expected)+`}`)
+		if rec.Code != 200 {
+			t.Fatal(rec.Code, rec.Body)
+		}
+		var summary expressionSummary
+		if err := json.Unmarshal(rec.Body.Bytes(), &summary); err != nil {
+			t.Fatal(err)
+		}
+		return summary
+	}
+	summary := open("")
+	if summary.Cells != 4 || summary.Features != 3 || summary.Entries != 6 || summary.Types["Antibody Capture"] != 1 || summary.Unit != "UMIs" {
+		t.Fatal(summary)
+	}
+	page := func(extra string) expressionPage {
+		t.Helper()
+		rec := postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(summary.ID)+extra+`}`)
+		if rec.Code != 200 {
+			t.Fatal(rec.Code, rec.Body)
+		}
+		var page expressionPage
+		json.Unmarshal(rec.Body.Bytes(), &page)
+		return page
+	}
+	unbound := page(`,"limit":1`)
+	if unbound.Links != nil || len(unbound.Cells) != 1 || unbound.Cells[0].ChainRows != nil {
+		t.Fatal(unbound)
+	}
+	binding := `,"dataset":` + jsonString(ds.ID) + `,"sample":0`
+	linked := page(binding)
+	if linked.Links.Matched != 2 || linked.Links.ReceptorOnly != 1 || linked.Links.ExpressionOnly != 2 || linked.Links.MissingBarcodeRows != 1 || *linked.Cells[0].ChainRows != 2 || *linked.Cells[0].GeneUMIs != 5 || *linked.Cells[1].ChainRows != 1 {
+		t.Fatal(linked)
+	}
+	last := page(binding + `,"offset":3,"limit":1`)
+	if len(last.Cells) != 1 || last.Cells[0].Barcode != "DD-1" || *last.Cells[0].GeneUMIs != 0 {
+		t.Fatal(last)
+	}
+	beyond := page(`,"offset":9223372036854775807`)
+	if len(beyond.Cells) != 0 {
+		t.Fatal(beyond)
+	}
+	features := page(`,"view":"features","offset":1,"limit":2`)
+	if len(features.Features) != 2 || features.Features[1].Type != "Antibody Capture" {
+		t.Fatal(features)
+	}
+	for _, extra := range []string{`,"sample":0`, `,"dataset":"x"`, binding + `,"limit":201`, binding + `,"offset":-1`, `,"view":"unknown"`, `,"dataset":` + jsonString(ds.ID) + `,"sample":42`} {
+		rec := postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(summary.ID)+extra+`}`)
+		if rec.Code != 400 {
+			t.Fatal(rec.Code, rec.Body)
+		}
+	}
+	// Eviction/restart does not alter identity; every companion is reread.
+	app.expression.mu.Lock()
+	app.expression.byID = nil
+	app.expression.mu.Unlock()
+	rec = postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(summary.ID)+`}`)
+	if rec.Code != 404 {
+		t.Fatal(rec.Code)
+	}
+	if open(summary.ID).ID != summary.ID {
+		t.Fatal("identity changed")
+	}
+	matrix := filepath.Join(dir, "matrix.mtx")
+	data, err := os.ReadFile(matrix)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(matrix, []byte(strings.Replace(string(data), "1 1 2", "1 1 9", 1)), 0600); err != nil {
+		t.Fatal(err)
+	}
+	rec = postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(dir)+`,"expectedId":`+jsonString(summary.ID)+`}`)
+	if rec.Code != 409 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	if open("").ID == summary.ID {
+		t.Fatal("drift not detected")
+	}
+	// The endpoint reads local paths only, behind the same-origin host's usual protection.
+	req := httptest.NewRequest(http.MethodPost, "/api/expression/open", strings.NewReader(`{"path":`+jsonString(dir)+`}`))
+	req.RemoteAddr = "192.0.2.1:1234"
+	out := httptest.NewRecorder()
+	app.handleExpressionOpen(out, req)
+	if out.Code != 403 {
+		t.Fatal(out.Code)
+	}
+}
+
+func TestExpressionHDF5ExampleAndReopening(t *testing.T) {
+	a, h := testApp(t)
+	a.examples.Dir = t.TempDir()
+	example := expressionHDF5Example()
+	dir := filepath.Join(a.examples.Dir, example.Source.Name)
+	if err := example.Make(context.Background(), dir, nil); err != nil {
+		t.Fatal(err)
+	}
+	rec := postJSON(t, h, "/api/datasets/open", `{"paths":[`+jsonString(filepath.Join(dir, "receptors.tsv"))+`]}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var ds datasetSummary
+	json.Unmarshal(rec.Body.Bytes(), &ds)
+	rec = postJSON(t, h, "/api/expression/open", `{"hdf5Example":true}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var s expressionSummary
+	json.Unmarshal(rec.Body.Bytes(), &s)
+	if s.Cells != 4 || s.Entries != 6 || len(s.Sources) != 1 || s.Sources[0].Role != "matrix-hdf5" {
+		t.Fatal(s)
+	}
+	page := func() expressionPage {
+		t.Helper()
+		rec := postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"dataset":`+jsonString(ds.ID)+`,"sample":0}`)
+		if rec.Code != 200 {
+			t.Fatal(rec.Body)
+		}
+		var p expressionPage
+		json.Unmarshal(rec.Body.Bytes(), &p)
+		return p
+	}
+	p := page()
+	if p.Links.Matched != 2 || p.Links.ExpressionOnly != 2 || p.Links.ReceptorOnly != 1 || *p.Cells[0].GeneUMIs != 5 || *p.Cells[3].GeneUMIs != 0 {
+		t.Fatal(p)
+	}
+	if rec = postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(s.Path)+`,"expectedId":`+jsonString(s.ID)+`}`); rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	for _, body := range []string{`{"hdf5Example":true,"example":true}`, `{"hdf5Example":true,"studyExample":true}`, `{"hdf5Example":true,"path":"x"}`, `{"hdf5Example":true,"cellsPath":"x"}`} {
+		if rec = postJSON(t, h, "/api/expression/open", body); rec.Code != 400 {
+			t.Fatal(rec.Body)
+		}
+	}
+	// A different valid encoding has the same observations but a different source identity.
+	raw, err := os.ReadFile("testdata/expression-hdf5/contiguous.h5")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(s.Path, raw, 0600); err != nil {
+		t.Fatal(err)
+	}
+	rec = postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(s.Path)+`,"expectedId":`+jsonString(s.ID)+`}`)
+	if rec.Code != 409 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	page() // Rejected replacement did not evict the verified input.
+	rec = postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(s.Path)+`}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var changed expressionSummary
+	json.Unmarshal(rec.Body.Bytes(), &changed)
+	if changed.ID == s.ID {
+		t.Fatal("changed file identity retained")
+	}
+}
+
+func TestExpressionAnnotationsAndImportedMap(t *testing.T) {
+	app, h := testApp(t)
+	dir := filepath.Join(t.TempDir(), "study")
+	if _, err := simulate.Run(context.Background(), simulate.Presets["cell-states"], dir, "validation", nil); err != nil {
+		t.Fatal(err)
+	}
+	items, problem := walkFolder(dir)
+	if problem != "" || len(items) != 5 {
+		t.Fatal("expression or truth leaked into receptor inputs", items, problem)
+	}
+	path := filepath.Join(dir, "expression", "S01-1")
+	cells := filepath.Join(path, "cells.tsv")
+	open := func(expected string) *httptest.ResponseRecorder {
+		return postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(path)+`,"cellsPath":`+jsonString(cells)+`,"expectedId":`+jsonString(expected)+`}`)
+	}
+	rec := open("")
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var s expressionSummary
+	json.Unmarshal(rec.Body.Bytes(), &s)
+	if s.Annotations.Mapped != 118 || s.Annotations.WithoutCoordinates != 2 || s.Annotations.WithoutAnnotation != 1 || s.Annotations.AnnotationOnly != 1 || len(s.Sources) != 4 {
+		t.Fatal(s)
+	}
+	page := func(view string, offset int) expressionPage {
+		t.Helper()
+		rec := postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"view":`+jsonString(view)+`,"offset":`+strconv.Itoa(offset)+`}`)
+		if rec.Code != 200 {
+			t.Fatal(rec.Body)
+		}
+		var p expressionPage
+		json.Unmarshal(rec.Body.Bytes(), &p)
+		return p
+	}
+	p := page("map", 100)
+	if len(p.Map) != 118 || p.Count != 120 || len(p.Annotations) != 20 || p.Annotations[19].Expression || p.Annotations[19].Barcode != "ANNOTATION-ONLY" {
+		t.Fatal(p)
+	}
+	p = page("cells", 0)
+	if p.Cells[1].Annotation != nil || p.Cells[2].Annotation.Position != nil || p.Cells[3].Annotation.Values[0] != "" {
+		t.Fatal(p.Cells[:4])
+	}
+	p = page("annotations", 999)
+	if p.Offset != 120 || len(p.Annotations) != 0 {
+		t.Fatal(p)
+	}
+	if open(s.ID).Code != 200 {
+		t.Fatal("unchanged files rejected")
+	}
+	raw, _ := os.ReadFile(cells)
+	os.WriteFile(cells, []byte(strings.Replace(string(raw), "state A", "state Z", 1)), 0600)
+	if rec := open(s.ID); rec.Code != 409 {
+		t.Fatal("changed annotations accepted", rec.Body)
+	}
+	// The rejected replacement retains the previous cached evidence. Map limits never silently
+	// truncate the population, and its full annotation pages remain available.
+	app.expression.mu.Lock()
+	app.expression.byID[s.ID].Cells.Coverage.Mapped = expression.MaxMapPoints + 1
+	app.expression.mu.Unlock()
+	rec = postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"view":"map"}`)
+	if rec.Code != 400 {
+		t.Fatal(rec.Body)
+	}
+	page("annotations", 0)
+	for _, body := range []string{`{"example":true,"studyExample":true}`, `{"studyExample":true,"cellsPath":"x"}`} {
+		if rec := postJSON(t, h, "/api/expression/open", body); rec.Code != 400 {
+			t.Fatal(rec.Body)
+		}
+	}
+}
+
+func TestExpressionWithoutGeneExpressionIsNotMeasured(t *testing.T) {
+	_, h := testApp(t)
+	dir := t.TempDir()
+	for name, data := range map[string]string{"matrix.mtx": "%%MatrixMarket matrix coordinate integer general\n1 1 1\n1 1 2\n", "features.tsv": "ab1\tAntibody\tAntibody Capture\n", "barcodes.tsv": "one\n"} {
+		if err := os.WriteFile(filepath.Join(dir, name), []byte(data), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	rec := postJSON(t, h, "/api/expression/open", `{"path":`+jsonString(dir)+`}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var summary expressionSummary
+	json.Unmarshal(rec.Body.Bytes(), &summary)
+	rec = postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(summary.ID)+`}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	var page expressionPage
+	json.Unmarshal(rec.Body.Bytes(), &page)
+	if len(page.Cells) != 1 || page.Cells[0].GeneUMIs != nil || page.Cells[0].Genes != nil {
+		t.Fatal(page)
+	}
+}
+
+func TestExpressionStudyPresetSelection(t *testing.T) {
+	a, h := testApp(t)
+	a.examples.Dir = t.TempDir()
+	for _, preset := range []string{"cell-states", "cell-states-clouds"} {
+		if _, err := simulate.Run(context.Background(), simulate.Presets[preset], filepath.Join(a.examples.Dir, "simulated-"+preset), "validation", nil); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for _, tc := range []struct {
+		preset string
+		cells  int
+	}{{"", 120}, {"cell-states", 120}, {"cell-states-clouds", 360}} {
+		rec := postJSON(t, h, "/api/expression/open", `{"studyExample":true,"studyPreset":`+jsonString(tc.preset)+`}`)
+		var s expressionSummary
+		if rec.Code != 200 || json.Unmarshal(rec.Body.Bytes(), &s) != nil || s.Cells != tc.cells || s.Annotations.Mapped != tc.cells-2 {
+			t.Fatal(rec.Body)
+		}
+	}
+	for _, body := range []string{`{"studyPreset":"cell-states-clouds"}`, `{"studyExample":true,"studyPreset":"../../elsewhere"}`, `{"studyExample":true,"studyPreset":"unknown"}`, `{"studyExample":true,"studyPreset":"cell-states-clouds","path":"other"}`} {
+		if rec := postJSON(t, h, "/api/expression/open", body); rec.Code != 400 {
+			t.Fatal(rec.Body)
+		}
+	}
+}
+
+func TestAnnDataSelectionPagesAndReopening(t *testing.T) {
+	a, h := testApp(t)
+	dir := filepath.Join(a.examples.Dir, "synthetic-anndata")
+	if e := annDataExample().Make(context.Background(), dir, nil); e != nil {
+		t.Fatal(e)
+	}
+	rec := postJSON(t, h, "/api/expression/open", `{"anndataExample":true}`)
+	if rec.Code != 200 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	var s expressionSummary
+	if e := json.Unmarshal(rec.Body.Bytes(), &s); e != nil {
+		t.Fatal(e)
+	}
+	if s.Unit != "counts" || s.AnnData == nil || s.AnnData.Selection.Layer != "layers/counts" || s.AnnData.AIRR.Chains != 3 {
+		t.Fatalf("%+v", s)
+	}
+	for _, view := range []string{"cells", "features", "annotations", "map", "airr", "airr-cells"} {
+		rec = postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"view":`+jsonString(view)+`,"offset":1,"limit":1}`)
+		if rec.Code != 200 {
+			t.Fatal(view, rec.Code, rec.Body)
+		}
+		var p expressionPage
+		if e := json.Unmarshal(rec.Body.Bytes(), &p); e != nil {
+			t.Fatal(e)
+		}
+		switch view {
+		case "features":
+			if len(p.VariableValues) != 1 || p.VariableValues[0][0] != "Shared" {
+				t.Fatal(p)
+			}
+		case "airr":
+			if len(p.AIRR) != 1 || p.AIRR[0].Chain != 2 || p.AIRR[0].Values[2] != nil {
+				t.Fatal(p)
+			}
+		case "airr-cells":
+			if len(p.AIRRCells) != 1 || p.AIRRCells[0].Chains == nil || *p.AIRRCells[0].Chains != 0 {
+				t.Fatal(p)
+			}
+		}
+	}
+	selection, _ := json.Marshal(s.AnnData.Selection)
+	body := `{"path":` + jsonString(s.Path) + `,"anndata":` + string(selection) + `,"expectedId":` + jsonString(s.ID) + `}`
+	rec = postJSON(t, h, "/api/expression/open", body)
+	if rec.Code != 200 {
+		t.Fatal(rec.Code, rec.Body)
+	}
+	rec = postJSON(t, h, "/api/expression/open", strings.Replace(body, `"layers/counts"`, `"X"`, 1))
+	if rec.Code != 409 {
+		t.Fatal("selection changes must change identity", rec.Code, rec.Body)
+	}
+	for _, bad := range []string{`{"path":` + jsonString(s.Path) + `}`, `{"path":` + jsonString(s.Path) + `,"anndata":{"layer":"layers/normalized"}}`, `{"anndataExample":true,"hdf5Example":true}`, `{"anndataExample":true,"anndata":{"layer":"X"}}`, `{"path":` + jsonString(s.Path) + `,"anndata":` + string(selection) + `,"cellsPath":"testdata/expression-mex/cells.tsv"}`} {
+		rec = postJSON(t, h, "/api/expression/open", bad)
+		if rec.Code != 400 {
+			t.Fatal(rec.Code, rec.Body)
+		}
+	}
+	rec = postJSON(t, h, "/api/expression/page", `{"id":`+jsonString(s.ID)+`,"view":"airr"}`)
+	if rec.Code != 200 {
+		t.Fatal("bad opens evicted valid input", rec.Body)
+	}
+	raw, e := os.ReadFile(s.Path)
+	if e != nil {
+		t.Fatal(e)
+	}
+	raw[len(raw)-1] ^= 1
+	if e = os.WriteFile(s.Path, raw, 0600); e != nil {
+		t.Fatal(e)
+	}
+	rec = postJSON(t, h, "/api/expression/open", body)
+	if rec.Code == 200 {
+		t.Fatal("changed source accepted")
+	}
+	req := httptest.NewRequest("POST", "/api/expression/open", strings.NewReader(body))
+	req.RemoteAddr = "203.0.113.1:9999"
+	rr := httptest.NewRecorder()
+	h.ServeHTTP(rr, req)
+	if rr.Code != 403 {
+		t.Fatal(rr.Code)
+	}
+}

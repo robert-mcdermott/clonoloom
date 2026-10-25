@@ -24,6 +24,7 @@ internal/seq/        nucleotides, codons, translation, junction checks
 internal/genes/      gene names: parsing, IMGT nomenclature, vendor names mapped, loci
 internal/reads/      readers of vendor and tool formats into one rearrangement table
 internal/rep/        the rearrangement table (columnar), samples and cells
+internal/expression/ sparse expression evidence, MEX readers and exact sample/barcode links (wave 6)
 internal/bcell/      B-cell evidence, clonal families, D-masked germlines, SHM, lineage trees and observed isotypes (wave 5)
 internal/validate/   findings with stable codes
 internal/clonotype/  definitions, clonotype tables for bulk and single-cell data

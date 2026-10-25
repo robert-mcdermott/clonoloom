@@ -1,0 +1,2553 @@
+{
+  "generated_by": {
+    "anndata": "0.12.6",
+    "mudata": "0.3.2",
+    "awkward": "2.8.12",
+    "h5py": "3.15.1",
+    "numpy": "2.4.2",
+    "pandas": "2.3.3",
+    "scipy": "1.17.0",
+    "scirpy": "0.25.1"
+  },
+  "valid": {
+    "dense.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "9a55b37464329ad9455a8a67622c6deb5897b4ea07825f0398e97f6dfcd75067",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 12
+    },
+    "csr.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "f73a3098340b8a82bacd978c1857b37ebfa5409ddf14489ccd90378948f0696f",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 5
+    },
+    "csc.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "1e4c4d7a9062691a89d6dc45e41b6cb3fe34de0b19456fa0ee1b213439342938",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 5
+    },
+    "gzip-dense.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "8511d9ff67b0cda27635d981843be9ef2dd8c818f0504df34c51fa58c45f7caa",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 12
+    },
+    "gzip-csr.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "86ffacd3a3042b42f8a16003775188a072d06cabab800808aa0a127477c73dfa",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 5
+    },
+    "float-counts.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "e671b00be482c5ce1c353045edb755db51700b4613527c3020a5ca5ec6623912",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 12
+    },
+    "big-endian.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "57dd8aafd0e94026a97a855c84f758e943dac0ac3e30eb1cd444eedc841b3bfe",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 12
+    },
+    "multimodal.h5mu": {
+      "selection": {
+        "layer": "layers/counts",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type",
+        "modality": "gex",
+        "airrModality": "receptors"
+      },
+      "sha256": "ef25ae4979ad78a269ad00ca292b966b158c340d3df1be33853f396bebc2559c",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL3",
+        "AIRR_ONLY",
+        "CELL1"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ]
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 5
+    },
+    "optional-cell.h5ad": {
+      "selection": {
+        "layer": "layers/counts",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "336f1c103825824bbccb62812dce6697104b593e29053f6742199f3f358c03c1",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        null,
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 5
+    },
+    "empty.h5ad": {
+      "selection": {
+        "layer": "layers/counts",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "0da95d17fbf9d5d64362959ccbe338fc9143105c1433ddb911e9e6a1d6400d85",
+      "barcodes": [],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [],
+      "gene_umis": [],
+      "genes": [],
+      "airr_barcodes": [],
+      "airr": [],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [],
+      "entries": 0
+    },
+    "edge-chunks.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "a1d91cca3424cfccebbcf9d87fb84a34672e666a4ab2726a3d735b02aa9fbae6",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score",
+        "flag",
+        "large"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5",
+          "true",
+          "9223372036854775807"
+        ],
+        [
+          "",
+          "",
+          "false",
+          "",
+          "",
+          "-9223372036854775808"
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5",
+          "false",
+          "0"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0",
+          "true",
+          "1"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 12
+    },
+    "scirpy.h5ad": {
+      "selection": {
+        "layer": "layers/counts",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "72ee1cabfc683097edc60f610c1591509fc5e28bf94c087171f6c11f1f73a346",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "d_call": null,
+            "d_cigar": null,
+            "germline_alignment": null,
+            "j_call": null,
+            "j_cigar": null,
+            "junction": null,
+            "junction_aa": "CASSF",
+            "locus": "TRA",
+            "productive": true,
+            "rev_comp": null,
+            "sequence": null,
+            "sequence_alignment": null,
+            "sequence_id": null,
+            "umi_count": 2,
+            "v_call": null,
+            "v_cigar": null
+          },
+          {
+            "d_call": null,
+            "d_cigar": null,
+            "germline_alignment": null,
+            "j_call": null,
+            "j_cigar": null,
+            "junction": null,
+            "junction_aa": "CASRF",
+            "locus": "TRB",
+            "productive": null,
+            "rev_comp": null,
+            "sequence": null,
+            "sequence_alignment": null,
+            "sequence_id": null,
+            "umi_count": 1,
+            "v_call": null,
+            "v_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "d_call": null,
+            "d_cigar": null,
+            "germline_alignment": null,
+            "j_call": null,
+            "j_cigar": null,
+            "junction": null,
+            "junction_aa": null,
+            "locus": "TRB",
+            "productive": false,
+            "rev_comp": null,
+            "sequence": null,
+            "sequence_alignment": null,
+            "sequence_id": null,
+            "umi_count": null,
+            "v_call": null,
+            "v_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5"
+        ],
+        [
+          "",
+          "",
+          "false",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0"
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 5
+    },
+    "nullable-strings.h5ad": {
+      "selection": {
+        "layer": "layers/counts",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "sha256": "ac8b64da262803ef44303028ee5be1e6e26c8eb5b85485cf89f314f884c370ee",
+      "barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "features": [
+        "g1",
+        "g2",
+        "ab1"
+      ],
+      "dense": [
+        [
+          2,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          2
+        ],
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gene_umis": [
+        5,
+        4,
+        7,
+        0
+      ],
+      "genes": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "airr_barcodes": [
+        "CELL1",
+        "CELL2",
+        "CELL3",
+        "CELL4"
+      ],
+      "airr": [
+        [
+          {
+            "locus": "TRA",
+            "junction_aa": "CASSF",
+            "productive": true,
+            "umi_count": 2,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          },
+          {
+            "locus": "TRB",
+            "junction_aa": "CASRF",
+            "productive": null,
+            "umi_count": 1,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        [],
+        [
+          {
+            "locus": "TRB",
+            "junction_aa": null,
+            "productive": false,
+            "umi_count": null,
+            "sequence_id": null,
+            "sequence": null,
+            "rev_comp": null,
+            "v_call": null,
+            "d_call": null,
+            "j_call": null,
+            "sequence_alignment": null,
+            "germline_alignment": null,
+            "junction": null,
+            "v_cigar": null,
+            "d_cigar": null,
+            "j_cigar": null
+          }
+        ],
+        []
+      ],
+      "obs_columns": [
+        "state",
+        "age",
+        "included",
+        "score",
+        "note"
+      ],
+      "obs_values": [
+        [
+          "A",
+          "1",
+          "true",
+          "0.5",
+          "red"
+        ],
+        [
+          "",
+          "",
+          "false",
+          "",
+          ""
+        ],
+        [
+          "B",
+          "3",
+          "true",
+          "1.5",
+          "NA"
+        ],
+        [
+          "Missing annotation",
+          "4",
+          "true",
+          "0",
+          ""
+        ]
+      ],
+      "var_columns": [
+        "gene_name",
+        "feature_type"
+      ],
+      "var_values": [
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Shared",
+          "Gene Expression"
+        ],
+        [
+          "Antibody",
+          "Antibody Capture"
+        ]
+      ],
+      "positions": [
+        [
+          0.1,
+          1.2
+        ],
+        [
+          3.4,
+          4.5
+        ],
+        [
+          6.7,
+          7.8
+        ],
+        null
+      ],
+      "entries": 5
+    }
+  },
+  "invalid": {
+    "fractional.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "counts"
+    },
+    "duplicate-barcode.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "duplicate index"
+    },
+    "bad-category.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "code outside"
+    },
+    "half-missing-map.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "complete finite"
+    },
+    "bad-airr-offset.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "outside content"
+    },
+    "encoding-version.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "unsupported AnnData"
+    },
+    "normalized.h5ad": {
+      "selection": {
+        "layer": "layers/normalized",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "counts"
+    },
+    "no-selection.h5ad": {
+      "selection": {
+        "layer": ""
+      },
+      "error": "select a count matrix"
+    },
+    "bad-indptr.h5ad": {
+      "selection": {
+        "layer": "layers/counts",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "monotone"
+    },
+    "duplicate-coordinate.h5ad": {
+      "selection": {
+        "layer": "layers/counts",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "duplicate count"
+    },
+    "bad-shape.h5ad": {
+      "selection": {
+        "layer": "layers/counts",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "shape differs"
+    },
+    "nan-count.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "counts"
+    },
+    "infinite-count.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "counts"
+    },
+    "fraction-count.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "counts"
+    },
+    "unsafe-count.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "counts"
+    },
+    "boolean-counts.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "numeric array"
+    },
+    "negative-index.h5ad": {
+      "selection": {
+        "layer": "layers/counts",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "negative"
+    },
+    "unknown-airr-form.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "unsupported Awkward form"
+    },
+    "airr-type-mismatch.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "character form"
+    },
+    "integer-mask.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "mask must be boolean"
+    },
+    "unknown-category-code.h5ad": {
+      "selection": {
+        "layer": "X",
+        "embedding": "X_umap",
+        "airrKey": "airr",
+        "featureName": "gene_name",
+        "featureType": "feature_type"
+      },
+      "error": "code outside"
+    }
+  }
+}

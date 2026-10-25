@@ -237,6 +237,43 @@ thereafter (on a 2024 laptop: Apple M-series or recent x86, 16 GB):
 | Internal model | The AIRR-C Rearrangement fields, in a columnar table with interned strings; junction (IMGT) rather than CDR3; IMGT gene nomenclature |
 | Reference data | Germline sets and model files downloaded on request with their license recorded; nothing under a non-commercial or no-derivatives license bundled (`research.md`, "Licenses") |
 | Reference tools | Validation only, run by scripts in `validation/reference/`; never linked, bundled or copied |
-| HDF5 | SituCraft's own reader of the subset AnnData and 10x matrices use (wave 6) |
+| HDF5 | Own bounded reader of the AnnData/10x subset (wave 6); SituCraft has a writer, not a reusable HDF5 reader |
 | Default port | 8860 (8860–8879) |
 | Remote control and screenshots | From wave 2, as in SituCraft: the documentation's capture scenes and headless runs drive the page through it |
+
+
+### Selected AnnData/MuData evidence (wave 6, slice 4)
+
+The expression input owns the selected sparse count matrix, its source observation annotations,
+variable annotations, one supplied embedding and optional unfiltered AIRR records. MuData
+selection is modality-local; exact barcodes link selected expression and AIRR populations.
+Neither global MuData row indices nor imported clonotype/chain-index analysis objects determine
+ClonoLoom results. `internal/hdf5` handles bounded storage decoding; `internal/expression`
+validates AnnData schema and scientific count/missing-value policies. No Python runtime is
+required by the application. Python public APIs generate independent test fixtures only.
+
+`anndata` in the open request and saved expression record pins count layer, modality, embedding,
+AIRR modality/key and optional feature-name/type columns. The whole source file and those
+selections determine the `clonoloom-expression-anndata/1` identity. Existing source identity
+domains remain stable. Summaries contain provenance and population counts; large variable/AIRR
+values are paged, and maps retain the existing population limit. Source observations stay
+supplied evidence; computed preprocessing, neighborhoods and phenotypes remain separate results.
+
+
+Computed expression analyses (wave 6 slice 5) use separate `expression-map` jobs and artifacts,
+keyed by expression identity, normalized options and method version. They retain population
+exclusions, feature moments/loadings, PCA scores, exact directed neighbors, fuzzy graph weights,
+UMAP coordinates and complete methods. Source fingerprints are verified again when a job runs;
+completed results are checksum-verified and reopen without the sources. They are independent
+of receptor QC and clonotype definitions. See `docs/EXPRESSION.md` for explicit bounded methods.
+
+Clonotype modularity (wave 6 slice 7) consumes a complete `phenotypes` artifact made with a
+computed map and that exact `expression-map` graph. `internal/modularity` validates the graph,
+induces its uniquely assigned population, computes size-conditioned edge tests and BY adjustment.
+It does not reopen raw sources or refit the graph. Parent IDs/checksums, effective settings and
+method version determine a separate `modularity` job/artifact. The worker verifies hashes again,
+stages JSON, checks cancellation and promotes only a readable result. Resume recreates work
+from the pinned spec. Completed results are self-contained for inspection; reproducing the graph
+test also uses the exported expression-map parent. JS lays out supplied null frequencies and
+observed/expected markers, filters tables and links the parent overlay; Go computes statistics.
+See `docs/MODULARITY.md` for the inferential assumptions and populations.

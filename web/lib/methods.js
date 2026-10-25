@@ -17,6 +17,15 @@ export function joinList(parts) {
   return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
 }
 
+// Expression fits have no receptor dataset of their own. Include a saved fit only through
+// an explicit input binding or one of this dataset's saved phenotype/graph/export results.
+export function cellResultsForDataset(project, dataset) {
+  const cells = project.artifacts.filter((r) => r.dataset === dataset && ['phenotypes', 'modularity', 'conga', 'anndata-export'].includes(r.kind));
+  const inputs = new Set([...(project.expression ?? []).filter((e) => e.dataset === dataset).map((e) => e.id), ...cells.map((r) => r.expression)]);
+  const maps = project.artifacts.filter((r) => r.kind === 'expression-map' && inputs.has(r.expression));
+  return [...maps, ...cells];
+}
+
 // The works a paragraph cites.
 export const REFERENCES = {
   conga: 'Schattgen SA, Guion K, Crawford JC, et al. Integrating T cell receptor sequences and transcriptional profiles by clonotype neighbor graph analysis (CoNGA). Nat Biotechnol. 2022;40:54–63. doi:10.1038/s41587-021-00989-2',
@@ -111,15 +120,23 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   // Simulated data (clonoloom simulate): how they were made.
   const simulations = (summary?.samples ?? []).map((s) => s.repertoire).filter((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
   const bcellModels = ['clonoloom-simulated-clonoloom-artificial-bcell-v1', 'clonoloom-simulated-clonoloom-artificial-bcell-v2'];
+  const cellModels = ['clonoloom-simulated-cell-states', 'clonoloom-simulated-cell-states-clouds'];
+  const trbModels = ['standard', 'null', 'small', 'car-t', 'transplant', 'vaccine'].map((name) => `clonoloom-simulated-${name}`);
   const bcellSimulation = simulations.some((r) => bcellModels.includes(r.studyId));
-  const simulated = simulations.find((r) => !bcellModels.includes(r.studyId));
+  const cellSimulations = simulations.filter((r) => cellModels.includes(r.studyId));
+  const simulated = simulations.find((r) => trbModels.includes(r.studyId));
+  const unknown = [...new Set(simulations.filter((r) => ![...bcellModels, ...cellModels, ...trbModels].includes(r.studyId)).map((r) => r.studyId))];
+  if (unknown.length) sentences.push(`The data include simulated studies ${joinList(unknown)}. These identifiers do not establish their generative model; consult each study's saved parameters and truth before describing how it was simulated.`);
+  if (cellSimulations.length) {
+    sentences.push(`The paired TRA/TRB and expression data were made by ClonoLoom's artificial cell-state simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} (studies ${[...new Set(cellSimulations.map((r) => r.studyId.replace('clonoloom-simulated-', '')))].join(', ')}). Clones have fictional SIM gene calls and independently drawn junctions; cells draw clones uniformly and one of three states by the recorded sample-specific rule. The 24 artificial genes have conditionally independent negative-binomial counts (size 4; mean 16 in the state's eight-gene block, 2 otherwise). Supplied grid or Gaussian-cloud coordinates illustrate the known state, independently of the expression fit; they are not inferred embeddings. Forced missing evidence and an all-zero cell test bookkeeping. Separate truth records the model, assignments and source hashes. This controlled benchmark is not fitted biology, does not simulate antigen specificity, and does not make cells independent biological replicates.`);
+  }
   if (bcellSimulation) {
     sentences.push(`The artificial paired B-cell sequences were made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} (models ${[...new Set(simulations.filter((r) => bcellModels.includes(r.studyId)).map((r) => r.studyId.replace('clonoloom-simulated-', '')))].join(', ')}): fictional SIM gene calls, coding sequences with uniform proposed substitutions restricted to preserve junction anchors and avoid stop codons, a fixed seven-node family tree, deliberate back-mutations, and fixed forward isotype transitions. B cells were sampled independently at days -7, 14 and 28 of a simulated immunization from recorded family and node probabilities. Ancestors, ordered mutation events, isotypes and observed cell assignments are recorded in truth/. Supplied ancestor alignments and region coordinates are artificial; this is not a fitted SHM or affinity model. No read counts, UMI counts, sequencing errors or additional biological variance were simulated for these B cells.`);
   }
   if (simulated) {
     sentences.push(`${bcellSimulation ? 'The T-cell receptor β data' : 'The data'} are simulated (${simulated.studyTitle || simulated.studyId}): T-cell receptor β rearrangements made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} from GRCh38's gene segments at Ensembl's annotation ${cite('ensembl')}, with the V and J usage of 10x Genomics' 10k PBMC data, deletions and non-templated insertions at the junctions, and selection on junction length to that data's ${cite('selection')}; each subject's clones of power-law sizes, each sample templates drawn from them and sequenced into reads. Their truth is recorded beside them.`);
     // A study over time: its samples' time points and reference samples say so.
-    const repertoires = simulations.filter((r) => !bcellModels.includes(r.studyId));
+    const repertoires = simulations.filter((r) => trbModels.includes(r.studyId));
     const event = repertoires.map((r) => /\(([^()]+)\)$/.exec(r.timePoint ?? '')?.[1]).find(Boolean);
     if (event) {
       const tissues = repertoires.map((r) => r.tissue ?? '');
@@ -358,5 +375,10 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     sentences.push(`A clonotype network (${r.describe || r.definition}) joined ${r.nodes} clonotypes by ${distance} at cutoff ${o.cutoff}, requiring ${o.arms === 'all' ? 'a bijection of all retained chains at each locus (missing matching missing only)' : 'any shared chain at the same locus'}${o.sameV ? ', with matching V calls' : ''}${o.sameJ ? ', with matching J calls' : ''}. The ${r.edges} edges formed ${r.components} connected components. Components express sequence similarity, not proven antigen specificity. A deterministic force drawing ${cite('forceDrawing', 'Fruchterman TMJ, Reingold EM. Graph drawing by force-directed placement. Software: Practice and Experience. 1991;21:1129–1164. doi:10.1002/spe.4380211102')} used a fixed grid start and 60 iterations, with a drawing limit independent of the complete graph.`);
   }
 
+  // These descriptions and citations are computed in Go and kept with each immutable result.
+  // Do not reconstruct scientific parameters from current controls or a plot selection.
+  for (const r of results.filter((r) => ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export'].includes(r.kind))) {
+    sentences.push(`Saved ${r.method || r.kind} result ${r.id}: ${r.describe || 'See the saved result for its effective parameters.'}${r.citation ? ` ${cite(`cell-method:${r.citation}`, r.citation)}` : ''}`);
+  }
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };
 }

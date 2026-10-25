@@ -113,9 +113,358 @@ async function showPlaces() {
   })()`);
 }
 
+async function checkAccessibility() {
+  const axe = join(DATA, 'axe-core/axe.min.js');
+  if (!existsSync(axe)) throw new Error('The study accessibility check needs axe-core (node validation/fetch.mjs axe-core)');
+  await js(`(0, eval)(${JSON.stringify(readFileSync(axe, 'utf8'))}); true`);
+  const violations = await js(`(async () => {
+    const result = await axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] }, resultTypes: ['violations'] });
+    return result.violations.map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target) }));
+  })()`);
+  if (violations.length) throw new Error(`Study accessibility: ${JSON.stringify(violations)}`);
+}
+
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cell-study'() {
+    await act('new_project', { name: 'Artificial single-cell study' });
+    await act('open_example', { example: 'simulated-cell-states-clouds', download: true });
+    const catalog = await (await fetch(`${URL}api/examples`)).json();
+    const example = catalog.examples.find((e) => e.name === 'simulated-cell-states-clouds');
+    for (const step of example.opens[0].steps) await act(step.action, step.args);
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods = await js(`document.querySelector('.methods-text').textContent`);
+    const references = await js(`document.querySelector('.methods-references').textContent`);
+    for (const phrase of ['cell-states-clouds', 'negative-binomial', 'PCA / UMAP', 'Clone sizes', 'Clonotype modularity', 'Receptor / expression neighborhoods', 'AnnData export']) {
+      if (!methods.includes(phrase)) throw new Error(`Study methods omitted ${phrase}`);
+    }
+    if (/GRCh38|Ensembl|power-law|sequenced into reads/.test(methods)) throw new Error('Unrelated simulation model in study methods');
+    for (const ref of ['1802.03426', 's41587-021-00989-2', 'fileformat-prose']) if (!references.includes(ref)) throw new Error(`Missing study reference ${ref}`);
+    await act('close_dialogs');
+    await js(`(async () => {
+      const app = window.clonoloom;
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells');
+      const views = { 'expression-map': 'cellAnalysisView', phenotypes: 'cellPhenotypesView', modularity: 'cellModularityView', conga: 'cellCongaView', 'anndata-export': 'cellAnnDataView' };
+      for (const r of app.store.project.artifacts) {
+        await app[views[r.kind]].show(r.id);
+        if (app[views[r.kind]].state().status !== 'ready') throw new Error('Saved result did not reopen: ' + r.kind);
+      }
+      return true;
+    })()`);
+    await js(`document.querySelector('#computed-cell-map').scrollIntoView({ block: 'start' })`);
+    await checkAccessibility();
+  },
+  async 'cell-anndata-export'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`window.clonoloom.cellsView.example(true)`);
+    await act('compute_expression_map');
+    const overlay = await act('compute_cell_phenotypes', {map:'latest', annotation:'state'});
+    await js(`(() => {const p=document.querySelector('[aria-label="Export phenotype parent"]');p.value=${JSON.stringify(overlay.data.artifact)};p.dispatchEvent(new Event('change'));[...document.querySelectorAll('button')].find((b)=>b.textContent==='Prepare AnnData export').click();return true;})()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellAnnDataView?.state().status)`,120000);
+    const state = await js('window.clonoloom.cellAnnDataView.state()');
+    if(state.status!=='ready'||state.answer.result.cells!==360||state.answer.result.embeddings.length!==3)throw new Error(`AnnData export failed: ${JSON.stringify(state)}`);
+    const remote = await act('export_anndata');
+    if(remote.data.artifact!==state.artifact)throw new Error('Visible and remote export differ');
+    await js(`(async()=>{const app=window.clonoloom,id=app.cellAnnDataView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Export undo failed');app.store.redo();const response=await fetch('api/anndata-export/'+id+'/download');if(!response.ok||!response.headers.get('Content-Type').includes('zip'))throw new Error('Export download failed');const zip=new Uint8Array(await response.arrayBuffer());if(zip[0]!==80||zip[1]!==75)throw new Error('Invalid download');await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellAnnDataView.show(id);if(app.cellsView.state().record)throw new Error('Saved export required expression source');return true;})()`);
+    await js(`document.querySelector('#anndata-export').scrollIntoView({block:'start'})`);
+  },
+  async 'cell-conga'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`window.clonoloom.cellsView.example(true)`);
+    await act('compute_expression_map');
+    const overlay=await act('compute_cell_phenotypes',{map:'latest',annotation:'state'});
+    await js(`(() => {const p=document.querySelector('[aria-label="Comparison phenotype parent"]');p.value=${JSON.stringify(overlay.data.artifact)};p.dispatchEvent(new Event('change'));document.querySelector('[aria-label="Comparison neighborhood sizes"]').value='2,4';document.querySelector('[aria-label="Comparison receptor distance"]').value='cdr3';[...document.querySelectorAll('button')].find((b)=>b.textContent==='Compare receptor and expression neighborhoods').click();return true;})()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellCongaView?.state().status)`,120000);
+    const state=await js('window.clonoloom.cellCongaView.state()');
+    if(state.status!=='ready'||state.answer.result.analysis.eligible!==358||state.answer.result.analysis.nodes.length!==10||state.answer.result.analysis.tested!==20)throw new Error(`Comparison failed: ${JSON.stringify({status:state.status,error:state.error,result:state.answer?.result.analysis})}`);
+    const remote=await act('compare_receptor_expression',{options:{neighbors:[2,4],cdr3Only:true}});
+    if(remote.data.artifact!==state.artifact)throw new Error('Visible and remote comparison differ');
+    await js(`(()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Comparison undo failed');app.store.redo();const r=app.cellCongaView.state().answer.result.analysis,t=r.tests.find((t)=>t.logP!=null);app.cellCongaView.selectClone(r.nodes[t.node].id);const plot=document.querySelector('.conga-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==t.overlap||Number(plot.querySelector('[data-expected]').dataset.expected)!==t.expected)throw new Error('Plot differs from Go result');const f=document.querySelector('[aria-label="Filter comparison clones"]');f.value=r.nodes[0].id;f.dispatchEvent(new Event('change'));if(app.cellCongaView.state().answer.result.analysis.tested!==20)throw new Error('Filtering changed family');return true;})()`);
+    await js(`(()=>{[...document.querySelectorAll('button')].find((b)=>b.textContent==='Open comparison phenotype overlay').click();return true;})()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length>1');
+    await js(`(async()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellCongaView.show(id);if(app.cellsView.state().record)throw new Error('Saved comparison required expression source');return true;})()`);
+    await js(`document.querySelector('#receptor-expression-neighborhoods').scrollIntoView({block:'start'})`);
+  },
+  async 'cell-modularity'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`window.clonoloom.cellsView.example(true)`);
+    await act('compute_expression_map');
+    const overlay = await act('compute_cell_phenotypes', { map:'latest', annotation:'state' });
+    await js(`(() => { const c=document.querySelector('[aria-label="Modularity phenotype parent"]'); c.value=${JSON.stringify(overlay.data.artifact)}; c.dispatchEvent(new Event('change')); [...document.querySelectorAll('button')].find((b)=>b.textContent==='Compute clonotype modularity').click(); return true; })()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellModularityView?.state().status)`,120000);
+    const state=await js('window.clonoloom.cellModularityView.state()');
+    if(state.status!=='ready'||state.answer.result.analysis.eligible!==358||state.answer.result.analysis.tested!==10) throw new Error(`Modularity failed: ${JSON.stringify({status:state.status,error:state.error,eligible:state.answer?.result.analysis.eligible,tested:state.answer?.result.analysis.tested})}`);
+    const remote=await act('compute_clonotype_modularity');
+    if(remote.data.artifact!==state.artifact) throw new Error('Visible and remote modularity differ');
+    await js(`(() => {const app=window.clonoloom,id=app.cellModularityView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Modularity undo failed');app.store.redo();const r=app.cellModularityView.state().answer.result.analysis;const c=r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0];app.cellModularityView.selectClone(c.id);const plot=document.querySelector('.modularity-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==c.observed)throw new Error('Observed marker differs from result');const f=document.querySelector('[aria-label="Filter modularity clones"]');f.value=c.id;f.dispatchEvent(new Event('change'));if(app.cellModularityView.state().answer.result.analysis.tested!==10)throw new Error('Filtering changed test family');return true;})()`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b)=>b.textContent==='Open parent phenotype overlay').click();return true;})()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length > 1');
+    await js(`(async()=>{const app=window.clonoloom,id=app.cellModularityView.state().artifact;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellModularityView.show(id);if(app.cellsView.state().record)throw new Error('Saved modularity required open expression source');const r=app.cellModularityView.state().answer.result.analysis;app.cellModularityView.selectClone(r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0].id);return true;})()`);
+    await js(`document.querySelector('#clonotype-modularity').scrollIntoView({block:'start'})`);
+  },
+  async 'cell-phenotypes'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`window.clonoloom.cellsView.example(true)`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await js(`(() => { const c = document.querySelector('[aria-label="Phenotype annotation"]'); c.value = 'state'; c.dispatchEvent(new Event('change')); [...document.querySelectorAll('button')].find((b) => b.textContent === 'Compute clonotype phenotypes').click(); return true; })()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellPhenotypesView?.state().status)`, 120000);
+    const state = await js('window.clonoloom.cellPhenotypesView.state()');
+    if (state.status !== 'ready' || state.answer.result.analysis.coverage.mapped !== 358 || state.answer.result.analysis.coverage.matched !== 359 || state.answer.result.analysis.cells.length !== 360 || state.answer.result.analysis.options.annotation !== 'state') throw new Error(`Phenotype result: ${state.error || JSON.stringify(state.answer?.result.analysis.coverage)}`);
+    const remote = await act('compute_cell_phenotypes', { annotation: 'state' });
+    if (remote.data.artifact !== state.artifact) throw new Error('Visible and remote phenotype controls differ');
+    await js(`(() => {
+      const app = window.clonoloom, id = app.cellPhenotypesView.state().artifact;
+      app.store.undo(); if (app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Phenotype undo failed'); app.store.redo();
+      const filter = document.querySelector('[aria-label="Filter phenotype table"]'); filter.value = 'CELL00001-1'; filter.dispatchEvent(new Event('change'));
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Select matching cells').click(); return true;
+    })()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length === 1');
+    await js(`(() => {
+      if (!document.querySelector('#inspector').textContent.includes('CELL00001-1')) throw new Error('Selected cells absent from inspector');
+      const plot = document.querySelector('.cell-overlay-plot'); if (!plot.querySelector('[opacity="0.14"]')) throw new Error('Other cells not dimmed');
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Reset cell selection').click(); return true;
+    })()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length === 0');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Undo cell selection').click(); return true; })()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length === 1');
+    await js(`document.querySelector('#clonotype-phenotypes').scrollIntoView({ block: 'start' })`);
+    const box = await js(`(() => { const r = document.querySelector('.cell-overlay-plot svg').getBoundingClientRect(); return { x:r.x+35, y:r.y+25, endX:r.right-35, endY:r.bottom-30 }; })()`);
+    await b.send('Input.dispatchMouseEvent', { type:'mousePressed', x:box.x, y:box.y, button:'left', clickCount:1 });
+    await b.send('Input.dispatchMouseEvent', { type:'mouseMoved', x:box.endX, y:box.endY, button:'left', buttons:1 });
+    await b.send('Input.dispatchMouseEvent', { type:'mouseReleased', x:box.endX, y:box.endY, button:'left', clickCount:1 });
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length > 1');
+    await js(`(() => { const app=window.clonoloom, r=app.cellPhenotypesView.state().answer.result; app.pendingCellClone={dataset:r.dataset,definition:r.analysis.definition,filter:r.analysis.filter,id:r.analysis.cells.find((c)=>c.clone).clone}; app.setMode('clonotypes'); return true; })()`);
+    await waitFor('Boolean(window.clonoloom.clonotypesView)');
+    await js(`window.clonoloom.clonotypesView.select(window.clonoloom.pendingCellClone.id)`);
+    await waitFor(`[...document.querySelectorAll('button')].some((b)=>b.textContent==='Show on a cell map')`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b)=>b.textContent==='Show on a cell map').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellPhenotypesView?.state().status === 'ready' && window.clonoloom.cellPhenotypesView.state().selected.length > 0`);
+    await js(`(async () => { const app=window.clonoloom,id=app.cellPhenotypesView.state().artifact; await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells'); await app.cellPhenotypesView.show(id); if(app.cellsView.state().record)throw new Error('Saved overlay required expression input'); return true; })()`);
+    // Reopen the source and attach a computed map; its population differs from the imported one.
+    await js(`window.clonoloom.cellsView.example(true)`);
+    const computed = await act('compute_expression_map');
+    const overlay = await act('compute_cell_phenotypes', { map: computed.data.artifact, population:'mapped', annotation:'state' });
+    if (overlay.data.coverage.mapped !== 359) throw new Error('Computed overlay reused imported positions');
+    await js(`(async () => { const app=window.clonoloom; await app.cellPhenotypesView.show(${JSON.stringify(state.artifact)}); const choice=document.querySelector('[aria-label="Overlay coloring"]');choice.value='annotation:0';choice.dispatchEvent(new Event('change'));const missing=document.querySelector('.cell-overlay-plot circle.cell-map-missing');if(!missing||getComputedStyle(missing).fill!=='rgb(163, 163, 163)')throw new Error('Overlay missing label not gray');choice.value='size';choice.dispatchEvent(new Event('change'));return true; })()`);
+    await js(`document.querySelector('#clonotype-phenotypes').scrollIntoView({ block: 'start' })`);
+  },
+  async 'cell-analysis'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use cell-state study').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Compute expression map').click(); return true; })()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellAnalysisView?.state().status)`, 120000);
+    let computed = await js('window.clonoloom.cellAnalysisView.state()');
+    if (computed.status !== 'ready' || computed.answer.result.analysis.cells.length !== 359 || computed.answer.result.analysis.excluded.length !== 1 || !computed.answer.result.analysis.graph.weights.length) throw new Error(`Computed map failed: ${JSON.stringify({status:computed.status,error:computed.error,cells:computed.answer?.result.analysis.cells.length,excluded:computed.answer?.result.analysis.excluded.map((c)=>({barcode:c.barcode,reason:c.reason}))})}`);
+    const remote = await act('compute_expression_map');
+    if (remote.data.artifact !== computed.artifact || remote.data.cells !== 359) throw new Error('Remote computed map differs from the visible controls');
+    await js(`(() => {
+      const app = window.clonoloom, id = app.cellAnalysisView.state().artifact;
+      if (!app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Computed map not kept');
+      app.store.undo();
+      if (app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Map undo failed');
+      app.store.redo(); return true;
+    })()`);
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.cellAnalysisView.state().artifact;
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells');
+      await app.cellAnalysisView.show(id);
+      if (app.cellsView.state().record !== null) throw new Error('Saved map required opening its input');
+      return true;
+    })()`);
+    await js(`(async () => {
+      const choice = document.querySelector('[aria-label="Computed map annotation"]'); choice.value = '0'; choice.dispatchEvent(new Event('change'));
+      const plot = document.querySelector('[aria-label="Computed expression map"]');
+      if (!plot.textContent.includes('UMAP 1 (computed)') || plot.textContent.includes('not computed')) throw new Error('Computed provenance mislabeled');
+      const missing = plot.querySelector('circle.cell-map-missing');
+      if (!missing || getComputedStyle(missing).fill !== 'rgb(163, 163, 163)') throw new Error('Computed missing annotation not gray');
+      missing.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (!document.querySelector('[aria-label="Selected computed cell"]').textContent.includes('CELL')) throw new Error('Computed selection failed');
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Selected features').click(); await Promise.resolve();
+      if (!document.body.textContent.includes('Log variance')) throw new Error('Feature table missing');
+      [...document.querySelectorAll('button')].find((b) => b.textContent === 'Mapped cells').click(); await Promise.resolve();
+      const link = [...document.querySelectorAll('a')].find((a) => a.textContent === 'Download result and provenance');
+      if (!link?.download.endsWith('.json')) throw new Error('Result export missing');
+      document.querySelector('#computed-cell-map').scrollIntoView({ block: 'start' }); return true;
+    })()`);
+    computed = await js('window.clonoloom.cellAnalysisView.state()');
+    if (computed.answer.result.analysis.cells[0].barcode !== 'CELL00001-1') throw new Error('Saved map barcode order changed');
+  },
+  async 'cells-anndata'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use AnnData example').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    const state = await js('window.clonoloom.cellsView.state()');
+    if (state.page.summary.anndata.selection.layer !== 'layers/counts' || state.page.cells[0].geneUMIs !== 5 || state.page.summary.anndata.airr.chains !== 3) throw new Error('AnnData evidence differs');
+    await js(`window.clonoloom.cellsView.page('features')`);
+    if ((await js('window.clonoloom.cellsView.state().page.variableValues[1][0]')) !== 'Shared') throw new Error('Variable annotations lost');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'AIRR evidence').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.airr?.length === 3`);
+    if ((await js('window.clonoloom.cellsView.state().page.airr[1].values[2]')) !== null) throw new Error('Missing AIRR field changed');
+    await js(`window.clonoloom.cellsView.page('airr-cells')`);
+    if ((await js('window.clonoloom.cellsView.state().page.airrCells[1].chains')) !== 0) throw new Error('Empty AIRR list changed');
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.store.project.id;
+      await app.saveNow(); await app.openProject(id); await app.setMode('cells');
+      const record = app.store.project.expression[0];
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      if (app.cellsView.state().record.id !== ${JSON.stringify(state.record.id)}) throw new Error('AnnData identity changed on reopen');
+      const before = JSON.stringify(app.store.project.expression);
+      await app.cellsView.inspect({ ...record, anndata: { ...record.anndata, layer: 'layers/normalized' } }).catch(() => {});
+      if (app.cellsView.state().status !== 'error' || JSON.stringify(app.store.project.expression) !== before) throw new Error('Normalized layer replaced saved count evidence');
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      return true;
+    })()`);
+    // Submit the visible fields after reopening: saved modality/layer/embedding selections
+    // must reach the server, not just the remote action.
+    await js(`document.querySelector('.view-body form').requestSubmit()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await act('inspect_expression', { anndataExample: true, sample: 0 });
+    await js(`window.clonoloom.cellsView.page('map')`);
+    await js(`(() => { const c = document.querySelector('[aria-label="Map annotation"]'); c.value='0'; c.dispatchEvent(new Event('change')); return true; })()`);
+    if (!(await js(`document.querySelector('[aria-label="Imported cell map"]').textContent.includes('UMAP 1 (supplied)')`))) throw new Error('Embedding axes missing');
+    await js(`document.querySelector('[aria-label="MEX directory, 10x HDF5, AnnData or MuData file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-anndata/cells.h5ad`)}`);
+    await js(`document.querySelector('#imported-cell-map').scrollIntoView({ block: 'start' })`);
+  },
+  async 'cells-hdf5'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use HDF5 example').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    const state = await js('window.clonoloom.cellsView.state()');
+    if (state.page.summary.sources.length !== 1 || state.page.summary.sources[0].role !== 'matrix-hdf5' || state.page.links.matched !== 2 || state.page.cells[0].geneUMIs !== 5 || state.page.cells[3].geneUMIs !== 0) throw new Error('HDF5 evidence differs');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Features').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.features.length === 3`);
+    if ((await js('window.clonoloom.cellsView.state().page.features[2].type')) !== 'Antibody Capture') throw new Error('HDF5 modality missing');
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.store.project.id;
+      await app.saveNow(); await app.openProject(id); await app.setMode('cells');
+      const record = app.store.project.expression[0];
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      if (app.cellsView.state().record.id !== ${JSON.stringify(state.record.id)}) throw new Error('HDF5 identity changed on project reopen');
+      const before = JSON.stringify(app.store.project.expression);
+      await app.cellsView.inspect({ path: ${JSON.stringify(join(ROOT, 'testdata/expression-hdf5/unsupported-filter.h5'))} }).catch(() => {});
+      if (app.cellsView.state().status !== 'error' || JSON.stringify(app.store.project.expression) !== before) throw new Error('Unsupported HDF5 replaced saved evidence');
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      return true;
+    })()`);
+    await js(`(() => {
+      const sample = document.querySelector('[aria-label="Receptor sample"]'); sample.value = '';
+      document.querySelector('.view-body form').requestSubmit();
+      if (!document.querySelector('[role="status"]').textContent.includes('explicitly')) throw new Error('Missing HDF5 sample accepted');
+      sample.value = '0'; document.querySelector('.view-body form').requestSubmit(); return true;
+    })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await act('inspect_expression', { hdf5Example: true, sample: 0 });
+    await js(`document.querySelector('[aria-label="MEX directory, 10x HDF5, AnnData or MuData file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression-hdf5/matrix.h5`)}`);
+  },
+  async 'cell-states'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use cell-state study').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    const state = await js('window.clonoloom.cellsView.state()');
+    if (state.page.links.matched !== 359 || state.page.summary.annotations.mapped !== 358 || state.page.cells[1].annotation || state.page.cells[2].annotation.position !== null || state.page.cells[3].annotation.values[0] !== '') throw new Error('Known missing evidence differs');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Annotations').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.annotations?.length === 50`);
+    for (let i = 0; i < 7; i++) {
+      await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Next').click(); return true; })()`);
+      await waitFor(`window.clonoloom.cellsView.state().page.offset === ${(i + 1) * 50}`);
+    }
+    if (!(await js(`document.querySelector('.view-body').textContent.includes('ANNOTATION-ONLY')`))) throw new Error('Unmatched annotations hidden');
+    await js(`(async () => {
+      const app = window.clonoloom, record = app.cellsView.state().record;
+      const before = JSON.stringify(app.store.project.expression);
+      await app.cellsView.inspect({ ...record, cellsPath: record.path }).catch(() => {});
+      if (app.cellsView.state().status !== 'error' || before !== JSON.stringify(app.store.project.expression)) throw new Error('Invalid annotation file changed project');
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells');
+      const saved = app.store.project.expression[0];
+      if (!saved.cellsPath || saved.sources.length !== 4) throw new Error('Annotation provenance lost');
+      await app.cellsView.inspect({ ...saved, expectedId: saved.id });
+      return true;
+    })()`);
+    // Exercise the visible optional-file form, then the map and keyboard-accessible table.
+    await js(`(() => { document.querySelector('.view-body form').requestSubmit(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().status === 'ready'`);
+    await act('inspect_expression', { studyExample: true, studyPreset: 'cell-states-clouds', sample: 0 });
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Imported map').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.map?.length === 358`);
+    await js(`(() => {
+      const choice = document.querySelector('[aria-label="Map annotation"]'); choice.value = '0'; choice.dispatchEvent(new Event('change'));
+      const missing = document.querySelector('circle.cell-map-missing');
+      if (!missing || getComputedStyle(missing).fill !== 'rgb(163, 163, 163)' || missing !== [...document.querySelectorAll('circle[data-cell]')].at(-1)) throw new Error('Missing annotation must be gray and drawn last');
+      missing.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('CELL00004-1')) throw new Error('Missing cell selection lost original index');
+      document.querySelector('circle[data-cell]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('Coordinates:')) throw new Error('Map cell inspection failed');
+      document.querySelector('table.data tbody button').click();
+      if (!document.querySelector('[aria-label="Selected cell"]').textContent.includes('CELL00001-1')) throw new Error('Table inspection failed');
+      return true;
+    })()`);
+    await js(`document.querySelector('[aria-label="MEX directory, 10x HDF5, AnnData or MuData file"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1`)}`);
+    await js(`document.querySelector('[aria-label="Cell annotations"]').value = ${JSON.stringify(`${SHOWN.examples}/simulated-cell-states-clouds/expression/S01-1/cells.tsv`)}`);
+    await js(`document.querySelector('#imported-cell-map').scrollIntoView({ block: 'start' })`);
+  },
+  async cells() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Use artificial example').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    const state = await js('window.clonoloom.cellsView.state()');
+    if (state.page.links.matched !== 2 || state.page.links.receptorOnly !== 1 || state.page.cells[0].geneUMIs !== 5 || state.page.cells[3].geneUMIs !== 0) throw new Error('Expression evidence differs');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Features').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView.state().page.features.length === 3`);
+    if (!(await js(`document.querySelector('.view-body').textContent.includes('Antibody Capture')`))) throw new Error('Feature modality missing');
+    await js(`window.clonoloom.setMode('data')`);
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Reopen').click(); return true; })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    if ((await js('window.clonoloom.cellsView.state().record.id')) !== state.record.id) throw new Error('Expression identity changed on reopen');
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const before = JSON.stringify(app.store.project.expression);
+      await app.cellsView.inspect({ path: '/does-not-exist' }).catch(() => {});
+      if (app.cellsView.state().status !== 'error' || JSON.stringify(app.store.project.expression) !== before) throw new Error('Invalid input changed saved evidence');
+      const record = app.store.project.expression[0];
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      return true;
+    })()`);
+    // Exercise the visible directory form and its explicit sample selector.
+    await js(`(() => {
+      const sample = document.querySelector('[aria-label="Receptor sample"]');
+      sample.value = ''; document.querySelector('.view-body form').requestSubmit();
+      if (!document.querySelector('[role="status"]').textContent.includes('explicitly')) throw new Error('Missing sample accepted');
+      sample.value = '0'; document.querySelector('.view-body form').requestSubmit(); return true;
+    })()`);
+    await waitFor(`window.clonoloom.cellsView?.state().status === 'ready'`);
+    await js(`(async () => {
+      const app = window.clonoloom;
+      const id = app.store.project.id;
+      await app.saveNow();
+      await app.openProject(id);
+      await app.setMode('cells');
+      const record = app.store.project.expression[0];
+      await app.cellsView.inspect({ ...record, expectedId: record.id });
+      if (app.cellsView.state().page.links.matched !== 2) throw new Error('Saved project expression did not reopen');
+      return true;
+    })()`);
+    await js(`(() => { [...document.querySelectorAll('button')].find((b) => b.textContent === 'Remove').click(); return true; })()`);
+    if ((await js('window.clonoloom.store.project.expression.length')) !== 0) throw new Error('Expression removal failed');
+    await js(`(() => { window.clonoloom.store.undo(); return true; })()`);
+    await waitFor('window.clonoloom.store.project.expression.length === 1');
+    await act('inspect_expression', { example: true, sample: 0 });
+    await js(`document.querySelector('[aria-label="MEX directory, 10x HDF5, AnnData or MuData file"]').value = ${JSON.stringify(`${SHOWN.examples}/synthetic-expression`)}`);
+  },
+
   async isotypes() {
     await act('open_example', { example: 'simulated-bcell-immunization', download: true });
     await act('find_bcell_families', { threshold: 0.1 });
@@ -377,6 +726,7 @@ const scenes = {
   // The start page of a first run.
   async start() {
     await waitFor(`Boolean(document.querySelector('.welcome'))`);
+    await checkAccessibility();
   },
   // The Example data dialog of a first run: nothing downloaded yet.
   async examples() {

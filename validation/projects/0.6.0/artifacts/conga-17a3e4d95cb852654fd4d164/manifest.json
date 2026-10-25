@@ -1,0 +1,270 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "conga-17a3e4d95cb852654fd4d164",
+  "kind": "conga",
+  "name": "Receptor / expression neighborhoods · S01-1",
+  "dataset": "d-8d1404a8ae498dab",
+  "state": "complete",
+  "created": "2026-10-25T06:35:00.019099Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "phenotypes",
+        "id": "pheno-1e9fe7e270d410a5a5ae2fef",
+        "sha256": "86e9944833fb02ee264baef94ba80fb6303316d618f7a79e8c858eee5c4abb35"
+      },
+      {
+        "kind": "expression-map",
+        "id": "emap-0fe86973e058204c90fc7cdd",
+        "sha256": "137b1ed9de900b3cd2a283206589c44c587cb3619e313edf0801f43be0f1f694"
+      }
+    ],
+    "job": {
+      "id": "jmvngdr18-5",
+      "kind": "conga",
+      "spec": {
+        "phenotypes": "pheno-1e9fe7e270d410a5a5ae2fef",
+        "options": {
+          "neighbors": [
+            2,
+            4
+          ],
+          "cdr3Only": true
+        },
+        "phenotypesSha256": "86e9944833fb02ee264baef94ba80fb6303316d618f7a79e8c858eee5c4abb35",
+        "map": "emap-0fe86973e058204c90fc7cdd",
+        "mapSha256": "137b1ed9de900b3cd2a283206589c44c587cb3619e313edf0801f43be0f1f694",
+        "method": 1,
+        "receptors": [
+          {
+            "id": "c-e70d699bf479ad51",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CAVDVCPDFARVGF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CESRSPCGQASIAF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-49c7be97a6a19b3a",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CGLPRIEGRLHQVF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CFKGRRAQTRAQSF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-c565b3c7edca1340",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CIGSSSKSILQVYF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CVVYKGLWFHLRRF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-4996705424a42899",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CLRYFCGLGTSYLF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CQDTNPAIYLYIGF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-1bfa62411406a76e",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CLTRTLGKATRRVF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CNAVLCPPARPTLF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-13df6e52e99e9a49",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CMGVFWSGGGNYFF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CLLLSLGNATSLGF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-127285632f5ee4a2",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CPFEVMCSRITTDF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CAGKSGILKKLAIF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-1d1cb5bb783700bb",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CPSACSTSLTTLTF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CFRIATNSSEPGPF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-ab080195830b041b",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CSSPRRPKVMDARF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CRIESYTGTREHRF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          },
+          {
+            "id": "c-d209d0ce5d29372f",
+            "chains": [
+              {
+                "locus": "TRA",
+                "junction": "CSTGRRHAEEMDTF",
+                "v": "TRAV1-SIM",
+                "j": "TRAJ1-SIM"
+              },
+              {
+                "locus": "TRB",
+                "junction": "CYAGCFIRFGGLSF",
+                "v": "TRBV1-SIM",
+                "j": "TRBJ1-SIM"
+              }
+            ],
+            "total": 0,
+            "samples": 0
+          }
+        ]
+      }
+    },
+    "method": {
+      "name": "CoNGA-style clonotype neighborhood overlap",
+      "version": "1",
+      "citation": "Schattgen et al. 2022, Nature Biotechnology 40:54–63, doi:10.1038/s41587-021-00989-2 (CoNGA); Dash et al. 2017, Nature 547:89–93, doi:10.1038/nature22383; Mayer-Blackwell et al. 2021, doi:10.7554/eLife.68605 (TCRdist3 conventions). Dunn 1961, doi:10.1080/01621459.1961.10482090 (Bonferroni). Mean-PC profiles, shared-CDR3 exclusions, inclusive ties and all-scale Bonferroni are declared ClonoLoom policies; see docs/CONGA.md."
+    },
+    "parameters": {
+      "phenotypes": "pheno-1e9fe7e270d410a5a5ae2fef",
+      "options": {
+        "neighbors": [
+          2,
+          4
+        ],
+        "cdr3Only": true
+      }
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.6.0",
+        "commit": "6c4f06e157d1fed84ca60f0f796f980257e876cd-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "conga.json",
+      "role": "conga",
+      "size": 128606,
+      "sha256": "372bd744d71778c67bdde0109a63ed12184529b961c42657660ea55f77b6727f"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "clonotypes": 10,
+    "eligible": 358,
+    "tested": 20
+  }
+}

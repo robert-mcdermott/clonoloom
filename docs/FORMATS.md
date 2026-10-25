@@ -3,14 +3,14 @@
 What ClonoLoom reads and writes, and how it reads each format. The research behind these choices,
 with sources, is in [clonoloom-spec/research.md](../clonoloom-spec/research.md).
 
-Every table can be gzipped (`.gz`); ClonoLoom recognizes gzip by its first bytes, not by the
+Every rearrangement table can be gzipped (`.gz`); ClonoLoom recognizes gzip by its first bytes, not by the
 name. Lines may end in LF or CRLF, and a UTF-8 byte-order mark is ignored. A file's format is
 decided from its header, whatever its name, except IMGT's multi-file bundle: its documented
 filenames identify table roles and headers are then checked.
 
-## What every reader produces
+## What every rearrangement reader produces
 
-Whatever the format, ClonoLoom reads rearrangements into one table with these fields (named as
+For repertoire formats, ClonoLoom reads rearrangements into one table with these fields (named as
 the AIRR Rearrangement schema names them):
 
 | Field | Meaning |
@@ -490,3 +490,228 @@ is `0`. `sources.csv` retains every parent-retained chain without duplicating ob
 Saved inspection does not require the input or parent files; exporting follows normal source
 access and data-use terms. Versioned isotype choices and normalized annotations travel in the
 analysis identity; unrelated active QC, clonotype and diversity settings do not.
+
+## 10x feature-barcode MEX (0.6.0)
+
+Expression is separate from rearrangement tables. **Cells** reads a selected MEX directory:
+`matrix.mtx[.gz]`, `features.tsv[.gz]` and `barcodes.tsv[.gz]`, or legacy two-column
+`genes.tsv[.gz]` in place of the three-column feature table. Plain/gzip may be mixed; two
+candidates for one role are ambiguous and rejected. No recursive raw/filtered choice is made.
+The Matrix Market header must be `%%MatrixMarket matrix coordinate integer general`.
+Features are rows, barcodes columns, coordinates one-based and values nonnegative integer UMIs.
+Source order and feature type are retained. Names may repeat; IDs, barcodes and coordinates may
+not. Explicit zeros are retained; missing coordinates within the matrix are zero, whereas a
+barcode absent from the matrix has no measured expression. Gene-expression totals include only
+`Gene Expression` features; with no such features, gene measurements are null, not zero.
+
+This reader follows the [10x MEX specification](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/cr-outputs-mex-matrices)
+and [NIST Matrix Market](https://math.nist.gov/MatrixMarket/formats.html). It requires UTF-8
+labels and LF/CRLF lines, without a byte-order mark. Counts and per-cell gene-expression totals
+must be at most 2^53−1. It limits features to 200,000, barcodes to 2,000,000, coordinates to
+10,000,000, label text to 64 MiB per companion, lines to 1 MiB, decompressed text to 512 MiB per
+file and source bytes to 1 GiB per file. Unsupported encodings and corrupt/truncated data fail.
+The source is streamed and fingerprinted read-only; a project saves its paths and SHA-256 values.
+Reopening verifies identity. Barcode links require an explicit receptor dataset/sample and keep
+suffixes exactly. Matching counts raw source evidence before QC, never inferred clonotypes.
+AnnData/MuData and 10x HDF5 are described below. See the
+[Cells guide](site/pages/docs/cells.html) and `testdata/expression-mex/` for a synthetic example.
+
+## 10x feature-barcode HDF5 (0.6.0)
+
+Cells accepts an explicitly selected HDF5 file in the same path field as a MEX directory.
+The schema follows [10x's HDF5 documentation](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-h5-matrices):
+`/matrix/shape`, `data`, `indices`, `indptr`, `barcodes` and `features/id`, `features/name`,
+`features/feature_type`. Shape is features by cells; CSC pointers and indices are zero-based.
+All eight datasets are required vectors. Older genome-named groups, molecule-info files,
+AnnData and MuData are not this schema. Extra datasets/attributes are not interpreted as counts
+or annotations. IDs, names and modalities are preserved, with the same exact-label, integer,
+duplicate and population rules as MEX. Unsorted CSC indices are sorted with their counts;
+duplicates fail instead of being summed. Optional `cells.tsv` remains an explicit selection.
+
+The reader is implemented from the [HDF Group format specification](https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t3.html).
+Its supported subset is deliberately explicit:
+
+- Superblocks 0–3, 8-byte addresses/lengths, optional user block, no superblock extension or
+  external file driver; object headers 1–2 and bounded continuation blocks.
+- Classic symbol-table groups or compact hard links. Soft/external links are never followed;
+  a required dataset behind one fails. Dense/fractal-heap groups are unsupported.
+- Fixed-length ASCII/UTF-8 strings with declared padding, variable strings through bounded
+  global heaps (added in slice 4), and full-width signed/unsigned 1/2/4/8-byte integers in either
+  byte order. 10x counts remain integer datatypes; negative/floating counts fail. The additional
+  numeric/attribute types supported for AnnData are described below. Compound/reference types
+  and custom bit layouts remain unsupported.
+- Compact and contiguous arrays; layout-v3 chunks indexed by v1 B-trees, including internal
+  nodes. Deflate, shuffle and Fletcher32 are supported, with reverse decoding order and
+  per-chunk masks. Metadata and Fletcher32 checksums are verified. Newer chunk indices,
+  unknown filters, external/virtual storage and missing/unallocated data fail. An empty vector
+  needs no allocation; a nonempty dataset is never silently filled from an HDF5 fill value.
+
+Resource policies: 1 GiB per file; 128 MiB per decoded array/read/chunk; 512 MiB total decoded
+arrays; 64 MiB total metadata and at most 4 MiB per metadata block; 2 GiB cumulative file reads
+and 1,000,000 read operations; 4,096 objects and 4,096 links per group, 65,536 messages per object/tree nodes per tree,
+64 continuation blocks, depth 32 and 262,144 chunks per array. Matrix limits remain 200,000
+features, 2,000,000 cells and 10,000,000 stored coordinates; feature labels and barcode labels
+are bounded at 64 MiB each. Counts and gene totals remain at most 2^53−1. Exceeding any bound
+fails the input, without sampling or partial values. A 10x sparse matrix is never densified. For unsupported
+encodings, supply the corresponding MEX files.
+
+The entire file is hashed before and after random-access parsing; changed size, modification
+time or bytes reject that read. The `matrix-hdf5` source records its path, size and SHA-256.
+Identity uses `clonoloom-expression-hdf5/1`, source size and hash; relocation retains identity,
+while another encoding of the same counts has a different source identity. Existing MEX and
+annotation identity domains are unchanged. Project reopening checks the recorded identity.
+
+`testdata/make-expression-hdf5.py` uses pinned h5py/NumPy/SciPy to write artificial fixtures
+and independently reconstruct every value in `validation/reference/expression_hdf5.json`.
+The compressed offline example has the same evidence as the MEX example. These are format
+tests, not a biological expression model or an HDF5 conformance claim.
+
+### Cell annotations and imported coordinates (0.6.0)
+
+An explicitly selected plain/gzip TSV can accompany one expression matrix. The first column
+is `barcode`; other columns are text annotations except reserved `map_x` and `map_y`, which
+must occur together. Header order is preserved. Up to 32 annotation columns are supported.
+Empty annotation fields mean missing; literal `NA` is a label, not a missing-value sentinel.
+Coordinates are either both empty or a finite pair within ±1e12. Zero is a valid coordinate.
+No quoting, escaped tabs, multiline fields or BOM; LF/CRLF and valid UTF-8 are accepted.
+Labels must have no surrounding whitespace, NUL, tab or newline. Headers and barcodes must
+be unique; malformed rows, partial coordinates and corrupt gzip fail the whole import.
+
+The table joins by exact barcode to the selected matrix. All rows remain available, including
+annotation-only barcodes. Missing rows, missing values and missing coordinates are distinct.
+The map contains only expression barcodes with coordinates, at most 20,000; larger populations
+fail explicitly rather than being sampled. The complete table remains pageable. Reader limits
+are 2,000,000 rows, 4,000,000 annotation values, 64 MiB of text and the MEX line/source limits.
+
+The selected source's path, byte size and SHA-256 hash are saved. The combined identity hashes
+the MEX identity, annotation byte size and hash under `clonoloom-expression-cells/1`. Files are
+never discovered implicitly, so adding an unselected file leaves existing MEX-only identities
+unchanged. A changed selected annotation file fails saved reopening. Coordinates are imported
+evidence; no UMAP, normalization, clustering or cell-type assignment is performed.
+
+## AnnData and MuData (0.6.0)
+
+The Cells path field also accepts `.h5ad` and `.h5mu`. Open **AnnData / MuData selections**
+and supply the **Count matrix** (`X` or `layers/<name>`). MuData also requires an **Expression
+modality**; optionally select **Supplied embedding**, **AIRR key** and **AIRR modality**.
+Feature name/type columns are optional, explicit var-column choices. No count layer, modality,
+embedding or AIRR key is guessed. The format metadata must identify an AnnData or MuData
+object; a filename alone does not establish compatibility. The selected modality's obs and
+var are authoritative; global MuData annotations/maps and obsmap/varmap are not substituted.
+
+The schema follows [AnnData's on-disk format](https://anndata.readthedocs.io/en/stable/fileformat-prose.html)
+and [MuData's embedded AnnData contract](https://mudata.readthedocs.io/en/latest/io/output.html).
+Supported encodings/versions: anndata and MuData 0.1.0; dataframe, array, string-array and
+categorical 0.2.0; CSR/CSC, nullable-integer, nullable-boolean, nullable-string-array and
+awkward-array 0.1.0. Unknown selected encodings or versions fail.
+
+- **Counts:** obs × var dense arrays or CSR/CSC. Validate all dimensions, pointer/index lengths,
+  monotonicity, bounds and duplicate coordinates. Nonnegative integer datatypes and finite,
+  exactly integral float32/64 values are accepted up to 2^53−1, including totals. Negative,
+  fractional, NaN, infinite, boolean and unsafe counts fail. X can contain normalized data:
+  explicit selection is essential, and integral values alone cannot prove preprocessing history.
+  The UI says **counts**, not UMIs. Sparse zeros remain stored coordinates. Dense input is bounded
+  to 10 million supplied coordinates, including zeros; zero values are implicit internally.
+- **Obs/var:** declared `_index` and `column-order`, with unique nonempty indices; exact text,
+  numeric, boolean, categorical and nullable values. Category code −1, nullable mask true and
+  numeric NaN mean missing. Empty annotation strings also display as missing; literal `NA`,
+  `None` and `Missing annotation` remain categories. Signed/unsigned integer annotation text
+  remains exact, even beyond JavaScript's safe integer range. At most 64 obs/128 var columns (32 obs for the separate AIRR modality),
+  4 million annotation values and 64 MiB label text per frame. Features use var index as ID;
+  without selected name/type columns, names equal IDs and type is Gene Expression. Missing
+  values in a selected feature-name/type column fail. The full variable columns remain inspectable.
+- **Embedding:** one selected dense obsm array with exactly two coordinates per observation.
+  Both NaN means missing; otherwise both must be finite within ±10^12. The selected path and
+  source key are retained. Axis labels derive from `X_umap`/`X_tsne` when those source keys
+  identify the map; other keys retain their own name with dimensions 1/2. This does not verify
+  that a producer actually ran that method. Coordinates remain supplied evidence, equal-scale
+  and unmodified; the existing 20,000-point display limit applies. No maps are concatenated.
+- **AIRR:** [scirpy's cell-aligned `obsm` representation](https://scirpy.scverse.org/en/latest/data-structure.html),
+  decoded through the [Awkward form/length/buffer contract](https://awkward-array.org/doc/main/reference/generated/ak.to_buffers.html).
+  Select the key and MuData modality explicitly. Retain every selected scalar field and chain
+  in source order, with missing fields distinct from empty text. Keep missing whole-cell records
+  distinct from empty chain lists. **AIRR evidence** pages chains; **AIRR cells** pages all
+  source observations, including no-chain and missing records. Cross-modality coverage uses
+  exact barcodes in those selected modalities; it is observation coverage, not a count of
+  productive/paired receptors. No suffix stripping, row-position matching, imported clonotype
+  adoption or execution of Python objects occurs. The supported built-in forms are ListOffset,
+  Record, Numpy scalar, Indexed/IndexedOption, Unmasked and Empty; optional indices use −1 for
+  missing. Strings use uint8 character buffers. At most 16 form levels, 256 forms, 128 fields,
+  1 million chains, 4 million field values and 64 MiB field text. Other selected forms fail.
+
+The HDF5 subset above additionally supports inline attributes v1–3, scalar metadata,
+rank-two arrays and classic B-tree chunks, IEEE float32/64, signed codes, exact integer labels,
+and FALSE/TRUE boolean enums. Variable string heaps count toward metadata budgets. Arbitrary
+enums, shared datatypes, dense groups/attributes, newer chunk indices and external/virtual
+storage remain unsupported. Required unsupported data fails rather than becoming missing or
+zero. AnnData requires its own observations; an external annotation TSV cannot be attached too.
+Unselected layers, embeddings and analysis dictionaries are not read as evidence.
+
+The `anndata` source records the entire file's path, size and SHA-256. Hashes before and after
+parsing must agree. Identity uses `clonoloom-expression-anndata/1`, bytes and all selections;
+relocation preserves it, changing selection or source does not. Saved reopening verifies it.
+Existing MEX and 10x identities are unchanged. Python is only used for independent fixtures;
+the distributed application remains a standard-library Go binary.
+
+`testdata/make-anndata.py` writes and independently reads synthetic fixtures with pinned
+AnnData 0.12.6, MuData 0.3.2, Awkward 2.8.12, h5py 3.15.1, NumPy 2.4.2, SciPy 1.17.0 and
+pandas 2.3.3 and scirpy 0.25.1. It uses public APIs, with no donor data or third-party implementation source.
+`validation/reference/anndata.json` records source hashes and independent counts and AIRR
+values. The **Use AnnData example** button works offline; its `X_umap` coordinates are
+artificial illustration points, not a computed UMAP or a biological validation dataset.
+
+## Clonotype phenotype results (0.6.0)
+
+`GET /api/phenotypes/{id}` returns an `artifact` manifest and a `result` document with
+`format: "clonoloom-phenotypes"`, `version: 1`. It records expression and receptor source
+fingerprints, the receptor dataset, explicit sample/subject/timepoint, map parent (empty for
+imported coordinates), axes/source flag, methods and the `analysis` object. Analysis includes
+normalized definition and ID, QC rules and content-derived `filterId`, effective size population,
+inclusive breakpoints, annotation column, coverage, cells, clone coverage, phenotype groups and
+clone/phenotype associations. The manifest also records the project's filter version if supplied.
+
+Cells retain exact barcodes, supplied annotation values and coordinates (`null` when absent),
+assignment/chain states, candidate IDs and a unique clone where available. A cell's unavailable
+size is `null`, never zero. Clone coverage counts may legitimately be zero. Empty annotation
+strings mean missing values; literal names are never interpreted as missing. Group expansion
+shares are nullable; association rows include both integer denominators and their fractions.
+Source axes and positions are copied, never combined across maps or samples. Result identities
+pin the input, map checksum, dataset/sample, definition meaning, QC rules, metadata, options and
+method version. [Full population and denominator rules](PHENOTYPES.md).
+
+## Clonotype modularity results (0.6.0)
+
+`GET /api/modularity/{id}` returns `{artifact, result}`. The result has
+`format: "clonoloom-modularity"`, `version: 1`, its description, the complete `phenotypes`
+parent document, computed `map` ID, `expressionExcluded` count and `analysis`. The manifest pins
+both parent hashes, method/software versions and options. The phenotype parent retains raw
+source fingerprints, exact sample binding, normalized definition, QC and supplied metadata.
+The separate map artifact holds the weighted graph; export it too for independent recomputation.
+
+Analysis contains effective `{permutations, seed}`, graph/eligible cell and edge counts, tested
+family size, the BY harmonic factor, explicit rules, graph-row `cells`, sorted `clones` and one
+`nulls` entry per tested size. Cells retain barcode, unique clone or empty string, and parent
+assignment status. Each clone has `cells`, `observed`, `expected`, `score`, `p`, `adjusted`,
+inclusive `tail` count and optional untested `reason`. Singleton and whole-population clones
+have null expected/score/p/adjusted/tail fields; these are not zero-valued test results.
+
+Nulls contain size, `Exhaustive` or `Monte Carlo` method, actual draw count, analytic expectation
+and sorted `{edges, count}` histogram bins. Absent integer bins have zero frequency; observed
+values can exceed all sampled null values. Monte Carlo tails use an added observed configuration,
+not a fabricated extra histogram bin. Graph counts use induced, positive undirected edges once;
+weights and UMAP coordinates are not test inputs. Identity includes both parent IDs/hashes,
+normalized options and method version. [Full method and limits](MODULARITY.md).
+
+
+## AnnData export (0.6.0)
+
+Cells prepares a checksum-verified `.h5ad` from a saved phenotype result. `X` is raw integer
+CSR with every input cell and feature modality; excluded cells retain their counts and have
+NaN computed embeddings. Namespaced observation columns preserve exact sample-scoped receptor
+assignments, chain status and clone sizes. Supplied annotations use categorical missing code −1;
+UTF-8 values and original column-name mappings survive. Source and computed coordinates are
+separate. This is ClonoLoom's versioned receptor-link contract, not scirpy's raw AIRR-chain form.
+The file includes parent documents/manifests, source fingerprints, definitions, QC, sample
+metadata, method citations and software provenance in `uns/clonoloom`. Download includes its
+manifest and source NOTICE. See [ANNDATA-EXPORT.md](ANNDATA-EXPORT.md) for the complete schema,
+independent round-trip validation, reading example and explicit resource limits.

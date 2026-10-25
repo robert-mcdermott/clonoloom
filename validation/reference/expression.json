@@ -1,0 +1,45 @@
+{
+  "reference": "SciPy 1.17.0 scipy.io.mmread; Python set intersection for links",
+  "sources": {
+    "matrix.mtx": "c2892c5e12fcab958069de8a3572857f6994b31494045bef700b4eb8c6640b21",
+    "features.tsv": "6c4947c5a635d49e1760d3e19bc0236df15c923eace6f540652f87e44a7bcfbc",
+    "barcodes.tsv": "f9d143acc2f099e6c9f5cee220013f400ed215bf21721b0fe623c74f9f447ca3",
+    "receptors.tsv": "dc8520fa91d4be4af3c49a62dd206a9c64140957a8ccb456d5e94f8513712844"
+  },
+  "featureByCell": [
+    [
+      2,
+      0,
+      0,
+      0
+    ],
+    [
+      3,
+      4,
+      7,
+      0
+    ],
+    [
+      11,
+      0,
+      0,
+      0
+    ]
+  ],
+  "geneUMIs": [
+    5,
+    4,
+    7,
+    0
+  ],
+  "genes": [
+    2,
+    1,
+    1,
+    0
+  ],
+  "matched": 2,
+  "expressionOnly": 2,
+  "receptorOnly": 1,
+  "missingBarcodeRows": 1
+}

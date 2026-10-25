@@ -22,7 +22,7 @@ import { createProject, isEmptyProject, parseProject, rename, serializeProject }
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
-const VERSION = '0.5.0';
+const VERSION = '0.6.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -38,14 +38,7 @@ const MODES = [
   { id: 'tracking', label: 'Tracking', icon: 'threads', load: () => import('./ui/mode-tracking.js').then((m) => m.mountTracking) },
   { id: 'specificity', label: 'Specificity', icon: 'receptor', load: () => import('./ui/mode-specificity.js').then((m) => m.mountSpecificity) },
   { id: 'bcells', label: 'B cells', icon: 'lineage', load: () => import('./ui/mode-bcells.js').then((m) => m.mountBCells) },
-  {
-    id: 'cells', label: 'Cells', icon: 'cell',
-    load: async () => plannedMode({
-      title: 'Cells', icon: 'cell',
-      purpose: 'Single-cell receptors linked to gene expression: clonotypes on the cells\' map, phenotypes of expanded clonotypes, and whether receptor similarity goes with expression similarity.',
-      steps: ['Open V(D)J with its gene expression (AnnData or Cell Ranger).', 'Color the map by clonotype or size.', 'Compare expanded and other cells by type, subject by subject.'],
-    }),
-  },
+  { id: 'cells', label: 'Cells', icon: 'cell', load: () => import('./ui/mode-cells.js').then((m) => m.mountCells) },
   'sep',
   {
     id: 'cohort', label: 'Cohort', icon: 'samples',
@@ -149,7 +142,7 @@ async function start() {
     clear(rail);
     for (const mode of MODES) {
       if (mode === 'sep') {
-        rail.append(h('span.rail-sep', { role: 'separator' }));
+        rail.append(h('span.rail-sep', { role: 'presentation', 'aria-hidden': 'true' }));
         continue;
       }
       if (mode.hidden) continue;
@@ -186,6 +179,7 @@ async function start() {
     store.setUI({ focus }, ['focus']);
     // A result opens in its view.
     const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
+    if (['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export'].includes(result?.kind) && store.ui.mode !== 'cells') app.setMode('cells');
     if (['families', 'germlines', 'shm', 'lineages', 'isotypes'].includes(result?.kind) && store.ui.mode !== 'bcells') app.setMode('bcells');
     if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
     if (['tracking', 'expansion', 'classes', 'attribution'].includes(result?.kind) && store.ui.mode !== 'tracking') app.setMode('tracking');

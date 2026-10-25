@@ -912,6 +912,9 @@ path.plot-ribbon { fill-opacity: 0.3; stroke: none; }
 circle.plot-dim { fill: var(--text-3); opacity: 0.45; }
 .swatch.plot-dim { background: var(--text-3); opacity: 0.45; }
 .plot-ring { fill: none; stroke: var(--text); stroke-width: 1.6; }
+/* Missing map annotations remain neutral in every theme and categorical palette. */
+circle.cell-map-missing { fill: #a3a3a3; stroke: var(--text); stroke-width: 1; }
+.swatch.cell-map-missing { background: #a3a3a3; border: 1px solid var(--text); }
 .repertoire-spec { margin: 0 0 10px; } .mapping-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 14px; margin: 12px 0; } .mapping-field { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; } .mapping-field select.input, .mapping-field input.input { width: 120px; } .mapping-preview td, .mapping-preview th { white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; } .mapping-check { margin-top: 8px; }
 .repertoire-controls { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0 0 10px; } .repertoire-controls select.input { width: auto; max-width: 100%; } .repertoire-start { max-width: 760px; } .repertoire-start p { margin: 6px 0 10px; } .repertoire-table td .muted { margin-left: 4px; }
 
@@ -952,3 +955,8 @@ textarea.tracking-list { width: 100%; font-family: var(--mono); font-size: 12px;
 
 /* Keep epitope labels readable beside the horizontally scrollable sample columns. */
 .specificity-epitopes td:first-child { min-width: 14rem; }
+
+/* Clonotype size is a linear display scale; unavailable evidence retains neutral gray. */
+.cell-map-scale { background: linear-gradient(to right, hsl(205 65% 75%), hsl(205 65% 30%)); }
+.cell-map-brush { fill: var(--accent); fill-opacity: .12; stroke: var(--accent); stroke-width: 1.5; pointer-events: none; }
+.cell-overlay-plot { max-width: 850px; }

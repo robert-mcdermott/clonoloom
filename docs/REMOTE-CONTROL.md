@@ -186,3 +186,160 @@ Saved inspection uses pinned labels and requires neither parent nor source files
 
 `GET /api/export?what=result&artifact={id}` exports all tables, full JSON, manifest and notice,
 independent of page filters, under the normal source-access and data-use conditions.
+
+### Expression evidence (0.6.0)
+
+`inspect_expression` opens a MEX directory or 10x HDF5 file in Cells and saves its source fingerprints and
+binding. Give `path`, `dataset` (ID or name) and an explicit zero-based `sample` index. Give
+`dataset: ""` for expression-only inspection. The answer includes the expression ID and raw
+barcode coverage. To use the artificial example, first call
+`open_example {"example":"synthetic-expression","download":true}`, then
+`inspect_expression {"example":true,"sample":0}`. Counts are source coverage before QC or
+clonotyping. No expression analysis is inferred. A path and `example:true` are mutually exclusive.
+
+Slice 2 adds optional `cellsPath` for a plain/gzip cell annotation TSV (see `FORMATS.md`). The
+response's `annotations` reports matching rows, annotation-only rows, missing rows and mapped
+expression barcodes. The source is saved and checked on reopening. To try the paired study:
+`open_example {"example":"simulated-cell-states","download":true}`, then
+`inspect_expression {"studyExample":true,"sample":0}`. This explicitly selects the generated
+`expression/S01-1` matrix and its `cells.tsv`; choose the matching first receptor sample.
+`studyExample` and `example` cannot be combined with each other or explicit paths. Other study
+samples use explicit `path`, `cellsPath` and receptor `sample`. The Cells view offers Annotations
+and Imported map; its coordinates are supplied evidence, never a computed embedding.
+
+For the larger cloud study, call
+`open_example {"example":"simulated-cell-states-clouds","download":true}`, then
+`inspect_expression {"studyExample":true,"studyPreset":"cell-states-clouds","sample":0}`.
+`studyPreset` requires `studyExample` and accepts only `cell-states` or `cell-states-clouds`.
+Omitting it preserves the original grid example. Saved records reopen their explicit paths;
+changing the preferred visible example never silently redirects an existing saved input.
+
+Slice 3 accepts a 10x feature-barcode HDF5 file in `path`. To use the compressed artificial
+example, call `open_example {"example":"synthetic-expression-hdf5","download":true}`, then
+`inspect_expression {"hdf5Example":true,"sample":0}`. `hdf5Example`, `example` and `studyExample`
+are mutually exclusive and cannot accompany explicit source paths. Saved records always
+reopen their selected paths. The response's source role is `matrix-hdf5`; counts and receptor
+coverage have the same semantics as MEX. `POST /api/expression/open` accepts the same HDF5
+path/example selector and optional `expectedId`; a changed source returns 409 without replacing
+the previously verified input. Reading boundaries and unsupported encodings are in `FORMATS.md`.
+
+
+Slice 4 adds explicit AnnData/MuData selections to `inspect_expression` and
+`POST /api/expression/open`. For example:
+
+```json
+{
+  "path": "/data/study.h5mu",
+  "anndata": {
+    "modality": "gex",
+    "layer": "layers/counts",
+    "embedding": "X_umap",
+    "airrModality": "receptors",
+    "airrKey": "airr",
+    "featureName": "gene_name",
+    "featureType": "feature_type"
+  }
+}
+```
+
+Only `layer` is mandatory for AnnData; MuData also requires `modality`, and `airrModality`
+when `airrKey` is supplied. All choices are persisted. No omitted layer/modality/map/AIRR
+key is inferred. An external `cellsPath` cannot accompany AnnData/MuData. Source counts must
+be nonnegative integral values; selecting a normalized layer is not a count conversion.
+The summary's `anndata` records selections, indices, variable columns, embedding provenance
+and AIRR population counts. `unit` is `counts`; UMI semantics are not inferred.
+
+`POST /api/expression/page` adds `airr` and `airr-cells` views (same offset/limit rules).
+`airr` returns scalar source fields with null for missing, barcode and one-based chain number.
+`airr-cells` returns all AIRR observation barcodes, a nullable chain count and expression
+presence; null is a missing AIRR record, zero is a present empty chain list. Feature pages
+include `variableValues` aligned to the summary's `variableColumns`. Existing receptor
+bindings still require an explicit dataset and sample and are separate from AIRR observations.
+
+Generate `synthetic-anndata` through `open_example`, then use `{"anndataExample":true}`
+to inspect its selected count layer, annotations, supplied map and AIRR records. This selector
+is exclusive with paths, explicit `anndata` choices and other example selectors. `expectedId`
+verifies the full source and selection on reopen; failed opens retain saved evidence.
+
+
+### Computed expression maps
+
+After `inspect_expression`, `compute_expression_map` analyzes the active expression input:
+
+```json
+{"options":{"minGenes":1,"minCells":1,"features":500,"components":30,"neighbors":15,"target":10000,"seed":20261024,"epochs":500,"minDist":0.5}}
+```
+
+Options are optional; the server resolves and records every default. Neighbors excludes self.
+The HTTP equivalent is `POST /api/expression-map` with `{id, options, start}`; `id` is the open
+expression ID and `start:false` only checks for a saved/running result. It returns an artifact ID
+and either `ready:true` or a durable job ID. Standard Tasks endpoints handle cancellation and
+resumption. `GET /api/expression-map/{id}` verifies and returns the manifest and complete saved
+result, without requiring the source files. See [EXPRESSION.md](EXPRESSION.md) for methods,
+populations, numerical limits and the meaning of the exported graph.
+
+### Clonotype overlays and phenotypes (0.6.0)
+
+After `inspect_expression` opens an input with a receptor dataset/sample binding, call
+`compute_cell_phenotypes` with optional `map` (a computed expression-map artifact ID; empty for
+imported coordinates), `population` (`receptor` or `mapped`), `annotation` (a supplied column;
+empty for the whole expression sample), and `breakpoints` (default `[1,2,5]`). It uses the
+project's current clonotype definition, QC version and sample metadata, saves the immutable
+result, and returns its artifact ID, coverage and method description. `GET /api/phenotypes/{id}`
+exports the full result with provenance. The corresponding POST endpoint accepts explicit
+`id`, `map`, `dataset`, `sample`, `definition`, `filter`, `annotation` (sample metadata including
+its exact `name`), `options` and optional `start:false` for lookup. The `options.annotation`
+column is distinct from the request's sample `annotation` metadata. No samples are pooled.
+
+### Clonotype modularity (0.6.0)
+
+`compute_cell_phenotypes` also accepts `map:"latest"` to choose the latest saved computed map
+for the open expression input; it fails if none exists. The returned artifact still pins its
+actual map ID and checksum. The cloud-study guide uses this to prepare a modularity parent.
+
+`compute_clonotype_modularity` accepts `{phenotypes, options}`. `phenotypes` is a saved phenotype
+artifact made with a computed map; omission uses the displayed phenotype result. Imported-map
+parents fail explicitly. Options are `{permutations:9999, seed:20261024}` by default; exact null
+spaces of at most 10000 subsets are enumerated regardless of the Monte Carlo draw setting.
+
+The HTTP equivalent is `POST /api/modularity` with `{phenotypes, options, start}`. Parent IDs are
+explicit here. `start:false` looks up the deterministic result/running job without starting work.
+The response has `artifact` and `ready`, with `job` when submitted. Tasks handles cancellation
+and resumption. Both saved parents are verified; raw source files need not be reopened.
+`GET /api/modularity/{id}` verifies and returns the complete saved manifest/result without
+requiring parents or sources. See [MODULARITY.md](MODULARITY.md) for the tested population,
+exchangeability assumption, binary edges, exact/Monte Carlo tails, BY correction and work bounds.
+
+### Receptor / expression comparison (0.6.0)
+
+`compare_receptor_expression` accepts `{phenotypes, options}`. Omitted `phenotypes` uses the
+displayed phenotype result. It must use a computed map and paired primary αβ amino-acid
+clonotypes with V/J genes or alleles. Keep the parent receptor dataset open for a new request.
+
+Options: `neighbors` is an array of 1–8 distinct integers in 1–200 (default `[5,15]`);
+`cdr3Only: true` explicitly omits germline loops. Otherwise choose `organism: "human"` or
+`"mouse"` and install the V-loop reference in Reference data. No automatic fallback or species
+inference. The fictional cloud-study step uses `{neighbors:[2,4],cdr3Only:true}`.
+
+HTTP: `POST /api/conga` with `{phenotypes, options, start}`. `start:false` resolves identity/cache
+without submitting a job. The server pins both parent hashes, captures required receptor
+sequences from the original dataset snapshot and pins the loop reference when used. Jobs
+support cancellation/resumption without reopening raw expression/receptor files.
+`GET /api/conga/{id}` returns a checksum-verified standalone result. Full methods, population,
+conditional null, tie handling, Bonferroni family and bounds: [CONGA.md](CONGA.md).
+
+
+### AnnData export (0.6.0)
+
+`export_anndata` accepts `{phenotypes}`; omission uses the displayed phenotype result. It
+prepares and saves the export, returning its artifact ID and population. Download it in Cells.
+Imported or computed-map phenotypes are accepted. Keep original expression sources available
+and reopen the original receptor dataset before preparing a new export.
+
+HTTP: `POST /api/anndata-export` with `{phenotypes, start}`; `start:false` resolves the saved
+export/running job without submitting work. Jobs support cancellation/resumption, capture
+linked clone definitions and verify expression-source and parent hashes. `GET
+/api/anndata-export/{id}` returns the checked export record. `GET
+/api/anndata-export/{id}/download` returns a ZIP with `cells.h5ad`, export record, manifest and
+NOTICE; restricted source terms require `accept=1` after acknowledgment. These GET endpoints
+work without parent/source files. See [ANNDATA-EXPORT.md](ANNDATA-EXPORT.md) for the schema.

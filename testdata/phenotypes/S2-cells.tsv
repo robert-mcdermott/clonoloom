@@ -1,0 +1,17 @@
+barcode	state	map_x	map_y
+C0-0	A	0	0
+C0-1			
+C1-0	A	0	1
+C2-0	A	0	2
+C2-1			
+C3-0	A	0	3
+C3-1			
+C3-2	Missing	2	3
+C3-3	A		
+C4-0	A	0	4
+C4-1			
+C4-2	Missing	2	4
+C4-3	A		
+C4-4		4	4
+qc	A	1	1
+none		2	2

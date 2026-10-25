@@ -480,6 +480,63 @@ export function remoteActions(app) {
       return { message: `${done.page.result.assigned} assigned observations summarized.`, data: { artifact: done.artifact, assigned: done.page.result.assigned, resolvedClass: done.page.result.resolvedClass, resolvedGene: done.page.result.resolvedGene, families: done.page.familyCount, excluded: done.page.result.excluded, issues: done.page.result.issues, options: done.page.result.isotypeOptions } };
     },
 
+    async compare_receptor_expression(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellCongaView, 5000, 'Receptor / expression comparison');
+      const result = await view.run({ ...options, phenotypes: options.phenotypes ?? app.cellPhenotypesView?.state().artifact });
+      if (!result) throw new ActionError('The project changed during the analysis.');
+      return { message:'Receptor / expression comparison saved.', data:{artifact:result.artifact.id,tested:result.result.analysis.tested,eligible:result.result.analysis.eligible,clonotypes:result.result.analysis.nodes.length,description:result.result.description} };
+    },
+
+    async compute_clonotype_modularity(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellModularityView, 5000, 'Clonotype modularity');
+      const result = await view.run({ ...options, phenotypes: options.phenotypes ?? app.cellPhenotypesView?.state().artifact });
+      if (!result) throw new ActionError('The project changed during the analysis.');
+      return { message: 'Clonotype modularity saved.', data: { artifact: result.artifact.id, tested: result.result.analysis.tested, eligible: result.result.analysis.eligible, description: result.result.description } };
+    },
+
+    async export_anndata(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellAnnDataView, 5000, 'AnnData export');
+      const phenotypes = options.phenotypes ?? app.cellPhenotypesView?.state().artifact;
+      const result = await view.run({ phenotypes });
+      if (!result) throw new ActionError('The project changed during the export.');
+      return { message: 'AnnData export saved; download it from Cells.', data: { artifact: result.artifact.id, cells: result.result.cells, features: result.result.features, embeddings: result.result.embeddings } };
+    },
+
+    async compute_cell_phenotypes(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellPhenotypesView, 5000, 'Clonotype phenotypes');
+      if (options.map === 'latest') {
+        const input = app.cellsView?.state().record;
+        const map = store.project.artifacts.filter((r) => r.kind === 'expression-map' && r.expression === input?.id).at(-1);
+        if (!map) throw new ActionError('Compute an expression map for the open input first.');
+        options = { ...options, map: map.id };
+      }
+      const result = await view.run(options);
+      if (!result) throw new ActionError('The project or expression input changed during the analysis.');
+      return { message: 'Clonotype phenotypes saved.', data: { artifact: result.artifact.id, coverage: result.result.analysis.coverage, description: result.result.description } };
+    },
+
+    async compute_expression_map({ options = {} } = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellAnalysisView, 5000, 'Computed expression map');
+      const result = await view.run(options);
+      if (!result) throw new ActionError('The project or expression input changed during the analysis.');
+      return { message: 'Expression map saved.', data: { artifact: result.artifact.id, cells: result.result.analysis.cells.length, description: result.result.description } };
+    },
+
+    async inspect_expression({ path, cellsPath, anndata, anndataExample = false, example = false, hdf5Example = false, studyExample = false, studyPreset, dataset, sample } = {}) {
+      const d = dataset === '' ? null : datasetOf(dataset);
+      if (d && (!Number.isInteger(sample) || sample < 0 || sample >= d.samples.length)) throw new ActionError('Give an explicit zero-based receptor sample index.');
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellsView, 5000, 'Cells');
+      const page = await view.inspect({ path, cellsPath, anndata, anndataExample, example, hdf5Example, studyExample, studyPreset, dataset: d?.id ?? '', sample: d ? sample : null });
+      if (!page) throw new ActionError('The project changed while reading expression.');
+      return { message: 'Expression evidence opened.', data: { id: page.summary.id, links: page.links ?? null, annotations: page.summary.annotations ?? null } };
+    },
+
     async inspect_bcell_inputs({ dataset, select } = {}) {
       const d = datasetOf(dataset);
       app.focusItem({ kind: 'dataset', id: d.id });

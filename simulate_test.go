@@ -51,6 +51,26 @@ func TestTheSimulateCommand(t *testing.T) {
 	}
 }
 
+func TestCellStateSimulateCommand(t *testing.T) {
+	var out, errs bytes.Buffer
+	if code := runSimulate([]string{"--preset", "cell-states", "--seed", "99", "--print-params"}, &out, &errs); code != 0 {
+		t.Fatal(code, errs.String())
+	}
+	var study simulate.Study
+	if err := json.Unmarshal(out.Bytes(), &study); err != nil || study.Seed != 99 || study.CellStates == nil {
+		t.Fatal(study, err)
+	}
+	out.Reset()
+	dir := filepath.Join(t.TempDir(), "study")
+	if code := runSimulate([]string{"--preset", "cell-states", "--out", dir, "--quiet"}, &out, &errs); code != 0 || !strings.Contains(out.String(), "2 subjects, 4 samples, 960 rearrangements") {
+		t.Fatal(code, out.String(), errs.String())
+	}
+	items, problem := walkFolder(dir)
+	if problem != "" || len(items) != 5 {
+		t.Fatal(items, problem)
+	}
+}
+
 func TestBCellSimulateCommandAndFolder(t *testing.T) {
 	var out, errs bytes.Buffer
 	if code := runSimulate([]string{"--preset", "bcell-immunization", "--seed", "99", "--print-params"}, &out, &errs); code != 0 {

@@ -302,3 +302,109 @@ all counts and shares using source hashes and heavy-member digests. A separate s
 hash checks processor repeatability. These checks validate descriptive bookkeeping. The analysis
 does not reconstruct the truth's historical switches; incomplete sampling, unresolved calls
 and family-threshold uncertainty require separate interpretation in biological data.
+
+## Paired receptors and expression with known states (wave 6, slice 2)
+
+`clonoloom simulate --preset cell-states --out my-study` generates model
+`clonoloom-artificial-cell-states-v1`, seed 20261028. The default is two subjects, two samples
+per subject, 120 expression cells per sample and twelve clones per subject. `cellStates` in a
+parameter JSON accepts subjects 1–20, cellsPerSample 12–10000 and clones 3–100, with at most
+100000 expression cells over the study. It replaces, rather than combines with, the TRB,
+series and B-cell models. Output is built in a staging directory; a cancelled or failed run
+never installs a partial study. The destination must be absent or empty.
+
+All parameters and distributions are deliberately chosen test cases, not fitted biology:
+
+- Each subject's clones have two independently drawn artificial 42-nt junctions: TGT, twelve
+  uniformly drawn non-stop codons, TTT. Calls are fictional `TRAV1-SIM*01`, `TRAJ1-SIM*01`,
+  `TRBV1-SIM*01` and `TRBJ1-SIM*01`. AIRR rows have one TRA and one TRB per receptor barcode.
+  No real reference alleles, affinity, antigen specificity or lineage model is implied.
+- Sampled clones are uniform. In sample 1 a cell's state is its zero-based clone index modulo
+  three. In sample 2 that state advances modulo three with probability one half. The three
+  labels are `state A`, `state B`, `state C`; cells are observations, subjects remain the
+  biological replication boundary. These samples do not establish a treatment effect.
+- There are 24 artificial Gene Expression features, in three consecutive blocks of eight.
+  The state's block has mean 16, all others mean 2. Each count is an independent negative
+  binomial conditional on state, size 4, variance μ + μ²/4, using the existing gamma–Poisson
+  sampler in `internal/random`. There is no library-size, dropout or sequencing-error model.
+- Supplied layout coordinates are x = 10 × state + U and y = 3 × sample + V, with zero-based
+  state/sample and independent integer U,V uniform on −2…2. These are illustrative coordinates,
+  not PCA, UMAP, physical positions or inferred clusters. Overlapping points are not jittered.
+- Barcodes `CELL00001-1`, … deliberately repeat across samples. Cell 1 has expression but no
+  receptor; cell 2 has no annotation row; cell 3 has no coordinates; cell 4 has an empty state
+  label; the final expression cell has measured all-zero counts. One extra barcode has paired
+  receptors but no expression, and `ANNOTATION-ONLY` has annotation/coordinates but no expression
+  or receptor. These forced cases are bookkeeping tests, not estimated missingness mechanisms.
+
+RNG streams use the project's PCG-based `internal/random`: clone stream
+30000 + 100 × subject + clone; sample stream 40000 + 2 × subject + sample (all zero-based).
+Within each sample cell, draw clone, optional second-sample state shift, gene counts in feature
+order, then x/y jitter if coordinates are present. Draw the final expression cell's counts
+before forcing them to zero. The extra receptor cell draws a clone/state but no counts or
+coordinates. The same parameters and seed give the same bytes across supported processors.
+
+Each sample has a root AIRR TSV, Repertoire subject/sample metadata, and a separate
+`expression/<sample>/` MEX directory with `cells.tsv`. Opening the study as receptor data skips
+its expression and truth folders. Select the matrix and optional annotation file explicitly
+in Cells, with the matching receptor sample. The example's guided step selects `S01-1`:
+119 matched barcodes, one expression-only, one receptor-only, 119 matching annotation rows,
+one annotation-only row and 118 mapped expression barcodes.
+
+`truth/observations.tsv` records each biological observation's sample, barcode, clone, known
+state, evidence-presence flags and gene UMI total (empty for missing expression). The synthetic
+annotation-only row is an extra source record, not a biological observation.
+`truth/truth.json` records the effective study, model, means, dispersion and hashes of every
+other generated file, including the observation truth. Truth is not imported as observations.
+SciPy independently reads all four matrices; Python CSV/sets compare totals, states and coverage
+with this separate truth. To regenerate the reference after intentionally changing the model:
+
+```sh
+uv run validation/reference/cell_states.py /path/to/my-study
+```
+
+Sampler references: Marsaglia and Tsang (2000), *A Simple Method for Generating Gamma Variables*,
+[doi:10.1145/358407.358414](https://doi.org/10.1145/358407.358414); Hörmann (1993), *The transformed
+rejection method for generating Poisson random variables*,
+[doi:10.1016/0167-7152(93)90097-4](https://doi.org/10.1016/0167-7152(93)90097-4).
+The generative study design, numeric parameters and missingness rules are ClonoLoom choices.
+
+### Supplied Gaussian clouds
+
+`clonoloom simulate --preset cell-states-clouds --out my-cloud-study` is the larger visual
+example offered by Cells. It keeps the same seed and two-subject/two-sample structure, with
+360 expression cells per sample and ten uniform clones per subject. The first sample's state
+probabilities are therefore 0.4, 0.3, 0.3; the second sample's are 0.35, 0.35, 0.3. Realized
+counts vary by seeded draw. This is chosen artificial heterogeneity, not a fit to biological
+data. There are 1,440 expression cells and 2,880 paired receptor rows across the study.
+
+The optional `cellStates.layout: "gaussian"` selects model
+`clonoloom-artificial-cell-states-clouds-v1`. For each mapped cell, with zero-based state/sample,
+x = 8 × state + 1.5 Z₁ and y = 3 × sample + σ Z₂, where σ is [1.2, 2, 0.8] by state and
+Z₁,Z₂ are independent standard normal draws from the existing polar sampler. Layout stream
+50000 + 2 × subject + sample is independent of the biological draws. The legacy integer jitter
+draws are retained and discarded so changing only layout leaves receptor rows, counts, labels
+and missingness unchanged. Coordinates use 17 significant digits with products rounded before
+addition for processor agreement. No source coordinates are jittered by the display.
+
+Sampler reference: Marsaglia and Bray (1964), *A Convenient Method for Generating Normal
+Variables*, SIAM Review 6:260–264, [doi:10.1137/1006063](https://doi.org/10.1137/1006063).
+The layout centers, spreads, state probabilities and sample size are project choices. These
+clouds are supplied illustrative coordinates, not a UMAP/t-SNE computed from expression.
+
+The original `cell-states` preset remains unchanged, including generated source bytes. Empty
+layout preserves that behavior. Old saved inputs continue to reopen; the cloud study uses a
+separate example directory. Its first sample has 359 receptor matches, one expression-only and
+one receptor-only barcode, 359 matching annotation rows, one annotation-only row and 358 mapped
+cells. Run the same independent reference script on this study to generate
+`validation/reference/cell_states_clouds.json`; the original reference remains untouched.
+
+### Complete guided workflow (0.6.0)
+
+The cloud example's seven steps cover source inspection, computed expression PCA/UMAP,
+clonotype phenotypes, graph modularity, receptor/expression neighborhood comparison,
+AnnData export and cited methods. The [worked study](https://robert-mcdermott.github.io/clonoloom/docs/cell-study.html)
+states expected populations, missingness, null assumptions, exports and saved reopening.
+The release fixture retains all four samples and separate truth; analysis uses S01-1 only.
+Its 360 input cells yield 359 retained map cells, 358 uniquely assigned retained cells,
+ten clone profiles and 20 comparison tests at k = 2, 4. All 360 cells remain in the raw-count
+export. Those numbers check a fixed artificial workflow, not biological accuracy.

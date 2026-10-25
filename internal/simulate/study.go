@@ -52,11 +52,14 @@ type Study struct {
 	// Series: a study over time (series.go), SamplesPerSubject then unused.
 	Series *Series `json:"series,omitempty"`
 	// BCells selects the artificial paired B-cell model; the TRB parameters above are unused.
-	BCells *BCellStudy `json:"bcells,omitempty"`
+	BCells     *BCellStudy     `json:"bcells,omitempty"`
+	CellStates *CellStateStudy `json:"cellStates,omitempty"`
 }
 
 // Presets are the studies `clonoloom simulate` starts from.
 var Presets = map[string]Study{
+	"cell-states":        {Name: "cell-states", Title: "An artificial paired T-cell and expression study with known states", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 120, Clones: 12}},
+	"cell-states-clouds": {Name: "cell-states-clouds", Title: "An artificial paired T-cell and expression study with supplied Gaussian clouds", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 360, Clones: 10, Layout: "gaussian"}},
 	"bcell-immunization": {
 		Name: "bcell-immunization", Title: "An artificial B-cell immunization study with known families and ancestors",
 		Seed:   20261027,
@@ -194,6 +197,9 @@ var Presets = map[string]Study{
 
 // Check says what is wrong with a study's parameters.
 func (s Study) Check() error {
+	if s.CellStates != nil {
+		return s.CellStates.check(s)
+	}
 	if s.BCells != nil {
 		return s.BCells.check(s)
 	}
@@ -390,6 +396,9 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 	}
 	if s.BCells != nil {
 		return runBCells(ctx, s, dir, version, progress)
+	}
+	if s.CellStates != nil {
+		return runCellStates(ctx, s, dir, version, progress)
 	}
 	if err := os.MkdirAll(filepath.Join(dir, "truth"), 0o755); err != nil {
 		return Summary{}, err

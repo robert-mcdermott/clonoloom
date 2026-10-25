@@ -1,0 +1,72 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "mod-b248ef807fda810511c6f58d",
+  "kind": "modularity",
+  "name": "Clonotype modularity · S01-1",
+  "dataset": "d-8d1404a8ae498dab",
+  "state": "complete",
+  "created": "2026-10-25T06:34:59.720405Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "phenotypes",
+        "id": "pheno-1e9fe7e270d410a5a5ae2fef",
+        "sha256": "86e9944833fb02ee264baef94ba80fb6303316d618f7a79e8c858eee5c4abb35"
+      },
+      {
+        "kind": "expression-map",
+        "id": "emap-0fe86973e058204c90fc7cdd",
+        "sha256": "137b1ed9de900b3cd2a283206589c44c587cb3619e313edf0801f43be0f1f694"
+      }
+    ],
+    "job": {
+      "id": "jmvngdqo6-4",
+      "kind": "modularity",
+      "spec": {
+        "phenotypes": "pheno-1e9fe7e270d410a5a5ae2fef",
+        "options": {
+          "permutations": 9999,
+          "seed": 20261024
+        },
+        "phenotypesSha256": "86e9944833fb02ee264baef94ba80fb6303316d618f7a79e8c858eee5c4abb35",
+        "map": "emap-0fe86973e058204c90fc7cdd",
+        "mapSha256": "137b1ed9de900b3cd2a283206589c44c587cb3619e313edf0801f43be0f1f694",
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Size-conditioned expression-graph connectivity",
+      "version": "1",
+      "citation": "scirpy.tl.clonotype_modularity documented connectivity score; Sturm et al. 2020, doi:10.1093/bioinformatics/btaa611. Phipson \u0026 Smyth 2010, doi:10.2202/1544-6115.1585; Hemerik \u0026 Goeman 2018, doi:10.1007/s11749-017-0571-1 (random permutation tests). Benjamini \u0026 Yekutieli 2001, doi:10.1214/aos/1013699998 (FDR under dependence). Population, binary graph and analytic expectation are ClonoLoom policies."
+    },
+    "parameters": {
+      "phenotypes": "pheno-1e9fe7e270d410a5a5ae2fef",
+      "options": {
+        "permutations": 9999,
+        "seed": 20261024
+      }
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.6.0",
+        "commit": "6c4f06e157d1fed84ca60f0f796f980257e876cd-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "modularity.json",
+      "role": "modularity",
+      "size": 133646,
+      "sha256": "05dd7f35ff6acbeb11840444f8480617a36fce7584b82a7edba7235d80e2e765"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "edges": 3963,
+    "eligible": 358,
+    "tested": 10
+  }
+}

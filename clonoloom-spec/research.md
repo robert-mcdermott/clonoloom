@@ -1438,3 +1438,398 @@ Public-data coverage checks also resolve the Ramos observation and all 56/437 as
 observations in the two pinned 10x PBMC fixtures. These C calls remain usable even where
 V/J allele evidence is insufficient for germline reconstruction. This tests evidence
 availability, not known biological class-switching truth.
+
+### 5.21 MEX expression evidence and exact barcode linkage (wave 6, slice 1)
+
+**Formats.** [10x Genomics, Cell Ranger Feature Barcode Matrices (MEX)](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/cr-outputs-mex-matrices)
+defines the feature/barcode companions and their orientation.
+[Boisvert et al., Matrix Market Exchange Formats, NISTIR 5935 (1996)](https://math.nist.gov/MatrixMarket/formats.html)
+defines coordinate matrices (doi:10.6028/NIST.IR.5935). Read feature × barcode integer/general counts, preserving feature
+IDs, names, modalities, barcode suffixes and explicit zero coordinates. Legacy genes.tsv has
+two columns and denotes Gene Expression; modern features.tsv has three. No expression value is
+computed in JavaScript. No normalization, graph, phenotype or biological inference is introduced.
+
+**ClonoLoom choices.** Keep a cell-compressed sparse matrix separate from receptor rows. Reject
+ambiguous companions, duplicate IDs/barcodes/coordinates, unsupported encodings and noninteger
+or negative counts. Do not sum repeated coordinates or choose one gene with a repeated name.
+Keep all modalities; gene totals and detected genes include only Gene Expression. With no gene
+features these measurements are null in the API. Retain measured zeros separately from missing
+barcodes. Bound counts and gene totals by 2^53−1 so JSON consumers preserve integers. Reader
+limits are documented in FORMATS.md. Stream and bound actual input before allocation; headers
+never determine a large allocation alone. Source bytes, role and reader version determine ID.
+
+Link against an explicitly selected receptor dataset/sample using exact barcode strings. Count
+distinct barcodes, not contigs; report chain rows, missing-barcode rows and both unmatched
+populations. This is before QC: nonproductive or low-confidence rows still contribute to raw
+coverage. No stripping of GEM-well suffixes, case folding, cross-sample fallback or assumption
+that a barcode is a productive singlet. These are data-handling policies, not a published test.
+
+**Sibling review.** SituCraft's cell_feature_matrix MEX reader uses a sparse representation and
+its AnnData reader supports Zarr. Its HDF5 code writes files; the roadmap's presumed existing
+HDF5 reader does not exist. ClonoLoom's streaming MEX parser is its own implementation. The
+HDF5/AnnData/MuData slices will use primary format documentation and independently produced
+fixtures, preserving the standard-library-only runtime.
+
+**Validation.** The artificial three-feature/four-barcode example has duplicated gene names,
+an antibody feature, unordered coordinates, an explicit zero and a zero-count barcode. SciPy
+1.17.0 `scipy.io.mmread` independently reads the dense 3×4 reference and gene totals (5, 4, 7, 0).
+Python sets tally two matches, two expression-only and one receptor-only barcode; one receptor
+row lacks a barcode. Files and values are pinned in `validation/reference/expression.json`,
+with the script beside it. Hand cases cover sample collisions, repeated chains, malformed
+counts, dimensions, duplicates, gzip corruption, cancellation and limits. Fuzzing probes the
+reader. This validates format and bookkeeping, not biological cell calling or phenotypes.
+
+### 5.22 Known cell states, annotations and imported maps (wave 6, slice 2)
+
+**Purpose.** A controlled paired TRA/TRB and count-matrix study supplies known clone/state
+relationships and explicit missing evidence for the rest of wave 6. Model
+`clonoloom-artificial-cell-states-v1` uses three artificial states, 24 genes, uniform clones,
+state-dependent negative-binomial counts and supplied illustrative coordinates. All means,
+dispersion, sample effects and missingness cases are project choices; this is not an inferred
+model of single-cell biology. The complete distributions, seeds, stream order and output
+contract are in `docs/SIMULATION.md`. Fictional junctions and SIM calls use no external alleles.
+
+**Methods.** Reuse the project's deterministic gamma–Poisson random sampler. Gamma generation:
+Marsaglia and Tsang (2000), *ACM TOMS* 26:363–372,
+[doi:10.1145/358407.358414](https://doi.org/10.1145/358407.358414). Poisson generation: Hörmann
+(1993), *Statistics & Probability Letters* 15:43–48,
+[doi:10.1016/0167-7152(93)90097-4](https://doi.org/10.1016/0167-7152(93)90097-4).
+Count storage follows the 10x/NIST MEX references in §5.21. No UMAP or clustering algorithm is
+implemented in this slice, and supplied state labels do not infer phenotype or specificity.
+SituCraft's own simulator provides a useful separation of observations and truth; this study's
+model and implementation are ClonoLoom's, reusing its existing sampler and simulation conventions.
+
+**Annotation contract.** Explicitly opt into one plain/gzip TSV: `barcode`, arbitrary text
+columns (at most 32), optional paired `map_x`/`map_y`. Preserve source row/header order and empty
+values, reject duplicates and malformed coordinates, join exact matrix barcodes, retain
+annotation-only rows. Go computes the complete coverage and mapped population; JS displays
+coordinates at equal axis scale. The 20,000-point map limit rejects larger populations rather
+than silently sampling. Table limits are 2,000,000 rows, 4,000,000 values and 64 MiB of text.
+These are format/resource policies, not published statistical methods.
+
+**Provenance.** An optional source extends the original MEX identity with its actual-byte hash
+and size under a separately versioned contract. Old MEX-only IDs remain unchanged; nearby files
+are never discovered implicitly. Projects pin paths and fingerprints, including annotations;
+changed sources fail reopening. Source coverage and supplied maps remain evidence inspection,
+not inferred-result artifacts. Zero counts, missing expression, missing annotation rows, missing
+labels and missing coordinates remain distinct. Barcodes repeating in separate samples never
+establish cross-sample cell identity; cells are not independent biological replicates.
+
+**Independent checks.** `validation/reference/cell_states.py` uses SciPy 1.17.0 `mmread`, CSV
+and sets, without calling ClonoLoom expression/linking code. It verifies all four generated
+matrices against separate observation truth and pins source hashes, dense-value hashes, gene
+totals/detection counts and linkage/annotation coverage. Go reconstructs the study and checks
+those numbers on both processors. Unit tests cover byte reproducibility, changed seeds,
+cancellation/staging, malformed input, optional-source identity, drift and missing values;
+browser scenes exercise explicit inputs, source-value tables, imported maps and saved reopening.
+
+### 5.23 Cells map rendering and exploration acceptance
+
+**Observed rendering issue.** The grid fixture placed multiple observations at exactly the same
+coordinates. The missing-label cell had a separate color, but a later state-colored point
+covered it. Missing values now use an outlined neutral gray drawn after categorized points;
+source indices remain unchanged for selection. No coordinate jitter or deduplication is added.
+An empty label is distinct from a literal `Missing annotation` label, including beyond the
+six-category palette limit. Legends retain missing values without taking a category color.
+Both source axes are explicit and retain equal scale. These are display policies, not inference.
+
+**A separate illustrative fixture.** The `cell-states-clouds` preset increases each sample to
+360 expression cells with ten clones per subject and optional `layout: "gaussian"`. Its new
+model ID and example directory preserve the original grid fixture and source identities.
+Continuous normal coordinates use a separate PCG stream and the existing polar normal sampler:
+Marsaglia and Bray (1964), SIAM Review 6:260–264,
+[doi:10.1137/1006063](https://doi.org/10.1137/1006063). Centers, spreads and sample sizes are chosen
+illustration parameters; this is not a biological fit or computed UMAP. `docs/SIMULATION.md`
+records every parameter. Tests require unchanged biological observations when only layout
+changes, reproducible source hashes on both processors, and independent SciPy/truth agreement.
+
+**Planned cell-size displays.** Size categories require explicit breakpoints and population.
+The [scirpy clonal_expansion documentation](https://scirpy.scverse.org/en/latest/generated/scirpy.tl.clonal_expansion.html)
+defines configurable inclusive breakpoints and optional grouping; its default (1,2) differs
+from the proposed (1,2,5). The latter yields 1, 2, 3–5 and >5 and is a ClonoLoom display choice,
+not a universal expansion threshold or significance test. Slice 6 must record cell counting,
+sample scope, selected definition/QC, mapped versus all-eligible population and unassigned cells.
+
+**Planned interaction and density.** The
+[documented linked selection workflow](https://www.10xgenomics.com/support/software/loupe-vdj-browser/latest/tutorials/lvb-integrated-analysis-loupe-browser)
+illustrates clonotype-to-map highlighting and phenotype-based exploration. Slice 6 acceptance
+now includes linked selection in both directions with a keyboard-accessible table alternative,
+exact sample/barcode identities and explicit missingness. Optional density overlays require
+an independently specified estimator, bandwidth, normalization and support criteria first;
+[clonalOverlay documentation](https://bioconductor.posit.co/packages/3.22/bioc/manuals/scRepertoire/man/scRepertoire.pdf)
+provides context for frequency-filtered contours, not an implementation to copy. Density on an
+embedding is descriptive and does not imply enrichment or antigen specificity. Only public
+method/interface documentation was consulted for these acceptance refinements.
+
+### 5.24 Bounded 10x HDF5 expression input
+
+**Format sources.** The [10x feature-barcode HDF5 schema](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-h5-matrices)
+defines the feature-by-cell CSC arrays and feature/barcode datasets. The reader is implemented
+from The HDF Group's [File Format Specification 3.0](https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t3.html)
+and [earlier 1.1 structures](https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t11.html).
+SituCraft's Apache-2.0 HDF5 writer supplies the lookup3 metadata-checksum helper and a useful
+compact-object reference; it supplies no reader. No other implementation's source was copied
+or consulted. Go standard-library zlib performs deflate decoding; no native/runtime dependency
+is added. h5py is used only through its public API to generate independent validation data.
+
+**Evidence policy.** This is format decoding, not a statistical method. Require all eight
+10x vectors; retain source feature names/types, barcodes, explicit zeros and source order.
+Normalize only the internal ordering of CSC indices, moving counts with them. Reject duplicate
+coordinates, malformed pointers, negative/floating counts and integer/UMI overflow. Missing
+storage chunks are not measured zeros. Ignore unrelated annotations/attributes rather than
+guessing a count layer, barcode mapping, genome, raw/filtered input or cell type. Receptor
+linkage and optional annotation TSVs reuse the exact sample-scoped rules of slices 1–2.
+
+**Bounded format subset.** `docs/FORMATS.md` records accepted structures and limits. It covers
+the classic structures emitted by ordinary h5py files and compact HDF5 1.8-era headers/groups,
+including compressed B-tree chunks. Unsupported variable strings, dense groups, newer chunk
+indices, shared datatypes, external/virtual storage and required soft/external links fail
+explicitly. Slice 4 must extend this boundary with independent AnnData/MuData fixtures, not
+claim compatibility from a filename extension. File/array/metadata/read/traversal budgets,
+checked offsets and context cancellation bound malformed input. Fletcher32 requires end-around
+carry: all-one words retain 0xffff, unlike a naive modulo-65535 calculation. Independent raw
+chunk checks include all-zero/all-one words and odd byte lengths.
+
+**Provenance and validation.** Hash the selected file before and after parsing and record its
+whole-file SHA-256, size and path in a separate `clonoloom-expression-hdf5/1` identity domain.
+MEX-only and optional-annotation identities are unchanged. Equal observations in different
+encodings do not establish equal source identity; relocation of identical bytes does.
+`testdata/make-expression-hdf5.py` pins h5py 3.15.1, NumPy 2.4.2 and SciPy 1.17.0. It generates
+17 accepted fixtures, including internal chunk-tree nodes, compact arrays, continuations,
+filter masks, differing byte orders and empty counts, plus 18 invalid/unsupported files.
+The saved reference independently reconstructs every value and gene total, with labels,
+stored-entry counts and source hashes. Mutation tests exercise corrupt checksums, addresses,
+cycles and budgets; fuzzing checks malformed files. The browser exercises visible opening,
+explicit binding, unsupported input and saved reopening in both themes. The format example
+is artificial bookkeeping evidence, not an expression model or biological validation.
+
+An additional check used the public, CC BY 4.0
+[10x 1k PBMC v3 dataset](https://www.10xgenomics.com/datasets/1-k-pbm-cs-from-a-healthy-donor-v-3-chemistry-3-standard-3-0-0)
+(Cell Ranger 3.0.0): all 2,498,225 stored entries, 33,538 feature records, 1,222 barcodes and
+gene totals matched h5py/SciPy exactly. `expression_hdf5_public.py` and the optional Go test
+make this repeatable with explicitly selected local paths. Neither the donor data nor its
+derived arrays are bundled. The check supports decoding compatibility, not biological inference.
+
+
+### 5.25 AnnData/MuData count and AIRR evidence
+
+**Primary format sources.** [AnnData on-disk encodings](https://anndata.readthedocs.io/en/stable/fileformat-prose.html)
+define dense/sparse matrices, data frames, categoricals, nullable arrays and Awkward storage.
+[MuData's output contract](https://mudata.readthedocs.io/en/latest/io/output.html) stores each
+modality as AnnData under `/mod`. [Scirpy's data structure](https://scirpy.scverse.org/en/latest/data-structure.html)
+places unfiltered per-cell AIRR chain lists in `obsm`; the
+[Awkward `ak.to_buffers` contract](https://awkward-array.org/doc/main/reference/generated/ak.to_buffers.html)
+specifies forms, lengths and named numeric buffers. HDF5 attributes, variable strings/global
+heaps, numeric datatypes and multidimensional storage follow the HDF Group's specification
+cited in 5.24. SituCraft's Apache-2.0 AnnData/Zarr data-frame reader was consulted for its
+missing-value and source-column conventions. No external reader implementation was copied
+or consulted; validation packages are used solely through documented public APIs.
+
+**ClonoLoom policies.** Count-layer/modality/map/AIRR selections are explicit and identity-bearing.
+Do not assume X contains raw counts or infer a UMI unit. Accept nonnegative, finite integral
+numeric values only, validate duplicate coordinates and dimensions, preserve sparse explicit
+zeros, and bound dense input before converting to the existing sparse representation. Retain
+obs/var annotations and missingness, with explicit choices for feature-name/type columns.
+The selected modality's observation index establishes row alignment; cross-modality joins use
+exact barcode strings, never global MuData row positions or stripped suffixes. Empty expression
+and zero-count cells are distinct from absent barcodes.
+
+**Supplied embedding and repertoire evidence.** Read one selected two-column obsm matrix.
+Record its path, derive axis labels from the source key and retain equal scaling; a producer's
+key identifies provenance but does not prove that a particular embedding method ran. Both-NaN
+coordinates are missing; partial/nonfinite pairs fail. No coordinates are recomputed or merged.
+Decode only built-in Awkward layouts and scalar AIRR fields. Preserve nullable fields, whole
+missing cell records, empty chain lists, all chains and their source order. Descriptive form
+parameters never register executable Python behavior. Imported chain indices and clonotypes
+remain outside this input contract; future analyses must compute their own declared results.
+
+**Validation.** Pinned AnnData, MuData, Awkward, h5py, NumPy, SciPy, pandas and scirpy write/read artificial
+fixtures independently. References include dense/CSR/CSC counts, byte orders, compressed edge
+chunks, nullable/categorical annotations, signed integer text, map values, reordered modality
+populations, missing whole AIRR cells and scalar field values. Malformed selections, schema,
+counts, pointers, codes, masks, coordinates and Awkward forms fail explicitly. Source drift,
+selection identity, relocation, cancellation, fuzzing and project reopening are checked. The
+small bundled example tests storage semantics; it is not a model of biological expression.
+
+
+### 5.26 Computed expression maps (wave 6, slice 5)
+
+**Primary methods.** Total-count normalization followed by natural log1p follows the documented
+[Scanpy normalization contract](https://scanpy.readthedocs.io/en/stable/generated/scanpy.pp.normalize_total.html)
+and Wolf, Angerer and Theis, *Genome Biology* 2018;19:15,
+[doi:10.1186/s13059-017-1382-0](https://doi.org/10.1186/s13059-017-1382-0).
+PCA follows Jolliffe and Cadima, *Phil Trans R Soc A* 2016;374:20150202,
+[doi:10.1098/rsta.2015.0202](https://doi.org/10.1098/rsta.2015.0202), with Householder reduction
+and implicit-shift QL (Wilkinson and Reinsch, *Handbook for Automatic Computation II*, 1971;
+Golub and Van Loan, *Matrix Computations*, 4th ed., §8.3). UMAP follows McInnes, Healy and
+Melville, [arXiv:1802.03426](https://arxiv.org/abs/1802.03426) and its
+[documented graph/curve API](https://umap-learn.readthedocs.io/en/latest/api.html).
+
+**Policy and provenance.** Use only Gene Expression features. Normalize against each retained
+cell's complete gene total, then select positive-variance genes detected in the required number
+of retained cells by transformed sample variance; ties use feature ID. Center without scaling,
+clipping or whitening. This deliberate simple ranking is not a claim to implement Seurat/Scanpy
+HVG selection. Preserve gene means, variances, detections, loadings, eigenvalues and scores.
+Exact kNN uses Euclidean PCA distance, excludes self and resolves ties in source barcode order.
+The UMAP graph uses local connectivity 1, bandwidth 1 and fuzzy union a+b−ab. The table's k other
+neighbors correspond to UMAP's k+1 including self; coincident cells remain separate. The map
+always starts from the first two PCs, with recorded initialization noise and a serial seeded
+optimizer. Plot axes have equal scaling. Disconnected components are reported; their apparent
+separation is not an effect size. This does not cluster cells or infer antigen specificity.
+
+`internal/linalg`, `internal/graph` and `internal/embed` adapt numerical code from SituCraft 0.9.0
+under Apache-2.0, with ClonoLoom's deterministic random/math packages and an exact bounded
+pipeline. Published software is used only as an independent executable reference. Defaults,
+limits, rank threshold, bisection and optimizer constants, fitted a/b, effective neighbor and
+component counts, exclusion reasons and original source fingerprints accompany immutable
+artifacts. Supplied annotations and maps never enter the fitting calculations. Receptor data
+remain a separate explicitly sample-bound source for subsequent overlays.
+
+**Independent validation.** The pinned reference script uses NumPy 2.3.5, SciPy 1.17.0,
+scikit-learn 1.8.0, umap-learn 0.5.11 and Numba 0.63.1. It executes public APIs without reading
+or copying their implementations. Numba JIT is disabled: compiled smooth-kNN fitting produced
+infinite bandwidths on some fixture rows in this environment; the non-JIT reference explicitly
+asserts finite bandwidths. Compare means/variances to 1e-12, loadings/scores/distances to 1e-10,
+eigenvalues to 1e-11, fuzzy weights to 1e-5 (reference uses float32), and fitted curve parameters
+to 2e-5. Neighbor indices and selected feature IDs agree exactly in both cases. Layouts use
+different random streams and are assessed by rank trustworthiness (Venna and Kaski, ICANN 2001,
+pp. 485–491) and simulated-state neighbor purity, not coordinate equality. Worker and processor
+identity use a separately pinned digest of the complete deterministic result.
+
+
+The two synthetic reference cases have neighbor purity 1.0 for the known states. ClonoLoom map
+trustworthiness is 0.977976 and 0.964181, beside the reference's 0.977363 and 0.961835. These
+numbers assess this fixture, not general biological accuracy. An optional run on the public
+10x 1k PBMC v3 matrix cited in §5.24 retains all 1222 cells and uses 500 features, 30 PCs and
+13678 undirected graph edges in 1.74 s on the development machine. Set
+`CLONOLOOM_EXPRESSION_MAP_HDF5` to a local matrix to repeat that bounded pipeline check; donor
+counts and coordinates are not committed.
+
+### 5.27 Clonotype modularity (wave 6, slice 7)
+
+The [scirpy API](https://scirpy.scverse.org/en/latest/generated/scirpy.tl.clonotype_modularity.html)
+defines an edge-count log2 ratio with pseudocount one and size-matched subgraphs. This is distinct
+from Newman Q and from CoNGA's comparison of receptor and expression neighborhoods. ClonoLoom
+uses an induced binary graph of uniquely assigned cells in one sample, retaining isolated
+vertices. Its analytic expectation M s(s−1)/(N(N−1)) follows from each edge's probability of
+having both endpoints in a uniformly chosen size-s subset. This policy removes simulation noise
+from the score and is not a claim to replicate scirpy's random mean or fitted tail.
+
+Read [Phipson & Smyth 2010](https://doi.org/10.2202/1544-6115.1585) and
+[Hemerik & Goeman 2018](https://doi.org/10.1007/s11749-017-0571-1) for nonzero random-permutation
+p-values and invariance assumptions. Enumerate all subsets through 10000, otherwise draw uniform
+subsets independently with replacement between draws. Use inclusive upper tails, exact tail/B
+or Monte Carlo (tail+1)/(B+1); no negative-binomial tail extrapolation. Record each occupied edge
+count and its frequency. Seeded PCG size-keyed streams preserve deterministic results.
+
+[Benjamini & Yekutieli 2001](https://doi.org/10.1214/aos/1013699998) supplies the harmonic-factor
+step-up adjustment under arbitrary dependence. Apply it to all clones with 2 <= s < N, including
+zero-edge clones. Shared expression graphs/nulls do not establish BH independence/PRDS. BY is
+conditional on valid individual tests; it cannot repair nonexchangeability or repeated analysis
+selection. This null does not stratify cell type, batch, receptor family, component or degree.
+These may explain connectivity and preclude stronger biological claims. Cells are not independent
+subjects; no specificity, causal or subject-level inference is supplied.
+
+The plot shows discrete null frequencies, a zero baseline and observed/analytic-expected markers;
+it is not an effect confidence interval or a density on UMAP. Complete methods and distinctions
+are in [MODULARITY.md](../docs/MODULARITY.md). Independent Python itertools enumerates subsets and
+set-based edges; SciPy 1.17.0's public BY API supplies adjusted p-values. Exact scores, means,
+tails and histograms agree; a separate exhaustive 15504-subset case checks Monte Carlo sampling.
+No third-party implementation source was read or copied for this method.
+
+### 5.28 Receptor / expression neighborhoods (wave 6, slice 8)
+
+[Schattgen et al. 2022](https://doi.org/10.1038/s41587-021-00989-2) motivates clonotype-level
+receptor/expression graph comparison. ClonoLoom uses a declared KNN-only adaptation; the full
+population, mean-PC, shared-CDR3, inclusive-tie and all-scale correction policies are in
+[CONGA.md](../docs/CONGA.md). A cell-level receptor graph would let expanded clones generate
+trivial matches. One vertex per clone avoids that multiplicity, while mean PCs may hide
+heterogeneous states within a clone. Inspect the parent overlay as well.
+
+The existing distance implementation follows [Dash et al.](https://doi.org/10.1038/nature22383)
+and [Mayer-Blackwell et al.](https://doi.org/10.7554/eLife.68605), with the explicit TCRdist3
+alignment conventions documented in §5.9. Full mode pins the germline-loop reference and
+organism; the CDR3-only approximation is selected explicitly, never a missing-reference fallback.
+Identical alpha or beta CDR3s are excluded from both candidate pools regardless of V/J. This
+conservative exclusion and inclusion of every cutoff tie are ClonoLoom policies. Arbitrary
+index tie breaking could manufacture common neighborhoods when both distances are tied.
+
+Conditional on candidate count M and actual degrees A and B, uniform-independent neighbor
+labels give hypergeometric overlap with expectation A B / M. Use the inclusive upper tail,
+including observed zero overlap. Fully tied/full candidate sets yield p = 1. A stable log-weight
+recurrence retains extreme tails; underflowing ordinary probabilities are null with finite
+natural-log values, not reported as zero. SciPy's public hypergeom API supplies independent
+reference probabilities; exact subset enumeration independently checks the small cases.
+
+[Bonferroni's simultaneous-comparison principle, Dunn 1961](https://doi.org/10.1080/01621459.1961.10482090)
+provides a dependence-robust family-wise bound: adjust across all testable clone-by-k rows,
+including redundant tied graphs, rather than select the most favorable scale. Valid marginal
+p-values still require the stated conditional null. Biological cell-type/batch/chain-group
+structure can violate exchangeability. Saved PCs may also include receptor genes, directly
+coupling expression to the receptor measurements; no feature removal is added here. This is exploratory association, not independent donor
+replication or evidence of specificity; separately tried analyses are not in this family.
+
+The figure compares observed counts with expected-count markers on a common zero-based linear
+axis; the complete table and neighbor lists make it inspectable. No confidence interval,
+biological density or significance map is implied. Independent aligned, permuted and tied
+fixtures test graph identities, actual degrees, overlap, expectation, tails and adjustment;
+existing reference validation covers the full receptor distance engine. No third-party
+implementation source was read or copied for this slice.
+
+
+### 5.29 AnnData export with receptor links (wave 6, slice 9)
+
+The [AnnData on-disk specification](https://anndata.readthedocs.io/en/stable/fileformat-prose.html)
+is the primary storage contract: obs/var dataframes, cell × feature CSR, cell-aligned obsm,
+categorical missing codes and UTF-8 variable-length strings. The
+[HDF Group File Format Specification 3.0](https://support.hdfgroup.org/documentation/hdf5/latest/_f_m_t3.html)
+defines atomic datatypes, object headers, contiguous datasets and global heaps. SituCraft's
+Apache-2.0 compact HDF5 writer provides the storage foundation; new scalar/array types and
+AnnData encoding attributes follow those specifications. Its AnnData/Zarr writer was consulted
+for naming and encoding patterns, not used as an HDF5 reader.
+
+The biological interpretation is inherited from the saved expression and phenotype methods,
+not recomputed by export. ClonoLoom policies: preserve every expression barcode, all selected
+feature modalities, exact integer counts and source order; require exact receptor sample/barcode
+binding and unchanged source identities. Keep supplied and computed coordinates separate;
+excluded cells retain raw counts and missing computed positions/scores. Missing assignments
+and annotations cannot become zero sizes, invented coordinates or ordinary categories.
+Ambiguity candidates and chain definitions remain explicit; no raw contig schema is fabricated.
+No sample pooling, receptor-only zero-count cells, normalization or inferred cell types.
+
+Complete saved documents and parent manifests carry selected features, PCA/graph/UMAP parameters,
+null-model citations, QC/definition versions, sample metadata and source hashes. Their coordinate
+population must be aligned by barcode, not row position. All embeddings are exploratory;
+export does not validate UMAP distances as biological distances or create independent subjects.
+The schema is explicitly a ClonoLoom receptor-link contract, not scirpy's obsm AIRR format.
+
+Independent public AnnData/h5py reader and rewrite validation checks a reordered synthetic
+fixture with a zero-count cell, excluded map row, missing/literal annotations, Unicode and counts
+beyond float32 precision. No incompatible-licensed implementation source was inspected or copied.
+See [AnnData export schema and validation](../docs/ANNDATA-EXPORT.md).
+
+### Wave 6 release review (0.6.0)
+
+The release walkthrough keeps three distinct geometries visible: supplied illustrative
+coordinates, computed UMAP coordinates and the PCA neighborhoods used for graph statistics.
+The source review reconfirmed the [UMAP paper](https://arxiv.org/abs/1802.03426),
+[scirpy's documented modularity API](https://scirpy.scverse.org/en/latest/generated/scirpy.tl.clonotype_modularity.html),
+[CoNGA paper](https://doi.org/10.1038/s41587-021-00989-2) and
+[AnnData on-disk specification](https://anndata.readthedocs.io/en/stable/fileformat-prose.html).
+No external implementation source was consulted. No scientific algorithm changes in slice 10:
+ClonoLoom's declared population, tie, null and correction policies remain as settled above.
+
+The generated methods previously treated paired cell-state metadata as the older TRB simulation
+and omitted saved Cells results. It now names the actual paired-state study and its artificial
+negative-binomial/SIM-receptor assumptions, distinguishes illustrative coordinates from computed
+maps, and quotes Go-generated saved descriptions/citations for all five Cells result kinds.
+Regression checks use the release fixture's actual metadata and explicit dataset/input bindings;
+unknown/renamed study identifiers do not imply a generative model.
+The complete guide retains missing values and the correct populations; significance does not
+establish antigen specificity or remove confounding, and cells remain observations within subjects.
+
+The independent `validation/reference/single_cell_release.py` reads the complete 0.6.0 AnnData
+binary using the pinned public AnnData/SciPy APIs, compares every raw count and identity against
+MEX, every label against cells.tsv, every assignment and coordinate against its saved parent,
+and then rewrites/reopens the object. This supplements the independently specified small export
+oracle, numerical references and synthetic null controls; it is not a biological performance claim.
