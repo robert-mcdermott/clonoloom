@@ -345,3 +345,21 @@ linked clone definitions and verify expression-source and parent hashes. `GET
 /api/anndata-export/{id}/download` returns a ZIP with `cells.h5ad`, export record, manifest and
 NOTICE; restricted source terms require `accept=1` after acknowledgment. These GET endpoints
 work without parent/source files. See [ANNDATA-EXPORT.md](ANNDATA-EXPORT.md) for the schema.
+
+### Subject group comparisons (wave 7)
+
+`compare_cohort` accepts `{features, options: {features, confidence?, permutations?, seed?}}`.
+The outer `features` is a saved `cohort-features` artifact ID from `get_state`; the inner array
+selects catalog IDs, for example `{features:"cf-…", options:{features:["hill1","shannon"]}}`.
+Use real IDs from the open project. Both tests for each selected feature enter one explicit
+BH family. Independent designs use Welch/Mann–Whitney; paired designs use paired t/signed ranks.
+No subjects or pairs are silently deleted for missing values. The response includes the result
+artifact, family size, testable count and full method description.
+
+HTTP: `POST /api/cohort-compare` with the same fields and optional `start:false` to probe.
+Defaults: confidence 0.95, 9999 Monte Carlo draws, seed 20261025. Exact rank null spaces
+through 50000 assignments are enumerated; larger spaces use seeded Monte Carlo. Options and
+parent checksums determine identity. Tasks supports cancellation and replay. Creation uses
+only the saved feature parent; reopening/downloading a saved comparison needs no parents.
+`GET /api/cohort-compare/{id}/download` returns complete CSV/JSON/provenance with provider-term
+acknowledgment as for other exports. See FORMATS and research §5.32 for methods and limits.

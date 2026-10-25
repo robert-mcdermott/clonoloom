@@ -17,7 +17,8 @@ It is one self-contained program for macOS, Linux and Windows. It opens as a des
 no Python, R or account, and keeps your data on your computer.
 
 **Current release:** 0.6.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-Subject-level cohort comparisons and pseudobulk remain planned for a later release.
+Wave 7 development adds saved subject designs, feature tables and two-group comparisons.
+Pseudobulk remains planned for a later slice.
 
 **B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an
 explicit threshold, reconstruct D-masked germlines, measure somatic hypermutation, explore

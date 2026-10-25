@@ -117,6 +117,7 @@ func (a *app) handleJobs() {
 	a.handlePhenotypeJobs()
 	a.handleModularityJobs()
 	a.handleCohortFeaturesJobs()
+	a.handleCohortCompareJobs()
 	a.handleCongaJobs()
 	a.handleAnnDataJobs()
 	a.jobs.Handle("example", func(spec json.RawMessage) (jobs.Func, error) {

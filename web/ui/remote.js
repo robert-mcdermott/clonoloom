@@ -199,6 +199,14 @@ export function remoteActions(app) {
       return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
     },
 
+    async compare_cohort(options = {}) {
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.cohortCompareView, 5000, 'Group comparisons');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before the comparison was saved.');
+      return { message: 'Subject-level comparison saved.', data: { artifact: result.artifact.id, family: result.result.analysis.family, tested: result.result.analysis.tested, description: result.result.description } };
+    },
+
     async build_cohort_features(options = {}) {
       await app.setMode('cohort');
       const view = await waitFor(() => app.cohortFeaturesView, 5000, 'Subject feature table');

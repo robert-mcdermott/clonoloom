@@ -320,3 +320,25 @@ durable replay, cancellation, exact provenance, malformed requests, checksum cha
 source-free export. The `cohort-features` capture scene checks browser undo/redo, source-free
 reopening/download, saved annotation isolation, feature selection, Methods and both-theme
 WCAG A/AA. This table performs no new fit or hypothesis test.
+
+### Subject-level group comparisons
+
+`uv run --no-project validation/reference/cohort_compare.py` uses pinned SciPy 1.17.0 public
+APIs for Welch/paired t inference, confidence limits and BH. Independent itertools enumeration
+provides every label/sign assignment for tied, unbalanced, degenerate and minimum-size cases,
+using the declared absolute-centered two-sided tail. Rank statistics and probability effects
+are also checked by public API or direct pairwise wins. Monte Carlo with 99,999 draws is checked
+against exhaustive 184,756-label and 131,072-sign spaces (absolute tolerance 0.01). Numerical
+inference agrees within 1e-10 relative/absolute; exact tail counts agree exactly. Student
+references include 35 tails and 42 quantiles over df 0.5–9998, with relative 1e-10 tail and
+relative/absolute 1e-9 quantile tolerance.
+
+Core controls exhaust small tied conditional nulls for super-uniformity and simulate 2,000
+normal-model replicates per layout for mean-interval coverage and rejection. Tests preserve
+pair identity under row reordering, missingness without subject deletion, untestable BH slots,
+work bounds and cancellation. Complete Monte Carlo result bytes are pinned across arm64/amd64;
+compiler assembly is checked for fused arithmetic. API checks cover checksum-bound parents,
+durable replay, malformed inputs, standalone reopening/export and provider notices. The
+`cohort-compare` and `cohort-paired` browser scenes check visible/remote equivalence, exact point
+and pair counts, both figure exports, undo/redo, saved reopening, Methods, source-free ZIP and
+both-theme WCAG A/AA. Simulated illustrations validate mechanics, not biological inference.

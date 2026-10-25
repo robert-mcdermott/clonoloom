@@ -754,3 +754,34 @@ CSV is wide, one selected subject/group observation per row, with each numeric f
 followed by its `_missing` reason column. Units/formulas are in `catalog.json`; definition,
 QC, input fingerprints and citations travel in the full JSON and NOTICE. No averaging,
 pooling, depth standardization, imputation or group inference occurs here.
+
+## Subject group comparisons
+
+`cohort-compare` artifacts contain `cohort-compare.json`, format `clonoloom-cohort-compare`
+version 1. `features` embeds the complete subject-feature document and `parentManifest` its
+manifest. `analysis` contains normalized `options`, `layout`, ordered `levels`, `family`,
+`tested`, method description and one `comparisons` entry per selected feature, in ID order.
+Each entry retains feature ID/unit/formula, selected reference/comparison n, complete pair
+count, missing count, every subject/sample/group/value, mean estimates, mean and probability
+effects, and the parametric/rank tests. Effects retain their own units, limits, interval meaning
+and unavailability reason. Tests retain statistic, degrees of freedom, raw/adjusted p, reason,
+randomization method, draws, tail count and nonzero-pair count. Inapplicable values are null;
+rank-only counters are zero where unused. Intervals are marginal, not BH-adjusted.
+
+`POST /api/cohort-compare` accepts `{features, options: {features, confidence?, permutations?,
+seed?}, start?}`. Outer `features` is the feature-artifact ID; inner `features` is 1–13 distinct
+catalog IDs. Confidence defaults to 0.95 (0.8–0.99), permutations to 9999 (999–99999), seed to
+20261025 (positive integer at most 2^53−1; zero selects the default). The normalized options,
+method version, parent ID and verified parent SHA-256 determine the `cc-` artifact identity.
+The server rebuilds the parent table from its embedded measurements and checks the design.
+No raw source or separate diversity artifact is required. `start:false` probes the result/job
+without starting work; durable replay rechecks the parent hash before computing.
+
+`GET /api/cohort-compare/{id}` verifies and returns manifest and result. The `/download`
+suffix returns `comparisons.csv` (two test/effect rows per selected feature), the complete
+`subject-features.csv`, full comparison JSON, manifest and NOTICE. Source provider terms
+require `accept=1` when restricted. Saved reads/exports need neither sources nor parents.
+Unavailable numbers become blank CSV cells with reason columns, never zero. The full JSON
+and NOTICE preserve design/exclusions, definition, QC, source fingerprints and method citations.
+The family is exactly 2K slots; untestable p=1 placeholders affect BH but remain null in output.
+Research §5.32 specifies the hypotheses, effect estimands, interval derivation and bounds.

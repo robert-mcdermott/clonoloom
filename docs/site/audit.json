@@ -77,6 +77,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/cohort-comparisons.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/cohort-design.html",
   "theme": "light",
   "width": "desktop",
@@ -329,6 +336,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/cohort-comparisons.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/cohort-design.html",
   "theme": "dark",
   "width": "desktop",
@@ -581,6 +595,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/cohort-comparisons.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/cohort-design.html",
   "theme": "light",
   "width": "phone",
@@ -827,6 +848,13 @@
  },
  {
   "page": "docs/clonotypes.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/cohort-comparisons.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

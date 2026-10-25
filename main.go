@@ -490,6 +490,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerStudy(mux)
 	a.registerCohort(mux)
 	a.registerCohortFeatures(mux)
+	a.registerCohortCompare(mux)
 	if a.remote != nil {
 		a.remote.register(mux)
 	}

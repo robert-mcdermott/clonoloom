@@ -11,6 +11,9 @@ The HDF5 metadata checksum helper and export writer are adapted from SituCraft's
 under the same Apache-2.0 license. The writer is extended for AnnData data types and encodings.
 They implement Bob Jenkins' public-domain lookup3/hashlittle checksum.
 
+The beta and Student t distribution helpers in internal/stats are adapted from SituCraft's
+Apache-2.0 statistics helpers by the same author.
+
 This product includes data derived from:
 - the HUGO Gene Nomenclature Committee's gene names (https://www.genenames.org; CC0): the names of
   the human T-cell receptor and immunoglobulin genes (internal/genes/human.go);

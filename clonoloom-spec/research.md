@@ -1901,3 +1901,101 @@ job replay, cancellation, parent/result tampering and source-free export. Browse
 checks undo/redo, saved-result routing, changed current annotations, methods, table controls,
 source-free download and WCAG A/AA. This is the first sample/subject portion of G4; receptor,
 gene-usage and other feature families remain future work.
+
+### 5.32 Subject-level two-group comparisons (wave 7, slice 3)
+
+Primary methods: [Welch (1947)](https://doi.org/10.1093/biomet/34.1-2.28),
+[Student (1908)](https://doi.org/10.2307/2331554),
+[Mann & Whitney (1947)](https://doi.org/10.1214/aoms/1177730491),
+[Wilcoxon (1945)](https://doi.org/10.2307/3001968), and
+[Benjamini & Hochberg (1995)](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x).
+Conditional Monte Carlo tails follow [Phipson & Smyth (2010)](https://doi.org/10.2202/1544-6115.1585).
+The conservative probability intervals below apply [Hoeffding (1963)](https://doi.org/10.1080/01621459.1963.10500830)
+and [McDiarmid (1989)](https://doi.org/10.1017/CBO9781107359949.008).
+These papers establish the methods; the two-test family, missingness refusal, bounds,
+feature selection and presentation below are ClonoLoom policies.
+
+**Population and provenance.** Consume one checksum-pinned subject feature artifact. Recheck
+its canonical design and reconstruct the table from its embedded diversity measurements;
+never refit diversity or reopen raw sources. Independent designs use disjoint subjects;
+paired designs align observations by subject ID, not row position. The original structural
+checks and warnings still apply. There is no multigroup, covariate-adjusted or clustered model,
+transformation, outlier deletion, depth standardization, pooling or automatic sample selection.
+Diversity values remain sampling-sensitive measurements at observed sample depths. Declare
+features and selection rules before looking at results. Neither cells nor clones are replicates.
+
+**Mean effects.** Every selected feature receives the design's mean test and rank counterpart,
+without a normality pretest or a choice of whichever test gives the smaller p-value.
+Independent means use B−A, variance sA²/nA+sB²/nB, and Welch–Satterthwaite degrees of freedom
+v² / [(sA²/nA)²/(nA−1)+(sB²/nB)²/(nB−1)]. Paired inference uses the sample mean and variance
+of D=B−A, with n−1 degrees of freedom. Variances have the n−1 denominator. Two-sided t
+p-values use the regularized incomplete beta function; confidence limits are estimate ±
+t_(1−alpha/2,df) × SE. Welch's degrees of freedom are an approximation; small-sample inference
+needs plausible normal observations (or normal differences for paired t). Subjects must be
+independent between units. Zero/non-finite SE leaves t, p and interval missing with a reason;
+a finite mean estimate remains. No p=0 is fabricated for two flat groups or constant changes.
+The beta continued-fraction/bisection implementation is adapted with attribution from the
+Apache-2.0 SituCraft sibling; deterministic math and explicit rounding prevent fused operations.
+
+**Rank tests.** Independent observations receive pooled midranks, with U for group B
+(sum of B ranks minus nB(nB+1)/2). Paired signed ranks exclude exact zero differences,
+midrank absolute nonzero differences, and report W+ (sum of positive ranks). Doubled integer
+ranks preserve half ranks exactly. The null reassigns observed ranks to groups of their original
+sizes, or flips signs independently conditional on absolute paired differences. Inclusive
+two-sided tails count absolute deviations from the conditional expectation at least as large
+as observed. This convention can differ from twice the smaller one-sided tail for asymmetric
+unbalanced tied populations. Ties are part of the randomization, not fed to an untied exact
+reference distribution. Literal saved floating-point values define equality; no tolerance or
+rounding invents ties. All-zero differences have one assignment and p=1, with no nonzero pairs.
+
+Mann–Whitney's randomization null requires identical distributions and exchangeable group
+labels. It is not a test solely of median equality or of superiority probability 1/2 under
+arbitrary unequal distributions. Signed ranks require subject differences symmetric about zero
+with exchangeable signs; this is stronger than a median of zero alone. There is no causal claim
+without a suitable study design. Enumerate at most 50,000 assignments, otherwise use seeded
+Monte Carlo with replacement and p=(tail+1)/(draws+1). Default draws are 9,999 (999–99,999);
+default seed is 20261025 (integer at most 2^53−1). Each feature has its own FNV-1a-derived
+random stream so selecting another feature does not alter its raw p-value. A total budget of
+50,000,000 assignment-size units refuses excessive work; cancellation does not promote a result.
+
+**Probability effects and intervals.** Report a second, explicitly different estimand:
+independent theta=P(B>A)+0.5P(B=A), estimated by U/(nA nB); paired theta=P(D>0)+0.5P(D=0),
+estimated by the mean of bounded win/tie scores. Neither is a median shift. The paired estimate
+includes zeros even though signed ranks omit them. Changing one independent A observation
+changes the empirical probability by at most 1/nA, and one B by at most 1/nB. McDiarmid's
+two-sided bound is therefore 2 exp[−2 r²/(1/nA+1/nB)]. For paired independent subjects,
+Hoeffding gives 2 exp(−2 n r²). Solving for alpha gives radius
+sqrt(log(2/alpha) × scale / 2), with scale=1/nA+1/nB or 1/n respectively. Intersect the
+resulting interval with [0,1]. This distribution-free bound targets the expectation of the
+estimator under independent sampled units; the population interpretation assumes representative
+sampling within the stated groups. It is conservative, often [0,1] at small n, and is not an
+inversion of the displayed rank test or a claim of precise bootstrap coverage.
+
+**Missingness and multiplicity.** Choose 1–13 feature IDs explicitly; both tests for each
+feature form one BH family of exactly 2K slots. Any missing selected observation makes that
+feature's tests and effects unavailable: retain all subjects/pairs, do not perform complete-case
+deletion. Untestable slots enter BH as p=1 while remaining null on screen and in JSON (blank
+in CSV). BH adjustment is min over subsequent ranked m p/r, capped at one and monotone.
+Its usual FDR control assumes independent or suitable positively dependent null p-values;
+arbitrary dependence among metrics and tests is not guaranteed. This correction does not
+cover other results, contrasts or outcome-driven feature selection. All 80–99% confidence
+intervals (default 95%) are marginal, not simultaneous or BH-adjusted. No discovery labels
+or inference of equivalence from nonsignificance are presented.
+
+**Visuals and checks.** Draw every available subject/group value with deterministic horizontal
+jitter; connect only observations belonging to the same paired subject. State units, selected
+n, pairs and missingness. Above 500 available observations show the full paginated table and
+export rather than silently plotting a subset. A separate effect plot shows only the mean
+difference and its t interval, including zero on its axis. Parent within-sample bootstrap
+intervals never appear as group uncertainty. Simulated screenshots illustrate mechanics,
+not biological effect validation; the paired example's time labels are assigned for demonstration.
+
+The independent SciPy 1.17.0 public APIs supply t tests/intervals and BH references. Independent
+itertools enumeration checks every conditional tail for tied, unbalanced, zero and small designs;
+Monte Carlo is compared with exhaustive 184,756-label and 131,072-sign null spaces. Additional
+Student distribution references cover fractional through 9,998 degrees of freedom, extreme
+tails and 0.005–0.995 quantiles. Exact null super-uniformity, seeded normal-model interval
+coverage/rejection, missingness, pair alignment, budgets and processor-byte agreement are tested.
+API checks bind parents, durable replay and standalone export. Browser checks exercise visible
+and remote controls, plots, figure export, undo/reopen, source-free download and both themes.
+No external implementation source was used for the reference calculations.

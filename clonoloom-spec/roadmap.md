@@ -9,13 +9,13 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are complete. Wave 7 is planned below; slice 1 starts the cohort design checks.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are complete. Wave 7 is underway below; the first three slices cover subject designs, features and comparisons.
 
 **Progress** is marked here as each slice is committed: done, next or to come. Each
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slice 1 is committed. Slice 2 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slices 1–2 are committed and pushed. Slice 3 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2192,7 +2192,7 @@ new work is recorded under Unreleased. No commit, push, tag, release or site pub
 
 ### Slice 2: source-pinned subject features
 
-**Implemented and validated; awaiting commit.** G4 (first sample/subject catalog) and G2 inputs.
+**Committed and pushed.** G4 (first sample/subject catalog) and G2 inputs.
 Bind one explicitly selected saved design version to one verified diversity artifact. Recheck
 canonical design inputs and exact complete sample coverage server-side; pin parent bytes before
 the job and verify them again in the worker. Keep one sample per subject/group, including paired
@@ -2231,7 +2231,54 @@ Both Cohort views and the methods modal pass WCAG A/AA; all 14 contrast checks p
 The complete six-subject table screenshots are visually reviewed in both themes. The site
 builds 37 pages with 43 screenshot sets; all 36 audited pages pass 144 theme/viewport checks
 with no violations or overflow. Formatting and diff checks pass. Version stays 0.6.0 until
-release preparation. No commit, push, tag, release or site publication; slice 3 has not begun.
+release preparation. Subsequently committed and pushed by the maintainer.
+
+### Slice 3: subject-level group comparisons
+
+**Implemented and validated; awaiting commit.** G2 and G3, bounded to the existing two-group
+independent/paired designs. The scientific contract is recorded in research §5.32.
+
+- Consume one verified saved feature table, rechecking its embedded design and measurements.
+  Preserve source/parent lineage; no raw data reopening or refitting of diversity is needed.
+- Compute two-sided Welch/paired t and conditional Mann–Whitney/signed-rank tests for every
+  explicitly selected feature. Handle ties by midranks and exact enumeration through 50,000
+  assignments; otherwise use seeded Monte Carlo with inclusive, nonzero tail probabilities.
+- Report mean differences and t intervals separately from probability effects and conservative
+  bounded-difference intervals. Keep zero-variance inference unavailable with reasons.
+  All intervals are marginal. State test assumptions and distinguish rank nulls from effects.
+- Declare exactly two BH slots per selected feature. Any missing observation leaves that
+  feature untested without deleting subjects or pairs; untestable slots remain in the family.
+  Disclose BH dependence assumptions and additional multiplicity from exploratory selection.
+- Show actual subject values and paired links, separately labeled mean-effect intervals,
+  selected counts, units and missingness; no cell-level replication or parent bootstrap bars.
+- Save immutable cancellable/replayable results, complete CSV/JSON/provenance and figure
+  exports, remote controls, Methods and undo/reopen. Preserve provider-term acknowledgment.
+  Keep version 0.6.0; do not introduce multigroup/count models or start slice 4 here.
+
+Acceptance: independent SciPy t/interval/distribution/BH references and exhaustive tied rank
+nulls, Monte Carlo agreement, exact null calibration and simulated interval coverage; missingness,
+pair identity, bounds/cancellation, durable replay, source-free export and parent tampering;
+processor reproducibility, full race/scientific/platform checks, reviewed both-theme plots,
+real-browser workflows, accessibility and documentation audit.
+
+**Validation completed:** full application/internal race tests pass (root 43.168 s), with
+focused race reruns for the final export/provider-term controls. The complete required-data
+scientific suite passes in 469.699 s, excluding unchanged performance-budget tests. The new
+inference, distribution and conditional-randomization references pass, including focused race
+coverage, exact null calibration and 2,000 normal-model replicates per layout. Whole-result
+Monte Carlo bytes and numerical references agree on arm64 and amd64; the compiler scan finds
+no fused multiply-adds. Saved jobs replay identically and missing parents/sources do not prevent
+export; changed evidence is refused before promotion.
+
+All 120 JavaScript tests, Go vet and six CGO-free platform builds pass. Independent/paired
+browser workflows pass in both themes, including visible/remote equivalence, exact point/pair
+counts, standalone figure captions, provider-aware ZIP export, Methods, undo/redo and saved
+reopening. All four screenshots are visually reviewed; the examples state their artificial
+scope and the paired teaching labels do not claim a simulated longitudinal intervention.
+All 14 contrast checks pass. The site builds 38 pages with 45 screenshot sets; 37 audited
+pages pass 148 theme/viewport checks with no accessibility violations or overflow. Formatting
+and diff checks pass. Version remains 0.6.0. No commit, push, tag, release or site publication;
+slice 4 has not begun.
 
 ## Later waves (outlined)
 

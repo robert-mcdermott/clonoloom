@@ -126,9 +126,65 @@ async function checkAccessibility() {
   if (violations.length) throw new Error(`Study accessibility: ${JSON.stringify(violations)}`);
 }
 
+// Cohort comparisons use only the saved subject table, with the raw observations
+// and mean-effect interval captured separately from the probability effect table.
+async function cohortComparisonScene(paired) {
+  await act('new_project', { name: paired ? 'Artificial paired subject comparison' : 'Artificial independent subject comparison' });
+  await act('open_example', { example: 'simulated-standard', download: true });
+  await act('measure_diversity');
+  const spec = { unit: 'subject', layout: paired ? 'paired' : 'independent', groupField: paired ? 'timepoint' : 'condition', levels: paired ? ['day 0','day 7'] : ['control','expanded'], exclude: {} };
+  if (paired) {
+    const samples = {};
+    for (let i=1;i<=6;i++) for (const j of [1,2]) samples[`S${String(i).padStart(2,'0')}-${j}`] = {timepoint:j===1?'day 0':'day 7'};
+    await act('annotate_samples', {samples});
+  } else for (let i=1;i<=6;i++) spec.exclude[`S${String(i).padStart(2,'0')}-2`]='Teaching selection: first observation per subject';
+  await act('check_cohort_design', {spec,name:paired?'Paired simulated observations':'First simulated observations',save:true});
+  const state=(await act('get_state')).data;
+  const feature=(await act('build_cohort_features',{design:state.cohortDesigns[0].id,diversity:state.artifacts.find((r)=>r.kind==='diversity').id})).data.artifact;
+  const options={features:feature,options:{features:['shannon','hill1'],confidence:.95,permutations:9999,seed:20261025}};
+  const result=(await act('compare_cohort',options)).data;
+  if(result.family!==4||result.tested!==4)throw new Error('Wrong comparison family');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCompareView,answer=v.state().answer;
+    const c=answer.result.analysis.comparisons[0];
+    if(c.points.length!==${paired?12:6}||c.pairs!==${paired?6:0})throw new Error('Wrong subject units');
+    if(document.querySelectorAll('.cohort-compare [data-sample]').length!==${paired?12:6}||document.querySelectorAll('.cohort-compare [data-subject]').length!==${paired?6:0})throw new Error('Point or pair geometry changed');
+    const id=v.state().artifact,snapshot=JSON.stringify(answer.result);
+    app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Comparison undo failed');
+    app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id});
+    window.comparisonCheck={id,snapshot};return true;
+  })()`);
+  await waitFor(`window.clonoloom.cohortCompareView?.state().status==='ready'`);
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCompareView;
+    if(JSON.stringify(v.state().answer.result)!==window.comparisonCheck.snapshot)throw new Error('Comparison changed on reopen');
+    await v.choose(${JSON.stringify(feature)});
+    const checkbox=document.querySelector('[aria-label="Compare Hill diversity q=1"]');checkbox.click();
+    [...document.querySelectorAll('.cohort-compare button')].find((b)=>b.textContent==='Compare selected features').click();return true;
+  })()`);
+  await waitFor(`window.clonoloom.cohortCompareView.state().status==='ready'`);
+  if(await js(`window.clonoloom.cohortCompareView.state().artifact`)!==result.artifact)throw new Error('Visible settings differ from remote settings');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCompareView,ensure=app.ensureDataset,create=URL.createObjectURL;let blob;
+    app.ensureDataset=async()=>{throw new Error('Sources unavailable')};URL.createObjectURL=(x)=>{blob=x;return create(x)};
+    try{await v.show(${JSON.stringify(result.artifact)});await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('Comparison ZIP unavailable without sources');}
+    finally{app.ensureDataset=ensure;URL.createObjectURL=create;}
+    const {figureBlob}=await import('./ui/figures.js');
+    for(const which of ['observations','effect']){const text=await (await figureBlob(v.plotSpec(which),'svg')).text();if(!text.includes('definition')||!text.includes('BH does not adjust intervals')||!text.includes('Contrast:')||!text.includes('Selected observations:'))throw new Error('Figure lost provenance');}
+    return true;
+  })()`);
+  await act('show_methods');
+  if(!await js(`document.querySelector('.methods-text').textContent.includes('BH family')`))throw new Error('Comparison methods absent');
+  await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.cohort-compare'),plot=root.querySelector('figure');root.closest('.workbench-scroll').scrollTop=plot.offsetTop-65;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cohort-compare'() { await cohortComparisonScene(false); },
+  async 'cohort-paired'() { await cohortComparisonScene(true); },
   async 'cohort-features'() {
     await act('new_project', { name: 'Artificial subject feature study' });
     await act('open_example', { example: 'simulated-standard', download: true });

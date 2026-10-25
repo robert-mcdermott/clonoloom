@@ -3,6 +3,7 @@
 import { h, icon, clear, downloadBlob } from './dom.js';
 import { toast } from './overlays.js';
 import { mountCohortFeatures } from './cohort-features.js';
+import { mountCohortCompare } from './cohort-compare.js';
 import { GROUP_FIELDS, cohortSamples, cohortSpec, cohortDesigns, saveCohortDesign, cohortDesignChanged } from '../lib/cohort.js';
 
 export function mountCohort(app, container) {
@@ -16,6 +17,7 @@ export function mountCohort(app, container) {
   container.append(h('div.view', h('div.workbench-head', h('h1', icon('samples'), 'Cohort'), h('span.spacer'), h('label.kv-inline', h('span.muted', 'Dataset'), select),
     h('button.btn.small', { type: 'button', onclick: () => app.setMode('data') }, 'Annotate samples')), h('div.workbench-scroll', body, featuresBody)));
   const features = mountCohortFeatures(app, featuresBody);
+  const comparisons = mountCohortCompare(app, featuresBody);
   const dataset = () => store.project.datasets.find((d) => d.id === chosen);
   const reportError = (e) => { error = e.message; render(); };
   const change = (patch) => { if (busy) return; spec = { ...spec, ...patch }; result = null; error = ''; render(); };
@@ -130,7 +132,7 @@ export function mountCohort(app, container) {
   app.cohortView = view;
   load().catch((e) => toast(e.message, { kind: 'error' }));
   return {
-    update(topics) { features.update(topics); if (topics.has('project') && sourceProject !== store.project) load().catch(reportError); },
-    destroy() { generation++; features.destroy(); if (app.cohortView === view) delete app.cohortView; },
+    update(topics) { features.update(topics); comparisons.update(topics); if (topics.has('project') && sourceProject !== store.project) load().catch(reportError); },
+    destroy() { generation++; features.destroy(); comparisons.destroy(); if (app.cohortView === view) delete app.cohortView; },
   };
 }

@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Subject-level group comparisons (wave 7, slice 3).** Compare saved features under their
+  checked independent or paired subject design: Welch/paired t and conditional rank tests,
+  including ties and exact/seeded Monte Carlo tails. Show mean differences and conservative
+  probability effects with distinct marginal intervals; declare both tests for every selected
+  feature as one BH family. Keep missing observations and untestable results explicit, with
+  no silent subject deletion or cell-level replication. Add subject/pair and effect plots,
+  complete CSV/JSON and figure exports, immutable jobs, remote control, methods, undo and
+  standalone reopening. Validate against SciPy and exhaustive nulls, coverage controls,
+  processor agreement and browser workflows; document assumptions and scientific limits.
+
 - **Subject feature tables (wave 7, slice 2).** Join an explicit saved design version to
   a checksum-pinned diversity result, keeping one selected sample per subject/group.
   Export 13 features with defined units, null/zero distinctions and missing-value reasons;

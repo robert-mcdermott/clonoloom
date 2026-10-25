@@ -68,3 +68,6 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
 
 <h2 id="cohort-features">Subject feature tables</h2>
 <p>Use <code>get_state</code> to find saved <code>cohortDesigns</code> and diversity <code>artifacts</code>. Call <code>build_cohort_features</code> with explicit <code>design</code> and <code>diversity</code> IDs from the same dataset. This keeps the saved subject/group observations and their units, missingness and provenance; it performs no group test. See <a href="cohort-features.html">Subject features</a>.</p>
+
+<h2 id="cohort-comparisons">Subject group comparisons</h2>
+<p>Call <code>compare_cohort</code> with an explicit saved feature-parent ID and <code>options: {features: ["hill1", "shannon"], confidence: 0.95, permutations: 9999, seed: 20261025}</code>. Both tests for each selected feature enter one BH family. The saved design determines independent or paired tests; missing observations never cause silent subject deletion. The response includes the artifact, family size, testable count and method description. See <a href="cohort-comparisons.html">Subject group comparisons</a> for assumptions, effects and interval meanings.</p>
