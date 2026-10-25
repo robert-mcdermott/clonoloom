@@ -408,3 +408,33 @@ The release fixture retains all four samples and separate truth; analysis uses S
 Its 360 input cells yield 359 retained map cells, 358 uniquely assigned retained cells,
 ten clone profiles and 20 comparison tests at k = 2, 4. All 360 cells remain in the raw-count
 export. Those numbers check a fixed artificial workflow, not biological accuracy.
+
+## Replicated count studies
+
+The `counts-independent`, `counts-paired` and `counts-null` presets provide dedicated NB2
+count benchmarks (wave 7, slice 4). They contain 32 independent subjects, 28 complete pairs
+(day 0/day 14), and 32 independent null subjects respectively. Use, for example:
+
+```sh
+clonoloom simulate --preset counts-paired --out /path/to/count-study
+```
+
+Counts are simulated UMIs in AIRR `umi_count`. Each subject has 600 private fictional receptors
+with a long abundance tail, plus a shared panel of 48. Lognormal sampling exposures, subject
+effects, heterogeneous gamma–Poisson dispersions and two batches create variation. Four panel
+receptors have generating log2 effects +2, four −1.5 and forty zero; all group effects are zero
+in `counts-null`. This controlled panel is not a fitted model of human receptor sharing,
+recombination, antigen specificity or UMI errors. Seeds and full parameters are saved.
+
+`truth/observations.tsv` records every generating mean, exposure, dispersion, effect and count
+(including zero), plus sample, subject, group, batch and receptor identity. `truth/truth.json`
+records source hashes. Generator exposures differ from realized library totals, so the fitted
+total-offset log2 ratios need not equal generating effects exactly. The null example is a
+negative control, not a promise that every p-value exceeds 0.05.
+
+Open all root TSVs with `repertoires.airr.json`. Annotate B1/B2 from truth (alternating by
+zero-based subject plus visit); paired time labels are `day 0`/`day 14`. Save an explicit
+independent condition or paired timepoint design, measure diversity and build its features,
+then fit replicated counts with count ≥10 in ≥12 samples and batch adjustment. Each subject
+contributes one observation per selected group. The shared panel is usually eligible; private
+clonotypes stay in denominators and exports but fail this declared prevalence filter.

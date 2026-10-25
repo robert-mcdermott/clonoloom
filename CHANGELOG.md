@@ -4,6 +4,17 @@
 
 ### Added
 
+- **Replicated clonotype counts (wave 7, slice 4).** Fit two-group NB2 models under saved
+  independent or paired subject designs, with assigned-library offsets, per-clonotype
+  Cox–Reid dispersion, optional estimable batch and explicit contrast/filter/BH family.
+  Require adequate residual replication; retain missing, separated, boundary and failed
+  inference explicitly, without Poisson fallback or silent subject removal. Add observed
+  subject/pair, MA-style and conditional Wald interval plots, complete captured counts,
+  immutable replay, remote controls, saved Methods and provider-aware exports. Provide
+  independent, paired and null simulations with heterogeneous variation and full truth.
+  Validate public statsmodels/SciPy references, null calibration and approximation limits,
+  source/truth consistency, processor agreement, saved workflows and both-theme visuals.
+
 - **Subject-level group comparisons (wave 7, slice 3).** Compare saved features under their
   checked independent or paired subject design: Welch/paired t and conditional rank tests,
   including ties and exact/seeded Monte Carlo tails. Show mean differences and conservative

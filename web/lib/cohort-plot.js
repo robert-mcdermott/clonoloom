@@ -8,7 +8,7 @@ export function cohortPoints(c, result) {
   const points = c.points.filter((p) => p.value != null && !p.missing);
   if (!points.length || points.length > 500) return { svg: '', description: points.length ? 'More than 500 observations: use the full observation table or export; no subset is drawn.' : 'No available observations to plot.' };
   const values = points.map((p) => p.value), low = Math.min(...values), high = Math.max(...values), pad = (high - low || Math.max(1, Math.abs(low))) * .08;
-  const min = low - pad, max = high + pad, y = (v) => 260 - (v - min) * 220 / (max - min);
+  const min = result.zeroBaseline ? 0 : low - pad, max = high + pad, y = (v) => 260 - (v - min) * 220 / (max - min);
   const subjects = [...new Set(points.map((p) => p.subject))].sort();
   const x = (p) => (p.group === result.levels[0] ? 210 : 450) + ((subjects.indexOf(p.subject) * 7 % 17) - 8) * 3;
   const desc = `${c.feature.name} (${c.feature.unit}); ${result.layout}. Each point is one saved subject/group observation; ${c.nReference} selected reference observations and ${c.nComparison} comparison observations, ${c.pairs} pairs, ${c.missing} missing values. Lines join only the same subject in paired designs. Horizontal jitter separates overlaps and carries no quantitative information. No uncertainty bars on observations.`;

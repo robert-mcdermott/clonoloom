@@ -342,3 +342,45 @@ durable replay, malformed inputs, standalone reopening/export and provider notic
 `cohort-compare` and `cohort-paired` browser scenes check visible/remote equivalence, exact point
 and pair counts, both figure exports, undo/redo, saved reopening, Methods, source-free ZIP and
 both-theme WCAG A/AA. Simulated illustrations validate mechanics, not biological inference.
+
+### Replicated count models
+
+`reference/count_model.py` uses public statsmodels 0.14.6 GLM NB2 and SciPy 1.17.0 optimization
+and chi-square APIs. Rebuild with `uv run validation/reference/count_model.py`. No ClonoLoom
+outputs or third-party implementation sources are read. Six fixtures cover balanced independent
+(16/16), paired (28 pairs) and unbalanced independent (12/20) designs, each with/without batch,
+unequal offsets and subject effects. Go checks fixed-alpha coefficients/likelihood, Cox–Reid
+alpha, coefficients, covariance, fitted means, full/null likelihoods, LRT and p. Tolerances are
+1e-9 for fixed likelihood, 1e-7 for fixed coefficients, 2e-6 for estimated likelihoods, and
+2e-5 for the remaining comparisons, scaled by max(1, absolute reference).
+
+`TestCountModelNullCalibration` uses 400 fixed-seed NB2 trials per layout, heterogeneous
+alpha 0.08/0.2/0.5 and uneven fixed exposures. Independent 16/16 subjects reject 26/400 at
+nominal 5% (6.5%), with 93.25% conditional Wald coverage. Twenty-eight pairs reject 18/400
+(4.5%) with 93.5% coverage. Unbalanced 12/20 subjects reject 25/400 (6.25%) with 93.5% coverage.
+All 400 fit in each layout. Guards require ≥380 fits, rejection ≤8% and coverage ≥92%; these
+finite Monte Carlo checks are not a general calibration guarantee. Initial 12-pair checks had
+8% rejection and 91% coverage, motivating the ≥24 residual-df production boundary. The
+approximate conditional intervals and observed coverage are disclosed in research §5.33.
+
+`TestReplicatedCountTruth` independently reads literal TSV fields for all three new presets,
+reconciles every observation including zeros, verifies shared/private identities and the effect
+panel, and checks source hashes and processor-stable whole-study digests. Numerical/model
+controls cover singular/aliased designs, insufficient replication, fractional/missing source
+counts before aggregation, incorrect totals, all-zero groups/subject blocks, boundary
+dispersion, cancellation, explicit BH slots and whole-result processor identity.
+
+API controls check immutable counts, saved definition/QC, parent integrity, source preservation,
+durable source-free replay, complete CSV/JSON, provider-term acknowledgment/NOTICE, and altered
+result refusal. `cohort-counts` and `cohort-counts-paired` browser scenes generate fresh examples,
+check exact point/pair counts and unfilled axes, visible/remote identity, undo/reopen, saved
+Methods, standalone ZIP and figure captions, both themes and accessibility. Visual review
+checks that observed CPM distributions, fitted ratios and conditional intervals remain distinct.
+
+`TestReplicatedCountExamplesAgainstTruth` also runs all three complete simulated repertoires
+through the production count pipeline using nucleotide-defined clonotypes. Independent and
+paired examples each fit all 48 eligible panel receptors; all eight generating changes have
+the correct effect direction. One of forty unchanged panel receptors in the independent
+example has BH≤0.05, versus zero in the paired example. The null example fits 45 eligible
+receptors and has zero BH≤0.05; three of its 48 panel receptors fail the prespecified count
+filter. These are recorded finite-study outcomes, not claims of guaranteed error control.

@@ -54,7 +54,7 @@ const DOCS = [
   { group: 'Specificity', pages: [['tcrdist', 'Similar receptors (TCRdist)'], ['neighborhoods', 'Neighborhoods and backgrounds'], ['generation', 'Generation probabilities'], ['networks', 'Clonotype networks'], ['database', 'Specificity databases']] },
   { group: 'Cells', pages: [['cell-study', 'A complete study'], ['cells', 'Expression evidence']] },
   { group: 'B cells', pages: [['bcell-inputs', 'Sequence evidence'], ['bcell-families', 'Clonal families'], ['bcell-germlines', 'Germlines'], ['bcell-shm', 'Somatic hypermutation'], ['bcell-lineages', 'Lineage trees'], ['bcell-isotypes', 'Isotypes']] },
-  { group: 'Cohorts', pages: [['cohort-design', 'Study design'], ['cohort-features', 'Subject features'], ['cohort-comparisons', 'Group comparisons']] },
+  { group: 'Cohorts', pages: [['cohort-design', 'Study design'], ['cohort-features', 'Subject features'], ['cohort-comparisons', 'Group comparisons'], ['cohort-counts', 'Replicated counts']] },
   { group: 'Results', pages: [['figures', 'Figures and exports'], ['record', 'The record']] },
   { group: 'Reference', pages: [['simulation', 'Simulated studies'], ['remote-control', 'Remote control']] },
 ];

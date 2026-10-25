@@ -39,6 +39,9 @@ func newExamples(dir string, offline bool) *examples.Library {
 // this computer in seconds.
 func simulatedExamples() []examples.Generated {
 	return []examples.Generated{
+		simulatedExample("counts-paired", nil, "Replicated paired clonotype counts", "Twenty-eight artificial subjects before and after stimulation, uneven depths, shared and private receptors, subject effects, two batches and heterogeneous negative-binomial variation. Sparse increases/decreases and a large unchanged background; complete count truth is saved.", "56 samples in UMIs. Compare day 14 against day 0 within subjects; annotate recorded batches B1/B2.", 12<<20),
+		simulatedExample("counts-independent", nil, "Replicated independent clonotype counts", "Thirty-two artificial subjects, sixteen control and sixteen stimulated, with uneven depths, a private long tail and heterogeneous biological variation. Complete generator truth is saved.", "32 samples in UMIs. Compare stimulated against control; annotate recorded batches B1/B2.", 12<<20),
+		simulatedExample("counts-null", nil, "Replicated counts with no group effect", "Thirty-two artificial subjects with heterogeneous variability and uneven depths; every group effect is zero. Batch variation is retained in the known truth.", "32 samples in UMIs. A negative control, not a promise that every fitted p-value exceeds 0.05.", 12<<20),
 		bcellInputExample(),
 		imgtInputExample(),
 		expressionInputExample(),

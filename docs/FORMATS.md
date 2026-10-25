@@ -785,3 +785,30 @@ Unavailable numbers become blank CSV cells with reason columns, never zero. The 
 and NOTICE preserve design/exclusions, definition, QC, source fingerprints and method citations.
 The family is exactly 2K slots; untestable p=1 placeholders affect BH but remain null in output.
 Research §5.32 specifies the hypotheses, effect estimands, interval derivation and bounds.
+
+## Replicated clonotype count models
+
+`cohort-counts` artifacts contain `cohort-counts.json` (format `clonoloom-cohort-counts`,
+version 1). They embed the checksum-pinned subject-feature parent and manifest, canonical design
+matrix/column names/contrast, assigned totals/log offsets, all observed clonotype counts and CPM,
+filter eligibility/reasons, full/null fits and covariance, dispersion, log2 effects/Wald intervals,
+LRT/raw/BH p-values, family size, effective options and method. Missing inference is JSON null
+or blank CSV, with a reason; it is never replaced by an observed zero or fabricated p-value.
+
+`POST /api/cohort-counts` accepts `{features, options: {minCount?, minSamples?, adjustBatch?,
+confidence?}, start?}`. Defaults are 10, 12, false, 0.95. Creation requires the original dataset
+open to capture counts under the parent's exact definition/QC; integer source members are
+checked before aggregation. Missing retained counts refuse capture. Count totals must equal
+the parent's assigned abundance. A `start:false` probe returns identity/readiness without
+fitting. Job identity hashes the complete captured matrix, parent checksum, effective options
+and method version. The durable worker rechecks its parent and operates on that matrix without
+source reads. Saved results and exports need neither sources nor separate parent artifacts.
+
+`GET /api/cohort-counts/{id}` verifies the result. `/download` returns `comparisons.csv`,
+`design.csv`, `counts.csv`, full JSON, manifest and NOTICE; restricted provider terms require
+`accept=1`. CSV comparisons retain every filtered and failed clonotype; counts retain all
+assigned denominators. Design CSV lists sample, subject, group, batch, library total, log offset
+and every design column; JSON retains the contrast, exclusions, definition, QC and count unit.
+This is a bounded, two-group, unmoderated NB2 model with subject blocks for paired studies and
+optional batch; the exact statistical contract and limits are in research §5.33 and the
+[replicated count guide](site/pages/docs/cohort-counts.html).

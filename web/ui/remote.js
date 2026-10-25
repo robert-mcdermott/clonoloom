@@ -199,6 +199,14 @@ export function remoteActions(app) {
       return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
     },
 
+    async fit_cohort_counts(options = {}) {
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.cohortCountsView, 5000, 'Replicated counts');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before the count model was saved.');
+      return { message: 'Replicated count model saved.', data: { artifact: result.artifact.id, family: result.result.analysis.family, tested: result.result.analysis.tested, description: result.result.description } };
+    },
+
     async compare_cohort(options = {}) {
       await app.setMode('cohort');
       const view = await waitFor(() => app.cohortCompareView, 5000, 'Group comparisons');

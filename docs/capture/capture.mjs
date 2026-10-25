@@ -180,9 +180,47 @@ async function cohortComparisonScene(paired) {
   await clearToasts();await checkAccessibility();
 }
 
+async function countModelScene(paired) {
+  await act('new_project',{name:paired?'Paired repertoire count study':'Independent repertoire count study'});
+  await act('open_example',{example:paired?'simulated-counts-paired':'simulated-counts-independent',download:true});
+  const annotations={};
+  for(let i=0;i<(paired?28:32);i++)for(let j=0;j<(paired?2:1);j++)annotations[`S${String(i+1).padStart(2,'0')}-${j+1}`]={batch:`B${(i+j)%2+1}`,...(paired?{timepoint:j?'day 14':'day 0'}:{})};
+  await act('annotate_samples',{samples:annotations});
+  await act('measure_diversity');
+  await act('check_cohort_design',{name:paired?'Before and after stimulation':'Independent control and stimulated subjects',save:true,spec:{unit:'subject',layout:paired?'paired':'independent',groupField:paired?'timepoint':'condition',levels:paired?['day 0','day 14']:['control','stimulated'],exclude:{}}});
+  const state=(await act('get_state')).data;
+  const features=(await act('build_cohort_features',{design:state.cohortDesigns[0].id,diversity:state.artifacts.find((r)=>r.kind==='diversity').id})).data.artifact;
+  const options={minCount:10,minSamples:12,adjustBatch:true,confidence:.95};
+  const answer=(await act('fit_cohort_counts',{features,options})).data;
+  if(answer.tested<25||answer.family>48)throw new Error(`Unexpected model coverage ${JSON.stringify(answer)}`);
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCountsView,doc=v.state().answer.result,r=doc.analysis;
+    if(r.design.rows.length!==${paired?56:32}||r.design.residualDF<24)throw new Error('Count design wrong');
+    if(getComputedStyle(document.querySelector('.cohort-counts .plot-axis')).fill!=='none')throw new Error('Count axes unexpectedly filled');
+    if(document.querySelectorAll('.cohort-counts [data-clone]').length!==r.tested||document.querySelectorAll('.cohort-counts [data-sample]').length!==${paired?56:32}||document.querySelectorAll('.cohort-counts [data-subject]').length!==${paired?28:0})throw new Error('Count plot geometry wrong');
+    window.countCheck={id:v.state().artifact,snapshot:JSON.stringify(doc)};
+    app.store.undo();if(app.store.project.artifacts.some((a)=>a.id===window.countCheck.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:window.countCheck.id});return true;
+  })()`);
+  await waitFor(`window.clonoloom.cohortCountsView?.state().status==='ready'`);
+  await js(`(()=>{const v=window.clonoloom.cohortCountsView;if(JSON.stringify(v.state().answer.result)!==window.countCheck.snapshot)throw new Error('Saved count model changed');v.choose(${JSON.stringify(features)});document.querySelector('[aria-label="Adjust count model for batch"]').checked=true;[...document.querySelectorAll('.cohort-counts button')].find((b)=>b.textContent==='Fit replicated counts').click();return true})()`);
+  await waitFor(`window.clonoloom.cohortCountsView.state().status==='ready'`);
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCountsView;if(v.state().artifact!==window.countCheck.id)throw new Error('Visible settings differ');
+    const ensure=app.ensureDataset,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};URL.createObjectURL=(b)=>{blob=b;return create(b)};
+    try{await v.show(window.countCheck.id);await v.download();const b=new Uint8Array(await blob.arrayBuffer());if(b[0]!==80||b[1]!==75)throw new Error('ZIP failed');}finally{app.ensureDataset=ensure;URL.createObjectURL=create;}
+    const {figureBlob}=await import('./ui/figures.js');for(const which of ['ma','observations','effect']){const text=await(await figureBlob(v.plotSpec(which),'svg')).text();if(!text.includes('Contrast:')||!text.includes('conditional on fitted dispersion'))throw new Error('Count figure lost method/provenance');}
+    return true;
+  })()`);
+  await act('show_methods');if(!await js(`document.querySelector('.methods-text').textContent.includes('Cox–Reid')`))throw new Error('Count methods absent');await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.cohort-counts');root.closest('.workbench-scroll').scrollTop=root.querySelector('.count-result-title').offsetTop-65;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cohort-counts'() { await countModelScene(false); },
+  async 'cohort-counts-paired'() { await countModelScene(true); },
   async 'cohort-compare'() { await cohortComparisonScene(false); },
   async 'cohort-paired'() { await cohortComparisonScene(true); },
   async 'cohort-features'() {
@@ -1120,7 +1158,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom(name === 'examples' ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts')) ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

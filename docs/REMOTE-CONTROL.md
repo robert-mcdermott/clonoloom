@@ -363,3 +363,24 @@ parent checksums determine identity. Tasks supports cancellation and replay. Cre
 only the saved feature parent; reopening/downloading a saved comparison needs no parents.
 `GET /api/cohort-compare/{id}/download` returns complete CSV/JSON/provenance with provider-term
 acknowledgment as for other exports. See FORMATS and research §5.32 for methods and limits.
+
+### Replicated clonotype counts (wave 7)
+
+`fit_cohort_counts` accepts a saved subject-feature parent and effective model settings:
+
+```json
+{"action":"fit_cohort_counts","args":{"features":"cf-…","options":{"minCount":10,"minSamples":12,"adjustBatch":true,"confidence":0.95}}}
+```
+
+The action captures counts from the original open receptor dataset, fits under the saved design
+and focuses the kept artifact. It returns artifact ID, fitted count, eligible family and method
+description. Paired subjects are blocked; batch adjustment must be requested and estimable.
+At least 12 subjects/group and 24 residual df are required. Raw and BH p-values accompany log2
+comparison/reference effects and conditional marginal Wald intervals. No Poisson fallback,
+composition normalization, automatic discovery labels or silent sample deletion is performed.
+
+HTTP uses `POST /api/cohort-counts` with the same fields, optionally `start:false`; the returned
+job can be polled/cancelled through `/api/jobs`. `GET /api/cohort-counts/{id}` and `/download`
+verify the saved result, with provider-term acknowledgment on restricted downloads. Durable
+replay needs the pinned feature parent but no raw source; saved reopening/export is standalone.
+See research §5.33 for assumptions, filtering, bounds and calibration limits.

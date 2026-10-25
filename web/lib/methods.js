@@ -121,11 +121,13 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const simulations = (summary?.samples ?? []).map((s) => s.repertoire).filter((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
   const bcellModels = ['clonoloom-simulated-clonoloom-artificial-bcell-v1', 'clonoloom-simulated-clonoloom-artificial-bcell-v2'];
   const cellModels = ['clonoloom-simulated-cell-states', 'clonoloom-simulated-cell-states-clouds'];
+  const countModels = ['clonoloom-simulated-replicated-counts-v1'];
   const trbModels = ['standard', 'null', 'small', 'car-t', 'transplant', 'vaccine'].map((name) => `clonoloom-simulated-${name}`);
   const bcellSimulation = simulations.some((r) => bcellModels.includes(r.studyId));
   const cellSimulations = simulations.filter((r) => cellModels.includes(r.studyId));
   const simulated = simulations.find((r) => trbModels.includes(r.studyId));
-  const unknown = [...new Set(simulations.filter((r) => ![...bcellModels, ...cellModels, ...trbModels].includes(r.studyId)).map((r) => r.studyId))];
+  const unknown = [...new Set(simulations.filter((r) => ![...bcellModels, ...cellModels, ...countModels, ...trbModels].includes(r.studyId)).map((r) => r.studyId))];
+  if (simulations.some((r) => countModels.includes(r.studyId))) sentences.push('The replicated repertoire counts were simulated with heterogeneous gamma-Poisson variation, lognormal sampling exposures, subject effects, two batch levels, 48 shared fictional receptors and a private long-tailed background. Sparse increases/decreases or an all-null group contrast are recorded in the saved parameters and truth. Fictional stop-free junctions and SIM calls do not represent fitted human recombination or antigen specificity. Generator exposures differ from realized library totals; fitted total-count-offset effects describe relative repertoire abundance.');
   if (unknown.length) sentences.push(`The data include simulated studies ${joinList(unknown)}. These identifiers do not establish their generative model; consult each study's saved parameters and truth before describing how it was simulated.`);
   if (cellSimulations.length) {
     sentences.push(`The paired TRA/TRB and expression data were made by ClonoLoom's artificial cell-state simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} (studies ${[...new Set(cellSimulations.map((r) => r.studyId.replace('clonoloom-simulated-', '')))].join(', ')}). Clones have fictional SIM gene calls and independently drawn junctions; cells draw clones uniformly and one of three states by the recorded sample-specific rule. The 24 artificial genes have conditionally independent negative-binomial counts (size 4; mean 16 in the state's eight-gene block, 2 otherwise). Supplied grid or Gaussian-cloud coordinates illustrate the known state, independently of the expression fit; they are not inferred embeddings. Forced missing evidence and an all-zero cell test bookkeeping. Separate truth records the model, assignments and source hashes. This controlled benchmark is not fitted biology, does not simulate antigen specificity, and does not make cells independent biological replicates.`);
@@ -377,7 +379,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
 
   // These descriptions and citations are computed in Go and kept with each immutable result.
   // Do not reconstruct scientific parameters from current controls or a plot selection.
-  for (const r of results.filter((r) => ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export', 'cohort-features', 'cohort-compare'].includes(r.kind))) {
+  for (const r of results.filter((r) => ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export', 'cohort-features', 'cohort-compare', 'cohort-counts'].includes(r.kind))) {
     sentences.push(`Saved ${r.method || r.kind} result ${r.id}: ${r.describe || 'See the saved result for its effective parameters.'}${r.citation ? ` ${cite(`cell-method:${r.citation}`, r.citation)}` : ''}`);
   }
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

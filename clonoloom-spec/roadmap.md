@@ -9,13 +9,13 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are complete. Wave 7 is underway below; the first three slices cover subject designs, features and comparisons.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are complete. Wave 7 is underway below; the first four slices cover subject designs, features, comparisons and replicated counts.
 
 **Progress** is marked here as each slice is committed: done, next or to come. Each
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–2 are committed and pushed. Slice 3 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slices 1–3 are committed and pushed. Slice 4 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2235,7 +2235,7 @@ release preparation. Subsequently committed and pushed by the maintainer.
 
 ### Slice 3: subject-level group comparisons
 
-**Implemented and validated; awaiting commit.** G2 and G3, bounded to the existing two-group
+**Committed and pushed.** G2 and G3, bounded to the existing two-group
 independent/paired designs. The scientific contract is recorded in research §5.32.
 
 - Consume one verified saved feature table, rechecking its embedded design and measurements.
@@ -2277,8 +2277,60 @@ reopening. All four screenshots are visually reviewed; the examples state their 
 scope and the paired teaching labels do not claim a simulated longitudinal intervention.
 All 14 contrast checks pass. The site builds 38 pages with 45 screenshot sets; 37 audited
 pages pass 148 theme/viewport checks with no accessibility violations or overflow. Formatting
-and diff checks pass. Version remains 0.6.0. No commit, push, tag, release or site publication;
-slice 4 has not begun.
+and diff checks pass. Version remains 0.6.0. Subsequently committed and pushed by the maintainer.
+
+### Slice 4: replicated clonotype counts
+
+**Implemented and validated; awaiting commit.** T4 remainder, bounded to saved two-group
+independent/paired studies. The scientific contract is research §5.33.
+
+- Capture whole observed counts under the pinned feature parent's sequence definition/QC;
+  preserve all assigned denominators, filtered/private clonotypes, original sources and terms.
+  Refuse unknown/missing/fractional counts and noncomparable vendor clonotype IDs.
+- Fit NB2 with assigned-library offsets, per-clonotype Cox–Reid dispersion, group contrast,
+  paired subject fixed effects and optional full-rank batch adjustment. Require at least
+  12 subjects/group and 24 residual df; retain failures instead of substituting Poisson tests.
+- Save the design/contrast, counts, offsets, dispersion, both likelihood fits/covariance,
+  conditional marginal Wald log2 intervals, LRT and one explicit eligible-clonotype BH family.
+  No composition normalization, empirical-Bayes moderation or automatic discovery labels.
+- Add complete subject/paired observations, all-fitted MA-style effects and separate model
+  intervals, with inspectable tables, failed fits, figure provenance and no p-value coloring.
+- Add immutable cancellable jobs, raw-source-free durable replay, standalone reopening and
+  exports, remote control, undo/redo and cited Methods with provider-term preservation.
+- Provide independent, paired and null UMI simulations with unequal depths, heterogeneous
+  variation, subject/batch effects, private long tails and full generating truth. Explicitly
+  distinguish artificial identities and generator exposures from biological reality and
+  realized-library offsets. Keep version 0.6.0 until release preparation.
+
+Validation: six independent statsmodels/SciPy numerical references; 1,200 fixed-exposure null
+trials spanning balanced, paired and unbalanced layouts; count/source/truth, estimability,
+missingness, nonconvergence, boundary, family, replay and provider-term controls; both-theme
+browser workflows and visual inspection; full application/scientific/platform checks.
+The observed 93.25–93.5% coverage of nominal 95% conditional intervals is disclosed; this
+unmoderated asymptotic method is not claimed to have exact small-sample calibration.
+
+**Validation completed:** the required-data scientific suite passes in 488.246 s, excluding
+unchanged performance-budget tests. All application/internal race packages pass (application
+rerun 40.061 s after updating the example catalog; count-model calibration 456.968 s), with
+focused race checks for the final missing/fractional source, separation and work-bound controls.
+All six numerical references pass under race and on amd64; native/amd64 whole-result and all
+three example digests agree. The compiler scan finds no fused multiply-adds. Source-free
+replay/export and inherited provider-term tests pass.
+
+The complete example pipeline fits all 48 eligible panel receptors in each positive study,
+with all eight generating changes in the correct direction. One of forty unchanged panel
+receptors in the independent study has BH≤0.05, versus none in the paired study. The all-null
+study fits 45 eligible panel receptors, none with BH≤0.05; three fail the declared count filter.
+These finite controls do not establish exact FDR or interval coverage on arbitrary data.
+
+All 123 JavaScript tests, Go vet and six CGO-free platform builds pass. Both independent/paired
+browser workflows pass in both themes: visible/remote identity, exact subject/pair counts,
+saved Methods, source-free ZIP and figure exports, undo/redo and project reopening. All four
+screenshots are visually reviewed. Review caught and corrected an unintended SVG axis fill;
+count observations now have an explicit zero baseline. The site builds 39 pages with 47
+screenshot sets; 38 audited pages pass all 152 theme/viewport checks with no accessibility
+violations or overflow. All 14 contrast checks, formatting and diff checks pass. Version stays
+0.6.0; no commit, push, tag, release or publication. Slice 5 has not begun.
 
 ## Later waves (outlined)
 

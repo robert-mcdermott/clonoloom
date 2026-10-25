@@ -71,3 +71,6 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
 
 <h2 id="cohort-comparisons">Subject group comparisons</h2>
 <p>Call <code>compare_cohort</code> with an explicit saved feature-parent ID and <code>options: {features: ["hill1", "shannon"], confidence: 0.95, permutations: 9999, seed: 20261025}</code>. Both tests for each selected feature enter one BH family. The saved design determines independent or paired tests; missing observations never cause silent subject deletion. The response includes the artifact, family size, testable count and method description. See <a href="cohort-comparisons.html">Subject group comparisons</a> for assumptions, effects and interval meanings.</p>
+
+<h2 id="cohort-counts">Replicated clonotype counts</h2>
+<p>Call <code>fit_cohort_counts</code> with a saved feature-parent ID and <code>options: {minCount: 10, minSamples: 12, adjustBatch: true, confidence: 0.95}</code>. The original receptor dataset supplies the initial count snapshot under the saved definition/QC. The response includes the artifact, fitted count, eligible BH family and method. Paired designs add subject blocks; optional batch effects must be estimable. See <a href="cohort-counts.html">Replicated clonotype counts</a> for replication limits, relative-abundance estimands and conditional interval interpretation.</p>

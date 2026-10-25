@@ -172,3 +172,8 @@ Isotype counts and denominators stay in Go, using checksum-pinned family observa
 sample annotations. Keep class resolution separate from constant-gene/subclass resolution,
 missing abundance separate from zero, and unordered family co-occurrence separate from
 switching inference. Preserve raw heavy and light calls and count each cell once. See research §5.20.
+
+Replicated clonotype count inference lives in `internal/countmodel/`: Go owns the exact design,
+count capture, offsets, NB2 fitting, dispersion, intervals and correction family. Browser plots
+only lay out saved CPM/effects; failed fits and filtered counts retain provenance. No Poisson
+fallback, silent subject deletion or unvalidated moderation is allowed. See research §5.33.
