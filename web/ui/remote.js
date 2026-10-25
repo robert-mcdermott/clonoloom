@@ -480,6 +480,14 @@ export function remoteActions(app) {
       return { message: `${done.page.result.assigned} assigned observations summarized.`, data: { artifact: done.artifact, assigned: done.page.result.assigned, resolvedClass: done.page.result.resolvedClass, resolvedGene: done.page.result.resolvedGene, families: done.page.familyCount, excluded: done.page.result.excluded, issues: done.page.result.issues, options: done.page.result.isotypeOptions } };
     },
 
+    async compare_receptor_expression(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellCongaView, 5000, 'Receptor / expression comparison');
+      const result = await view.run({ ...options, phenotypes: options.phenotypes ?? app.cellPhenotypesView?.state().artifact });
+      if (!result) throw new ActionError('The project changed during the analysis.');
+      return { message:'Receptor / expression comparison saved.', data:{artifact:result.artifact.id,tested:result.result.analysis.tested,eligible:result.result.analysis.eligible,clonotypes:result.result.analysis.nodes.length,description:result.result.description} };
+    },
+
     async compute_clonotype_modularity(options = {}) {
       await app.setMode('cells');
       const view = await waitFor(() => app.cellModularityView, 5000, 'Clonotype modularity');

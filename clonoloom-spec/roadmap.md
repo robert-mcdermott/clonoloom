@@ -1903,7 +1903,7 @@ subsets with Python itertools and check BY with SciPy's public API; compare Mont
 frequencies to exhaustive truth. Check graph validation, degeneracy, exclusion, cancellation,
 changed parents, processor identity, saved reopening, undo, both themes and regression suites.
 
-**Done, awaiting the maintainer's commit.** Sample-scoped induced graph tests, analytic expected
+**Done; committed by the maintainer as `7a991b9`.** Sample-scoped induced graph tests, analytic expected
 edges, exhaustive/seeded null distributions, inclusive nonzero p-values and BY adjustment are
 implemented. Results retain complete phenotype evidence, both parent hashes, effective options,
 method citations, graph memberships, null frequencies and explicit untested states. Jobs verify
@@ -1928,8 +1928,75 @@ reporting; explicit rounding fixes it, and the full final run is clean. Vet, gof
 builds, 106 JavaScript tests and all 14 contrast checks pass. All seven Cells capture scenes
 pass in both themes; final modularity screenshots are refreshed and inspected. The site builds
 34 pages with 38 screenshot sets and passes all 132 audit checks. Existing unrelated performance
-budgets, skipped under race detection, were not rerun. Version remains 0.5.0. Slice 8 has not
-started.
+budgets, skipped under race detection, were not rerun. Version remains 0.5.0.
+
+### Slice 8: Receptor / expression neighborhood comparison
+
+**Scope (M3).** A bounded CoNGA-style comparison of paired αβ clonotypes in one sample, using
+checksum-pinned computed-map phenotype evidence and all retained expression PCs. New requests
+capture the original open receptor dataset's required clonotype sequences; durable jobs then
+need no raw expression/receptor files. Full TCRdist requires explicit organism and a pinned
+V-loop reference. CDR3-only is an explicit approximation, including in the fictional offline guide.
+No imported-coordinate distances, donor pooling or treatment inference.
+
+**Settled method.** Refine from Schattgen et al. (2022), Dash et al. (2017), TCRdist3 conventions
+and conditional hypergeometric probability. Use one mean-PC profile per uniquely assigned,
+paired clonotype; clone size does not multiply graph vertices. Require primary TRA/TRB amino-acid
+clones resolving V/J genes or alleles; preserve invalid/missing evidence reasons. For each focal
+clone, exclude self and any identical α or β CDR3 from both candidate pools. Construct exact,
+directed k-nearest sets on mean PCs and paired receptor distances, including every cutoff tie.
+Test overlap with an inclusive hypergeometric tail conditional on the actual two degrees and
+candidate population. Correct every testable clone-by-k row with Bonferroni, including zero
+matches and degenerate tied sets. Keep all scales; never silently choose the best. Insufficient
+candidates produce explicit untested rows. Stable log tails preserve probabilities below float
+range. These declared policies are not an exact reproduction of the original multi-graph score.
+
+**Interpretation.** Independent, exchangeable neighbor labels are assumptions, not established
+properties of a biological dataset. The null does not condition on cell type, batch or chain
+groups; correction cannot repair nonexchangeability. Results are exploratory within one sample,
+not specificity, causality or subject-level effects. Repeated analysis choices are outside the
+correction. Means can hide within-clone heterogeneity; keep parent-overlay exploration.
+
+**Delivery and validation.** Save sequences, clone memberships, mean PCs, neighbor identities,
+actual degrees, exclusions, expectations, probabilities/log probabilities, source/parent/reference
+fingerprints and cited method parameters. Expose a zero-based observed-count / expected-marker
+plot and accessible complete tables; it is not a confidence interval or density. Add remote
+control, a cloud-study guide step, docs and both-theme screenshots. Bounds: 10000 retained cells,
+2000 assigned clones, eight scales, k <= 200, two million stored neighbor entries, 500 million
+conservative distance work units; refuse excess without subsampling. Validate against independent
+SciPy geometry/tails and exhaustive set enumeration, including tied/null controls, shared chains,
+clone abundance, missing/ambiguous evidence, cancellation, source drift and saved reopening.
+Run race/scientific regressions, processor checks, six builds, JavaScript, browser/contrast/site
+checks. Keep version 0.5.0; the maintainer performs every Git operation.
+
+**Done, awaiting the maintainer's commit.** The bounded comparison, immutable job/API, Cells
+controls, observed/expected plot, accessible tables, remote action and fifth cloud-study step
+are implemented. New results pin source-compatible receptor snapshots, both parent hashes and
+the full-distance reference when used; saved results reopen without sources or parents. Missing
+full-distance references never fall back automatically. Both neighbor sets, actual degrees,
+clone means/memberships, cell exclusions, conditional tails and all-scale adjustments are kept.
+Untested overlaps/statistics are null. The visible method notes include nonexchangeability and
+possible direct coupling through receptor genes retained in the inherited PCs.
+
+Independent SciPy geometry and tail probabilities agree with every reference neighbor identity,
+mean profile, degree, overlap, expectation and Bonferroni value. Exhaustive subsets confirm small
+upper tails and super-uniform null probabilities; extreme tails retain finite log values.
+Concentrated-neighborhood and fully tied controls, shared-chain exclusions, clone abundance,
+source-order invariance, missing loops/evidence, malformed inputs, work/output bounds and
+cancellation pass. The cloud workflow retains 358 paired cells among 359 expression-PC cells,
+10 clonotype profiles and 20 tests at k = 2, 4. These artificial checks validate the specified
+calculation, not biological specificity or general null exchangeability.
+
+Application/internal race tests and the full required-data scientific suite pass (475.803 s
+for the latter). Final focused race/assembly/reference checks cover the explicit null export;
+API checks cover missing-reference refusal and saved-job integrity. Native/amd64 deterministic
+results, released-project replay and processor checks agree. Vet, gofmt, six platform builds,
+108 JavaScript tests and 14 contrast checks pass. All eight Cells browser scenes pass in both
+themes, including visible/remote equivalence, unchanged test families under filtering, overlay
+links, undo/redo and saved reopening. Final comparison screenshots are refreshed and visually
+inspected. The site builds 34 pages with 39 screenshot sets and passes all 132 audit checks;
+four focused Cells checks pass after the final methods wording. Unrelated performance budgets,
+skipped under race detection, were not rerun. Version remains 0.5.0; slice 9 has not started.
 
 ## Later waves (outlined)
 

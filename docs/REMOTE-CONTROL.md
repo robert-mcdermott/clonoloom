@@ -309,3 +309,21 @@ and resumption. Both saved parents are verified; raw source files need not be re
 `GET /api/modularity/{id}` verifies and returns the complete saved manifest/result without
 requiring parents or sources. See [MODULARITY.md](MODULARITY.md) for the tested population,
 exchangeability assumption, binary edges, exact/Monte Carlo tails, BY correction and work bounds.
+
+### Receptor / expression comparison (development)
+
+`compare_receptor_expression` accepts `{phenotypes, options}`. Omitted `phenotypes` uses the
+displayed phenotype result. It must use a computed map and paired primary αβ amino-acid
+clonotypes with V/J genes or alleles. Keep the parent receptor dataset open for a new request.
+
+Options: `neighbors` is an array of 1–8 distinct integers in 1–200 (default `[5,15]`);
+`cdr3Only: true` explicitly omits germline loops. Otherwise choose `organism: "human"` or
+`"mouse"` and install the V-loop reference in Reference data. No automatic fallback or species
+inference. The fictional cloud-study step uses `{neighbors:[2,4],cdr3Only:true}`.
+
+HTTP: `POST /api/conga` with `{phenotypes, options, start}`. `start:false` resolves identity/cache
+without submitting a job. The server pins both parent hashes, captures required receptor
+sequences from the original dataset snapshot and pins the loop reference when used. Jobs
+support cancellation/resumption without reopening raw expression/receptor files.
+`GET /api/conga/{id}` returns a checksum-verified standalone result. Full methods, population,
+conditional null, tie handling, Bonferroni family and bounds: [CONGA.md](CONGA.md).

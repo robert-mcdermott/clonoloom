@@ -116,6 +116,24 @@ async function showPlaces() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'cell-conga'() {
+    await js(`window.clonoloom.setMode('cells')`);
+    await waitFor('Boolean(window.clonoloom.cellsView)');
+    await js(`window.clonoloom.cellsView.example(true)`);
+    await act('compute_expression_map');
+    const overlay=await act('compute_cell_phenotypes',{map:'latest',annotation:'state'});
+    await js(`(() => {const p=document.querySelector('[aria-label="Comparison phenotype parent"]');p.value=${JSON.stringify(overlay.data.artifact)};p.dispatchEvent(new Event('change'));document.querySelector('[aria-label="Comparison neighborhood sizes"]').value='2,4';document.querySelector('[aria-label="Comparison receptor distance"]').value='cdr3';[...document.querySelectorAll('button')].find((b)=>b.textContent==='Compare receptor and expression neighborhoods').click();return true;})()`);
+    await waitFor(`['ready','failed'].includes(window.clonoloom.cellCongaView?.state().status)`,120000);
+    const state=await js('window.clonoloom.cellCongaView.state()');
+    if(state.status!=='ready'||state.answer.result.analysis.eligible!==358||state.answer.result.analysis.nodes.length!==10||state.answer.result.analysis.tested!==20)throw new Error(`Comparison failed: ${JSON.stringify({status:state.status,error:state.error,result:state.answer?.result.analysis})}`);
+    const remote=await act('compare_receptor_expression',{options:{neighbors:[2,4],cdr3Only:true}});
+    if(remote.data.artifact!==state.artifact)throw new Error('Visible and remote comparison differ');
+    await js(`(()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Comparison undo failed');app.store.redo();const r=app.cellCongaView.state().answer.result.analysis,t=r.tests.find((t)=>t.logP!=null);app.cellCongaView.selectClone(r.nodes[t.node].id);const plot=document.querySelector('.conga-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==t.overlap||Number(plot.querySelector('[data-expected]').dataset.expected)!==t.expected)throw new Error('Plot differs from Go result');const f=document.querySelector('[aria-label="Filter comparison clones"]');f.value=r.nodes[0].id;f.dispatchEvent(new Event('change'));if(app.cellCongaView.state().answer.result.analysis.tested!==20)throw new Error('Filtering changed family');return true;})()`);
+    await js(`(()=>{[...document.querySelectorAll('button')].find((b)=>b.textContent==='Open comparison phenotype overlay').click();return true;})()`);
+    await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length>1');
+    await js(`(async()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellCongaView.show(id);if(app.cellsView.state().record)throw new Error('Saved comparison required expression source');return true;})()`);
+    await js(`document.querySelector('#receptor-expression-neighborhoods').scrollIntoView({block:'start'})`);
+  },
   async 'cell-modularity'() {
     await js(`window.clonoloom.setMode('cells')`);
     await waitFor('Boolean(window.clonoloom.cellsView)');

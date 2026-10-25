@@ -1736,3 +1736,42 @@ are in [MODULARITY.md](../docs/MODULARITY.md). Independent Python itertools enum
 set-based edges; SciPy 1.17.0's public BY API supplies adjusted p-values. Exact scores, means,
 tails and histograms agree; a separate exhaustive 15504-subset case checks Monte Carlo sampling.
 No third-party implementation source was read or copied for this method.
+
+### 5.28 Receptor / expression neighborhoods (wave 6, slice 8)
+
+[Schattgen et al. 2022](https://doi.org/10.1038/s41587-021-00989-2) motivates clonotype-level
+receptor/expression graph comparison. ClonoLoom uses a declared KNN-only adaptation; the full
+population, mean-PC, shared-CDR3, inclusive-tie and all-scale correction policies are in
+[CONGA.md](../docs/CONGA.md). A cell-level receptor graph would let expanded clones generate
+trivial matches. One vertex per clone avoids that multiplicity, while mean PCs may hide
+heterogeneous states within a clone. Inspect the parent overlay as well.
+
+The existing distance implementation follows [Dash et al.](https://doi.org/10.1038/nature22383)
+and [Mayer-Blackwell et al.](https://doi.org/10.7554/eLife.68605), with the explicit TCRdist3
+alignment conventions documented in §5.9. Full mode pins the germline-loop reference and
+organism; the CDR3-only approximation is selected explicitly, never a missing-reference fallback.
+Identical alpha or beta CDR3s are excluded from both candidate pools regardless of V/J. This
+conservative exclusion and inclusion of every cutoff tie are ClonoLoom policies. Arbitrary
+index tie breaking could manufacture common neighborhoods when both distances are tied.
+
+Conditional on candidate count M and actual degrees A and B, uniform-independent neighbor
+labels give hypergeometric overlap with expectation A B / M. Use the inclusive upper tail,
+including observed zero overlap. Fully tied/full candidate sets yield p = 1. A stable log-weight
+recurrence retains extreme tails; underflowing ordinary probabilities are null with finite
+natural-log values, not reported as zero. SciPy's public hypergeom API supplies independent
+reference probabilities; exact subset enumeration independently checks the small cases.
+
+[Bonferroni's simultaneous-comparison principle, Dunn 1961](https://doi.org/10.1080/01621459.1961.10482090)
+provides a dependence-robust family-wise bound: adjust across all testable clone-by-k rows,
+including redundant tied graphs, rather than select the most favorable scale. Valid marginal
+p-values still require the stated conditional null. Biological cell-type/batch/chain-group
+structure can violate exchangeability. Saved PCs may also include receptor genes, directly
+coupling expression to the receptor measurements; no feature removal is added here. This is exploratory association, not independent donor
+replication or evidence of specificity; separately tried analyses are not in this family.
+
+The figure compares observed counts with expected-count markers on a common zero-based linear
+axis; the complete table and neighbor lists make it inspectable. No confidence interval,
+biological density or significance map is implied. Independent aligned, permuted and tied
+fixtures test graph identities, actual degrees, overlap, expectation, tails and adjustment;
+existing reference validation covers the full receptor distance engine. No third-party
+implementation source was read or copied for this slice.
