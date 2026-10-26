@@ -4,6 +4,17 @@
 
 ### Added
 
+- **Definition robustness (wave 7, slice 5).** Audit saved subject-feature contrasts under
+  declared junction and V/J alternatives, preserving subjects, QC and inference settings.
+  Require exact baseline reproduction; retain failed alternatives, all correction slots,
+  assigned evidence and explicit direction/magnitude/interval summaries without p-threshold
+  verdicts. Add across-audit BY correction, forest and subject plots, complete exports,
+  immutable replay, remote controls and saved Methods. Provide a realistic sparse simulated
+  study with synonymous junctions, gene/allele distinctions, uneven depths and full truth.
+  Validate independent regrouping/SciPy references, processor agreement, source-free saved
+  workflows and both-theme screenshots. Document the bounded aggregate-feature scope and
+  distinguish descriptive sensitivity from joint specification-curve inference.
+
 - **Replicated clonotype counts (wave 7, slice 4).** Fit two-group NB2 models under saved
   independent or paired subject designs, with assigned-library offsets, per-clonotype
   Cox–Reid dispersion, optional estimable batch and explicit contrast/filter/BH family.

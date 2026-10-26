@@ -5,6 +5,7 @@ import { toast } from './overlays.js';
 import { mountCohortFeatures } from './cohort-features.js';
 import { mountCohortCompare } from './cohort-compare.js';
 import { mountCohortCounts } from './cohort-counts.js';
+import { mountRobustness } from './robustness.js';
 import { GROUP_FIELDS, cohortSamples, cohortSpec, cohortDesigns, saveCohortDesign, cohortDesignChanged } from '../lib/cohort.js';
 
 export function mountCohort(app, container) {
@@ -20,6 +21,7 @@ export function mountCohort(app, container) {
   const features = mountCohortFeatures(app, featuresBody);
   const comparisons = mountCohortCompare(app, featuresBody);
   const counts = mountCohortCounts(app, featuresBody);
+  const robustness = mountRobustness(app, featuresBody);
   const dataset = () => store.project.datasets.find((d) => d.id === chosen);
   const reportError = (e) => { error = e.message; render(); };
   const change = (patch) => { if (busy) return; spec = { ...spec, ...patch }; result = null; error = ''; render(); };
@@ -134,7 +136,7 @@ export function mountCohort(app, container) {
   app.cohortView = view;
   load().catch((e) => toast(e.message, { kind: 'error' }));
   return {
-    update(topics) { features.update(topics); comparisons.update(topics); counts.update(topics); if (topics.has('project') && sourceProject !== store.project) load().catch(reportError); },
-    destroy() { generation++; features.destroy(); comparisons.destroy(); counts.destroy(); if (app.cohortView === view) delete app.cohortView; },
+    update(topics) { features.update(topics); comparisons.update(topics); counts.update(topics); robustness.update(topics); if (topics.has('project') && sourceProject !== store.project) load().catch(reportError); },
+    destroy() { generation++; features.destroy(); comparisons.destroy(); counts.destroy(); robustness.destroy(); if (app.cohortView === view) delete app.cohortView; },
   };
 }

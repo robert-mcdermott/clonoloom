@@ -384,3 +384,25 @@ job can be polled/cancelled through `/api/jobs`. `GET /api/cohort-counts/{id}` a
 verify the saved result, with provider-term acknowledgment on restricted downloads. Durable
 replay needs the pinned feature parent but no raw source; saved reopening/export is standalone.
 See research §5.33 for assumptions, filtering, bounds and calibration limits.
+
+### Definition robustness (wave 7)
+
+`audit_definitions` starts from a saved `cohort-compare` artifact. Send `comparison` and
+1–5 `definitions`, retaining the parent's chain, cell, require-all and productivity policies.
+Only junction and V/J resolution may differ. For an AA productive bulk baseline, for example:
+
+```json
+{"action":"audit_definitions","args":{"comparison":"cc-<saved-id>","definitions":[{"name":"NT with V/J genes","junction":"nt","v":"gene","j":"gene","chains":[],"cells":"primary","productiveOnly":true,"requireAll":false,"vendor":false}]}}
+```
+
+The response gives the artifact, full BY family, per-feature direction/interval summaries and
+method description. The original dataset supplies the initial abundance snapshots under the
+pinned QC. Subjects, exclusions, features, tests, confidence and seeds stay fixed; choose
+reasonable alternatives before examining outcomes. Neither a p threshold nor across-definition
+pooling determines a robustness verdict. The audit covers aggregate features, not changing
+individual-clonotype identities. See the [guide](site/pages/docs/definition-robustness.html).
+
+HTTP accepts the same fields at `POST /api/definition-robustness`, optionally `start:false`.
+Use `/api/jobs` to poll/cancel. Verified GET `/api/definition-robustness/{id}` and `/download`
+work from saved results; ZIPs preserve source terms and full evidence. Durable replay needs
+the saved comparison and captured job specification, without original raw data.

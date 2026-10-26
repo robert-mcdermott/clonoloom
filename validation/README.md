@@ -384,3 +384,28 @@ the correct effect direction. One of forty unchanged panel receptors in the inde
 example has BH≤0.05, versus zero in the paired example. The null example fits 45 eligible
 receptors and has zero BH≤0.05; three of its 48 panel receptors fail the prespecified count
 filter. These are recorded finite-study outcomes, not claims of guaranteed error control.
+
+### Definition robustness
+
+`validation/reference/robustness.py` independently groups literal synthetic AIRR-like rows
+under AA genes, NT genes, AA alleles and AA junction-only rules. Plain Python computes abundance,
+richness, entropy and Hill q=1; SciPy 1.17.0 computes Welch inference and BY. Exhaustive label
+assignment gives conditional rank tails. Generate with `uv run --no-project validation/reference/robustness.py`. `TestDefinitionRobustnessIndependentReference` compares
+all subject values, effects, marginal intervals, raw probabilities and the full BY family;
+its complete-result digest is pinned for arm64/amd64 agreement. This checks implementation,
+not the validity of a particular biological definition or population assumption.
+
+`internal/robustness` tests preserve failed slots, missing intervals, zero/null distinctions,
+policy/duplicate refusals, stale baselines, cancellation and identical replay. Summary direction
+uses estimates and uncertainty uses intervals; neither uses p-value thresholds. API tests
+exercise exact baseline inference, strict requests, saved identity, raw-source/grandparent-free
+replay, provider terms and full exports. Browser scene `definition-robustness` checks visible
+and remote equivalence, four complete forest rows, 32 subject observations, undo/redo,
+project reopening, source-free exports, figure provenance, Methods and accessibility in both themes.
+
+`TestDefinitionStudyTruth` generates the complete 32-subject study, independently regroups its
+literal truth and compares every positive abundance vector with the production AIRR/clonotype
+pipeline. The fixed seed retains 4,082 zeros and 3,590 singletons; richness changes sign across
+definitions (−244.125 to +64.125), while Shannon and Hill q=1 mean estimates remain negative.
+The study digest is pinned across processors. Earlier count presets retain their own original
+digests. This is a controlled partition/depth example, not fitted biology or a calibration claim.

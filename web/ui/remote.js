@@ -199,6 +199,14 @@ export function remoteActions(app) {
       return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
     },
 
+    async audit_definitions(options = {}) {
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.robustnessView, 5000, 'Definition robustness');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before the audit was saved.');
+      return { message: 'Definition audit saved.', data: { artifact: result.artifact.id, family: result.result.analysis.family, summaries: result.result.analysis.summaries, description: result.result.description } };
+    },
+
     async fit_cohort_counts(options = {}) {
       await app.setMode('cohort');
       const view = await waitFor(() => app.cohortCountsView, 5000, 'Replicated counts');

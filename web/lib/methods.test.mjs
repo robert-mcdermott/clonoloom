@@ -419,3 +419,10 @@ test('cohort feature methods use saved observations and source parameters', () =
   assert.match(out.text, /Saved Subject feature table result cf-pinned: Design Pre, version 2: 6 subjects, 6 observations; parent div-original, unit umis, no pooling/);
   assert.ok(out.references.some((r) => r.includes('Jost 2006')));
 });
+
+test('definition audits retain their saved methods and the distinct synthetic model', () => {
+  const result={id:'rb-pinned',kind:'definition-robustness',method:'Descriptive definition sensitivity',describe:'Four declared definitions, 32 subjects, marginal intervals and 24 BY slots.',citation:'Simonsohn et al. 2020; Benjamini & Yekutieli 2001.'};
+  const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-definition-variants-v1'}}]};
+  const out=methodsParagraph({dataset:pbmc,summary,program,results:[result]});
+  assert.match(out.text,/Saved Descriptive definition sensitivity result rb-pinned/);assert.match(out.text,/synonymous/);assert.match(out.text,/not a fitted biological population/);assert.doesNotMatch(out.text,/SIM calls|identifiers do not establish|uniformly/);assert.ok(out.references.some((r)=>r.includes('Simonsohn')));
+});

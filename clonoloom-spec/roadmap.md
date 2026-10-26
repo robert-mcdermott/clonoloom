@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–3 are committed and pushed. Slice 4 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slices 1–4 are committed and pushed. Slice 5 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2281,7 +2281,7 @@ and diff checks pass. Version remains 0.6.0. Subsequently committed and pushed b
 
 ### Slice 4: replicated clonotype counts
 
-**Implemented and validated; awaiting commit.** T4 remainder, bounded to saved two-group
+**Committed and pushed.** T4 remainder, bounded to saved two-group
 independent/paired studies. The scientific contract is research §5.33.
 
 - Capture whole observed counts under the pinned feature parent's sequence definition/QC;
@@ -2330,7 +2330,55 @@ screenshots are visually reviewed. Review caught and corrected an unintended SVG
 count observations now have an explicit zero baseline. The site builds 39 pages with 47
 screenshot sets; 38 audited pages pass all 152 theme/viewport checks with no accessibility
 violations or overflow. All 14 contrast checks, formatting and diff checks pass. Version stays
-0.6.0; no commit, push, tag, release or publication. Slice 5 has not begun.
+0.6.0; no tag, release or publication. Slice 4 was subsequently committed and pushed by the maintainer.
+
+### Slice 5: definition robustness
+
+**Implemented and validated; awaiting commit.** C5 is bounded to saved aggregate subject-feature
+contrasts; the scientific contract is research §5.34. Individual-clonotype count-model audits
+need an explicit correspondence between changing receptor partitions and are not claimed here.
+
+- Pin and reconstruct the complete saved comparison, then capture baseline plus 1–5 declared
+  junction/V/J alternatives under identical source QC, chain/cell/productivity rules and unit.
+  Preserve all subjects, exclusions, features, tests, confidence and randomization settings.
+  Refuse equivalent definitions, policy changes and any baseline measurement/inference drift.
+- Reuse the validated diversity and subject-comparison engines. Retain missing/failed analyses
+  with reasons and full test-family membership. Keep within-definition BH and add BY over
+  both tests × features × definitions; marginal intervals remain unadjusted.
+- Report direction, effect-size range and interval behavior separately, without a p-threshold
+  verdict. Definitions reuse subjects; no pooled effect, equivalence claim, joint confidence
+  interval or specification-curve inferential test is implied.
+- Show every definition in a common-axis forest in declared order, complete subject/pair
+  observations, assignment changes, tests and failures. Preserve methods/figure provenance,
+  immutable jobs/replay, provider-aware full exports, remote control and saved reopening.
+- Add a 32-subject, long-tailed gamma-Poisson UMI example with uneven depths and explicit
+  synonymous junction/gene/allele distinctions. Literal truth verifies every partition and
+  count; simulated observed richness reverses direction across definitions. This deliberately
+  sensitive construction is not fitted biological evidence or depth-standardized inference.
+- Keep version 0.6.0. Do not begin slice 6 or perform release operations in this slice.
+
+Validation includes independently grouped Python/SciPy references for all subject values,
+mean effects/intervals, conditional rank tails and BY; missingness/failure/policy/cancellation
+controls; exact baseline and source-free replay/export; literal simulator truth and previous
+preset byte compatibility; processor agreement; accessible browser workflows and both-theme
+visual review.
+
+**Validation completed:** the full application/internal race suite passes (application 65.189 s,
+count-model calibration 470.787 s, simulator 73.689 s). The required-data scientific suite
+passes in 504.456 s, excluding unchanged performance-budget tests. Final focused race checks
+cover provenance/checksum refusals, paired observations, cancellation between definitions,
+abundance bounds and incompatible simulation options. The compiler scan finds no fused
+multiply-adds. Native/amd64 complete-result and example digests agree; earlier count presets
+retain their original bytes. The four-definition example's richness contrast spans −244.125
+to +64.125 observed clonotypes, explicitly a descriptive range under unequal observed depth.
+
+All 126 JavaScript tests, Go vet and six CGO-free platform builds pass. The complete browser
+workflow passes in both themes, including visible/remote identity, every forest row, undo/redo,
+saved reopening, source-free ZIP, figure provenance and saved Methods. Both final screenshots
+are visually reviewed. The local site builds 40 pages with 48 screenshot sets; 39 audited pages
+pass all 156 theme/viewport checks with no accessibility violations or overflow. All 14
+contrast checks, formatting and diff checks pass. Version stays 0.6.0; no commit, push, tag,
+release or publication. Slice 6 has not begun.
 
 ## Later waves (outlined)
 

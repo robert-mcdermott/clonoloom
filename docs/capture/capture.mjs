@@ -216,9 +216,45 @@ async function countModelScene(paired) {
   await clearToasts();await checkAccessibility();
 }
 
+async function definitionAuditScene() {
+  await act('new_project',{name:'Definition-sensitive repertoire study'});
+  await act('open_example',{example:'simulated-definition-study',download:true});
+  const samples={};for(let i=0;i<32;i++)samples[`S${String(i+1).padStart(2,'0')}-1`]={batch:`B${i%2+1}`};
+  await act('annotate_samples',{samples});await act('measure_diversity');
+  await act('check_cohort_design',{name:'Control and stimulated subjects',save:true,spec:{unit:'subject',layout:'independent',groupField:'condition',levels:['control','stimulated'],exclude:{}}});
+  const state=(await act('get_state')).data;
+  const features=(await act('build_cohort_features',{design:state.cohortDesigns[0].id,diversity:state.artifacts.find((r)=>r.kind==='diversity').id})).data.artifact;
+  const comparison=(await act('compare_cohort',{features,options:{features:['hill1','richness','shannon'],confidence:.95,permutations:999,seed:20261025}})).data.artifact;
+  await js(`window.clonoloom.robustnessView.choose(${JSON.stringify(comparison)})`);
+  const definitions=await js(`(()=>{const p=window.clonoloom.cohortCompareView.state().answer.result.features.parent.definition;return [['nt','gene','NT · V/J genes'],['aa','allele','AA · V/J alleles'],['aa','none','AA · junction only']].map(([junction,r,name])=>({...p,junction,v:r,j:r,name}))})()`);
+  const answer=(await act('audit_definitions',{comparison,definitions})).data;
+  if(answer.family!==24)throw new Error('Wrong audit family');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.robustnessView;v.select('richness');const doc=v.state().answer.result,r=doc.analysis;
+    if(r.variants.length!==4||r.variants.some((x)=>x.table.rows.length!==32)||r.summaries.find((x)=>x.feature.id==='richness').direction!=='Effect direction changes across definitions')throw new Error('Audit lost definition-dependent richness');
+    if(document.querySelectorAll('.definition-robustness [data-estimate]').length!==4||document.querySelectorAll('.definition-robustness [data-lower]').length!==4)throw new Error('Forest geometry wrong');
+    if(JSON.stringify(r.variants[0].analysis)!==JSON.stringify(doc.parent.analysis))throw new Error('Baseline changed');
+    window.auditCheck={id:v.state().artifact,snapshot:JSON.stringify(doc)};
+    app.store.undo();if(app.store.project.artifacts.some((a)=>a.id===window.auditCheck.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:window.auditCheck.id});return true;
+  })()`);
+  await waitFor(`window.clonoloom.robustnessView?.state().status==='ready'`);
+  await js(`(async()=>{const v=window.clonoloom.robustnessView;if(JSON.stringify(v.state().answer.result)!==window.auditCheck.snapshot)throw new Error('Saved audit changed');await v.choose(${JSON.stringify(comparison)});[...document.querySelectorAll('.definition-robustness button')].find((b)=>b.textContent==='Audit definitions').click();return true})()`);
+  await waitFor(`window.clonoloom.robustnessView.state().status==='ready'`);
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.robustnessView;if(v.state().artifact!==window.auditCheck.id)throw new Error('Visible/remote settings differ');
+    const ensure=app.ensureDataset,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};URL.createObjectURL=(b)=>{blob=b;return create(b)};
+    try{await v.show(window.auditCheck.id);await v.download();const b=new Uint8Array(await blob.arrayBuffer());if(b[0]!==80||b[1]!==75)throw new Error('ZIP failed');}finally{app.ensureDataset=ensure;URL.createObjectURL=create;}
+    v.select('richness');const {figureBlob}=await import('./ui/figures.js');for(const which of ['effects','observations']){const text=await(await figureBlob(v.plotSpec(which),'svg')).text();if(!text.includes('Contrast:')||!text.includes('simultaneous')||!text.includes('declared order'))throw new Error('Figure lost provenance');}return true;
+  })()`);
+  await act('show_methods');if(!await js(`(()=>{const s=document.querySelector('.methods-text').textContent;return s.includes('Descriptive sensitivity')&&s.includes('synonymous')&&document.querySelector('.methods-references').textContent.includes('Specification curve')})()`))throw new Error('Audit/example methods absent');await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.definition-robustness');root.closest('.workbench-scroll').scrollTop=root.querySelector('.robustness-title').offsetTop-65;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async 'definition-robustness'() { await definitionAuditScene(); },
   async 'cohort-counts'() { await countModelScene(false); },
   async 'cohort-counts-paired'() { await countModelScene(true); },
   async 'cohort-compare'() { await cohortComparisonScene(false); },
@@ -1158,7 +1194,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts')) ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

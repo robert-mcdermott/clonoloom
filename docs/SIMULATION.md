@@ -438,3 +438,32 @@ independent condition or paired timepoint design, measure diversity and build it
 then fit replicated counts with count ≥10 in ≥12 samples and batch adjustment. Each subject
 contributes one observation per selected group. The shared panel is usually eligible; private
 clonotypes stay in denominators and exports but fail this declared prevalence filter.
+
+## Definition-sensitive repertoire study
+
+`clonoloom simulate --preset definition-study --out <empty-folder>` generates 32 independent
+subjects (16 control, 16 stimulated), with model `clonoloom-definition-variants-v1` and seed
+20261028. It extends the replicated-count generator with a sparse private tail, mean
+1800/k^1.2 multiplied by exposure and by 1.6 in the comparison group. Uneven depths,
+gamma-Poisson variability and existing shared subject/batch effects remain. All 600 private
+nucleotide identities per subject are distinct; comparison subjects have synonymous triples
+sharing AA junctions, labeled arbitrarily TRBV5-1*01, TRBV5-1*02 and TRBV5-2*01, with J TRBJ2-7*01.
+Reference subjects have distinct private AA junctions. These are fictional sequences and
+arbitrary parseable gene labels, not fitted recombination or inferred germline assignments.
+
+The example deliberately makes observed-depth diversity depend on definition. It is suitable
+for demonstrating sensitivity, not estimating biological effects or validating power/FDR.
+Richness also depends on sampling depth: the audit does not rarefy or standardize coverage.
+The default seed has 4,082 zero and 3,590 singleton generating observations. Under four declared
+definitions, the simulated stimulated-minus-control richness effect spans −244.125 to +64.125
+observed clonotypes; this range is descriptive, not a confidence interval.
+
+`truth/observations.tsv` adds `v_call`, `j_call`, `junction_aa` to the count study's full truth,
+including every zero count. Its source files and metadata have checksums in `truth/truth.json`.
+The example is offered as **Definition-sensitive repertoire study**. Measure diversity, save
+an independent condition design, build features and compare richness/Shannon/Hill q=1 before
+opening Definition robustness. Record batch from truth as in the count examples; the feature
+comparison itself is the existing unadjusted two-group comparison. Existing count examples
+keep their previous bytes. Definition variants currently require independent groups and cannot be combined with the
+all-null count option. The truth’s `log2_effect` column describes the shared panel; the separate
+1.6 private-count scale is declared in the model and included in every recorded mean.

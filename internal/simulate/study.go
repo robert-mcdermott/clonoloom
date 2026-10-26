@@ -59,6 +59,7 @@ type Study struct {
 
 // Presets are the studies `clonoloom simulate` starts from.
 var Presets = map[string]Study{
+	"definition-study":   {Name: "definition-study", Title: "A definition-sensitive repertoire study", Seed: 20261028, Counts: &CountStudy{Subjects: 32, Layout: "independent", DefinitionVariants: true}},
 	"counts-paired":      {Name: "counts-paired", Title: "A replicated paired repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 28, Layout: "paired"}},
 	"counts-independent": {Name: "counts-independent", Title: "A replicated independent repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 32, Layout: "independent"}},
 	"counts-null":        {Name: "counts-null", Title: "A replicated null repertoire study", Seed: 20261027, Counts: &CountStudy{Subjects: 32, Layout: "independent", Null: true}},

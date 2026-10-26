@@ -18,7 +18,8 @@ no Python, R or account, and keeps your data on your computer.
 
 **Current release:** 0.6.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
 Wave 7 development adds saved subject designs, feature tables, two-group comparisons and
-[replicated clonotype count models](docs/site/pages/docs/cohort-counts.html).
+[replicated clonotype count models](docs/site/pages/docs/cohort-counts.html), and
+[definition robustness](docs/site/pages/docs/definition-robustness.html).
 Pseudobulk remains planned for a later slice.
 
 **B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an

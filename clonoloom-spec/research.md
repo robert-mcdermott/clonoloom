@@ -2137,3 +2137,100 @@ Independent literal TSV checks reconcile every example observation with truth, p
 private/shared identity, zero counts, effects and hashes. API/browser checks validate capture,
 whole counts before aggregation, immutable lineage/replay, checksum refusals, provider notices,
 source-free reopening/export, exact plot membership, figure labels, undo/redo and Methods.
+
+### 5.34 Definition robustness of subject-feature contrasts
+
+**Sources and scope.** Simonsohn, Simmons & Nelson (2020), *Specification curve analysis*,
+Nature Human Behaviour 4:1208–1214, doi:10.1038/s41562-020-0912-z
+([author manuscript](https://faculty.wharton.upenn.edu/wp-content/uploads/2016/11/33-Simonsohn-Simmons-Nelson-2020.pdf)),
+motivates declaring reasonable, nonredundant alternatives and displaying their outcomes.
+Its descriptive display and joint inferential procedure are separate. ClonoLoom implements
+only a bounded descriptive definition audit, **not** the paper's joint specification-curve
+test, a meta-analysis or independent replications. Sofou et al. (2023), *Clonotype definitions
+for immunogenetic studies: proposals from the EuroClonality NGS Working Group*, Leukemia
+37:1750–1752, doi:10.1038/s41375-023-01952-7 ([PubMed](https://pubmed.ncbi.nlm.nih.gov/37391484/)),
+provides the immunogenetic context: nucleotide identity and broader groupings answer different
+questions. No single alternative definition is asserted to recover a biological ground truth.
+No external implementation source was used.
+
+**Pinned estimand.** Begin with an immutable, checksum-verified `cohort-compare` result.
+Reconstruct its design/features and reproduce its inference before accepting it. Recompute
+its selected aggregate diversity features under the baseline and 1–5 distinct, declared
+junction/V/J alternatives. Only aa/nt and gene/allele/family/none resolution vary. Preserve
+chains, cell primary/all selection, require-all policy, productivity, QC, biological subjects,
+all exclusions/annotations, abundance unit, contrast, selected features, tests, confidence,
+randomization seed and budget. Equivalent definitions (ignoring names), vendor identities,
+and population-policy changes are refused. AA definitions require productive sequences;
+an NT baseline allowing nonproductive sequences cannot be compared with AA by changing that
+population silently. Missing junctions/calls can alter assignment; each definition retains
+exclusion counts and per-sample assigned abundance/richness for inspection.
+
+Use the established diversity point estimates (§5.31), with **no within-sample bootstrap**,
+and the exact subject-level tests/intervals of §5.32. Retain all selected subjects: undefined
+features stay unavailable, not zero or silently removed. Baseline features and inference
+must match the parent exactly; changed source measurements cannot masquerade as definition
+sensitivity. The aggregate feature estimand is comparable as a declared summary, but changing
+the receptor partition changes its interpretation. Individual clonotype count-model results
+are outside this slice: clone identifiers and biological group membership change across
+partitions, so matching those identifiers would not preserve an estimand.
+
+**Multiplicity and interpretation.** Keep each comparison's original within-definition BH
+family. Add Benjamini–Yekutieli (2001), *The control of the false discovery rate in multiple
+testing under dependency*, Annals of Statistics 29:1165–1188,
+doi:10.1214/aos/1013699998, over both tests × every selected feature × every declared definition.
+For M slots, use the existing validated `modularity.AdjustBY`: sorted p_(i) are multiplied
+by M H_M/i, made monotone from the right and capped at 1. Failed/unavailable slots enter as
+p=1 internally and remain null in output; the family never shrinks after seeing results.
+Definitions and features reuse the same subjects, so their tests are dependent. BY tolerates
+arbitrary dependence **provided individual p-values are valid**; it does not repair assumptions,
+exploratory selection of definitions/features after seeing outcomes, or unreported analyses.
+No correction alters the marginal t or conservative probability intervals.
+
+For each feature, report available effect/interval counts; minimum, maximum and span of mean
+estimates; whether signs agree, change, include zero, are all zero, or are incomplete; and
+whether all marginal intervals lie above, below, include zero, differ, or are incomplete.
+These are separate descriptive summaries, with **no p-value cutoff**. The estimate range is
+not a confidence interval; agreeing signs do not prove robustness to undeclared alternatives,
+biological truth, joint coverage or practical equivalence. All-zero effects do not establish
+equivalence. Sampling depth, compositional changes and assignment/annotation quality can
+still explain observed diversity differences. Do not interpret UMI abundance as biological
+replication or assert causal/antigen-specific effects.
+
+**Visuals.** A horizontal forest displays every declared definition, baseline first, without
+sorting by p or coloring significance. It shares one feature-specific numerical axis, includes
+zero, shows original Go estimates and marginal t intervals, and retains failed rows/reasons.
+Missing intervals are not zero-width intervals. The selected definition also offers the
+existing complete subject/pair plot; no pooled across-definition error bar is drawn. Tables
+show both tests, raw/within/across probabilities, assignment shifts and explicit units.
+Figure captions retain all rules, subject counts, contrast, source/design identity and limits.
+
+**Example and validation.** `definition-study` v1 is a controlled 32-subject independent
+UMI study, not a fit to human repertoires. It retains uneven lognormal sampling exposure,
+gamma-Poisson variability, 48 shared receptors, subject/batch effects and 600 private
+nucleotide identities per subject from §5.33. Private mean is 1800/k^1.2 times exposure,
+with a 1.6 comparison-group scale. Comparison private identities occur in synonymous triples:
+Cys TGT/TGC and terminal Phe TTT/TTC preserve the AA junction; arbitrary labels TRBV5-1*01,
+TRBV5-1*02, TRBV5-2*01 and TRBJ2-7*01 permit allele/gene/junction-only distinctions. Reference
+private AA identities are distinct. Gene labels are parseable labels, not inferred germline
+assignments or a sequence-generation model. Full truth includes every zero, count, mean,
+exposure, dispersion, sequence and gene call. The example deliberately combines partition
+and depth differences to demonstrate sensitivity, not to establish a biological response.
+
+A separately written Python reference groups literal rows and computes entropy, exponentiated
+entropy, richness and assigned abundance; public SciPy 1.17.0 supplies Welch inference and BY,
+and exhaustive Python label enumeration supplies conditional rank tails. Go compares every
+subject value, effect, interval and corrected probability. Separate simulator tests reconcile
+all abundance vectors against literal truth across four definitions; previous presets retain
+their original byte digests. API tests cover exact baseline, failed/undefined alternatives,
+strict input, captured-evidence replay without source/grandparents, cancellation, checksums,
+provider terms and complete CSV/JSON. Browser tests exercise visible/remote settings, every
+forest row, figure provenance, saved Methods, project reopening and both themes.
+
+**Operational bounds.** At most 256 source samples, 200 selected subject/group observations,
+6 total definitions and 400,000 positive sample/clonotype abundance entries per definition;
+each captured abundance is finite, positive and ≤10^12. Retained rearrangements missing counts
+are refused, not imputed. Each definition uses the existing cohort work bound (50 million
+randomization operations); the audit runs definitions sequentially, at most six such budgets.
+Capture is required initially; immutable jobs retain sufficient abundance evidence for replay.
+Baseline failures abort; unavailable alternative analyses remain visible with all family slots.
+These are implementation limits, not sample-size or power recommendations.

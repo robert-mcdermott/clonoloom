@@ -812,3 +812,31 @@ and every design column; JSON retains the contrast, exclusions, definition, QC a
 This is a bounded, two-group, unmoderated NB2 model with subject blocks for paired studies and
 optional batch; the exact statistical contract and limits are in research §5.33 and the
 [replicated count guide](site/pages/docs/cohort-counts.html).
+
+## Definition robustness
+
+`definition-robustness` artifacts store `definition-robustness.json`, format
+`clonoloom-definition-robustness`, method version 1. The document embeds its entire
+checksum-pinned `cohort-compare` parent and manifest. Each declared variant retains the
+normalized definition, exclusions, captured positive abundance vectors for every source sample,
+subject feature table, cohort result and across-audit BY values (null when unavailable).
+Failed alternatives keep their reason and family slots; baseline failure aborts.
+
+`POST /api/definition-robustness` takes `{comparison, definitions, start?}`; `definitions`
+contains 1–5 alternative definition objects and the saved baseline is prepended. Only
+junction/V/J resolution may vary; normalized policy changes and duplicates are refused.
+The original dataset must be open initially. Source counts must reproduce baseline features
+exactly; the immutable worker also reproduces baseline inference. The `rb-` identity hashes
+parent ID/checksum, declared definitions, captured evidence and method version. Replay uses
+that evidence plus the comparison parent, not raw files or feature/diversity grandparents.
+GET `/api/definition-robustness/{id}` verifies the artifact checksum. `/download` returns
+`sensitivity.csv`, complete JSON/manifest, per-definition feature CSVs and inherited NOTICE;
+provider terms require the established acceptance flow.
+
+The CSV keeps all definition/feature rows, both tests, raw p, within-definition BH,
+across-audit BY, effects/intervals, failures and descriptive summaries. Missing numbers are
+blank in CSV and null in JSON. Two tests × selected features × all definitions form the BY
+family, including unavailable slots. Marginal intervals are not multiplicity-adjusted;
+summary ranges are descriptive. No inference treats definitions as independent replications.
+Bounds and interpretive limits are in the [definition guide](site/pages/docs/definition-robustness.html)
+and research §5.34. This format does not equate individual clonotype identities across definitions.
