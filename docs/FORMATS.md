@@ -967,3 +967,25 @@ CSV contains every included sample × metric slot; unavailable numeric fields an
 flags are blank. Excluded samples and all denominators remain in JSON. Provider restrictions
 use the existing 409/explicit `accept=1` flow. Subject IDs are retained; export is not
 implicitly de-identified. No source sample or QC filter is modified by a flag.
+
+## Pseudobulk count evidence (wave 7, slice 10)
+
+`POST /api/pseudobulk` accepts `phenotypes` (1–32 explicit saved IDs), `options` with a
+required supplied `annotation` column and `minCells` (default 10), and optional `start:false`.
+Unknown fields and trailing JSON are refused. All parents must share one receptor dataset,
+definition, QC, receptor size population and breakpoints. Original expression sources are
+fingerprint-verified for each new capture. Feature IDs/names/types/order must match exactly.
+No files, barcodes, cell types or samples are inferred from paths.
+
+The `pb-…` artifact, kind `pseudobulk`, contains `clonoloom-pseudobulk` version 1:
+`evidence` pins source/parent fingerprints, policies, subject/sample/time annotations, sparse
+raw Gene Expression counts and cell inclusion reasons; `analysis` contains all sample × type
+× bin groups, all feature sums, library totals, eligibility/reasons and cell denominators.
+Absent groups have null counts/total. Measured zeros are numeric zero. Low-cell groups keep
+raw counts but are ineligible. Counts and library totals are bounded at 9e15.
+
+`GET /api/pseudobulk/{id}` verifies saved checksums. `/download` includes `pseudobulk.json`,
+`manifest.json`, `cells.json`, complete `observations.csv` and `NOTICE.txt`. Every group × feature
+is exported; unavailable counts are blank. Provider terms require `accept=1`. Reopening and
+durable replay use captured evidence without source or parent files. Subject identifiers remain
+present. This format makes no differential-expression, normalization or significance claim.

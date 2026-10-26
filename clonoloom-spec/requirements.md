@@ -130,7 +130,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | M2 | Clonal expansion by cluster or cell type; clonotype size on the map | done (wave 6, slice 6: distinct-cell receptor/mapped sizes, configurable categories, descriptive supplied-annotation counts and fractions, sample/subject boundaries, linked selection and complete provenance; no cell-level significance tests) |
 | M3 | Clonotype modularity and CoNGA-style graph-versus-graph analysis | done (wave 6, slices 7–8: clonotype modularity and bounded paired-alpha-beta CoNGA-style KNN comparison, explicit conditional nulls and multiple testing; not the complete CoNGA pipeline) |
 | M4 | Antigen-capture (BEAM, dextramer) specificity calls per clonotype | parked |
-| M5 | Pseudobulk differential expression between expanded and other clonotypes per cell type, subject as the unit | planned (wave 7) |
+| M5 | Pseudobulk differential expression between expanded and other clonotypes per cell type, subject as the unit | foundation implemented (wave 7, slice 10: exact sample/subject × supplied type × receptor-size category raw Gene Expression sums, missingness and minimum-cell evidence, source-free replay and complete exports; differential expression remains slice 11) |
 
 ## Cohorts
 

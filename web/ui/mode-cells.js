@@ -1,4 +1,5 @@
 import { mountCellAnnData } from './cell-anndata.js';
+import { mountCellPseudobulk } from './cell-pseudobulk.js';
 import { mountCellPhenotypes } from './cell-phenotypes.js';
 import { mountCellConga } from './cell-conga.js';
 import { mountCellModularity } from './cell-modularity.js';
@@ -56,6 +57,7 @@ export function mountCells(app, container) {
   const analysis = mountCellAnalysis(app, root.querySelector('.view-body'), () => active);
   const phenotypes = mountCellPhenotypes(app, root.querySelector('.view-body'), () => active);
   const anndata = mountCellAnnData(app, root.querySelector('.view-body'));
+  const pseudobulk = mountCellPseudobulk(app, root.querySelector('.view-body'));
   const conga = mountCellConga(app, root.querySelector('.view-body'));
   const modularity = mountCellModularity(app, root.querySelector('.view-body'));
 
@@ -180,8 +182,8 @@ export function mountCells(app, container) {
       }
       if (topics.has('datasets')) { const sample = samples.value; drawDatasets(); samples.value = sample; }
       drawSaved();
-      analysis.update(topics); phenotypes.update(topics); modularity.update(topics); conga.update(topics); anndata.update(topics);
+      analysis.update(topics); phenotypes.update(topics); modularity.update(topics); conga.update(topics); anndata.update(topics); pseudobulk.update(topics);
     },
-    destroy() { anndata.destroy(); conga.destroy(); modularity.destroy(); phenotypes.destroy(); analysis.destroy(); serial++; controller?.abort(); if (app.cellsView === api) delete app.cellsView; root.remove(); },
+    destroy() { pseudobulk.destroy(); anndata.destroy(); conga.destroy(); modularity.destroy(); phenotypes.destroy(); analysis.destroy(); serial++; controller?.abort(); if (app.cellsView === api) delete app.cellsView; root.remove(); },
   };
 }

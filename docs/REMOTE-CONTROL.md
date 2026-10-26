@@ -526,3 +526,17 @@ identity, jobs and undo/redo. No active clonotype definition is used or changed.
 Subject repeats within one batch require explicit exclusions; repeats across batches remain
 visible in sample/subject counts and do not establish independent batches. Small groups and
 zero MAD yield null scores with reasons. A review flag does not remove data or correct batches.
+
+### Pseudobulk count evidence
+
+After saving one receptor-population phenotype result per sample with explicit subject/timepoint:
+
+```json
+{"action":"aggregate_pseudobulk","args":{"phenotypes":["pheno-…","pheno-…"],"options":{"annotation":"cell_type","minCells":10}}}
+```
+
+The action uses Cells' visible workflow and saves the same `pseudobulk` artifact. Parents must
+share definition/QC/size breakpoints and feature identities. The response includes artifact ID,
+eligible group count, subject count and method description. This sums raw counts; it does not
+fit a differential-expression model. Original sources are needed for capture, not saved replay
+or export. Download complete evidence from `GET /api/pseudobulk/{id}/download`.

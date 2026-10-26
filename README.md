@@ -26,7 +26,10 @@ with explicit typing universes, complete BY families and marginal subject-freque
 [Contamination evidence](docs/site/pages/docs/contamination.html) adds exact cross-subject nucleotide
 sharing with abundance and model context; review flags never remove sequences.
 [Batch QC](docs/site/pages/docs/batch-qc.html) adds sample-level reference distributions,
-median/MAD review flags and explicit unscored evidence. Pseudobulk remains planned for a later slice.
+median/MAD review flags and explicit unscored evidence.
+[Pseudobulk counts](docs/site/pages/docs/pseudobulk.html) preserve raw subject/sample counts for
+supplied cell types and receptor-size categories, with explicit coverage and missingness.
+Differential expression follows in slice 11.
 
 **B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an
 explicit threshold, reconstruct D-masked germlines, measure somatic hypermutation, explore

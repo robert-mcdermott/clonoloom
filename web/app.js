@@ -173,7 +173,7 @@ async function start() {
     // A result opens in its view.
     const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
     if (['cohort-features', 'cohort-compare', 'definition-robustness', 'cohort-counts'].includes(result?.kind) && store.ui.mode !== 'cohort') app.setMode('cohort');
-    if (['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export'].includes(result?.kind) && store.ui.mode !== 'cells') app.setMode('cells');
+    if (['pseudobulk', 'expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export'].includes(result?.kind) && store.ui.mode !== 'cells') app.setMode('cells');
     if (['families', 'germlines', 'shm', 'lineages', 'isotypes'].includes(result?.kind) && store.ui.mode !== 'bcells') app.setMode('bcells');
     if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
     if (['tracking', 'expansion', 'classes', 'attribution'].includes(result?.kind) && store.ui.mode !== 'tracking') app.setMode('tracking');

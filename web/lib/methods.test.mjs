@@ -455,3 +455,9 @@ test('batch QC methods retain sample-level policy and construction limits',()=>{
  const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'bqc-pinned',kind:'batch-qc',method:'Descriptive batch QC',describe:'Zero MAD remains unscored; no correction.',citation:'Iglewicz and Hoaglin (1993).'}]});
  assert.match(out.text,/Saved Descriptive batch QC result bqc-pinned/);assert.match(out.text,/26 samples from 25 fictional subjects/);assert.match(out.text,/not calibrated/);assert.ok(out.references.some((r)=>r.includes('Iglewicz')));
 });
+
+test('pseudobulk methods describe raw evidence and the known artificial model',()=>{
+ const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-pseudobulk-study'}}]};
+ const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'pb-pinned',kind:'pseudobulk',method:'Exact raw pseudobulk sums',describe:'Absent groups remain unavailable; no differential-expression test.',citation:'Crowell et al. 2020. doi:10.1038/s41467-020-19894-4.'}]});
+ assert.match(out.text,/Saved Exact raw pseudobulk sums result pb-pinned/);assert.match(out.text,/negative-binomial/);assert.match(out.text,/not make cells independent biological replicates/);assert.doesNotMatch(out.text,/identifiers do not establish/);assert.ok(out.references.some((r)=>r.includes('s41467')));
+});

@@ -1,0 +1,1119 @@
+{
+  "input": {
+    "options": {
+      "annotation": "type",
+      "minCells": 3
+    },
+    "features": [
+      {
+        "id": "g0",
+        "name": "Gene 0",
+        "type": "Gene Expression"
+      },
+      {
+        "id": "g1",
+        "name": "Gene 1",
+        "type": "Gene Expression"
+      },
+      {
+        "id": "g2",
+        "name": "Gene 2",
+        "type": "Gene Expression"
+      }
+    ],
+    "bins": [
+      "1",
+      ">1"
+    ],
+    "samples": [
+      {
+        "parent": "p0",
+        "expression": "e0",
+        "annotation": {
+          "name": "sample0",
+          "subject": "subject0",
+          "timepoint": "visit0"
+        },
+        "cells": [
+          {
+            "barcode": "C0",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 1
+              }
+            ]
+          },
+          {
+            "barcode": "C1",
+            "type": "",
+            "bin": "",
+            "reason": "Missing cell-type annotation",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C2",
+            "type": "A",
+            "bin": "",
+            "reason": "Unavailable unique clonotype size",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 3
+              }
+            ]
+          },
+          {
+            "barcode": "C3",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 4
+              }
+            ]
+          },
+          {
+            "barcode": "C4",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 5
+              }
+            ]
+          },
+          {
+            "barcode": "C5",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 6
+              }
+            ]
+          },
+          {
+            "barcode": "C6",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 7
+              }
+            ]
+          },
+          {
+            "barcode": "C7",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 8
+              }
+            ]
+          },
+          {
+            "barcode": "C8",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 9
+              }
+            ]
+          },
+          {
+            "barcode": "C9",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 10
+              }
+            ]
+          },
+          {
+            "barcode": "C10",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C11",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C12",
+            "type": "B",
+            "bin": "1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C13",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C14",
+            "type": "C",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          }
+        ]
+      },
+      {
+        "parent": "p1",
+        "expression": "e1",
+        "annotation": {
+          "name": "sample1",
+          "subject": "subject0",
+          "timepoint": "visit1"
+        },
+        "cells": [
+          {
+            "barcode": "C0",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C1",
+            "type": "",
+            "bin": "",
+            "reason": "Missing cell-type annotation",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 4
+              },
+              {
+                "feature": 2,
+                "count": 1
+              }
+            ]
+          },
+          {
+            "barcode": "C2",
+            "type": "A",
+            "bin": "",
+            "reason": "Unavailable unique clonotype size",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 6
+              },
+              {
+                "feature": 2,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C3",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 8
+              },
+              {
+                "feature": 2,
+                "count": 3
+              }
+            ]
+          },
+          {
+            "barcode": "C4",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 10
+              }
+            ]
+          },
+          {
+            "barcode": "C5",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 12
+              },
+              {
+                "feature": 2,
+                "count": 1
+              }
+            ]
+          },
+          {
+            "barcode": "C6",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 14
+              },
+              {
+                "feature": 2,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C7",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 16
+              },
+              {
+                "feature": 2,
+                "count": 3
+              }
+            ]
+          },
+          {
+            "barcode": "C8",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 18
+              }
+            ]
+          },
+          {
+            "barcode": "C9",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 20
+              },
+              {
+                "feature": 2,
+                "count": 1
+              }
+            ]
+          },
+          {
+            "barcode": "C10",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C11",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C12",
+            "type": "B",
+            "bin": "1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C13",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C14",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          }
+        ]
+      },
+      {
+        "parent": "p2",
+        "expression": "e2",
+        "annotation": {
+          "name": "sample2",
+          "subject": "subject1",
+          "timepoint": "visit0"
+        },
+        "cells": [
+          {
+            "barcode": "C0",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 3
+              }
+            ]
+          },
+          {
+            "barcode": "C1",
+            "type": "",
+            "bin": "",
+            "reason": "Missing cell-type annotation",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 6
+              },
+              {
+                "feature": 2,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C2",
+            "type": "A",
+            "bin": "",
+            "reason": "Unavailable unique clonotype size",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 9
+              }
+            ]
+          },
+          {
+            "barcode": "C3",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 12
+              },
+              {
+                "feature": 2,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C4",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 15
+              }
+            ]
+          },
+          {
+            "barcode": "C5",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 18
+              },
+              {
+                "feature": 2,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C6",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 21
+              }
+            ]
+          },
+          {
+            "barcode": "C7",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 24
+              },
+              {
+                "feature": 2,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C8",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 27
+              }
+            ]
+          },
+          {
+            "barcode": "C9",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 30
+              },
+              {
+                "feature": 2,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C10",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C11",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C12",
+            "type": "B",
+            "bin": "1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C13",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C14",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          }
+        ]
+      },
+      {
+        "parent": "p3",
+        "expression": "e3",
+        "annotation": {
+          "name": "sample3",
+          "subject": "subject1",
+          "timepoint": "visit1"
+        },
+        "cells": [
+          {
+            "barcode": "C0",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 4
+              }
+            ]
+          },
+          {
+            "barcode": "C1",
+            "type": "",
+            "bin": "",
+            "reason": "Missing cell-type annotation",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 8
+              },
+              {
+                "feature": 2,
+                "count": 3
+              }
+            ]
+          },
+          {
+            "barcode": "C2",
+            "type": "A",
+            "bin": "",
+            "reason": "Unavailable unique clonotype size",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 12
+              },
+              {
+                "feature": 2,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C3",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 16
+              },
+              {
+                "feature": 2,
+                "count": 1
+              }
+            ]
+          },
+          {
+            "barcode": "C4",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 20
+              }
+            ]
+          },
+          {
+            "barcode": "C5",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 24
+              },
+              {
+                "feature": 2,
+                "count": 3
+              }
+            ]
+          },
+          {
+            "barcode": "C6",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 28
+              },
+              {
+                "feature": 2,
+                "count": 2
+              }
+            ]
+          },
+          {
+            "barcode": "C7",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 32
+              },
+              {
+                "feature": 2,
+                "count": 1
+              }
+            ]
+          },
+          {
+            "barcode": "C8",
+            "type": "A",
+            "bin": ">1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 36
+              }
+            ]
+          },
+          {
+            "barcode": "C9",
+            "type": "A",
+            "bin": "1",
+            "reason": "",
+            "counts": [
+              {
+                "feature": 0,
+                "count": 40
+              },
+              {
+                "feature": 2,
+                "count": 3
+              }
+            ]
+          },
+          {
+            "barcode": "C10",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C11",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C12",
+            "type": "B",
+            "bin": "1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C13",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          },
+          {
+            "barcode": "C14",
+            "type": "B",
+            "bin": ">1",
+            "reason": "",
+            "counts": []
+          }
+        ]
+      }
+    ]
+  },
+  "result": {
+    "groups": [
+      {
+        "sample": 0,
+        "type": "A",
+        "bin": "1",
+        "cells": 4,
+        "counts": [
+          22,
+          0,
+          0
+        ],
+        "total": 22,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "sample": 0,
+        "type": "A",
+        "bin": ">1",
+        "cells": 4,
+        "counts": [
+          28,
+          0,
+          0
+        ],
+        "total": 28,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "sample": 0,
+        "type": "B",
+        "bin": "1",
+        "cells": 1,
+        "counts": [
+          0,
+          0,
+          0
+        ],
+        "total": 0,
+        "eligible": false,
+        "reason": "Below minimum cells"
+      },
+      {
+        "sample": 0,
+        "type": "B",
+        "bin": ">1",
+        "cells": 3,
+        "counts": [
+          0,
+          0,
+          0
+        ],
+        "total": 0,
+        "eligible": false,
+        "reason": "Zero count library"
+      },
+      {
+        "sample": 0,
+        "type": "C",
+        "bin": "1",
+        "cells": 0,
+        "counts": null,
+        "total": null,
+        "eligible": false,
+        "reason": "No eligible cells"
+      },
+      {
+        "sample": 0,
+        "type": "C",
+        "bin": ">1",
+        "cells": 1,
+        "counts": [
+          0,
+          0,
+          0
+        ],
+        "total": 0,
+        "eligible": false,
+        "reason": "Below minimum cells"
+      },
+      {
+        "sample": 1,
+        "type": "A",
+        "bin": "1",
+        "cells": 4,
+        "counts": [
+          44,
+          0,
+          6
+        ],
+        "total": 50,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "sample": 1,
+        "type": "A",
+        "bin": ">1",
+        "cells": 4,
+        "counts": [
+          56,
+          0,
+          4
+        ],
+        "total": 60,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "sample": 1,
+        "type": "B",
+        "bin": "1",
+        "cells": 1,
+        "counts": [
+          0,
+          0,
+          0
+        ],
+        "total": 0,
+        "eligible": false,
+        "reason": "Below minimum cells"
+      },
+      {
+        "sample": 1,
+        "type": "B",
+        "bin": ">1",
+        "cells": 4,
+        "counts": [
+          0,
+          0,
+          0
+        ],
+        "total": 0,
+        "eligible": false,
+        "reason": "Zero count library"
+      },
+      {
+        "sample": 1,
+        "type": "C",
+        "bin": "1",
+        "cells": 0,
+        "counts": null,
+        "total": null,
+        "eligible": false,
+        "reason": "No eligible cells"
+      },
+      {
+        "sample": 1,
+        "type": "C",
+        "bin": ">1",
+        "cells": 0,
+        "counts": null,
+        "total": null,
+        "eligible": false,
+        "reason": "No eligible cells"
+      },
+      {
+        "sample": 2,
+        "type": "A",
+        "bin": "1",
+        "cells": 4,
+        "counts": [
+          66,
+          0,
+          4
+        ],
+        "total": 70,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "sample": 2,
+        "type": "A",
+        "bin": ">1",
+        "cells": 4,
+        "counts": [
+          84,
+          0,
+          4
+        ],
+        "total": 88,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "sample": 2,
+        "type": "B",
+        "bin": "1",
+        "cells": 1,
+        "counts": [
+          0,
+          0,
+          0
+        ],
+        "total": 0,
+        "eligible": false,
+        "reason": "Below minimum cells"
+      },
+      {
+        "sample": 2,
+        "type": "B",
+        "bin": ">1",
+        "cells": 4,
+        "counts": [
+          0,
+          0,
+          0
+        ],
+        "total": 0,
+        "eligible": false,
+        "reason": "Zero count library"
+      },
+      {
+        "sample": 2,
+        "type": "C",
+        "bin": "1",
+        "cells": 0,
+        "counts": null,
+        "total": null,
+        "eligible": false,
+        "reason": "No eligible cells"
+      },
+      {
+        "sample": 2,
+        "type": "C",
+        "bin": ">1",
+        "cells": 0,
+        "counts": null,
+        "total": null,
+        "eligible": false,
+        "reason": "No eligible cells"
+      },
+      {
+        "sample": 3,
+        "type": "A",
+        "bin": "1",
+        "cells": 4,
+        "counts": [
+          88,
+          0,
+          6
+        ],
+        "total": 94,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "sample": 3,
+        "type": "A",
+        "bin": ">1",
+        "cells": 4,
+        "counts": [
+          112,
+          0,
+          4
+        ],
+        "total": 116,
+        "eligible": true,
+        "reason": ""
+      },
+      {
+        "sample": 3,
+        "type": "B",
+        "bin": "1",
+        "cells": 1,
+        "counts": [
+          0,
+          0,
+          0
+        ],
+        "total": 0,
+        "eligible": false,
+        "reason": "Below minimum cells"
+      },
+      {
+        "sample": 3,
+        "type": "B",
+        "bin": ">1",
+        "cells": 4,
+        "counts": [
+          0,
+          0,
+          0
+        ],
+        "total": 0,
+        "eligible": false,
+        "reason": "Zero count library"
+      },
+      {
+        "sample": 3,
+        "type": "C",
+        "bin": "1",
+        "cells": 0,
+        "counts": null,
+        "total": null,
+        "eligible": false,
+        "reason": "No eligible cells"
+      },
+      {
+        "sample": 3,
+        "type": "C",
+        "bin": ">1",
+        "cells": 0,
+        "counts": null,
+        "total": null,
+        "eligible": false,
+        "reason": "No eligible cells"
+      }
+    ],
+    "coverage": [
+      {
+        "cells": 15,
+        "included": 13,
+        "excluded": {
+          "Missing cell-type annotation": 1,
+          "Unavailable unique clonotype size": 1
+        }
+      },
+      {
+        "cells": 15,
+        "included": 13,
+        "excluded": {
+          "Missing cell-type annotation": 1,
+          "Unavailable unique clonotype size": 1
+        }
+      },
+      {
+        "cells": 15,
+        "included": 13,
+        "excluded": {
+          "Missing cell-type annotation": 1,
+          "Unavailable unique clonotype size": 1
+        }
+      },
+      {
+        "cells": 15,
+        "included": 13,
+        "excluded": {
+          "Missing cell-type annotation": 1,
+          "Unavailable unique clonotype size": 1
+        }
+      }
+    ],
+    "subjects": 2,
+    "eligible": 8
+  }
+}

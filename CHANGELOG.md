@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Pseudobulk count evidence (wave 7, slice 10).** Sum exact raw Gene Expression counts
+  per subject, sample, literal timepoint, supplied cell type and declared receptor-size
+  category. Preserve missing annotations, unavailable assignments, absent groups, measured
+  zeros, low-cell libraries, complete features and per-cell membership. Pin saved phenotype
+  parents, source hashes, definitions and QC; refuse implicit sample pooling or mismatched
+  feature panels. Add durable source-free replay, complete provider-aware exports, Cells
+  controls, remote aggregation, cited Methods and coverage plots in both themes. Provide an
+  eight-sample artificial count study and independent integer aggregation checks. This is
+  evidence preparation; no normalization, differential-expression test or specificity claim.
+
 - **Batch QC (wave 7, slice 9).** Compare six sample metrics within explicitly declared
   batches using median/raw-MAD modified z-scores. Preserve every sample assignment, exclusion,
   raw value, denominator and unscored reason; require one included observation per subject

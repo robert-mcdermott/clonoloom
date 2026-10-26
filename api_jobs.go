@@ -123,6 +123,7 @@ func (a *app) handleJobs() {
 	a.handleMotifsJobs()
 	a.handleConvergenceJobs()
 	a.handleBatchQCJobs()
+	a.handlePseudobulkJobs()
 	a.handleContaminationJobs()
 	a.handleCongaJobs()
 	a.handleAnnDataJobs()

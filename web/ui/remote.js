@@ -574,6 +574,14 @@ export function remoteActions(app) {
       return { message: 'Clonotype modularity saved.', data: { artifact: result.artifact.id, tested: result.result.analysis.tested, eligible: result.result.analysis.eligible, description: result.result.description } };
     },
 
+    async aggregate_pseudobulk(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellPseudobulkView, 5000, 'Pseudobulk counts');
+      const result = await view.run(options);
+      if (!result) throw new ActionError('The project changed during aggregation.');
+      return {message:'Pseudobulk count evidence saved.',data:{artifact:result.artifact.id,eligible:result.result.analysis.eligible,subjects:result.result.analysis.subjects,description:result.result.description}};
+    },
+
     async export_anndata(options = {}) {
       await app.setMode('cells');
       const view = await waitFor(() => app.cellAnnDataView, 5000, 'AnnData export');

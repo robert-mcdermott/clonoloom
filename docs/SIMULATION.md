@@ -572,3 +572,18 @@ All row-level generating observations are in `truth/observations.tsv`; model/see
 and source hashes accompany them. These examples illustrate reference-distribution limits,
 missingness and descriptive flags, not empirical technical failure rates, randomized biology,
 classifier calibration or batch correction. Earlier example presets keep their pinned bytes.
+
+### Pseudobulk count study
+
+`--preset pseudobulk-study` uses the established artificial cell-state model with seed 20261102,
+four subjects, two visits (days 0 and 14), 420 matrix cells per sample and 48 possible paired
+clones per subject. It writes eight MEX matrices with 24 artificial genes, supplied `state`
+annotations, Gaussian illustration coordinates and complete generating truth/source hashes.
+Counts follow the existing independent conditional negative-binomial model (size 4, means
+16 in the state's eight-gene block and 2 elsewhere). Inverse-rank clone probabilities produce variable
+realized sample-scoped sizes. Missing annotation/receptor evidence and an all-zero cell are
+explicit controls. This is not a fitted biological cohort, specificity model or DE benchmark.
+
+Save each sample's phenotypes with receptor sizes, annotation `state` and inclusive breakpoints
+`1,5,10`; select the eight parents in Cells → Pseudobulk counts. Inspect all sample × state × bin
+counts, absent groups and minimum-cell eligibility. The current slice performs no inference.

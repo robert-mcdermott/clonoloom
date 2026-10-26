@@ -72,6 +72,7 @@ var Presets = map[string]Study{
 	"counts-independent":  {Name: "counts-independent", Title: "A replicated independent repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 32, Layout: "independent"}},
 	"counts-null":         {Name: "counts-null", Title: "A replicated null repertoire study", Seed: 20261027, Counts: &CountStudy{Subjects: 32, Layout: "independent", Null: true}},
 	"cell-states":         {Name: "cell-states", Title: "An artificial paired T-cell and expression study with known states", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 120, Clones: 12}},
+	"pseudobulk-study":    {Name: "pseudobulk-study", Title: "Artificial pseudobulk count evidence across subjects and timepoints", Seed: 20261102, CellStates: &CellStateStudy{Subjects: 4, CellsPerSample: 420, Clones: 48, Layout: "gaussian"}},
 	"cell-states-clouds":  {Name: "cell-states-clouds", Title: "An artificial paired T-cell and expression study with supplied Gaussian clouds", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 360, Clones: 10, Layout: "gaussian"}},
 	"bcell-immunization": {
 		Name: "bcell-immunization", Title: "An artificial B-cell immunization study with known families and ancestors",

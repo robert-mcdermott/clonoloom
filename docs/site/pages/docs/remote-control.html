@@ -89,3 +89,6 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
 
 <h2 id="batch-qc">Batch QC</h2>
 <p><code>screen_batch_qc</code> accepts a dataset, every sample as <code>{name,subject,batch,exclude}</code> and <code>options:{threshold:3.5,minSamples:5}</code>. Use explicit exclusion reasons for repeats or missing assignments. The result includes the artifact ID, included sample and unique-subject counts, and scientific description. See <a href="batch-qc.html">Batch QC</a> for metric denominators, unscored policies and interpretation.</p>
+
+<h2 id="pseudobulk">Pseudobulk count evidence</h2>
+<p><code>aggregate_pseudobulk</code> accepts explicit saved <code>phenotypes</code> IDs and <code>options</code> containing the supplied <code>annotation</code> column and <code>minCells</code> (default 10). It uses the visible Cells workflow and saves exact raw sums and cell membership. It performs no differential-expression test. See <a href="pseudobulk.html">Pseudobulk counts</a> for sample boundaries, missingness and export rules.</p>

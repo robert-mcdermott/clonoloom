@@ -168,3 +168,44 @@ func TestCellStatesParametersAndCancellation(t *testing.T) {
 		t.Fatal("partial output installed", err)
 	}
 }
+
+func TestPseudobulkStudyIdentity(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "pseudobulk")
+	sum, e := Run(context.Background(), Presets["pseudobulk-study"], dir, "validation", nil)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if sum.Subjects != 4 || sum.Samples != 8 || sum.Rows != 6720 {
+		t.Fatal(sum)
+	}
+	h := sha256.New()
+	for _, name := range sum.Files {
+		raw, e := os.ReadFile(filepath.Join(dir, name))
+		if e != nil {
+			t.Fatal(e)
+		}
+		fmt.Fprintln(h, name)
+		h.Write(raw)
+	}
+	digest := fmt.Sprintf("%x", h.Sum(nil))
+	if digest != "6ac6339c8dcd9b468a34dd746de193410625379170adb819d98c45bbd6173875" {
+		t.Fatal("pseudobulk simulation digest", digest)
+	}
+	var truth cellStateTruth
+	raw, _ := os.ReadFile(filepath.Join(dir, "truth/truth.json"))
+	if e = json.Unmarshal(raw, &truth); e != nil {
+		t.Fatal(e)
+	}
+	if truth.Model != "clonoloom-artificial-pseudobulk-v1" || truth.CloneSampling == "" {
+		t.Fatal("model not explicit", truth)
+	}
+	for _, f := range truth.Files {
+		raw, e := os.ReadFile(filepath.Join(dir, f.Path))
+		if e != nil || fmt.Sprintf("%x", sha256.Sum256(raw)) != f.SHA256 {
+			t.Fatal("source hash", f, e)
+		}
+	}
+	if _, e = Run(context.Background(), Presets["pseudobulk-study"], dir, "validation", nil); e == nil {
+		t.Fatal("overwrote existing study")
+	}
+}

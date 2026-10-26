@@ -502,3 +502,22 @@ identity, QC-tab source loading, undo/redo, reopening, source-free ZIP and figur
 Review both themes: common 0–1 fraction scale, exact sample points, explicit median lines and
 vertical-offset explanation, gray unscored observations and clear valid/scored denominators.
 The existing Sample QC and Contamination workflows are separate regression scenes.
+
+### Pseudobulk count evidence
+
+`uv run --no-project validation/reference/pseudobulk.py` regenerates a stdlib exact-integer
+oracle, including repeated visits/barcodes, missing annotations, unknown assignments, absent
+categories, measured zeros, zero libraries and low-cell groups. `TestPseudobulkIndependentReference`
+compares the complete result and pins native/amd64-identical bytes. Integration tests generate
+the eight-sample study and independently parse every Matrix Market entry and generating
+clone/annotation record to verify each feature sum and cell denominator. They also cover
+canonical selection order, strict requests, saved checksums, provider terms and replay after
+removing original sources and parents. Core tests exercise invalid identity, modality, bounds,
+count overflow, threshold invariance and cancellation. Browser scene `pseudobulk` checks visible
+and remote identity, complete exports, saved reopening, Methods and both-theme figure geometry.
+
+The slice-10 result digest is
+`f7b51cf23e2e5b404d7331d4f5092c1e4fd4de91df756629f82045acee33a3db`;
+the eight-sample simulator digest is
+`6ac6339c8dcd9b468a34dd746de193410625379170adb819d98c45bbd6173875`.
+The screenshot scene always generates a fresh study and verifies its model/sampling declaration.

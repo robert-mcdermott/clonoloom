@@ -2711,3 +2711,65 @@ invariance, cancellation, tamper refusal, provider-aware exports and source-free
 Complete-result and simulator digests are pinned on native and amd64 processors. Browser checks
 compare every plotted value with saved evidence, reopen projects without sources, validate full
 exports and cited captions, and exercise existing Sample QC and Contamination in both themes.
+
+## 5.39 Pseudobulk count evidence (wave 7, slice 10)
+
+**Sources checked 2026-10-25.** Crowell HL et al., *muscat detects subpopulation-specific
+state transitions from multi-sample multi-condition single-cell transcriptomics data*,
+Nature Communications 2020;11:6077, doi:10.1038/s41467-020-19894-4; and OSCA Multi-Sample,
+chapter 4, https://bioconductor.org/books/release/OSCA.multisample/multi-sample-comparisons.html.
+These describe raw sums within sample and supplied subpopulation and the distinction between
+cells and biological replicates. Published cell-count cutoffs are analysis choices, not
+universal adequacy guarantees. Only primary papers and methodological documentation were
+consulted. No external implementation source was used.
+
+**Adaptation and estimand.** This slice supplies exact count evidence, not differential
+expression. For each selected sample s, supplied nonempty type t, declared size bin b and
+Gene Expression feature g, compute Y[s,t,b,g] = sum of raw X[cell,g] over eligible cells.
+Subject, literal timepoint, tissue and sample remain recorded; never pool across libraries.
+Require one selected sample per subject/timepoint. Multiple visits remain repeated observations,
+not independent subjects. Feature ID, name, type and order must match across matrices; do not
+intersect panels, impute absent genes or merge repeated display names. Exclude other modalities.
+AnnData/MuData raw matrix selections and source hashes remain explicit. Nonnegative integer
+validation alone cannot establish that user-supplied data are unnormalized raw counts.
+
+**Membership.** Capture immutable saved phenotype parents with one dataset, definition, QC,
+receptor-size population and inclusive breakpoints. Reject mapped-size populations. Sizes count
+unique receptor cells within the source sample, not within each cell type and not across samples.
+Use all expression cells, including unmapped cells; neither graph filters nor visual selections
+implicitly restrict the matrix. Missing type takes precedence over unavailable unique clone
+size in disjoint exclusion accounting. Preserve exact barcode membership and all raw sparse
+Gene Expression counts, including excluded cells, for audit and source-free replay.
+
+**Availability.** Create every selected sample × union of observed nonempty types × declared
+bin. A group with no contributing cells has null counts and library total. A measured group
+contains all genes with implicit sparse zeros made explicit. Keep raw sums for groups below
+minimum cells (default 10, configurable 1–100000), but mark them ineligible; zero-library groups
+are also ineligible. There is no normalization, averaging, log transform, pseudocount, test or
+claim of adequate power. A category indicates sampled clone size, not specificity or causal
+expansion. Ascertainment and expression-derived labels can affect later inference.
+
+**Bounds and provenance.** Accept 1–32 selected samples, 100000 cells per source and 200000
+captured cells overall, 1–50000 Gene Expression features, 1–128 types, at most 2000000 source
+sparse entries per matrix and captured entries overall, and 2000000 output count slots.
+Counts and contributing cell/library totals must not exceed 9e15; integer overflow is refused.
+Source fingerprints, phenotype checksums, exact policies, per-cell counts and assignment reasons
+travel with the durable job/result and complete provider-aware export. No data are silently
+subsampled. Selection order does not change identity.
+
+**Visual.** Shared zero-based linear bars show contributing cells per sample/category for one
+supplied type. The minimum line is an evidence cutoff, not significance. Gray distinguishes
+ineligible measured groups; absent groups have no expression-count bar. Every raw library and
+cell exclusion is tabulated. No error bars, inferential p-values or normalized expression claims.
+
+**Example and validation.** The new `pseudobulk-study` preset uses the existing cell-state
+model with seed 20261102, four subjects, two visits, 420 cells/matrix and 48 possible clones.
+Its 24 artificial genes have independent conditional negative-binomial counts with size 4 and
+means 16 within the state block, 2 elsewhere. Inverse-rank clone probabilities generate uneven realized
+sizes. Supplied clouds illustrate states; they are not computed embeddings. This deliberately
+small demonstration is not a fitted biological model or a DE calibration fixture. Prior presets
+remain unchanged. An independent stdlib Python integer oracle covers missing, zero, absent,
+low-cell, repeated-visit and repeated-barcode controls. Integration checks independently parse
+all eight literal Matrix Market files and generating clone/annotation truth, comparing every
+feature sum and cell denominator. Check strict requests, mismatches, overflow, cancellation,
+checksums, provider terms, source-free replay, exact processor agreement, and both-theme UI.

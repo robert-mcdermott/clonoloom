@@ -48,13 +48,14 @@ func (c CellStateStudy) check(s Study) error {
 }
 
 type cellStateTruth struct {
-	Model     string      `json:"model"`
-	Simulator string      `json:"simulator"`
-	Study     Study       `json:"study"`
-	States    []string    `json:"states"`
-	Means     [][]int     `json:"means"`
-	Size      int         `json:"size"`
-	Files     []bcellFile `json:"files"`
+	CloneSampling string      `json:"cloneSampling,omitempty"`
+	Model         string      `json:"model"`
+	Simulator     string      `json:"simulator"`
+	Study         Study       `json:"study"`
+	States        []string    `json:"states"`
+	Means         [][]int     `json:"means"`
+	Size          int         `json:"size"`
+	Files         []bcellFile `json:"files"`
 }
 
 // Artificial junctions only: no copied reference alleles or implied antigen specificity.
@@ -97,6 +98,16 @@ func runCellStates(ctx context.Context, s Study, dir, version string, progress P
 	truth := cellStateTruth{Model: cellStateModel, Simulator: "ClonoLoom simulate " + version, Study: s, States: []string{"state A", "state B", "state C"}, Size: 4}
 	if c.Layout == "gaussian" {
 		truth.Model = "clonoloom-artificial-cell-states-clouds-v1"
+	}
+	cloneWeights := make([]float64, c.Clones)
+	if s.Name == "pseudobulk-study" {
+		truth.Model = "clonoloom-artificial-pseudobulk-v1"
+		truth.CloneSampling = fmt.Sprintf("Pr(clone rank k) proportional to 1/k, k=1..%d; sampled separately per visit", c.Clones)
+		var total float64
+		for i := range cloneWeights {
+			total += 1 / float64(i+1)
+			cloneWeights[i] = total
+		}
 	}
 	for state := range 3 {
 		means := make([]int, 24)
@@ -148,6 +159,9 @@ func runCellStates(ctx context.Context, s Study, dir, version string, progress P
 				}
 				barcode := fmt.Sprintf("CELL%05d-1", cell+1) // deliberately reused across samples
 				clone := r.IntN(c.Clones)
+				if s.Name == "pseudobulk-study" {
+					clone = r.Discrete(cloneWeights)
+				}
 				state := clone % 3
 				if sample == 1 && r.IntN(2) == 0 {
 					state = (state + 1) % 3
@@ -213,6 +227,11 @@ func runCellStates(ctx context.Context, s Study, dir, version string, progress P
 			}
 			metadata := repertoire(s, Subject{ID: subjectID, Condition: "artificial cell states"}, id, id+".tsv", version)
 			ms := metadata["sample"].([]any)[0].(map[string]any)
+			if s.Name == "pseudobulk-study" {
+				ms["collection_time_point_relative"] = sample * 14
+				ms["collection_time_point_relative_unit"] = map[string]any{"label": "day"}
+				ms["collection_time_point_reference"] = "artificial baseline"
+			}
 			ms["template_class"] = "RNA"
 			ms["single_cell"] = true
 			ms["pcr_target"] = []any{map[string]any{"pcr_target_locus": "TRA"}, map[string]any{"pcr_target_locus": "TRB"}}
@@ -250,6 +269,10 @@ See docs/SIMULATION.md for the sampler references and reproducibility contract.
 `, s.Title, truth.Model, s.Seed, version, c.CellsPerSample, c.Clones)
 	if c.Layout == "gaussian" {
 		readme = strings.Replace(readme, "Coordinates: x = 10*state + uniform integer -2..2; y = 3*sample + uniform integer -2..2\n(zero-based state/sample), drawn only for mapped cells.", "Supplied Gaussian layout: x = 8*state + 1.5*N(0,1); y = 3*sample + sigma*N(0,1),\nwith sigma [1.2,2,0.8] by state (zero-based state/sample). Independent layout stream\n50000 + 2*subject + sample; original integer jitter draws are retained and discarded\nto preserve all biological observations at fixed parameters. Layout is illustrative,\nnot fitted or computed from expression. Ten uniform clones give first-sample state\nprobabilities 0.4,0.3,0.3 in the preset; these probabilities depend on clone count.", 1)
+	}
+	if s.Name == "pseudobulk-study" {
+		readme = strings.Replace(readme, "Clones are uniform;", fmt.Sprintf("Clone probabilities are proportional to 1/rank over %d clones, sampled per visit;", c.Clones), 1)
+		readme = strings.Replace(readme, "Ten uniform clones give first-sample state\nprobabilities 0.4,0.3,0.3 in the preset; these probabilities depend on clone count.", "State probabilities follow the declared clone-rank weights modulo 3; they are construction choices.", 1)
 	}
 	if err := write("README.md", readme); err != nil {
 		return Summary{}, err

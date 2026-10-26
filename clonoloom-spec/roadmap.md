@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–8 are committed and pushed. Slice 9 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slices 1–9 are committed and pushed. Slice 10 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2544,7 +2544,7 @@ no commit, push, tag, release or publication. Slice 8 was subsequently committed
 
 ### Slice 9: batch QC
 
-**Implemented and validated; awaiting commit.** Q5 reports descriptive sample-level metrics and
+**Committed and pushed.** Q5 reports descriptive sample-level metrics and
 within-batch review labels. Research §5.38 records sources, exact universes and scientific limits.
 
 - Capture every source sample, explicit subject/batch assignments and exclusion reasons.
@@ -2589,7 +2589,60 @@ screenshots are visually reviewed. The final browser regression also verifies th
 from a saved result to another QC tab loads its source assignments without breaking source-free
 reopening. The site builds 44 pages with 52 screenshot sets; 43 audited pages pass all 172
 theme/viewport checks without accessibility violations or overflow. Formatting and diff checks
-pass. Version stays 0.6.0; no commit, push, tag, release or publication. Slice 10 has not begun.
+pass. Version stays 0.6.0; no commit, push, tag, release or publication. Slice 9 was subsequently committed and pushed by the maintainer.
+
+### Slice 10: pseudobulk count evidence
+
+**Implemented and validated; awaiting commit.** M5 foundation. Research §5.39 records primary sources,
+exact count and membership rules, the artificial model and limits. Differential expression
+remains slice 11; release preparation remains slice 12.
+
+- Select explicit saved phenotype parents with one receptor dataset, definition, QC,
+  receptor-size population and inclusive breakpoints. Pin subject, literal timepoint and sample;
+  refuse duplicate samples/expression inputs or more than one sample per subject/timepoint.
+- Verify expression sources and exact Gene Expression feature IDs/names/modalities/order.
+  Preserve sample boundaries and every raw gene count; exclude other modalities. Never pool,
+  normalize, average, impute absent features or reuse a map's display/QC subset implicitly.
+- Aggregate per sample × supplied type × declared size category with captured cell membership.
+  Missing type and unavailable unique clone assignment have disjoint exclusion reasons.
+  Sizes count unique receptor cells in the original sample, before type-specific partitioning.
+- Preserve every observed type crossed with all categories in every sample. Absent groups have
+  null counts; measured zeros remain zero. Low-cell and zero-library groups retain raw evidence
+  but are ineligible. Default minimum 10 cells is a configurable evidence rule, not power.
+- Keep durable jobs, source-free replay/reopening, complete provider-aware exports, visible and
+  remote identity, undo/redo and cited Methods. Coverage panels share a zero-based linear scale;
+  bars count cells, not replicates or normalized expression. Samples sort by subject/time/name.
+- Add four artificial subjects at two visits, 420 cells/matrix and 24 negative-binomial genes.
+  Inverse-rank clone probabilities produce uneven sample-scoped sizes; preserve missing and
+  all-zero controls and complete truth/source hashes. Earlier presets retain their identities.
+- Bound samples, features, cells, sparse capture and output slots; refuse exact-count overflow.
+  Keep version 0.6.0. No differential-expression fit, release or publication in this slice.
+
+Validation includes an independent stdlib integer oracle; every literal count and generating
+clone/annotation record of the eight-sample example; missingness, modality and feature identity,
+barcode scoping, sample/time boundaries, threshold invariance, overflow, cancellation, source
+fingerprints, provider terms, complete exports and replay without sources or parent artifacts.
+Native/amd64 digests, application/internal race tests, required-data scientific regressions,
+six platform builds, JavaScript and browser checks and both-theme figures are required.
+
+**Validation completed:** the complete application/internal race suite passes (application
+267.513 s); final focused capture/reference/simulator race checks pass (application 50.016 s).
+The required-data scientific suite passes in 469.651 s, excluding unchanged performance budgets,
+including processor and released-project compatibility and the compiler's no-FMA scan. All eight
+example matrices agree with independently parsed generating clone/annotation truth for every
+raw gene sum and contributing cell count. Canonical request order, relocation-independent
+identity, changed-source refusal, provider terms, checksum failures and replay after removing
+sources and parent files pass. Exact integer-reference and simulator digests agree on native
+arm64 and amd64; existing cell-state and release fixtures retain their pinned identities.
+
+All 139 JavaScript tests, Go vet, six CGO-free platform builds and 14 contrast checks pass.
+Pseudobulk, phenotype and AnnData browser workflows pass in both themes, including visible/remote
+identity, undo/redo, saved reopening, source-free exports and cited Methods/figures. Final
+pseudobulk and refreshed AnnData screenshots are visually reviewed; the capture generates a
+fresh study and verifies its model to prevent stale example reuse. The site builds 45 pages
+with 53 screenshot sets; 44 audited pages pass all 176 theme/viewport checks with no problems.
+Formatting and diff checks pass. Version stays 0.6.0; no commit, push, tag, release or publication.
+Slice 11 has not begun.
 
 ## Later waves (outlined)
 
