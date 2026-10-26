@@ -406,3 +406,24 @@ HTTP accepts the same fields at `POST /api/definition-robustness`, optionally `s
 Use `/api/jobs` to poll/cancel. Verified GET `/api/definition-robustness/{id}` and `/download`
 work from saved results; ZIPs preserve source terms and full evidence. Durable replay needs
 the saved comparison and captured job specification, without original raw data.
+
+### Motifs and sequence-signature groups (wave 7)
+
+Call `screen_motifs` with `dataset` (name or ID; optional for the current dataset), explicit
+`query` and `background` sample-name arrays and optional `options`:
+
+```json
+{"query":["S01","S02","S03","S04"],"background":["S05","S06","S07","S08","S09","S10","S11","S12"],"options":{"minK":2,"maxK":5,"minMembers":3,"q":0.05,"minFold":2}}
+```
+
+The current AA definition, QC and project subject annotations are captured. The response gives
+the saved artifact, pooled family size, reported count and complete method description. The
+visible Specificity → Motifs controls use the same route. Samples must be distinct/disjoint;
+missing or ineligible source evidence is refused. Reporting settings do not change the family.
+
+HTTP uses `POST /api/motifs` with dataset ID, definition, filter, query/background, optional
+subject map/options and `start:false` for readiness probing. Poll/cancel through `/api/jobs`.
+GET `/api/motifs/{id}`, `/group/{group}` and `/download` inspect/export checksum-verified saved
+results. The ZIP retains all signatures, receptors, methods and source terms; sources are not
+needed to reopen or replay captured evidence. See [the motif guide](site/pages/docs/motifs.html)
+for bounds, GLIPH2 adaptations, conditional Fisher/BY assumptions and lack of specificity proof.

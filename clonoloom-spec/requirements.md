@@ -86,7 +86,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | R4 | Overlap: shared clonotypes, Jaccard, overlap coefficient, Morisita–Horn, rarefied versions; public clonotypes across subjects, including against public cohorts | partial (wave 2, slice 7: within a project, with Sørensen–Dice and Morisita's own index, the rarefied forms exact, intervals checked against the simulator's truth; equal to immunarch, vegan and scirpy; wave 9: against public cohorts) |
 | R5 | Clonal space homeostasis: the shares of rare, small, medium, large and hyperexpanded clonotypes | done (wave 2, slice 4: immunarch's bins, with bootstrap intervals) |
 | R6 | Generation probability of CDR3s under published V(D)J recombination models (OLGA's algorithm, IGoR models downloaded on request) | done (wave 4, slice 3: amino-acid or nucleotide CDR3s, alone or with their V and J genes, under OLGA's seven default models downloaded on request or ClonoLoom's own model of human TRB; each sample's distribution, the clonotypes by probability, the inspector's; 99,949 CDR3s within 3 × 10⁻¹⁵ of OLGA 1.3.0's; a million in 32 s on 10 processors) |
-| R7 | k-mer and motif summaries | planned (wave 7) |
+| R7 | k-mer and motif summaries | implemented (wave 7 slice 6: bounded TRB query/background signatures and residue frequencies) |
 
 ## Tracking and dynamics
 
@@ -105,7 +105,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | --- | --- | --- |
 | S1 | TCRdist (Dash et al. 2017; tcrdist3's defaults), single or paired chains | done (wave 4, slice 2: as tcrdist3 computes it, with the V genes' loops from tcrdist3's database of genes downloaded on request, or the CDR3s alone; each clonotype's neighbors within a radius and its nearest, and a clonotype's nearest loop by loop; every distance between Dash et al.'s 2,339 clones equal to tcrdist3's; 100,000 paired TCRs in 25 s on 10 processors) |
 | S2 | TCRdist neighborhoods with enrichment against a background (V/J/length-matched synthetic, shuffled, or a public paired background) | done (wave 4, slice 5: each receptor of one locus a centroid, its radius controlled at a rate of a background drawn from a recombination model with the dataset's V–J usage and weighted to what recombination makes, or of its own CDR3s shuffled; each neighborhood's receptors, enrichment and motif; every centroid equal to tcrdist3 0.3's on Dash et al.'s chains; a public background waits for a later wave) |
-| S3 | GLIPH2-style specificity groups (global and local similarity, motif enrichment, scores) | planned (wave 7) |
+| S3 | GLIPH2-style specificity groups (global and local similarity, motif enrichment, scores) | implemented (wave 7 slice 6: documented adaptation; matched TRBV/length, Fisher/BY, no N/P boost or GLIPH2 composite score) |
 | S4 | Clonotype networks by CDR3 identity, edit distance or TCRdist | planned (wave 4) |
 | S5 | Matching against specificity databases (VDJdb first; McPAS-TCR and IEDB as their terms allow) by exact or TCRdist-near match, with species, MHC and evidence; database versions recorded; downloaded on request, never bundled | partial (wave 4, slice 7: VDJdb and the simulated vaccine database; exact/TCRdist chain matching, evidence, per-sample shares, Tracking, download terms and checksums; McPAS-TCR and IEDB later) |
 | S6 | Cross-subject convergence; HLA association (hypergeometric) when HLA types are given | planned (wave 7) |

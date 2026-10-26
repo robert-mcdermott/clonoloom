@@ -467,3 +467,28 @@ comparison itself is the existing unadjusted two-group comparison. Existing coun
 keep their previous bytes. Definition variants currently require independent groups and cannot be combined with the
 all-null count option. The truth’s `log2_effect` column describes the shared panel; the separate
 1.6 private-count scale is declared in the model and included in every recorded mean.
+
+## Query and background motif study
+
+`clonoloom simulate --preset motif-study --out <empty-folder>` makes a controlled local/global
+signature example (seed 20261029, model `clonoloom-motif-study-v1`). Four query subjects S01–S04
+have 30 rows each; eight background subjects S05–S12 have 125 each. CASS/EQYF boundaries and
+biased random central residues give junction lengths 15–17. Gene labels are arbitrary parseable
+TRBV calls, not inferred assignments. Codons translate exactly to the recorded junctions.
+
+Four global ILMV variants under TRBV7-9 are repeated across query subjects. Nine further rows
+per query subject carry local QGHT at starts 5–7 under TRBV5-1. Other V/junction identities are
+unique controls. Subject exposure is lognormal (log SD 0.45); counts are
+1+Poisson(Gamma(shape=4) × [5000/(rank+1)^1.2 × exposure]/4). The added one guarantees positive
+observed rows. Counts vary across subjects/ranks but remain descriptive, never motif weights.
+These construction choices are not fitted recombination, antigen labels or biological evidence.
+
+The Examples catalog offers **Query and background motif study**. Assign S01–S04 to query and
+S05–S12 to background in Specificity → Motifs. The default analysis has 108 query/1000 background
+units and 64,168 pooled signature slots (48,456 testable), with 110 reported local signatures and
+one global signature. Overlapping windows and shorter motifs account for multiple local hits;
+they are not independent discoveries. These are fixed positive controls, not power/FDR estimates.
+
+`truth/receptors.tsv` records every sample, subject, arm, V call, junction, count and planted
+signature; `truth/truth.json` records the model, study and source-file checksums. Repertoire
+metadata marks the study artificial. Earlier example presets retain their byte digests.

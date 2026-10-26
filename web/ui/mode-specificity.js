@@ -1,3 +1,4 @@
+import { mountMotifs } from './motifs.js';
 import { databaseOptions, databaseWords, useDatabase } from '../lib/database.js';
 import { databaseControls, databaseResult } from './database.js';
 import { useTracking } from '../lib/tracking.js';
@@ -32,10 +33,10 @@ import { BACKGROUNDS, CENTER_ORDERS, CONTROL_RATES, MODELS, ORGANISMS, PGEN_ORDE
 import { exportable, madeBy } from './figures.js';
 import { exportResult } from './exports.js';
 
-const PARTS = { neighbors: 'Neighbors', neighborhoods: 'Neighborhoods', generation: 'Generation', networks: 'Networks', database: 'Database' };
+const PARTS = { motifs: 'Motifs', neighbors: 'Neighbors', neighborhoods: 'Neighborhoods', generation: 'Generation', networks: 'Networks', database: 'Database' };
 // The analysis each part shows, the part each opens in, its API, and what the head's button says.
 const KIND_OF = { neighbors: 'tcrdist', neighborhoods: 'neighborhoods', generation: 'pgen', networks: 'networks', database: 'specificity' };
-const PART_OF = { tcrdist: 'neighbors', neighborhoods: 'neighborhoods', pgen: 'generation', networks: 'networks', specificity: 'database' };
+const PART_OF = { motifs: 'motifs', tcrdist: 'neighbors', neighborhoods: 'neighborhoods', pgen: 'generation', networks: 'networks', specificity: 'database' };
 const KINDS = ['tcrdist', 'neighborhoods', 'pgen', 'networks', 'specificity'];
 const START = { tcrdist: 'Compare the receptors', neighborhoods: 'Find the neighborhoods', pgen: 'Compute the probabilities', networks: 'Find the network', specificity: 'Match the database' };
 const SHOWN = 100;
@@ -72,7 +73,8 @@ export function mountSpecificity(app, container) {
   const head = h('div.workbench-head', h('h1', icon('receptor'), 'Specificity'), partSwitch,
     h('span.spacer'), h('label.kv-inline', h('span.muted', 'Dataset'), datasetSelect), startButton, exportButton);
   const body = h('div.view-body.specificity-view');
-  const root = h('div.view', head, h('div.workbench-scroll', body));
+  const motifBody = h('div.view-body'); motifBody.hidden = true;
+  const root = h('div.view', head, h('div.workbench-scroll', body, motifBody));
   container.append(root);
   const focusedResult = store.ui.focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === store.ui.focus.id) : null;
   let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : focusedResult?.dataset ?? store.project.datasets[0]?.id ?? null;
@@ -97,6 +99,7 @@ export function mountSpecificity(app, container) {
   };
 
   const dataset = () => store.project.datasets.find((d) => d.id === chosen) ?? store.project.datasets[0] ?? null;
+  const motifView = mountMotifs(app, motifBody, dataset);
   const request = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, tcrdist: tcrdistRequest(spec.options), ...extra });
   const pgenBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, pgen: pgenRequest(spec.pgen), ...extra });
   const hoodBody = (extra = {}) => ({ dataset: spec.dataset, definition: spec.definition, filter: spec.filter, neighborhoods: neighborhoodRequest(spec.neighborhoods), ...extra });
@@ -387,6 +390,8 @@ export function mountSpecificity(app, container) {
     for (const [key, label] of Object.entries(PARTS)) {
       partSwitch.append(h(`button${key === part ? '.active' : ''}`, { type: 'button', role: 'tab', 'aria-selected': key === part ? 'true' : 'false', onclick: () => show(key) }, label));
     }
+    body.hidden = part === 'motifs'; motifBody.hidden = part !== 'motifs';
+    if (part === 'motifs') { startButton.hidden = true; exportButton.hidden = true; motifView.load(); return; }
     clear(body);
     const d = dataset();
     const kind = KIND_OF[part];
@@ -750,8 +755,9 @@ export function mountSpecificity(app, container) {
     return JSON.stringify([d?.id ?? null, d?.definition ?? null, d?.filter ?? null, d?.tcrdist ?? null, d?.pgen ?? null, d?.neighborhoods ?? null, d?.networks ?? null, d?.specificity ?? null, store.project.samples]);
   };
   function update(topics) {
+    motifView.update(topics);
     if (topics.has('theme') && part === 'networks') render();
-    if (topics.has('jobs') && results[KIND_OF[part]].status === 'running') render();
+    if (topics.has('jobs') && results[KIND_OF[part]]?.status === 'running') render();
     if (topics.has('focus')) {
       const r = store.ui.focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === store.ui.focus.id) : null;
       if (PART_OF[r?.kind]) {
@@ -840,6 +846,7 @@ export function mountSpecificity(app, container) {
     update,
     destroy() {
       unsubscribe();
+      motifView.destroy();
       app.specificityView = null;
       root.remove();
     },

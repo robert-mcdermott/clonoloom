@@ -121,6 +121,8 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const simulations = (summary?.samples ?? []).map((s) => s.repertoire).filter((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
   const bcellModels = ['clonoloom-simulated-clonoloom-artificial-bcell-v1', 'clonoloom-simulated-clonoloom-artificial-bcell-v2'];
   const cellModels = ['clonoloom-simulated-cell-states', 'clonoloom-simulated-cell-states-clouds'];
+  const motifModels = ['clonoloom-simulated-motif-study-v1'];
+  if (simulations.some((r) => motifModels.includes(r.studyId))) sentences.push('The artificial motif study contains four query and eight background subjects, variable junction lengths, biased central residues and arbitrary TRBV labels. Planted local QGHT and conservative global ILMV signatures are known construction choices, not antigen annotations. Uneven shifted gamma-Poisson UMI counts are descriptive, not statistical weights. Complete sequence, arm and signature truth is saved; this is not a fitted recombination model.');
   const definitionModels = ['clonoloom-simulated-definition-variants-v1'];
   if (simulations.some((r) => definitionModels.includes(r.studyId))) sentences.push('The definition-sensitivity study is artificial: long-tailed gamma-Poisson UMI counts, uneven sampling exposure and explicit synonymous junction/V-allele distinctions create different receptor partitions. Comparison subjects have triples of nucleotide junctions sharing an amino-acid junction and different V/allele calls, with a 1.6-fold private-count scale. The construction and observed depth are deliberately definition-sensitive; it is not a fitted biological population or a depth-standardized comparison. Complete generating and partition truth is retained.');
   const countModels = ['clonoloom-simulated-replicated-counts-v1'];
@@ -128,7 +130,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const bcellSimulation = simulations.some((r) => bcellModels.includes(r.studyId));
   const cellSimulations = simulations.filter((r) => cellModels.includes(r.studyId));
   const simulated = simulations.find((r) => trbModels.includes(r.studyId));
-  const unknown = [...new Set(simulations.filter((r) => ![...bcellModels, ...cellModels, ...definitionModels, ...countModels, ...trbModels].includes(r.studyId)).map((r) => r.studyId))];
+  const unknown = [...new Set(simulations.filter((r) => ![...bcellModels, ...cellModels, ...definitionModels, ...motifModels, ...countModels, ...trbModels].includes(r.studyId)).map((r) => r.studyId))];
   if (simulations.some((r) => countModels.includes(r.studyId))) sentences.push('The replicated repertoire counts were simulated with heterogeneous gamma-Poisson variation, lognormal sampling exposures, subject effects, two batch levels, 48 shared fictional receptors and a private long-tailed background. Sparse increases/decreases or an all-null group contrast are recorded in the saved parameters and truth. Fictional stop-free junctions and SIM calls do not represent fitted human recombination or antigen specificity. Generator exposures differ from realized library totals; fitted total-count-offset effects describe relative repertoire abundance.');
   if (unknown.length) sentences.push(`The data include simulated studies ${joinList(unknown)}. These identifiers do not establish their generative model; consult each study's saved parameters and truth before describing how it was simulated.`);
   if (cellSimulations.length) {
@@ -381,7 +383,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
 
   // These descriptions and citations are computed in Go and kept with each immutable result.
   // Do not reconstruct scientific parameters from current controls or a plot selection.
-  for (const r of results.filter((r) => ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export', 'cohort-features', 'cohort-compare', 'definition-robustness', 'cohort-counts'].includes(r.kind))) {
+  for (const r of results.filter((r) => ['motifs', 'expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export', 'cohort-features', 'cohort-compare', 'definition-robustness', 'cohort-counts'].includes(r.kind))) {
     sentences.push(`Saved ${r.method || r.kind} result ${r.id}: ${r.describe || 'See the saved result for its effective parameters.'}${r.citation ? ` ${cite(`cell-method:${r.citation}`, r.citation)}` : ''}`);
   }
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

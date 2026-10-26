@@ -426,3 +426,9 @@ test('definition audits retain their saved methods and the distinct synthetic mo
   const out=methodsParagraph({dataset:pbmc,summary,program,results:[result]});
   assert.match(out.text,/Saved Descriptive definition sensitivity result rb-pinned/);assert.match(out.text,/synonymous/);assert.match(out.text,/not a fitted biological population/);assert.doesNotMatch(out.text,/SIM calls|identifiers do not establish|uniformly/);assert.ok(out.references.some((r)=>r.includes('Simonsohn')));
 });
+
+test('motif methods distinguish the adaptation and its artificial controls',()=>{
+ const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-motif-study-v1'}}]};
+ const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'mot-pinned',kind:'motifs',method:'GLIPH2-style adaptation',describe:'Matched V and length; pooled family; no N/P boost.',citation:'Huang et al. 2020.'}]});
+ assert.match(out.text,/Saved GLIPH2-style adaptation result mot-pinned/);assert.match(out.text,/not antigen annotations/);assert.match(out.text,/descriptive, not statistical weights/);assert.doesNotMatch(out.text,/identifiers do not establish/);assert.ok(out.references.some((r)=>r.includes('Huang')));
+});

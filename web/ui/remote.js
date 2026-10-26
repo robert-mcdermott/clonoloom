@@ -199,6 +199,19 @@ export function remoteActions(app) {
       return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
     },
 
+    async screen_motifs(options = {}) {
+      const dataset = datasetOf(options.dataset);
+      app.focusItem({kind:'dataset',id:dataset.id});
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.motifsView, 5000, 'Motif screen');
+      app.specificityView.show('motifs');
+      await app.specificityView.settled();
+      await waitFor(() => view.state().status !== 'loading', 10000, 'Motif source');
+      const result = await view.run({...options, dataset: dataset.id});
+      if (!result) throw new Error('The project changed before the screen was saved.');
+      return {message:'Motif screen saved.',data:{artifact:result.artifact.id,family:result.result.analysis.family,reported:result.result.analysis.reported,description:result.result.description}};
+    },
+
     async audit_definitions(options = {}) {
       await app.setMode('cohort');
       const view = await waitFor(() => app.robustnessView, 5000, 'Definition robustness');

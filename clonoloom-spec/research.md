@@ -2234,3 +2234,116 @@ randomization operations); the audit runs definitions sequentially, at most six 
 Capture is required initially; immutable jobs retain sufficient abundance evidence for replay.
 Baseline failures abort; unavailable alternative analyses remain visible with all family slots.
 These are implementation limits, not sample-size or power recommendations.
+
+### 5.35 Motifs and sequence-signature groups (wave 7, slice 6)
+
+**Primary sources.** Huang H et al. (2020), *Analyzing the M. tuberculosis immune response
+by T cell receptor clustering with GLIPH2 and genome-wide antigen screening*, Nature
+Biotechnology 38:1194–1202, doi:10.1038/s41587-020-0505-4
+([paper and Methods](https://pmc.ncbi.nlm.nih.gov/articles/PMC7541396/)). Its global rule
+requires equal-length junctions differing at one common position with favorable BLOSUM
+substitutions; its local rule uses enriched contiguous 2–5-mers with positional separation
+within three residues. Its Methods use unique sequences in Fisher contingency tables and
+describe an N/P-region enrichment boost. Henikoff & Henikoff (1992), PNAS 89:10915–10919,
+doi:10.1073/pnas.89.22.10915 supplies BLOSUM62. Fisher (1922), J R Stat Soc 85:87–94,
+doi:10.2307/2340521 supplies the conditional test; Benjamini & Yekutieli (2001), Ann Stat
+29:1165–1188, doi:10.1214/aos/1013699998 supplies correction under dependent tests.
+Implementation is independently written from these published methods. The existing BLOSUM62
+data and validated hypergeometric engine are reused. No external GLIPH implementation is
+required. This is explicitly a **ClonoLoom adaptation, not GLIPH2 equivalence**.
+
+**Units and background.** Require explicit, distinct, disjoint query/background sample sets
+from one opened dataset. Apply its saved QC and amino-acid clonotype definition with V-gene
+or allele resolution. Refuse vendor definitions, omitted/family V calls and retained source
+rows lacking counts. Take exactly one retained TRB chain per clonotype; require resolved TRBV
+gene, standard amino acids, full AIRR junction length 9–40 and conserved C…F/W boundaries.
+Collapse positive observed evidence separately in each arm by **TRBV gene + full AA junction**,
+regardless of J or the other paired chain. This differs from CDR3-only uniqueness. Preserve
+all contributing clonotype IDs, sample/subject sets and summed abundance. Neither abundance
+nor repeated rows, samples, subjects or alternative paired partners weight motif membership.
+Subject annotations are descriptive and may be missing; no subject-level test is performed.
+An identity may occur in both arms; report that overlap explicitly.
+
+Match **both local and global** signatures within exact TRBV-gene/full-junction-length strata.
+The extra local V/length restriction is an adaptation, not a claim about published GLIPH2.
+No automatic reference download, repertoire shuffling, Pgen matching, antigen label or implicit
+background is supplied. Species, assay, selection, population, donor and receptor quality must
+make the chosen background scientifically defensible; matching V/length alone cannot ensure
+this. Do not mix species or sample contexts and interpret the output as matched biological
+inference. Query-only/background-only strata remain explicit and untestable.
+
+**Signature construction.** Exclude the first three and last three residues of the full AIRR
+junction from local search and possible global substitutions. This fixed terminal policy is
+ours; the full junction is retained for identity, length matching and global equality. Local
+2–5-mers use fixed windows of up to four consecutive eligible starting positions, so any two
+starts differ by at most three. A repeated motif counts once per receptor/window. Windows
+overlap and truncate at the eligible end; equal member sets in different windows remain
+separate declared hypotheses. Do not chain positions transitively across longer distances.
+Global signatures require equality at every other full-junction position. At the one variable
+position, enumerate maximal sets of observed residues for which **every distinct pair has
+BLOSUM62 > 0**. Strict positivity and maximal cliques specify our conservative adaptation;
+do not join A–B–C if A and C are incompatible. Store the full `%` mask, allowed residues and
+one-based position. These groups can overlap; no connected-component supergroup is inferred.
+
+**Tests and selection.** Enumerate the complete signature family from the pooled captured
+query/background units before using their arm labels. This includes background-only signatures,
+all eligible windows, both signature kinds and untestable strata; do not screen query support
+before defining the family. For a signature in a stratum with Q query and B background units,
+let a and b be its distinct members. The table is [[a,Q−a],[b,B−b]]. The one-sided Fisher p-value
+is the hypergeometric upper tail P(X≥a), conditional on Q, B and a+b. Reuse `conga.LogTail` to
+retain finite natural-log tails even if the ordinary probability underflows. Apply BY across
+all M pooled signatures: sorted log p + log(M) + log(H_M) − log(rank), made monotone from the
+right and capped at log(1). Untestable slots use p=1 internally and remain null in output.
+The displayed score is exactly **−log10(BY)**, not a GLIPH2 composite probability or confidence
+of common antigen recognition. Unsmoothed fold is (a/Q)/(b/B); no background matches gives
+null fold and an explicit reason, not a fabricated finite estimate. Reporting defaults require
+at least three query units, BY≤0.05 and fold≥2; zero-background signatures are allowed with
+the null-fold label. Reporting filters never shrink the correction family or change scores.
+
+Fixed pooled signatures avoid query-only motif selection within this analysis. They do not
+correct selecting samples, backgrounds, definitions or motif lengths after seeing outcomes,
+or unreported repeated screens. Fisher calibration assumes exchangeable sequence units within
+strata. Deduplication, related receptors, shared identities, donor structure, unequal repertoire
+sampling and ascertainment can violate this. BY allows dependence between tests **only when
+the individual p-values are valid**; it cannot repair these assumptions. No guarantee of
+biological false-discovery control, independent replication or antigen specificity is made.
+Use these as exploratory hypotheses for independent repertoire and experimental validation.
+
+**Deliberate omissions.** Do not apply the paper's division of p by two per N/P member:
+this slice has neither calibrated N/P annotations nor a validated null for that boost. Do not
+call the result the published GLIPH/GLIPH2 composite score. HLA association, clonal-expansion
+scores, antigen assignment, structural recognition and experimental specificity validation are
+not implemented here. HLA/convergence is a separate subject-level slice.
+
+**Visuals and example.** For a selected group, Go supplies every residue count and frequency
+over all distinct query members. The plot uses the complete unaligned full junction, one-based
+positions and a fixed opacity scale 0–100%; no information-content logo, abundance weighting,
+subsampling or smoothing. Conserved positions follow from signature selection and are not
+independent specificity evidence. Accessible tables retain exact frequencies' denominators,
+members, sample/subject annotations, strata, null scores and complete exports.
+
+The `motif-study` v1 example (seed 20261029) has four query subjects ×30 rows and eight background
+subjects ×125 rows. Biased central residues, junction lengths 15–17, uneven lognormal exposures
+and shifted gamma-Poisson UMI counts give varied observations. Four global ILMV variants are
+shared across query subjects; nine further rows per query subject plant QGHT at starts 5–7.
+Other junctions are unique random controls. Parseable TRBV labels and fixed codon translation
+are artificial, not germline assignment or fitted V(D)J recombination. Counts are
+1+Poisson(Gamma(shape=4) × [5000/(rank+1)^1.2 × exposure]/4); the added one guarantees positive
+records. Full source hashes and every sequence, arm, count and planted signature are saved.
+The default analysis has 108 distinct query and 1000 background units; repeated global rows
+must not inflate support. Example signal is constructed and cannot establish power or FDR.
+
+**Validation and bounds.** Independently enumerate literal pooled signatures and maximal
+residue sets in Python, using the public Biopython BLOSUM62 data API and SciPy Fisher/BY
+calculations. Check all 811 reference signatures, memberships, denominators, nulls and scores,
+plus full result processor digests. Exhaustive label assignments check a conditional null and
+family invariance; policy tests cover repeated motifs, nontransitive positions/substitutions,
+abundance invariance, strict schemas, bounds and cancellation. Literal example truth checks
+every captured count/identity; source-free replay, checksums, provider terms, complete ZIPs,
+browser saving/reopening, figure provenance and both themes are exercised.
+
+The screen accepts at most 256 source samples, 4000 distinct units summed across arms,
+100,000 pooled signatures and 20 million conservatively counted exact-tail support points.
+Exceeding a bound fails explicitly rather than truncating the family. Choose a scientifically
+declared subset before inspecting outcomes. Immutable jobs retain the complete captured
+evidence for deterministic source-free replay; limits are operational, not power guidance.

@@ -1,0 +1,45 @@
+---
+title: Motifs and sequence signatures
+description: Screen explicit query and background repertoires for overlapping local motifs and conservative global signatures, with matched strata and complete scientific provenance.
+lede: Find sequence patterns that a chosen background does not explain. These overlapping groups are hypotheses to investigate, not proof that their receptors recognize the same antigen.
+---
+<h2 id="run">Choose the query and background</h2>
+<ol>
+<li>Open one receptor dataset containing the intended query and background samples. Use an amino-acid clonotype definition retaining V genes or alleles, with the intended QC rules.</li>
+<li>Open Specificity → <strong>Motifs</strong>. Expand <strong>Query, background and reporting settings</strong> and assign each sample to query, background or excluded. Both arms must be explicit and disjoint.</li>
+<li>Declare the motif lengths and reporting settings before inspecting outcomes. Select <strong>Screen motifs</strong>.</li>
+<li>Inspect reported groups, their matched denominators, full member lists, exclusions and scientific methods. Uncheck <strong>Reported signatures only</strong> to inspect the complete family.</li>
+</ol>
+<p>Eligible clonotypes have exactly one retained TRB chain, a resolved TRBV gene and a standard full AIRR amino-acid junction of length 9–40. Positive observed evidence is collapsed separately in each arm by V gene plus full junction. J calls and other paired chains do not create additional motif units. Repeated rows, abundance and repeated subjects do not add membership. Subject annotations remain descriptive.</p>
+<p>Query and background are matched within exact <strong>TRBV gene and full junction length</strong>. An unmatched stratum has no test, rather than a zero background denominator. Choose comparable species, sampling populations, assays and ascertainment. Matching V/length alone cannot make a background appropriate.</p>
+
+<h2 id="read">Read the sequence evidence</h2>
+<shot name="motifs" alt="Artificial query and background study showing a selected QGHT motif group, full junction residue frequencies, matched denominators and conditional enrichment evidence">Four query and eight background subjects, variable junction lengths and uneven UMI counts. Local QGHT and conservative global ILMV signatures were planted deliberately; this is a controlled example, not fitted human recombination or antigen evidence.</shot>
+<p>The residue grid shows <strong>all distinct query members</strong> of the selected group. Rows are amino acids; columns are one-based full-junction positions. Opacity uses the same 0–100% frequency scale for every position and group. Hover a cell for its exact count and denominator. This is a frequency plot, not an information-content logo. Conserved positions result from selecting the signature; they are not independent evidence of specificity.</p>
+<p>Member tables show sample/subject sets and descriptive abundance. Signature tables show query and background membership over their complete matched-stratum totals. No background matches gives an undefined fold, explicitly labeled; it does not produce a finite fold estimate. Exports contain every signature and receptor, including rows outside the visible page.</p>
+
+<h2 id="adaptations">What “GLIPH2-style” means here</h2>
+<p>This is a documented <strong>ClonoLoom adaptation</strong> of published GLIPH2 ideas, not the GLIPH2 implementation, pipeline or composite score. The first three and last three full-junction residues are excluded from local search and possible global substitutions.</p>
+<ul>
+<li><strong>Local:</strong> contiguous 2–5-mers in fixed windows of up to four possible starting positions (maximum start separation three). Each receptor counts once per signature. Windows overlap; positions are not chained transitively. Requiring exact V gene and full length for local groups is an additional restriction.</li>
+<li><strong>Global:</strong> the complete junction agrees except at one common central position. Allowed residues form maximal sets whose distinct pairs all have BLOSUM62 &gt;0. Strict positivity and pairwise sets make the rule explicit; an incompatible A/C pair cannot join through B.</li>
+<li><strong>Scores:</strong> one-sided Fisher enrichment within each V/length stratum, followed by Benjamini–Yekutieli correction across every pooled signature. The displayed score is −log10(BY), not a probability of shared specificity.</li>
+<li><strong>Omitted:</strong> N/P-region boosts, composite GLIPH2 scores, HLA tests, clonal-expansion scores, antigen assignment and experimental validation.</li>
+</ul>
+
+<h2 id="limits">Selection and scientific limits</h2>
+<p>The full signature family is constructed from the pooled query/background before using arm labels. It includes background-only signatures, overlapping windows, local/global groups and untestable strata. Reporting thresholds (default ≥3 query members, BY≤0.05, fold≥2) do not shrink it; zero-background matches can pass while their fold remains unavailable.</p>
+<p>Fisher p-values assume exchangeable sequence units within each stratum. Related receptors, donor structure, deduplication, shared identities, unequal repertoire sampling and background ascertainment can violate this assumption. These are <strong>not independent-subject tests</strong>. BY accommodates dependence between valid tests; it cannot repair invalid p-values or selecting backgrounds, settings and samples after viewing outcomes. No biological false-discovery guarantee or antigen-specificity conclusion follows.</p>
+<p>Use independent repertoires and experimental evidence to evaluate hypotheses. Groups overlap; do not merge them into a single specificity claim. The bounded implementation accepts at most 256 source samples, 4000 total distinct arm units, 100,000 signatures and 20 million conservatively counted exact-tail support points. It refuses larger jobs rather than truncating the family.</p>
+
+<h2 id="save">Keep and reproduce the screen</h2>
+<p>Saved results retain query/background selections, captured receptors, source fingerprints and terms, definition/QC, abundance units, subject annotations, exclusions, all scores and method citations. Reopening, replay and ZIP export can use this evidence without the original sources. <strong>Export motif ZIP</strong> includes JSON, manifest, complete signatures and receptor CSVs, and NOTICE. Figure captions retain the selection, denominators, correction family and limits.</p>
+<p>Try <strong>Query and background motif study</strong> from Examples: S01–S04 are query; S05–S12 are background. The default seed supplies 108 unique query and 1000 background V/junction units. Source rows and full planted truth are available for inspection. Remote clients use <a href="remote-control.html#motifs"><code>screen_motifs</code></a>.</p>
+
+<h2 id="sources">Method sources</h2>
+<ul>
+<li>Huang et al. (2020). <a href="https://doi.org/10.1038/s41587-020-0505-4">GLIPH2 and genome-wide antigen screening</a>. Published global/local signature inspiration; adaptations are stated above.</li>
+<li>Henikoff &amp; Henikoff (1992). <a href="https://doi.org/10.1073/pnas.89.22.10915">Amino acid substitution matrices from protein blocks</a>. BLOSUM62 data.</li>
+<li>Fisher (1922). <a href="https://doi.org/10.2307/2340521">On the interpretation of χ² from contingency tables, and the calculation of P</a>. Conditional exact test.</li>
+<li>Benjamini &amp; Yekutieli (2001). <a href="https://doi.org/10.1214/aos/1013699998">False discovery rate under dependency</a>.</li>
+</ul>

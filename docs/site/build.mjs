@@ -51,7 +51,7 @@ const DOCS = [
   { group: 'Quality and clonotypes', pages: [['qc', 'Quality control'], ['clonotypes', 'Clonotypes']] },
   { group: 'Repertoires', pages: [['diversity', 'Diversity'], ['rarefaction', 'Rarefaction'], ['genes', 'Genes and junctions'], ['overlap', 'Overlap']] },
   { group: 'Tracking', pages: [['subjects', 'Subjects and time points'], ['tracking', 'Following clonotypes'], ['tests', 'Expanded and contracted clonotypes'], ['classes', 'Classes across time points'], ['attribution', 'Attribution to a reference']] },
-  { group: 'Specificity', pages: [['tcrdist', 'Similar receptors (TCRdist)'], ['neighborhoods', 'Neighborhoods and backgrounds'], ['generation', 'Generation probabilities'], ['networks', 'Clonotype networks'], ['database', 'Specificity databases']] },
+  { group: 'Specificity', pages: [['motifs', 'Motifs and sequence signatures'], ['tcrdist', 'Similar receptors (TCRdist)'], ['neighborhoods', 'Neighborhoods and backgrounds'], ['generation', 'Generation probabilities'], ['networks', 'Clonotype networks'], ['database', 'Specificity databases']] },
   { group: 'Cells', pages: [['cell-study', 'A complete study'], ['cells', 'Expression evidence']] },
   { group: 'B cells', pages: [['bcell-inputs', 'Sequence evidence'], ['bcell-families', 'Clonal families'], ['bcell-germlines', 'Germlines'], ['bcell-shm', 'Somatic hypermutation'], ['bcell-lineages', 'Lineage trees'], ['bcell-isotypes', 'Isotypes']] },
   { group: 'Cohorts', pages: [['cohort-design', 'Study design'], ['cohort-features', 'Subject features'], ['cohort-comparisons', 'Group comparisons'], ['cohort-counts', 'Replicated counts'], ['definition-robustness', 'Definition robustness']] },

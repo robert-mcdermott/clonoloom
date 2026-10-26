@@ -39,7 +39,7 @@ func listExamples(t *testing.T, handler http.Handler) exampleList {
 func TestExamplesDownloadAndOpenWithTheirCredits(t *testing.T) {
 	a, handler := testApp(t)
 	list := listExamples(t, handler)
-	if len(list.Examples) != 25 || list.Offline || len(list.Hosts) != 4 {
+	if len(list.Examples) != 26 || list.Offline || len(list.Hosts) != 4 {
 		t.Fatalf("%+v", list)
 	}
 	terms := ""

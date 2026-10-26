@@ -409,3 +409,27 @@ pipeline. The fixed seed retains 4,082 zeros and 3,590 singletons; richness chan
 definitions (−244.125 to +64.125), while Shannon and Hill q=1 mean estimates remain negative.
 The study digest is pinned across processors. Earlier count presets retain their own original
 digests. This is a controlled partition/depth example, not fitted biology or a calibration claim.
+
+### Motifs and sequence signatures
+
+Generate the independent fixture with
+`uv run --no-project validation/reference/motifs.py` (SciPy 1.17.0, Biopython 1.86).
+The reference independently enumerates fixed local windows and exhaustive maximal positive
+BLOSUM62 residue subsets, then uses public SciPy Fisher and BY APIs. BLOSUM62 values are data
+read through Biopython's public API; no GLIPH implementation source is used. Go compares all
+811 signature memberships, matched denominators, raw/corrected probabilities and null slots.
+Full-result digests must agree on arm64 and amd64. Every residue-count column sums to its
+unique-query-member denominator.
+
+`internal/motifs` checks abundance invariance, repeated motifs, nontransitive positions and
+substitutions, full-family reporting invariance, bounds and cancellation. Exhaustive 4-of-8
+label allocations check conditional sequence-level tails and family invariance; they do not
+establish biological FDR. Simulator/API controls reconcile every captured identity/count
+against literal truth, preserve four global units despite repeated source rows, and retain
+old example digests. New example digests agree across processors.
+
+API tests cover strict selections/schema, captured evidence consistency, durable source-free
+replay, cancellation, checksums, provider terms, full ZIPs and Go residue profiles. Browser
+scene `motifs` checks remote/visible identity, positive local/global controls, full frequency
+geometry, undo/reopen, saved Methods, source-free export, figure provenance and both themes.
+The scientific contract and all GLIPH2 adaptations/limits are in research §5.35.

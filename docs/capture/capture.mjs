@@ -251,9 +251,35 @@ async function definitionAuditScene() {
   await clearToasts();await checkAccessibility();
 }
 
+async function motifScene() {
+  await act('new_project',{name:'Artificial sequence-signature study'});
+  await act('open_example',{example:'simulated-motif-study',download:true});
+  const query=Array.from({length:4},(_,i)=>`S${String(i+1).padStart(2,'0')}`),background=Array.from({length:8},(_,i)=>`S${String(i+5).padStart(2,'0')}`);
+  const out=(await act('screen_motifs',{query,background})).data;
+  if(!out.reported||out.family<1000)throw new Error('Motif positive control missing');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.motifsView,doc=v.state().answer.result,r=doc.analysis;
+    if(r.query.length!==108||r.background.length!==1000||!r.groups.some((g)=>g.kind==='global'&&g.reported))throw new Error('Wrong source units/global control');
+    const group=r.groups.filter((g)=>g.motif==='QGHT'&&g.reported).sort((a,b)=>b.query.length-a.query.length||a.id.localeCompare(b.id))[0];if(!group)throw new Error('Local control missing');await v.select(group.id);
+    const p=v.state().detail.profile;if(p.n!==group.query.length||p.counts.some((c)=>c.reduce((a,b)=>a+b,0)!==p.n))throw new Error('Profile denominator wrong');
+    if(document.querySelectorAll('.motifs-view [data-position]').length!==20*group.length)throw new Error('Profile geometry wrong');
+    const empty=r.groups.find((g)=>!g.query.length);if(!empty)throw new Error('Background-only control absent');await v.select(empty.id);if(v.plotSpec()!==null||!document.querySelector('.motifs-view').textContent.includes('No query members; residue frequencies are unavailable.'))throw new Error('Empty-query frequencies misrepresented');await v.select(group.id);app.store.notify(['jobs']);
+    window.motifCheck={id:v.state().answer.artifact.id,group:group.id,snapshot:JSON.stringify(doc)};
+    app.store.undo();if(app.store.project.artifacts.some((a)=>a.id===window.motifCheck.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:window.motifCheck.id});return true;
+  })()`);
+  await waitFor(`window.clonoloom.motifsView?.state().status==='ready'&&window.clonoloom.motifsView.state().detail`);
+  await js(`(async()=>{const v=window.clonoloom.motifsView;if(JSON.stringify(v.state().answer.result)!==window.motifCheck.snapshot)throw new Error('Saved motif result changed');v.configure(${JSON.stringify(query)},${JSON.stringify(background)});[...document.querySelectorAll('.motifs-view button')].find((b)=>b.textContent==='Screen motifs').click();return true})()`);
+  await waitFor(`window.clonoloom.motifsView.state().status==='ready'&&window.clonoloom.motifsView.state().detail`);
+  await js(`(async()=>{const app=window.clonoloom;let v=app.motifsView;if(v.state().answer.artifact.id!==window.motifCheck.id)throw new Error('Visible/remote settings differ');const ensure=app.ensureDataset,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};URL.createObjectURL=(b)=>{blob=b;return create(b)};try{await app.setMode('data');app.focusItem({kind:'result',id:window.motifCheck.id});for(let i=0;i<200;i++){if(app.motifsView?.state().status==='ready'&&app.motifsView.state().detail)break;await new Promise((r)=>setTimeout(r,50));}v=app.motifsView;if(v?.state().status!=='ready'||!v.state().detail)throw new Error('Source-free remount failed');await v.download();const b=new Uint8Array(await blob.arrayBuffer());if(b[0]!==80||b[1]!==75)throw new Error('ZIP unavailable');await v.select(window.motifCheck.group);}finally{app.ensureDataset=ensure;URL.createObjectURL=create;}const {figureBlob}=await import('./ui/figures.js');const text=await(await figureBlob(v.plotSpec(),'svg')).text();for(const phrase of ['frequency','pooled','ClonoLoom adaptation','Query samples:','not proven'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase);return true})()`);
+  await act('show_methods');if(!await js(`(()=>{const s=document.querySelector('.methods-text').textContent;return s.includes('Planted local QGHT')&&s.includes('No N/P boost')})()`))throw new Error('Motif methods absent');await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.motifs-view');root.closest('.workbench-scroll').scrollTop=root.querySelector('.motif-title').offsetTop-65;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async motifs() { await motifScene(); },
   async 'definition-robustness'() { await definitionAuditScene(); },
   async 'cohort-counts'() { await countModelScene(false); },
   async 'cohort-counts-paired'() { await countModelScene(true); },
@@ -1194,7 +1220,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

@@ -840,3 +840,33 @@ family, including unavailable slots. Marginal intervals are not multiplicity-adj
 summary ranges are descriptive. No inference treats definitions as independent replications.
 Bounds and interpretive limits are in the [definition guide](site/pages/docs/definition-robustness.html)
 and research §5.34. This format does not equate individual clonotype identities across definitions.
+
+## Motif and sequence-signature screens
+
+`motifs` artifacts store `motifs.json` (format `clonoloom-motifs`, method version 1).
+`evidence` embeds the complete request, captured query/background TRBV-gene/full-AA-junction
+units, source sample list, exclusions, NOTICE, abundance unit and method version. Each unit
+retains its sample/subject/clonotype sets and descriptive summed abundance. Its identity is
+shared across arms when the same V/junction occurs in both; membership is unique within an arm.
+`analysis` retains options, both receptor arrays, shared-identity count, every matching stratum,
+the full pooled signature family, scores and reporting decisions. Group member indexes refer
+to their respective arm arrays. `start`/`end` are inclusive one-based motif-start windows;
+for global signatures they are the single variable position, marked `%` in the full junction.
+`allowed` contains its pairwise-positive BLOSUM62 residue set.
+
+Probabilities and scores are JSON null when untestable. `logP`/`logQ` are natural logarithms
+and remain informative if `p`/`q` underflow to zero; `score` is −log10(BY). A zero background
+match count gives null fold and an explicit reason. Untestable family slots remain present.
+The complete family is defined before reporting thresholds, including background-only groups.
+
+`POST /api/motifs` takes `{dataset, definition, filter, query, background, subjects?, options?,
+start?}`. Query/background are disjoint source sample names. Options default to
+`{minK:2,maxK:5,minMembers:3,q:0.05,minFold:2}`. `start:false` captures and probes readiness
+without submitting a job. Verified GET `/api/motifs/{id}` returns the manifest and document;
+`/group/{group}` returns the signature and Go-computed residue counts/frequencies.
+`/download` supplies `motifs.json`, `manifest.json`, complete `signatures.csv`, `receptors.csv`
+and NOTICE, preserving provider-term acknowledgement. CSV unavailable numbers are blank.
+
+Creation needs source evidence; saved inspection, export and durable replay do not. Captured
+request/arm/subject membership is revalidated in workers. Bounds, exact GLIPH2 adaptations and
+conditional scientific limits are in [the guide](site/pages/docs/motifs.html) and research §5.35.

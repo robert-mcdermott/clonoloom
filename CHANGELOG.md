@@ -4,6 +4,17 @@
 
 ### Added
 
+- **Motifs and sequence-signature groups (wave 7, slice 6).** Screen explicit query and
+  background samples for overlapping local motifs and conservative global signatures.
+  Count unique TRBV/junction units, match exact V/length strata, and use conditional Fisher
+  tails with BY across the complete pooled signature family. Preserve nulls, exclusions,
+  captured evidence, replay, provider-aware exports, remote control and cited Methods.
+  Add complete query-member residue frequencies and a varied artificial study with planted
+  signatures, uneven counts and full truth. Document every GLIPH2 adaptation, omitted N/P
+  and composite scores, sequence-unit assumptions and lack of antigen-specificity proof.
+  Validate independent enumeration/SciPy probabilities, source/truth counts, processor
+  agreement, saved workflows and both-theme visuals.
+
 - **Definition robustness (wave 7, slice 5).** Audit saved subject-feature contrasts under
   declared junction and V/J alternatives, preserving subjects, QC and inference settings.
   Require exact baseline reproduction; retain failed alternatives, all correction slots,

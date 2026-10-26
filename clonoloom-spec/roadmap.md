@@ -2111,6 +2111,10 @@ QC and multiplicity family. Cells, chains, libraries and repeated samples cannot
 replication. Passing structural checks is not a claim of adequate power, randomization,
 independence or absence of confounding.
 
+Slice 6 sequence-signature screens are separate conditional repertoire analyses, not cohort
+comparisons: their sequence units are not independent subjects. Their exploratory scores
+carry explicit exchangeability/ascertainment limits and imply no population-level inference.
+
 ### Wave 7 sequence
 
 | Slice | Scope and requirements | Acceptance before the next slice |
@@ -2334,7 +2338,7 @@ violations or overflow. All 14 contrast checks, formatting and diff checks pass.
 
 ### Slice 5: definition robustness
 
-**Implemented and validated; awaiting commit.** C5 is bounded to saved aggregate subject-feature
+**Committed and pushed.** C5 is bounded to saved aggregate subject-feature
 contrasts; the scientific contract is research §5.34. Individual-clonotype count-model audits
 need an explicit correspondence between changing receptor partitions and are not claimed here.
 
@@ -2378,7 +2382,64 @@ saved reopening, source-free ZIP, figure provenance and saved Methods. Both fina
 are visually reviewed. The local site builds 40 pages with 48 screenshot sets; 39 audited pages
 pass all 156 theme/viewport checks with no accessibility violations or overflow. All 14
 contrast checks, formatting and diff checks pass. Version stays 0.6.0; no commit, push, tag,
-release or publication. Slice 6 has not begun.
+release or publication. Slice 5 was subsequently committed and pushed by the maintainer.
+
+### Slice 6: motifs and sequence-signature groups
+
+**Implemented and validated; awaiting commit.** R7 and S3 have a bounded TRB implementation;
+research §5.35 states the complete scientific contract and GLIPH2 adaptations.
+
+- Capture explicitly selected, disjoint query/background samples under saved AA definition
+  and QC. Collapse positive evidence to unique TRBV-gene/full-junction units in each arm;
+  retain source hashes, subject/sample/clonotype membership, abundance units and exclusions.
+  Match exact V/length strata and preserve unmatched cases explicitly.
+- Enumerate overlapping local 2–5-mer windows and global one-position signatures with maximal
+  pairwise-positive BLOSUM62 residue sets. Exclude three residues at each terminal; never chain
+  positions or incompatible substitutions transitively. These are documented adaptations,
+  including stricter local V/length matching, not claims of GLIPH2 implementation equivalence.
+- Construct the complete pooled, arm-label-independent signature family before testing. Use
+  stable one-sided Fisher tails and log-space BY over all slots; reporting filters never
+  shrink the family. Preserve unmatched nulls, undefined zero-background folds and underflow
+  log probabilities. The score is −log10(BY), not the GLIPH2 composite score.
+- State exchangeable-sequence assumptions and donor, repertoire and ascertainment limitations.
+  Abundance and subject annotations are descriptive; no independent-subject p-values, N/P
+  boost, HLA test, antigen label or experimental specificity conclusion is supplied.
+- Show complete query-member residue frequencies on one fixed 0–100% opacity scale, with
+  one-based full-junction positions, exact count tables and explicit denominators. Selection
+  explains conserved positions; the display is not an information-content logo.
+- Save immutable cancellable jobs, source-free replay/reopening, complete provider-aware ZIPs,
+  remote controls, Methods and figure provenance. Revalidate captured arm/subject evidence.
+- Provide a twelve-subject example with varied junctions, uneven gamma-Poisson UMI counts,
+  known local/global signatures and every source/truth record. It is an artificial positive
+  control, not fitted recombination or a power/FDR benchmark. Existing presets remain stable.
+- Keep version 0.6.0. Slice 7 and release operations remain outside this change.
+
+Validation includes all 811 independently enumerated signatures with SciPy Fisher/BY values,
+exhaustive conditional label allocations, nontransitive policies, abundance/family invariance,
+underflow, nulls, bounds, cancellation, source/truth counts, replay, checksums and provider terms.
+Native/amd64 result and example digests agree. Browser workflows cover visible/remote identity,
+empty-query profiles, complete counts, undo/reopening, source-free remount/export and Methods.
+Both-theme screenshots are reviewed; the plot was made more compact so its denominators and
+selected evidence remain visible. Existing Networks workflows are regressed in both themes.
+
+**Validation completed:** the full application/internal race suite passes (application
+183.224 s; simulator 89.144 s), with final focused API race checks in 151.331 s and final
+numeric/simulator/reference race checks passing after pinning the new fixture. The required-data
+scientific suite passes in 502.815 s, excluding unchanged performance-budget tests. The compiler
+scan finds no fused multiply-adds after correcting progress arithmetic. All 811 independent
+reference signatures agree; native/amd64 complete-result and example digests match. Extreme
+underflow retains finite log scores on both processors. The 70 exhaustive conditional label
+allocations preserve the pooled family and super-uniform raw tails for the checked signature;
+this finite sequence-level check is not a biological FDR claim.
+
+All 128 JavaScript tests, Go vet and six CGO-free platform builds pass. Final motif browser
+workflows pass in both themes, including background-only unavailable profiles, job updates,
+visible/remote identity, source-free remount/export, undo/redo and saved Methods. Final light
+and dark screenshots are visually reviewed; scientific notation stays unbroken. Existing
+Networks workflows also pass in both themes. The local site builds 41 pages with 49 screenshot
+sets; 40 audited pages pass 160 theme/viewport checks without accessibility violations or
+overflow. All 14 contrast checks, formatting and diff checks pass. Version stays 0.6.0; no
+commit, push, tag, release or publication. Slice 7 has not begun.
 
 ## Later waves (outlined)
 
