@@ -54,6 +54,7 @@ type Study struct {
 	// BCells selects the artificial paired B-cell model; the TRB parameters above are unused.
 	BCells        *BCellStudy         `json:"bcells,omitempty"`
 	CellStates    *CellStateStudy     `json:"cellStates,omitempty"`
+	BatchQC       *BatchQCStudy       `json:"batchQC,omitempty"`
 	Contamination *ContaminationStudy `json:"contamination,omitempty"`
 	Convergence   *ConvergenceStudy   `json:"convergence,omitempty"`
 	Motifs        *MotifStudy         `json:"motifs,omitempty"`
@@ -62,6 +63,7 @@ type Study struct {
 
 // Presets are the studies `clonoloom simulate` starts from.
 var Presets = map[string]Study{
+	"batch-qc-study":      {Name: "batch-qc-study", Title: "An artificial batch-QC study", Seed: 20261101, BatchQC: &BatchQCStudy{}},
 	"contamination-study": {Name: "contamination-study", Title: "An artificial contamination-evidence study", Seed: 20261031, Contamination: &ContaminationStudy{}},
 	"convergence-study":   {Name: "convergence-study", Title: "An artificial subject recurrence and HLA study", Seed: 20261030, Convergence: &ConvergenceStudy{}},
 	"motif-study":         {Name: "motif-study", Title: "An artificial sequence-signature study", Seed: 20261029, Motifs: &MotifStudy{}},
@@ -208,6 +210,13 @@ var Presets = map[string]Study{
 
 // Check says what is wrong with a study's parameters.
 func (s Study) Check() error {
+	if s.BatchQC != nil {
+		if s.Contamination != nil || s.Convergence != nil || s.Motifs != nil || s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
+			return fmt.Errorf("batch QC study replaces other models")
+		}
+		return nil
+	}
+
 	if s.Contamination != nil {
 		if s.Convergence != nil || s.Motifs != nil || s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
 			return fmt.Errorf("contamination study replaces other models")
@@ -425,6 +434,9 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 	}
 	if entries, err := os.ReadDir(dir); err == nil && len(entries) > 0 {
 		return Summary{}, fmt.Errorf("%s is not empty", dir)
+	}
+	if s.BatchQC != nil {
+		return runBatchQC(ctx, s, dir, version, progress)
 	}
 	if s.Contamination != nil {
 		return runContamination(ctx, s, dir, version, progress)

@@ -122,6 +122,7 @@ func (a *app) handleJobs() {
 	a.handleRobustnessJobs()
 	a.handleMotifsJobs()
 	a.handleConvergenceJobs()
+	a.handleBatchQCJobs()
 	a.handleContaminationJobs()
 	a.handleCongaJobs()
 	a.handleAnnDataJobs()

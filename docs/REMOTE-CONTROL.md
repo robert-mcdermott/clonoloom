@@ -495,3 +495,34 @@ HTTP takes the same fields plus dataset ID and recorded `filter` at `POST /api/c
 `start:false` probes without submission. GET `/api/contamination/{id}` and `/download` inspect
 or export checked captures. Raw subject/sequence evidence and source terms remain attached;
 provider terms use `?accept=1`. See the [guide](site/pages/docs/contamination.html).
+
+### Batch QC
+
+`screen_batch_qc` captures sample-level metrics under the selected dataset's QC and saves
+within-batch modified-z evidence. Supply every source sample, including explicit exclusions:
+
+```json
+{
+  "action": "screen_batch_qc",
+  "args": {
+    "dataset": "study dataset",
+    "samples": [
+      {"name": "D01-1", "subject": "D01", "batch": "run-A", "exclude": ""},
+      {"name": "D02-1", "subject": "D02", "batch": "run-A", "exclude": ""},
+      {"name": "D01-2", "subject": "D01", "batch": "run-A", "exclude": "Repeat: retain D01-1"}
+    ],
+    "options": {"threshold": 3.5, "minSamples": 5}
+  }
+}
+```
+
+This three-sample request illustrates assignment and exclusion structure; two included
+subjects are insufficient for scores under the declared five-subject minimum. A larger
+source requires its full assignment list. The generated batch-QC example supplies that
+list in `truth/samples.json`. The action returns `artifact`, included `samples`, unique
+`subjects` and the complete scientific description. It shares the visible controls' result
+identity, jobs and undo/redo. No active clonotype definition is used or changed.
+
+Subject repeats within one batch require explicit exclusions; repeats across batches remain
+visible in sample/subject counts and do not establish independent batches. Small groups and
+zero MAD yield null scores with reasons. A review flag does not remove data or correct batches.

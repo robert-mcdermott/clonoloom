@@ -48,7 +48,7 @@ const VERSION = /var version = "([^"]+)"/.exec(readFileSync(join(repo, 'main.go'
 // The documentation, in reading order.
 const DOCS = [
   { group: 'Start', pages: [['index', 'Overview'], ['getting-started', 'Getting started'], ['opening-data', 'Opening data']] },
-  { group: 'Quality and clonotypes', pages: [['qc', 'Quality control'], ['contamination', 'Contamination evidence'], ['clonotypes', 'Clonotypes']] },
+  { group: 'Quality and clonotypes', pages: [['qc', 'Quality control'], ['contamination', 'Contamination evidence'], ['batch-qc', 'Batch QC'], ['clonotypes', 'Clonotypes']] },
   { group: 'Repertoires', pages: [['diversity', 'Diversity'], ['rarefaction', 'Rarefaction'], ['genes', 'Genes and junctions'], ['overlap', 'Overlap']] },
   { group: 'Tracking', pages: [['subjects', 'Subjects and time points'], ['tracking', 'Following clonotypes'], ['tests', 'Expanded and contracted clonotypes'], ['classes', 'Classes across time points'], ['attribution', 'Attribution to a reference']] },
   { group: 'Specificity', pages: [['motifs', 'Motifs and sequence signatures'], ['convergence', 'Subject recurrence and HLA'], ['tcrdist', 'Similar receptors (TCRdist)'], ['neighborhoods', 'Neighborhoods and backgrounds'], ['generation', 'Generation probabilities'], ['networks', 'Clonotype networks'], ['database', 'Specificity databases']] },

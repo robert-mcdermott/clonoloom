@@ -2590,3 +2590,124 @@ invalid evidence and cancellation. Earlier Pgen scientific references remain aut
 probability computation itself. Browser checks exercise visible/remote identity, plot geometry,
 undo/redo, reopening, source/parent-free exports, cited Methods and both themes; sample QC is
 regressed separately. No inferential calibration or classification-performance claim is made.
+
+## 5.38 Batch QC: descriptive sample metrics and robust scores
+
+**Sources and scope.** Iglewicz and Hoaglin, *How to Detect and Handle Outliers* (ASQC,
+1993), as summarized in the [NIST/SEMATECH e-Handbook §1.3.5.17](https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm),
+provides the modified-z labeling rule. NIST distinguishes investigating unusual observations
+from establishing erroneous data and notes masking and distributional assumptions. The
+[OSCA Advanced chapter, Quality control, redux](https://www.bioconductor.org/books/release/OSCA.advanced/quality-control-redux.html)
+discusses batch-specific reference distributions, biological heterogeneity and failure of
+adaptive thresholds when much of a batch is poor. Its per-cell implementation is not copied
+or reproduced here: ClonoLoom uses sample-level metrics and the policy below, independently
+implemented from the mathematical definition. Neither source validates these receptor-specific
+cutoffs, minimum sample count or metrics as a diagnostic classifier.
+
+**Assignment and observation unit.** Capture every source sample from one opened dataset,
+including explicit exclusion reasons. Included samples require exact subject and batch labels;
+missing labels do not form an implicit “unknown” reference group. Include at most one sample
+per subject per batch. A repeat requires an explicit exclusion or a distinct, scientifically
+justified batch assignment; the software never pools technical replicates. Subjects may recur
+across batches, so the global unique-subject count can be smaller than the sample count and
+batch summaries are not independent. Batches may represent runs or a predeclared combination
+of experimental factors. Labels and structural checks do not prove subject independence,
+comparability, absence of confounding or sufficient power. No inferential batch comparison is
+performed. Bounds: 2–256 source samples, at least two included, at most 32 included batches.
+
+**Metrics and denominators.** Use the saved source QC rules. No active clonotype definition
+is used or changed, and no missing sequence is silently replaced or required for these metrics.
+Store original/retained row counts, named filter exclusions and every metric's numerator,
+denominator, raw value and availability reason. Bulk weights are explicitly known integer
+reads, UMIs or templates; sequence-only and unknown-unit datasets are refused. A missing,
+negative, noninteger or nonfinite contributing count makes the affected metric unavailable,
+rather than treating it as zero or one. Other valid metrics remain available. A zero denominator
+is unavailable; zero numerators with positive denominators remain real zeros. Counts are bounded
+at 9e15, below loss of integer precision. In single-cell tables, fractions count contigs once
+regardless of UMI depth; abundance counts unique nonempty retained barcodes within each sample.
+Any retained contig without a barcode makes cell abundance unavailable. Contigs/cells do not
+become independent QC-score observations.
+
+| Metric | Raw value | Scoring scale |
+| --- | --- | --- |
+| Retained abundance | Sum of retained bulk counts, or distinct retained barcodes | log10 of positive values |
+| Retained rows | Number of rows passing QC; contigs for single-cell tables | log10 of positive values |
+| Productive fraction | Explicitly productive weight / all weight after QC except its productive-only rule | Original fraction |
+| Unknown productivity fraction | Missing productive-flag weight / that same status denominator | Original fraction |
+| Resolved V-gene fraction | Resolved V-gene weight / all retained explicitly productive weight | Original fraction |
+| Resolved J-gene fraction | Resolved J-gene weight / all retained explicitly productive weight | Original fraction |
+
+Gene fractions include productive rows without junctions in the denominator; ambiguous/missing
+gene calls are unresolved. Productivity fractions retain unknown flags in the denominator.
+Removing the productive-only rule from the status universe avoids reporting a mechanically
+perfect productive fraction after that filter. Other QC rules still apply. These exact
+universes are specific to this screen and travel with the result; they should not be assumed
+equivalent to vendor metrics or metrics using an eligible-junction denominator. Log metrics
+use no pseudocount: raw zero remains in tables but has no transformed value or score. Fractions
+use no logit, arcsine or normality claim. Comparing heterogeneous fractions can flag genuine
+biology; the distribution and provenance must be inspected.
+
+**Score and unavailable policy.** For each batch × metric, take all finite transformed values,
+including the observation being scored. The median of an even set is the mean of its two
+middle values. Compute raw MAD = median(|x − median(x)|), then
+`modified_z = 0.6745 × (x − median(x)) / MAD`. The coefficient is the rounded NIST value,
+used exactly as declared; MAD itself is not additionally scaled. Default review is strictly
+`abs(modified_z) > 3.5`, in both directions. The threshold is editable from 1 to 20.
+There are no p-values, multiplicity adjustments, calibrated false-positive rates, confidence
+intervals, normality tests or contamination diagnoses. An extreme productive fraction in
+either direction may reflect preprocessing, protocol or biology, not necessarily poor quality.
+
+At least five evaluable subjects per batch/metric are required by default (editable upward
+to 100). This is a conservative ClonoLoom display policy, not a published power guarantee.
+Below the minimum, preserve medians/MADs and values but leave all scores unavailable.
+If MAD is exactly zero, leave scores unavailable even for values different from the median;
+no epsilon, infinity, pooled scale, mean/SD or IQR fallback is invented. Numerical overflow
+also remains unavailable. A false flag on an unscored JSON observation must be read together
+with its null score/reason; CSV uses a blank flag for unscored observations. Every group reports
+included samples/subjects, valid values, scored values and flags separately. Changing the review
+threshold does not change membership, reference values or denominators. Small-group policy and
+missingness operate separately per metric.
+
+**Visuals and interpretation.** Show every included sample with a plottable value, all batches
+on the same horizontal scoring scale. Fractions use 0–1; positive count metrics use explicitly
+labeled log10 values. Batch medians are vertical lines, not uncertainty intervals. Deterministic
+vertical offsets distribute samples within each labeled batch and have no quantitative meaning;
+x values are never jittered. Coincident marks can overlap; tables and exports retain every
+observation. Gold denotes a review flag, purple a scored value below threshold, gray an unscored
+value. Missing/nonpositive-log values remain in the tables with reasons. No density estimate,
+regression, batch-difference test, hidden subsampling or pooling is used. The common scale allows
+inspection of systematic shifts that a within-batch reference can conceal. A batch where most
+samples fail can look internally typical; a lack of flags does not establish usable data.
+
+**Reproducibility.** Capture all metrics, source fingerprints, sample assignments/exclusions,
+QC, unit, transformation and scoring policies in immutable cancellable jobs. Replay uses the
+captured evidence and does not reopen source files. Complete ZIPs include the document, manifest,
+sample evidence, every included sample × metric observation and provider notice; explicit
+exclusions remain in JSON. Subject identifiers are retained. Visible and remote workflows share
+the same content identity, support undo/redo and feed cited Methods and figure captions.
+
+**Artificial study.** `batch-qc-study` v1 (seed 20261101) generates 26 samples from 25 fictional
+subjects and 2427 rows. Twenty-four included subjects occupy four batches (8, 8, 3, 5); a D01
+repeat and a sample with missing batch have explicit exclusions. Productive TRB junctions use
+the existing length-selected generator. Nonproductive controls replace an internal codon with
+TAA, with consistent translation and false productive flags. Missing productivity flags and
+V/J calls are deliberately generated. Counts are `1 + Poisson(Gamma(shape=3) ×
+1800/(rank+1)^1.05 × exposure / 3)`, with lognormal exposure log-SD 0.38. Most sample row
+counts vary from 65 to 129; the final batch has 80 rows in each sample to exercise zero MAD.
+Run A's eighth subject has a lower generating productive proportion; its seventh has one
+missing count. Run B has a lower generating productivity distribution; run C is too small
+for scores. Generating probability is not necessarily the observed count-weighted fraction.
+These are controlled construction assumptions, not fitted assay error rates, empirical batch
+effects, classifier sensitivity or a randomized biological study. All row-level truth,
+assignments, model/seed and source hashes are saved. Older presets retain their existing bytes.
+
+**Independent validation.** A standard-library Python oracle uses exact Fraction medians/MADs
+and the declared 0.6745 coefficient for fraction metrics, and independent `math.log10` for count
+metrics. Go checks every reference group and observation, missingness, score and flag. Literal
+source truth is independently aggregated in API tests to check every raw metric, missing count
+and denominator; separate checks cover productive-only QC and barcode-versus-contig accounting.
+Tests include duplicate-subject refusal, explicit exclusions, zero MAD, minimum groups, threshold
+invariance, cancellation, tamper refusal, provider-aware exports and source-free replay.
+Complete-result and simulator digests are pinned on native and amd64 processors. Browser checks
+compare every plotted value with saved evidence, reopen projects without sources, validate full
+exports and cited captions, and exercise existing Sample QC and Contamination in both themes.

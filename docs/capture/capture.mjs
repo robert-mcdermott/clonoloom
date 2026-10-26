@@ -317,6 +317,26 @@ async function convergenceScene() {
   await clearToasts(); await checkAccessibility();
 }
 
+async function batchQCScene() {
+ await act('new_project',{name:'Artificial sample quality and batch study'});
+ await act('open_example',{example:'simulated-batch-qc-study',download:true});
+ const samples=JSON.parse(readFileSync(join(places.examples,'simulated-batch-qc-study','truth/samples.json'),'utf8'));
+ const declaration={samples,options:{threshold:3.5,minSamples:5}};
+ const out=(await act('screen_batch_qc',declaration)).data;
+ if(out.samples!==24||out.subjects!==24)throw new Error('Batch subject/sample accounting differs');
+ await js(`(()=>{const app=window.clonoloom;app.focusItem({kind:'result',id:${JSON.stringify(out.artifact)}});app.qcView.show('contamination');return true})()`);
+ await waitFor(`window.clonoloom.contaminationView?.state().status==='idle'`);
+ await js(`(()=>{if(document.querySelectorAll('.contamination-view input[aria-label^="subject "]').length!==26)throw new Error('Switching QC tabs did not load source assignments');window.clonoloom.qcView.show('batch-qc');return true})()`);
+ await js(`(()=>{const v=window.clonoloom.batchQCView,r=v.state().answer.result.analysis,groups=r.groups.filter((g)=>g.metric==='productive'),points=[...document.querySelectorAll('.batch-qc-view [data-sample]')],values=groups.flatMap((g)=>g.observations).filter((p)=>p.transformed!=null);if(points.length!==values.length||points.length!==23)throw new Error('Plot omits sample values');for(const node of points){const p=values.find((p)=>r.evidence.samples[p.sample].assignment.name===node.dataset.sample);if(!p||String(p.value)!==node.dataset.value||String(p.transformed)!==node.dataset.transformed)throw new Error('Plot differs from evidence');}if(groups.find((g)=>g.batch==='run-C').scored!==0)throw new Error('Small group scored');if(r.groups.find((g)=>g.batch==='run-D'&&g.metric==='rows').mad!==0)throw new Error('Constant group control differs');window.batchQCCheck={id:v.state().answer.artifact.id,snapshot:JSON.stringify(v.state().answer.result)};v.configure(${JSON.stringify(declaration)});[...document.querySelectorAll('.batch-qc-view button')].find((b)=>b.textContent==='Screen batch QC').click();return true})()`);
+ await waitFor(`window.clonoloom.batchQCView?.state().status==='ready'`);
+ await js(`(async()=>{const app=window.clonoloom,v=app.batchQCView,c=window.batchQCCheck;if(v.state().answer.artifact.id!==c.id)throw new Error('Visible/remote identity differs');app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===c.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:c.id});return true})()`);
+ await waitFor(`window.clonoloom.batchQCView?.state().status==='ready'`);
+ await js(`(async()=>{const app=window.clonoloom,c=window.batchQCCheck;if(JSON.stringify(app.batchQCView.state().answer.result)!==c.snapshot)throw new Error('Saved result changed');const ensure=app.ensureDataset,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};URL.createObjectURL=(b)=>{blob=b;return create(b)};try{await app.setMode('data');app.focusItem({kind:'result',id:c.id});for(let i=0;i<200;i++){if(app.batchQCView?.state().status==='ready')break;await new Promise((r)=>setTimeout(r,50))}const v=app.batchQCView;if(v?.state().status!=='ready')throw new Error('Source-free remount failed');await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('ZIP failed');const {figureBlob}=await import('./ui/figures.js');const text=await(await figureBlob(v.plotSpec(),'svg')).text();for(const phrase of ['no quantitative meaning','Threshold:','QC:','0.6745','Iglewicz','no batch correction'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase);}finally{app.ensureDataset=ensure;URL.createObjectURL=create;}return true})()`);
+ await act('show_methods');if(!await js(`(()=>{const text=document.querySelector('.methods-text').textContent;return text.includes('26 samples from 25 fictional subjects')&&text.includes('zero MAD')&&document.querySelector('.methods-references').textContent.includes('Iglewicz')})()`))throw new Error('Methods missing');await act('close_dialogs');
+ await js(`(()=>{const root=document.querySelector('.batch-qc-view'),scroller=root.parentElement;scroller.scrollTop+=root.querySelector('.batch-qc-title').getBoundingClientRect().top-scroller.getBoundingClientRect().top-12;return true})()`);
+ await clearToasts();await checkAccessibility();
+}
+
 async function contaminationScene() {
   await act('new_project',{name:'Artificial nucleotide sharing and carryover study'});
   await act('open_example',{example:'simulated-contamination-study',download:true});
@@ -342,6 +362,7 @@ async function contaminationScene() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+ async ['batch-qc'](){await batchQCScene();},
  async contamination() {await contaminationScene();},
   async convergence() { await convergenceScene(); },
   async motifs() { await motifScene(); },
@@ -1285,7 +1306,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

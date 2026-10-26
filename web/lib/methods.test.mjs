@@ -449,3 +449,9 @@ test('contamination methods retain heuristic and artificial-control limits',()=>
   const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'cnt-pinned',kind:'contamination',method:'Descriptive contamination evidence',describe:'Exact NT sharing; no removal or contamination verdict.',citation:'Li et al. 2023. doi:10.1093/bib/bbad230.'}]});
   assert.match(out.text,/Saved Descriptive contamination evidence result cnt-pinned/);assert.match(out.text,/eight fictional subjects and nine samples/);assert.match(out.text,/not Pgen labels/);assert.doesNotMatch(out.text,/identifiers do not establish/);assert.ok(out.references.some((r)=>r.includes('bbad230')));
 });
+
+test('batch QC methods retain sample-level policy and construction limits',()=>{
+ const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-batch-qc-study-v1'}}]};
+ const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'bqc-pinned',kind:'batch-qc',method:'Descriptive batch QC',describe:'Zero MAD remains unscored; no correction.',citation:'Iglewicz and Hoaglin (1993).'}]});
+ assert.match(out.text,/Saved Descriptive batch QC result bqc-pinned/);assert.match(out.text,/26 samples from 25 fictional subjects/);assert.match(out.text,/not calibrated/);assert.ok(out.references.some((r)=>r.includes('Iglewicz')));
+});

@@ -1,0 +1,1637 @@
+{
+  "input": {
+    "options": {
+      "threshold": 3.5,
+      "minSamples": 5
+    },
+    "unit": "umis",
+    "singleCell": false,
+    "samples": [
+      {
+        "assignment": {
+          "name": "A0",
+          "subject": "D0",
+          "batch": "A",
+          "exclude": ""
+        },
+        "rows": 100,
+        "kept": 100,
+        "removed": {},
+        "values": [
+          {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 100,
+            "numerator": 100,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.7,
+            "numerator": 0.7,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.3,
+            "numerator": 0.3,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": null,
+            "numerator": null,
+            "denominator": null,
+            "reason": "Missing evidence"
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "A1",
+          "subject": "D1",
+          "batch": "A",
+          "exclude": ""
+        },
+        "rows": 110,
+        "kept": 110,
+        "removed": {},
+        "values": [
+          {
+            "value": 100,
+            "numerator": 100,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 110,
+            "numerator": 110,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.72,
+            "numerator": 0.72,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.28,
+            "numerator": 0.28,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "A2",
+          "subject": "D2",
+          "batch": "A",
+          "exclude": ""
+        },
+        "rows": 120,
+        "kept": 120,
+        "removed": {},
+        "values": [
+          {
+            "value": 1000,
+            "numerator": 1000,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 120,
+            "numerator": 120,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.74,
+            "numerator": 0.74,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.26,
+            "numerator": 0.26,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "A3",
+          "subject": "D3",
+          "batch": "A",
+          "exclude": ""
+        },
+        "rows": 130,
+        "kept": 130,
+        "removed": {},
+        "values": [
+          {
+            "value": 10000,
+            "numerator": 10000,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 130,
+            "numerator": 130,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.76,
+            "numerator": 0.76,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.24,
+            "numerator": 0.24,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "A4",
+          "subject": "D4",
+          "batch": "A",
+          "exclude": ""
+        },
+        "rows": 140,
+        "kept": 140,
+        "removed": {},
+        "values": [
+          {
+            "value": 100000,
+            "numerator": 100000,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 140,
+            "numerator": 140,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.78,
+            "numerator": 0.78,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.22,
+            "numerator": 0.22,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "A5",
+          "subject": "D5",
+          "batch": "A",
+          "exclude": ""
+        },
+        "rows": 150,
+        "kept": 150,
+        "removed": {},
+        "values": [
+          {
+            "value": 1000000,
+            "numerator": 1000000,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 150,
+            "numerator": 150,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.98,
+            "numerator": 0.98,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.02,
+            "numerator": 0.02,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "B0",
+          "subject": "D0",
+          "batch": "B",
+          "exclude": ""
+        },
+        "rows": 100,
+        "kept": 100,
+        "removed": {},
+        "values": [
+          {
+            "value": 10,
+            "numerator": 10,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 100,
+            "numerator": 100,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.8,
+            "numerator": 0.8,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.2,
+            "numerator": 0.2,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "B1",
+          "subject": "D1",
+          "batch": "B",
+          "exclude": ""
+        },
+        "rows": 110,
+        "kept": 110,
+        "removed": {},
+        "values": [
+          {
+            "value": 100,
+            "numerator": 100,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 110,
+            "numerator": 110,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.8,
+            "numerator": 0.8,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.2,
+            "numerator": 0.2,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "B2",
+          "subject": "D2",
+          "batch": "B",
+          "exclude": ""
+        },
+        "rows": 120,
+        "kept": 120,
+        "removed": {},
+        "values": [
+          {
+            "value": 1000,
+            "numerator": 1000,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 120,
+            "numerator": 120,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.8,
+            "numerator": 0.8,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.2,
+            "numerator": 0.2,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "B3",
+          "subject": "D3",
+          "batch": "B",
+          "exclude": ""
+        },
+        "rows": 130,
+        "kept": 130,
+        "removed": {},
+        "values": [
+          {
+            "value": 10000,
+            "numerator": 10000,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 130,
+            "numerator": 130,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.8,
+            "numerator": 0.8,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.2,
+            "numerator": 0.2,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "B4",
+          "subject": "D4",
+          "batch": "B",
+          "exclude": ""
+        },
+        "rows": 140,
+        "kept": 140,
+        "removed": {},
+        "values": [
+          {
+            "value": 100000,
+            "numerator": 100000,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 140,
+            "numerator": 140,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.8,
+            "numerator": 0.8,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.2,
+            "numerator": 0.2,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "C0",
+          "subject": "D0",
+          "batch": "C",
+          "exclude": ""
+        },
+        "rows": 100,
+        "kept": 100,
+        "removed": {},
+        "values": [
+          {
+            "value": 10,
+            "numerator": 10,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 100,
+            "numerator": 100,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.4,
+            "numerator": 0.4,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.6,
+            "numerator": 0.6,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "C1",
+          "subject": "D1",
+          "batch": "C",
+          "exclude": ""
+        },
+        "rows": 110,
+        "kept": 110,
+        "removed": {},
+        "values": [
+          {
+            "value": 100,
+            "numerator": 100,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 110,
+            "numerator": 110,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.6,
+            "numerator": 0.6,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.4,
+            "numerator": 0.4,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "C2",
+          "subject": "D2",
+          "batch": "C",
+          "exclude": ""
+        },
+        "rows": 120,
+        "kept": 120,
+        "removed": {},
+        "values": [
+          {
+            "value": 1000,
+            "numerator": 1000,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 120,
+            "numerator": 120,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.1,
+            "numerator": 0.1,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.9,
+            "numerator": 0.9,
+            "denominator": 1,
+            "reason": ""
+          },
+          {
+            "value": 0.95,
+            "numerator": 0.95,
+            "denominator": 1,
+            "reason": ""
+          }
+        ]
+      },
+      {
+        "assignment": {
+          "name": "excluded",
+          "subject": "",
+          "batch": "",
+          "exclude": "Not comparable"
+        },
+        "rows": 0,
+        "kept": 0,
+        "removed": {},
+        "values": [
+          {
+            "value": null,
+            "numerator": null,
+            "denominator": null,
+            "reason": "No evidence"
+          },
+          {
+            "value": null,
+            "numerator": null,
+            "denominator": null,
+            "reason": "No evidence"
+          },
+          {
+            "value": null,
+            "numerator": null,
+            "denominator": null,
+            "reason": "No evidence"
+          },
+          {
+            "value": null,
+            "numerator": null,
+            "denominator": null,
+            "reason": "No evidence"
+          },
+          {
+            "value": null,
+            "numerator": null,
+            "denominator": null,
+            "reason": "No evidence"
+          },
+          {
+            "value": null,
+            "numerator": null,
+            "denominator": null,
+            "reason": "No evidence"
+          }
+        ]
+      }
+    ]
+  },
+  "groups": [
+    {
+      "batch": "A",
+      "metric": "abundance",
+      "valid": 5,
+      "median": 4.0,
+      "mad": 1.0,
+      "reason": "",
+      "scored": 5,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 0,
+          "value": 0,
+          "transformed": null,
+          "reason": "Zero has no log10 value; no pseudocount",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 1,
+          "value": 100,
+          "transformed": 2.0,
+          "reason": "",
+          "z": -1.349,
+          "flag": false
+        },
+        {
+          "sample": 2,
+          "value": 1000,
+          "transformed": 3.0,
+          "reason": "",
+          "z": -0.6745,
+          "flag": false
+        },
+        {
+          "sample": 3,
+          "value": 10000,
+          "transformed": 4.0,
+          "reason": "",
+          "z": 0.0,
+          "flag": false
+        },
+        {
+          "sample": 4,
+          "value": 100000,
+          "transformed": 5.0,
+          "reason": "",
+          "z": 0.6745,
+          "flag": false
+        },
+        {
+          "sample": 5,
+          "value": 1000000,
+          "transformed": 6.0,
+          "reason": "",
+          "z": 1.349,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "A",
+      "metric": "rows",
+      "valid": 6,
+      "median": 2.096562299177231,
+      "mad": 0.0523676752600065,
+      "reason": "",
+      "scored": 6,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 0,
+          "value": 100,
+          "transformed": 2.0,
+          "reason": "",
+          "z": -1.2437304209450624,
+          "flag": false
+        },
+        {
+          "sample": 1,
+          "value": 110,
+          "transformed": 2.041392685158225,
+          "reason": "",
+          "z": -0.7105892035699816,
+          "flag": false
+        },
+        {
+          "sample": 2,
+          "value": 120,
+          "transformed": 2.0791812460476247,
+          "reason": "",
+          "z": -0.22386940565361835,
+          "flag": false
+        },
+        {
+          "sample": 3,
+          "value": 130,
+          "transformed": 2.113943352306837,
+          "reason": "",
+          "z": 0.22386940565361835,
+          "flag": false
+        },
+        {
+          "sample": 4,
+          "value": 140,
+          "transformed": 2.146128035678238,
+          "reason": "",
+          "z": 0.6384107964300184,
+          "flag": false
+        },
+        {
+          "sample": 5,
+          "value": 150,
+          "transformed": 2.1760912590556813,
+          "reason": "",
+          "z": 1.0243395982670584,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "A",
+      "metric": "productive",
+      "valid": 6,
+      "median": 0.75,
+      "mad": 0.03,
+      "reason": "",
+      "scored": 6,
+      "flagged": 1,
+      "observations": [
+        {
+          "sample": 0,
+          "value": 0.7,
+          "transformed": 0.7,
+          "reason": "",
+          "z": -1.1241666666666668,
+          "flag": false
+        },
+        {
+          "sample": 1,
+          "value": 0.72,
+          "transformed": 0.72,
+          "reason": "",
+          "z": -0.6745,
+          "flag": false
+        },
+        {
+          "sample": 2,
+          "value": 0.74,
+          "transformed": 0.74,
+          "reason": "",
+          "z": -0.22483333333333333,
+          "flag": false
+        },
+        {
+          "sample": 3,
+          "value": 0.76,
+          "transformed": 0.76,
+          "reason": "",
+          "z": 0.22483333333333333,
+          "flag": false
+        },
+        {
+          "sample": 4,
+          "value": 0.78,
+          "transformed": 0.78,
+          "reason": "",
+          "z": 0.6745,
+          "flag": false
+        },
+        {
+          "sample": 5,
+          "value": 0.98,
+          "transformed": 0.98,
+          "reason": "",
+          "z": 5.171166666666666,
+          "flag": true
+        }
+      ]
+    },
+    {
+      "batch": "A",
+      "metric": "unknown",
+      "valid": 6,
+      "median": 0.25,
+      "mad": 0.03,
+      "reason": "",
+      "scored": 6,
+      "flagged": 1,
+      "observations": [
+        {
+          "sample": 0,
+          "value": 0.3,
+          "transformed": 0.3,
+          "reason": "",
+          "z": 1.1241666666666668,
+          "flag": false
+        },
+        {
+          "sample": 1,
+          "value": 0.28,
+          "transformed": 0.28,
+          "reason": "",
+          "z": 0.6745,
+          "flag": false
+        },
+        {
+          "sample": 2,
+          "value": 0.26,
+          "transformed": 0.26,
+          "reason": "",
+          "z": 0.22483333333333333,
+          "flag": false
+        },
+        {
+          "sample": 3,
+          "value": 0.24,
+          "transformed": 0.24,
+          "reason": "",
+          "z": -0.22483333333333333,
+          "flag": false
+        },
+        {
+          "sample": 4,
+          "value": 0.22,
+          "transformed": 0.22,
+          "reason": "",
+          "z": -0.6745,
+          "flag": false
+        },
+        {
+          "sample": 5,
+          "value": 0.02,
+          "transformed": 0.02,
+          "reason": "",
+          "z": -5.171166666666666,
+          "flag": true
+        }
+      ]
+    },
+    {
+      "batch": "A",
+      "metric": "vResolved",
+      "valid": 6,
+      "median": 0.9,
+      "mad": 0.0,
+      "reason": "Zero MAD: reference spread is undefined",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 0,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 1,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 2,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 3,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 4,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 5,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "A",
+      "metric": "jResolved",
+      "valid": 5,
+      "median": 0.95,
+      "mad": 0.0,
+      "reason": "Zero MAD: reference spread is undefined",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 0,
+          "value": null,
+          "transformed": null,
+          "reason": "Missing evidence",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 1,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 2,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 3,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 4,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 5,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "B",
+      "metric": "abundance",
+      "valid": 5,
+      "median": 3.0,
+      "mad": 1.0,
+      "reason": "",
+      "scored": 5,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 6,
+          "value": 10,
+          "transformed": 1.0,
+          "reason": "",
+          "z": -1.349,
+          "flag": false
+        },
+        {
+          "sample": 7,
+          "value": 100,
+          "transformed": 2.0,
+          "reason": "",
+          "z": -0.6745,
+          "flag": false
+        },
+        {
+          "sample": 8,
+          "value": 1000,
+          "transformed": 3.0,
+          "reason": "",
+          "z": 0.0,
+          "flag": false
+        },
+        {
+          "sample": 9,
+          "value": 10000,
+          "transformed": 4.0,
+          "reason": "",
+          "z": 0.6745,
+          "flag": false
+        },
+        {
+          "sample": 10,
+          "value": 100000,
+          "transformed": 5.0,
+          "reason": "",
+          "z": 1.349,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "B",
+      "metric": "rows",
+      "valid": 5,
+      "median": 2.0791812460476247,
+      "mad": 0.0377885608893997,
+      "reason": "",
+      "scored": 5,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 6,
+          "value": 100,
+          "transformed": 2.0,
+          "reason": "",
+          "z": -1.413331156363369,
+          "flag": false
+        },
+        {
+          "sample": 7,
+          "value": 110,
+          "transformed": 2.041392685158225,
+          "reason": "",
+          "z": -0.6745,
+          "flag": false
+        },
+        {
+          "sample": 8,
+          "value": 120,
+          "transformed": 2.0791812460476247,
+          "reason": "",
+          "z": 0.0,
+          "flag": false
+        },
+        {
+          "sample": 9,
+          "value": 130,
+          "transformed": 2.113943352306837,
+          "reason": "",
+          "z": 0.6204798521029672,
+          "flag": false
+        },
+        {
+          "sample": 10,
+          "value": 140,
+          "transformed": 2.146128035678238,
+          "reason": "",
+          "z": 1.194954466194439,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "B",
+      "metric": "productive",
+      "valid": 5,
+      "median": 0.8,
+      "mad": 0.0,
+      "reason": "Zero MAD: reference spread is undefined",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 6,
+          "value": 0.8,
+          "transformed": 0.8,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 7,
+          "value": 0.8,
+          "transformed": 0.8,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 8,
+          "value": 0.8,
+          "transformed": 0.8,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 9,
+          "value": 0.8,
+          "transformed": 0.8,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 10,
+          "value": 0.8,
+          "transformed": 0.8,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "B",
+      "metric": "unknown",
+      "valid": 5,
+      "median": 0.2,
+      "mad": 0.0,
+      "reason": "Zero MAD: reference spread is undefined",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 6,
+          "value": 0.2,
+          "transformed": 0.2,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 7,
+          "value": 0.2,
+          "transformed": 0.2,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 8,
+          "value": 0.2,
+          "transformed": 0.2,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 9,
+          "value": 0.2,
+          "transformed": 0.2,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 10,
+          "value": 0.2,
+          "transformed": 0.2,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "B",
+      "metric": "vResolved",
+      "valid": 5,
+      "median": 0.9,
+      "mad": 0.0,
+      "reason": "Zero MAD: reference spread is undefined",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 6,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 7,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 8,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 9,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 10,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "B",
+      "metric": "jResolved",
+      "valid": 5,
+      "median": 0.95,
+      "mad": 0.0,
+      "reason": "Zero MAD: reference spread is undefined",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 6,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 7,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 8,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 9,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 10,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Zero MAD: reference spread is undefined",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "C",
+      "metric": "abundance",
+      "valid": 3,
+      "median": 2.0,
+      "mad": 1.0,
+      "reason": "Too few evaluable subjects for the declared minimum",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 11,
+          "value": 10,
+          "transformed": 1.0,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 12,
+          "value": 100,
+          "transformed": 2.0,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 13,
+          "value": 1000,
+          "transformed": 3.0,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "C",
+      "metric": "rows",
+      "valid": 3,
+      "median": 2.041392685158225,
+      "mad": 0.0377885608893997,
+      "reason": "Too few evaluable subjects for the declared minimum",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 11,
+          "value": 100,
+          "transformed": 2.0,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 12,
+          "value": 110,
+          "transformed": 2.041392685158225,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 13,
+          "value": 120,
+          "transformed": 2.0791812460476247,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "C",
+      "metric": "productive",
+      "valid": 3,
+      "median": 0.6,
+      "mad": 0.2,
+      "reason": "Too few evaluable subjects for the declared minimum",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 11,
+          "value": 0.4,
+          "transformed": 0.4,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 12,
+          "value": 0.6,
+          "transformed": 0.6,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 13,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "C",
+      "metric": "unknown",
+      "valid": 3,
+      "median": 0.4,
+      "mad": 0.2,
+      "reason": "Too few evaluable subjects for the declared minimum",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 11,
+          "value": 0.6,
+          "transformed": 0.6,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 12,
+          "value": 0.4,
+          "transformed": 0.4,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 13,
+          "value": 0.1,
+          "transformed": 0.1,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "C",
+      "metric": "vResolved",
+      "valid": 3,
+      "median": 0.9,
+      "mad": 0.0,
+      "reason": "Too few evaluable subjects for the declared minimum",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 11,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 12,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 13,
+          "value": 0.9,
+          "transformed": 0.9,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        }
+      ]
+    },
+    {
+      "batch": "C",
+      "metric": "jResolved",
+      "valid": 3,
+      "median": 0.95,
+      "mad": 0.0,
+      "reason": "Too few evaluable subjects for the declared minimum",
+      "scored": 0,
+      "flagged": 0,
+      "observations": [
+        {
+          "sample": 11,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 12,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        },
+        {
+          "sample": 13,
+          "value": 0.95,
+          "transformed": 0.95,
+          "reason": "Too few evaluable subjects for the declared minimum",
+          "z": null,
+          "flag": false
+        }
+      ]
+    }
+  ]
+}

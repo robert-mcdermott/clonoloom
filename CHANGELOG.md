@@ -4,6 +4,17 @@
 
 ### Added
 
+- **Batch QC (wave 7, slice 9).** Compare six sample metrics within explicitly declared
+  batches using median/raw-MAD modified z-scores. Preserve every sample assignment, exclusion,
+  raw value, denominator and unscored reason; require one included observation per subject
+  per batch. Keep small groups, zero MAD and unavailable evidence unscored. Add common-scale
+  sample distributions, exact reference tables, immutable source-free replay and exports,
+  remote control and cited Methods. Provide a varied 26-sample artificial study with shifted,
+  low-productivity, missing-count, small-group and constant-value controls. Validate independent
+  references, every generating denominator, processor agreement and both-theme workflows.
+  Flags are descriptive review labels, never automatic removal, batch correction or biological
+  inference. Document assumptions, masking and the limits of within-batch references.
+
 - **Contamination evidence (wave 7, slice 8).** Inspect exact productive bulk TRB nucleotide
   junction/V/J sharing between explicitly assigned unrelated human subjects. Preserve all
   sample pairs and matches, complete retained-abundance denominators, eligible evidence and

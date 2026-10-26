@@ -481,3 +481,24 @@ fraction, visible/remote identity, dataset-toolbar restoration, undo/redo, reope
 figure captions, cited Methods, accessibility and the existing sample-QC view. Review both
 themes for readable equal log axes, denominator/threshold explanations and an explicit
 artificial-study label. More than 2000 shared points are not silently sampled.
+
+### Batch QC
+
+`uv run --no-project validation/reference/batch_qc.py` writes the independent standard-library
+reference: exact Fraction medians, raw MADs and 0.6745 arithmetic for fraction scores, with
+independent `math.log10` for count metrics. Go compares all 18 batch × metric groups and every
+observation, including zero-log values, missingness, small groups and zero MAD. Complete-result
+and simulator digests must agree on native and amd64 processors.
+
+API tests independently sum all 2427 generating rows to check every raw metric and denominator.
+They check explicit repeat/exclusion policies, productive-only QC's separate status universe,
+missing-count propagation, single-cell barcode deduplication, contig-weighted fractions and
+missing barcodes. Additional checks cover threshold invariance, cancellation, checksum refusals,
+provider terms, complete 144-observation CSV export and byte-identical source-free replay.
+
+`node docs/capture/capture.mjs batch-qc qc contamination --theme both` checks all 23 plotted
+productive fractions against saved evidence, small/constant reference controls, visible/remote
+identity, QC-tab source loading, undo/redo, reopening, source-free ZIP and figure exports, cited Methods and accessibility.
+Review both themes: common 0–1 fraction scale, exact sample points, explicit median lines and
+vertical-offset explanation, gray unscored observations and clear valid/scored denominators.
+The existing Sample QC and Contamination workflows are separate regression scenes.

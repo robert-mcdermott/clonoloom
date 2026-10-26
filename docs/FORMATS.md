@@ -940,3 +940,30 @@ NT/AA, counts, fractions, ratios, review/model-context labels and reasons; missi
 fields are blank. The JSON also retains all private/unshared eligible identities. Subject IDs
 and sequences are included; provider terms use the existing `?accept=1` acknowledgement.
 Reopening and durable replay do not need source files or the Pgen parent directory.
+
+### Batch QC (`batch-qc`, wave 7 slice 9)
+
+`POST /api/batch-qc` accepts `dataset`, the saved QC `filter`, all `samples` as
+`{name,subject,batch,exclude}`, and `options:{threshold:3.5,minSamples:5}`.
+An empty exclusion reason includes the sample; a nonempty reason preserves an explicit
+exclusion. Every source sample must appear once. Included samples need subject/batch labels;
+at most one sample per subject per batch is allowed. Bounds are 2–256 source samples and
+32 included batches. Unknown fields and trailing JSON are refused. `start:false` checks
+whether the computed artifact is ready without starting a job.
+
+The immutable `bqc-…` identity includes normalized options/assignments, all captured metric
+values and numerators/denominators, source QC/unit/fingerprints, provider notice and method
+version. `batch-qc.json` has format `clonoloom-batch-qc`, version 1, a cited `description`,
+`evidence` and `analysis`. The analysis records the six fixed metric definitions, included
+sample and unique-subject counts, exclusions, and every batch × metric reference and sample
+observation. Reference medians/MADs use the declared transformed scale. A null transformed
+value or score has an explicit reason. Read a JSON `flag` only with its score/reason:
+unscored observations have a null score and do not constitute a below-threshold verdict.
+
+`GET /api/batch-qc/{id}` verifies the saved result's checksum. Durable jobs replay from
+captured metrics without original source files. `/download` returns a ZIP containing
+`batch-qc.json`, `manifest.json`, `samples.json`, `observations.csv` and `NOTICE.txt`.
+CSV contains every included sample × metric slot; unavailable numeric fields and unscored
+flags are blank. Excluded samples and all denominators remain in JSON. Provider restrictions
+use the existing 409/explicit `accept=1` flow. Subject IDs are retained; export is not
+implicitly de-identified. No source sample or QC filter is modified by a flag.

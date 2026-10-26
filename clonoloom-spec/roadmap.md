@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–7 are committed and pushed. Slice 8 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slices 1–8 are committed and pushed. Slice 9 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2494,7 +2494,7 @@ no commit, push, tag, release or publication. Slice 7 was subsequently committed
 
 ### Slice 8: contamination evidence
 
-**Implemented and validated; awaiting commit.** Q4 has a bounded human bulk-TRB evidence
+**Committed and pushed.** Q4 has a bounded human bulk-TRB evidence
 screen. Research §5.37 states the sources, independent implementation and scientific limits.
 
 - Capture explicit human/unrelated declarations, sample/subject/batch assignments, source QC,
@@ -2540,7 +2540,56 @@ as well as both-theme contamination and existing sample-QC workflows. All four f
 screenshots are visually reviewed. The local site builds 43 pages with 51 screenshot sets;
 42 audited pages pass all 168 theme/viewport checks without accessibility violations or
 overflow. All 14 contrast checks, Go formatting and diff checks pass. Version stays 0.6.0;
-no commit, push, tag, release or publication. Slice 9 has not begun.
+no commit, push, tag, release or publication. Slice 8 was subsequently committed and pushed by the maintainer.
+
+### Slice 9: batch QC
+
+**Implemented and validated; awaiting commit.** Q5 reports descriptive sample-level metrics and
+within-batch review labels. Research §5.38 records sources, exact universes and scientific limits.
+
+- Capture every source sample, explicit subject/batch assignments and exclusion reasons.
+  Require one included observation per subject per batch; do not pool technical repeats.
+  Preserve unique-subject and sample denominators, including recurrence across batches.
+- Measure six fixed QC metrics with raw numerator/denominator evidence and source QC.
+  Bulk fractions use known counts; single-cell fractions use contigs and retained abundance
+  deduplicates barcodes. Preserve missing counts/barcodes and zero denominators as unavailable.
+  Productive fractions use the status universe before the productive-only QC rule; gene
+  fractions include all retained productive weights, including missing-junction rows.
+- Use log10 for positive abundance/row counts without pseudocounts; keep fractions on their
+  original scale. Compute 0.6745 × deviation/raw MAD within each batch, with strict absolute
+  threshold 3.5 and at least five evaluable subjects by default. Small groups and zero MAD
+  remain unscored, without epsilon, pooled reference or alternate-scale fallback.
+- Show complete sample distributions on a common scale, batch median lines, exact reference
+  tables and all exclusions. Vertical offsets have no quantitative meaning. Distinguish
+  flags from correction, deletion or biological inference; systematic shifts and masking
+  can evade a within-batch reference. No p-values or calibrated error-rate claim.
+- Preserve immutable cancellable jobs, source-free replay/reopening, complete provider-aware
+  exports, visible/remote identity, undo/redo and cited Methods and figure captions.
+- Add 26 artificial samples from 25 subjects and 2427 rows, with uneven depths, a shifted
+  distribution, a low-productivity observation, missing counts, small and constant groups,
+  explicit repeat/missing-batch exclusions and complete generating truth. Keep prior presets.
+- Keep version 0.6.0; slice 10 and release operations remain outside this change.
+
+Validation covers independent median/MAD/score references, every simulated row's contribution,
+threshold invariance, same-subject refusal, missingness, barcode/contig accounting, cancellation,
+source-free replay, checksums, complete exports, processor agreement and both-theme workflows.
+
+**Validation completed:** application/internal race tests pass (application 136.343 s;
+simulator 41.396 s), with final capture/refusal/replay race checks passing in 6.661 s.
+The required-data scientific suite passes in 294.004 s, excluding unchanged performance
+budgets. Its compiler scan exposed four fused-arithmetic expressions; explicit rounding
+resolves them, and a subsequent scan of 3174 functions finds no fused multiply-adds.
+Independent references agree and the native/amd64 result and simulator digests are unchanged.
+Earlier presets retain their pinned bytes. Canonical assignment order, strict threshold
+boundaries, raw denominator limits and source-free replay/export are checked explicitly.
+
+All 136 JavaScript tests, Go vet, six CGO-free platform builds and 14 contrast checks pass.
+Batch QC, Sample QC and Contamination browser workflows pass in both themes; all six final
+screenshots are visually reviewed. The final browser regression also verifies that switching
+from a saved result to another QC tab loads its source assignments without breaking source-free
+reopening. The site builds 44 pages with 52 screenshot sets; 43 audited pages pass all 172
+theme/viewport checks without accessibility violations or overflow. Formatting and diff checks
+pass. Version stays 0.6.0; no commit, push, tag, release or publication. Slice 10 has not begun.
 
 ## Later waves (outlined)
 

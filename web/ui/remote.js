@@ -199,6 +199,12 @@ export function remoteActions(app) {
       return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
     },
 
+    async screen_batch_qc(options = {}) {
+      const dataset=datasetOf(options.dataset);app.focusItem({kind:'dataset',id:dataset.id});await app.setMode('qc');app.qcView.show('batch-qc');
+      const view=await waitFor(()=>app.batchQCView,5000,'Batch QC');await waitFor(()=>view.state().status!=='loading',10000,'Batch QC source');
+      const result=await view.run({...options,dataset:dataset.id});if(!result)throw new Error('The project changed before the result was saved.');
+      return {message:'Batch QC saved.',data:{artifact:result.artifact.id,samples:result.result.analysis.included,subjects:result.result.analysis.subjects,description:result.result.description}};
+    },
     async screen_contamination(options = {}) {
       const dataset=datasetOf(options.dataset);app.focusItem({kind:'dataset',id:dataset.id});await app.setMode('qc');app.qcView.show('contamination');
       const view=await waitFor(()=>app.contaminationView,5000,'Contamination evidence');await waitFor(()=>view.state().status!=='loading',10000,'Contamination source');

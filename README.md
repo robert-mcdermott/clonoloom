@@ -25,7 +25,8 @@ conditional-inference limits. It also adds [subject recurrence and HLA associati
 with explicit typing universes, complete BY families and marginal subject-frequency intervals.
 [Contamination evidence](docs/site/pages/docs/contamination.html) adds exact cross-subject nucleotide
 sharing with abundance and model context; review flags never remove sequences.
-Pseudobulk remains planned for a later slice.
+[Batch QC](docs/site/pages/docs/batch-qc.html) adds sample-level reference distributions,
+median/MAD review flags and explicit unscored evidence. Pseudobulk remains planned for a later slice.
 
 **B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an
 explicit threshold, reconstruct D-masked germlines, measure somatic hypermutation, explore

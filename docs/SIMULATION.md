@@ -549,3 +549,26 @@ No empirical index-hopping rate, population selection or classifier is fitted. S
 are designated truth, not proof of biological publicness. The positive example cannot establish
 real-world sensitivity or specificity. The [guide](site/pages/docs/contamination.html) and
 research §5.37 explain the conditional interpretations and bounded bulk-TRB scope.
+
+### Batch quality-control study
+
+`clonoloom simulate --preset batch-qc-study --out /path/to/new-study` generates the
+`batch-qc-study` v1 preset (seed 20261101), also available in Examples. Its 26 samples from
+25 fictional subjects contain 2427 rows. Explicit assignments include 24 subjects across
+four batches of 8, 8, 3 and 5; a repeated D01 sample and a missing-batch sample are excluded
+with reasons. The generating assignment list is `truth/samples.json`.
+
+The existing length-selected human TRB model supplies productive junctions. An internal TAA
+codon produces nonproductive controls with matching translated sequence and false flags.
+Missing productive flags, V/J calls and one count are deliberate controls. Counts use
+`1 + Poisson(Gamma(3) × 1800/(rank+1)^1.05 × exposure / 3)` with lognormal exposure log-SD
+0.38; ordinary samples contain 65–129 rows. Run A has a low-productivity observation and a
+missing-count observation. Run B has a lower generating productivity distribution; run C
+is too small for scores. Run D has exactly 80 rows per sample, exercising zero MAD for that
+metric while its other metrics vary. Generating probabilities differ from realized weighted
+fractions, which are computed from the exported source rows.
+
+All row-level generating observations are in `truth/observations.tsv`; model/seed, assignments
+and source hashes accompany them. These examples illustrate reference-distribution limits,
+missingness and descriptive flags, not empirical technical failure rates, randomized biology,
+classifier calibration or batch correction. Earlier example presets keep their pinned bytes.
