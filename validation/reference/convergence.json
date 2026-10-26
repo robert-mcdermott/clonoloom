@@ -1,0 +1,649 @@
+{
+  "subjects": [
+    {
+      "id": "S00",
+      "samples": [
+        "s0",
+        "repeat"
+      ],
+      "typing": {
+        "A": [
+          "HLA-A*02:01:01",
+          "A*03:01"
+        ],
+        "B": [
+          "B*07:02",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S01",
+      "samples": [
+        "s1"
+      ],
+      "typing": {
+        "A": [
+          "HLA-A*02:01:01",
+          "A*03:01"
+        ],
+        "B": [
+          "B*08:01",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S02",
+      "samples": [
+        "s2"
+      ],
+      "typing": {
+        "A": [
+          "HLA-A*02:01:01",
+          "A*03:01"
+        ],
+        "B": [
+          "B*07:02",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S03",
+      "samples": [
+        "s3"
+      ],
+      "typing": {
+        "A": [
+          "HLA-A*02:01:01",
+          "A*03:01"
+        ],
+        "B": [
+          "B*08:01",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S04",
+      "samples": [
+        "s4"
+      ],
+      "typing": {
+        "A": [
+          "HLA-A*02:01:01",
+          "A*03:01"
+        ],
+        "B": [
+          "B*07:02",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S05",
+      "samples": [
+        "s5"
+      ],
+      "typing": {
+        "A": [
+          "HLA-A*02:01:01",
+          "A*03:01"
+        ],
+        "B": [
+          "B*08:01",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S06",
+      "samples": [
+        "s6"
+      ],
+      "typing": {
+        "A": [
+          "HLA-A*02:01:01",
+          "A*03:01"
+        ],
+        "B": [
+          "B*07:02",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S07",
+      "samples": [
+        "s7"
+      ],
+      "typing": {
+        "A": [
+          "A*01:01",
+          "A*24:02"
+        ],
+        "B": [
+          "B*08:01",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S08",
+      "samples": [
+        "s8"
+      ],
+      "typing": {
+        "A": [
+          "A*01:01",
+          "A*24:02"
+        ],
+        "B": [
+          "B*07:02",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S09",
+      "samples": [
+        "s9"
+      ],
+      "typing": {
+        "A": [
+          "A*01:01",
+          "A*24:02"
+        ],
+        "B": [
+          "B*08:01",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S10",
+      "samples": [
+        "s10"
+      ],
+      "typing": {
+        "A": [
+          "A*02"
+        ],
+        "B": [
+          "B*07:02",
+          "B*08:01"
+        ]
+      }
+    },
+    {
+      "id": "S11",
+      "samples": [
+        "s11"
+      ],
+      "typing": {
+        "A": [
+          "A*02:01N",
+          "A*24:02"
+        ],
+        "B": [
+          "B*08:01",
+          "B*08:01"
+        ]
+      }
+    }
+  ],
+  "records": [
+    {
+      "v": "TRBV5-1",
+      "junction": "CASSQGHTANEQYF",
+      "samples": [
+        "s0",
+        "repeat",
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s7"
+      ]
+    },
+    {
+      "v": "TRBV5-1",
+      "junction": "CASSDHRGANEQYF",
+      "samples": [
+        "s0",
+        "s2",
+        "s4",
+        "s6",
+        "s8",
+        "s10"
+      ]
+    },
+    {
+      "v": "TRBV5-1",
+      "junction": "CASSASGTANEQYF",
+      "samples": [
+        "s0",
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5",
+        "s6",
+        "s7",
+        "s8",
+        "s10",
+        "s11"
+      ]
+    },
+    {
+      "v": "TRBV5-1",
+      "junction": "CASSNQGHTNEQYF",
+      "samples": [
+        "s0",
+        "repeat",
+        "s1"
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "id": "local-q",
+      "label": "QGHT signature",
+      "members": [
+        0,
+        3
+      ]
+    },
+    {
+      "id": "local-d",
+      "label": "DHRG signature",
+      "members": [
+        1
+      ]
+    },
+    {
+      "id": "all",
+      "label": "All observed subjects",
+      "members": [
+        2
+      ]
+    },
+    {
+      "id": "empty",
+      "label": "Empty signature",
+      "members": []
+    }
+  ],
+  "alleles": [
+    "HLA-A*02:01",
+    "HLA-B*07:02",
+    "HLA-A*99:99"
+  ],
+  "recurrence": [
+    {
+      "id": "local-q",
+      "subjects": [
+        "S00",
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S07"
+      ],
+      "observedSubjects": 11,
+      "frequency": 0.5454545454545454
+    },
+    {
+      "id": "local-d",
+      "subjects": [
+        "S00",
+        "S02",
+        "S04",
+        "S06",
+        "S08",
+        "S10"
+      ],
+      "observedSubjects": 11,
+      "frequency": 0.5454545454545454
+    },
+    {
+      "id": "all",
+      "subjects": [
+        "S00",
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S10",
+        "S11"
+      ],
+      "observedSubjects": 11,
+      "frequency": 1.0
+    },
+    {
+      "id": "empty",
+      "subjects": [],
+      "observedSubjects": 11,
+      "frequency": 0.0
+    }
+  ],
+  "associations": [
+    {
+      "group": "local-q",
+      "allele": "HLA-A*02:01",
+      "n": 9,
+      "carriers": 7,
+      "groupSubjects": 6,
+      "shared": 5,
+      "excluded": 3,
+      "p": 0.5833333333333333,
+      "carrier": {
+        "matches": 5,
+        "total": 7,
+        "estimate": 0.7142857142857143,
+        "lower": 0.3589344518326193,
+        "upper": 0.9177810759959432
+      },
+      "noncarrier": {
+        "matches": 1,
+        "total": 2,
+        "estimate": 0.5,
+        "lower": 0.09453120573423074,
+        "upper": 0.9054687942657693
+      },
+      "difference": 0.2142857142857143,
+      "q": 1.0
+    },
+    {
+      "group": "local-q",
+      "allele": "HLA-B*07:02",
+      "n": 11,
+      "carriers": 6,
+      "groupSubjects": 6,
+      "shared": 3,
+      "excluded": 1,
+      "p": 0.8246753246753247,
+      "carrier": {
+        "matches": 3,
+        "total": 6,
+        "estimate": 0.5,
+        "lower": 0.18761630648265054,
+        "upper": 0.8123836935173494
+      },
+      "noncarrier": {
+        "matches": 3,
+        "total": 5,
+        "estimate": 0.6,
+        "lower": 0.23072428127601297,
+        "upper": 0.8823792257673521
+      },
+      "difference": -0.09999999999999998,
+      "q": 1.0
+    },
+    {
+      "group": "local-q",
+      "allele": "HLA-A*99:99",
+      "n": 9,
+      "carriers": 0,
+      "groupSubjects": 6,
+      "shared": 0,
+      "excluded": 3,
+      "p": null,
+      "carrier": {
+        "matches": 0,
+        "total": 0,
+        "estimate": null,
+        "lower": null,
+        "upper": null
+      },
+      "noncarrier": {
+        "matches": 6,
+        "total": 9,
+        "estimate": 0.6666666666666666,
+        "lower": 0.3542021355803963,
+        "upper": 0.879416181613089
+      },
+      "difference": null,
+      "q": null
+    },
+    {
+      "group": "local-d",
+      "allele": "HLA-A*02:01",
+      "n": 9,
+      "carriers": 7,
+      "groupSubjects": 5,
+      "shared": 4,
+      "excluded": 3,
+      "p": 0.7222222222222223,
+      "carrier": {
+        "matches": 4,
+        "total": 7,
+        "estimate": 0.5714285714285714,
+        "lower": 0.2504583645276572,
+        "upper": 0.8417801447485302
+      },
+      "noncarrier": {
+        "matches": 1,
+        "total": 2,
+        "estimate": 0.5,
+        "lower": 0.09453120573423074,
+        "upper": 0.9054687942657693
+      },
+      "difference": 0.0714285714285714,
+      "q": 1.0
+    },
+    {
+      "group": "local-d",
+      "allele": "HLA-B*07:02",
+      "n": 11,
+      "carriers": 6,
+      "groupSubjects": 6,
+      "shared": 6,
+      "excluded": 1,
+      "p": 0.0021645021645021645,
+      "carrier": {
+        "matches": 6,
+        "total": 6,
+        "estimate": 1.0,
+        "lower": 0.6096657120978346,
+        "upper": 1.0
+      },
+      "noncarrier": {
+        "matches": 0,
+        "total": 5,
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.43448246478317476
+      },
+      "difference": 1.0,
+      "q": 0.08060287475871891
+    },
+    {
+      "group": "local-d",
+      "allele": "HLA-A*99:99",
+      "n": 9,
+      "carriers": 0,
+      "groupSubjects": 5,
+      "shared": 0,
+      "excluded": 3,
+      "p": null,
+      "carrier": {
+        "matches": 0,
+        "total": 0,
+        "estimate": null,
+        "lower": null,
+        "upper": null
+      },
+      "noncarrier": {
+        "matches": 5,
+        "total": 9,
+        "estimate": 0.5555555555555556,
+        "lower": 0.2666512934954931,
+        "upper": 0.8112214789023354
+      },
+      "difference": null,
+      "q": null
+    },
+    {
+      "group": "all",
+      "allele": "HLA-A*02:01",
+      "n": 9,
+      "carriers": 7,
+      "groupSubjects": 9,
+      "shared": 7,
+      "excluded": 3,
+      "p": null,
+      "carrier": {
+        "matches": 7,
+        "total": 7,
+        "estimate": 1.0,
+        "lower": 0.6456695649333126,
+        "upper": 1.0
+      },
+      "noncarrier": {
+        "matches": 2,
+        "total": 2,
+        "estimate": 1.0,
+        "lower": 0.34238022750665303,
+        "upper": 1.0
+      },
+      "difference": 0.0,
+      "q": null
+    },
+    {
+      "group": "all",
+      "allele": "HLA-B*07:02",
+      "n": 11,
+      "carriers": 6,
+      "groupSubjects": 11,
+      "shared": 6,
+      "excluded": 1,
+      "p": null,
+      "carrier": {
+        "matches": 6,
+        "total": 6,
+        "estimate": 1.0,
+        "lower": 0.6096657120978346,
+        "upper": 1.0
+      },
+      "noncarrier": {
+        "matches": 5,
+        "total": 5,
+        "estimate": 1.0,
+        "lower": 0.5655175352168251,
+        "upper": 1.0
+      },
+      "difference": 0.0,
+      "q": null
+    },
+    {
+      "group": "all",
+      "allele": "HLA-A*99:99",
+      "n": 9,
+      "carriers": 0,
+      "groupSubjects": 9,
+      "shared": 0,
+      "excluded": 3,
+      "p": null,
+      "carrier": {
+        "matches": 0,
+        "total": 0,
+        "estimate": null,
+        "lower": null,
+        "upper": null
+      },
+      "noncarrier": {
+        "matches": 9,
+        "total": 9,
+        "estimate": 1.0,
+        "lower": 0.7008549515804559,
+        "upper": 1.0
+      },
+      "difference": null,
+      "q": null
+    },
+    {
+      "group": "empty",
+      "allele": "HLA-A*02:01",
+      "n": 9,
+      "carriers": 7,
+      "groupSubjects": 0,
+      "shared": 0,
+      "excluded": 3,
+      "p": null,
+      "carrier": {
+        "matches": 0,
+        "total": 7,
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.35433043506668743
+      },
+      "noncarrier": {
+        "matches": 0,
+        "total": 2,
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.6576197724933469
+      },
+      "difference": 0.0,
+      "q": null
+    },
+    {
+      "group": "empty",
+      "allele": "HLA-B*07:02",
+      "n": 11,
+      "carriers": 6,
+      "groupSubjects": 0,
+      "shared": 0,
+      "excluded": 1,
+      "p": null,
+      "carrier": {
+        "matches": 0,
+        "total": 6,
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.3903342879021653
+      },
+      "noncarrier": {
+        "matches": 0,
+        "total": 5,
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.43448246478317476
+      },
+      "difference": 0.0,
+      "q": null
+    },
+    {
+      "group": "empty",
+      "allele": "HLA-A*99:99",
+      "n": 9,
+      "carriers": 0,
+      "groupSubjects": 0,
+      "shared": 0,
+      "excluded": 3,
+      "p": null,
+      "carrier": {
+        "matches": 0,
+        "total": 0,
+        "estimate": null,
+        "lower": null,
+        "upper": null
+      },
+      "noncarrier": {
+        "matches": 0,
+        "total": 9,
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.29914504841954404
+      },
+      "difference": null,
+      "q": null
+    }
+  ]
+}

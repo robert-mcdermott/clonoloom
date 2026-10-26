@@ -108,7 +108,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | S3 | GLIPH2-style specificity groups (global and local similarity, motif enrichment, scores) | implemented (wave 7 slice 6: documented adaptation; matched TRBV/length, Fisher/BY, no N/P boost or GLIPH2 composite score) |
 | S4 | Clonotype networks by CDR3 identity, edit distance or TCRdist | planned (wave 4) |
 | S5 | Matching against specificity databases (VDJdb first; McPAS-TCR and IEDB as their terms allow) by exact or TCRdist-near match, with species, MHC and evidence; database versions recorded; downloaded on request, never bundled | partial (wave 4, slice 7: VDJdb and the simulated vaccine database; exact/TCRdist chain matching, evidence, per-sample shares, Tracking, download terms and checksums; McPAS-TCR and IEDB later) |
-| S6 | Cross-subject convergence; HLA association (hypergeometric) when HLA types are given | planned (wave 7) |
+| S6 | Cross-subject convergence; HLA association (hypergeometric) when HLA types are given | implemented (wave 7 slice 7: observed recurrence of selected saved TRB motif groups; unique subjects, explicit complete two-field typed universes, conditional hypergeometric/BY and marginal Wilson intervals; no convergent-recombination or HLA-restriction inference) |
 | S7 | Invariant populations flagged (MAIT, iNKT, GEM) by published gene and junction rules | implemented (wave 4, slice 8: explicit species; MAIT/iNKT gene and junction-length rules, human GEM motif; flags, sample counts and evaluability, CSV and methods) |
 
 ## B cells

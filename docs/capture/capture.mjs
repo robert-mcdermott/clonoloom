@@ -276,9 +276,51 @@ async function motifScene() {
   await clearToasts();await checkAccessibility();
 }
 
+async function convergenceScene() {
+  await act('new_project', { name: 'Artificial subject recurrence and HLA study' });
+  await act('open_example', { example: 'simulated-convergence-study', download: true });
+  const folder = join(places.examples, 'simulated-convergence-study');
+  const arms = JSON.parse(readFileSync(join(folder, 'truth/arms.json'), 'utf8'));
+  const subjects = JSON.parse(readFileSync(join(folder, 'truth/subjects.json'), 'utf8'));
+  const parent = (await act('screen_motifs', { ...arms, options: { minK: 4, maxK: 4 } })).data.artifact;
+  const groups = await js(`window.clonoloom.motifsView.state().answer.result.analysis.groups.filter((g)=>(g.kind==='local'&&g.motif==='QGHT'&&g.length===17&&g.start===5)||(g.kind==='global'&&g.allowed==='ILMV')).map((g)=>g.id)`);
+  if (groups.length !== 2) throw new Error('Planted signatures absent');
+  const selection = { species: 'human', samples: [...arms.query, ...arms.background], subjects, groups, alleles: ['HLA-A*02:01', 'HLA-B*07:02', 'HLA-DRB1*15:01'] };
+  const out = (await act('analyze_convergence', { motifs: parent, selection })).data;
+  if (out.subjects !== 32 || out.family !== 6) throw new Error('Wrong subject/family counts');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.convergenceView,r=v.state().answer.result.analysis;
+    const group=r.recurrence.find((g)=>g.label.includes('QGHT')),index=r.associations.findIndex((x)=>x.group===group.id&&x.allele==='HLA-A*02:01'),x=r.associations[index];
+    if(group.subjects.length!==18||x.n!==28||x.carriers!==20||x.shared!==17||x.excluded!==4||x.noncarrier.matches!==1||x.noncarrier.total!==8)throw new Error('Wrong subject truth');
+    if(r.associations.some((x)=>x.locus!=='A'&&x.n!==32))throw new Error('Wrong locus universe');
+    v.select(index);const points=[...document.querySelectorAll('.convergence-view [data-estimate]')];
+    if(points.length!==2||points[0].dataset.matches!=='17'||points[0].dataset.total!=='20'||points[1].dataset.matches!=='1'||points[1].dataset.total!=='8')throw new Error('Frequency geometry wrong');
+    await v.loadParent(${JSON.stringify(parent)});v.configure(${JSON.stringify(selection)});
+    if(document.querySelector('[aria-label="Typing H01"]').value!==${JSON.stringify(Object.values(subjects[0].typing).flat().join(', '))})throw new Error('Raw typing control lost');
+    window.convergenceCheck={id:v.state().answer.artifact.id,index,snapshot:JSON.stringify(v.state().answer.result)};
+    [...document.querySelectorAll('.convergence-view button')].find((b)=>b.textContent==='Analyze recurrence and HLA').click();return true;
+  })()`);
+  await waitFor(`window.clonoloom.convergenceView.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,v=app.convergenceView,c=window.convergenceCheck;if(v.state().answer.artifact.id!==c.id)throw new Error('Visible/remote declaration differs');app.store.undo();if(app.store.project.artifacts.some((a)=>a.id===c.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:c.id});return true})()`);
+  await waitFor(`window.clonoloom.convergenceView?.state().status==='ready'`);
+  await js(`(async()=>{
+    const app=window.clonoloom,c=window.convergenceCheck;if(JSON.stringify(app.convergenceView.state().answer.result)!==c.snapshot)throw new Error('Saved result changed');
+    const ensure=app.ensureDataset,originalFetch=window.fetch,create=URL.createObjectURL;let blob;
+    app.ensureDataset=async()=>{throw new Error('Source unavailable')};window.fetch=(url,...args)=>{if(String(url).includes('api/motifs'))throw new Error('Parent unavailable');return originalFetch(url,...args)};URL.createObjectURL=(b)=>{blob=b;return create(b)};
+    try{await app.setMode('data');app.focusItem({kind:'result',id:c.id});for(let i=0;i<200;i++){if(app.convergenceView?.state().status==='ready')break;await new Promise((r)=>setTimeout(r,50));}const v=app.convergenceView;if(v?.state().status!=='ready')throw new Error('Source-free remount failed');await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('ZIP unavailable');v.select(c.index);const {figureBlob}=await import('./ui/figures.js');for(const which of ['hla','recurrence']){const text=await(await figureBlob(v.plotSpec(which),'svg')).text();for(const phrase of ['subjects','BY','Wilson','Selected samples','restriction','Glanville J','10.1080/01621459.1927.10502953'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase);}}
+    finally{app.ensureDataset=ensure;window.fetch=originalFetch;URL.createObjectURL=create;}return true;
+  })()`);
+  await act('show_methods');
+  if (!await js(`(()=>{const s=document.querySelector('.methods-text').textContent;return s.includes('32 fictional subjects')&&s.includes('typed-subject universe')&&document.querySelector('.methods-references').textContent.includes('Glanville')})()`)) throw new Error('Convergence/example methods absent');
+  await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.convergence-view');const scroller=root.closest('.workbench-scroll');scroller.scrollTop+=root.querySelector('.convergence-title').getBoundingClientRect().top-scroller.getBoundingClientRect().top-16;return true})()`);
+  await clearToasts(); await checkAccessibility();
+}
+
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+  async convergence() { await convergenceScene(); },
   async motifs() { await motifScene(); },
   async 'definition-robustness'() { await definitionAuditScene(); },
   async 'cohort-counts'() { await countModelScene(false); },
@@ -1220,7 +1262,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

@@ -199,6 +199,15 @@ export function remoteActions(app) {
       return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
     },
 
+    async analyze_convergence(options = {}) {
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.convergenceView, 5000, 'Convergence and HLA');
+      app.specificityView.show('convergence');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before the analysis was saved.');
+      return {message:'Subject recurrence and HLA analysis saved.',data:{artifact:result.artifact.id,subjects:result.result.analysis.observedSubjects,family:result.result.analysis.family,tested:result.result.analysis.tested,description:result.result.description}};
+    },
+
     async screen_motifs(options = {}) {
       const dataset = datasetOf(options.dataset);
       app.focusItem({kind:'dataset',id:dataset.id});

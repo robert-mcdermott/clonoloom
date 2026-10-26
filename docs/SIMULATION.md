@@ -492,3 +492,32 @@ they are not independent discoveries. These are fixed positive controls, not pow
 `truth/receptors.tsv` records every sample, subject, arm, V call, junction, count and planted
 signature; `truth/truth.json` records the model, study and source-file checksums. Repertoire
 metadata marks the study artificial. Earlier example presets retain their byte digests.
+
+## Subject recurrence and HLA study
+
+`clonoloom simulate --preset convergence-study --out <empty-folder>` generates 32 fictional
+subjects and 36 samples, seed 20261030, model `clonoloom-convergence-study-v1`. H01–H04 have
+second observations with the same sequence identities at different depths. Each sample has
+30 rows: variable full junctions, biased central residues and arbitrary TRBV labels. UMI counts
+are 1+Poisson(Gamma(shape=3) × [4000/(rank+1)^1.15 × exposure]/3), with lognormal exposure
+log-SD 0.5. Counts are descriptive; they never weight subject replication.
+
+The generator plants local QGHT (length 17, starting window 5–8) in 18 subjects and a global
+ILMV signature in 11. H01–H20 carry A*02:01; four other subjects have missing, low-resolution or
+expression-suffix A typing. With the declared three-allele panel A*02:01, B*07:02, DRB1*15:01,
+the QGHT/A test uses 28 subjects: 17/20 carriers versus 1/8 non-carriers. The six-slot family
+has p≈0.00070943549 and BY≈0.01042870 for that association. B and DRB1 remain evaluable in all
+32 subjects. Repeated samples must not turn 32 subjects into 36 independent observations.
+
+From Examples choose **Subject recurrence and HLA study**. Use `truth/arms.json` for the
+alternating query/background sample assignments, keeping repeats with their subject; screen
+with motif lengths 4–4. Select the two planted signatures and the panel above before HLA
+inspection. `truth/subjects.json` supplies explicit typing and sample assignments;
+`truth/receptors.tsv` lists every row's subject, arm, sequence, count and planted signature.
+`truth/truth.json` pins source hashes and the generator specification. Full source files and
+Repertoire metadata accompany the truth.
+
+This is a controlled demonstration of recurrence, missingness and conditional association,
+not fitted human haplotypes, realistic HLA population frequencies, V(D)J recombination or
+antigen recognition. Its constructed association cannot establish power or biological FDR.
+The [guide](site/pages/docs/convergence.html) and research §5.36 state the inference limits.

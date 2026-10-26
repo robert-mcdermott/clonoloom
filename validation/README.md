@@ -433,3 +433,28 @@ replay, cancellation, checksums, provider terms, full ZIPs and Go residue profil
 scene `motifs` checks remote/visible identity, positive local/global controls, full frequency
 geometry, undo/reopen, saved Methods, source-free export, figure provenance and both themes.
 The scientific contract and all GLIPH2 adaptations/limits are in research §5.35.
+
+### Subject recurrence and HLA association
+
+Regenerate the independent reference with
+`uv run --no-project validation/reference/convergence.py` (SciPy 1.17.0). Literal subject
+sets supply 12 group × allele slots; SciPy supplies hypergeometric upper tails, complete-family
+BY and Wilson score intervals. Go checks every contingency cell, frequency, interval,
+difference, null and recurrence count. A complete-result digest pins processor agreement.
+
+`internal/convergence` checks duplicate observations/abundance invariance, homozygous carriage,
+incomplete/ambiguous typing, recurrence-only mode, unavailable receptor evidence, bounds and
+cancellation. All 70 four-of-eight carrier assignments give super-uniform raw tails in a fixed
+exchangeable case. This finite check is not a guarantee of biological FDR or power.
+
+The new simulator digest preserves all 32 subjects, 36 samples and 1080 rows, including repeated
+sampling and four unknown A typings. The API test independently aggregates the literal planted
+truth, verifies 17/20 versus 1/8 in the 28-subject A universe, then removes sources and parent
+and checks exact durable replay, provider-aware complete ZIPs and tamper refusals. Earlier
+presets keep their pinned bytes.
+
+`node docs/capture/capture.mjs convergence --theme both` checks exact plot numerators and
+denominators, locus-specific universes, visible/remote artifact identity, raw typing controls,
+undo/redo, saved reopening, source/parent-free export, figure provenance, Methods and
+accessibility. Review both screenshots: fixed frequency scale, marginal interval labels,
+explicit artificial data and complete counts. Existing Networks is a sibling-view regression.

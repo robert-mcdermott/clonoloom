@@ -870,3 +870,36 @@ and NOTICE, preserving provider-term acknowledgement. CSV unavailable numbers ar
 Creation needs source evidence; saved inspection, export and durable replay do not. Captured
 request/arm/subject membership is revalidated in workers. Bounds, exact GLIPH2 adaptations and
 conditional scientific limits are in [the guide](site/pages/docs/motifs.html) and research §5.35.
+
+## Subject recurrence and HLA artifacts (wave 7, slice 7)
+
+`POST /api/convergence` takes `{motifs, selection}`. `motifs` is a checked saved motif
+artifact ID; selection contains `species:"human"`, explicit `samples`, `subjects`,
+`groups` and `alleles`. Each subject is `{id,samples,typing:{A:[call,call],B:[call,call]}}`;
+each sample belongs to exactly one named subject. Groups are 1–128 saved signature IDs.
+Alleles are 0–64 declared targets; an empty panel requests descriptive recurrence only.
+Use two explicit copies per tested locus, including duplicated homozygous calls. Calls are
+compared at two fields. Unresolved typing is retained as unknown, never inferred non-carriage.
+See [research §5.36](../clonoloom-spec/research.md#536-subject-recurrence-and-hla-association-wave-7-slice-7).
+
+`start:false` validates capture and probes readiness without submitting a job. The result ID
+is `cv-` plus 24 hex digits of the canonical captured-spec SHA-256. Samples/subjects sort
+canonically; group and target order remain declared. Target names normalize to two fields;
+absent/empty typing arrays represent the same unknown state. Nonempty raw calls are retained.
+The spec pins the parent manifest, checked parent result hash and method, source notice,
+selected membership and all eligible receptor/sample identities. It does not recalculate or
+combine motif scores. Durable replay needs neither original sources nor the parent directory.
+
+`GET /api/convergence/{id}` returns checked artifact metadata and `clonoloom-convergence`
+version 1 JSON. Analysis retains every subject, typed-locus status/reason, observed group and
+exact receptor recurrence, all declared group × allele slots, counts, frequencies, marginal
+Wilson bounds, descriptive differences, p/BY and natural-log probabilities. An unavailable
+number is JSON null. Each locus has its own complete typed/receptor-evaluable universe,
+including group-negative subjects. Untestable slots stay in the BY family with p=1 internally
+and null output; no displayed reporting subset changes multiplicity.
+
+`GET /api/convergence/{id}/download` writes `convergence.json`, `manifest.json`, `subjects.json`,
+`associations.csv`, `recurrence.csv` and `NOTICE.txt`. CSVs retain complete rows and reasons;
+unavailable numeric fields are blank. The subject declaration includes raw HLA typing and
+identifiers. Provider terms require the existing `?accept=1` acknowledgement. The result and
+its source/definition/QC provenance are checksum-verified before reading or exporting.

@@ -427,3 +427,37 @@ GET `/api/motifs/{id}`, `/group/{group}` and `/download` inspect/export checksum
 results. The ZIP retains all signatures, receptors, methods and source terms; sources are not
 needed to reopen or replay captured evidence. See [the motif guide](site/pages/docs/motifs.html)
 for bounds, GLIPH2 adaptations, conditional Fisher/BY assumptions and lack of specificity proof.
+
+### Subject recurrence and HLA association (wave 7)
+
+`analyze_convergence` accepts a saved `motifs` artifact ID and an explicit `selection`:
+
+```json
+{
+  "motifs": "saved-motif-artifact-id",
+  "selection": {
+    "species": "human",
+    "samples": ["sample-1", "sample-2"],
+    "subjects": [
+      {"id": "subject-1", "samples": ["sample-1"], "typing": {"A": ["HLA-A*02:01", "HLA-A*03:01"]}},
+      {"id": "subject-2", "samples": ["sample-2"], "typing": {"A": ["HLA-A*01:01", "HLA-A*24:02"]}}
+    ],
+    "groups": ["saved-signature-id"],
+    "alleles": ["HLA-A*02:01"]
+  }
+}
+```
+
+Replace illustrative IDs with saved IDs and use the complete intended subject universe;
+two subjects illustrate the schema, not a testable study. Each sample must come from the
+parent's captured arms and belong to exactly one named subject. Multiple samples of one
+subject are unioned. Supply both copies at each tested locus; missing/ambiguous typing is
+unknown. Empty alleles gives recurrence only. Declare signatures and alleles before inspecting
+outcomes. The result returns artifact ID, evaluable subjects, full family, tested count and
+method; Specificity → HLA uses the same route and saved artifact identity.
+
+HTTP uses `POST /api/convergence` with the same body (`start:false` validates/probes without
+submission). GET `/api/convergence/{id}` and `/download` reopen/export checked evidence.
+ZIPs include raw subject IDs/HLA typing, complete association and recurrence tables, and NOTICE;
+provider terms use `?accept=1`. Replay is source/parent-free. See the
+[guide](site/pages/docs/convergence.html) for typing rules, conditional tests and limits.

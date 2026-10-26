@@ -2347,3 +2347,115 @@ The screen accepts at most 256 source samples, 4000 distinct units summed across
 Exceeding a bound fails explicitly rather than truncating the family. Choose a scientifically
 declared subset before inspecting outcomes. Immutable jobs retain the complete captured
 evidence for deterministic source-free replay; limits are operational, not power guidance.
+
+### 5.36 Subject recurrence and HLA association (wave 7, slice 7)
+
+**Sources and scope.** Glanville J et al. (2017), *Identifying specificity groups in the
+T cell receptor repertoire*, Nature 547:94–98, doi:10.1038/nature22976
+([paper and Methods](https://pmc.ncbi.nlm.nih.gov/articles/PMC5794212/)), motivates checking
+HLA enrichment among subjects bearing a sequence group. This independently written extension
+uses saved groups from §5.35; it does not implement GLIPH's composite score or assert GLIPH2
+pipeline equivalence. The statistical sources are Fisher (1922), doi:10.2307/2340521;
+Benjamini & Yekutieli (2001), doi:10.1214/aos/1013699998; and Wilson (1927), JASA 22:209–212,
+doi:10.1080/01621459.1927.10502953. Reuse the validated exact-tail and Wilson engines.
+
+**ClonoLoom's choices: observation and selection.** Select 1–128 groups from the saved motif
+family, an explicit subset of its captured samples, 1–200 named human subjects and 0–64 target
+alleles. Every selected sample belongs to exactly one subject. The species declaration is
+required, not inferred from gene names. The parent bounds of 256 samples and 4000 distinct
+captured V-gene/full-AA-junction identities apply. Union identities across query/background
+arms and all selected samples of each subject. A subject contributes once, regardless of
+abundance, cells, distinct group members, homozygosity or repeated visits. Group presence is
+any captured member; exact receptor recurrence retains V/full-junction identity and its
+complete subject list. This is **observed recurrence**, not a model of convergent recombination.
+
+A subject with no eligible positive receptor evidence is unevaluable, not group-negative.
+A subject with eligible evidence but no member has observed non-detection; that does not
+establish biological absence. All such subjects remain in the output with sample assignments,
+receptor totals and explicit reasons. Recurrence denominators are all receptor-evaluable
+selected subjects, independent of typing. Empty allele panels produce descriptive recurrence
+only. Selecting signatures, samples or alleles using their HLA results invalidates a prospective
+interpretation; declare the panel before inspection and retain unreported/untestable slots.
+
+**Typing policy.** The [IPD-IMGT/HLA allele naming convention](https://www.hla.alleles.org/pages/nomenclature/naming_alleles/)
+distinguishes protein-level names from additional synonymous/noncoding fields; expression
+suffixes carry additional meaning. [G groups](https://www.hla.alleles.org/pages/p%26g_groups/g_groups/)
+do not identify one fully resolved allele. Our fixed comparison resolution is two fields.
+Accept syntactically resolved 2–4-field calls with optional `HLA-`, retaining their raw text;
+compare their first two fields. Syntax is checked, **not existence in an HLA database release**.
+Support A, B, C, DRB1, DQA1, DQB1, DPA1 and DPB1. Each tested locus needs exactly two explicit
+allele copies: repeat the name for a homozygote. A singleton is incomplete, not assumed
+homozygous. Missing, partial, low-resolution, ambiguous, wrong-locus, G/P-group or expression-
+suffix calls make the entire locus unknown. Never strip N/L/S/C/A/Q suffixes, impute a missing
+copy, resolve ambiguous alternatives, infer serotypes or construct class-II heterodimers.
+Variable-copy loci DRB3/4/5 are outside this bounded diploid contract. Unknown fields remain
+raw with reasons; absent and empty typing arrays normalize to the same unknown state.
+
+**Typed universes and test.** For each tested locus, take all selected subjects with eligible
+receptor evidence and two resolved calls, including subjects without the selected group.
+This same complete-case universe is used for every group and target at that locus. Denote its
+size N, allele carriers C, group-bearing subjects G and their intersection A. The contingency
+table is `[[A,C−A],[G−A,N−C−G+A]]`; the one-sided enrichment p-value is
+`P(X≥A), X~Hypergeometric(N,C,G)`. Four evaluable subjects is a structural floor, not a power
+recommendation. N<4 or constant carriage/group margins produce an unavailable test with a
+reason. Frequencies A/C and (G−A)/(N−C), where their denominators exist, remain descriptive.
+
+Adjust over the complete Cartesian product of declared groups and alleles, up to 8192 slots,
+using log-space BY as in §5.35. Untestable slots use p=1 internally, contribute to the family,
+and remain null in JSON/blank in CSV. Retain natural-log probabilities. No p-value threshold
+selects the displayed group panel or drops failed tests. The original motif p-values are
+separate and are not combined into a composite score. BY permits dependence between valid
+individual tests; it does not repair confounding or post-outcome selection.
+
+**Intervals and plots.** Go computes each observed subject fraction and marginal 95% Wilson
+score interval, z=1.959963984540054, with no continuity correction. The HLA plot shows carrier
+and non-carrier fractions on one fixed 0–100% axis, labeled with numerator/denominator and
+interval meaning. No denominator gives no point, never an apparent zero. Their difference is
+descriptive: the two marginal intervals are neither an interval for that difference nor
+simultaneous/BY-adjusted intervals. The recurrence plot shows every declared group in declared
+order on a common subject-count scale; above 20 groups use the complete table rather than a
+selected subset. Figures carry selection, source/definition/QC, units, citations and limits.
+
+**Inference limits.** The test assumes independent, exchangeable subjects and comparable
+ascertainment conditional on its margins. Population structure, relatedness, HLA linkage
+disequilibrium, unequal repertoire depth, unequal numbers of sampling visits, case selection
+and HLA-dependent sampling can violate this. Unioning visits avoids pseudoreplication but
+does not equalize detection opportunities. Complete-case typing may itself be selected.
+No ancestry adjustment, haplotype phase, causal effect, HLA restriction, common antigen or
+experimental recognition is inferred. Use independent cohorts and experimental evidence to
+investigate the hypotheses. The small synthetic checks below are not population calibration.
+
+**Artifact contract.** Pin the parent manifest and checked result hash; capture all eligible
+receptor identities/sample membership and only the selected group memberships, alongside the
+explicit subject/typing declaration. Source fingerprints, QC, definition, abundance unit,
+provider terms and parent method remain attached. Immutable cancellable jobs replay without
+source files or the parent artifact. ZIPs contain complete JSON, manifest, raw subject typing,
+all associations and exact recurrence CSVs plus NOTICE; downloads retain provider-term checks.
+Exports include subject IDs and raw HLA typing. No de-identification is implied in this slice.
+
+**Artificial example.** `convergence-study` v1, seed 20261030, has 32 fictional subjects,
+36 samples (four subjects revisited), and 30 rows per sample. Repeated samples retain receptor
+identities but have different observed depths. Biased junction residues, lengths 15–17,
+arbitrary TRBV labels and 1+Poisson(Gamma(shape=3) × [4000/(rank+1)^1.15 × exposure]/3) UMI
+counts, with lognormal exposure log-SD 0.5, provide varied evidence. These are construction
+choices, not fitted human haplotypes, V(D)J recombination or measured biological data.
+
+QGHT (length 17, starting window 5–8) occurs in 18 subjects; a conservative ILMV group occurs
+in 11. Declare these two groups and A*02:01, B*07:02, DRB1*15:01 before HLA inspection. Four
+subjects have unresolved A typing. The planted QGHT/A association is 17/20 carriers versus
+1/8 non-carriers in the 28-subject typed universe: p≈0.00070943549, six-slot BY≈0.01042870.
+B and DRB1 each have 32 typed subjects. The two motif arms alternate subjects, with revisits
+kept in their subject's arm. Full arm, typing, sample, receptor and source-hash truth is saved.
+The association is intentionally constructed and demonstrates neither statistical power nor
+biological false-discovery control.
+
+**Independent validation.** `validation/reference/convergence.py` (SciPy 1.17.0) constructs
+literal subject sets and independently checks all 12 group/allele slots, hypergeometric tails,
+BY and Wilson intervals, including incomplete typing, a subject with no receptor evidence and
+constant/empty margins. Exact enumeration of all 70 four-of-eight carrier assignments checks
+super-uniform raw tails in one exchangeable fixed-group case. Tests check repeated-sample and
+abundance invariance, homozygosity, missingness, declared family, bounds, cancellation,
+checksums, source/parent-free durable replay and provider-aware complete ZIPs. Simulated truth
+is aggregated directly by subject, independently of group statistics; result/example digests
+pin processor reproducibility. Browser checks compare visible and remote declarations, exact
+plot geometry, undo/redo/reopening, source/parent-free exports and cited Methods in both themes.

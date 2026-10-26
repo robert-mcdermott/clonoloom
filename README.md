@@ -21,7 +21,8 @@ Wave 7 development adds saved subject designs, feature tables, two-group compari
 [replicated clonotype count models](docs/site/pages/docs/cohort-counts.html), and
 [definition robustness](docs/site/pages/docs/definition-robustness.html) and
 [GLIPH2-style motif screens](docs/site/pages/docs/motifs.html) with explicit adaptations and
-conditional-inference limits.
+conditional-inference limits. It also adds [subject recurrence and HLA association](docs/site/pages/docs/convergence.html)
+with explicit typing universes, complete BY families and marginal subject-frequency intervals.
 Pseudobulk remains planned for a later slice.
 
 **B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an

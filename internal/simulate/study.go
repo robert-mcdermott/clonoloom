@@ -52,14 +52,16 @@ type Study struct {
 	// Series: a study over time (series.go), SamplesPerSubject then unused.
 	Series *Series `json:"series,omitempty"`
 	// BCells selects the artificial paired B-cell model; the TRB parameters above are unused.
-	BCells     *BCellStudy     `json:"bcells,omitempty"`
-	CellStates *CellStateStudy `json:"cellStates,omitempty"`
-	Motifs     *MotifStudy     `json:"motifs,omitempty"`
-	Counts     *CountStudy     `json:"counts,omitempty"`
+	BCells      *BCellStudy       `json:"bcells,omitempty"`
+	CellStates  *CellStateStudy   `json:"cellStates,omitempty"`
+	Convergence *ConvergenceStudy `json:"convergence,omitempty"`
+	Motifs      *MotifStudy       `json:"motifs,omitempty"`
+	Counts      *CountStudy       `json:"counts,omitempty"`
 }
 
 // Presets are the studies `clonoloom simulate` starts from.
 var Presets = map[string]Study{
+	"convergence-study":  {Name: "convergence-study", Title: "An artificial subject recurrence and HLA study", Seed: 20261030, Convergence: &ConvergenceStudy{}},
 	"motif-study":        {Name: "motif-study", Title: "An artificial sequence-signature study", Seed: 20261029, Motifs: &MotifStudy{}},
 	"definition-study":   {Name: "definition-study", Title: "A definition-sensitive repertoire study", Seed: 20261028, Counts: &CountStudy{Subjects: 32, Layout: "independent", DefinitionVariants: true}},
 	"counts-paired":      {Name: "counts-paired", Title: "A replicated paired repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 28, Layout: "paired"}},
@@ -204,6 +206,12 @@ var Presets = map[string]Study{
 
 // Check says what is wrong with a study's parameters.
 func (s Study) Check() error {
+	if s.Convergence != nil {
+		if s.Motifs != nil || s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
+			return fmt.Errorf("convergence study replaces other simulation models")
+		}
+		return nil
+	}
 	if s.Motifs != nil {
 		if s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
 			return fmt.Errorf("motif study replaces other simulation models")
@@ -409,6 +417,9 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 	}
 	if entries, err := os.ReadDir(dir); err == nil && len(entries) > 0 {
 		return Summary{}, fmt.Errorf("%s is not empty", dir)
+	}
+	if s.Convergence != nil {
+		return runConvergence(ctx, s, dir, version, progress)
 	}
 	if s.Motifs != nil {
 		return runMotifs(ctx, s, dir, version, progress)

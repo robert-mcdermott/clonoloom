@@ -4,6 +4,18 @@
 
 ### Added
 
+- **Convergence and HLA association (wave 7, slice 7).** Measure selected saved motif-group
+  recurrence across unique subjects, with explicit sample assignments and raw HLA typing.
+  Use complete two-field typed universes per locus, conditional hypergeometric enrichment
+  and BY over all declared group × allele slots. Preserve incomplete/ambiguous typing,
+  unavailable tests and full membership. Show subject fractions with marginal Wilson
+  intervals and descriptive recurrence, with cited methods and population/selection limits.
+  Add immutable replay, source/parent-free reopening, provider-aware complete exports,
+  remote control and a 32-subject artificial study with repeated samples, varied junctions,
+  uneven counts and full truth. Validate independent SciPy references, exact conditional
+  controls, processor agreement, saved workflows and both-theme visuals. Recurrence and
+  HLA association do not establish convergent recombination, restriction or specificity.
+
 - **Motifs and sequence-signature groups (wave 7, slice 6).** Screen explicit query and
   background samples for overlapping local motifs and conservative global signatures.
   Count unique TRBV/junction units, match exact V/length strata, and use conditional Fisher

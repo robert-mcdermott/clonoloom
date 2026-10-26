@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–4 are committed and pushed. Slice 5 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slices 1–6 are committed and pushed. Slice 7 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2386,7 +2386,7 @@ release or publication. Slice 5 was subsequently committed and pushed by the mai
 
 ### Slice 6: motifs and sequence-signature groups
 
-**Implemented and validated; awaiting commit.** R7 and S3 have a bounded TRB implementation;
+**Committed and pushed.** R7 and S3 have a bounded TRB implementation;
 research §5.35 states the complete scientific contract and GLIPH2 adaptations.
 
 - Capture explicitly selected, disjoint query/background samples under saved AA definition
@@ -2439,7 +2439,58 @@ and dark screenshots are visually reviewed; scientific notation stays unbroken. 
 Networks workflows also pass in both themes. The local site builds 41 pages with 49 screenshot
 sets; 40 audited pages pass 160 theme/viewport checks without accessibility violations or
 overflow. All 14 contrast checks, formatting and diff checks pass. Version stays 0.6.0; no
-commit, push, tag, release or publication. Slice 7 has not begun.
+commit, push, tag, release or publication. Slice 6 was subsequently committed and pushed by the maintainer.
+
+### Slice 7: convergence and HLA association
+
+**Implemented and validated; awaiting commit.** S6 is bounded to observed recurrence of
+explicitly selected saved TRB sequence groups and conditional subject-level HLA association.
+Research §5.36 records the primary sources, implementation choices and scientific limits.
+
+- Pin the saved motif parent and capture selected memberships, receptor/sample identities,
+  source hashes, definition/QC, units, method and provider terms. Union both motif arms and
+  selected visits by globally named subject. Require an explicit human declaration and exact
+  sample assignments; sequences, cells, abundance and repeated samples cannot add replicates.
+- Preserve observed group and exact V/full-AA-junction recurrence. No eligible receptor
+  evidence means unevaluable, never inferred absence. An empty allele panel gives descriptive
+  recurrence only; no convergent-recombination model is claimed.
+- Require two explicit resolved copies at each tested locus, including homozygotes. Compare
+  at two fields, retaining raw calls. Missing, incomplete, ambiguous, low-resolution and
+  expression/group-suffix typing remains unknown. Do not infer typing, phase or heterodimers.
+- Use a separate complete typed/receptor-evaluable universe per locus, including subjects
+  without the group. Compute stable one-sided hypergeometric tails and BY over all declared
+  group × allele slots. Keep constant/undersized tests null with reasons and family membership.
+- Show fixed-scale subject fractions with marginal 95% Wilson intervals, exact denominators,
+  descriptive differences and complete recurrence. State population structure, relatedness,
+  depth, unequal sampling, ascertainment and selection limits. Association is not restriction
+  or antigen specificity; original motif scores are not combined.
+- Support immutable cancellable jobs, source/parent-free replay, complete provider-aware ZIPs,
+  undo/redo, remote/visible identity, cited Methods and figure provenance. Raw subject IDs and
+  typing remain explicit in exports.
+- Add a 32-subject, 36-sample artificial study with varied junctions, uneven gamma-Poisson UMI
+  counts, repeated observations and four unresolved A typings. Save all generating truth;
+  the planted 17/20 versus 1/8 association demonstrates behavior, not power or biological FDR.
+- Keep version 0.6.0. Slice 8 and release operations remain outside this change.
+
+Validation includes independent SciPy hypergeometric/BY/Wilson values for every one of 12
+reference slots, all 70 fixed-margin carrier assignments, repeated-sample/abundance invariance,
+homozygosity, unknown typing, bounds, cancellation, source truth, tamper refusals and exact
+source/parent-free replay. Browser checks verify every displayed fraction, locus denominator,
+visible/remote identity, raw typing, saved reopening, export and cited Methods in both themes.
+
+**Validation completed:** the full application/internal race suite passes (application
+71.108 s; simulator 25.187 s), followed by final focused race checks for canonical empty typing,
+source/parent-free replay and exports (application 38.036 s). The required-data scientific
+suite passes in 198.209 s, excluding unchanged performance-budget tests; its compiler scan
+finds no fused multiply-adds. All independent association/interval values agree; native/amd64
+complete-result and simulator digests match. Earlier example presets retain their pinned bytes.
+
+All 131 JavaScript tests, final compact-plot checks, Go vet and six CGO-free platform builds
+pass. Browser workflows and existing Networks regressions pass in both themes; all four final
+screenshots are visually reviewed. The local site builds 42 pages with 50 screenshot sets;
+41 audited pages pass all 164 theme/viewport checks with no accessibility violations or
+overflow. All 14 contrast checks, Go formatting and diff checks pass. Version stays 0.6.0;
+no commit, push, tag, release or publication. Slice 8 has not begun.
 
 ## Later waves (outlined)
 

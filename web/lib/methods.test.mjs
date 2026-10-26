@@ -432,3 +432,14 @@ test('motif methods distinguish the adaptation and its artificial controls',()=>
  const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'mot-pinned',kind:'motifs',method:'GLIPH2-style adaptation',describe:'Matched V and length; pooled family; no N/P boost.',citation:'Huang et al. 2020.'}]});
  assert.match(out.text,/Saved GLIPH2-style adaptation result mot-pinned/);assert.match(out.text,/not antigen annotations/);assert.match(out.text,/descriptive, not statistical weights/);assert.doesNotMatch(out.text,/identifiers do not establish/);assert.ok(out.references.some((r)=>r.includes('Huang')));
 });
+
+test('convergence methods preserve subject-level limits and artificial typing truth', () => {
+  const summary = { samples: [{ repertoire: { studyId: 'clonoloom-simulated-convergence-study-v1' } }] };
+  const out = methodsParagraph({ dataset: pbmc, summary, program, results: [{ id: 'cv-pinned', kind: 'convergence', method: 'Subject recurrence and HLA', describe: 'Complete typed-subject universes; conditional association, not restriction.', citation: 'Glanville et al. 2017.' }] });
+  assert.match(out.text, /Saved Subject recurrence and HLA result cv-pinned/);
+  assert.match(out.text, /32 fictional subjects and 36 samples/);
+  assert.match(out.text, /four unresolved A typings/);
+  assert.match(out.text, /not fitted haplotypes/);
+  assert.doesNotMatch(out.text, /identifiers do not establish/);
+  assert.ok(out.references.some((r) => r.includes('Glanville')));
+});
