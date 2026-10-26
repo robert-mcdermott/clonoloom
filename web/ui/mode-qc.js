@@ -11,6 +11,7 @@ import { UNITS, datasetUnit } from '../lib/datasets.js';
 import { LOCI, RULES, cleanRules, datasetFilter, describeRules, saveFilter, useFilter } from '../lib/filters.js';
 import { columns, stackedBars } from '../lib/plot.js';
 import { exportable, madeBy } from './figures.js';
+import { mountContamination } from './contamination.js';
 
 const count = (n) => (Number.isFinite(n) ? Number(n).toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—');
 const pct = (v, digits = 1) => (Number.isFinite(v) ? `${(100 * v).toFixed(digits)}%` : '—');
@@ -39,10 +40,15 @@ export function mountQC(app, container) {
     h('label.unit-confirm', h('span.muted', 'Filter'), filterSelect),
     h('button.btn.small', { type: 'button', onclick: () => editFilter() }, icon('filter'), 'New filter…'));
   const body = h('div.view-body.qc-view');
-  root.append(head, body);
+  const evidenceBody = h('div.view-body');
+  evidenceBody.hidden = true;
+  const tabs = h('div.segmented', { role: 'tablist', 'aria-label': 'QC view' });
+  head.insertBefore(tabs, head.children[1]);
+  root.append(head, body, evidenceBody);
   container.append(root);
 
-  let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : store.project.datasets[0]?.id ?? null;
+  let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : store.project.artifacts.find((r) => r.id === store.ui.focus?.id)?.dataset ?? store.project.datasets[0]?.id ?? null;
+  let part = store.project.artifacts.find((r) => r.id === store.ui.focus?.id)?.kind === 'contamination' ? 'contamination' : 'summary';
   let answer = null;
   let answerKey = '';
   let shownSample = 0;
@@ -50,6 +56,9 @@ export function mountQC(app, container) {
   let loading = 0;
 
   const dataset = () => store.project.datasets.find((d) => d.id === chosen) ?? store.project.datasets[0] ?? null;
+  const evidence = mountContamination(app, evidenceBody, dataset);
+  function showPart(next) { part = next; render(); }
+  app.qcView = { show: showPart };
 
   function applyChoice(value) {
     const d = dataset();
@@ -99,7 +108,19 @@ export function mountQC(app, container) {
   }
 
   function render() {
+    clear(tabs);
+    for (const [id, label] of [['summary', 'Sample QC'], ['contamination', 'Contamination']]) {
+      tabs.append(h(`button${part === id ? '.active' : ''}`, {
+        type: 'button', role: 'tab', 'aria-selected': String(part === id), onclick: () => showPart(id),
+      }, label));
+    }
+    body.hidden = part !== 'summary';
+    evidenceBody.hidden = part !== 'contamination';
     drawControls();
+    if (part === 'contamination') {
+      if (store.ui.focus?.kind !== 'result') evidence.load();
+      return;
+    }
     const d = dataset();
     if (!d) {
       clear(body).append(h('div.empty', icon('qc'), h('h3', 'No data to check'), h('p', 'Open data first: QC measures each sample of a dataset.'),
@@ -306,6 +327,14 @@ export function mountQC(app, container) {
   render();
   return {
     update(topics) {
+      evidence.update(topics);
+      const result = store.project.artifacts.find((r) => r.id === store.ui.focus?.id);
+      if (topics.has('focus') && result?.kind === 'contamination') {
+        chosen = result.dataset;
+        part = 'contamination';
+        render();
+        return;
+      }
       if (topics.has('focus') && store.ui.focus?.kind === 'dataset' && store.ui.focus.id !== chosen) {
         chosen = store.ui.focus.id;
         render();
@@ -314,6 +343,8 @@ export function mountQC(app, container) {
       if (topics.has('project') || topics.has('datasets') || topics.has('project-loaded') || topics.has('theme')) render();
     },
     destroy() {
+      evidence.destroy();
+      delete app.qcView;
       root.remove();
     },
   };

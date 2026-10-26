@@ -317,9 +317,32 @@ async function convergenceScene() {
   await clearToasts(); await checkAccessibility();
 }
 
+async function contaminationScene() {
+  await act('new_project',{name:'Artificial nucleotide sharing and carryover study'});
+  await act('open_example',{example:'simulated-contamination-study',download:true});
+  const samples=JSON.parse(readFileSync(join(places.examples,'simulated-contamination-study','truth/samples.json'),'utf8'));
+  await act('set_definition',{definition:{chains:['TRB'],junction:'nt',v:'gene',j:'gene',productiveOnly:true}});
+  const pgen=(await act('measure_generation',{models:'clonoloom',organism:'human',genes:false})).data.result;
+  const declaration={species:'human',unrelated:true,samples,pgen,options:{minCount:2,highFraction:.01,ratio:20,highPgen:1e-8}};
+  const out=(await act('screen_contamination',declaration)).data;
+  if(out.pairs!==35)throw new Error('Same-subject pair was not excluded');
+  // Switching from another dataset to a saved result must restore its toolbar context.
+  await js(`(async()=>{const app=window.clonoloom,store=app.store,id=${JSON.stringify(out.artifact)},original=store.project.datasets[0],ensure=app.ensureDataset;app.ensureDataset=async()=>{throw new Error('Navigation control has no source')};try{store.commit({...store.project,datasets:[...store.project.datasets,{...original,id:'qc-navigation-control',name:'Navigation control'}]},'Navigation control',['project']);app.focusItem({kind:'dataset',id:'qc-navigation-control'});await new Promise((r)=>setTimeout(r,50));if(document.querySelector('.workbench-head select[aria-label="Dataset"]').value!=='qc-navigation-control')throw new Error('Control dataset was not selected');app.focusItem({kind:'result',id});await new Promise((r)=>setTimeout(r,50));if(document.querySelector('.workbench-head select[aria-label="Dataset"]').value!==original.id)throw new Error('Saved result did not restore its dataset');store.undo();}finally{app.ensureDataset=ensure;}return true})()`);
+  await waitFor(`window.clonoloom.contaminationView?.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,v=app.contaminationView,r=v.state().answer.result.analysis,index=r.pairs.findIndex((p)=>r.evidence.samples[p.a].sample.name==='D01-1'&&r.evidence.samples[p.b].sample.name==='D02-1');v.select(index);const p=r.pairs[index],rows=r.matches.filter((m)=>m.a===p.a&&m.b===p.b);if(p.shared!==6||rows.filter((m)=>m.pattern==='Asymmetric observed fractions').length!==3)throw new Error('Planted sharing controls differ');const points=[...document.querySelectorAll('.contamination-view [data-receptor]')];if(points.length!==6||points.some((node)=>!rows.some((m)=>m.receptor===node.dataset.receptor&&String(m.fractionA)===node.dataset.fractionA&&String(m.fractionB)===node.dataset.fractionB)))throw new Error('Scatter fractions differ');window.contaminationCheck={id:v.state().answer.artifact.id,index,snapshot:JSON.stringify(v.state().answer.result)};v.configure(${JSON.stringify(declaration)});[...document.querySelectorAll('.contamination-view button')].find((b)=>b.textContent==='Screen contamination evidence').click();return true})()`);
+  await waitFor(`window.clonoloom.contaminationView?.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,v=app.contaminationView,c=window.contaminationCheck;if(v.state().answer.artifact.id!==c.id)throw new Error('Visible/remote settings differ');app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===c.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:c.id});return true})()`);
+  await waitFor(`window.clonoloom.contaminationView?.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,c=window.contaminationCheck;if(JSON.stringify(app.contaminationView.state().answer.result)!==c.snapshot)throw new Error('Saved evidence changed');const ensure=app.ensureDataset,originalFetch=window.fetch,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};window.fetch=(url,...args)=>{if(String(url).includes('api/pgen'))throw new Error('Pgen parent unavailable');return originalFetch(url,...args)};URL.createObjectURL=(b)=>{blob=b;return create(b)};try{await app.setMode('data');app.focusItem({kind:'result',id:c.id});for(let i=0;i<200;i++){if(app.contaminationView?.state().status==='ready')break;await new Promise((r)=>setTimeout(r,50))}const v=app.contaminationView;if(v?.state().status!=='ready')throw new Error('Source-free remount failed');v.select(c.index);await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('ZIP failed');const {figureBlob}=await import('./ui/figures.js');const text=await(await figureBlob(v.plotSpec(),'svg')).text();for(const phrase of ['no pseudocount','Thresholds:','QC','bbad230','checksum','unrelated'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase);}finally{app.ensureDataset=ensure;window.fetch=originalFetch;URL.createObjectURL=create;}return true})()`);
+  await act('show_methods');if(!await js(`(()=>{const s=document.querySelector('.methods-text').textContent;return s.includes('eight fictional subjects')&&s.includes('No sequence is removed')&&document.querySelector('.methods-references').textContent.includes('bbad230')})()`))throw new Error('Scientific methods absent');await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.contamination-view'),scroller=root.parentElement;scroller.scrollTop+=root.querySelector('.contamination-title').getBoundingClientRect().top-scroller.getBoundingClientRect().top-12;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+ async contamination() {await contaminationScene();},
   async convergence() { await convergenceScene(); },
   async motifs() { await motifScene(); },
   async 'definition-robustness'() { await definitionAuditScene(); },
@@ -1262,7 +1285,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

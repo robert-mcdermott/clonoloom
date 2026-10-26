@@ -4,6 +4,18 @@
 
 ### Added
 
+- **Contamination evidence (wave 7, slice 8).** Inspect exact productive bulk TRB nucleotide
+  junction/V/J sharing between explicitly assigned unrelated human subjects. Preserve all
+  sample pairs and matches, complete retained-abundance denominators, eligible evidence and
+  exclusion reasons. Separate editable abundance/asymmetry review heuristics from optional
+  checksum-pinned nucleotide Pgen context; unknown Pgen remains unknown and high Pgen never
+  suppresses evidence. Add equal-log-axis plots, complete source-free replay/exports, remote
+  controls and cited Methods. Provide a varied eight-subject artificial study with a repeat,
+  planted transfers, assigned shared controls, a synonymous control and full truth. Validate
+  independent rational references, every simulated pair, processor agreement, saved workflows
+  and both-theme visuals. No source, direction, rate or proof of contamination is inferred;
+  no sequence is removed. Document the bounded human bulk-TRB scope and scientific limits.
+
 - **Convergence and HLA association (wave 7, slice 7).** Measure selected saved motif-group
   recurrence across unique subjects, with explicit sample assignments and raw HLA typing.
   Use complete two-field typed universes per locus, conditional hypergeometric enrichment

@@ -443,3 +443,9 @@ test('convergence methods preserve subject-level limits and artificial typing tr
   assert.doesNotMatch(out.text, /identifiers do not establish/);
   assert.ok(out.references.some((r) => r.includes('Glanville')));
 });
+
+test('contamination methods retain heuristic and artificial-control limits',()=>{
+  const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-contamination-study-v1'}}]};
+  const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'cnt-pinned',kind:'contamination',method:'Descriptive contamination evidence',describe:'Exact NT sharing; no removal or contamination verdict.',citation:'Li et al. 2023. doi:10.1093/bib/bbad230.'}]});
+  assert.match(out.text,/Saved Descriptive contamination evidence result cnt-pinned/);assert.match(out.text,/eight fictional subjects and nine samples/);assert.match(out.text,/not Pgen labels/);assert.doesNotMatch(out.text,/identifiers do not establish/);assert.ok(out.references.some((r)=>r.includes('bbad230')));
+});

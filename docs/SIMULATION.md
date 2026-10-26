@@ -521,3 +521,31 @@ This is a controlled demonstration of recurrence, missingness and conditional as
 not fitted human haplotypes, realistic HLA population frequencies, V(D)J recombination or
 antigen recognition. Its constructed association cannot establish power or biological FDR.
 The [guide](site/pages/docs/convergence.html) and research §5.36 state the inference limits.
+
+## Cross-subject nucleotide sharing study
+
+`clonoloom simulate --preset contamination-study --out <empty-folder>` generates eight fictional
+subjects, nine samples and 706 rows (seed 20261031; model `clonoloom-contamination-study-v1`).
+Productive sequences use the existing length-selected human TRB simulator. Each subject has
+75 private sequences, plus three sequences assigned as biological-sharing controls. D01 has a
+second sample in a different batch. Three D01 identities with counts 3500/4700/5900 are copied
+into D02 at counts 7/11/15. A synonymous Cys-codon variant in D03 provides a same-AA/different-NT
+control. These are explicit construction choices, not fitted contamination mechanisms or
+independent stochastic re-generation of the shared sequences.
+
+Remaining observations use 1+Poisson(Gamma(shape=3) × [2500/(rank+1)^1.1 × exposure]/3), with
+lognormal exposure log-SD 0.55. The data have 604 eligible nucleotide/V/J identities, 35
+cross-subject sample pairs and 111 shared pair/identity records. The D01 repeat is excluded
+from same-subject comparison. D01-1/D02-1 has six matches, three with the planted fraction
+asymmetry; sample totals are 17316 and 10431 UMIs.
+
+From Examples choose **Cross-subject nucleotide sharing study**. `truth/samples.json` supplies
+subject/batch assignments; `truth/observations.tsv` retains every row's generating class,
+V/J, nucleotide junction and count. Source hashes, model, seed and specification are recorded
+in `truth/truth.json`. Optionally compute a compatible human productive NT TRB/V-and-J-gene Pgen
+parent before screening. Pgen categories come from that model, never the planted labels.
+
+No empirical index-hopping rate, population selection or classifier is fitted. Shared controls
+are designated truth, not proof of biological publicness. The positive example cannot establish
+real-world sensitivity or specificity. The [guide](site/pages/docs/contamination.html) and
+research §5.37 explain the conditional interpretations and bounded bulk-TRB scope.

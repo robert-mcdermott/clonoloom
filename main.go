@@ -495,6 +495,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerRobustness(mux)
 	a.registerMotifs(mux)
 	a.registerConvergence(mux)
+	a.registerContamination(mux)
 	if a.remote != nil {
 		a.remote.register(mux)
 	}

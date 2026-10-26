@@ -458,3 +458,26 @@ denominators, locus-specific universes, visible/remote artifact identity, raw ty
 undo/redo, saved reopening, source/parent-free export, figure provenance, Methods and
 accessibility. Review both screenshots: fixed frequency scale, marginal interval labels,
 explicit artificial data and complete counts. Existing Networks is a sibling-view regression.
+
+### Contamination evidence
+
+`uv run --no-project validation/reference/contamination.py` builds an independent literal
+reference using Python set intersections and exact rational arithmetic. Go compares all pairs,
+shared identities, fractions, ratios, review/model-context categories and nulls; the complete
+result is digest-pinned on native and amd64 processors. There is no inferential test or
+claimed classifier calibration in this descriptive screen.
+
+Core tests cover same-subject exclusions, threshold invariance, high-Pgen/review overlap,
+model zero versus missing, unavailable depth, invalid inputs and cancellation. The API tests
+independently join every simulated truth row and verify all pair intersections and sample
+denominators. They check missing-count and single-cell refusals, unevaluable-sequence abundance
+retention, incompatible Pgen QC, absent Pgen, checksums, provider terms and exact replay with
+sources and Pgen parent removed. The example's 706 rows, repeat, three transfers, assigned
+shared controls and synonymous control are checked and byte-pinned. Existing Pgen references
+validate its probability engine; this slice does not reimplement it.
+
+`node docs/capture/capture.mjs contamination qc --theme both` checks every selected scatter
+fraction, visible/remote identity, dataset-toolbar restoration, undo/redo, reopening, source/parent-free exports, scientific
+figure captions, cited Methods, accessibility and the existing sample-QC view. Review both
+themes for readable equal log axes, denominator/threshold explanations and an explicit
+artificial-study label. More than 2000 shared points are not silently sampled.

@@ -199,6 +199,12 @@ export function remoteActions(app) {
       return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
     },
 
+    async screen_contamination(options = {}) {
+      const dataset=datasetOf(options.dataset);app.focusItem({kind:'dataset',id:dataset.id});await app.setMode('qc');app.qcView.show('contamination');
+      const view=await waitFor(()=>app.contaminationView,5000,'Contamination evidence');await waitFor(()=>view.state().status!=='loading',10000,'Contamination source');
+      const result=await view.run({...options,dataset:dataset.id});if(!result)throw new Error('The project changed before the result was saved.');
+      return {message:'Contamination evidence saved.',data:{artifact:result.artifact.id,pairs:result.result.analysis.pairs.length,matches:result.result.analysis.matches.length,description:result.result.description}};
+    },
     async analyze_convergence(options = {}) {
       await app.setMode('specificity');
       const view = await waitFor(() => app.convergenceView, 5000, 'Convergence and HLA');

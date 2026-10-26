@@ -23,6 +23,8 @@ Wave 7 development adds saved subject designs, feature tables, two-group compari
 [GLIPH2-style motif screens](docs/site/pages/docs/motifs.html) with explicit adaptations and
 conditional-inference limits. It also adds [subject recurrence and HLA association](docs/site/pages/docs/convergence.html)
 with explicit typing universes, complete BY families and marginal subject-frequency intervals.
+[Contamination evidence](docs/site/pages/docs/contamination.html) adds exact cross-subject nucleotide
+sharing with abundance and model context; review flags never remove sequences.
 Pseudobulk remains planned for a later slice.
 
 **B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an

@@ -461,3 +461,37 @@ submission). GET `/api/convergence/{id}` and `/download` reopen/export checked e
 ZIPs include raw subject IDs/HLA typing, complete association and recurrence tables, and NOTICE;
 provider terms use `?accept=1`. Replay is source/parent-free. See the
 [guide](site/pages/docs/convergence.html) for typing rules, conditional tests and limits.
+
+### Contamination evidence (wave 7)
+
+`screen_contamination` opens QC → Contamination and runs the same screen as its visible controls:
+
+```json
+{
+  "species": "human",
+  "unrelated": true,
+  "samples": [
+    {"name": "sample-A", "subject": "subject-1", "batch": "lane-1"},
+    {"name": "sample-B", "subject": "subject-2", "batch": "lane-1"}
+  ],
+  "options": {"minCount": 2, "highFraction": 0.01, "ratio": 20, "highPgen": 1e-8}
+}
+```
+
+`dataset` optionally names the dataset; `pgen` optionally names a saved compatible nucleotide
+Pgen artifact. Every sample must exist and belong to a named subject; repeated samples reuse
+an ID and are not cross-subject evidence. The response contains `artifact`, cross-subject
+`pairs`, shared pair/identity `matches` and the method description. Thresholds are heuristic
+and no sequence is removed.
+
+For optional Pgen context, use `set_definition` with
+`{chains:["TRB"],junction:"nt",v:"gene",j:"gene",productiveOnly:true}`, then
+`measure_generation` with explicit human organism/model and the intended gene-joint setting.
+Pass its returned `result` ID to `screen_contamination`. Both parents must have identical QC.
+The screen itself always uses its fixed nucleotide definition without changing the project's.
+Unknown Pgen stays unknown, and high Pgen never clears a sample.
+
+HTTP takes the same fields plus dataset ID and recorded `filter` at `POST /api/contamination`;
+`start:false` probes without submission. GET `/api/contamination/{id}` and `/download` inspect
+or export checked captures. Raw subject/sequence evidence and source terms remain attached;
+provider terms use `?accept=1`. See the [guide](site/pages/docs/contamination.html).

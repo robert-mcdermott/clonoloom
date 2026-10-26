@@ -2459,3 +2459,134 @@ checksums, source/parent-free durable replay and provider-aware complete ZIPs. S
 is aggregated directly by subject, independently of group statistics; result/example digests
 pin processor reproducibility. Browser checks compare visible and remote declarations, exact
 plot geometry, undo/redo/reopening, source/parent-free exports and cited Methods in both themes.
+
+### 5.37 Contamination evidence (wave 7, slice 8)
+
+**Primary sources and distinction.** The AIRR Community's *Guide to Planning and Performing
+AIRR-Seq Experiments* (2022), doi:10.1007/978-1-0716-2115-8_15,
+[contamination discussion](https://www.ncbi.nlm.nih.gov/books/NBK586946/), motivates inspecting
+cross-subject nucleotide sharing and abundance patterns alongside laboratory context.
+Li R et al. (2023), *A novel statistical method for decontaminating T-cell receptor sequencing
+data*, Briefings in Bioinformatics 24:bbad230, doi:10.1093/bib/bbad230,
+[paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC10359082/), describes TCR-Broom's statistical
+approach. We cite its problem framing; **we do not implement its Bayesian classifier, priors,
+training reference or removal procedure**. Sethna et al. (2019), OLGA, Bioinformatics
+35:2974–2981, doi:10.1093/bioinformatics/btz035, supports the separate recombination-probability
+context already validated in wave 4. Only papers, documentation and our existing engines are
+used; no external repertoire-tool implementation source is inspected or copied.
+
+**ClonoLoom's bounded choice.** This is a descriptive evidence screen for **human bulk TRB**,
+not an estimator of contamination probability/rate. Require 2–64 explicit selected samples,
+globally meaningful subject IDs, optional batch labels, a human declaration and confirmation
+that different IDs represent unrelated subjects. Repeated samples retain the same ID; every
+same-subject sample pair is excluded. Distinct IDs cannot establish independence. All remaining
+unordered sample pairs are retained, including zero-match and unevaluable pairs. Multiple pairs
+involving one subject are dependent; no inferential test pools them as replicates. We do not
+silently assume unrelatedness or infer a source/direction from a larger count or fraction.
+
+Apply recorded source QC, then require explicitly productive TRB rows. Use a fixed full AIRR
+**nucleotide junction + V gene + J gene** identity, normalizing resolved allele calls to gene.
+This is separate from the active project definition, which is not changed. It is an exact
+junction identity, not proof of identical full rearrangement or shared biological ancestry.
+Require standard A/C/G/T, length 27–120 divisible by three, translated C…F/W boundaries and no
+stop/unknown amino acids; unresolved V/J calls and missing/nonstandard junctions are excluded
+from matching, with counts of reasons. Different synonymous nucleotide junctions never match,
+nor do different resolved V/J genes. Gene-call discordance can hide genuine carryover; no
+fuzzy matching, edit-distance rescue or automatic annotation repair is applied.
+
+Require known nonnegative integer counts in reads, UMIs or templates. Missing/nonfinite/
+fractional retained counts refuse the screen; they are never one or zero by default. Whole
+selected samples without retained abundance remain unavailable. Reads measure amplification
+as well as molecules. Single-cell, sequence-only, unknown-unit, nonhuman and other-locus
+workflows are outside this slice. In particular, a recombination Pgen is not a model of SHM in
+mature B-cell repertoires; extending those cases needs its own scientific contract.
+
+**Denominators and coverage of evidence.** Sum every retained productive TRB count in each
+selected sample before sequence/gene evaluability checks. This complete abundance is the
+fraction denominator T_s. Record eligible abundance, retained row count, and every exclusion
+beside it. Identical eligible keys sum within each sample. A positive match has c_a>0 and c_b>0;
+its fractions are c_a/T_a and c_b/T_b. Shared abundance sums all matching identities within
+each sample, with corresponding fractions. Missing counts refuse capture; a zero denominator
+or no eligible identities makes pair summaries unavailable rather than reassuring zero sharing.
+For two evaluable samples with no matches, zero is the observed result. These quantities are
+coverage of the **retained evidence**, not estimated unseen repertoire coverage or equal-depth
+comparisons. Unequal sequencing depth and QC affect the opportunity to observe a match.
+
+**Heuristic review rules.** Preserve every positive cross-subject identity match. Defaults
+mark a match for review when both counts are ≥2 and the larger sample fraction is ≥0.01.
+Among these, call the fractions asymmetric when max(f_a,f_b)/min(f_a,f_b)≥20; otherwise label
+shared high abundance. Thresholds are explicit, serialized and editable. Zero-valued options
+resolve to documented defaults. These are **ClonoLoom's display/review choices**, not published
+calibrated cutoffs, p-values, sensitivity/specificity estimates, a contamination test or a
+reason to remove sequences. They neither change denominators nor discard below-threshold
+matches. Shared expansions can merit inspection even without an asymmetric pattern.
+
+**Publicness context.** Optionally attach a checksum-verified saved Pgen artifact from the
+same dataset, QC, productive NT TRB/V-and-J-gene definition and human organism. Capture its
+manifest, result hash, model name/checksum/source/license/citation and joint-V/J setting, then
+attach probabilities by exact identity. Never substitute AA Pgen for NT Pgen, mix model
+contexts, infer a missing probability or silently download a model. No parent or no computed
+value gives **unknown Pgen**. Model zero is retained as zero, not evidence of biological
+impossibility. The default high-NT-Pgen threshold is 1e-8, a declared contextual choice rather
+than an empirical publicness classifier. Joint V/J probabilities and sequence-only probabilities
+are distinct quantities; thresholds are interpreted under the recorded setting.
+
+A high Pgen match receives a separate plausible-publicness annotation and remains in all
+sharing/review counts. Review and high-Pgen categories can overlap. A low Pgen match is not
+proof of contamination, and a high Pgen match does not establish independent generation or
+clear a sample. Biological selection, shared exposure, expansion, relatedness, transplantation
+and cell therapies complicate comparisons; index misassignment, sample mislabeling and several
+laboratory mechanisms can also produce overlap. Batch labels provide context only. This screen
+cannot distinguish these mechanisms or establish a contamination source, direction or rate.
+
+**Plots.** The selected pair's scatter contains every positive shared identity, with exact
+Go-computed fractions and counts. Both axes have the same logarithmic limits: the lower decade
+containing the smallest positive fraction (at most 0.01), to 1. Geometry has equal horizontal/vertical scale;
+its diagonal denotes equal fractions. Limits can differ across sample pairs. There is no zero
+pseudocount, jitter, density smoothing, regression, probability contour or random subset.
+Coincident identities may overlap visually; full tables/exports retain each. Above 2000 points
+show the complete tables/export rather than an undocumented plot subset. Purple/gold indicate
+review status, and open circles independently identify high Pgen. Captions retain sample IDs,
+subjects, denominator definition, QC, thresholds, model context, provenance and references.
+
+**Artifacts and limits.** Capture all selected depth/assignment records, eligible identities
+and per-sample counts, source fingerprints, QC, fixed definition, unit, thresholds and optional
+Pgen evidence. Refuse more than 5000 eligible identities or 200,000 shared pair/identity rows;
+never truncate. Retained sample abundance is bounded at 9e15, below exact integer overflow.
+Immutable cancellable jobs replay from that capture without original files or Pgen parent.
+Complete CSV/JSON ZIPs retain samples, pairs, matches, model context, manifests and provider
+notices. Exports contain subject IDs and nucleotide sequences; no de-identification is implied.
+No source data, QC filter or sequence is changed by a review flag.
+
+**Artificial study.** `contamination-study` v1 (seed 20261031) has eight fictional subjects,
+nine samples and 706 rows. Productive junctions use the existing length-selected human TRB
+simulator (its documented gene segments, deletion/insertion and usage model). Each subject
+has 75 private sequences; three further sequences are assigned to all subjects as designated
+biological-sharing controls. These assignments are construction truth, not independent
+stochastic re-generation events, antigen labels or Pgen-based classifications. D01 has a
+second sample in another batch. Three D01 identities with counts 3500/4700/5900 are copied
+into D02 at 7/11/15 to plant carryover evidence. A Cys-codon synonymous variant in D03 supplies
+a same-AA/different-NT control. Other counts are 1+Poisson(Gamma(shape=3) ×
+[2500/(rank+1)^1.1 × exposure]/3), with lognormal exposure log-SD 0.55. Repeats use the same
+identities at another depth. No empirical index-hopping mechanism or contamination rate is fitted.
+
+Every source row's sample, subject, class, V/J, NT and count is saved in `truth/observations.tsv`;
+assignments, model/seed and source hashes accompany it. There are 604 eligible identities,
+35 cross-subject sample pairs, one excluded same-subject pair and 111 shared pair/identity
+records. D01-1/D02-1 has six matches, three with the planted asymmetry. Their retained totals
+are 17316 and 10431 UMIs. Pgen is computed separately under the selected model; planted truth
+never determines the displayed high-Pgen annotation. This demonstrates mechanics and limits,
+not real-world detection accuracy or absence of false positives.
+
+**Independent validation.** Python sets and exact `fractions.Fraction` arithmetic construct
+literal sample intersections, denominators, ratios, review flags, model-context categories and
+nulls in `validation/reference/contamination.py`. Go checks every output pair/match and pins
+the complete-result digest. API tests independently join every simulated truth row, compare
+all sample totals and pair intersections, then verify compatible/missing/incompatible Pgen,
+missing-count refusals, retained-but-unevaluable sequence denominators, checksum refusals,
+provider terms and exact replay after deleting source and Pgen directories. Core tests cover
+threshold invariance, same-subject exclusion, high-Pgen overlap, model zero, unavailable depth,
+invalid evidence and cancellation. Earlier Pgen scientific references remain authoritative for
+probability computation itself. Browser checks exercise visible/remote identity, plot geometry,
+undo/redo, reopening, source/parent-free exports, cited Methods and both themes; sample QC is
+regressed separately. No inferential calibration or classification-performance claim is made.

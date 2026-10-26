@@ -903,3 +903,40 @@ and null output; no displayed reporting subset changes multiplicity.
 unavailable numeric fields are blank. The subject declaration includes raw HLA typing and
 identifiers. Provider terms require the existing `?accept=1` acknowledgement. The result and
 its source/definition/QC provenance are checksum-verified before reading or exporting.
+
+## Contamination-evidence artifacts (wave 7, slice 8)
+
+`POST /api/contamination` takes `{dataset,species:"human",unrelated:true,samples,filter,options,pgen}`.
+Samples are 2–64 explicit `{name,subject,batch}` records; batch is optional and repeated samples
+reuse a subject ID. The declaration states that distinct IDs represent unrelated subjects.
+Options default to `{minCount:2,highFraction:0.01,ratio:20,highPgen:1e-8}`. An optional `pgen`
+is a compatible saved artifact ID, not an arbitrary probability mapping. `start:false`
+validates capture and probes readiness without submitting a job. Unknown JSON fields and
+multiple top-level objects are refused.
+
+The fixed identity is productive human bulk TRB, full nucleotide junction plus resolved V/J
+genes; the project definition is unchanged. Source QC is captured. Counts must be known
+nonnegative integers in reads, UMIs or templates. Retained productive TRB abundance supplies
+each sample's denominator, including rows with unevaluable nucleotide/gene evidence; reasons,
+retained rows and eligible abundance accompany it. Missing counts refuse capture. Single-cell,
+sequence-only and unknown-unit sources are outside this version.
+
+A `cnt-` content identity pins the canonical assignments, thresholds, source notice/definition,
+captured count matrix and optional Pgen manifest, checked hash and model metadata. Pgen parents
+must match dataset, QC, human organism and productive NT TRB V/J-gene definition. Their joint-
+gene setting remains explicit. Missing probabilities are null, distinct from model zero.
+No probabilities are inferred from sharing or supplied directly by a caller.
+
+`GET /api/contamination/{id}` returns checksum-verified `clonoloom-contamination` version 1
+JSON, with captured evidence, every cross-subject pair and every positive shared identity.
+Same-subject pairs are counted as excluded. Pair totals, fractions, review counts, high/unknown
+Pgen counts and missingness reasons remain complete. Review labels never remove matches.
+The capture is bounded to 5000 eligible identities and 200,000 shared pair/identity records;
+oversized jobs fail rather than truncate. No p-value or contamination probability is returned.
+
+`GET /api/contamination/{id}/download` supplies `contamination.json`, `manifest.json`,
+`samples.json`, `matches.csv`, `pairs.csv` and `NOTICE.txt`. Complete CSVs retain identifiers,
+NT/AA, counts, fractions, ratios, review/model-context labels and reasons; missing numeric
+fields are blank. The JSON also retains all private/unshared eligible identities. Subject IDs
+and sequences are included; provider terms use the existing `?accept=1` acknowledgement.
+Reopening and durable replay do not need source files or the Pgen parent directory.

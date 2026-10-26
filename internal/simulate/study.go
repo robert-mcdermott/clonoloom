@@ -52,23 +52,25 @@ type Study struct {
 	// Series: a study over time (series.go), SamplesPerSubject then unused.
 	Series *Series `json:"series,omitempty"`
 	// BCells selects the artificial paired B-cell model; the TRB parameters above are unused.
-	BCells      *BCellStudy       `json:"bcells,omitempty"`
-	CellStates  *CellStateStudy   `json:"cellStates,omitempty"`
-	Convergence *ConvergenceStudy `json:"convergence,omitempty"`
-	Motifs      *MotifStudy       `json:"motifs,omitempty"`
-	Counts      *CountStudy       `json:"counts,omitempty"`
+	BCells        *BCellStudy         `json:"bcells,omitempty"`
+	CellStates    *CellStateStudy     `json:"cellStates,omitempty"`
+	Contamination *ContaminationStudy `json:"contamination,omitempty"`
+	Convergence   *ConvergenceStudy   `json:"convergence,omitempty"`
+	Motifs        *MotifStudy         `json:"motifs,omitempty"`
+	Counts        *CountStudy         `json:"counts,omitempty"`
 }
 
 // Presets are the studies `clonoloom simulate` starts from.
 var Presets = map[string]Study{
-	"convergence-study":  {Name: "convergence-study", Title: "An artificial subject recurrence and HLA study", Seed: 20261030, Convergence: &ConvergenceStudy{}},
-	"motif-study":        {Name: "motif-study", Title: "An artificial sequence-signature study", Seed: 20261029, Motifs: &MotifStudy{}},
-	"definition-study":   {Name: "definition-study", Title: "A definition-sensitive repertoire study", Seed: 20261028, Counts: &CountStudy{Subjects: 32, Layout: "independent", DefinitionVariants: true}},
-	"counts-paired":      {Name: "counts-paired", Title: "A replicated paired repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 28, Layout: "paired"}},
-	"counts-independent": {Name: "counts-independent", Title: "A replicated independent repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 32, Layout: "independent"}},
-	"counts-null":        {Name: "counts-null", Title: "A replicated null repertoire study", Seed: 20261027, Counts: &CountStudy{Subjects: 32, Layout: "independent", Null: true}},
-	"cell-states":        {Name: "cell-states", Title: "An artificial paired T-cell and expression study with known states", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 120, Clones: 12}},
-	"cell-states-clouds": {Name: "cell-states-clouds", Title: "An artificial paired T-cell and expression study with supplied Gaussian clouds", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 360, Clones: 10, Layout: "gaussian"}},
+	"contamination-study": {Name: "contamination-study", Title: "An artificial contamination-evidence study", Seed: 20261031, Contamination: &ContaminationStudy{}},
+	"convergence-study":   {Name: "convergence-study", Title: "An artificial subject recurrence and HLA study", Seed: 20261030, Convergence: &ConvergenceStudy{}},
+	"motif-study":         {Name: "motif-study", Title: "An artificial sequence-signature study", Seed: 20261029, Motifs: &MotifStudy{}},
+	"definition-study":    {Name: "definition-study", Title: "A definition-sensitive repertoire study", Seed: 20261028, Counts: &CountStudy{Subjects: 32, Layout: "independent", DefinitionVariants: true}},
+	"counts-paired":       {Name: "counts-paired", Title: "A replicated paired repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 28, Layout: "paired"}},
+	"counts-independent":  {Name: "counts-independent", Title: "A replicated independent repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 32, Layout: "independent"}},
+	"counts-null":         {Name: "counts-null", Title: "A replicated null repertoire study", Seed: 20261027, Counts: &CountStudy{Subjects: 32, Layout: "independent", Null: true}},
+	"cell-states":         {Name: "cell-states", Title: "An artificial paired T-cell and expression study with known states", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 120, Clones: 12}},
+	"cell-states-clouds":  {Name: "cell-states-clouds", Title: "An artificial paired T-cell and expression study with supplied Gaussian clouds", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 360, Clones: 10, Layout: "gaussian"}},
 	"bcell-immunization": {
 		Name: "bcell-immunization", Title: "An artificial B-cell immunization study with known families and ancestors",
 		Seed:   20261027,
@@ -206,6 +208,12 @@ var Presets = map[string]Study{
 
 // Check says what is wrong with a study's parameters.
 func (s Study) Check() error {
+	if s.Contamination != nil {
+		if s.Convergence != nil || s.Motifs != nil || s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
+			return fmt.Errorf("contamination study replaces other models")
+		}
+		return nil
+	}
 	if s.Convergence != nil {
 		if s.Motifs != nil || s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
 			return fmt.Errorf("convergence study replaces other simulation models")
@@ -417,6 +425,9 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 	}
 	if entries, err := os.ReadDir(dir); err == nil && len(entries) > 0 {
 		return Summary{}, fmt.Errorf("%s is not empty", dir)
+	}
+	if s.Contamination != nil {
+		return runContamination(ctx, s, dir, version, progress)
 	}
 	if s.Convergence != nil {
 		return runConvergence(ctx, s, dir, version, progress)

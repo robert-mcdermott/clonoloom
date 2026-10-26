@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–6 are committed and pushed. Slice 7 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slices 1–7 are committed and pushed. Slice 8 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2443,7 +2443,7 @@ commit, push, tag, release or publication. Slice 6 was subsequently committed an
 
 ### Slice 7: convergence and HLA association
 
-**Implemented and validated; awaiting commit.** S6 is bounded to observed recurrence of
+**Committed and pushed.** S6 is bounded to observed recurrence of
 explicitly selected saved TRB sequence groups and conditional subject-level HLA association.
 Research §5.36 records the primary sources, implementation choices and scientific limits.
 
@@ -2490,7 +2490,57 @@ pass. Browser workflows and existing Networks regressions pass in both themes; a
 screenshots are visually reviewed. The local site builds 42 pages with 50 screenshot sets;
 41 audited pages pass all 164 theme/viewport checks with no accessibility violations or
 overflow. All 14 contrast checks, Go formatting and diff checks pass. Version stays 0.6.0;
-no commit, push, tag, release or publication. Slice 8 has not begun.
+no commit, push, tag, release or publication. Slice 7 was subsequently committed and pushed by the maintainer.
+
+### Slice 8: contamination evidence
+
+**Implemented and validated; awaiting commit.** Q4 has a bounded human bulk-TRB evidence
+screen. Research §5.37 states the sources, independent implementation and scientific limits.
+
+- Capture explicit human/unrelated declarations, sample/subject/batch assignments, source QC,
+  fixed productive NT TRB/V-and-J-gene definition, known integer abundance and fingerprints.
+  Keep repeated samples under the same subject; exclude their same-subject pair. Preserve all
+  other pairs, including zero-match and unavailable cases, without treating pairs as replicates.
+- Match exact standard nucleotide junctions with resolved genes; never collapse synonymous
+  sequences. Retained productive TRB abundance supplies every fraction denominator, including
+  unevaluable sequence/gene rows. Expose eligible abundance and exclusion reasons. Missing
+  counts refuse the screen; zero/no eligible evidence is unavailable, not a clean result.
+- Keep every positive match. Apply declared count/fraction/asymmetry review heuristics without
+  removing evidence. No p-values, calibrated classifier, automatic filtering or source,
+  direction, rate or proof of contamination is claimed. Batch labels are contextual.
+- Optionally capture a compatible checked NT Pgen parent, model/checksum and joint-gene setting.
+  Separate high-Pgen plausible-publicness context from review status; categories can overlap.
+  Missing Pgen is unknown; model zero is not impossibility. Biological sharing and sampling
+  limits remain explicit. Other loci and single-cell analyses require separate future contracts.
+- Show every selected pair's positive matches on equal log axes, exact denominators and
+  complete tables. No pseudocounts or subsampling. Preserve scientific captions, immutable
+  replay, source/parent-free reopening, provider-aware exports, remote controls and Methods.
+- Provide eight artificial subjects and nine samples with length-selected simulated TRB
+  junctions, uneven gamma-Poisson counts, a repeat, planted transfers, assigned shared controls,
+  a synonymous control and full truth. Labels are construction assumptions, not Pgen outputs
+  or claims of real-world classifier accuracy. Previous example bytes remain unchanged.
+- Keep version 0.6.0. Slice 9 and release operations are outside this change.
+
+Validation includes independent rational-arithmetic pair/match references, every simulated
+truth intersection and sample denominator, threshold invariance, explicit missingness,
+incompatible-model/capture refusals, cancellation, checksums and source/parent-free replay.
+Browser checks cover visible/remote identity, exact scatter geometry, saved workflows, full
+exports and cited Methods; existing sample QC is regressed in both themes.
+
+**Validation completed:** the full application/internal race suite passes (application
+92.719 s; simulator 28.414 s), followed by final focused race checks for evidence capture,
+source/parent-free replay and exports (application 5.080 s). The required-data scientific
+suite passes in 204.203 s, excluding unchanged performance-budget tests; its compiler scan
+finds no fused multiply-adds. Independent rational references agree; native/amd64 complete
+result and simulator digests match. Earlier example presets retain their pinned bytes.
+
+All 133 JavaScript tests, Go vet and six CGO-free platform builds pass. Final browser checks
+cover saved-result dataset restoration and clearing stale results during source changes,
+as well as both-theme contamination and existing sample-QC workflows. All four final
+screenshots are visually reviewed. The local site builds 43 pages with 51 screenshot sets;
+42 audited pages pass all 168 theme/viewport checks without accessibility violations or
+overflow. All 14 contrast checks, Go formatting and diff checks pass. Version stays 0.6.0;
+no commit, push, tag, release or publication. Slice 9 has not begun.
 
 ## Later waves (outlined)
 
