@@ -733,3 +733,23 @@ Only the driver accepts review proposals. Native tests additionally cover hostil
 metadata, permission/status contracts, no overwrite, original JSON tokens/whitespace, re-export,
 local post-import checkpoints, and reopening each v0.2–v0.7 project fixture. Transfer success
 is not scientific recomputation; existing certificate replay and method validation remain separate.
+
+
+## De-identification export boundaries (wave 8, slice 11)
+
+`node validation/deidentification.mjs /path/to/clonoloom --screenshots` creates an isolated host
+and a seeded artificial vaccination study: six observations of two explicitly annotated subjects,
+46,447 retained rearrangements and 27,215 clonotypes under the default definition. It checks
+unchanged project JSON and native query evidence, reviewed/rejected downloads, a separately
+requested private identity map, changed removal choices, stale project edits and cancellation.
+It audits both themes with axe-core and optionally captures the Reports review panel. Review
+clicks belong only to this validation driver; production clients never accept proposals.
+
+`go test -run TestDeidentification .` compares every nonidentity AIRR field and every scientific
+clonotype CSV cell with ordinary exports, verifies within-sample cell/sequence correspondence,
+repeated subjects and missing subjects, and checks identity canaries across every public member.
+Controls cover explicit annotation retention/removal, HLA in retained text, unsupported nested
+provenance, provider permissions, source immutability, pinning/replacement, malformed requests,
+context cancellation, alias framing and bounded correspondence/output. This validates the
+mapped table-copy contract; it does not certify anonymity, sanitize other formats or replay a
+transformed scientific artifact. See [the scope and limits](../docs/DEIDENTIFICATION.md).

@@ -281,8 +281,11 @@ exact tables, existing figures, cited methods, notices and original certificates
 browser check verifies embedded bytes, not scientific validity; native replay remains separate.
 [Portable project archives](docs/PROJECT-ARCHIVES.md) transfer exact project/history, results and
 checkpoints with opt-in permitted sources, bounded inventories and verified local bindings.
-Inspect before import; conflicts refuse overwrite. The [Wave 8 plan](clonoloom-spec/roadmap.md)
-schedules de-identification and further source coverage. Published binaries remain 0.7.0
+Inspect before import; conflicts refuse overwrite.
+[De-identification exports](docs/DEIDENTIFICATION.md) prepare separate pseudonymized dataset
+tables, with explicit free-text/HLA removal, preserved scientific values and a separately requested
+private identity map. They do not sanitize existing archives or establish anonymity.
+The [Wave 8 plan](clonoloom-spec/roadmap.md) tracks remaining release preparation. Published binaries remain 0.7.0
 until the next release.
 
 ## Development

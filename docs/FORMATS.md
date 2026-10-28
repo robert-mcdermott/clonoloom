@@ -1073,3 +1073,14 @@ source paths. No scientific computation runs. Unsupported paths/versions, missin
 evidence, altered members and destination conflicts refuse import. See
 [PROJECT-ARCHIVES.md](PROJECT-ARCHIVES.md) for the exact schema, bounds, source permissions,
 checkpoint bindings and interruption limits.
+
+## De-identification table exports (Wave 8 development)
+
+Slice 11 adds `clonoloom-deidentified-tables` v1, an allowlisted ZIP of native scientific tables,
+pseudonymized identities, explicitly retained sample annotations and fresh inventory/notice.
+The separate `clonoloom-private-identity-map` v1 never enters that ZIP. Retained table values
+match ordinary native exports under the same definition and QC; original scientific artifacts
+and source files stay unchanged. Unsupported nested provenance refuses AIRR export. Existing
+archives, reports and certificates retain their identities and are not transformed. See
+[DEIDENTIFICATION.md](DEIDENTIFICATION.md) for exact fields, linkage/removal rules, bounds,
+private review/download behavior and scientific/privacy limits.

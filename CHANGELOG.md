@@ -4,6 +4,15 @@
 
 ### Added
 
+- **Explicit de-identification exports (wave 8, slice 11).** Prepare and review fresh subject,
+  sample, cell and sequence pseudonyms in a separate dataset-table ZIP. Choose free-text/HLA
+  removal explicitly, preserve retained native scientific values, units, QC and definitions,
+  and download the private identity map separately. Refuse unmapped nested evidence, stale
+  receipts and oversized outputs; keep originals and provider terms unchanged. Add reviewed
+  shared actions and generated Python/R methods (catalog 3, 63 actions), scientific-parity and
+  disclosure checks, and a representative both-theme workflow. This is pseudonymization, not
+  anonymity or de-identification of existing archives, reports or replay certificates.
+
 - **Portable project archives (wave 8, slice 10).** Transfer original project/history, result
   and checkpoint bytes in a versioned, bounded `.clz` inventory. Include sources only by explicit
   choice and policy; retain missing, changed, omitted, restricted and unsupported statuses.

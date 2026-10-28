@@ -2,11 +2,63 @@
 from ._json import UNSET
 
 API_VERSION = 2
-CATALOG_VERSION = 2
+CATALOG_VERSION = 3
 POLICY_VERSION = 1
 
 class Tools:
     """Actions generated from the host catalog; changes require window review."""
+
+    def prepare_deidentified_export(self, *, accept=UNSET, dataset=UNSET, drop_hla=UNSET, drop_text=UNSET, what=UNSET):
+        """
+        Prepare de-identification export.
+
+        Prepare bounded native dataset tables with fresh subject/sample/cell/sequence pseudonyms
+        and explicit annotation/HLA removal. Review the private subject correspondence before
+        downloading. Original scientific evidence remains unchanged; this is not anonymity or a
+        transformed replay certificate.
+
+        Effects: read, compute, files. Window review: required.
+
+        accept (optional; omitted by default): Explicit private-use acknowledgment for
+        restricted provider data; never permits redistribution.
+
+        dataset (optional; omitted by default): A dataset of the project by name or id; the one
+        in focus, else the first, if not given.
+
+        drop_hla (optional; omitted by default): Remove HLA annotation; default true.
+
+        drop_text (optional; omitted by default): Remove free-text sample annotations; default
+        true.
+
+        what (optional; omitted by default): AIRR and clonotype tables, or clonotypes only;
+        default tables.
+
+        Returns a Result with exact int/Decimal values. None sends JSON null; UNSET omits an
+        optional argument.
+        """
+        return self.call("prepare_deidentified_export", **{"accept": accept, "dataset": dataset, "dropHLA": drop_hla, "dropText": drop_text, "what": what})
+
+    def download_deidentified_export(self, token, expected, *, identity_map=UNSET):
+        """
+        Download reviewed de-identification export.
+
+        Download the prepared pseudonymized table ZIP, or explicitly download only its separate
+        PRIVATE identity map. Requires the reviewed token/fingerprint and unchanged project.
+        Never bundles the identity map. Preparation expires after 15 minutes or replacement.
+
+        Effects: read, files. Window review: required.
+
+        token (required): Token returned by prepare_deidentified_export.
+
+        expected (required): Reviewed export fingerprint.
+
+        identity_map (optional; omitted by default): Download only the private identity map
+        separately; default false downloads the pseudonymized ZIP.
+
+        Returns a Result with exact int/Decimal values. None sends JSON null; UNSET omits an
+        optional argument.
+        """
+        return self.call("download_deidentified_export", **{"token": token, "expected": expected, "identityMap": identity_map})
 
     def export_project_archive(self, *, accept=UNSET, include_sources=UNSET, own_sources=UNSET):
         """

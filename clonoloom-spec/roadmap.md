@@ -3319,7 +3319,7 @@ follows maintainer review and commit.
 
 ### Slice 10: portable project archives
 
-**Implemented and validated; awaiting maintainer review and commit.**
+**Committed as `205045c` and pushed by the maintainer.**
 
 **Plan recorded before implementation.** Complete D12's portable archive contract with a
 versioned `.clz` ZIP containing original project/history bytes, attached immutable artifact
@@ -3392,6 +3392,69 @@ Validation completed:
 
 No commit, push, tag, release or publication was performed. Slice 11 (export de-identification)
 follows maintainer review and commit.
+
+### Slice 11: explicit de-identification exports
+
+**Status: implemented and validated; awaiting maintainer review and commit.**
+
+**Plan recorded before implementation.** Implement O10 as a dedicated, versioned dataset-table
+export, following CytoWeave's allowlisted-copy approach. Do not relabel ordinary archives,
+certificates, HTML reports, figures or arbitrary nested artifacts as de-identified. Those formats
+retain original evidence and require separately mapped transformations before support can expand.
+This slice's ZIP contains only native clonotype CSV, optional AIRR rearrangements, a sample
+annotation table, a fresh transformation inventory and provider notice. No original project,
+history, paths, source documents, manifests, recipes, checkpoints, embedded images or binary
+attachments may enter it. Unsupported nested scientific annotations refuse the AIRR export
+rather than being silently stripped; clonotype-only export remains an explicit alternative.
+
+Prepare and review before download. Generate fresh cryptographically random pseudonyms for
+subjects and samples; scope cell/sequence aliases by sample and preserve missing identities.
+Display the complete subject correspondence locally. Require explicit choices for dropping
+free-text annotations and HLA (both selected initially). Preserve sample membership, counts,
+units, QC, clonotype definition, missingness and all retained native scientific field values.
+Keep the original dataset/project/artifacts untouched. A separately requested identity-map
+file retains original identifiers, metadata and source fingerprints for private audit; it is
+never included in the shareable ZIP or its public inventory. Pseudonyms are stable within one
+prepared export, fresh across preparations, and not derived from names without a secret key.
+
+Retained sequences, stable scientific identifiers, rare measurements and optional annotations
+can enable linkage. No anonymity, privacy-risk measurement, legal certification or exact replay
+of a transformed artifact is claimed. Provider terms remain authoritative. Refuse unsafe or
+unsupported metadata instead of silently broadening a privacy claim. Bound preparation, files,
+identity maps and ephemeral storage; fingerprint-pin both downloads and reject stale browser
+state. Add reviewed shared actions and regenerate both clients with the next catalog version.
+
+Validate field-by-field equality with ordinary scientific exports, subject/sample/cell linkage,
+missingness, disclosure canaries across every ZIP member, source immutability, restricted-data
+policy, separate-map retrieval, cancellation/bounds and UI stale state. Use representative seeded
+studies and inspect both themes; no new scientific estimator or figure is introduced. Document
+supported scope, removed fields, scientific limits and cited rationale. Keep version 0.7.0.
+
+
+**Implementation.** Added the native v1 allowlisted table ZIP and separate private map, fresh
+per-preparation HMAC pseudonyms, native scientific-field parity, effective annotation removal,
+provider attribution, bounded in-memory lifetime and fingerprint-pinned separate downloads.
+The window shows every subject correspondence and clears review when choices or project change.
+Both shared actions require explicit capabilities and human review; catalog 3 generates 63
+Python/R wrappers without changing their numeric-token or permission contracts. Existing source
+files, project/history, saved artifacts, replay methods, scientific plots and version 0.7.0 remain
+unchanged. Unsupported nested provenance refuses AIRR export; clonotype-only scope is explicit.
+
+**Validation.** Native boundary and focused race tests pass, as do 169 JavaScript tests,
+17 Python tests, 1,300 R assertions and R CMD build/install/check without errors, warnings or
+notes. Live R/Python/HTTP native-evidence checks, Go vet and all six CGO-free platform builds
+pass. The browser workflow verifies 46,447 retained rearrangements and 27,215 clonotypes across
+six observations of two simulated vaccination subjects, unchanged native queries/project bytes,
+review rejection, separate downloads, changed choices, stale edits and cancellation. Both-theme
+screenshots were reviewed; browser accessibility, 14 contrast/color-vision checks and 224 site
+checks across 56 pages/two themes/two widths pass. The complete
+`go test -race -timeout 30m ./...` suite passes (application 1,093.950 s; scientific validation
+940.147 s); existing performance budgets intentionally skip under race instrumentation.
+No scientific workers or performance-budget definitions changed.
+
+Guides, format contract, implementation citations (research §5.52), scoped requirement O10,
+site page, screenshots, CI and changelog are updated. No commit, push, tag, release or site
+publication was performed. Slice 12 (release preparation) follows maintainer review and commit.
 
 ## Later waves (outlined)
 

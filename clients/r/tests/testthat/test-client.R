@@ -96,7 +96,7 @@ test_that("every generated wrapper uses the shared action contract", {
   functions <- ls(asNamespace("clonoloom"), pattern = "^cl_")
   core <- c("cl_connect", "cl_default", "cl_find_connection", "cl_call", "cl_tools", "cl_permissions", "cl_version", "cl_native", "cl_records", "cl_number", "cl_omit", "cl_array", "cl_object")
   functions <- setdiff(functions, core)
-  expect_length(functions, 61)
+  expect_length(functions, 63)
   for (name in functions) {
     fn <- get(name, asNamespace("clonoloom"))
     formal <- formals(fn)

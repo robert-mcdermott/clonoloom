@@ -22,6 +22,7 @@ import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate }
 import { datasetDefinition } from './lib/definitions.js';
 
 import { parseExactProject as parseProject } from './lib/project-archives.js';
+import { createDeidentification } from './ui/deidentification.js';
 import { createProjectArchives } from './ui/project-archives.js';
 
 const VERSION = '0.7.0';
@@ -113,6 +114,7 @@ async function start() {
   // kind → async (item).
   app.importers = new Map();
   app.archives = createProjectArchives(app);
+  app.deidentification = createDeidentification(app);
   app.importers.set('project', async ({file}) => { await app.setMode('reports'); await app.archives.inspect(file); });
 
   app.sidebar = mountSidebar(app);

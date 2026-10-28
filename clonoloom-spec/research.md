@@ -3300,3 +3300,44 @@ units/definitions/denominators without adding an estimator or inference. Existin
 certificate replay remains separate, with unchanged limits. Inspect both-theme screenshots and
 run accessibility checks; no scientific plot geometry changes. Shared actions retain explicit
 host grants and human review; generated Python/R wrappers follow catalog 2 with exact JSON handling.
+
+### 5.52 Explicit identifier transformation without changing scientific evidence
+
+**Sources and scope (2026-10-28).** Consulted [NIST SP 800-188 (2023)](https://doi.org/10.6028/NIST.SP.800-188),
+the [AIRR metadata schema](https://docs.airr-community.org/en/latest/datarep/metadata.html), and
+Vander Heiden et al. (2018), *Frontiers in Immunology*, [doi:10.3389/fimmu.2018.02206](https://doi.org/10.3389/fimmu.2018.02206).
+Identifier substitution alone cannot establish anonymity; the release context and retained
+information matter. AIRR distinguishes subjects, samples/repertoires and rearrangement evidence.
+Reviewed CytoWeave's Apache-2.0 documentation for its separate, restricted-format export pattern;
+no external scientific source code was copied. No new statistical method or biological claim
+is introduced.
+
+**ClonoLoom's choices.** Offer an allowlisted native dataset-table copy rather than attempting
+recursive sanitization of arbitrary project evidence. Use a fresh random secret for HMAC aliases
+with structured identity kind, sample scope and original value. Keep within-export equality,
+sample membership and missing identities; do not infer subjects or biological replication.
+Use 96-bit suffixes with collision refusal. Keep the complete original correspondence, effective
+annotations and source fingerprints in a separate private map, never inside the public ZIP.
+Explicit removal choices cover the six experimental annotation strings and HLA independently.
+Retained strings with known subject/sample identifiers refuse instead of being rewritten.
+Unsupported nested IMGT/germline-database provenance refuses AIRR export, with an explicit
+clonotype-only alternative. Attribution and provider restrictions remain authoritative.
+
+All nonidentity native AIRR fields and all clonotype scientific values remain exactly as the
+ordinary export writes them. This preserves normalized evidence, not raw input bytes or precision
+already outside the native count model. Record effective QC, definition ID/rules, unit and
+population; replace sample names in QC exclusions. Keep saved results, recipes, certificates,
+checkpoints, source files and project history unchanged. Their existing exact replay contracts
+remain separate. Removing study annotations can prevent reconstructing design without the
+private evidence. Stable clonotype IDs, receptor sequences, gene calls, counts, sample structure
+and optional annotations still permit linkage; there is no anonymity claim, privacy-risk score,
+legal certification or transformed replay certificate.
+
+**Validation boundary.** Compare every retained scientific field with ordinary exports; check
+zero versus missing, scope repeated cell/sequence IDs by sample, retain repeated-subject linkage,
+and leave missing subjects empty. Check sentinel identifiers across every ZIP member, exact
+source immutability, removal/retention choices, unsupported provenance, provider restrictions,
+private-map separation, fingerprint pinning, replacement, bounded output and cancellation.
+Exercise six longitudinal samples from two seeded artificial vaccination subjects, exact native
+query/project parity, explicit proposal rejection, separate downloads and stale browser state.
+Inspect both themes and accessibility. No scientific plot geometry or estimator changes.

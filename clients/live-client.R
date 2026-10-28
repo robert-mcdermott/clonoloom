@@ -3,7 +3,7 @@ library(clonoloom)
 folder <- Sys.getenv("CLONOLOOM_TEST_LIBRARY")
 cl <- cl_connect(data_dir = folder, client = "R research notebook")
 grants <- cl_permissions(cl)
-stopifnot(identical(sort(names(grants)), sort(c("read", "edits", "compute", "files"))), all(vapply(grants, isTRUE, logical(1))), length(cl_tools(cl)) == 61L)
+stopifnot(identical(sort(names(grants)), sort(c("read", "edits", "compute", "files"))), all(vapply(grants, isTRUE, logical(1))), length(cl_tools(cl)) == 63L)
 idle <- function() {
   for (i in seq_len(300)) {
     state <- cl_get_state(cl = cl)$data

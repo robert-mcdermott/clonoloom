@@ -3,6 +3,7 @@ import { h, icon, downloadBlob, formatBytes } from './dom.js';
 import { confirmDialog } from './overlays.js';
 import { certificateResults, verificationLabel } from '../lib/certificates.js';
 import { mountCheckpoints } from './checkpoints.js';
+import { mountDeidentification } from './deidentification.js';
 import { mountProjectArchives } from './project-archives.js';
 import { mountHTMLReports } from './html-reports.js';
 
@@ -11,6 +12,7 @@ export function mountReports(app, container) {
   const body = h('div.view-body');
   const root = h('div.view', h('div.workbench-head', h('h1', icon('report'), 'Reports')), h('div.workbench-scroll', body));
   container.append(root);
+  const deidentification = mountDeidentification(app, body);
   const archives = mountProjectArchives(app, body);
   const checkpoints = mountCheckpoints(app, body);
   const htmlReports = mountHTMLReports(app, body);
@@ -71,7 +73,7 @@ export function mountReports(app, container) {
     const records = current();
     if (!records.some((r) => r.id === chosen)) chosen = records.at(-1)?.id ?? '';
     // Keep the checkpoint component mounted while certificate state rerenders.
-    for (const child of [...body.children]) if (!child.classList.contains('checkpoints-view') && !child.classList.contains('html-reports-view') && !child.classList.contains('project-archives-view')) child.remove();
+    for (const child of [...body.children]) if (!child.classList.contains('checkpoints-view') && !child.classList.contains('html-reports-view') && !child.classList.contains('project-archives-view') && !child.classList.contains('deidentification-view')) child.remove();
     const select = h('select.input', { 'aria-label': 'Certificate result', disabled: busy, onchange: (e) => { chosen = e.target.value; record = null; error = ''; render(); } },
       ...records.map((r) => h('option', { value: r.id, selected: r.id === chosen }, `${r.name} · ${r.id}`)));
     body.append(h('section.card', h('h2', 'Saved-result evidence certificates'),
@@ -109,10 +111,10 @@ export function mountReports(app, container) {
   const view = { inspect, exportCertificate, verify, state: () => ({ record, report, reportText, busy, error }) };
   app.certificatesView = view; render();
   return { update(topics) {
-    archives.update(topics);
+    archives.update(topics); deidentification.update(topics);
     checkpoints.update(topics);
     htmlReports.update(topics);
     if (generation !== store.state.generation) { controller?.abort(); controller = null; generation = store.state.generation; chosen = ''; record = null; report = null; busy = false; error = ''; }
     if (topics.has('project') || topics.has('mode')) render();
-  }, destroy() { alive = false; controller?.abort(); archives.destroy(); checkpoints.destroy(); htmlReports.destroy(); if (app.certificatesView === view) app.certificatesView = null; root.remove(); } };
+  }, destroy() { alive = false; controller?.abort(); archives.destroy(); deidentification.destroy(); checkpoints.destroy(); htmlReports.destroy(); if (app.certificatesView === view) app.certificatesView = null; root.remove(); } };
 }

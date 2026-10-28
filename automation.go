@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-const actionCatalogVersion = 2
+const actionCatalogVersion = 3
 const automationPolicyVersion = 1
 
 type automationAudit struct {

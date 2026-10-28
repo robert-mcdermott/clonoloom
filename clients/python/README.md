@@ -1,6 +1,6 @@
 # ClonoLoom Python client
 
-Wave 8 development: generated methods for the local action API 2, catalog 2, permission policy 1.
+Wave 8 development: generated methods for the local action API 2, catalog 3, permission policy 1.
 The package/application version stays 0.7.0 until the wave release; published 0.7.0 hosts predate
 this contract. Install this checkout, not a published package with the same version number.
 

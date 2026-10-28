@@ -1,8 +1,81 @@
 {
   "api": 2,
-  "catalogVersion": 2,
+  "catalogVersion": 3,
   "policyVersion": 1,
   "tools": [
+    {
+      "effects": [
+        "read",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "prepare_deidentified_export",
+      "title": "Prepare de-identification export",
+      "description": "Prepare bounded native dataset tables with fresh subject/sample/cell/sequence pseudonyms and explicit annotation/HLA removal. Review the private subject correspondence before downloading. Original scientific evidence remains unchanged; this is not anonymity or a transformed replay certificate.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Explicit private-use acknowledgment for restricted provider data; never permits redistribution.",
+            "type": "boolean"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "dropHLA": {
+            "description": "Remove HLA annotation; default true.",
+            "type": "boolean"
+          },
+          "dropText": {
+            "description": "Remove free-text sample annotations; default true.",
+            "type": "boolean"
+          },
+          "what": {
+            "description": "AIRR and clonotype tables, or clonotypes only; default tables.",
+            "enum": [
+              "tables",
+              "clonotypes"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": true,
+      "name": "download_deidentified_export",
+      "title": "Download reviewed de-identification export",
+      "description": "Download the prepared pseudonymized table ZIP, or explicitly download only its separate PRIVATE identity map. Requires the reviewed token/fingerprint and unchanged project. Never bundles the identity map. Preparation expires after 15 minutes or replacement.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "expected": {
+            "description": "Reviewed export fingerprint.",
+            "type": "string"
+          },
+          "identityMap": {
+            "description": "Download only the private identity map separately; default false downloads the pseudonymized ZIP.",
+            "type": "boolean"
+          },
+          "token": {
+            "description": "Token returned by prepare_deidentified_export.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "expected"
+        ],
+        "type": "object"
+      }
+    },
     {
       "effects": [
         "read",

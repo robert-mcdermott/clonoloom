@@ -223,6 +223,9 @@ jobs:
           node validation/fetch.mjs axe-core
           node validation/project-archives.mjs "$RUNNER_TEMP/clonoloom-archives"
 
+      - name: Explicit de-identification and both-theme accessibility
+        run: node validation/deidentification.mjs "$RUNNER_TEMP/clonoloom-archives"
+
   installers:
     name: Installer syntax
     needs: changed

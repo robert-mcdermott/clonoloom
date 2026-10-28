@@ -88,6 +88,14 @@ export function remoteActions(app) {
   const lociOf = (summary) => Object.keys(summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
 
   const actions = {
+    async prepare_deidentified_export({dataset, ...options} = {}) {
+      const chosen = datasetOf(dataset);
+      await app.setMode('reports');
+      return {message:'Pseudonymized export prepared for review; nothing downloaded or changed in the project.',data:await app.deidentification.prepare(chosen.id,options)};
+    },
+    async download_deidentified_export(options) {
+      return {message:'Reviewed file downloaded; the identity map is always separate.',data:await app.deidentification.download(options)};
+    },
     async export_project_archive(options = {}) {
       await app.setMode('reports');
       return {message:'Portable project archive downloaded; no scientific recomputation.', data:await app.archives.exportArchive(options)};

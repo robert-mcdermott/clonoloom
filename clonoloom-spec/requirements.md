@@ -154,7 +154,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | O7 | Checkpoints with plain-language differences between analysis versions | done (wave 8, slice 4: immutable bounded local project/result evidence, exact descriptive differences, conflict-refusing recovery, undo/redo and version checks; original sources, unattached parents, running jobs and portable transfer are outside the documented contract) |
 | O8 | MiAIRR completeness checklist | planned (wave 9) |
 | O9 | Exports carry each public input's license and citation; an export that would redistribute restricted data warns first | partial (wave 2, slice 8: every export's NOTICE.txt names the data's files and fingerprints, the filter, definition and unit, the method and ClonoLoom's version, and each public data set's license and citation; rows of data under terms of use are written only after their terms are shown and accepted, and say not to share them; wave 8 slice 10 extends this to portable archives with source inclusion off by default and restricted originals excluded) |
-| O10 | De-identification on export: subject IDs replaced, free-text metadata and HLA dropped on request | planned (wave 8) |
+| O10 | De-identification on export: subject IDs replaced, free-text metadata and HLA dropped on request | done for mapped dataset tables (wave 8 slice 11); explicit pseudonyms, removal policy, separate private map; archives/reports/arbitrary nested evidence excluded |
 
 ## Automation
 

@@ -12,7 +12,7 @@ study = Path(os.environ['CLONOLOOM_TEST_STUDY'])
 connection = cl.find_connection(folder)
 client = cl.connect(data_dir=folder, client='Python research notebook')
 assert client.permissions() == {'read': True, 'edits': True, 'compute': True, 'files': True}
-assert len(client.tools()) == 61
+assert len(client.tools()) == 63
 
 
 def idle():
