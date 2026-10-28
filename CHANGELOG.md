@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Typed Parquet dataset exports (wave 8, slice 12).** Export native clonotypes and retained
+  AIRR rearrangements with nullable integer counts, boolean flags, explicit sample-column maps,
+  definition/QC/units, provider notices and hashed inventories. Preserve invariant-rule
+  denominators and native annotation text; refuse fractional or ambiguous counts without
+  rounding. Add Parquet to the existing reviewed pseudonymized workflow with sanitized footers
+  and a separate private map. Adapt the Apache-2.0 SituCraft writer with bounded optional columns
+  and cancellation, without runtime dependencies. Add reviewed automation and generated clients
+  (catalog 4, 64 actions), independent PyArrow/DuckDB parity controls and both-theme validation.
+  This is a mapped native-table representation, not restored input precision or a replay certificate.
+
 - **Explicit de-identification exports (wave 8, slice 11).** Prepare and review fresh subject,
   sample, cell and sequence pseudonyms in a separate dataset-table ZIP. Choose free-text/HLA
   removal explicitly, preserve retained native scientific values, units, QC and definitions,

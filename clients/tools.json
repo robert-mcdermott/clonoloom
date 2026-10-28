@@ -1,8 +1,41 @@
 {
   "api": 2,
-  "catalogVersion": 3,
+  "catalogVersion": 4,
   "policyVersion": 1,
   "tools": [
+    {
+      "effects": [
+        "read",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "export_parquet",
+      "title": "Export native Parquet tables",
+      "description": "Download typed native clonotypes or rearrangements with units, definition, QC, source provenance and provider notice. Original identifiers remain. Missing values are null; exact native integer counts are never rounded. Saved result tables are outside this schema.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Explicit acknowledgment of provider restrictions for private use; never redistribution permission.",
+            "type": "boolean"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "what": {
+            "description": "Native dataset table; default clonotypes.",
+            "enum": [
+              "clonotypes",
+              "rearrangements"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
     {
       "effects": [
         "read",
@@ -31,6 +64,14 @@
           "dropText": {
             "description": "Remove free-text sample annotations; default true.",
             "type": "boolean"
+          },
+          "storageFormat": {
+            "description": "Representation after the identifier policy: text (CSV/AIRR TSV, default) or typed Parquet.",
+            "enum": [
+              "text",
+              "parquet"
+            ],
+            "type": "string"
           },
           "what": {
             "description": "AIRR and clonotype tables, or clonotypes only; default tables.",

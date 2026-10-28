@@ -43,6 +43,8 @@ export function mountClonotypes(app, container) {
       if (!d) return;
       showMenu(e.currentTarget, [
         { section: 'Export, with a NOTICE of the data\'s source and license' },
+        { label: 'Clonotypes (Parquet)', icon: 'download', onSelect: () => exportDataset(app, d, 'clonotypes', 'parquet') },
+        { label: 'Rearrangements (Parquet)', icon: 'download', onSelect: () => exportDataset(app, d, 'rearrangements', 'parquet') },
         { label: 'Clonotypes (CSV)', icon: 'download', onSelect: () => exportDataset(app, d, 'clonotypes') },
         { label: 'Rearrangements (AIRR TSV)', icon: 'download', onSelect: () => exportDataset(app, d, 'rearrangements') },
       ]);

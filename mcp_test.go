@@ -399,7 +399,7 @@ func TestMCPCatalogGrantsAndReview(t *testing.T) {
 	for i, tool := range tools {
 		want := remoteActions[i]
 		meta := tool.Meta["org.clonoloom/automation"]
-		if tool.Name != want.Name || meta.Review != want.Review || meta.API != 2 || meta.CatalogVersion != 3 || meta.PolicyVersion != 1 || strings.Join(meta.Effects, ",") != strings.Join(want.Effects, ",") {
+		if tool.Name != want.Name || meta.Review != want.Review || meta.API != 2 || meta.CatalogVersion != 4 || meta.PolicyVersion != 1 || strings.Join(meta.Effects, ",") != strings.Join(want.Effects, ",") {
 			t.Fatal(tool, want)
 		}
 	}

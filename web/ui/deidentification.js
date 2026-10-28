@@ -17,7 +17,7 @@ export function createDeidentification(app) {
   const api={
     state:()=>({busy,error,prepared,dataset:sourceDataset}),cancel:()=>controller?.abort(),
     forget(){prepared=null;source=null;sourceDataset='';error='';notify();},
-    async prepare(dataset,{what='tables',dropText=true,dropHLA=true,accept=false}={}){
+    async prepare(dataset,{what='tables',storageFormat='text',dropText=true,dropHLA=true,accept=false}={}){
       return perform(async(project,valid,signal)=>{
         prepared=null;source=null;sourceDataset='';
         const d=project.datasets.find(d=>d.id===dataset||d.name===dataset)??(!dataset?project.datasets[0]:null);
@@ -25,7 +25,7 @@ export function createDeidentification(app) {
         const opened=await app.ensureDataset(d);if(opened.status!=='open')throw new Error(opened.error??'Dataset unavailable.');
         if(!valid())throw new Error('The project changed before preparation.');
         const summary=opened.summary,loci=[...new Set(summary.samples.flatMap(s=>Object.keys(s.loci??{})))];
-        const response=await fetch('api/deidentification/prepare',{method:'POST',headers:{'Content-Type':'application/json'},signal,body:JSON.stringify({dataset:d.id,definition:datasetDefinition(d,loci),filter:datasetFilter(project,d)?.rules??{},what,dropText,dropHLA,accept,annotations:deidentificationAnnotations(project,d.id,summary.samples)})});
+        const response=await fetch('api/deidentification/prepare',{method:'POST',headers:{'Content-Type':'application/json'},signal,body:JSON.stringify({dataset:d.id,definition:datasetDefinition(d,loci),filter:datasetFilter(project,d)?.rules??{},what,storageFormat,dropText,dropHLA,accept,annotations:deidentificationAnnotations(project,d.id,summary.samples)})});
         const value=await response.json();if(!response.ok)throw new Error(value.error??'Preparation failed.');
         if(!valid())throw new Error('The project changed; prepare and review again.');
         if(!validDeidentificationReceipt(value))throw new Error('Unsupported preparation receipt.');
@@ -49,11 +49,11 @@ export function createDeidentification(app) {
 
 export function mountDeidentification(app,container){
   const root=h('section.card.deidentification-view');container.append(root);
-  let dataset=app.store.project.datasets[0]?.id??'',what='tables',dropText=true,dropHLA=true,accept=false;
+  let dataset=app.store.project.datasets[0]?.id??'',what='tables',storageFormat='text',dropText=true,dropHLA=true,accept=false;
   const run=work=>work().catch(()=>{});
   function render(){
     clear(root);const {busy,error,prepared,dataset:preparedDataset}=app.deidentification.state();
-    if(prepared){dataset=preparedDataset;what=prepared.record.what;dropText=prepared.record.dropText;dropHLA=prepared.record.dropHLA;}
+    if(prepared){dataset=preparedDataset;what=prepared.record.what;storageFormat=prepared.record.storageFormat??'text';dropText=prepared.record.dropText;dropHLA=prepared.record.dropHLA;}
     const fields=h('fieldset',h('legend','Explicit export choices'));
     for(const [label,checked,set] of [
       ['Remove free-text annotations (time point, tissue, reference, subset, condition, batch)',dropText,v=>{dropText=v;}],
@@ -63,15 +63,16 @@ export function mountDeidentification(app,container){
     root.append(h('h2','De-identification export'),h('p','Prepare a separate copy of native dataset tables. Review fresh subject pseudonyms before downloading; original data, project and saved scientific evidence stay unchanged.'),
       h('p.callout','Pseudonymization is not anonymity. Receptor sequences, gene calls, stable clonotype IDs and rare measurements remain linkable. Retained annotations can identify participants. The private identity map is a separate download.'),
       h('label.field',h('span','Dataset'),h('select.input',{value:dataset,disabled:busy,onchange:e=>{dataset=e.target.value;app.deidentification.forget();}},...app.store.project.datasets.map(d=>h('option',{value:d.id,selected:d.id===dataset},d.name)))),
+      h('label.field',h('span','Storage format'),h('select.input',{disabled:busy,onchange:e=>{storageFormat=e.target.value;app.deidentification.forget();}},h('option',{value:'text',selected:storageFormat==='text'},'CSV and AIRR TSV'),h('option',{value:'parquet',selected:storageFormat==='parquet'},'Typed Parquet'))),
       h('label.field',h('span','Supported tables'),h('select.input',{value:what,disabled:busy,onchange:e=>{what=e.target.value;app.deidentification.forget();}},h('option',{value:'tables',selected:what==='tables'},'AIRR rearrangements and clonotypes'),h('option',{value:'clonotypes',selected:what==='clonotypes'},'Clonotypes only'))),fields,
       h('p.muted','Other archives, saved results, figures, raw metadata and nested IMGT annotations are outside this export contract. Removing experimental annotations limits later study-design reconstruction. Missing subjects remain missing.'),
-      h('button.btn.small',{disabled:busy||!app.store.project.datasets.length,onclick:()=>run(()=>app.deidentification.prepare(dataset,{what,dropText,dropHLA,accept}))},'Prepare and review pseudonyms'));
+      h('button.btn.small',{disabled:busy||!app.store.project.datasets.length,onclick:()=>run(()=>app.deidentification.prepare(dataset,{what,storageFormat,dropText,dropHLA,accept}))},'Prepare and review pseudonyms'));
     if(busy)root.append(h('button.btn.small',{onclick:()=>app.deidentification.cancel()},'Cancel preparation/download'));
     if(error)root.append(h('p.callout.danger',{role:'alert'},error));
     if(prepared){
       const r=prepared.record;
       root.append(h('h3','Prepared export review'),h('p',`${r.subjects} subjects · ${r.missingSubjects} samples without a subject · ${r.samples} samples · ${r.retainedRows.toLocaleString('en-US')} retained rearrangements · ${r.clonotypes.toLocaleString('en-US')} clonotypes.`),
-        h('p',`Prepared settings: free text ${r.dropText?'removed':'retained'}; HLA ${r.dropHLA?'removed':'retained'}. ${r.what==='tables'?'AIRR and clonotype tables':'Clonotype table only'}. Changing choices requires preparing again.`),
+        h('p',`Prepared settings: ${r.storageFormat==='parquet'?'Parquet':'CSV/AIRR TSV'}; free text ${r.dropText?'removed':'retained'}; HLA ${r.dropHLA?'removed':'retained'}. ${r.what==='tables'?'AIRR and clonotype tables':'Clonotype table only'}. Changing choices requires preparing again.`),
         h('p.muted',`Expires ${new Date(prepared.expires).toLocaleTimeString()}; preparing again replaces this export and generates new pseudonyms.`));
       const rows=h('tbody');for(const s of prepared.subjects)rows.append(h('tr',h('td',s.original),h('td.mono',s.pseudonym)));
       root.append(h('div.table-wrap',{tabIndex:0},h('table.data',h('caption','Complete subject correspondence — local/private review only'),h('thead',h('tr',h('th',{scope:'col'},'Original subject'),h('th',{scope:'col'},'Export pseudonym'))),rows)),

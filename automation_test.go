@@ -38,7 +38,7 @@ func TestAutomationCatalogAndGrants(t *testing.T) {
 		}
 		// Export can include original sources and therefore needs explicit review even
 		// though it does not edit the project. Inspection remains unreviewed.
-		if (edits || a.Name == "export_project_archive" || a.Name == "prepare_deidentified_export" || a.Name == "download_deidentified_export") != a.Review {
+		if (edits || a.Name == "export_parquet" || a.Name == "export_project_archive" || a.Name == "prepare_deidentified_export" || a.Name == "download_deidentified_export") != a.Review {
 			t.Fatalf("review drift: %s", a.Name)
 		}
 	}

@@ -2,13 +2,37 @@
 from ._json import UNSET
 
 API_VERSION = 2
-CATALOG_VERSION = 3
+CATALOG_VERSION = 4
 POLICY_VERSION = 1
 
 class Tools:
     """Actions generated from the host catalog; changes require window review."""
 
-    def prepare_deidentified_export(self, *, accept=UNSET, dataset=UNSET, drop_hla=UNSET, drop_text=UNSET, what=UNSET):
+    def export_parquet(self, *, accept=UNSET, dataset=UNSET, what=UNSET):
+        """
+        Export native Parquet tables.
+
+        Download typed native clonotypes or rearrangements with units, definition, QC, source
+        provenance and provider notice. Original identifiers remain. Missing values are null;
+        exact native integer counts are never rounded. Saved result tables are outside this
+        schema.
+
+        Effects: read, compute, files. Window review: required.
+
+        accept (optional; omitted by default): Explicit acknowledgment of provider restrictions
+        for private use; never redistribution permission.
+
+        dataset (optional; omitted by default): A dataset of the project by name or id; the one
+        in focus, else the first, if not given.
+
+        what (optional; omitted by default): Native dataset table; default clonotypes.
+
+        Returns a Result with exact int/Decimal values. None sends JSON null; UNSET omits an
+        optional argument.
+        """
+        return self.call("export_parquet", **{"accept": accept, "dataset": dataset, "what": what})
+
+    def prepare_deidentified_export(self, *, accept=UNSET, dataset=UNSET, drop_hla=UNSET, drop_text=UNSET, storage_format=UNSET, what=UNSET):
         """
         Prepare de-identification export.
 
@@ -30,13 +54,16 @@ class Tools:
         drop_text (optional; omitted by default): Remove free-text sample annotations; default
         true.
 
+        storage_format (optional; omitted by default): Representation after the identifier
+        policy: text (CSV/AIRR TSV, default) or typed Parquet.
+
         what (optional; omitted by default): AIRR and clonotype tables, or clonotypes only;
         default tables.
 
         Returns a Result with exact int/Decimal values. None sends JSON null; UNSET omits an
         optional argument.
         """
-        return self.call("prepare_deidentified_export", **{"accept": accept, "dataset": dataset, "dropHLA": drop_hla, "dropText": drop_text, "what": what})
+        return self.call("prepare_deidentified_export", **{"accept": accept, "dataset": dataset, "dropHLA": drop_hla, "dropText": drop_text, "storageFormat": storage_format, "what": what})
 
     def download_deidentified_export(self, token, expected, *, identity_map=UNSET):
         """

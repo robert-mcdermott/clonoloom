@@ -11,6 +11,9 @@ The HDF5 metadata checksum helper and export writer are adapted from SituCraft's
 under the same Apache-2.0 license. The writer is extended for AnnData data types and encodings.
 They implement Bob Jenkins' public-domain lookup3/hashlittle checksum.
 
+The flat Parquet writer and compact-protocol emission are adapted from SituCraft v0.9.0
+under the same Apache-2.0 license, extended for nullable fields and bounded scientific exports.
+
 The beta and Student t distribution helpers in internal/stats are adapted from SituCraft's
 Apache-2.0 statistics helpers by the same author.
 

@@ -8,6 +8,7 @@ cl_prepare_deidentified_export(
   dataset = cl_omit(),
   drop_hla = cl_omit(),
   drop_text = cl_omit(),
+  storage_format = cl_omit(),
   what = cl_omit(),
   cl = cl_default()
 )
@@ -17,6 +18,7 @@ cl_prepare_deidentified_export(
 \item{dataset}{A dataset of the project by name or id; the one in focus, else the first, if not given. Omitted by default; NULL sends explicit JSON null.}
 \item{drop_hla}{Remove HLA annotation; default true. Omitted by default; NULL sends explicit JSON null.}
 \item{drop_text}{Remove free-text sample annotations; default true. Omitted by default; NULL sends explicit JSON null.}
+\item{storage_format}{Representation after the identifier policy: text (CSV/AIRR TSV, default) or typed Parquet. Omitted by default; NULL sends explicit JSON null.}
 \item{what}{AIRR and clonotype tables, or clonotypes only; default tables. Omitted by default; NULL sends explicit JSON null.}
 \item{cl}{Connection from \code{\link{cl_connect}}; defaults to the last connection.}
 }

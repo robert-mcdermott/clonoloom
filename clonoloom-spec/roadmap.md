@@ -3395,7 +3395,7 @@ follows maintainer review and commit.
 
 ### Slice 11: explicit de-identification exports
 
-**Status: implemented and validated; awaiting maintainer review and commit.**
+**Status: committed as `1c10c3e`; maintainer reports pushed.**
 
 **Plan recorded before implementation.** Implement O10 as a dedicated, versioned dataset-table
 export, following CytoWeave's allowlisted-copy approach. Do not relabel ordinary archives,
@@ -3454,7 +3454,86 @@ No scientific workers or performance-budget definitions changed.
 
 Guides, format contract, implementation citations (research §5.52), scoped requirement O10,
 site page, screenshots, CI and changelog are updated. No commit, push, tag, release or site
-publication was performed. Slice 12 (release preparation) follows maintainer review and commit.
+publication was performed. Slice 12 (Parquet exports) follows maintainer review and commit. Release preparation remains slice 15.
+
+
+### Slice 12: typed Parquet dataset exports
+
+**Plan recorded before implementation.** Follow the wave sequence: this slice implements the
+Parquet portion of O3, not release preparation. Correct the stale slice-11 closing note; keep
+application/client versions at 0.7.0. Adapt only the Apache-2.0 SituCraft v0.9.0 writer and compact
+protocol emission, extending it for optional columns, cancellation, failure handling and explicit
+bounds. Do not import a general reader or runtime dependency. Consult the Apache Parquet/Thrift
+specifications; validate generated files with independent PyArrow and DuckDB readers.
+
+Export mapped native dataset tables (clonotypes and rearrangements) with flat versioned schemas,
+metadata for effective definition/QC, abundance units, native source fingerprints, provider notices,
+and exact table population. Use native CSV/AIRR exporters as the scientific source so this adds no
+second computation. Assign stable sample-column keys with an explicit name map to avoid collision
+with scientific column names. Write missing values as null, explicit zero as zero, flags as bool,
+and counts as signed INT64 only when native float64 values are finite, nonnegative, integral and
+within the consecutive exact-integer range (2^53−1). Refuse ambiguous/fractional counts, never
+round or claim to restore input precision already lost before export. Keep other retained AIRR
+evidence as native text, including invalid annotations; this is not an AIRR schema replacement.
+
+Add explicit Parquet options to the window and a reviewed shared export action; regenerate the
+Python/R catalog. Integrate an optional Parquet representation into slice 11's pseudonymized
+export: run the existing identifier/removal policy first, keep sanitized provenance in every
+footer/schema, and never put its private map or original paths/fingerprints in the public bundle.
+Existing raw Parquet exports retain original identities and are clearly labeled as such. Saved
+analysis artifacts and unsupported nested table types remain outside this mapped export contract.
+
+Use deterministic GZIP/PLAIN v1 pages, RLE definition levels, fixed column/row-group ordering and
+sorted metadata. Bound input, pages, groups, metadata and output; complete validation before any
+HTTP download succeeds. Preserve provider acknowledgment, cancellation and stale-project guards.
+Test exact independent integer/null/boolean/text decoding, empty/multiple groups, byte stability,
+invalid input/writer failures, native-table parity, identity-map separation and provider refusal.
+Exercise a seeded representative vaccination dataset and inspect both-theme presentation. Update
+formats, guides, research, requirements, changelog and CI; no commit/tag/release/publication.
+
+**Implementation.** Added the bounded standard-library writer, native typed-table ZIP route,
+schema/notice footer metadata and exact member inventories. Preserve native clonotype and AIRR
+table order, nullable counts/flags, explicit sample-column mappings, original source provenance
+and optional invariant-rule denominators/shares. Ordinary exports clearly retain identifiers.
+The existing pseudonymized workflow optionally emits Parquet after its removal/mapping policy;
+footers contain only sanitized public provenance and the private map remains separate. Text
+output stays the default. Negative, fractional, infinite and ambiguous large counts refuse
+without rounding; native missing values stay null. No scientific worker or replay rule changes.
+
+Added Reports and Clonotypes export choices, stale-project/cancellation guards and reviewed
+`export_parquet` automation. Catalog 4 generates 64 Python/R wrappers; API 2, permission policy 1
+and application/client version 0.7.0 remain unchanged. Updated guides, formats, scoped O3,
+implementation citations (§5.53), NOTICE, CI and changelog. Validation uses independent PyArrow
+26.0.0 and DuckDB 2.0.0, including explicit physical-type assertions for native AIRR count names
+instead of relying solely on the emitted schema.
+
+**Validation.** Final native export/boundary and focused race checks pass, including nullable
+AIRR `duplicate_count`, `umi_count` and `templates`, refusal of unsafe counts, source immutability,
+provider policy, sanitized footers, separate identity maps and writer resource/failure bounds.
+PyArrow 26.0.0 and DuckDB 2.0.0 pass 16 independent reader/bundle checks against native evidence;
+the bounded adapter fuzz run completed 11,288 executions without failure. The browser verifies
+46,447 rearrangements and 27,215 clonotypes across six observations of two seeded vaccination
+subjects, unchanged query/project evidence, reviewed rejection, stale state and cancellation.
+Native/pseudonymized Parquet and existing text-export screenshots were reviewed in both themes.
+
+Pass 169 JavaScript tests, 17 Python tests, 1,302 R assertions and R CMD build/install/check
+without errors, warnings or notes; live Python/R/HTTP exact-evidence checks; Go vet; all six
+CGO-free platform builds; 14 contrast/color-vision checks; and 228 site accessibility/layout
+checks across 57 pages, two themes and two widths. The local site builds 58 pages; no publication.
+
+Complete Go race coverage finished in batches. The initial `go test -race -timeout 30m ./...`
+hit its cumulative timeout while portable-release reopening and pseudobulk controls were actively
+computing, without assertion failures or race reports. These application/reference tests run
+sequentially. Retain the preceding successful checks and rerun every interrupted and remaining
+entry (31 application/test-seed entries and 23 scientific-reference entries) with verbose race
+instrumentation: both batches pass (986.531 s and 898.286 s respectively). Final Parquet changes
+also pass their focused race suite. Existing costly performance/simulation controls intentionally
+skip under race instrumentation and remain in CI's non-race data job; no scientific assertions,
+numeric tolerances, performance budgets or release fixtures were changed.
+
+Ready for maintainer review and commit. No commit, push, tag, release or publication was performed.
+Slice 13 (agent benchmark) follows; container/cluster work is slice 14 and release preparation
+remains slice 15.
 
 ## Later waves (outlined)
 

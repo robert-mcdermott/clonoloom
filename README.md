@@ -285,7 +285,10 @@ Inspect before import; conflicts refuse overwrite.
 [De-identification exports](docs/DEIDENTIFICATION.md) prepare separate pseudonymized dataset
 tables, with explicit free-text/HLA removal, preserved scientific values and a separately requested
 private identity map. They do not sanitize existing archives or establish anonymity.
-The [Wave 8 plan](clonoloom-spec/roadmap.md) tracks remaining release preparation. Published binaries remain 0.7.0
+[Typed Parquet exports](docs/PARQUET.md) preserve native clonotype and rearrangement evidence
+with nullable counts, explicit provenance and an optional pseudonymized representation.
+The [Wave 8 plan](clonoloom-spec/roadmap.md) tracks the remaining agent benchmark, container/cluster
+workflow and release preparation. Published binaries remain 0.7.0
 until the next release.
 
 ## Development

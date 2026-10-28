@@ -44,14 +44,15 @@ type deidAnnotation struct {
 	Fields map[string]string `json:"fields"`
 }
 type deidRequest struct {
-	Dataset     string               `json:"dataset"`
-	Definition  clonotype.Definition `json:"definition"`
-	Filter      qc.Filter            `json:"filter"`
-	What        string               `json:"what"` // tables (AIRR + clonotypes), or clonotypes only
-	DropText    *bool                `json:"dropText"`
-	DropHLA     *bool                `json:"dropHLA"`
-	Annotations []deidAnnotation     `json:"annotations"`
-	Accept      bool                 `json:"accept"`
+	StorageFormat string               `json:"storageFormat,omitempty"`
+	Dataset       string               `json:"dataset"`
+	Definition    clonotype.Definition `json:"definition"`
+	Filter        qc.Filter            `json:"filter"`
+	What          string               `json:"what"` // tables (AIRR + clonotypes), or clonotypes only
+	DropText      *bool                `json:"dropText"`
+	DropHLA       *bool                `json:"dropHLA"`
+	Annotations   []deidAnnotation     `json:"annotations"`
+	Accept        bool                 `json:"accept"`
 }
 type deidBinding struct {
 	Kind      string `json:"kind"`
@@ -60,6 +61,7 @@ type deidBinding struct {
 	Pseudonym string `json:"pseudonym"`
 }
 type deidRecord struct {
+	StorageFormat   string               `json:"storageFormat,omitempty"`
 	Format          string               `json:"format"`
 	Version         int                  `json:"version"`
 	Scope           string               `json:"scope"`
@@ -179,6 +181,9 @@ func deidCSV(ctx context.Context, rows [][]string) ([]byte, error) {
 }
 
 func (a *app) prepareDeidentified(ctx context.Context, request deidRequest) (*deidPackage, error) {
+	if request.StorageFormat != "" && request.StorageFormat != "text" && request.StorageFormat != "parquet" {
+		return nil, errors.New("choose text or parquet storage explicitly")
+	}
 	if request.DropText == nil || request.DropHLA == nil {
 		return nil, errors.New("choose both free-text and HLA removal explicitly")
 	}
@@ -212,6 +217,11 @@ func (a *app) prepareDeidentified(ctx context.Context, request deidRequest) (*de
 		return nil, e
 	}
 	def.Name = ""
+	if request.StorageFormat == "parquet" {
+		if e := checkParquetCounts(ctx, rt, ct, request.Filter, request.What == "tables"); e != nil {
+			return nil, e
+		}
+	}
 	notice := a.notice(ds, string(ct.Unit), request.Filter, def.Describe(), ct.DefinitionID)
 	if notice.Restricted() && !request.Accept {
 		return nil, errors.New("provider-restricted data require explicit private-use acknowledgment; pseudonyms do not change permissions")
@@ -424,6 +434,9 @@ func (a *app) prepareDeidentified(ctx context.Context, request deidRequest) (*de
 	if record.DropHLA {
 		record.Removed = append(record.Removed, "hla annotation")
 	}
+	if request.StorageFormat == "parquet" {
+		record.StorageFormat = "parquet"
+	}
 	randomID := make([]byte, 16)
 	if _, e = rand.Read(randomID); e != nil {
 		return nil, e
@@ -448,6 +461,23 @@ func (a *app) prepareDeidentified(ctx context.Context, request deidRequest) (*de
 		if len(original) >= 4 && strings.Contains(string(mustJSON(record.Credits)), original) {
 			return nil, errors.New("provider credits contain a selected identifier; this attribution cannot be removed automatically")
 		}
+	}
+	if request.StorageFormat == "parquet" {
+		schemas := map[string]parquetSchema{}
+		for _, spec := range []struct{ file, kind string }{{"clonotypes.csv", "clonotypes"}, {"rearrangements.tsv", "rearrangements"}, {"samples.csv", "samples"}} {
+			raw, ok := files[spec.file]
+			if !ok {
+				continue
+			}
+			data, schema, err := nativeParquet(ctx, raw, spec.kind, names, mustJSON(record), string(files["NOTICE.txt"]))
+			if err != nil {
+				return nil, err
+			}
+			delete(files, spec.file)
+			files[spec.kind+".parquet"] = data
+			schemas[spec.kind] = schema
+		}
+		files["schema.json"] = mustJSON(schemas)
 	}
 	paths := []string{}
 	total := 0

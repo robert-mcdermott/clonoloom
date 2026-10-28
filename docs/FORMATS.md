@@ -1084,3 +1084,22 @@ and source files stay unchanged. Unsupported nested provenance refuses AIRR expo
 archives, reports and certificates retain their identities and are not transformed. See
 [DEIDENTIFICATION.md](DEIDENTIFICATION.md) for exact fields, linkage/removal rules, bounds,
 private review/download behavior and scientific/privacy limits.
+
+## Typed Parquet dataset exports (wave 8, slice 12)
+
+The [Parquet guide](PARQUET.md) defines the version 1 mapped native-table format. Ordinary
+exports contain clonotypes or AIRR rearrangements, optional invariant sample denominators,
+`schema.json`, NOTICE and a SHA-256 inventory. Nullable INT64 counts distinguish zero and
+missing; conversion refuses fractions and native counts beyond 2^53−1. Native AIRR flags
+become BOOLEAN; other evidence stays UTF-8 text, including invalid annotations. Original
+identities, source provenance, effective definition/QC and units remain explicit.
+
+Clonotype sample columns use stable positional keys plus a sample-name map. Invariant shares
+retain DOUBLE native precision, full retained-abundance denominators and rule limitations.
+Parquet footers repeat the corresponding schema and notice. This is not a fresh verification
+of source files, a general result converter, a Parquet reader or a scientific replay certificate.
+
+The [pseudonymized export](DEIDENTIFICATION.md) optionally accepts `storageFormat:"parquet"`: its
+existing mapping/removal policy runs before conversion, text tables become typed files and
+`schema.json` is added. Public footers contain sanitized provenance only; the private map
+remains separate. Existing text output stays the default and preserves its v1 contract.

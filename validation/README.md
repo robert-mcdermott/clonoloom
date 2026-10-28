@@ -753,3 +753,37 @@ provenance, provider permissions, source immutability, pinning/replacement, malf
 context cancellation, alias framing and bounded correspondence/output. This validates the
 mapped table-copy contract; it does not certify anonymity, sanitize other formats or replay a
 transformed scientific artifact. See [the scope and limits](../docs/DEIDENTIFICATION.md).
+
+## Typed Parquet tables (wave 8, slice 12)
+
+The writer is a representation layer; scientific values come from ordinary native exporters.
+Generate deterministic controls and actual export bundles, then decode them with two independent
+readers (validation-only packages; the Go runtime stays standard-library-only):
+
+```sh
+CLONOLOOM_PARQUET_FIXTURES=/tmp/clonoloom-parquet go test -run 'TestParquet|TestWriterIndependentFixture' . ./internal/parquet
+UV_CACHE_DIR=/tmp/clonoloom-uv uv run --no-project --with pyarrow==26.0.0 --with duckdb==2.0.0 validation/reference/parquet_exports.py /tmp/clonoloom-parquet
+node validation/parquet.mjs /path/to/clonoloom --screenshots
+```
+
+PyArrow 26.0.0 and DuckDB 2.0.0 compare every field against native CSV/AIRR, including count
+units, null/zero, boolean flags, sample-column maps, invariant shares and full denominators.
+They check schema/NOTICE metadata, inventories, empty/multiple groups, exact INT64 extrema,
+Unicode and signed zero. Full INT64 controls test encoding only: the native adapter refuses
+fractional/non-finite values and counts above 2^53−1 because its source count model is float64.
+It cannot restore precision already lost before export. Native NaN remains missing.
+
+The public pseudonymized ZIP is decoded before disclosure checks: compressed bytes alone are
+not a sufficient privacy test. Compare all retained scientific fields against native values
+using the separate private map, check repeated/missing subject linkage and verify source bytes
+are unchanged. Keep provider restrictions, nested-evidence refusals and private-map separation.
+Native tests cover cancellation, malformed schemas/settings, sticky/short writes, count limits,
+page/group/output bounds and fixed-metadata byte stability. Fuzz the bounded native adapter with
+`go test -run '^$' -fuzz '^FuzzNativeParquet$' -fuzztime 20s .`.
+
+The isolated browser uses six observations of two seeded simulated vaccination subjects
+(46,447 rearrangements; 27,215 clonotypes), checks unchanged project/native query evidence,
+explicit proposal rejection, both output representations, cancellation and stale-project state.
+It audits both themes and optionally writes the native and pseudonymized Parquet screenshots.
+No biological inference, new estimator or scientific figure is introduced. See
+[the format and limits](../docs/PARQUET.md) and research §5.53.

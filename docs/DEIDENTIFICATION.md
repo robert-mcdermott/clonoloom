@@ -1,7 +1,7 @@
 # Explicit de-identification exports
 
 Wave 8 development, slice 11. Use a development host and matching clients: action API **2**,
-catalog **3** (63 actions), permission policy **1**. Published v0.7.0 predates this workflow.
+catalog **4** (64 actions), permission policy **1**. Published v0.7.0 predates this workflow.
 
 ## Prepare, review and download
 
@@ -9,7 +9,8 @@ catalog **3** (63 actions), permission policy **1**. Published v0.7.0 predates t
    Imported metadata supplies unset annotation fields; review those effective values before export.
 2. Open **Reports → De-identification export**, choose a dataset and either AIRR rearrangements
    plus clonotypes or clonotypes only. Choose whether to remove free-text annotations and HLA.
-   Both removal options start selected. Acknowledge provider restrictions when applicable.
+   Choose text tables (the default) or Typed Parquet. Both removal options start selected.
+   Acknowledge provider restrictions when applicable.
 3. Select **Prepare and review pseudonyms**. Inspect the complete subject correspondence,
    retained population, units, removal choices, inventory and fingerprint. Original identifiers
    in this local review are private. No file has been downloaded yet.
@@ -26,7 +27,7 @@ Do not rely on memory clearing as secure erasure or on pseudonyms as encryption.
 
 ## What changes, and what stays exact
 
-The version 1 ZIP contains only these named files:
+The version 1 ZIP's default text representation contains only these named files:
 
 | File | Contract |
 | --- | --- |
@@ -36,6 +37,14 @@ The version 1 ZIP contains only these named files:
 | `transformation.json` | Format/version, fresh export identity, software, effective definition ID/rules, QC with aliased sample exclusions, clonotype abundance unit, population counts, removals, binding counts, provider credits, scientific limits and SHA-256/size inventory. |
 | `NOTICE.txt` | Fresh scientific provenance and provider attribution/restrictions; no original source paths or fingerprints. |
 
+With `storageFormat:"parquet"`, the same policy runs before conversion: `.parquet` files replace
+CSV/TSV and `schema.json` records typed fields and aliased sample mappings. Public footer
+metadata contains only the sanitized transformation record (without its file list) and notice.
+The private map remains separate. Missing fields become null and explicit zero stays zero;
+fractional, non-finite or native counts above 2^53−1 refuse instead of being rounded.
+See [Parquet schema, bounds and scientific limits](PARQUET.md). The optional format field is
+omitted for the default text representation, preserving the existing version 1 contract.
+
 The record format is `clonoloom-deidentified-tables`, version 1, scope
 `native-table-copy-with-pseudonymized-identifiers`. Its exact JSON bytes have the reviewed SHA-256
 fingerprint. Its sorted inventory covers the other files; it does not hash itself. This is an
@@ -43,7 +52,8 @@ export inventory, not a certificate of scientific replay, authenticity or de-ide
 
 Subjects receive one pseudonym across their samples. Sample names receive distinct pseudonyms;
 cell and sequence identifiers are scoped by original sample, preserving within-sample equality
-without merging repeated barcodes from different samples. Missing subject, sequence and cell IDs remain empty. Repertoire
+without merging repeated barcodes from different samples. Missing subject, sequence and cell IDs
+remain empty in text or null in Parquet. Repertoire
 IDs become the sample pseudonym, so even ambiguous vendor repertoire labels cannot merge samples.
 The separate map records their original values. Pseudonyms use HMAC-SHA-256 with a fresh random
 256-bit key per preparation, structured kind/scope/value inputs and 96-bit suffixes; a detected
@@ -97,13 +107,13 @@ not a whole-library operation.
 
 ## Shared actions and native routes
 
-`prepare_deidentified_export(dataset?, what="tables", dropText=true, dropHLA=true, accept=false)`
+`prepare_deidentified_export(dataset?, what="tables", dropText=true, dropHLA=true, storageFormat="text", accept=false)`
 requires explicit host `read`, `compute`, `files` grants and human proposal review. It returns
 the receipt and private local subject correspondence. `what="clonotypes"` omits AIRR rows.
 `download_deidentified_export(token, expected, identityMap=false)` requires `read`, `files` and
 separate review. Its default downloads only the ZIP; `identityMap=true` downloads only the private
 map. The window, HTTP/MCP and generated Python/R clients use the same contract. Client parameter
-names are generated in snake_case (`drop_text`, `drop_hla`, `identity_map`). Clients do not grant
+names are generated in snake_case (`drop_text`, `drop_hla`, `storage_format`, `identity_map`). Clients do not grant
 permissions or approve proposals, and downloads occur on the host's browser computer.
 
 Native window routes are `POST /api/deidentification/prepare` and

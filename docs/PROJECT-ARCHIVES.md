@@ -2,7 +2,7 @@
 
 Slice 10 adds version 1 `.clz` archives. Use the development host: published v0.7.0
 predates this feature. Application/package versions remain 0.7.0; automation uses API 2,
-**catalog 3**, policy 1 (63 actions). Regenerate/update both clients with this host.
+**catalog 4**, policy 1 (64 actions). Regenerate/update both clients with this host.
 
 ## Transfer a study
 

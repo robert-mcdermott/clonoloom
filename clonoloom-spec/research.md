@@ -3341,3 +3341,59 @@ private-map separation, fingerprint pinning, replacement, bounded output and can
 Exercise six longitudinal samples from two seeded artificial vaccination subjects, exact native
 query/project parity, explicit proposal rejection, separate downloads and stale browser state.
 Inspect both themes and accessibility. No scientific plot geometry or estimator changes.
+
+### 5.53 Typed Parquet without a second scientific computation
+
+**Sources and scope (2026-10-28).** Consulted the primary Apache specifications:
+[Parquet file format](https://parquet.apache.org/docs/file-format/),
+[data-page encodings](https://parquet.apache.org/docs/file-format/data-pages/encodings/),
+[parquet.thrift](https://github.com/apache/parquet-format/blob/master/src/main/thrift/parquet.thrift)
+and [Thrift Compact Protocol](https://github.com/apache/thrift/blob/master/doc/specs/thrift-compact-protocol.md).
+Scientific fields retain the native AIRR export semantics from Vander Heiden et al. (2018),
+[doi:10.3389/fimmu.2018.02206](https://doi.org/10.3389/fimmu.2018.02206), and the existing
+clonotype/invariant-rule methods. Inspected SituCraft v0.9.0's Apache-2.0 license and adapted
+its flat writer, metadata types and compact emission only; attribution is in NOTICE. No
+external reader or scientific algorithm implementation is incorporated. There is no new
+estimator, biological inference or scientific plot.
+
+**ClonoLoom's choices.** Use ordinary native CSV/AIRR exporters as the only scientific source,
+then map documented layouts into flat optional columns. Add nullable definition levels (RLE),
+PLAIN GZIP DATA_PAGE v1 pages, footer file version 1, sorted metadata, cancellation, sticky
+write failures and explicit bounds to the sister application's writer. Preserve native row
+order and sample membership; assign positional sample-column keys with an explicit name map
+so sample names cannot collide with scientific fields. Missing native fields become null;
+explicit zero remains zero. Native text cannot distinguish missing from an empty string.
+
+Write count values as signed INT64 only when the native value is finite, nonnegative, integral
+and at most 2^53−1. This deliberately conservative bound reflects the native float64 model,
+not the larger physical INT64 range. Reject ambiguous counts rather than round; prior input
+or aggregation precision cannot be recovered. Native NaN denotes missing and is not a zero.
+The three native productive/frame/stop flags become BOOLEAN; other AIRR evidence stays text, including raw coordinates,
+invalid annotations and nested annotation JSON. This is not an AIRR schema replacement.
+Keep invariant-rule flags, full-sample denominators, evaluable abundance and native DOUBLE
+shares together; populations may overlap and do not establish phenotype or specificity.
+
+Record exact field mapping, effective definition/QC, units, provider notice and native source
+fingerprints in footer metadata and a companion schema. Original paths and identifiers remain
+in ordinary exports, clearly labeled. Fingerprints reflect loading, not newly checked source
+files. The inventory establishes recorded-byte integrity, not authenticity, biological validity
+or replay. Fixed values and metadata yield deterministic bytes; fresh notice timestamps and
+pseudonyms change complete bundle fingerprints.
+
+For optional pseudonymized Parquet, run §5.52's explicit identifier/removal policy first.
+Repeat only sanitized public provenance and notices in every footer/schema; keep original
+identities and source fingerprints in the separate private map. Preserve all existing exclusions
+for unmapped nested evidence and the limitations of removing experimental annotations. Neither
+the storage format nor the transformation establishes anonymity or replay of transformed data.
+
+**Validation boundary.** Independent PyArrow 26.0.0 and DuckDB 2.0.0 readers decode every field
+against ordinary native exports, including invariant shares/denominators. Writer controls test
+full signed INT64 extrema and 2^53+1 (encoding only, not native count eligibility), signed zero,
+null versus explicit zero/empty text, booleans, Unicode, empty/multiple groups and deterministic
+bytes. Adapter controls test 2^53−1 acceptance, larger/fractional/non-finite refusal, collisions,
+schema/size bounds, cancellation and malformed input. Independently assert native AIRR
+`duplicate_count`, `umi_count` and `templates` physical integer types, rather than trusting
+the writer's own schema to define the expected type. Independent readers check every decoded
+cell/footer for private disclosure canaries, then use the separately saved map to compare native
+scientific evidence and subject/sample linkage. The seeded vaccination browser workflow checks
+unchanged query/project bytes, review rejection, cancellation, stale state and both themes.

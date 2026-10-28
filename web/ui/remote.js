@@ -88,6 +88,11 @@ export function remoteActions(app) {
   const lociOf = (summary) => Object.keys(summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
 
   const actions = {
+    async export_parquet({dataset, ...options} = {}) {
+      const chosen = datasetOf(dataset);
+      await app.setMode('reports');
+      return {message:'Native Parquet ZIP downloaded with original identifiers and scientific provenance.',data:await app.parquet.export(chosen.id,options)};
+    },
     async prepare_deidentified_export({dataset, ...options} = {}) {
       const chosen = datasetOf(dataset);
       await app.setMode('reports');

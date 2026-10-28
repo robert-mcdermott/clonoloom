@@ -226,6 +226,17 @@ jobs:
       - name: Explicit de-identification and both-theme accessibility
         run: node validation/deidentification.mjs "$RUNNER_TEMP/clonoloom-archives"
 
+      - name: Native and pseudonymized Parquet with both-theme accessibility
+        run: node validation/parquet.mjs "$RUNNER_TEMP/clonoloom-archives"
+
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - name: Parquet files against independent PyArrow and DuckDB readers
+        env:
+          CLONOLOOM_PARQUET_FIXTURES: ${{ runner.temp }}/parquet-fixtures
+        run: |
+          go test -run 'TestParquet|TestWriterIndependentFixture' . ./internal/parquet
+          uv run --no-project --with pyarrow==26.0.0 --with duckdb==2.0.0 validation/reference/parquet_exports.py "$CLONOLOOM_PARQUET_FIXTURES"
+
   installers:
     name: Installer syntax
     needs: changed

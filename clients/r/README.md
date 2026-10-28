@@ -2,7 +2,7 @@
 
 Generated functions and help for the normal local host, with explicit grants and human review.
 See [the R guide](../../docs/R.md) for exact number tokens, connection precedence and limits.
-Use the development host (API 2/catalog 3/policy 1); published 0.7.0 predates this contract.
+Use the development host (API 2/catalog 4/policy 1); published 0.7.0 predates this contract.
 
 ```sh
 Rscript -e 'install.packages(c("curl", "jsonlite"), repos="https://cloud.r-project.org")'
