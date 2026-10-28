@@ -185,6 +185,11 @@ func (a *app) registerCertificates(mux *http.ServeMux) {
 		serve(w, r)
 	})
 	mux.HandleFunc("POST /api/certificates/verify", func(w http.ResponseWriter, r *http.Request) {
+		mode := r.URL.Query().Get("mode")
+		if mode != "" && mode != "integrity" && mode != "replay" {
+			writeError(w, 400, "Choose integrity or replay.")
+			return
+		}
 		file, err := os.CreateTemp("", "clonoloom-verify-*.clz")
 		if err != nil {
 			writeError(w, 500, err.Error())
@@ -196,6 +201,12 @@ func (a *app) registerCertificates(mux *http.ServeMux) {
 			writeError(w, 413, err.Error())
 			return
 		}
-		writeJSON(w, certificate.Verify(r.Context(), file, n, r.URL.Query().Get("expect")))
+		ctx, cancel := context.WithTimeout(r.Context(), 5*time.Minute)
+		defer cancel()
+		if mode == "replay" {
+			writeJSON(w, replayCertificate(ctx, file, n, r.URL.Query().Get("expect")))
+			return
+		}
+		writeJSON(w, certificate.Verify(ctx, file, n, r.URL.Query().Get("expect")))
 	})
 }

@@ -1027,3 +1027,9 @@ project archive. Scope `recorded-artifact-bytes` and report `recomputed: false` 
 exclude scientific replay. See [CERTIFICATES.md](CERTIFICATES.md) for the canonical record,
 fingerprint, size/path limits, integrity verdicts and native CLI. No source files are added,
 but captured evidence can contain raw data and identifiers; provider restrictions still apply.
+
+Wave 8 slice 2 keeps certificate v1 unchanged and adds a separate `clonoloom-replay` v1
+report, scope `captured-cohort-evidence`. It embeds the integrity report, original manifest,
+current verifier software/platform, findings and ordered step digests/metadata comparisons.
+Only supported cohort workers execute in a temporary store; exact output/metadata agreement
+is distinct from source verification and biological validity. See [replay scope and verdicts](CERTIFICATES.md#exact-replay-boundary).

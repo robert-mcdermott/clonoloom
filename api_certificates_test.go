@@ -16,7 +16,7 @@ import (
 	"clonoloom/internal/export"
 )
 
-func certificateFixture(t *testing.T, a *app, kind string) string {
+func certificateFixture(t *testing.T, a *app, kind string, selected ...string) string {
 	t.Helper()
 	dir := "validation/projects/0.7.0"
 	raw, e := os.ReadFile(filepath.Join(dir, "project.json"))
@@ -29,6 +29,9 @@ func certificateFixture(t *testing.T, a *app, kind string) string {
 	}
 	for _, r := range p.Artifacts {
 		if r.Kind != kind {
+			continue
+		}
+		if len(selected) > 0 && r.ID != selected[0] {
 			continue
 		}
 		base := filepath.Join(dir, "artifacts", r.ID)
@@ -165,6 +168,7 @@ func TestVerifyUsageAndFailureCodes(t *testing.T) {
 		{[]string{"--help"}, 0}, {nil, 2}, {[]string{path}, 2}, {[]string{"--integrity", path}, 1},
 		{[]string{"--integrity", path + "missing"}, 2}, {[]string{"--integrity", "--expect", "wrong", path}, 2},
 		{[]string{"--integrity", "--timeout", "0s", path}, 2}, {[]string{"--integrity", path, path}, 2},
+		{[]string{"--integrity", "--replay", path}, 2}, {[]string{"--replay", "--timeout", "1ns", path}, 2},
 	} {
 		var out, err bytes.Buffer
 		if got := runVerify(tc.args, &out, &err); got != tc.code {

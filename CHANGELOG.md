@@ -4,6 +4,17 @@
 
 ### Added
 
+- **Exact cohort certificate replay (wave 8, slice 2).** Add `verify --replay` and an explicit
+  Reports replay mode for cohort features, comparisons and count models. Verify embedded
+  parent hashes and recipe bindings, rerun the existing Go workers in a disposable store,
+  and compare complete output bytes and scientific metadata without tolerance fallback.
+  Preserve original provenance separately from the verifier; report exact match, differences
+  and unavailable replay. Recompute from captured diversity measurements/count matrices;
+  do not imply source-file verification, diversity refitting, authenticity or scientific validity.
+  Add cancellation, changed-input checks, twelve release controls, one-bit difference and
+  missing/unsupported-evidence controls, independent report checks and both-theme coverage.
+  Keep version 0.7.0 and existing certificate bytes unchanged.
+
 - **Saved-result evidence certificates (wave 8, slice 1).** Plan Wave 8 and introduce
   bounded single-result integrity archives for cohort features, comparisons and count models.
   Preserve exact manifests, recipes, outputs, source fingerprints and provider notices. Add

@@ -1,7 +1,7 @@
 // Certificates are prepared and checked in Go; this view displays those records.
 import { h, icon, clear, downloadBlob, formatBytes } from './dom.js';
 import { confirmDialog } from './overlays.js';
-import { certificateResults, integrityLabel } from '../lib/certificates.js';
+import { certificateResults, verificationLabel } from '../lib/certificates.js';
 
 export function mountReports(app, container) {
   const { store } = app;
@@ -9,6 +9,8 @@ export function mountReports(app, container) {
   const root = h('div.view', h('div.workbench-head', h('h1', icon('report'), 'Reports')), h('div.workbench-scroll', body));
   container.append(root);
   let chosen = '', record = null, report = null, busy = false, error = '', generation = store.state.generation, alive = true;
+  let verificationMode = 'integrity', controller = null;
+  let reportText = '';
   const current = () => certificateResults(store.project);
   const same = () => { const check = store.sameProject(); return () => alive && check(); };
   const button = (title, action, disabled = false) => h('button.btn.small', { type: 'button', disabled: busy || disabled, onclick: () => action().catch((e) => { error = e.message; render(); }) }, title);
@@ -46,16 +48,17 @@ export function mountReports(app, container) {
       return prepared.certificate;
     } finally { if (valid()) { busy = false; render(); } }
   }
-  async function verify(file, expected = '') {
+  async function verify(file, expected = '', mode = 'integrity') {
     if (busy) throw new Error('Wait for the certificate operation.');
     if (!file || file.size > 520 * 1024 * 1024) throw new Error('Choose a certificate no larger than 520 MiB.');
     if (expected && !/^[a-f0-9]{64}$/.test(expected)) throw new Error('Expected fingerprint must be 64 lowercase hexadecimal characters.');
-    const valid = same(); busy = true; error = ''; report = null; render();
+    if (!['integrity', 'replay'].includes(mode)) throw new Error('Choose integrity or replay.');
+    const valid = same(); controller = new AbortController(); verificationMode = mode; busy = true; error = ''; report = null; render();
     try {
-      const response = await fetch(`api/certificates/verify${expected ? `?expect=${expected}` : ''}`, { method: 'POST', headers: { 'Content-Type': 'application/zip' }, body: file });
-      const value = await response.json(); if (!response.ok) throw new Error(value.error ?? 'Certificate could not be read.');
-      if (!valid()) throw new Error('The project changed.'); report = value; return value;
-    } finally { if (valid()) { busy = false; render(); } }
+      const response = await fetch(`api/certificates/verify?mode=${mode}${expected ? `&expect=${expected}` : ''}`, { method: 'POST', headers: { 'Content-Type': 'application/zip' }, body: file, signal: controller.signal });
+      const text = await response.text(), value = JSON.parse(text); if (!response.ok) throw new Error(value.error ?? 'Certificate could not be read.');
+      if (!valid()) throw new Error('The project changed.'); report = value; reportText = text; return value;
+    } finally { if (valid()) { controller = null; busy = false; render(); } }
   }
   function render() {
     if (!alive) return;
@@ -78,19 +81,28 @@ export function mountReports(app, container) {
         h('thead', h('tr', h('th', { scope: 'col' }, 'File'), h('th', { scope: 'col' }, 'Size'), h('th', { scope: 'col' }, 'SHA-256'))),
         h('tbody', ...record.certificate.files.map((f) => h('tr', h('td', f.path), h('td', formatBytes(f.size)), h('td.mono', f.sha256))))))));
     const expected = h('input.input', { 'aria-label': 'Expected certificate fingerprint', placeholder: 'Optional independently recorded SHA-256', disabled: busy });
-    const upload = h('input', { type: 'file', accept: '.clz,.zip', 'aria-label': 'Certificate file', disabled: busy, onchange: (e) => verify(e.target.files[0], expected.value.trim()).catch((e) => { error = e.message; render(); }) });
-    body.append(h('section.card', h('h2', 'Check a certificate'), h('p', 'Choose an archive to check in the local Go host. Its files are read without extraction; source paths and recipes are never followed or executed.'),
+    const terminal = h('p.muted', `Terminal: clonoloom verify --${verificationMode} FILE.certificate.clz`);
+    const method = h('select.input', { 'aria-label': 'Certificate check', disabled: busy, onchange: (e) => { verificationMode = e.target.value; terminal.textContent = `Terminal: clonoloom verify --${verificationMode} FILE.certificate.clz`; } },
+      h('option', { value: 'integrity', selected: verificationMode === 'integrity' }, 'Integrity only — saved bytes'),
+      h('option', { value: 'replay', selected: verificationMode === 'replay' }, 'Exact replay — captured cohort evidence'));
+    const upload = h('input', { type: 'file', accept: '.clz,.zip', 'aria-label': 'Certificate file', disabled: busy, onchange: (e) => { const valid = same(); verify(e.target.files[0], expected.value.trim(), verificationMode).catch((e) => { if (valid()) { error = e.name === 'AbortError' ? 'Verification cancelled.' : e.message; render(); } }); } });
+    body.append(h('section.card.certificate-check', h('h2', 'Check or replay a certificate'), h('p', 'Integrity checks saved bytes. Replay runs the supported Go workers in a disposable store, checking embedded parent hashes and exact outputs. Original receptor files and upstream diversity computations are not checked or rerun. No recorded source paths are opened.'),
+      h('label.field', h('span', 'Check to perform'), method),
       h('label.field', h('span', 'Expected fingerprint (optional)'), expected), h('label.field', h('span', 'Certificate archive'), upload),
-      h('p.muted', 'Terminal: clonoloom verify --integrity FILE.certificate.clz')));
-    if (report) body.append(h('section.card.certificate-verdict', h('h2', integrityLabel(report)),
-      h('p', `${report.filesChecked} files · ${formatBytes(report.bytesChecked)} checked. Scientific recomputation: not performed.`),
+      controller ? h('button.btn.small', { type: 'button', onclick: () => controller?.abort() }, 'Cancel verification') : null,
+      terminal));
+    const integrity = report?.integrity ?? report;
+    if (report) body.append(h('section.card.certificate-verdict', h('h2', verificationLabel(report)),
+      h('p', `${integrity.filesChecked} files · ${formatBytes(integrity.bytesChecked)} checked. ${report.format === 'clonoloom-replay' ? 'Replay steps and limits are recorded below.' : 'Scientific recomputation: not performed.'}`),
       h('p', report.limits), ...report.findings.map((f) => h('p.callout.danger', f)),
-      button('Export verification JSON', async () => downloadBlob(new Blob([JSON.stringify(report, null, 2) + '\n'], { type: 'application/json' }), 'certificate-verification.json'))));
+      ...(report.steps ?? []).map((s) => h('div', h('h3', `${s.kind}: ${s.verdict}`), h('p', `Scientific metadata: ${s.metadataMatched ? 'exact match' : 'differs'}.`), h('p.mono.certificate-fingerprint', `Expected SHA-256: ${s.expectedSHA256}`), h('p.mono.certificate-fingerprint', `Recomputed SHA-256: ${s.actualSHA256 ?? 'unavailable'}`))),
+      report.verifier ? h('p.muted', `Verifier: ${report.verifier.name} ${report.verifier.version} (${report.platform}). Original provenance is retained separately in the JSON report.`) : null,
+      button('Export verification JSON', async () => downloadBlob(new Blob([reportText], { type: 'application/json' }), 'certificate-verification.json'))));
   }
-  const view = { inspect, exportCertificate, verify, state: () => ({ record, report, busy, error }) };
+  const view = { inspect, exportCertificate, verify, state: () => ({ record, report, reportText, busy, error }) };
   app.certificatesView = view; render();
   return { update(topics) {
-    if (generation !== store.state.generation) { generation = store.state.generation; chosen = ''; record = null; report = null; busy = false; error = ''; }
+    if (generation !== store.state.generation) { controller?.abort(); controller = null; generation = store.state.generation; chosen = ''; record = null; report = null; busy = false; error = ''; }
     if (topics.has('project') || topics.has('mode')) render();
-  }, destroy() { alive = false; if (app.certificatesView === view) app.certificatesView = null; root.remove(); } };
+  }, destroy() { alive = false; controller?.abort(); if (app.certificatesView === view) app.certificatesView = null; root.remove(); } };
 }

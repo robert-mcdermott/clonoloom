@@ -256,8 +256,11 @@ It takes `-h` for its settings.
 
 [Evidence certificates](docs/CERTIFICATES.md) preserve exact saved cohort result bytes with
 provider notices. Reports and `clonoloom verify --integrity` check the inventory without
-scientific recomputation. The [Wave 8 plan](clonoloom-spec/roadmap.md) schedules replay,
-headless runs, reports, MCP and generated Python/R clients. Published binaries remain 0.7.0
+scientific recomputation. `clonoloom verify --replay` reruns the three supported cohort kinds
+from captured evidence and compares exact output bytes; original receptor sources and upstream
+diversity are not rerun. Reports offers both modes with explicit limits. The
+[Wave 8 plan](clonoloom-spec/roadmap.md) schedules broader replay, headless runs, reports, MCP
+and generated Python/R clients. Published binaries remain 0.7.0
 until the next release.
 
 ## Development

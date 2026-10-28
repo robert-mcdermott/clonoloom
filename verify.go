@@ -2,7 +2,7 @@ package main
 
 // CLI shape and explicit verdicts follow CytoWeave 0.8.1 / MaveScape verify.go.
 // Unlike their browser-based implementations, this checks bytes directly in Go.
-// Wave 8 slice 1 requires --integrity: it must never imply scientific replay.
+// Explicit modes never substitute an integrity match for scientific replay.
 import (
 	"context"
 	"encoding/hex"
@@ -24,11 +24,12 @@ func runVerify(args []string, stdout, stderr io.Writer) int {
 	f := flag.NewFlagSet("clonoloom verify", flag.ContinueOnError)
 	f.SetOutput(stderr)
 	integrity := f.Bool("integrity", false, "check recorded bytes only; no scientific recomputation")
+	replay := f.Bool("replay", false, "recompute supported cohort results from captured evidence, exactly")
 	expect := f.String("expect", "", "an independently recorded certificate SHA-256 fingerprint")
 	report := f.String("report", "", "write the verification JSON to a new file (never overwrite)")
 	timeout := f.Duration("timeout", 5*time.Minute, "maximum verification time")
 	f.Usage = func() {
-		fmt.Fprintln(stderr, "Usage: clonoloom verify --integrity [--expect SHA256] [--report NEW.json] FILE.certificate.clz\nExit status: 0 integrity match; 1 contents differ or archive is invalid; 2 usage, input, output or cancellation error.\nNo scientific recomputation, source-file or parent verification is performed.")
+		fmt.Fprintln(stderr, "Usage: clonoloom verify (--integrity | --replay) [--expect SHA256] [--report NEW.json] FILE.certificate.clz\nExit status: 0 requested check matches; 1 contents differ or archive is invalid; 2 usage, input, output, cancellation or unavailable replay.\nReplay checks captured cohort evidence; original sources and upstream diversity are not recomputed.")
 		f.PrintDefaults()
 	}
 	paths, err := parseArgs(f, args)
@@ -39,13 +40,22 @@ func runVerify(args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	bad := func(err error) int { fmt.Fprintln(stderr, "clonoloom verify:", err); return 2 }
-	if !*integrity || len(paths) != 1 || *timeout <= 0 {
-		return bad(errors.New("give --integrity, one certificate and a positive timeout; scientific replay is not available in this slice"))
+	if *integrity == *replay || len(paths) != 1 || *timeout <= 0 {
+		return bad(errors.New("give exactly one of --integrity or --replay, one certificate and a positive timeout"))
 	}
 	if *expect != "" {
 		raw, e := hex.DecodeString(*expect)
 		if e != nil || len(raw) != 32 || strings.ToLower(*expect) != *expect {
 			return bad(errors.New("--expect must be 64 lowercase hexadecimal characters"))
+		}
+	}
+	// Refuse an existing destination before expensive replay. O_EXCL below still
+	// protects against a file created between this check and the final write.
+	if *report != "" {
+		if _, e := os.Lstat(*report); e == nil {
+			return bad(errors.New("report path already exists"))
+		} else if !errors.Is(e, os.ErrNotExist) {
+			return bad(e)
 		}
 	}
 	file, err := os.Open(paths[0])
@@ -64,7 +74,16 @@ func runVerify(args []string, stdout, stderr io.Writer) int {
 	defer stop()
 	ctx, cancel := context.WithTimeout(ctx, *timeout)
 	defer cancel()
-	answer := certificate.Verify(ctx, file, stat.Size(), *expect)
+	var answer any
+	var verdict, fingerprint, limits string
+	var findings []string
+	if *replay {
+		r := replayCertificate(ctx, file, stat.Size(), *expect)
+		answer, verdict, fingerprint, limits, findings = r, r.Verdict, r.Integrity.Fingerprint, r.Limits, r.Findings
+	} else {
+		r := certificate.Verify(ctx, file, stat.Size(), *expect)
+		answer, verdict, fingerprint, limits, findings = r, r.Verdict, r.Fingerprint, r.Limits, r.Findings
+	}
 	if err = ctx.Err(); err != nil {
 		return bad(err)
 	}
@@ -85,11 +104,14 @@ func runVerify(args []string, stdout, stderr io.Writer) int {
 			return bad(e)
 		}
 	}
-	fmt.Fprintf(stdout, "%s: %d files, %d bytes checked\nFingerprint: %s\n%s\n", answer.Verdict, answer.FilesChecked, answer.BytesChecked, answer.Fingerprint, answer.Limits)
-	for _, finding := range answer.Findings {
+	fmt.Fprintf(stdout, "%s\nFingerprint: %s\n%s\n", verdict, fingerprint, limits)
+	for _, finding := range findings {
 		fmt.Fprintln(stdout, finding)
 	}
-	if answer.Verdict != "integrity-match" {
+	if verdict == "unavailable" {
+		return 2
+	}
+	if verdict != "integrity-match" && verdict != "replay-match" {
 		return 1
 	}
 	return 0

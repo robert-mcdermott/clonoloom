@@ -550,3 +550,11 @@ Reports view and return its record/fingerprint; export downloads a `.certificate
 the browser. These actions do not recompute statistics or read new source paths. File checking
 is available by Reports upload or `clonoloom verify --integrity`; see
 [CERTIFICATES.md](CERTIFICATES.md). MCP and generated clients follow later in Wave 8.
+
+Certificate upload verification additionally accepts `mode=replay` on
+`POST /api/certificates/verify`; omitted mode remains integrity-only. Replay uses the same
+native worker path as `clonoloom verify --replay`, with a five-minute deadline and request
+cancellation. HTTP 200 carries a report; inspect `verdict` for `replay-match`, `differs` or
+`unavailable`. It does not read arbitrary source paths or populate the current project.
+Reports provides an explicit mode selector, cancellation and the complete downloadable report.
+See [the captured-evidence boundary](CERTIFICATES.md#exact-replay-boundary).

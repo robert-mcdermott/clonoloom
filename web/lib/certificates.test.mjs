@@ -13,3 +13,12 @@ test('integrity display never calls bytes reproduced or scientific evidence veri
   assert.equal(integrityLabel({...r, verdict:'differs'}), 'Integrity check failed');
   for (const patch of [{version:2},{recomputed:true},{scope:'recomputed'},{format:'other'}]) assert.equal(integrityLabel({...r,...patch}), 'Unsupported verification report');
 });
+
+test('replay labels require exact output and metadata matches and state the captured boundary', async () => {
+  const { verificationLabel } = await import('./certificates.js');
+  const r = { format:'clonoloom-replay', version:1, scope:'captured-cohort-evidence', verdict:'replay-match', recomputed:true, integrity:{verdict:'integrity-match'}, steps:[{verdict:'replay-match',metadataMatched:true,expectedSHA256:'a',actualSHA256:'a'}] };
+  assert.equal(verificationLabel(r), 'Exact replay match — captured evidence');
+  for (const patch of [{version:2},{recomputed:false},{steps:[]},{integrity:{verdict:'differs'}},{steps:[{...r.steps[0],actualSHA256:'b'}]},{steps:[{...r.steps[0],metadataMatched:false}]}]) assert.equal(verificationLabel({...r,...patch}), 'Unsupported verification report');
+  assert.equal(verificationLabel({...r,verdict:'unavailable',recomputed:false}), 'Replay unavailable');
+  assert.equal(verificationLabel({...r,verdict:'differs'}), 'Replay differs');
+});

@@ -2953,3 +2953,52 @@ SHA-256 against a small deterministic certificate, plus exact numeric-token pres
 changed/missing/extra/duplicate members, invalid paths/versions, external fingerprint mismatch,
 cancellation, provider restrictions and native CLI/API agreement after source/parent removal.
 Scientific cohort references remain separate checks; integrity alone is never calibration.
+
+### 5.43 Exact replay from captured cohort evidence (wave 8, slice 2)
+
+**Source.** National Academies of Sciences, Engineering, and Medicine (2019),
+*Reproducibility and Replicability in Science*, [doi:10.17226/25303](https://doi.org/10.17226/25303),
+[summary](https://www.nationalacademies.org/read/25303/chapter/3) and
+[computational reproducibility](https://www.nationalacademies.org/read/25303/chapter/7).
+The report distinguishes computational agreement using the same inputs and procedures from
+replication using newly collected data. ClonoLoom's choice is stricter exact output-byte
+comparison at an explicitly declared captured-input boundary; neither matching computations
+nor immutable records establish scientific validity.
+
+**Boundary and implementation.** Keep certificate v1 and its integrity interpretation unchanged.
+A separate `clonoloom-replay` v1 report has scope `captured-cohort-evidence`. After full integrity
+checking, reread required members against their pinned hashes. Decode bounded embedded parent
+results and manifests, verify parent/result hash and recipe/identity bindings, and install only
+those verified inputs in an isolated temporary store. Feature replay checks the recorded design
+and recomputes `study.SubjectFeatures` from saved diversity measurements. Comparison replay runs
+that feature worker first, then the ordinary `cohort.Compute` worker. Count replay runs the
+feature worker, checks sample totals and fits `countmodel.Compute` on the recipe's captured
+matrix. No new estimator, inference claim or tolerance is introduced; §§5.30–5.33 retain the
+methods, estimands, testing families and conditional-inference limitations.
+
+Compare every output byte, then manifest identity/name/dataset, method, parameters, job kind/spec,
+parents and summary. The file inventories bind those outputs independently. Original validation
+findings, timestamps, job IDs and software provenance remain in the report's original manifest;
+new execution times/IDs are not scientific equality criteria. The current verifier's software,
+commit when available, and platform are separate. Verified original parent manifests are restored
+only within the temporary store after exact feature reproduction, preserving downstream embedded
+provenance. Expected target output is never installed as a computed result.
+
+**Limits.** Original receptor files and their fingerprints, separate parent files, upstream
+clonotyping/diversity computations, and project history are not checked against external evidence.
+An embedded diversity measurement is an input, not an independently reproduced diversity estimate.
+Count replay refits captured counts; it does not reconstruct them from source sequences. Parent
+hash agreement establishes internal binding, not authorship. Coordinated replacement of data,
+recipes and hashes can still produce a matching record; use a separately retained fingerprint to
+recognize the intended archive. Model adequacy, calibration, subject independence, causal effects,
+antigen specificity and biological truth are outside this verification. Reports show these limits.
+
+**Failure and validation.** Integrity failure or changed outputs/metadata returns `differs`;
+unsupported methods/kinds, missing required captured inputs or worker failure returns `unavailable`.
+No unperformed step becomes a success. All twelve saved feature/comparison/count results across
+four 0.7.0 artificial controls are replayed without their original sources or library parents.
+Independent Python ZIP/hash checks preserve raw JSON numeric tokens rather than round-tripping
+floats; they compare report digests with actual archived input/output bytes. Separate cohort and
+statsmodels count-model references validate the unchanged scientific methods. Negative controls
+include a one-bit change to an effect, changed parent/metadata/recipe bindings, missing inputs,
+unsupported versions, wrong external fingerprint, corrupted ZIPs and cancellation/cleanup.

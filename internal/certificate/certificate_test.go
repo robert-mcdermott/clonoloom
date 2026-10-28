@@ -238,5 +238,14 @@ func FuzzCertificateIntegrity(f *testing.F) {
 		if got.Recomputed {
 			t.Fatal("integrity check claims recomputation")
 		}
+		if got.Verdict == "integrity-match" {
+			e, _, err := OpenEvidence(context.Background(), bytes.NewReader(raw), int64(len(raw)), got.Fingerprint)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err = e.Read(context.Background(), "manifest.json", MaxManifestBytes); err != nil {
+				t.Fatal(err)
+			}
+		}
 	})
 }

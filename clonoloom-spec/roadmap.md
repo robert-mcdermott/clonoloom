@@ -16,8 +16,8 @@ requirement's status is in `requirements.md`; release changes are in `CHANGELOG.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–7 are merged and
 released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
 with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
-`wave8` branch. Slice 1 is implemented and validated, awaiting the maintainer's commit;
-slice 2 is next. No 0.8.0 release is made.
+`wave8` branch. Slice 1 was committed and pushed as `b459f61`. Slice 2 is implemented
+and validated, awaiting the maintainer's commit. Slice 3 is next; no 0.8.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2806,7 +2806,7 @@ No source from incompatible-licensed implementations is used.
 
 ### Slice 1: saved-result evidence certificates
 
-**Implemented and validated; awaiting maintainer commit.** O5 foundation, O9, X5, N2/N4.
+**Committed and pushed as `b459f61`.** O5 foundation, O9, X5, N2/N4.
 Reports prepares and inspects cohort feature/comparison/count certificates. A browser-upload
 check and `clonoloom verify --integrity` use the same Go verifier, return explicit inventory
 findings, and never claim source verification, authenticity, recomputation or scientific validity.
@@ -2841,6 +2841,75 @@ Keep version 0.7.0. Scientific replay is slice 2; no certificate in this slice c
 sources or parents were independently checked, that statistics were recomputed, or that a
 checksum establishes authenticity or biological validity. Nothing is committed, tagged,
 released or published by the implementation workflow.
+
+
+### Slice 2: exact scientific replay from captured cohort evidence
+
+**Implemented and validated; awaiting maintainer commit.** O5, N2/N4/N7.
+
+- Reuse the existing feature, comparison and count-model job handlers in a disposable
+  native-Go artifact store. Integrity verification is a prerequisite, never a substitute.
+- Accept the existing version-1 certificates without rewriting them. Verify the embedded
+  parent result's exact bytes against both its own manifest and the recorded recipe binding.
+  Replay feature parents before dependent comparisons/count models, then restore their
+  verified original manifests inside the disposable store so new timestamps/job IDs do not
+  change downstream scientific bytes. Never install the expected target output before running
+  its worker. Check the recipe identity and scientific manifest metadata as well as every
+  output byte; no numeric tolerance, rounding or missing-input fallback.
+- The explicit computation boundary is **captured cohort evidence**: checked design and
+  subject features from embedded diversity measurements; comparison tests/effects from those
+  features; negative-binomial refitting from the captured count matrix. Original receptor files,
+  source-file fingerprints and upstream diversity fits are not independently verified or
+  recomputed. Their recorded provenance is retained, not relabeled as new verification.
+- `verify --replay` and Reports upload use the same host path. Keep `--integrity` explicit and
+  backward compatible. Report `replay-match`, `differs` or `unavailable`, with per-step hashes,
+  scientific-metadata comparison, original manifest and current verifier software/platform.
+  Exit 0 only for the requested match, 1 for a difference/invalid archive and 2 for unavailable
+  replay or operational failure. Report files never overwrite existing paths.
+- Unknown kinds/method versions, incomplete captured inputs or failed worker checks cannot
+  succeed. Only allowlisted workers run; no saved source path, shell command or network resource
+  is opened. Recheck input bytes when reading them after integrity verification. Propagate
+  cancellation and remove the temporary store on success, failure or interruption.
+- Keep scientific validity distinct from computational agreement: matching output does not
+  establish model calibration, sound design, authorship, replication with new data or biology.
+  Cite NASEM (2019) alongside the unchanged method references in research §5.43.
+- Validate every supported result from the four 0.7.0 cohort controls, including positive/null,
+  unbalanced and paired designs, on native arm64 and amd64. Add independent evidence/report
+  digest checks, one-bit output changes, parent/metadata/recipe refusal, cancellation and
+  cleanup controls. Exercise both UI modes and both themes and review the updated screenshots.
+
+Validation completed:
+
+- Application/internal race suite passed with the repository's thirty-minute timeout
+  (application 1,038.178 s). Final targeted race checks passed (32.538 s), covering later
+  verdict refinements, changed parent manifests, duplicate recipe keys, unsupported inputs,
+  cancellation, cleanup, CLI usage, fail-fast report-path refusal and action parity.
+- All twelve release cohort controls reproduced exact output bytes and scientific metadata
+  on native arm64 and amd64. The amd64 replay/byte checks passed in 56.128 s. CLI/API/native
+  reports agree; original manifests remain unchanged. Original release fixtures were not edited.
+- The independent Python ZIP/report oracle, run through `uv`, checked all twelve archives,
+  original provenance and step digests. It preserves raw nested JSON tokens rather than
+  re-encoding floats. Targeted cohort/count-model reference and no-fused-operations checks
+  passed (3.391 s); existing scientific estimators are unchanged.
+- Final verdict controls passed (11.583 s), including one-bit effect differences, scientific
+  metadata changes, missing captured data, altered parent bindings and worker refusal after
+  a completed parent step. During validation a duplicate-key test initially assumed compact
+  fixture JSON and made no change; the corrected control prepends the duplicate regardless
+  of indentation and passes. A redundant focused race run hit Go's default ten-minute timeout;
+  the successful full run and final targeted checks use the existing thirty-minute allowance.
+- Archive/evidence fuzzing completed 113,515 executions in thirty seconds without failure.
+  Direct tests cover input changes after integrity checking, caller read bounds and cancellation.
+- Go vet, formatting, browser syntax, six CGO-free builds, 152 JavaScript tests and 14
+  contrast/color-vision checks passed. Both-theme browser workflows cover visible mode/file
+  controls, exact replay, cancellation without a verdict, corrupt input, saved reopening and
+  exact report downloads, including an integer beyond JavaScript's exact range. Both updated
+  screenshots were reviewed; no statistical plot or estimator is added.
+- The site builds 48 pages with 58 screenshots. Its final audit passed 188 checks across
+  47 pages, two themes and two widths. The complete scientific/performance release suite is
+  not claimed by this slice's targeted reference checks.
+
+Keep version 0.7.0. Broader result support and headless recipes remain slice 3; O5 remains partial.
+No commit, tag, release or publication is performed by this slice's implementation workflow.
 
 
 ## Later waves (outlined)
