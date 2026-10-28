@@ -11,10 +11,10 @@
 // Needs Go (to build ClonoLoom) and Chrome, Chromium, Edge or Brave (CHROME=path).
 
 import { spawn } from 'node:child_process';
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { launch, sleep } from '../../validation/cdp.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -403,6 +403,28 @@ async function capturedCertificateScene(kind) {
 }
 
 const scenes = {
+  async ['html-reports']() {
+    await batchQCScene();
+    const artifact=await js('window.batchQCCheck.id');
+    const exported=(await act('export_html_report',{artifacts:[artifact],title:'Artificial batch QC study · recorded evidence'})).data;
+    if(!/^[a-f0-9]{64}$/.test(exported.fingerprint)||exported.recomputed)throw new Error('HTML export contract');
+    await js(`(()=>{const root=document.querySelector('.html-reports-view');if(!root.querySelector('input[type=checkbox]').checked)root.querySelector('input[type=checkbox]').click();root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    // Refuse a completed response after a newer project edit, then exercise cancellation.
+    await js(`(async()=>{const app=window.clonoloom,v=app.htmlReportsView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).includes('reports/html')){entered();await gate}return response};try{const pending=v.exportReport(['${artifact}']);await started;app.store.commit({...app.store.project,reportSentinel:'keep'},'Concurrent report edit');release();let refused=false;try{await pending}catch(e){refused=e.message.includes('analysis changed')}if(!refused||app.store.project.reportSentinel!=='keep')throw new Error('Stale report export');}finally{release();window.fetch=original}app.store.undo();await new Promise(r=>setTimeout(r,0));const pending=app.htmlReportsView.exportReport(['${artifact}']);[...document.querySelectorAll('.html-reports-view button')].find(b=>b.textContent==='Cancel report export').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||app.htmlReportsView.state().busy)throw new Error('Report cancellation');return true})()`);
+    await act('export_html_report',{artifacts:[artifact],title:'Artificial batch QC study · recorded evidence'});
+    await js(`(()=>{const root=document.querySelector('.html-reports-view');if(!root.querySelector('input[type=checkbox]').checked)root.querySelector('input[type=checkbox]').click();root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    await clearToasts();await checkAccessibility();
+  },
+  async ['offline-report']() {
+    await batchQCScene();const artifact=await js('window.batchQCCheck.id');
+    const expectedPoints=await js(`(()=>{const r=JSON.parse(window.batchQCCheck.snapshot).analysis;return r.groups.filter(g=>g.metric===r.metrics[0].id).flatMap(g=>g.observations).filter(p=>p.transformed!=null).map(p=>({sample:r.evidence.samples[p.sample].assignment.name,value:String(p.value),transformed:String(p.transformed)}))})()`);
+    const prepared=await js(`(async()=>{const r=await fetch('api/reports/html',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({artifacts:['${artifact}'],title:'Artificial batch QC study · recorded evidence'})});if(!r.ok)throw new Error(await r.text());return {html:await r.text(),fingerprint:r.headers.get('X-ClonoLoom-Report')}})()`);
+    const path=join(temp,'offline-report.html');writeFileSync(path,prepared.html);
+    await b.goto(pathToFileURL(path).href,100);
+    await waitFor(`document.getElementById('status')?.dataset.verdict==='integrity-match'`);
+    await js(`(()=>{if(document.querySelectorAll('#report svg').length!==6)throw new Error('Incomplete batch figures');if(document.getElementById('fingerprint').textContent!=='${prepared.fingerprint}')throw new Error('Report identity changed');const first=document.querySelector('#report figure'),expected=${JSON.stringify(expectedPoints)},points=[...first.querySelectorAll('circle')];if(points.length!==expected.length||points.some(p=>!expected.some(e=>e.sample===p.dataset.sample&&e.value===p.dataset.value&&e.transformed===p.dataset.transformed)))throw new Error('Plot differs from recorded observations');window.scrollTo(0,first.offsetTop-8);return true})()`);
+    await checkAccessibility();
+  },
   async checkpoints() {
     await batchQCScene();
     const artifact = await js('window.batchQCCheck.id');
@@ -1455,7 +1477,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name === 'html-reports' || name === 'offline-report' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {
@@ -1470,7 +1492,7 @@ try {
         await scenes[name]();
         await clearToasts();
         await sleep(800);
-        await showPlaces();
+        if(name!=='offline-report') await showPlaces();
         await b.capture(join(IMAGES, `${name}-${theme}.webp`), { format: 'webp', quality: 86 });
         console.log(`${name} (${theme})`);
       } catch (error) {

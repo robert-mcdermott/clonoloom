@@ -3072,3 +3072,41 @@ with the original record and replay digests, independently inventory saved bytes
 versions, changed files, conflict refusal, cancellation, source-free recovery and undo/redo, and
 review the same workflow in both themes. Existing scientific controls continue to validate the
 unchanged calculations separately from recovery integrity.
+
+### 5.46 Self-checking reports from saved evidence (wave 8, slice 5)
+
+**Boundary.** No new estimator or statistical visualization is introduced. The NASEM (2019)
+computational reproducibility distinction and SHA-256 reference in §§5.42–5.43 continue to apply.
+Checking bytes is not rerunning science, testing model assumptions or validating biology. A
+single offline file can make evidence inspectable without granting authenticity or data rights.
+
+**ClonoLoom's choice.** Follow the compatible Apache-2.0 CytoWeave traceable-table/provenance and
+MaveScape recorded-methods patterns. Go renders complete tables directly from raw JSON tokens,
+retaining missing values, exact integers, denominators, exclusions and correction families.
+Original scientific JSON and native replayable certificates remain byte-identical downloads.
+The full captured recipe stays in the certificate; large input matrices are not duplicated in
+the visible provenance table. Selection is explicit and bounded, never inferred from a current
+view or filtered to significant findings. Methods/references come from saved result lineage
+and notices, not newly inferred analyses.
+
+The offline browser checks the exact content, downloads, reused geometry and styles against a
+versioned inventory before display. It can compare an independently retained report fingerprint.
+It makes no network requests, follows no source paths and runs no scientific worker. The
+checker/surrounding UI are not an independently trusted verifier: coordinated replacement can
+forge an internally consistent file. Native certificate replay remains a separate tool and
+keeps the established five-kind captured-input limits. Neither mode implies de-identification.
+
+**Figures.** Reuse subject observation/effect plots, the NB2 count-model overview and all batch-QC
+metric panels, with their existing captions/units and geometry tests. Browser numbers place
+marks; exact table/download tokens remain untouched. Unsafe integer geometry, unsupported shapes
+and plotting bounds yield explicit unavailable figures. Feature and motif reports are tables-only.
+The batch example retains its missing sample values and small/constant groups. No density,
+confidence interval, significance color or biological interpretation is invented by the report.
+
+**Validation.** Export/reopen all five kinds offline, check native replay against original bytes,
+and independently inspect inventories/ZIP members and replay digests with a Python oracle.
+Retain all release count-model rows and unavailable fits. Test tampered content, scientific JSON,
+geometry/styles, wrong independent fingerprints, provider terms, cancellation and stale edits.
+Review both-theme application/report screenshots and accessibility; keep scientific calibration
+controls separate from integrity validation. Full motif screens may exceed report bounds; use
+their original certificate exports rather than silently dropping candidate groups.

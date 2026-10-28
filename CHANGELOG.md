@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Self-checking HTML reports (wave 8, slice 5).** Export one offline file for explicitly
+  selected cohort features/comparisons/count models, batch QC and motif results. Preserve
+  exact numeric tables, complete result records, original JSON/certificates, methods,
+  references and provider notices. Reuse existing plot geometry with explicit unavailable
+  states and keep feature/motif reports tables-only. Check embedded content, downloads,
+  geometry and styles before display, optionally against a separately retained fingerprint.
+  Keep integrity distinct from scientific replay, authenticity and biological validity.
+  Refuse changed/unsupported/oversized evidence and stale exports; retain provider gates,
+  cancellation, exact native replay and clear bounds. Version remains 0.7.0.
+
 - **Checkpoints and analysis differences (wave 8, slice 4).** Preserve named immutable local
   analysis checkpoints with exact project JSON, completed attached result files and SHA-256
   inventories. Compare recorded sources, definitions, QC, populations, parameters and result

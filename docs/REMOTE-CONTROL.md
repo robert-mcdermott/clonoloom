@@ -573,3 +573,14 @@ uses current analysis when `against` is omitted. Recovery reinstalls missing sav
 and restores analysis values, refusing conflicting bytes and stale edits. It does not read new
 source paths, resume jobs or perform scientific replay. Checkpoint IDs and evidence are local to
 the library. See [CHECKPOINTS.md](CHECKPOINTS.md) for the exact API and recovery limits.
+
+### HTML report action (wave 8 development)
+
+`export_html_report {artifacts, title?, accept?}` selects 1–8 distinct supported result IDs in
+the open project, shows that selection/title in Reports and downloads one self-checking HTML
+file. The response includes the report fingerprint, selected IDs and `recomputed: false`.
+`accept: true` explicitly acknowledges all selected results' provider terms for private study.
+Changed projects/analyses and cancellation prevent stale downloads. No output path, source
+reading or scientific computation is introduced. The local endpoint is `POST /api/reports/html`
+with `{title, artifacts, accept?}`; it returns the `X-ClonoLoom-Report` fingerprint and HTML
+attachment. See [HTML-REPORTS.md](HTML-REPORTS.md) for evidence, size and replay limits.

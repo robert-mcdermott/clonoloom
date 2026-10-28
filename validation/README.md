@@ -602,3 +602,29 @@ calibration. The `checkpoints` browser scene uses the existing artificial batch-
 exercises proposed sensitivity settings, comparison, deleted-result recovery, undo/redo, saved
 reopening, unchanged certificate identity, exact replay, stale-edit refusal and cancellation in
 both themes. Existing cohort/batch-QC/motif certificate scenes remain regression checks.
+
+## Self-checking HTML reports (Wave 8, slice 5)
+
+`reports_test.go` verifies exact JSON/certificate bytes and native replay for all five supported
+kinds, including the complete release count-model fixture (about 19,000 clonotypes). The motif
+fixture uses a bounded subset of artificial captured units; the large full screen can exceed
+report bounds and remains available through native certificates. Repeat exports are byte-identical
+for fixed evidence, title, order and build. Controls cover complete selection, hostile labels,
+numeric tokens, missing/null, table bounds, unknown requests, provider terms, changed files and
+cancellation. No existing release fixture is rewritten.
+
+```sh
+mkdir -p /tmp/report-oracle
+CLONOLOOM_REPORT_ORACLE_DIR=/tmp/report-oracle go test -timeout 10m . -run TestHTMLReportsExactEvidenceAndReplay
+UV_CACHE_DIR=/tmp/clonoloom-uv uv run --no-project validation/reference/html_report.py /tmp/report-oracle/*.html
+node validation/html-report.mjs /tmp/report-oracle
+```
+
+The independent Python oracle checks raw report members, native ZIP inventories, original
+result/manifest identity and replay digests, without re-encoding scientific JSON. The browser
+harness opens local files with no server and checks all five kinds, complete figures, wrong
+external fingerprints, changed bytes/code/styles, hidden failed content and zero network requests.
+`web/lib/report-check.test.mjs` tests the portable checker with Node's independent SHA-256.
+The `html-reports` and `offline-report` capture scenes exercise export, stale edits, cancellation,
+saved scientific geometry and both-theme accessibility on the realistic artificial batch-QC study.
+Integrity/replay validation is separate from the existing independent scientific method controls.

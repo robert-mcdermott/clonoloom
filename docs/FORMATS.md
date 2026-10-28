@@ -1051,3 +1051,13 @@ raw before/after JSON strings beneath descriptive changes. Recovery restores ana
 exact attached result bytes, retaining current project identity/history. Neither format is a
 certificate, portable archive or running-job state. See [CHECKPOINTS.md](CHECKPOINTS.md) for
 bounds, version checks, conflict refusal, cancellation, numeric precision and replay limits.
+
+## Self-checking HTML reports (Wave 8 development)
+
+`clonoloom-html-report` v1 inventories exact embedded content, geometry source, stylesheet,
+original result JSON and native certificates for 1–8 explicitly selected supported results.
+Its scope is `embedded-report-bytes`; its SHA-256 fingerprint hashes the exact Go-encoded
+inventory bytes. It is an offline HTML envelope, not a new certificate or scientific replay
+format. Go renders exact numeric tokens in tables; the browser checks bytes and places existing
+figure marks. Unsupported/oversized evidence is refused without row truncation. See
+[HTML-REPORTS.md](HTML-REPORTS.md) for fields, limits, provider gates and the trusted-checker boundary.

@@ -264,8 +264,11 @@ AIRR inputs, or replay supported certificates, without a browser or server. They
 normalized parameters, provider notices and a complete run inventory.
 [Analysis checkpoints](docs/CHECKPOINTS.md) keep immutable local settings and attached result
 bytes, compare exact recorded changes and recover through Undo/Redo. They do not back up
-original source files or replace scientific replay. The
-[Wave 8 plan](clonoloom-spec/roadmap.md) schedules further source coverage, reports, MCP
+original source files or replace scientific replay.
+[Self-checking HTML reports](docs/HTML-REPORTS.md) package explicitly selected results with
+exact tables, existing figures, cited methods, notices and original certificates. Their offline
+browser check verifies embedded bytes, not scientific validity; native replay remains separate.
+The [Wave 8 plan](clonoloom-spec/roadmap.md) schedules further source coverage, automation policy, MCP
 and generated Python/R clients. Published binaries remain 0.7.0
 until the next release.
 

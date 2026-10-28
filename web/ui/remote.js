@@ -87,6 +87,11 @@ export function remoteActions(app) {
   const lociOf = (summary) => Object.keys(summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
 
   const actions = {
+    async export_html_report({artifacts,title='Saved analysis report',accept=false}) {
+      await app.setMode('reports');
+      const view=await waitFor(()=>app.htmlReportsView,5000,'HTML reports');
+      return {message:'Self-checking HTML downloaded; no scientific recomputation.',data:await view.exportReport(artifacts,{title,accept})};
+    },
     async create_checkpoint({name}) {
       await app.setMode('reports');
       const view = await waitFor(() => app.checkpointsView, 5000, 'Checkpoints');

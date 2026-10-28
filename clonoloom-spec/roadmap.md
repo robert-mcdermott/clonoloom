@@ -17,8 +17,8 @@ requirement's status is in `requirements.md`; release changes are in `CHANGELOG.
 released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
 with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
 `wave8` branch. Slices 1 and 2 were committed and pushed as `b459f61` and `62b088b`.
-Slice 3 was committed and pushed as `59b8868`. Slice 4 is implemented and validated, awaiting
-the user's commit. No 0.8.0 release is made.
+Slice 3 was committed and pushed as `59b8868`; slice 4 as `1874fc7`. Slice 5 is implemented
+and validated, awaiting the user's commit. No 0.8.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2989,7 +2989,7 @@ additional source/parent contracts must be mapped explicitly before expanding su
 
 ### Slice 4: checkpoints and analysis differences
 
-**Implemented and validated; awaiting the user's commit.** O7, O9, N2/N4/N7.
+**Committed and pushed as `1874fc7`.** O7, O9, N2/N4/N7.
 
 - Add named immutable local checkpoints in Reports, using the compatible CytoWeave pattern
   of snapshot, compare and undoable recovery. Preserve raw project JSON and every inventoried
@@ -3055,6 +3055,66 @@ Validation completed:
 
 Slice 5 remains self-checking reports. Portable transfer of checkpoint evidence belongs to the
 explicit project-archive contract in slice 10; no commit, tag, release or publication here.
+
+### Slice 5: self-checking HTML reports
+
+**Implemented and validated; awaiting the user's commit.** O6, O1/O2, O9, N2/N4/N7.
+
+- Export one offline HTML file for one to eight explicitly selected saved results from the
+  five existing certificate kinds. Reuse original result/manifest bytes, provider gates,
+  notices, methods and references; do not open source paths or imply project-wide coverage.
+- Go renders complete exact-value tables and recorded evidence without float conversion.
+  Embed native replayable certificates and result JSON downloads. Bound exports and refuse
+  unsupported, changed, malformed or oversized evidence rather than silently drop records.
+- Reuse existing batch-QC, cohort comparison and count-model figure geometry. Show all
+  applicable plots within declared bounds, never select discoveries or compute new statistics.
+  Feature tables and motif screens retain complete tables; no new visualization method here.
+- A standalone browser checker verifies the exact report-content bytes and embedded download
+  bytes before displaying them. Allow an independently retained report fingerprint. No network
+  resources, source paths, external fonts or unescaped metadata. State unsupported/failed checks
+  explicitly; checksums are not scientific replay, signatures or biological validation.
+- Preserve exact numeric tokens in tables/downloads; browser numbers are used only for existing
+  figure geometry, with explicit refusal of unsafe integer geometry. Carry full denominators,
+  missing/exclusion reasons, correction families, methods and kind-specific scientific limits.
+- Exercise offline checks, tampered evidence/content, independently pinned fingerprints,
+  source-free reopening, provider gates, stale edits/cancellation, exact certificate replay,
+  hostile labels, complete tables and existing figure geometry. Review both-theme screenshots.
+
+Validation completed:
+
+- Full application/internal race suite passed with the thirty-minute allowance (application
+  715.737 s). Final targeted report/action race controls passed in 136.523 s; amd64 controls
+  passed in 19.254 s. Exact original result/certificate bytes and native replay pass for all
+  five kinds, including the full release count-model result with about 19,000 clonotypes.
+  Existing release fixtures, scientific workers and estimator/plotting modules are unchanged.
+- Repeated exports with fixed selection/order, title, evidence and build are byte-identical.
+  Multi-result selection stays explicit. Provider gates, cancellation, stale edits, corrupt
+  files, unsupported requests, numeric tokens, missing/null and table limits are checked.
+  The full large motif study exceeds the bounded report contract; native certificates remain
+  available. A smaller captured artificial motif fixture validates its report/replay path.
+- The independent Python oracle, run through `uv`, checks five reports' inventories, exact
+  result bytes, ZIP members, certificate fingerprints and native replay digests. The offline
+  browser harness opens all five as local files, with no server or network requests, and
+  verifies figures, independent fingerprints, changed evidence, altered geometry/styles and
+  hidden failed content. Final regenerated exports passed in 5.598 s.
+- Table-parser fuzzing completed 506,908 executions in thirty seconds without failure.
+  Go vet, gofmt, browser/helper syntax and six CGO-free platform builds pass. All 158 JavaScript
+  tests and 14 contrast/color-vision checks pass. Independent cohort feature/comparison,
+  batch-QC/motif and no-fused-operations controls pass (7.369 s), plus the independent
+  statsmodels count-model reference (0.274 s). This is not the complete scientific release suite.
+- Application export and offline-figure workflows pass in both themes, including accessibility,
+  visible remote selection/title, cancellation and stale-response refusal. All four screenshots
+  were reviewed. A capture assertion initially counted all included samples rather than only
+  available metric values; it now checks every plotted sample and coordinate against recorded
+  evidence. Missing values remain in the complete tables. Initial export bounds were adjusted
+  to retain full release count-model rows while avoiding duplicate large captured recipes.
+- Site build passes with 51 pages and 63 screenshot references. The audit passes 200 checks
+  across 50 pages, two themes and two widths. Guides document numeric precision, geometry
+  coverage/unavailable states, all bounds, original recipe downloads, provider restrictions,
+  the trusted-checker boundary and the distinction from scientific replay and validity.
+
+Keep version 0.7.0. Broader result contracts and portable project archives remain separate;
+automation policy is slice 6. No commit, tag, release or publication in this slice.
 
 ## Later waves (outlined)
 

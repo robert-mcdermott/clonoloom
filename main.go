@@ -34,7 +34,7 @@ import (
 	"clonoloom/internal/jobs"
 )
 
-//go:embed web/index.html web/styles.css web/app.js web/favicon.svg web/lib/*.js web/ui/*.js
+//go:embed web/index.html web/styles.css web/app.js web/favicon.svg web/lib/*.js web/ui/*.js web/ui/offline-report.css
 var content embed.FS
 
 var version = "0.7.0"
@@ -489,6 +489,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerCache(mux)
 	a.registerCertificates(mux)
 	a.registerCheckpoints(mux)
+	a.registerHTMLReports(mux)
 	a.registerAnalyses(mux)
 	a.registerTCRdist(mux)
 	a.registerPgen(mux)
