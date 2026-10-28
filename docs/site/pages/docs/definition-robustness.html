@@ -1,0 +1,36 @@
+---
+title: Definition robustness
+description: Audit saved subject-feature comparisons across declared clonotype definitions, preserving subjects, methods and complete evidence.
+lede: A conclusion can depend on how rearrangements are grouped into clonotypes. Compare declared alternatives while keeping the biological observations and analysis settings fixed.
+---
+<h2 id="run">Audit a saved comparison</h2>
+<ol>
+<li>Save a checked <a href="cohort-design.html">study design</a>, its <a href="cohort-features.html">subject features</a> and a <a href="cohort-comparisons.html">group comparison</a> with the intended features and tests.</li>
+<li>In Cohort → <strong>Definition robustness</strong>, choose that comparison. Keep the original receptor dataset available for the initial capture.</li>
+<li>Declare one to five scientifically defensible alternatives before inspecting outcomes. The visible choices cover nucleotide/amino-acid junctions and V/J gene, allele, family or omitted calls.</li>
+<li>Select <strong>Audit definitions</strong>. Inspect each feature, its estimates and intervals, and the assigned evidence under every definition.</li>
+</ol>
+<p>The baseline plus alternatives keep the same subjects, exclusions, contrast, QC, chain/cell/productivity rules, selected features, confidence, tests and randomization settings. Definitions must differ in meaning. An AA definition requires productive sequences, so it cannot silently replace an NT baseline that includes nonproductive sequences. Baseline measurements and inference must exactly reproduce the saved result.</p>
+
+<h2 id="read">Read direction and uncertainty separately</h2>
+<shot name="definition-robustness" alt="Synthetic 32-subject study with four declared definitions, all mean effects and marginal intervals, and a richness contrast that changes direction">Sixteen subjects per group, unequal UMI depths and a sparse abundance tail. Synonymous junctions and explicit V-gene/allele distinctions change the partitions. This controlled example demonstrates definition sensitivity; it is not a fitted human repertoire or evidence of a biological response.</shot>
+<p>Each forest row is one analysis of the <strong>same subjects</strong>. Rows remain in declared order. Points are comparison-minus-reference mean effects; bars are marginal t intervals. A zero reference line helps read direction. Missing intervals and failed analyses remain explicit. Select a row to inspect its complete subject observations and probability-effect/rank-test table.</p>
+<p>The plain summaries describe whether effect directions agree or change and how marginal intervals relate to zero. They do not use a p-value threshold. The minimum, maximum and span of estimates are a <strong>descriptive range, not a confidence interval</strong>. Agreement does not prove equivalence, a biological truth, joint coverage or robustness to alternatives you did not declare.</p>
+<p>Changing definitions changes receptor partitions and can change assigned abundance or the meaning of diversity. Expand <strong>Definitions, assigned evidence and exclusions</strong> to compare per-sample richness and abundance. These observed-depth features are not rarefied or coverage-standardized. UMI counts and clonotypes are not independent biological replicates.</p>
+
+<h2 id="multiplicity">One declared audit family</h2>
+<p>The original within-definition Benjamini–Hochberg values remain available. Additional Benjamini–Yekutieli correction covers both tests for every feature and every declared definition. Failed slots stay in the family as p=1 internally and remain unavailable in output. BY accommodates dependent tests when the input p-values are valid; it cannot correct outcome-driven selection of analyses or violated test assumptions. Intervals remain marginal and are not adjusted by BY.</p>
+<p>This is a descriptive sensitivity audit inspired by specification-curve analysis. It does not implement that method's joint inferential test, pool effects or treat definitions as replications. It covers aggregate subject features. Individual-clonotype count models require a separately defined correspondence between changing receptor partitions and are outside this audit.</p>
+
+<h2 id="save">Saved evidence and exports</h2>
+<p>The audit retains the full parent comparison/design, source notices, definitions, captured per-sample abundance vectors, every feature table, results and failure reasons. Saved reopening and ZIP export need no raw source. Replay needs the saved comparison and captured job evidence; original diversity/feature grandparents need not be present.</p>
+<p><strong>Export definition audit ZIP</strong> includes complete JSON, manifest, <code>sensitivity.csv</code>, one subject-feature CSV per available definition and provider NOTICE. Figure exports retain the rules, contrast, units, subject counts and interval meanings. Methods includes saved evidence and citations. Remote clients use <a href="remote-control.html#definition-robustness"><code>audit_definitions</code></a>.</p>
+<p>The implementation accepts at most 256 source samples, 200 selected subject/group observations, six total definitions and 400,000 positive sample/clonotype abundance entries per definition. These bounds are not power recommendations.</p>
+
+<h2 id="sources">Method sources</h2>
+<ul>
+<li>Simonsohn, Simmons &amp; Nelson (2020). <a href="https://doi.org/10.1038/s41562-020-0912-z">Specification curve analysis</a>. Descriptive inspiration; no joint specification-curve test.</li>
+<li>Sofou et al. (2023). <a href="https://doi.org/10.1038/s41375-023-01952-7">Clonotype definitions for immunogenetic studies</a>. Context for alternative receptor groupings.</li>
+<li>Benjamini &amp; Yekutieli (2001). <a href="https://doi.org/10.1214/aos/1013699998">False discovery rate under dependency</a>.</li>
+<li>Existing <a href="cohort-comparisons.html#sources">subject-comparison methods</a> and diversity definitions are reused unchanged.</li>
+</ul>

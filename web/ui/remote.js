@@ -5,6 +5,7 @@
 // same actions with their arguments (actions.go, GET /api/remote/tools); a Go test checks the two
 // lists agree. Adapted from SituCraft 0.9.0 web/ui/remote.js.
 
+import { cohortExampleStep } from './cohort-example.js';
 import { useInvariantSpecies } from '../lib/invariant.js';
 import { networkOptions } from '../lib/networks.js';
 import { closeDialogs, toast } from './overlays.js';
@@ -24,7 +25,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const count = (n, noun) => `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`;
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', jobs: 'jobs' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', cohort: 'cohort', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.
@@ -95,6 +96,8 @@ export function remoteActions(app) {
           project: { id: project.id, name: project.name },
           view: ui.mode,
           focus: ui.focus ?? null,
+          cohortDesigns: (project.cohortDesigns ?? []).map((d) => ({ id: d.id, name: d.name, revision: d.revision, dataset: d.dataset, design: d.result.id, ok: d.result.ok })),
+          artifacts: project.artifacts.map((r) => ({ id: r.id, kind: r.kind, name: r.name, dataset: r.dataset })),
           datasets: project.datasets.map((d) => ({
             id: d.id, name: d.name, formats: d.formats, unit: datasetUnit(d) || null, singleCell: d.singleCell, rows: d.rows, samples: d.samples,
             findings: d.findings, files: d.sources.map((s) => s.path), metadata: (d.metadata ?? []).map((m) => m.path),
@@ -185,6 +188,86 @@ export function remoteActions(app) {
       const next = annotate(store.project, edits, 'Annotated by a program');
       if (next !== store.project) store.commit(next, `Annotate samples of ${d.name}`);
       return { message: `${d.name}: ${count(edits.length, 'value')} set on ${count(Object.keys(samples).length, 'sample')}.`, data: { dataset: d.id, values: edits.length } };
+    },
+
+    async cohort_example_step(options = {}) {
+      return cohortExampleStep(app, actions, datasetOf(options.dataset), options);
+    },
+
+    async check_cohort_design({ dataset, spec, name, save }) {
+      const d = datasetOf(dataset);
+      app.focusItem({ kind: 'dataset', id: d.id });
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.cohortView, 5000, 'the Cohort view');
+      await view.choose(d.id);
+      const result = await view.configure({ spec, name, save });
+      return { message: result.ok ? 'The structural design checks passed.' : 'The design needs attention.', data: result };
+    },
+
+    async screen_batch_qc(options = {}) {
+      const dataset=datasetOf(options.dataset);app.focusItem({kind:'dataset',id:dataset.id});await app.setMode('qc');app.qcView.show('batch-qc');
+      const view=await waitFor(()=>app.batchQCView,5000,'Batch QC');await waitFor(()=>view.state().status!=='loading',10000,'Batch QC source');
+      const result=await view.run({...options,dataset:dataset.id});if(!result)throw new Error('The project changed before the result was saved.');
+      return {message:'Batch QC saved.',data:{artifact:result.artifact.id,samples:result.result.analysis.included,subjects:result.result.analysis.subjects,description:result.result.description}};
+    },
+    async screen_contamination(options = {}) {
+      const dataset=datasetOf(options.dataset);app.focusItem({kind:'dataset',id:dataset.id});await app.setMode('qc');app.qcView.show('contamination');
+      const view=await waitFor(()=>app.contaminationView,5000,'Contamination evidence');await waitFor(()=>view.state().status!=='loading',10000,'Contamination source');
+      const result=await view.run({...options,dataset:dataset.id});if(!result)throw new Error('The project changed before the result was saved.');
+      return {message:'Contamination evidence saved.',data:{artifact:result.artifact.id,pairs:result.result.analysis.pairs.length,matches:result.result.analysis.matches.length,description:result.result.description}};
+    },
+    async analyze_convergence(options = {}) {
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.convergenceView, 5000, 'Convergence and HLA');
+      app.specificityView.show('convergence');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before the analysis was saved.');
+      return {message:'Subject recurrence and HLA analysis saved.',data:{artifact:result.artifact.id,subjects:result.result.analysis.observedSubjects,family:result.result.analysis.family,tested:result.result.analysis.tested,description:result.result.description}};
+    },
+
+    async screen_motifs(options = {}) {
+      const dataset = datasetOf(options.dataset);
+      app.focusItem({kind:'dataset',id:dataset.id});
+      await app.setMode('specificity');
+      const view = await waitFor(() => app.motifsView, 5000, 'Motif screen');
+      app.specificityView.show('motifs');
+      await app.specificityView.settled();
+      await waitFor(() => view.state().status !== 'loading', 10000, 'Motif source');
+      const result = await view.run({...options, dataset: dataset.id});
+      if (!result) throw new Error('The project changed before the screen was saved.');
+      return {message:'Motif screen saved.',data:{artifact:result.artifact.id,family:result.result.analysis.family,reported:result.result.analysis.reported,description:result.result.description}};
+    },
+
+    async audit_definitions(options = {}) {
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.robustnessView, 5000, 'Definition robustness');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before the audit was saved.');
+      return { message: 'Definition audit saved.', data: { artifact: result.artifact.id, family: result.result.analysis.family, summaries: result.result.analysis.summaries, description: result.result.description } };
+    },
+
+    async fit_cohort_counts(options = {}) {
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.cohortCountsView, 5000, 'Replicated counts');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before the count model was saved.');
+      return { message: 'Replicated count model saved.', data: { artifact: result.artifact.id, family: result.result.analysis.family, tested: result.result.analysis.tested, description: result.result.description } };
+    },
+
+    async compare_cohort(options = {}) {
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.cohortCompareView, 5000, 'Group comparisons');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before the comparison was saved.');
+      return { message: 'Subject-level comparison saved.', data: { artifact: result.artifact.id, family: result.result.analysis.family, tested: result.result.analysis.tested, description: result.result.description } };
+    },
+
+    async build_cohort_features(options = {}) {
+      await app.setMode('cohort');
+      const view = await waitFor(() => app.cohortFeaturesView, 5000, 'Subject feature table');
+      const result = await view.run(options);
+      if (!result) throw new Error('The project changed before features were saved.');
+      return { message: 'Subject feature table saved.', data: { artifact: result.artifact.id, subjects: result.result.design.subjects, observations: result.result.table.rows.length, description: result.result.description } };
     },
 
     async describe_subjects({ dataset }) {
@@ -494,6 +577,22 @@ export function remoteActions(app) {
       const result = await view.run({ ...options, phenotypes: options.phenotypes ?? app.cellPhenotypesView?.state().artifact });
       if (!result) throw new ActionError('The project changed during the analysis.');
       return { message: 'Clonotype modularity saved.', data: { artifact: result.artifact.id, tested: result.result.analysis.tested, eligible: result.result.analysis.eligible, description: result.result.description } };
+    },
+
+    async compare_pseudobulk(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellPseudobulkDEView, 5000, 'Pseudobulk differential expression');
+      const result = await view.run(options);
+      if (!result) throw new ActionError('The project changed during the analysis.');
+      return {message:'Paired pseudobulk expression saved.',data:{artifact:result.artifact.id,subjects:result.result.analysis.observations.length/2,family:result.result.analysis.family,tested:result.result.analysis.tested,description:result.result.description}};
+    },
+
+    async aggregate_pseudobulk(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellPseudobulkView, 5000, 'Pseudobulk counts');
+      const result = await view.run(options);
+      if (!result) throw new ActionError('The project changed during aggregation.');
+      return {message:'Pseudobulk count evidence saved.',data:{artifact:result.artifact.id,eligible:result.result.analysis.eligible,subjects:result.result.analysis.subjects,description:result.result.description}};
     },
 
     async export_anndata(options = {}) {

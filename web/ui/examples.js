@@ -170,7 +170,7 @@ export function createExamples(app, kind = EXAMPLES) {
       h('p', e.description),
       e.opens?.length ? h('ul.example-opens', ...e.opens.map((o) => h('li', h('b', o.title), ': ', o.summary))) : null,
       e.opens?.some((o) => o.steps?.length)
-        ? h('details.example-steps', h('summary', 'Guided steps, in the Tracking view'), h('ol', ...e.opens.flatMap((o) => o.steps ?? []).map((step) => h('li', step.title))))
+        ? h('details.example-steps', h('summary', e.name.startsWith('simulated-counts-') ? 'Guided steps, in Cohort or Tracking' : 'Guided steps, in the Tracking view'), h('ol', ...e.opens.flatMap((o) => o.steps ?? []).map((step) => h('li', step.title))))
         : null,
       h('dl.kv.small',
         h('dt', 'Source'), h('dd', e.page ? external(e.page, e.source) : e.source),

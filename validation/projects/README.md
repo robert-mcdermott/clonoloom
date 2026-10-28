@@ -128,3 +128,21 @@ uv run --offline --no-project validation/reference/single_cell_release.py
 
 This uses pinned AnnData/h5py/SciPy public APIs to compare raw MEX counts, annotations, receptor
 links and every supplied/computed embedding row, then verifies an AnnData rewrite.
+
+## 0.7.0 — complete cohort studies
+
+`node validation/create-project-0.7.mjs` generates an isolated real-browser project with five
+studies: independent positive, independent null, 12/20 unbalanced, 28-subject paired and 16/16
+fully confounded. All 184 source samples and their complete generating truth are retained.
+The four usable designs each have diversity → subject features → comparison + count model;
+the confounded design retains its failed check and creates no analysis artifact. Five saved
+design checks and sixteen artifacts are kept. Original source paths map from `locations.json`
+to `data/`; project and design-source reopening paths are portable, scientific records unchanged.
+
+`projects_cohort_test.go` rechecks designs and all truth/source hashes and replays real durable
+workers under the recorded IDs, comparing every result byte. Only verified original parent
+manifests are restored, retaining job/time/software provenance used by child records. All new
+fixture artifact files, including `manifest.json`, are stored with a `.gz` suffix because count
+job specs capture raw evidence. Decompression preserves exact original bytes. Earlier fixtures
+retain their original storage conventions. JavaScript also checks project byte round-tripping,
+all usable result chains, and retention of the failed confounding check in cited Methods.

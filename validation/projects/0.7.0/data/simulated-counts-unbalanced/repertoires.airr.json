@@ -1,0 +1,1604 @@
+{
+  "Repertoire": [
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S01-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S02-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S03-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S03-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S03-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S03"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S04-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S04-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S04-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S04"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S05-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S05-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S05-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S05"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S06-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S06-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S06-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S06"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S07-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S07-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S07-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S07"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S08-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S08-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S08-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S08"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S09-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S09-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S09-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S09"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S10-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S10-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S10-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S10"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S11-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S11-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S11-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S11"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S12-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S12-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S12-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "control"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S12"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S13-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S13-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S13-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S13"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S14-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S14-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S14-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S14"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S15-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S15-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S15-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S15"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S16-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S16-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S16-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S16"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S17-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S17-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S17-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S17"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S18-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S18-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S18-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S18"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S19-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S19-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S19-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S19"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S20-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S20-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S20-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S20"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S21-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S21-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S21-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S21"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S22-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S22-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S22-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S22"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S23-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S23-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S23-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S23"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S24-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S24-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S24-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S24"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S25-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S25-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S25-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S25"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S26-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S26-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S26-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S26"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S27-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S27-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S27-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S27"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S28-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S28-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S28-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S28"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S29-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S29-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S29-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S29"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S30-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S30-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S30-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S30"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S31-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S31-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S31-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S31"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S32-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S32-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S32-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-counts-unbalanced",
+        "study_title": "An unbalanced replicated repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "stimulated"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S32"
+      }
+    }
+  ]
+}

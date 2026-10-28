@@ -9,15 +9,13 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–5 are complete. Wave 6 has ten implemented slices; slice 10 prepares release 0.6.0.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are complete. Wave 7 is underway below; the first four slices cover subject designs, features, comparisons and replicated counts.
 
-**Progress** is marked here as each slice is committed: done, with what it settled or changed from
-the plan; next; or to come. Each requirement's own status is in `requirements.md`, and what each
-release brought in `CHANGELOG.md`. **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves
-2–5 are merged and released as 0.2.0–0.5.0; the 0.5.0 product site is published.
-Wave 6 is underway on `wave6`. Slices 1–9 and the cell-map feedback follow-up are committed.
-Slice 10 completes the guided study, compatibility fixture and release checks. Version is 0.6.0;
-commit, merge, tag, release and site publication remain with the maintainer.
+**Progress** is marked here as each slice is committed: done, next or to come. Each
+requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
+**Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
+released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
+`wave7`. Slices 1–11 are committed and pushed. Slice 12 is implemented and validated, awaiting maintainer commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2102,13 +2100,655 @@ screenshots are refreshed, and the new study plus map/graph-test visuals are ins
 The site builds 35 pages with 41 screenshot sets and passes 136 accessibility/overflow checks.
 The link-preview image is regenerated; its bytes are unchanged because its crop is unchanged.
 
-No commit, tag, release or site publication was performed. Wave 7 has not started.
+The maintainer committed and merged wave 6, published release 0.6.0, and published the site.
+The release cache-key omission was corrected with a host regression check before publication.
+
+## 0.7.0: cohorts and robustness (wave 7)
+
+The subject is the independent unit. A cohort result must first state the biological
+question, sampled population, groups, pairing, exclusions, abundance unit, definition,
+QC and multiplicity family. Cells, chains, libraries and repeated samples cannot inflate
+replication. Passing structural checks is not a claim of adequate power, randomization,
+independence or absence of confounding.
+
+Slice 6 sequence-signature screens are separate conditional repertoire analyses, not cohort
+comparisons: their sequence units are not independent subjects. Their exploratory scores
+carry explicit exchangeability/ascertainment limits and imply no population-level inference.
+
+### Wave 7 sequence
+
+| Slice | Scope and requirements | Acceptance before the next slice |
+| --- | --- | --- |
+| 1 | Explicit two-group study designs (G1, G3 foundation) | Independent/paired subjects, exact group labels, explicit sample exclusions, refusal of repeated samples/incomplete pairs, batch-confounding check, named saved snapshots, table inspection, remote control and artificial example |
+| 2 | Subject feature tables (G4; G2 inputs) | Source-pinned per-subject metrics with units, definition/QC and missingness, exports, explicit sample selection; do not average diversity across libraries or silently pool counts |
+| 3 | Group comparisons (G2, G3) | Design-driven independent/paired tests and nonparametric counterparts, effect sizes and intervals, explicit BH family; subject points and within-subject links, correct interval labels, no cell-level tests; extend multi-group designs only with validated estimability checks |
+| 4 | Replicated count models (T4 remainder) | Explicit offsets, design matrices and contrasts, rank/estimability checks, negative-binomial dispersion policy, repeated-subject handling, independently validated calibration and nonconvergence; no substitution of Poisson tests |
+| 5 | Definition robustness (C5) | Recompute pinned key results under declared alternative definitions; effect direction/size/uncertainty and failed analyses shown; no verdict based solely on crossing a significance threshold |
+| 6 | Motifs and GLIPH2-style groups (R7, S3) | Document published global/local sequence rules, background matching, motif tests and scores; distinguish adaptations, disclose selection/multiplicity, independent reference validation; groups are hypotheses, not proven specificity |
+| 7 | Convergence and HLA association (S6) | Unique subjects as observations, explicit typed-subject universe and allele resolution/missingness, hypergeometric tails and declared multiplicity; population structure and ascertainment limitations |
+| 8 | Contamination evidence (Q4) | Cross-subject nucleotide matches with explicit abundance/coverage; separate plausible public/high-Pgen receptors; flags are evidence for investigation, never proof of contamination |
+| 9 | Batch QC (Q5) | Subject/sample denominators, robust z-score policy including zero MAD and small groups, distributions and exclusions; separate a QC flag from correction or biological inference |
+| 10 | Pseudobulk count evidence (M5 foundation) | Exact raw-count sums per subject × supplied cell type × declared expansion category, feature/modality identity, sample/time boundaries, minimum-cell rule, missing versus zero, export and independent aggregation oracle |
+| 11 | Pseudobulk differential expression (M5) | Within-subject category comparisons with explicit count design/offsets, estimability, filtering/dispersion/multiplicity and replicate-aware uncertainty; expanded means a stated size category, not antigen specificity; independent null/positive controls |
+| 12 | Complete cohort study and release 0.7.0 | Guided artificial null/positive/unbalanced/confounded studies, all results saved and replayable, methods and references, reviewed figures, full scientific/platform/accessibility/performance checks and compatibility fixture |
+
+Each later statistical slice rechecks its primary papers and publishes its exact methods,
+limits and independent reference fixtures before implementation is considered complete.
+A method that cannot be independently validated is not advertised as implemented. Runtime
+remains standard-library Go and vanilla JavaScript; external tools are validation only.
+No incompatible-licensed implementation source is inspected or copied.
+
+### Decisions for wave 7
+
+- Start with one opened dataset (which may contain many source files) and two explicitly
+  chosen levels, reference then comparison. Subject IDs must be globally meaningful within
+  that dataset. Multi-dataset merging and arbitrary formula models are not implicit.
+- Slice 1 never infers that two libraries are technical replicates or pools repeated samples.
+  Exclude samples explicitly with reasons to select a justified observation. Later count
+  aggregation needs its own recorded biological and technical policy.
+- Independent designs require disjoint subjects; paired designs require one sample per
+  subject at each chosen level, with no automatic complete-case deletion. Two subjects per
+  group or two complete pairs is a structural minimum, not a power recommendation.
+- Groups use exact trimmed annotation labels. Existing Tracking time parsing is unchanged;
+  cohort time labels such as `week 4` and `day 28` are not silently equated.
+- Named design versions keep all effective design annotations, choices, exclusions, checks,
+  citations and a Go-computed content identity bound to the source-derived dataset ID.
+  Annotation edits mark old designs changed; old snapshots remain inspectable/exportable.
+- Slice 1 detects complete separation of groups by recorded batch, and warns when batch
+  annotations are missing or sampling contexts differ. It does not fit adjusted models or
+  certify that all confounding has been ruled out.
+- Adapt the siblings' named-design and undo workflows; all scientific rules/counts remain
+  in Go. The first visual is an accessible membership/count table, not an inferential plot.
+
+### Slice 1: study design before cohort inference
+
+**Committed.** Requirements G1 and G3 (bounded first implementation).
+Add the Cohort view and `POST /api/cohort/design`, requiring the complete sample set of an
+opened dataset, with a bounded strict request schema. Validate exact source sample names,
+subject grouping, exclusions, independent/paired structure and recorded batch overlap.
+Report every sample's disposition and Go-computed group/subject counts. Save named versions
+in the project, with undo, changed-annotation detection, JSON export and remote control.
+Use the artificial standard study to demonstrate why twelve samples from six subjects are
+not twelve independent replicates and how a justified single observation per subject is selected.
+
+Validation: hand-specified independent/paired/missing/repeated/confounded controls; exhaustive
+small membership assignments checked against independent SQL aggregation; deterministic saved
+identity under row reordering; endpoint dataset membership and strict request failures; project
+round-trip, immutable saved snapshots, annotation changes and undo; real-browser example,
+both-theme captures and accessibility. No inferential statistics are added in this slice.
+
+**Validation completed:** application/internal race suites pass (root 14.918 s), including
+release-project replay; all 116 JavaScript tests pass. The required-data scientific suite
+passes in 158.662 s, excluding unchanged performance-budget tests; no existing inferential
+algorithm or budgeted data path changed. Focused race checks validate
+all 6,561 independent SQL assignments in both layouts (13,122 checks), including membership,
+counts, complete pairs and finding counts. Bounds, malformed requests, duplicate/unknown
+samples, exact labels and source/annotation/contrast identity changes are covered.
+
+All six CGO-free platform builds and Go vet pass. The real-browser walkthrough passes in
+both themes for independent and paired designs, repeated-subject refusal, explicit exclusions,
+named saving, undo/redo, project reopening, annotation changes and complete JSON export with
+sources unavailable. Both empty and populated Cohort views pass axe WCAG A/AA checks; both
+screenshots are captured and visually reviewed. All 14 contrast checks pass. The generated
+site builds 36 pages and the 35 audited pages pass 140 theme/viewport checks without violations
+or overflow. Formatting and diff checks pass. Version remains 0.6.0 until release preparation;
+new work is recorded under Unreleased. No commit, push, tag, release or site publication.
+
+### Slice 2: source-pinned subject features
+
+**Committed and pushed.** G4 (first sample/subject catalog) and G2 inputs.
+Bind one explicitly selected saved design version to one verified diversity artifact. Recheck
+canonical design inputs and exact complete sample coverage server-side; pin parent bytes before
+the job and verify them again in the worker. Keep one sample per subject/group, including paired
+subject identity, without averaging libraries or pooling counts. Catalog 13 existing measures
+with units and definitions; distinguish zero abundance/richness from empty, singleton and
+fractional-count missingness. Preserve the full design/exclusions, parent measurements and
+manifest, source notices, definition, QC, options and software/method provenance.
+
+Use an accessible, searchable, paginated observation table with a feature selector; no group
+summary or inferential plot. Save immutable artifacts, undo/redo, route from Results, expose
+remote control and include saved descriptions in Methods. Export exact wide CSV, catalog, JSON,
+manifest and NOTICE; saved evidence must reopen and export without sources or parent artifacts.
+Initial creation requires opening the source dataset to bind fingerprints and provider terms.
+This is a bounded sample/subject diversity catalog; receptor/usage and other feature families
+remain outside the first G4 implementation. Group comparisons begin in slice 3.
+
+Validation covers independent raw-abundance formulas, missingness/zero and unit controls,
+explicit selection and pairing, malformed/changed inputs, durable replay/cancellation,
+checksum tampering, source-free export, CSV/JSON round trips, browser controls, undo/reopen,
+methods and both-theme accessibility/captures. Full application/scientific/platform checks
+and documentation audit are complete.
+
+**Validation completed:** application/internal race tests pass, including release-project
+replay. All 117 JavaScript tests pass. The required-data scientific suite passes in
+160.806 s, excluding unchanged performance-budget tests; existing numeric engines and
+budgeted data paths are unchanged. Focused race checks pass the exhaustive 13,122 design
+membership comparisons and independent raw-abundance feature reference. Additional API
+controls verify provider-term acknowledgments/NOTICE retention and changed-parent worker
+failure without promotion.
+
+Go vet and all six CGO-free platform builds pass. Both-theme browser workflows pass visible
+and remote selection equivalence, filtering, saved annotation isolation, undo/redo, sidebar
+routing, project reopening, source-free ZIP export and cited Methods. Long methods dialogs
+are keyboard-scrollable; accessibility checks wait for entrance animations to settle.
+Both Cohort views and the methods modal pass WCAG A/AA; all 14 contrast checks pass.
+The complete six-subject table screenshots are visually reviewed in both themes. The site
+builds 37 pages with 43 screenshot sets; all 36 audited pages pass 144 theme/viewport checks
+with no violations or overflow. Formatting and diff checks pass. Version stays 0.6.0 until
+release preparation. Subsequently committed and pushed by the maintainer.
+
+### Slice 3: subject-level group comparisons
+
+**Committed and pushed.** G2 and G3, bounded to the existing two-group
+independent/paired designs. The scientific contract is recorded in research §5.32.
+
+- Consume one verified saved feature table, rechecking its embedded design and measurements.
+  Preserve source/parent lineage; no raw data reopening or refitting of diversity is needed.
+- Compute two-sided Welch/paired t and conditional Mann–Whitney/signed-rank tests for every
+  explicitly selected feature. Handle ties by midranks and exact enumeration through 50,000
+  assignments; otherwise use seeded Monte Carlo with inclusive, nonzero tail probabilities.
+- Report mean differences and t intervals separately from probability effects and conservative
+  bounded-difference intervals. Keep zero-variance inference unavailable with reasons.
+  All intervals are marginal. State test assumptions and distinguish rank nulls from effects.
+- Declare exactly two BH slots per selected feature. Any missing observation leaves that
+  feature untested without deleting subjects or pairs; untestable slots remain in the family.
+  Disclose BH dependence assumptions and additional multiplicity from exploratory selection.
+- Show actual subject values and paired links, separately labeled mean-effect intervals,
+  selected counts, units and missingness; no cell-level replication or parent bootstrap bars.
+- Save immutable cancellable/replayable results, complete CSV/JSON/provenance and figure
+  exports, remote controls, Methods and undo/reopen. Preserve provider-term acknowledgment.
+  Keep version 0.6.0; do not introduce multigroup/count models or start slice 4 here.
+
+Acceptance: independent SciPy t/interval/distribution/BH references and exhaustive tied rank
+nulls, Monte Carlo agreement, exact null calibration and simulated interval coverage; missingness,
+pair identity, bounds/cancellation, durable replay, source-free export and parent tampering;
+processor reproducibility, full race/scientific/platform checks, reviewed both-theme plots,
+real-browser workflows, accessibility and documentation audit.
+
+**Validation completed:** full application/internal race tests pass (root 43.168 s), with
+focused race reruns for the final export/provider-term controls. The complete required-data
+scientific suite passes in 469.699 s, excluding unchanged performance-budget tests. The new
+inference, distribution and conditional-randomization references pass, including focused race
+coverage, exact null calibration and 2,000 normal-model replicates per layout. Whole-result
+Monte Carlo bytes and numerical references agree on arm64 and amd64; the compiler scan finds
+no fused multiply-adds. Saved jobs replay identically and missing parents/sources do not prevent
+export; changed evidence is refused before promotion.
+
+All 120 JavaScript tests, Go vet and six CGO-free platform builds pass. Independent/paired
+browser workflows pass in both themes, including visible/remote equivalence, exact point/pair
+counts, standalone figure captions, provider-aware ZIP export, Methods, undo/redo and saved
+reopening. All four screenshots are visually reviewed; the examples state their artificial
+scope and the paired teaching labels do not claim a simulated longitudinal intervention.
+All 14 contrast checks pass. The site builds 38 pages with 45 screenshot sets; 37 audited
+pages pass 148 theme/viewport checks with no accessibility violations or overflow. Formatting
+and diff checks pass. Version remains 0.6.0. Subsequently committed and pushed by the maintainer.
+
+### Slice 4: replicated clonotype counts
+
+**Committed and pushed.** T4 remainder, bounded to saved two-group
+independent/paired studies. The scientific contract is research §5.33.
+
+- Capture whole observed counts under the pinned feature parent's sequence definition/QC;
+  preserve all assigned denominators, filtered/private clonotypes, original sources and terms.
+  Refuse unknown/missing/fractional counts and noncomparable vendor clonotype IDs.
+- Fit NB2 with assigned-library offsets, per-clonotype Cox–Reid dispersion, group contrast,
+  paired subject fixed effects and optional full-rank batch adjustment. Require at least
+  12 subjects/group and 24 residual df; retain failures instead of substituting Poisson tests.
+- Save the design/contrast, counts, offsets, dispersion, both likelihood fits/covariance,
+  conditional marginal Wald log2 intervals, LRT and one explicit eligible-clonotype BH family.
+  No composition normalization, empirical-Bayes moderation or automatic discovery labels.
+- Add complete subject/paired observations, all-fitted MA-style effects and separate model
+  intervals, with inspectable tables, failed fits, figure provenance and no p-value coloring.
+- Add immutable cancellable jobs, raw-source-free durable replay, standalone reopening and
+  exports, remote control, undo/redo and cited Methods with provider-term preservation.
+- Provide independent, paired and null UMI simulations with unequal depths, heterogeneous
+  variation, subject/batch effects, private long tails and full generating truth. Explicitly
+  distinguish artificial identities and generator exposures from biological reality and
+  realized-library offsets. Keep version 0.6.0 until release preparation.
+
+Validation: six independent statsmodels/SciPy numerical references; 1,200 fixed-exposure null
+trials spanning balanced, paired and unbalanced layouts; count/source/truth, estimability,
+missingness, nonconvergence, boundary, family, replay and provider-term controls; both-theme
+browser workflows and visual inspection; full application/scientific/platform checks.
+The observed 93.25–93.5% coverage of nominal 95% conditional intervals is disclosed; this
+unmoderated asymptotic method is not claimed to have exact small-sample calibration.
+
+**Validation completed:** the required-data scientific suite passes in 488.246 s, excluding
+unchanged performance-budget tests. All application/internal race packages pass (application
+rerun 40.061 s after updating the example catalog; count-model calibration 456.968 s), with
+focused race checks for the final missing/fractional source, separation and work-bound controls.
+All six numerical references pass under race and on amd64; native/amd64 whole-result and all
+three example digests agree. The compiler scan finds no fused multiply-adds. Source-free
+replay/export and inherited provider-term tests pass.
+
+The complete example pipeline fits all 48 eligible panel receptors in each positive study,
+with all eight generating changes in the correct direction. One of forty unchanged panel
+receptors in the independent study has BH≤0.05, versus none in the paired study. The all-null
+study fits 45 eligible panel receptors, none with BH≤0.05; three fail the declared count filter.
+These finite controls do not establish exact FDR or interval coverage on arbitrary data.
+
+All 123 JavaScript tests, Go vet and six CGO-free platform builds pass. Both independent/paired
+browser workflows pass in both themes: visible/remote identity, exact subject/pair counts,
+saved Methods, source-free ZIP and figure exports, undo/redo and project reopening. All four
+screenshots are visually reviewed. Review caught and corrected an unintended SVG axis fill;
+count observations now have an explicit zero baseline. The site builds 39 pages with 47
+screenshot sets; 38 audited pages pass all 152 theme/viewport checks with no accessibility
+violations or overflow. All 14 contrast checks, formatting and diff checks pass. Version stays
+0.6.0; no tag, release or publication. Slice 4 was subsequently committed and pushed by the maintainer.
+
+### Slice 5: definition robustness
+
+**Committed and pushed.** C5 is bounded to saved aggregate subject-feature
+contrasts; the scientific contract is research §5.34. Individual-clonotype count-model audits
+need an explicit correspondence between changing receptor partitions and are not claimed here.
+
+- Pin and reconstruct the complete saved comparison, then capture baseline plus 1–5 declared
+  junction/V/J alternatives under identical source QC, chain/cell/productivity rules and unit.
+  Preserve all subjects, exclusions, features, tests, confidence and randomization settings.
+  Refuse equivalent definitions, policy changes and any baseline measurement/inference drift.
+- Reuse the validated diversity and subject-comparison engines. Retain missing/failed analyses
+  with reasons and full test-family membership. Keep within-definition BH and add BY over
+  both tests × features × definitions; marginal intervals remain unadjusted.
+- Report direction, effect-size range and interval behavior separately, without a p-threshold
+  verdict. Definitions reuse subjects; no pooled effect, equivalence claim, joint confidence
+  interval or specification-curve inferential test is implied.
+- Show every definition in a common-axis forest in declared order, complete subject/pair
+  observations, assignment changes, tests and failures. Preserve methods/figure provenance,
+  immutable jobs/replay, provider-aware full exports, remote control and saved reopening.
+- Add a 32-subject, long-tailed gamma-Poisson UMI example with uneven depths and explicit
+  synonymous junction/gene/allele distinctions. Literal truth verifies every partition and
+  count; simulated observed richness reverses direction across definitions. This deliberately
+  sensitive construction is not fitted biological evidence or depth-standardized inference.
+- Keep version 0.6.0. Do not begin slice 6 or perform release operations in this slice.
+
+Validation includes independently grouped Python/SciPy references for all subject values,
+mean effects/intervals, conditional rank tails and BY; missingness/failure/policy/cancellation
+controls; exact baseline and source-free replay/export; literal simulator truth and previous
+preset byte compatibility; processor agreement; accessible browser workflows and both-theme
+visual review.
+
+**Validation completed:** the full application/internal race suite passes (application 65.189 s,
+count-model calibration 470.787 s, simulator 73.689 s). The required-data scientific suite
+passes in 504.456 s, excluding unchanged performance-budget tests. Final focused race checks
+cover provenance/checksum refusals, paired observations, cancellation between definitions,
+abundance bounds and incompatible simulation options. The compiler scan finds no fused
+multiply-adds. Native/amd64 complete-result and example digests agree; earlier count presets
+retain their original bytes. The four-definition example's richness contrast spans −244.125
+to +64.125 observed clonotypes, explicitly a descriptive range under unequal observed depth.
+
+All 126 JavaScript tests, Go vet and six CGO-free platform builds pass. The complete browser
+workflow passes in both themes, including visible/remote identity, every forest row, undo/redo,
+saved reopening, source-free ZIP, figure provenance and saved Methods. Both final screenshots
+are visually reviewed. The local site builds 40 pages with 48 screenshot sets; 39 audited pages
+pass all 156 theme/viewport checks with no accessibility violations or overflow. All 14
+contrast checks, formatting and diff checks pass. Version stays 0.6.0; no commit, push, tag,
+release or publication. Slice 5 was subsequently committed and pushed by the maintainer.
+
+### Slice 6: motifs and sequence-signature groups
+
+**Committed and pushed.** R7 and S3 have a bounded TRB implementation;
+research §5.35 states the complete scientific contract and GLIPH2 adaptations.
+
+- Capture explicitly selected, disjoint query/background samples under saved AA definition
+  and QC. Collapse positive evidence to unique TRBV-gene/full-junction units in each arm;
+  retain source hashes, subject/sample/clonotype membership, abundance units and exclusions.
+  Match exact V/length strata and preserve unmatched cases explicitly.
+- Enumerate overlapping local 2–5-mer windows and global one-position signatures with maximal
+  pairwise-positive BLOSUM62 residue sets. Exclude three residues at each terminal; never chain
+  positions or incompatible substitutions transitively. These are documented adaptations,
+  including stricter local V/length matching, not claims of GLIPH2 implementation equivalence.
+- Construct the complete pooled, arm-label-independent signature family before testing. Use
+  stable one-sided Fisher tails and log-space BY over all slots; reporting filters never
+  shrink the family. Preserve unmatched nulls, undefined zero-background folds and underflow
+  log probabilities. The score is −log10(BY), not the GLIPH2 composite score.
+- State exchangeable-sequence assumptions and donor, repertoire and ascertainment limitations.
+  Abundance and subject annotations are descriptive; no independent-subject p-values, N/P
+  boost, HLA test, antigen label or experimental specificity conclusion is supplied.
+- Show complete query-member residue frequencies on one fixed 0–100% opacity scale, with
+  one-based full-junction positions, exact count tables and explicit denominators. Selection
+  explains conserved positions; the display is not an information-content logo.
+- Save immutable cancellable jobs, source-free replay/reopening, complete provider-aware ZIPs,
+  remote controls, Methods and figure provenance. Revalidate captured arm/subject evidence.
+- Provide a twelve-subject example with varied junctions, uneven gamma-Poisson UMI counts,
+  known local/global signatures and every source/truth record. It is an artificial positive
+  control, not fitted recombination or a power/FDR benchmark. Existing presets remain stable.
+- Keep version 0.6.0. Slice 7 and release operations remain outside this change.
+
+Validation includes all 811 independently enumerated signatures with SciPy Fisher/BY values,
+exhaustive conditional label allocations, nontransitive policies, abundance/family invariance,
+underflow, nulls, bounds, cancellation, source/truth counts, replay, checksums and provider terms.
+Native/amd64 result and example digests agree. Browser workflows cover visible/remote identity,
+empty-query profiles, complete counts, undo/reopening, source-free remount/export and Methods.
+Both-theme screenshots are reviewed; the plot was made more compact so its denominators and
+selected evidence remain visible. Existing Networks workflows are regressed in both themes.
+
+**Validation completed:** the full application/internal race suite passes (application
+183.224 s; simulator 89.144 s), with final focused API race checks in 151.331 s and final
+numeric/simulator/reference race checks passing after pinning the new fixture. The required-data
+scientific suite passes in 502.815 s, excluding unchanged performance-budget tests. The compiler
+scan finds no fused multiply-adds after correcting progress arithmetic. All 811 independent
+reference signatures agree; native/amd64 complete-result and example digests match. Extreme
+underflow retains finite log scores on both processors. The 70 exhaustive conditional label
+allocations preserve the pooled family and super-uniform raw tails for the checked signature;
+this finite sequence-level check is not a biological FDR claim.
+
+All 128 JavaScript tests, Go vet and six CGO-free platform builds pass. Final motif browser
+workflows pass in both themes, including background-only unavailable profiles, job updates,
+visible/remote identity, source-free remount/export, undo/redo and saved Methods. Final light
+and dark screenshots are visually reviewed; scientific notation stays unbroken. Existing
+Networks workflows also pass in both themes. The local site builds 41 pages with 49 screenshot
+sets; 40 audited pages pass 160 theme/viewport checks without accessibility violations or
+overflow. All 14 contrast checks, formatting and diff checks pass. Version stays 0.6.0; no
+commit, push, tag, release or publication. Slice 6 was subsequently committed and pushed by the maintainer.
+
+### Slice 7: convergence and HLA association
+
+**Committed and pushed.** S6 is bounded to observed recurrence of
+explicitly selected saved TRB sequence groups and conditional subject-level HLA association.
+Research §5.36 records the primary sources, implementation choices and scientific limits.
+
+- Pin the saved motif parent and capture selected memberships, receptor/sample identities,
+  source hashes, definition/QC, units, method and provider terms. Union both motif arms and
+  selected visits by globally named subject. Require an explicit human declaration and exact
+  sample assignments; sequences, cells, abundance and repeated samples cannot add replicates.
+- Preserve observed group and exact V/full-AA-junction recurrence. No eligible receptor
+  evidence means unevaluable, never inferred absence. An empty allele panel gives descriptive
+  recurrence only; no convergent-recombination model is claimed.
+- Require two explicit resolved copies at each tested locus, including homozygotes. Compare
+  at two fields, retaining raw calls. Missing, incomplete, ambiguous, low-resolution and
+  expression/group-suffix typing remains unknown. Do not infer typing, phase or heterodimers.
+- Use a separate complete typed/receptor-evaluable universe per locus, including subjects
+  without the group. Compute stable one-sided hypergeometric tails and BY over all declared
+  group × allele slots. Keep constant/undersized tests null with reasons and family membership.
+- Show fixed-scale subject fractions with marginal 95% Wilson intervals, exact denominators,
+  descriptive differences and complete recurrence. State population structure, relatedness,
+  depth, unequal sampling, ascertainment and selection limits. Association is not restriction
+  or antigen specificity; original motif scores are not combined.
+- Support immutable cancellable jobs, source/parent-free replay, complete provider-aware ZIPs,
+  undo/redo, remote/visible identity, cited Methods and figure provenance. Raw subject IDs and
+  typing remain explicit in exports.
+- Add a 32-subject, 36-sample artificial study with varied junctions, uneven gamma-Poisson UMI
+  counts, repeated observations and four unresolved A typings. Save all generating truth;
+  the planted 17/20 versus 1/8 association demonstrates behavior, not power or biological FDR.
+- Keep version 0.6.0. Slice 8 and release operations remain outside this change.
+
+Validation includes independent SciPy hypergeometric/BY/Wilson values for every one of 12
+reference slots, all 70 fixed-margin carrier assignments, repeated-sample/abundance invariance,
+homozygosity, unknown typing, bounds, cancellation, source truth, tamper refusals and exact
+source/parent-free replay. Browser checks verify every displayed fraction, locus denominator,
+visible/remote identity, raw typing, saved reopening, export and cited Methods in both themes.
+
+**Validation completed:** the full application/internal race suite passes (application
+71.108 s; simulator 25.187 s), followed by final focused race checks for canonical empty typing,
+source/parent-free replay and exports (application 38.036 s). The required-data scientific
+suite passes in 198.209 s, excluding unchanged performance-budget tests; its compiler scan
+finds no fused multiply-adds. All independent association/interval values agree; native/amd64
+complete-result and simulator digests match. Earlier example presets retain their pinned bytes.
+
+All 131 JavaScript tests, final compact-plot checks, Go vet and six CGO-free platform builds
+pass. Browser workflows and existing Networks regressions pass in both themes; all four final
+screenshots are visually reviewed. The local site builds 42 pages with 50 screenshot sets;
+41 audited pages pass all 164 theme/viewport checks with no accessibility violations or
+overflow. All 14 contrast checks, Go formatting and diff checks pass. Version stays 0.6.0;
+no commit, push, tag, release or publication. Slice 7 was subsequently committed and pushed by the maintainer.
+
+### Slice 8: contamination evidence
+
+**Committed and pushed.** Q4 has a bounded human bulk-TRB evidence
+screen. Research §5.37 states the sources, independent implementation and scientific limits.
+
+- Capture explicit human/unrelated declarations, sample/subject/batch assignments, source QC,
+  fixed productive NT TRB/V-and-J-gene definition, known integer abundance and fingerprints.
+  Keep repeated samples under the same subject; exclude their same-subject pair. Preserve all
+  other pairs, including zero-match and unavailable cases, without treating pairs as replicates.
+- Match exact standard nucleotide junctions with resolved genes; never collapse synonymous
+  sequences. Retained productive TRB abundance supplies every fraction denominator, including
+  unevaluable sequence/gene rows. Expose eligible abundance and exclusion reasons. Missing
+  counts refuse the screen; zero/no eligible evidence is unavailable, not a clean result.
+- Keep every positive match. Apply declared count/fraction/asymmetry review heuristics without
+  removing evidence. No p-values, calibrated classifier, automatic filtering or source,
+  direction, rate or proof of contamination is claimed. Batch labels are contextual.
+- Optionally capture a compatible checked NT Pgen parent, model/checksum and joint-gene setting.
+  Separate high-Pgen plausible-publicness context from review status; categories can overlap.
+  Missing Pgen is unknown; model zero is not impossibility. Biological sharing and sampling
+  limits remain explicit. Other loci and single-cell analyses require separate future contracts.
+- Show every selected pair's positive matches on equal log axes, exact denominators and
+  complete tables. No pseudocounts or subsampling. Preserve scientific captions, immutable
+  replay, source/parent-free reopening, provider-aware exports, remote controls and Methods.
+- Provide eight artificial subjects and nine samples with length-selected simulated TRB
+  junctions, uneven gamma-Poisson counts, a repeat, planted transfers, assigned shared controls,
+  a synonymous control and full truth. Labels are construction assumptions, not Pgen outputs
+  or claims of real-world classifier accuracy. Previous example bytes remain unchanged.
+- Keep version 0.6.0. Slice 9 and release operations are outside this change.
+
+Validation includes independent rational-arithmetic pair/match references, every simulated
+truth intersection and sample denominator, threshold invariance, explicit missingness,
+incompatible-model/capture refusals, cancellation, checksums and source/parent-free replay.
+Browser checks cover visible/remote identity, exact scatter geometry, saved workflows, full
+exports and cited Methods; existing sample QC is regressed in both themes.
+
+**Validation completed:** the full application/internal race suite passes (application
+92.719 s; simulator 28.414 s), followed by final focused race checks for evidence capture,
+source/parent-free replay and exports (application 5.080 s). The required-data scientific
+suite passes in 204.203 s, excluding unchanged performance-budget tests; its compiler scan
+finds no fused multiply-adds. Independent rational references agree; native/amd64 complete
+result and simulator digests match. Earlier example presets retain their pinned bytes.
+
+All 133 JavaScript tests, Go vet and six CGO-free platform builds pass. Final browser checks
+cover saved-result dataset restoration and clearing stale results during source changes,
+as well as both-theme contamination and existing sample-QC workflows. All four final
+screenshots are visually reviewed. The local site builds 43 pages with 51 screenshot sets;
+42 audited pages pass all 168 theme/viewport checks without accessibility violations or
+overflow. All 14 contrast checks, Go formatting and diff checks pass. Version stays 0.6.0;
+no commit, push, tag, release or publication. Slice 8 was subsequently committed and pushed by the maintainer.
+
+### Slice 9: batch QC
+
+**Committed and pushed.** Q5 reports descriptive sample-level metrics and
+within-batch review labels. Research §5.38 records sources, exact universes and scientific limits.
+
+- Capture every source sample, explicit subject/batch assignments and exclusion reasons.
+  Require one included observation per subject per batch; do not pool technical repeats.
+  Preserve unique-subject and sample denominators, including recurrence across batches.
+- Measure six fixed QC metrics with raw numerator/denominator evidence and source QC.
+  Bulk fractions use known counts; single-cell fractions use contigs and retained abundance
+  deduplicates barcodes. Preserve missing counts/barcodes and zero denominators as unavailable.
+  Productive fractions use the status universe before the productive-only QC rule; gene
+  fractions include all retained productive weights, including missing-junction rows.
+- Use log10 for positive abundance/row counts without pseudocounts; keep fractions on their
+  original scale. Compute 0.6745 × deviation/raw MAD within each batch, with strict absolute
+  threshold 3.5 and at least five evaluable subjects by default. Small groups and zero MAD
+  remain unscored, without epsilon, pooled reference or alternate-scale fallback.
+- Show complete sample distributions on a common scale, batch median lines, exact reference
+  tables and all exclusions. Vertical offsets have no quantitative meaning. Distinguish
+  flags from correction, deletion or biological inference; systematic shifts and masking
+  can evade a within-batch reference. No p-values or calibrated error-rate claim.
+- Preserve immutable cancellable jobs, source-free replay/reopening, complete provider-aware
+  exports, visible/remote identity, undo/redo and cited Methods and figure captions.
+- Add 26 artificial samples from 25 subjects and 2427 rows, with uneven depths, a shifted
+  distribution, a low-productivity observation, missing counts, small and constant groups,
+  explicit repeat/missing-batch exclusions and complete generating truth. Keep prior presets.
+- Keep version 0.6.0; slice 10 and release operations remain outside this change.
+
+Validation covers independent median/MAD/score references, every simulated row's contribution,
+threshold invariance, same-subject refusal, missingness, barcode/contig accounting, cancellation,
+source-free replay, checksums, complete exports, processor agreement and both-theme workflows.
+
+**Validation completed:** application/internal race tests pass (application 136.343 s;
+simulator 41.396 s), with final capture/refusal/replay race checks passing in 6.661 s.
+The required-data scientific suite passes in 294.004 s, excluding unchanged performance
+budgets. Its compiler scan exposed four fused-arithmetic expressions; explicit rounding
+resolves them, and a subsequent scan of 3174 functions finds no fused multiply-adds.
+Independent references agree and the native/amd64 result and simulator digests are unchanged.
+Earlier presets retain their pinned bytes. Canonical assignment order, strict threshold
+boundaries, raw denominator limits and source-free replay/export are checked explicitly.
+
+All 136 JavaScript tests, Go vet, six CGO-free platform builds and 14 contrast checks pass.
+Batch QC, Sample QC and Contamination browser workflows pass in both themes; all six final
+screenshots are visually reviewed. The final browser regression also verifies that switching
+from a saved result to another QC tab loads its source assignments without breaking source-free
+reopening. The site builds 44 pages with 52 screenshot sets; 43 audited pages pass all 172
+theme/viewport checks without accessibility violations or overflow. Formatting and diff checks
+pass. Version stays 0.6.0; no commit, push, tag, release or publication. Slice 9 was subsequently committed and pushed by the maintainer.
+
+### Slice 10: pseudobulk count evidence
+
+**Committed and pushed.** M5 foundation. Research §5.39 records primary sources,
+exact count and membership rules, the artificial model and limits. Differential expression
+remains slice 11; release preparation remains slice 12.
+
+- Select explicit saved phenotype parents with one receptor dataset, definition, QC,
+  receptor-size population and inclusive breakpoints. Pin subject, literal timepoint and sample;
+  refuse duplicate samples/expression inputs or more than one sample per subject/timepoint.
+- Verify expression sources and exact Gene Expression feature IDs/names/modalities/order.
+  Preserve sample boundaries and every raw gene count; exclude other modalities. Never pool,
+  normalize, average, impute absent features or reuse a map's display/QC subset implicitly.
+- Aggregate per sample × supplied type × declared size category with captured cell membership.
+  Missing type and unavailable unique clone assignment have disjoint exclusion reasons.
+  Sizes count unique receptor cells in the original sample, before type-specific partitioning.
+- Preserve every observed type crossed with all categories in every sample. Absent groups have
+  null counts; measured zeros remain zero. Low-cell and zero-library groups retain raw evidence
+  but are ineligible. Default minimum 10 cells is a configurable evidence rule, not power.
+- Keep durable jobs, source-free replay/reopening, complete provider-aware exports, visible and
+  remote identity, undo/redo and cited Methods. Coverage panels share a zero-based linear scale;
+  bars count cells, not replicates or normalized expression. Samples sort by subject/time/name.
+- Add four artificial subjects at two visits, 420 cells/matrix and 24 negative-binomial genes.
+  Inverse-rank clone probabilities produce uneven sample-scoped sizes; preserve missing and
+  all-zero controls and complete truth/source hashes. Earlier presets retain their identities.
+- Bound samples, features, cells, sparse capture and output slots; refuse exact-count overflow.
+  Keep version 0.6.0. No differential-expression fit, release or publication in this slice.
+
+Validation includes an independent stdlib integer oracle; every literal count and generating
+clone/annotation record of the eight-sample example; missingness, modality and feature identity,
+barcode scoping, sample/time boundaries, threshold invariance, overflow, cancellation, source
+fingerprints, provider terms, complete exports and replay without sources or parent artifacts.
+Native/amd64 digests, application/internal race tests, required-data scientific regressions,
+six platform builds, JavaScript and browser checks and both-theme figures are required.
+
+**Validation completed:** the complete application/internal race suite passes (application
+267.513 s); final focused capture/reference/simulator race checks pass (application 50.016 s).
+The required-data scientific suite passes in 469.651 s, excluding unchanged performance budgets,
+including processor and released-project compatibility and the compiler's no-FMA scan. All eight
+example matrices agree with independently parsed generating clone/annotation truth for every
+raw gene sum and contributing cell count. Canonical request order, relocation-independent
+identity, changed-source refusal, provider terms, checksum failures and replay after removing
+sources and parent files pass. Exact integer-reference and simulator digests agree on native
+arm64 and amd64; existing cell-state and release fixtures retain their pinned identities.
+
+All 139 JavaScript tests, Go vet, six CGO-free platform builds and 14 contrast checks pass.
+Pseudobulk, phenotype and AnnData browser workflows pass in both themes, including visible/remote
+identity, undo/redo, saved reopening, source-free exports and cited Methods/figures. Final
+pseudobulk and refreshed AnnData screenshots are visually reviewed; the capture generates a
+fresh study and verifies its model to prevent stale example reuse. The site builds 45 pages
+with 53 screenshot sets; 44 audited pages pass all 176 theme/viewport checks with no problems.
+Formatting and diff checks pass. Version stays 0.6.0; no commit, push, tag, release or publication.
+The maintainer committed and pushed slice 10 as `a90782b`.
+
+### Slice 11: paired pseudobulk differential expression
+
+**Committed** (`d1521e7`). M5. Research §5.40 records sources, explicit
+adaptations, estimands, normalization assumptions and limits. Release preparation remains slice 12.
+
+- Consume a checked immutable count parent, one exact supplied type and literal timepoint,
+  two declared size categories, and explicit whole-sample exclusions with reasons. Require
+  both eligible categories for each included subject; never delete incomplete pairs silently.
+- Reuse the independently validated NB2/Cox–Reid engine with a full-rank subject-blocked
+  design and comparison contrast. Require 25–32 pairs (24 residual df minimum), not cells
+  as replicates. Record every disposition, raw group, design column and contrast.
+- Add median-of-ratios size factors from genes positive in every selected observation before
+  testing filters; record the reference set and log offsets. Require ten reference genes;
+  no pseudocount fallback. Document majority-unchanged/balanced-change assumptions.
+- Keep raw count/prevalence filters, all eligible genes in the BH family (failed fits as
+  p=1 placeholders, displayed unavailable), conditional marginal Wald intervals and failed
+  fits. No moderation, quasi-likelihood, Poisson fallback or edgeR/DESeq2 equivalence claim.
+- Save durable jobs with count-parent checksums, source/parent-free replay, complete raw/design/
+  gene exports, provider terms, cited Methods, undo/redo and visible/remote identity.
+- Show gene abundance/effects, zero-based paired subject counts and a separate conditional
+  interval. Color selection, not discoveries. Retain filtered/failed genes and all observations.
+- Add distinct 28-subject positive/null artificial expression presets, uneven receptor sizes,
+  subject/category variability, low/zero controls and full generating truth/source hashes.
+  Preserve earlier simulations. Version remains 0.6.0.
+
+Validation includes the independent 40-gene full-fit oracle and 300-gene null/positive panel,
+all generated raw-count truth, family/failure/normalization invariants, exact source-free replay,
+processor-identical digests, race/scientific/JavaScript/platform checks, both-theme browser
+workflows and visual inspection, complete methods/docs and a local site audit.
+
+**Validation completed:** full application/internal race checks pass (application 262.158 s).
+Final focused race checks pass for API replay/exports (231.381 s), core policies/contrast
+reversal/cancellation (117.451 s), simulators (4.851 s) and numerical/example controls
+(313.863 s). The full required-data scientific suite passes in 285.324 s, excluding unchanged
+performance budgets; it includes released-project compatibility and the compiler's no-FMA scan.
+The 40-gene oracle agrees on normalization, complete designs, full/null fits, covariance,
+likelihoods, effects, conditional intervals and BH. The separate 300-gene panel has 15/267
+nominal null rejections, 250/267 conditional intervals covering zero and 30/30 correct positive
+directions, disclosed as finite approximation diagnostics. Every selected example raw count
+matches generating truth. The positive/null examples each fit 37/38 eligible genes; respectively
+four/zero have BH≤.05 for the fixed seeds, not a calibration guarantee.
+
+Complete-result and both simulator digests agree on native arm64 and amd64. Earlier examples
+and released-project identities are unchanged. Go vet, six CGO-free platform builds, 143
+JavaScript tests and 14 contrast checks pass. Paired expression and count-evidence browser
+workflows pass in both themes: visible/remote identity, all gene/subject points and paired
+links, failed-fit display, undo/redo, reopening, source/parent-free exports and cited Methods.
+Both effect and paired-observation/conditional-interval figures are visually reviewed in both
+themes. The local site builds 46 pages with 55 screenshot sets; 45 audited pages pass all 180
+theme/viewport checks without accessibility problems or overflow. Formatting/diff checks pass.
+No commit, push, tag, release or publication; version remains 0.6.0.
+
+### Slice 12: complete cohort studies and release 0.7.0
+
+**Implemented and validated; awaiting maintainer commit.** E3, O2, N7. Research §5.41 records the
+control designs, interpretation and release evidence. Five offline guides use the ordinary
+visible actions: independent positive, null, unbalanced 12/20, paired 28-subject and fully
+confounded 16/16 studies. Count truth and model identities are retained; no new inferential
+method is introduced. Failed design checks remain versioned, exportable and cited, with
+analysis selection and host checks excluding them.
+
+The 0.7.0 project contains all five source studies, complete truth, five design checks and
+sixteen saved results. Real durable workers replay the four usable design → diversity →
+features → comparison/count chains byte for byte. Exact original parent manifests are
+restored only after checksum/result verification, preserving provenance in child documents.
+Old release fixtures remain unchanged. New manifest files are gzip-compressed in the fixture
+because captured raw counts make plain manifests large; their decoded bytes are unchanged.
+
+Application, citation and HTML asset-cache versions are 0.7.0. Release/tag/publication remain
+the maintainer's actions after commit, CI and merge. Wave 8 covers clients and MCP.
+
+Validation fixes include the catalog's new total of 66 guided steps, two-minute waits for
+pseudobulk test jobs, and an explicit 30-minute CI race-package timeout. The application
+race suite now takes longer than Go's default ten minutes; a local full-cache scientific
+race run also exceeded a 20-minute package limit. These are harness deadlines, not relaxed
+scientific tolerances or performance budgets. A narrow-screen table overflow in the new
+guide was fixed before the final site audit.
+
+Release checks: application/internal Go race tests passed (application 625.981 s).
+The remaining scientific race cases passed in a separate 670.828 s run after the
+full-cache run's package timeout, with no scientific assertion relaxed. The required-data
+scientific suite passed in 328.640 s: 74 top-level tests passed, with four optional checks
+skipped (live publisher downloads, two maintainer-selected HDF5 checks, and maintainer-only
+VDJdb). Native and amd64 fixture replay, designs and new simulator digests agreed. Go vet,
+six CGO-free platform builds, 149 JavaScript tests, syntax checks and 14 contrast checks
+passed. All 112 browser scene/theme runs passed; 57 screenshot pairs were reviewed, including
+the final cohort workflow/refusal recaptures. The site builds 47 pages with 57 screenshot
+sets; its 184 desktop/mobile/theme audit checks report no violations or overflow. Shell
+installer syntax passed; PowerShell parsing remains a CI check because `pwsh` is unavailable
+locally. No old release fixture was changed.
+
+All six performance budgets passed without race instrumentation (147.633 s total): one
+million rearrangements read/validated in 1.590 s at 58 bytes/row plus junctions; 100 samples
+reopened in 148 ms; a searched million-clonotype page in 38.485 ms; 10,000 neighborhood
+centroids against 99,997 background receptors in 2.801 s; one million generation probabilities
+in 82.793 s with no generated receptor assigned zero probability; and neighbors of 100,000
+paired TCRs in 49.539 s at 1.3 GB. Parallel timings are on ten processors. The homepage's
+scale timings were refreshed and the final 47-page site rebuilt locally. No commit, tag,
+release or site publication was performed.
+
 
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 7 | 0.7.0 | Cohorts and robustness | Study design, group comparisons with the subject as unit, robustness to the definition, GLIPH2-style groups, HLA association, contamination and batch QC, pseudobulk |
 | 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |
 | 9 | 0.9.0 | Suite and public data | ADC queries, overlap with public cohorts, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |
 | 10 | 1.0.0 | Hardening | Budgets met, accessibility audit, documentation complete, external beta feedback addressed |

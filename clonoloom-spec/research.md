@@ -1833,3 +1833,1084 @@ binary using the pinned public AnnData/SciPy APIs, compares every raw count and 
 MEX, every label against cells.tsv, every assignment and coordinate against its saved parent,
 and then rewrites/reopens the object. This supplements the independently specified small export
 oracle, numerical references and synthetic null controls; it is not a biological performance claim.
+
+### 5.30 Cohort study design (wave 7, slice 1)
+
+[Lazic SE (2010), BMC Neuroscience 11:5](https://doi.org/10.1186/1471-2202-11-5)
+explains pseudoreplication when correlated or repeated observations are treated as independent.
+[Squair et al. (2021), Nature Communications 12:5692](https://doi.org/10.1038/s41467-021-25960-2)
+provides empirical single-cell evidence for preserving biological replication in differential
+expression. These support the unit-of-inference contract, not a particular group test in slice 1.
+
+ClonoLoom's choices: one dataset, explicitly selected reference/comparison labels,
+independent or paired subject design, no automatic pooling or deletion of incomplete pairs,
+and at least two subjects per group or complete pairs. Exact trimmed labels preserve the
+user's time/tissue semantics. Duplicate subject/group samples block use until explicitly
+resolved; same-time observations alone do not establish their technical/biological relationship.
+Every input sample remains in the report, including out-of-contrast levels and exclusions.
+Unannotated samples block use unless explicitly excluded. The dataset ID fingerprints the
+sources; the design ID fingerprints sorted complete annotations and the effective specification.
+
+Every batch containing only one chosen group means the group effect is inseparable from
+unrestricted batch effects. This conservative check blocks that design; incomplete batch
+annotations warn rather than impute. Mixed sampling contexts warn. Passing checks does not
+establish independence (subjects may share a cage/cluster), randomization, sufficient power,
+or freedom from unmeasured confounding. Such designs require an appropriate external model.
+No p-values, effect sizes, covariate adjustment, power calculation or expression analysis is
+performed here. Later slices must validate the actual test-specific design and null model.
+
+The view shows exact subject/sample counts and membership tables. No aggregate error bars,
+cell-level replicate plots or inferred group geometry are drawn. Independent SQL aggregation
+and exhaustive small membership assignments validate counts and refusal rules. Sibling Apache-2.0
+named-design/undo patterns were consulted; the scientific checks are implemented in Go.
+
+### 5.31 Subject feature tables (wave 7, slice 2)
+
+[Jost (2006), Entropy and diversity](https://doi.org/10.1111/j.2006.0030-1299.14714.x)
+distinguishes raw entropy/indices from effective diversity. The version 1 catalog therefore
+labels Shannon entropy in nats separately from observed Hill numbers in effective clonotypes.
+[Chao & Jost (2012)](https://doi.org/10.1890/11-1952.1) defines sample coverage;
+[Chao et al. (2014)](https://doi.org/10.1890/13-0133.1) develops the sampling framework.
+The existing diversity engine and its independent reference validation remain unchanged (§5.3).
+These are sampling-sensitive point estimates, not depth-standardized outcomes. Coverage
+estimates abundance completeness, not the fraction of all clonotypes discovered.
+
+ClonoLoom's policy is an exact sample-name join between one checked, saved design and one
+checksum-pinned diversity parent from the same dataset. One selected sample contributes one
+subject/group row. Paired observations retain subject IDs; no new replicate is inferred.
+No libraries are averaged, no counts pooled and no missing values imputed. Selection reasons,
+out-of-contrast/excluded annotations, definition, QC and units remain in the artifact. Source
+fingerprints and provider notices bind the initial operation; saved reads and exports require
+neither sources nor parent files. The canonical design is rechecked server-side, and the
+worker rechecks the parent hash. All numeric values are copied in Go, without JS statistics.
+
+The 13-column catalog contains assigned abundance (after QC/definition, not raw depth),
+observed richness, Shannon H, Hill q=1/q=2, normalized Shannon evenness/clonality, Simpson
+concentration, Gini–Simpson, Gini on observed positive clones without finite-S rescaling,
+maximum share, top-10 share and sample coverage. Empty samples keep abundance/richness zero;
+other columns are null. S=1 makes H/log(S) and its complement undefined. Fractional
+abundances make coverage unavailable. Unexpected absent parent estimates remain explicitly
+missing. Parent bootstrap intervals remain archived but are not used as subject-level error
+bars. No group tests or group summaries are drawn in this slice.
+
+Independent Python stdlib calculations from raw abundances check every catalog column;
+Gini uses the pairwise absolute-difference definition instead of the engine's ranked sum.
+Empty, singleton, equal, skewed, fractional, scaled and top-ten-boundary fixtures exercise
+meaningful edge cases. API tests cover input identity, complete sample-set matching, metadata,
+job replay, cancellation, parent/result tampering and source-free export. Browser validation
+checks undo/redo, saved-result routing, changed current annotations, methods, table controls,
+source-free download and WCAG A/AA. This is the first sample/subject portion of G4; receptor,
+gene-usage and other feature families remain future work.
+
+### 5.32 Subject-level two-group comparisons (wave 7, slice 3)
+
+Primary methods: [Welch (1947)](https://doi.org/10.1093/biomet/34.1-2.28),
+[Student (1908)](https://doi.org/10.2307/2331554),
+[Mann & Whitney (1947)](https://doi.org/10.1214/aoms/1177730491),
+[Wilcoxon (1945)](https://doi.org/10.2307/3001968), and
+[Benjamini & Hochberg (1995)](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x).
+Conditional Monte Carlo tails follow [Phipson & Smyth (2010)](https://doi.org/10.2202/1544-6115.1585).
+The conservative probability intervals below apply [Hoeffding (1963)](https://doi.org/10.1080/01621459.1963.10500830)
+and [McDiarmid (1989)](https://doi.org/10.1017/CBO9781107359949.008).
+These papers establish the methods; the two-test family, missingness refusal, bounds,
+feature selection and presentation below are ClonoLoom policies.
+
+**Population and provenance.** Consume one checksum-pinned subject feature artifact. Recheck
+its canonical design and reconstruct the table from its embedded diversity measurements;
+never refit diversity or reopen raw sources. Independent designs use disjoint subjects;
+paired designs align observations by subject ID, not row position. The original structural
+checks and warnings still apply. There is no multigroup, covariate-adjusted or clustered model,
+transformation, outlier deletion, depth standardization, pooling or automatic sample selection.
+Diversity values remain sampling-sensitive measurements at observed sample depths. Declare
+features and selection rules before looking at results. Neither cells nor clones are replicates.
+
+**Mean effects.** Every selected feature receives the design's mean test and rank counterpart,
+without a normality pretest or a choice of whichever test gives the smaller p-value.
+Independent means use B−A, variance sA²/nA+sB²/nB, and Welch–Satterthwaite degrees of freedom
+v² / [(sA²/nA)²/(nA−1)+(sB²/nB)²/(nB−1)]. Paired inference uses the sample mean and variance
+of D=B−A, with n−1 degrees of freedom. Variances have the n−1 denominator. Two-sided t
+p-values use the regularized incomplete beta function; confidence limits are estimate ±
+t_(1−alpha/2,df) × SE. Welch's degrees of freedom are an approximation; small-sample inference
+needs plausible normal observations (or normal differences for paired t). Subjects must be
+independent between units. Zero/non-finite SE leaves t, p and interval missing with a reason;
+a finite mean estimate remains. No p=0 is fabricated for two flat groups or constant changes.
+The beta continued-fraction/bisection implementation is adapted with attribution from the
+Apache-2.0 SituCraft sibling; deterministic math and explicit rounding prevent fused operations.
+
+**Rank tests.** Independent observations receive pooled midranks, with U for group B
+(sum of B ranks minus nB(nB+1)/2). Paired signed ranks exclude exact zero differences,
+midrank absolute nonzero differences, and report W+ (sum of positive ranks). Doubled integer
+ranks preserve half ranks exactly. The null reassigns observed ranks to groups of their original
+sizes, or flips signs independently conditional on absolute paired differences. Inclusive
+two-sided tails count absolute deviations from the conditional expectation at least as large
+as observed. This convention can differ from twice the smaller one-sided tail for asymmetric
+unbalanced tied populations. Ties are part of the randomization, not fed to an untied exact
+reference distribution. Literal saved floating-point values define equality; no tolerance or
+rounding invents ties. All-zero differences have one assignment and p=1, with no nonzero pairs.
+
+Mann–Whitney's randomization null requires identical distributions and exchangeable group
+labels. It is not a test solely of median equality or of superiority probability 1/2 under
+arbitrary unequal distributions. Signed ranks require subject differences symmetric about zero
+with exchangeable signs; this is stronger than a median of zero alone. There is no causal claim
+without a suitable study design. Enumerate at most 50,000 assignments, otherwise use seeded
+Monte Carlo with replacement and p=(tail+1)/(draws+1). Default draws are 9,999 (999–99,999);
+default seed is 20261025 (integer at most 2^53−1). Each feature has its own FNV-1a-derived
+random stream so selecting another feature does not alter its raw p-value. A total budget of
+50,000,000 assignment-size units refuses excessive work; cancellation does not promote a result.
+
+**Probability effects and intervals.** Report a second, explicitly different estimand:
+independent theta=P(B>A)+0.5P(B=A), estimated by U/(nA nB); paired theta=P(D>0)+0.5P(D=0),
+estimated by the mean of bounded win/tie scores. Neither is a median shift. The paired estimate
+includes zeros even though signed ranks omit them. Changing one independent A observation
+changes the empirical probability by at most 1/nA, and one B by at most 1/nB. McDiarmid's
+two-sided bound is therefore 2 exp[−2 r²/(1/nA+1/nB)]. For paired independent subjects,
+Hoeffding gives 2 exp(−2 n r²). Solving for alpha gives radius
+sqrt(log(2/alpha) × scale / 2), with scale=1/nA+1/nB or 1/n respectively. Intersect the
+resulting interval with [0,1]. This distribution-free bound targets the expectation of the
+estimator under independent sampled units; the population interpretation assumes representative
+sampling within the stated groups. It is conservative, often [0,1] at small n, and is not an
+inversion of the displayed rank test or a claim of precise bootstrap coverage.
+
+**Missingness and multiplicity.** Choose 1–13 feature IDs explicitly; both tests for each
+feature form one BH family of exactly 2K slots. Any missing selected observation makes that
+feature's tests and effects unavailable: retain all subjects/pairs, do not perform complete-case
+deletion. Untestable slots enter BH as p=1 while remaining null on screen and in JSON (blank
+in CSV). BH adjustment is min over subsequent ranked m p/r, capped at one and monotone.
+Its usual FDR control assumes independent or suitable positively dependent null p-values;
+arbitrary dependence among metrics and tests is not guaranteed. This correction does not
+cover other results, contrasts or outcome-driven feature selection. All 80–99% confidence
+intervals (default 95%) are marginal, not simultaneous or BH-adjusted. No discovery labels
+or inference of equivalence from nonsignificance are presented.
+
+**Visuals and checks.** Draw every available subject/group value with deterministic horizontal
+jitter; connect only observations belonging to the same paired subject. State units, selected
+n, pairs and missingness. Above 500 available observations show the full paginated table and
+export rather than silently plotting a subset. A separate effect plot shows only the mean
+difference and its t interval, including zero on its axis. Parent within-sample bootstrap
+intervals never appear as group uncertainty. Simulated screenshots illustrate mechanics,
+not biological effect validation; the paired example's time labels are assigned for demonstration.
+
+The independent SciPy 1.17.0 public APIs supply t tests/intervals and BH references. Independent
+itertools enumeration checks every conditional tail for tied, unbalanced, zero and small designs;
+Monte Carlo is compared with exhaustive 184,756-label and 131,072-sign null spaces. Additional
+Student distribution references cover fractional through 9,998 degrees of freedom, extreme
+tails and 0.005–0.995 quantiles. Exact null super-uniformity, seeded normal-model interval
+coverage/rejection, missingness, pair alignment, budgets and processor-byte agreement are tested.
+API checks bind parents, durable replay and standalone export. Browser checks exercise visible
+and remote controls, plots, figure export, undo/reopen, source-free download and both themes.
+No external implementation source was used for the reference calculations.
+
+### 5.33 Replicated clonotype counts (wave 7, slice 4)
+
+**Question and estimand.** Under one saved two-group subject design, estimate the comparison /
+reference ratio in a sequence-defined clonotype's abundance relative to the selected sample's
+assigned repertoire counts. This is not an absolute cell expansion estimate, a causal effect,
+an antigen-specific response, or the full edgeR/DESeq2 pipeline. The NB2 log-link likelihood,
+Fisher scoring and Cox–Reid adjusted profile likelihood follow McCarthy DJ, Chen Y, Smyth GK
+(2012), *Nucleic Acids Research* 40:4288–4297,
+[doi:10.1093/nar/gks042](https://doi.org/10.1093/nar/gks042).
+Benjamini–Hochberg correction follows Benjamini Y, Hochberg Y (1995), *JRSS B* 57:289–300,
+[doi:10.1111/j.2517-6161.1995.tb02031.x](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x).
+Only primary publications and public reference APIs were consulted; no external implementation
+source was inspected or copied. Runtime remains standard-library Go.
+
+**Observation and offset policy (ClonoLoom's choices).** The source-pinned subject-feature
+parent supplies its exact design, sequence definition, QC and declared count unit. Initial
+creation captures all observed clonotype counts from that opened source snapshot, including
+clonotypes subsequently filtered from inference. Vendor clonotype IDs are refused because they
+are not comparable biological identities across samples. Unknown count units, missing retained
+bulk counts and fractional/negative source counts cannot be converted to observed zeros.
+Missing retained counts anywhere in the definition/QC table conservatively refuse capture,
+even if the offending sample is excluded by the cohort design. For bulk data, selected original
+member counts must be whole before aggregation; single-cell clonotypes count assigned cells.
+Counts absent from this fully observed assigned repertoire are zeros. No pair or subject is
+silently dropped. Assigned totals must match the saved parent measurements exactly.
+
+For clonotype g and sample i, mu_gi = exp(log L_i + x_i beta_g), and
+Var(Y_gi) = mu_gi + alpha_g mu_gi². L_i is all assigned clonotype counts after the saved
+QC/definition, **before** the inference count filter, not total sequencing reads from another
+assay. CPM is 10^6 Y_gi/L_i. This total-count offset estimates relative composition and does
+not implement TMM, a median ratio size factor, empirical-Bayes moderation or robust outlier
+weights. Strong composition changes can distort the intended biological interpretation;
+Robinson MD, Oshlack A (2010), *Genome Biology* 11:R25,
+[doi:10.1186/gb-2010-11-3-r25](https://doi.org/10.1186/gb-2010-11-3-r25), motivates that warning,
+not a claim that its normalization is implemented. Read counts require a defensible model of
+library-level variation and do not make amplified reads independent biological replicates.
+
+**Design.** Independent designs use an intercept and comparison indicator. Paired designs add
+subject fixed effects (treatment coding, lexically first subject as baseline). Optional batch
+adjustment adds treatment-coded batch columns, with complete batch annotations required.
+Subject-constant batch is aliased with paired subject blocks and is explicitly refused;
+no column is silently removed. The design and contrast [0,1,0,…] are saved and shown. The
+coefficient is on the natural-log scale; displayed effect and SE divide by log(2), giving a
+log2 comparison/reference ratio. Paired inference assumes conditional independence after
+fixed subject blocking; it is not a random-effects or arbitrary repeated-measures model.
+
+Require at least 12 subjects per group **and 24 residual degrees of freedom**; paired designs
+therefore need at least 25 complete pairs without additional batch columns. This is a bounded
+first implementation with unmoderated dispersion, not a universal sample-size recommendation
+or guarantee of calibration/power. At most 96 observations and 40 coefficients are accepted.
+Full rank is checked by Cholesky of X'X; likelihood information must also remain well conditioned.
+A relative pivot below 10^-11 of the largest diagonal is refused, without a ridge.
+
+**Fitting.** Fisher scoring uses score X'(Y−mu)/(1+alpha mu) and information X'WX with
+W_ii=mu_i/(1+alpha mu_i). Intercept starts at log(sum Y/sum exp(offset)); other coefficients
+start at zero. A maximum coefficient step of five and up to 30 halvings guard the ascent.
+Convergence requires maximum unscaled coefficient increment <10^-7, within 100 iterations;
+absolute coefficients >30 or linear predictors outside [−30,30] are refused. All-zero groups
+or paired subject blocks remain untestable with a reason, not removed or pseudocounted.
+
+Each clonotype estimates its own alpha under the **full** design by maximizing
+l(beta_hat,alpha) − 0.5 log|X'WX|. A fixed 29-point log grid on [10^-5,100] brackets the best
+point, then 34 golden-section iterations refine the adjacent interval. A boundary grid maximum
+is untestable; no Poisson fallback or silent ceiling estimate. No shared trend or prior shrinks
+alpha. The null removes only the group column and uses the same estimated alpha. Its statistic
+is 2(l_full−l_null), with a chi-square(1) asymptotic tail. Substantial negative likelihood
+difference, nonconvergence or singular information leaves inference unavailable. Full and null
+coefficients, fitted means, covariance, likelihood and iterations remain in JSON for inspection.
+
+A marginal normal Wald interval is beta_group/log(2) ± z × SE/log(2), default 95%, selectable
+80–99%. It treats estimated dispersion as known; dispersion uncertainty and finite-sample
+approximation can reduce coverage. It is neither a profile-likelihood interval nor simultaneous
+or BH-adjusted. This implementation deliberately avoids small-replicate claims that would need
+validated moderation or quasi-likelihood corrections.
+
+**Filtering and multiplicity.** Default eligibility is count ≥10 in ≥12 selected samples,
+pooled across groups; choose before inspecting inference. Allowed count threshold is 1–10^6
+and sample threshold 2–96. Every eligible observed clonotype enters one BH family, including
+failed fits as p=1 placeholders for adjustment. Failed inference remains JSON null / blank CSV
+with a reason; placeholders are not shown as measured p-values. Filtered clonotypes remain in
+counts, denominators, saved JSON and export, but outside that family. BH requires independence
+or suitable positive dependence and valid input p-values; selection/filtering, arbitrary
+compositional dependence and searching across contrasts are not covered by a general guarantee.
+There is no automatic discovery classification or equivalence claim from a large p-value.
+
+Bounds: 20,000 observed clonotypes, 1,000,000 dense matrix entries, 1,000 eligible clonotypes,
+and eligible × observations × coefficients² ≤3,000,000. Individual aggregated counts ≤10^9,
+positive library totals ≤10^12. Requests exceeding bounds fail explicitly; no thinning of cells,
+clonotypes or subjects changes the analysis. Cancellation cannot promote a partial result.
+
+**Examples and visuals.** Dedicated `counts-independent`, `counts-paired` and `counts-null`
+presets contain 32 independent subjects (16/group), 28 complete pairs, and 32 all-null subjects,
+respectively. They simulate UMI counts with heterogeneous gamma–Poisson variation, lognormal
+sampling exposure, a 48-receptor shared panel and 600 private receptors per subject. Private
+abundances follow a long tail; shared receptors have subject log effects and a 1.2-fold B2 batch
+effect. Four shared receptors have generating log2 effects +2, four −1.5, forty zero; the null
+preset sets all group effects to zero. Both time observations in a paired subject share that
+subject's receptor effects and private identities; day 0/day 14 labels correspond to the
+simulated contrast. Batch alternates by zero-based subject plus visit and must be annotated
+explicitly from truth. Junctions are fictional stop-free sequences with SIM gene calls.
+The shared panel deliberately enables a controlled replicated test; its sharing frequency is
+not an estimate of a human public repertoire. This is not a fitted recombination, response or
+UMI error model. Gamma/Poisson sampling uses the existing cited Marsaglia–Tsang (2000) and
+Hörmann (1993) samplers (§5.22).
+
+Generator exposures are not realized library totals: fitted total-offset effects need not
+exactly equal generating log2 effects because all counts contribute to each denominator.
+Truth records every count, mean, exposure, dispersion, effect, subject, batch and identity,
+including zeros. Separate fixed-exposure reference/calibration controls validate inference.
+
+The MA-style plot shows **all fitted** clonotypes: mean observed CPM on a log x axis and fitted
+log2 ratio on y, with zero included. A highlighted point is the selected clonotype, not a
+significance call. The subject plot shows every observed CPM, deterministic horizontal jitter,
+and only true within-subject paired links; these are not batch-adjusted predictions. The
+separate interval plot shows the model's log2 effect and marginal Wald interval, with zero.
+Failed fits remain accessible in the table/family. Captions preserve definition/QC, count unit,
+contrast, sample/subject counts, residual df, batch policy, interval meaning and provenance.
+
+**Independent checks and calibration.** Public statsmodels 0.14.6 GLM NB2 and SciPy 1.17.0
+optimization/chi-square APIs supply six numerical cases: independent, paired and unbalanced
+12/20 subjects, each with/without batch, unequal exposures and heterogeneous subject effects.
+Compare fixed-alpha fits, Cox–Reid alpha, coefficients, fitted means, covariance, both
+likelihoods, LRT and p. This is numerical cross-validation, not equivalence with a moderated
+RNA-seq pipeline. Additional fixed-seed NB2 null simulations exercise heterogeneous dispersions
+0.08/0.2/0.5, uneven exposures and paired subject effects. At 400 trials per layout, the initial
+12-pair control rejected 32/400 (8%) at nominal 5% with 91% Wald coverage; that informed the
+stricter residual-df boundary. At 32 independent subjects, the retained control rejects 26/400
+(6.5%) with 93.25% coverage; at 28 pairs, 18/400 (4.5%) with 93.5% coverage. These finite Monte
+Carlo results and conditional intervals do not establish general nominal calibration. The
+regression guard requires ≥380/400 fits, rejection ≤8% and coverage ≥92%; the unbalanced
+control is recorded in validation/README.md. Inference remains approximate, and additional
+biological heterogeneity, outliers, sparse data or model misspecification require caution.
+
+Independent literal TSV checks reconcile every example observation with truth, preserving
+private/shared identity, zero counts, effects and hashes. API/browser checks validate capture,
+whole counts before aggregation, immutable lineage/replay, checksum refusals, provider notices,
+source-free reopening/export, exact plot membership, figure labels, undo/redo and Methods.
+
+### 5.34 Definition robustness of subject-feature contrasts
+
+**Sources and scope.** Simonsohn, Simmons & Nelson (2020), *Specification curve analysis*,
+Nature Human Behaviour 4:1208–1214, doi:10.1038/s41562-020-0912-z
+([author manuscript](https://faculty.wharton.upenn.edu/wp-content/uploads/2016/11/33-Simonsohn-Simmons-Nelson-2020.pdf)),
+motivates declaring reasonable, nonredundant alternatives and displaying their outcomes.
+Its descriptive display and joint inferential procedure are separate. ClonoLoom implements
+only a bounded descriptive definition audit, **not** the paper's joint specification-curve
+test, a meta-analysis or independent replications. Sofou et al. (2023), *Clonotype definitions
+for immunogenetic studies: proposals from the EuroClonality NGS Working Group*, Leukemia
+37:1750–1752, doi:10.1038/s41375-023-01952-7 ([PubMed](https://pubmed.ncbi.nlm.nih.gov/37391484/)),
+provides the immunogenetic context: nucleotide identity and broader groupings answer different
+questions. No single alternative definition is asserted to recover a biological ground truth.
+No external implementation source was used.
+
+**Pinned estimand.** Begin with an immutable, checksum-verified `cohort-compare` result.
+Reconstruct its design/features and reproduce its inference before accepting it. Recompute
+its selected aggregate diversity features under the baseline and 1–5 distinct, declared
+junction/V/J alternatives. Only aa/nt and gene/allele/family/none resolution vary. Preserve
+chains, cell primary/all selection, require-all policy, productivity, QC, biological subjects,
+all exclusions/annotations, abundance unit, contrast, selected features, tests, confidence,
+randomization seed and budget. Equivalent definitions (ignoring names), vendor identities,
+and population-policy changes are refused. AA definitions require productive sequences;
+an NT baseline allowing nonproductive sequences cannot be compared with AA by changing that
+population silently. Missing junctions/calls can alter assignment; each definition retains
+exclusion counts and per-sample assigned abundance/richness for inspection.
+
+Use the established diversity point estimates (§5.31), with **no within-sample bootstrap**,
+and the exact subject-level tests/intervals of §5.32. Retain all selected subjects: undefined
+features stay unavailable, not zero or silently removed. Baseline features and inference
+must match the parent exactly; changed source measurements cannot masquerade as definition
+sensitivity. The aggregate feature estimand is comparable as a declared summary, but changing
+the receptor partition changes its interpretation. Individual clonotype count-model results
+are outside this slice: clone identifiers and biological group membership change across
+partitions, so matching those identifiers would not preserve an estimand.
+
+**Multiplicity and interpretation.** Keep each comparison's original within-definition BH
+family. Add Benjamini–Yekutieli (2001), *The control of the false discovery rate in multiple
+testing under dependency*, Annals of Statistics 29:1165–1188,
+doi:10.1214/aos/1013699998, over both tests × every selected feature × every declared definition.
+For M slots, use the existing validated `modularity.AdjustBY`: sorted p_(i) are multiplied
+by M H_M/i, made monotone from the right and capped at 1. Failed/unavailable slots enter as
+p=1 internally and remain null in output; the family never shrinks after seeing results.
+Definitions and features reuse the same subjects, so their tests are dependent. BY tolerates
+arbitrary dependence **provided individual p-values are valid**; it does not repair assumptions,
+exploratory selection of definitions/features after seeing outcomes, or unreported analyses.
+No correction alters the marginal t or conservative probability intervals.
+
+For each feature, report available effect/interval counts; minimum, maximum and span of mean
+estimates; whether signs agree, change, include zero, are all zero, or are incomplete; and
+whether all marginal intervals lie above, below, include zero, differ, or are incomplete.
+These are separate descriptive summaries, with **no p-value cutoff**. The estimate range is
+not a confidence interval; agreeing signs do not prove robustness to undeclared alternatives,
+biological truth, joint coverage or practical equivalence. All-zero effects do not establish
+equivalence. Sampling depth, compositional changes and assignment/annotation quality can
+still explain observed diversity differences. Do not interpret UMI abundance as biological
+replication or assert causal/antigen-specific effects.
+
+**Visuals.** A horizontal forest displays every declared definition, baseline first, without
+sorting by p or coloring significance. It shares one feature-specific numerical axis, includes
+zero, shows original Go estimates and marginal t intervals, and retains failed rows/reasons.
+Missing intervals are not zero-width intervals. The selected definition also offers the
+existing complete subject/pair plot; no pooled across-definition error bar is drawn. Tables
+show both tests, raw/within/across probabilities, assignment shifts and explicit units.
+Figure captions retain all rules, subject counts, contrast, source/design identity and limits.
+
+**Example and validation.** `definition-study` v1 is a controlled 32-subject independent
+UMI study, not a fit to human repertoires. It retains uneven lognormal sampling exposure,
+gamma-Poisson variability, 48 shared receptors, subject/batch effects and 600 private
+nucleotide identities per subject from §5.33. Private mean is 1800/k^1.2 times exposure,
+with a 1.6 comparison-group scale. Comparison private identities occur in synonymous triples:
+Cys TGT/TGC and terminal Phe TTT/TTC preserve the AA junction; arbitrary labels TRBV5-1*01,
+TRBV5-1*02, TRBV5-2*01 and TRBJ2-7*01 permit allele/gene/junction-only distinctions. Reference
+private AA identities are distinct. Gene labels are parseable labels, not inferred germline
+assignments or a sequence-generation model. Full truth includes every zero, count, mean,
+exposure, dispersion, sequence and gene call. The example deliberately combines partition
+and depth differences to demonstrate sensitivity, not to establish a biological response.
+
+A separately written Python reference groups literal rows and computes entropy, exponentiated
+entropy, richness and assigned abundance; public SciPy 1.17.0 supplies Welch inference and BY,
+and exhaustive Python label enumeration supplies conditional rank tails. Go compares every
+subject value, effect, interval and corrected probability. Separate simulator tests reconcile
+all abundance vectors against literal truth across four definitions; previous presets retain
+their original byte digests. API tests cover exact baseline, failed/undefined alternatives,
+strict input, captured-evidence replay without source/grandparents, cancellation, checksums,
+provider terms and complete CSV/JSON. Browser tests exercise visible/remote settings, every
+forest row, figure provenance, saved Methods, project reopening and both themes.
+
+**Operational bounds.** At most 256 source samples, 200 selected subject/group observations,
+6 total definitions and 400,000 positive sample/clonotype abundance entries per definition;
+each captured abundance is finite, positive and ≤10^12. Retained rearrangements missing counts
+are refused, not imputed. Each definition uses the existing cohort work bound (50 million
+randomization operations); the audit runs definitions sequentially, at most six such budgets.
+Capture is required initially; immutable jobs retain sufficient abundance evidence for replay.
+Baseline failures abort; unavailable alternative analyses remain visible with all family slots.
+These are implementation limits, not sample-size or power recommendations.
+
+### 5.35 Motifs and sequence-signature groups (wave 7, slice 6)
+
+**Primary sources.** Huang H et al. (2020), *Analyzing the M. tuberculosis immune response
+by T cell receptor clustering with GLIPH2 and genome-wide antigen screening*, Nature
+Biotechnology 38:1194–1202, doi:10.1038/s41587-020-0505-4
+([paper and Methods](https://pmc.ncbi.nlm.nih.gov/articles/PMC7541396/)). Its global rule
+requires equal-length junctions differing at one common position with favorable BLOSUM
+substitutions; its local rule uses enriched contiguous 2–5-mers with positional separation
+within three residues. Its Methods use unique sequences in Fisher contingency tables and
+describe an N/P-region enrichment boost. Henikoff & Henikoff (1992), PNAS 89:10915–10919,
+doi:10.1073/pnas.89.22.10915 supplies BLOSUM62. Fisher (1922), J R Stat Soc 85:87–94,
+doi:10.2307/2340521 supplies the conditional test; Benjamini & Yekutieli (2001), Ann Stat
+29:1165–1188, doi:10.1214/aos/1013699998 supplies correction under dependent tests.
+Implementation is independently written from these published methods. The existing BLOSUM62
+data and validated hypergeometric engine are reused. No external GLIPH implementation is
+required. This is explicitly a **ClonoLoom adaptation, not GLIPH2 equivalence**.
+
+**Units and background.** Require explicit, distinct, disjoint query/background sample sets
+from one opened dataset. Apply its saved QC and amino-acid clonotype definition with V-gene
+or allele resolution. Refuse vendor definitions, omitted/family V calls and retained source
+rows lacking counts. Take exactly one retained TRB chain per clonotype; require resolved TRBV
+gene, standard amino acids, full AIRR junction length 9–40 and conserved C…F/W boundaries.
+Collapse positive observed evidence separately in each arm by **TRBV gene + full AA junction**,
+regardless of J or the other paired chain. This differs from CDR3-only uniqueness. Preserve
+all contributing clonotype IDs, sample/subject sets and summed abundance. Neither abundance
+nor repeated rows, samples, subjects or alternative paired partners weight motif membership.
+Subject annotations are descriptive and may be missing; no subject-level test is performed.
+An identity may occur in both arms; report that overlap explicitly.
+
+Match **both local and global** signatures within exact TRBV-gene/full-junction-length strata.
+The extra local V/length restriction is an adaptation, not a claim about published GLIPH2.
+No automatic reference download, repertoire shuffling, Pgen matching, antigen label or implicit
+background is supplied. Species, assay, selection, population, donor and receptor quality must
+make the chosen background scientifically defensible; matching V/length alone cannot ensure
+this. Do not mix species or sample contexts and interpret the output as matched biological
+inference. Query-only/background-only strata remain explicit and untestable.
+
+**Signature construction.** Exclude the first three and last three residues of the full AIRR
+junction from local search and possible global substitutions. This fixed terminal policy is
+ours; the full junction is retained for identity, length matching and global equality. Local
+2–5-mers use fixed windows of up to four consecutive eligible starting positions, so any two
+starts differ by at most three. A repeated motif counts once per receptor/window. Windows
+overlap and truncate at the eligible end; equal member sets in different windows remain
+separate declared hypotheses. Do not chain positions transitively across longer distances.
+Global signatures require equality at every other full-junction position. At the one variable
+position, enumerate maximal sets of observed residues for which **every distinct pair has
+BLOSUM62 > 0**. Strict positivity and maximal cliques specify our conservative adaptation;
+do not join A–B–C if A and C are incompatible. Store the full `%` mask, allowed residues and
+one-based position. These groups can overlap; no connected-component supergroup is inferred.
+
+**Tests and selection.** Enumerate the complete signature family from the pooled captured
+query/background units before using their arm labels. This includes background-only signatures,
+all eligible windows, both signature kinds and untestable strata; do not screen query support
+before defining the family. For a signature in a stratum with Q query and B background units,
+let a and b be its distinct members. The table is [[a,Q−a],[b,B−b]]. The one-sided Fisher p-value
+is the hypergeometric upper tail P(X≥a), conditional on Q, B and a+b. Reuse `conga.LogTail` to
+retain finite natural-log tails even if the ordinary probability underflows. Apply BY across
+all M pooled signatures: sorted log p + log(M) + log(H_M) − log(rank), made monotone from the
+right and capped at log(1). Untestable slots use p=1 internally and remain null in output.
+The displayed score is exactly **−log10(BY)**, not a GLIPH2 composite probability or confidence
+of common antigen recognition. Unsmoothed fold is (a/Q)/(b/B); no background matches gives
+null fold and an explicit reason, not a fabricated finite estimate. Reporting defaults require
+at least three query units, BY≤0.05 and fold≥2; zero-background signatures are allowed with
+the null-fold label. Reporting filters never shrink the correction family or change scores.
+
+Fixed pooled signatures avoid query-only motif selection within this analysis. They do not
+correct selecting samples, backgrounds, definitions or motif lengths after seeing outcomes,
+or unreported repeated screens. Fisher calibration assumes exchangeable sequence units within
+strata. Deduplication, related receptors, shared identities, donor structure, unequal repertoire
+sampling and ascertainment can violate this. BY allows dependence between tests **only when
+the individual p-values are valid**; it cannot repair these assumptions. No guarantee of
+biological false-discovery control, independent replication or antigen specificity is made.
+Use these as exploratory hypotheses for independent repertoire and experimental validation.
+
+**Deliberate omissions.** Do not apply the paper's division of p by two per N/P member:
+this slice has neither calibrated N/P annotations nor a validated null for that boost. Do not
+call the result the published GLIPH/GLIPH2 composite score. HLA association, clonal-expansion
+scores, antigen assignment, structural recognition and experimental specificity validation are
+not implemented here. HLA/convergence is a separate subject-level slice.
+
+**Visuals and example.** For a selected group, Go supplies every residue count and frequency
+over all distinct query members. The plot uses the complete unaligned full junction, one-based
+positions and a fixed opacity scale 0–100%; no information-content logo, abundance weighting,
+subsampling or smoothing. Conserved positions follow from signature selection and are not
+independent specificity evidence. Accessible tables retain exact frequencies' denominators,
+members, sample/subject annotations, strata, null scores and complete exports.
+
+The `motif-study` v1 example (seed 20261029) has four query subjects ×30 rows and eight background
+subjects ×125 rows. Biased central residues, junction lengths 15–17, uneven lognormal exposures
+and shifted gamma-Poisson UMI counts give varied observations. Four global ILMV variants are
+shared across query subjects; nine further rows per query subject plant QGHT at starts 5–7.
+Other junctions are unique random controls. Parseable TRBV labels and fixed codon translation
+are artificial, not germline assignment or fitted V(D)J recombination. Counts are
+1+Poisson(Gamma(shape=4) × [5000/(rank+1)^1.2 × exposure]/4); the added one guarantees positive
+records. Full source hashes and every sequence, arm, count and planted signature are saved.
+The default analysis has 108 distinct query and 1000 background units; repeated global rows
+must not inflate support. Example signal is constructed and cannot establish power or FDR.
+
+**Validation and bounds.** Independently enumerate literal pooled signatures and maximal
+residue sets in Python, using the public Biopython BLOSUM62 data API and SciPy Fisher/BY
+calculations. Check all 811 reference signatures, memberships, denominators, nulls and scores,
+plus full result processor digests. Exhaustive label assignments check a conditional null and
+family invariance; policy tests cover repeated motifs, nontransitive positions/substitutions,
+abundance invariance, strict schemas, bounds and cancellation. Literal example truth checks
+every captured count/identity; source-free replay, checksums, provider terms, complete ZIPs,
+browser saving/reopening, figure provenance and both themes are exercised.
+
+The screen accepts at most 256 source samples, 4000 distinct units summed across arms,
+100,000 pooled signatures and 20 million conservatively counted exact-tail support points.
+Exceeding a bound fails explicitly rather than truncating the family. Choose a scientifically
+declared subset before inspecting outcomes. Immutable jobs retain the complete captured
+evidence for deterministic source-free replay; limits are operational, not power guidance.
+
+### 5.36 Subject recurrence and HLA association (wave 7, slice 7)
+
+**Sources and scope.** Glanville J et al. (2017), *Identifying specificity groups in the
+T cell receptor repertoire*, Nature 547:94–98, doi:10.1038/nature22976
+([paper and Methods](https://pmc.ncbi.nlm.nih.gov/articles/PMC5794212/)), motivates checking
+HLA enrichment among subjects bearing a sequence group. This independently written extension
+uses saved groups from §5.35; it does not implement GLIPH's composite score or assert GLIPH2
+pipeline equivalence. The statistical sources are Fisher (1922), doi:10.2307/2340521;
+Benjamini & Yekutieli (2001), doi:10.1214/aos/1013699998; and Wilson (1927), JASA 22:209–212,
+doi:10.1080/01621459.1927.10502953. Reuse the validated exact-tail and Wilson engines.
+
+**ClonoLoom's choices: observation and selection.** Select 1–128 groups from the saved motif
+family, an explicit subset of its captured samples, 1–200 named human subjects and 0–64 target
+alleles. Every selected sample belongs to exactly one subject. The species declaration is
+required, not inferred from gene names. The parent bounds of 256 samples and 4000 distinct
+captured V-gene/full-AA-junction identities apply. Union identities across query/background
+arms and all selected samples of each subject. A subject contributes once, regardless of
+abundance, cells, distinct group members, homozygosity or repeated visits. Group presence is
+any captured member; exact receptor recurrence retains V/full-junction identity and its
+complete subject list. This is **observed recurrence**, not a model of convergent recombination.
+
+A subject with no eligible positive receptor evidence is unevaluable, not group-negative.
+A subject with eligible evidence but no member has observed non-detection; that does not
+establish biological absence. All such subjects remain in the output with sample assignments,
+receptor totals and explicit reasons. Recurrence denominators are all receptor-evaluable
+selected subjects, independent of typing. Empty allele panels produce descriptive recurrence
+only. Selecting signatures, samples or alleles using their HLA results invalidates a prospective
+interpretation; declare the panel before inspection and retain unreported/untestable slots.
+
+**Typing policy.** The [IPD-IMGT/HLA allele naming convention](https://www.hla.alleles.org/pages/nomenclature/naming_alleles/)
+distinguishes protein-level names from additional synonymous/noncoding fields; expression
+suffixes carry additional meaning. [G groups](https://www.hla.alleles.org/pages/p%26g_groups/g_groups/)
+do not identify one fully resolved allele. Our fixed comparison resolution is two fields.
+Accept syntactically resolved 2–4-field calls with optional `HLA-`, retaining their raw text;
+compare their first two fields. Syntax is checked, **not existence in an HLA database release**.
+Support A, B, C, DRB1, DQA1, DQB1, DPA1 and DPB1. Each tested locus needs exactly two explicit
+allele copies: repeat the name for a homozygote. A singleton is incomplete, not assumed
+homozygous. Missing, partial, low-resolution, ambiguous, wrong-locus, G/P-group or expression-
+suffix calls make the entire locus unknown. Never strip N/L/S/C/A/Q suffixes, impute a missing
+copy, resolve ambiguous alternatives, infer serotypes or construct class-II heterodimers.
+Variable-copy loci DRB3/4/5 are outside this bounded diploid contract. Unknown fields remain
+raw with reasons; absent and empty typing arrays normalize to the same unknown state.
+
+**Typed universes and test.** For each tested locus, take all selected subjects with eligible
+receptor evidence and two resolved calls, including subjects without the selected group.
+This same complete-case universe is used for every group and target at that locus. Denote its
+size N, allele carriers C, group-bearing subjects G and their intersection A. The contingency
+table is `[[A,C−A],[G−A,N−C−G+A]]`; the one-sided enrichment p-value is
+`P(X≥A), X~Hypergeometric(N,C,G)`. Four evaluable subjects is a structural floor, not a power
+recommendation. N<4 or constant carriage/group margins produce an unavailable test with a
+reason. Frequencies A/C and (G−A)/(N−C), where their denominators exist, remain descriptive.
+
+Adjust over the complete Cartesian product of declared groups and alleles, up to 8192 slots,
+using log-space BY as in §5.35. Untestable slots use p=1 internally, contribute to the family,
+and remain null in JSON/blank in CSV. Retain natural-log probabilities. No p-value threshold
+selects the displayed group panel or drops failed tests. The original motif p-values are
+separate and are not combined into a composite score. BY permits dependence between valid
+individual tests; it does not repair confounding or post-outcome selection.
+
+**Intervals and plots.** Go computes each observed subject fraction and marginal 95% Wilson
+score interval, z=1.959963984540054, with no continuity correction. The HLA plot shows carrier
+and non-carrier fractions on one fixed 0–100% axis, labeled with numerator/denominator and
+interval meaning. No denominator gives no point, never an apparent zero. Their difference is
+descriptive: the two marginal intervals are neither an interval for that difference nor
+simultaneous/BY-adjusted intervals. The recurrence plot shows every declared group in declared
+order on a common subject-count scale; above 20 groups use the complete table rather than a
+selected subset. Figures carry selection, source/definition/QC, units, citations and limits.
+
+**Inference limits.** The test assumes independent, exchangeable subjects and comparable
+ascertainment conditional on its margins. Population structure, relatedness, HLA linkage
+disequilibrium, unequal repertoire depth, unequal numbers of sampling visits, case selection
+and HLA-dependent sampling can violate this. Unioning visits avoids pseudoreplication but
+does not equalize detection opportunities. Complete-case typing may itself be selected.
+No ancestry adjustment, haplotype phase, causal effect, HLA restriction, common antigen or
+experimental recognition is inferred. Use independent cohorts and experimental evidence to
+investigate the hypotheses. The small synthetic checks below are not population calibration.
+
+**Artifact contract.** Pin the parent manifest and checked result hash; capture all eligible
+receptor identities/sample membership and only the selected group memberships, alongside the
+explicit subject/typing declaration. Source fingerprints, QC, definition, abundance unit,
+provider terms and parent method remain attached. Immutable cancellable jobs replay without
+source files or the parent artifact. ZIPs contain complete JSON, manifest, raw subject typing,
+all associations and exact recurrence CSVs plus NOTICE; downloads retain provider-term checks.
+Exports include subject IDs and raw HLA typing. No de-identification is implied in this slice.
+
+**Artificial example.** `convergence-study` v1, seed 20261030, has 32 fictional subjects,
+36 samples (four subjects revisited), and 30 rows per sample. Repeated samples retain receptor
+identities but have different observed depths. Biased junction residues, lengths 15–17,
+arbitrary TRBV labels and 1+Poisson(Gamma(shape=3) × [4000/(rank+1)^1.15 × exposure]/3) UMI
+counts, with lognormal exposure log-SD 0.5, provide varied evidence. These are construction
+choices, not fitted human haplotypes, V(D)J recombination or measured biological data.
+
+QGHT (length 17, starting window 5–8) occurs in 18 subjects; a conservative ILMV group occurs
+in 11. Declare these two groups and A*02:01, B*07:02, DRB1*15:01 before HLA inspection. Four
+subjects have unresolved A typing. The planted QGHT/A association is 17/20 carriers versus
+1/8 non-carriers in the 28-subject typed universe: p≈0.00070943549, six-slot BY≈0.01042870.
+B and DRB1 each have 32 typed subjects. The two motif arms alternate subjects, with revisits
+kept in their subject's arm. Full arm, typing, sample, receptor and source-hash truth is saved.
+The association is intentionally constructed and demonstrates neither statistical power nor
+biological false-discovery control.
+
+**Independent validation.** `validation/reference/convergence.py` (SciPy 1.17.0) constructs
+literal subject sets and independently checks all 12 group/allele slots, hypergeometric tails,
+BY and Wilson intervals, including incomplete typing, a subject with no receptor evidence and
+constant/empty margins. Exact enumeration of all 70 four-of-eight carrier assignments checks
+super-uniform raw tails in one exchangeable fixed-group case. Tests check repeated-sample and
+abundance invariance, homozygosity, missingness, declared family, bounds, cancellation,
+checksums, source/parent-free durable replay and provider-aware complete ZIPs. Simulated truth
+is aggregated directly by subject, independently of group statistics; result/example digests
+pin processor reproducibility. Browser checks compare visible and remote declarations, exact
+plot geometry, undo/redo/reopening, source/parent-free exports and cited Methods in both themes.
+
+### 5.37 Contamination evidence (wave 7, slice 8)
+
+**Primary sources and distinction.** The AIRR Community's *Guide to Planning and Performing
+AIRR-Seq Experiments* (2022), doi:10.1007/978-1-0716-2115-8_15,
+[contamination discussion](https://www.ncbi.nlm.nih.gov/books/NBK586946/), motivates inspecting
+cross-subject nucleotide sharing and abundance patterns alongside laboratory context.
+Li R et al. (2023), *A novel statistical method for decontaminating T-cell receptor sequencing
+data*, Briefings in Bioinformatics 24:bbad230, doi:10.1093/bib/bbad230,
+[paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC10359082/), describes TCR-Broom's statistical
+approach. We cite its problem framing; **we do not implement its Bayesian classifier, priors,
+training reference or removal procedure**. Sethna et al. (2019), OLGA, Bioinformatics
+35:2974–2981, doi:10.1093/bioinformatics/btz035, supports the separate recombination-probability
+context already validated in wave 4. Only papers, documentation and our existing engines are
+used; no external repertoire-tool implementation source is inspected or copied.
+
+**ClonoLoom's bounded choice.** This is a descriptive evidence screen for **human bulk TRB**,
+not an estimator of contamination probability/rate. Require 2–64 explicit selected samples,
+globally meaningful subject IDs, optional batch labels, a human declaration and confirmation
+that different IDs represent unrelated subjects. Repeated samples retain the same ID; every
+same-subject sample pair is excluded. Distinct IDs cannot establish independence. All remaining
+unordered sample pairs are retained, including zero-match and unevaluable pairs. Multiple pairs
+involving one subject are dependent; no inferential test pools them as replicates. We do not
+silently assume unrelatedness or infer a source/direction from a larger count or fraction.
+
+Apply recorded source QC, then require explicitly productive TRB rows. Use a fixed full AIRR
+**nucleotide junction + V gene + J gene** identity, normalizing resolved allele calls to gene.
+This is separate from the active project definition, which is not changed. It is an exact
+junction identity, not proof of identical full rearrangement or shared biological ancestry.
+Require standard A/C/G/T, length 27–120 divisible by three, translated C…F/W boundaries and no
+stop/unknown amino acids; unresolved V/J calls and missing/nonstandard junctions are excluded
+from matching, with counts of reasons. Different synonymous nucleotide junctions never match,
+nor do different resolved V/J genes. Gene-call discordance can hide genuine carryover; no
+fuzzy matching, edit-distance rescue or automatic annotation repair is applied.
+
+Require known nonnegative integer counts in reads, UMIs or templates. Missing/nonfinite/
+fractional retained counts refuse the screen; they are never one or zero by default. Whole
+selected samples without retained abundance remain unavailable. Reads measure amplification
+as well as molecules. Single-cell, sequence-only, unknown-unit, nonhuman and other-locus
+workflows are outside this slice. In particular, a recombination Pgen is not a model of SHM in
+mature B-cell repertoires; extending those cases needs its own scientific contract.
+
+**Denominators and coverage of evidence.** Sum every retained productive TRB count in each
+selected sample before sequence/gene evaluability checks. This complete abundance is the
+fraction denominator T_s. Record eligible abundance, retained row count, and every exclusion
+beside it. Identical eligible keys sum within each sample. A positive match has c_a>0 and c_b>0;
+its fractions are c_a/T_a and c_b/T_b. Shared abundance sums all matching identities within
+each sample, with corresponding fractions. Missing counts refuse capture; a zero denominator
+or no eligible identities makes pair summaries unavailable rather than reassuring zero sharing.
+For two evaluable samples with no matches, zero is the observed result. These quantities are
+coverage of the **retained evidence**, not estimated unseen repertoire coverage or equal-depth
+comparisons. Unequal sequencing depth and QC affect the opportunity to observe a match.
+
+**Heuristic review rules.** Preserve every positive cross-subject identity match. Defaults
+mark a match for review when both counts are ≥2 and the larger sample fraction is ≥0.01.
+Among these, call the fractions asymmetric when max(f_a,f_b)/min(f_a,f_b)≥20; otherwise label
+shared high abundance. Thresholds are explicit, serialized and editable. Zero-valued options
+resolve to documented defaults. These are **ClonoLoom's display/review choices**, not published
+calibrated cutoffs, p-values, sensitivity/specificity estimates, a contamination test or a
+reason to remove sequences. They neither change denominators nor discard below-threshold
+matches. Shared expansions can merit inspection even without an asymmetric pattern.
+
+**Publicness context.** Optionally attach a checksum-verified saved Pgen artifact from the
+same dataset, QC, productive NT TRB/V-and-J-gene definition and human organism. Capture its
+manifest, result hash, model name/checksum/source/license/citation and joint-V/J setting, then
+attach probabilities by exact identity. Never substitute AA Pgen for NT Pgen, mix model
+contexts, infer a missing probability or silently download a model. No parent or no computed
+value gives **unknown Pgen**. Model zero is retained as zero, not evidence of biological
+impossibility. The default high-NT-Pgen threshold is 1e-8, a declared contextual choice rather
+than an empirical publicness classifier. Joint V/J probabilities and sequence-only probabilities
+are distinct quantities; thresholds are interpreted under the recorded setting.
+
+A high Pgen match receives a separate plausible-publicness annotation and remains in all
+sharing/review counts. Review and high-Pgen categories can overlap. A low Pgen match is not
+proof of contamination, and a high Pgen match does not establish independent generation or
+clear a sample. Biological selection, shared exposure, expansion, relatedness, transplantation
+and cell therapies complicate comparisons; index misassignment, sample mislabeling and several
+laboratory mechanisms can also produce overlap. Batch labels provide context only. This screen
+cannot distinguish these mechanisms or establish a contamination source, direction or rate.
+
+**Plots.** The selected pair's scatter contains every positive shared identity, with exact
+Go-computed fractions and counts. Both axes have the same logarithmic limits: the lower decade
+containing the smallest positive fraction (at most 0.01), to 1. Geometry has equal horizontal/vertical scale;
+its diagonal denotes equal fractions. Limits can differ across sample pairs. There is no zero
+pseudocount, jitter, density smoothing, regression, probability contour or random subset.
+Coincident identities may overlap visually; full tables/exports retain each. Above 2000 points
+show the complete tables/export rather than an undocumented plot subset. Purple/gold indicate
+review status, and open circles independently identify high Pgen. Captions retain sample IDs,
+subjects, denominator definition, QC, thresholds, model context, provenance and references.
+
+**Artifacts and limits.** Capture all selected depth/assignment records, eligible identities
+and per-sample counts, source fingerprints, QC, fixed definition, unit, thresholds and optional
+Pgen evidence. Refuse more than 5000 eligible identities or 200,000 shared pair/identity rows;
+never truncate. Retained sample abundance is bounded at 9e15, below exact integer overflow.
+Immutable cancellable jobs replay from that capture without original files or Pgen parent.
+Complete CSV/JSON ZIPs retain samples, pairs, matches, model context, manifests and provider
+notices. Exports contain subject IDs and nucleotide sequences; no de-identification is implied.
+No source data, QC filter or sequence is changed by a review flag.
+
+**Artificial study.** `contamination-study` v1 (seed 20261031) has eight fictional subjects,
+nine samples and 706 rows. Productive junctions use the existing length-selected human TRB
+simulator (its documented gene segments, deletion/insertion and usage model). Each subject
+has 75 private sequences; three further sequences are assigned to all subjects as designated
+biological-sharing controls. These assignments are construction truth, not independent
+stochastic re-generation events, antigen labels or Pgen-based classifications. D01 has a
+second sample in another batch. Three D01 identities with counts 3500/4700/5900 are copied
+into D02 at 7/11/15 to plant carryover evidence. A Cys-codon synonymous variant in D03 supplies
+a same-AA/different-NT control. Other counts are 1+Poisson(Gamma(shape=3) ×
+[2500/(rank+1)^1.1 × exposure]/3), with lognormal exposure log-SD 0.55. Repeats use the same
+identities at another depth. No empirical index-hopping mechanism or contamination rate is fitted.
+
+Every source row's sample, subject, class, V/J, NT and count is saved in `truth/observations.tsv`;
+assignments, model/seed and source hashes accompany it. There are 604 eligible identities,
+35 cross-subject sample pairs, one excluded same-subject pair and 111 shared pair/identity
+records. D01-1/D02-1 has six matches, three with the planted asymmetry. Their retained totals
+are 17316 and 10431 UMIs. Pgen is computed separately under the selected model; planted truth
+never determines the displayed high-Pgen annotation. This demonstrates mechanics and limits,
+not real-world detection accuracy or absence of false positives.
+
+**Independent validation.** Python sets and exact `fractions.Fraction` arithmetic construct
+literal sample intersections, denominators, ratios, review flags, model-context categories and
+nulls in `validation/reference/contamination.py`. Go checks every output pair/match and pins
+the complete-result digest. API tests independently join every simulated truth row, compare
+all sample totals and pair intersections, then verify compatible/missing/incompatible Pgen,
+missing-count refusals, retained-but-unevaluable sequence denominators, checksum refusals,
+provider terms and exact replay after deleting source and Pgen directories. Core tests cover
+threshold invariance, same-subject exclusion, high-Pgen overlap, model zero, unavailable depth,
+invalid evidence and cancellation. Earlier Pgen scientific references remain authoritative for
+probability computation itself. Browser checks exercise visible/remote identity, plot geometry,
+undo/redo, reopening, source/parent-free exports, cited Methods and both themes; sample QC is
+regressed separately. No inferential calibration or classification-performance claim is made.
+
+## 5.38 Batch QC: descriptive sample metrics and robust scores
+
+**Sources and scope.** Iglewicz and Hoaglin, *How to Detect and Handle Outliers* (ASQC,
+1993), as summarized in the [NIST/SEMATECH e-Handbook §1.3.5.17](https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm),
+provides the modified-z labeling rule. NIST distinguishes investigating unusual observations
+from establishing erroneous data and notes masking and distributional assumptions. The
+[OSCA Advanced chapter, Quality control, redux](https://www.bioconductor.org/books/release/OSCA.advanced/quality-control-redux.html)
+discusses batch-specific reference distributions, biological heterogeneity and failure of
+adaptive thresholds when much of a batch is poor. Its per-cell implementation is not copied
+or reproduced here: ClonoLoom uses sample-level metrics and the policy below, independently
+implemented from the mathematical definition. Neither source validates these receptor-specific
+cutoffs, minimum sample count or metrics as a diagnostic classifier.
+
+**Assignment and observation unit.** Capture every source sample from one opened dataset,
+including explicit exclusion reasons. Included samples require exact subject and batch labels;
+missing labels do not form an implicit “unknown” reference group. Include at most one sample
+per subject per batch. A repeat requires an explicit exclusion or a distinct, scientifically
+justified batch assignment; the software never pools technical replicates. Subjects may recur
+across batches, so the global unique-subject count can be smaller than the sample count and
+batch summaries are not independent. Batches may represent runs or a predeclared combination
+of experimental factors. Labels and structural checks do not prove subject independence,
+comparability, absence of confounding or sufficient power. No inferential batch comparison is
+performed. Bounds: 2–256 source samples, at least two included, at most 32 included batches.
+
+**Metrics and denominators.** Use the saved source QC rules. No active clonotype definition
+is used or changed, and no missing sequence is silently replaced or required for these metrics.
+Store original/retained row counts, named filter exclusions and every metric's numerator,
+denominator, raw value and availability reason. Bulk weights are explicitly known integer
+reads, UMIs or templates; sequence-only and unknown-unit datasets are refused. A missing,
+negative, noninteger or nonfinite contributing count makes the affected metric unavailable,
+rather than treating it as zero or one. Other valid metrics remain available. A zero denominator
+is unavailable; zero numerators with positive denominators remain real zeros. Counts are bounded
+at 9e15, below loss of integer precision. In single-cell tables, fractions count contigs once
+regardless of UMI depth; abundance counts unique nonempty retained barcodes within each sample.
+Any retained contig without a barcode makes cell abundance unavailable. Contigs/cells do not
+become independent QC-score observations.
+
+| Metric | Raw value | Scoring scale |
+| --- | --- | --- |
+| Retained abundance | Sum of retained bulk counts, or distinct retained barcodes | log10 of positive values |
+| Retained rows | Number of rows passing QC; contigs for single-cell tables | log10 of positive values |
+| Productive fraction | Explicitly productive weight / all weight after QC except its productive-only rule | Original fraction |
+| Unknown productivity fraction | Missing productive-flag weight / that same status denominator | Original fraction |
+| Resolved V-gene fraction | Resolved V-gene weight / all retained explicitly productive weight | Original fraction |
+| Resolved J-gene fraction | Resolved J-gene weight / all retained explicitly productive weight | Original fraction |
+
+Gene fractions include productive rows without junctions in the denominator; ambiguous/missing
+gene calls are unresolved. Productivity fractions retain unknown flags in the denominator.
+Removing the productive-only rule from the status universe avoids reporting a mechanically
+perfect productive fraction after that filter. Other QC rules still apply. These exact
+universes are specific to this screen and travel with the result; they should not be assumed
+equivalent to vendor metrics or metrics using an eligible-junction denominator. Log metrics
+use no pseudocount: raw zero remains in tables but has no transformed value or score. Fractions
+use no logit, arcsine or normality claim. Comparing heterogeneous fractions can flag genuine
+biology; the distribution and provenance must be inspected.
+
+**Score and unavailable policy.** For each batch × metric, take all finite transformed values,
+including the observation being scored. The median of an even set is the mean of its two
+middle values. Compute raw MAD = median(|x − median(x)|), then
+`modified_z = 0.6745 × (x − median(x)) / MAD`. The coefficient is the rounded NIST value,
+used exactly as declared; MAD itself is not additionally scaled. Default review is strictly
+`abs(modified_z) > 3.5`, in both directions. The threshold is editable from 1 to 20.
+There are no p-values, multiplicity adjustments, calibrated false-positive rates, confidence
+intervals, normality tests or contamination diagnoses. An extreme productive fraction in
+either direction may reflect preprocessing, protocol or biology, not necessarily poor quality.
+
+At least five evaluable subjects per batch/metric are required by default (editable upward
+to 100). This is a conservative ClonoLoom display policy, not a published power guarantee.
+Below the minimum, preserve medians/MADs and values but leave all scores unavailable.
+If MAD is exactly zero, leave scores unavailable even for values different from the median;
+no epsilon, infinity, pooled scale, mean/SD or IQR fallback is invented. Numerical overflow
+also remains unavailable. A false flag on an unscored JSON observation must be read together
+with its null score/reason; CSV uses a blank flag for unscored observations. Every group reports
+included samples/subjects, valid values, scored values and flags separately. Changing the review
+threshold does not change membership, reference values or denominators. Small-group policy and
+missingness operate separately per metric.
+
+**Visuals and interpretation.** Show every included sample with a plottable value, all batches
+on the same horizontal scoring scale. Fractions use 0–1; positive count metrics use explicitly
+labeled log10 values. Batch medians are vertical lines, not uncertainty intervals. Deterministic
+vertical offsets distribute samples within each labeled batch and have no quantitative meaning;
+x values are never jittered. Coincident marks can overlap; tables and exports retain every
+observation. Gold denotes a review flag, purple a scored value below threshold, gray an unscored
+value. Missing/nonpositive-log values remain in the tables with reasons. No density estimate,
+regression, batch-difference test, hidden subsampling or pooling is used. The common scale allows
+inspection of systematic shifts that a within-batch reference can conceal. A batch where most
+samples fail can look internally typical; a lack of flags does not establish usable data.
+
+**Reproducibility.** Capture all metrics, source fingerprints, sample assignments/exclusions,
+QC, unit, transformation and scoring policies in immutable cancellable jobs. Replay uses the
+captured evidence and does not reopen source files. Complete ZIPs include the document, manifest,
+sample evidence, every included sample × metric observation and provider notice; explicit
+exclusions remain in JSON. Subject identifiers are retained. Visible and remote workflows share
+the same content identity, support undo/redo and feed cited Methods and figure captions.
+
+**Artificial study.** `batch-qc-study` v1 (seed 20261101) generates 26 samples from 25 fictional
+subjects and 2427 rows. Twenty-four included subjects occupy four batches (8, 8, 3, 5); a D01
+repeat and a sample with missing batch have explicit exclusions. Productive TRB junctions use
+the existing length-selected generator. Nonproductive controls replace an internal codon with
+TAA, with consistent translation and false productive flags. Missing productivity flags and
+V/J calls are deliberately generated. Counts are `1 + Poisson(Gamma(shape=3) ×
+1800/(rank+1)^1.05 × exposure / 3)`, with lognormal exposure log-SD 0.38. Most sample row
+counts vary from 65 to 129; the final batch has 80 rows in each sample to exercise zero MAD.
+Run A's eighth subject has a lower generating productive proportion; its seventh has one
+missing count. Run B has a lower generating productivity distribution; run C is too small
+for scores. Generating probability is not necessarily the observed count-weighted fraction.
+These are controlled construction assumptions, not fitted assay error rates, empirical batch
+effects, classifier sensitivity or a randomized biological study. All row-level truth,
+assignments, model/seed and source hashes are saved. Older presets retain their existing bytes.
+
+**Independent validation.** A standard-library Python oracle uses exact Fraction medians/MADs
+and the declared 0.6745 coefficient for fraction metrics, and independent `math.log10` for count
+metrics. Go checks every reference group and observation, missingness, score and flag. Literal
+source truth is independently aggregated in API tests to check every raw metric, missing count
+and denominator; separate checks cover productive-only QC and barcode-versus-contig accounting.
+Tests include duplicate-subject refusal, explicit exclusions, zero MAD, minimum groups, threshold
+invariance, cancellation, tamper refusal, provider-aware exports and source-free replay.
+Complete-result and simulator digests are pinned on native and amd64 processors. Browser checks
+compare every plotted value with saved evidence, reopen projects without sources, validate full
+exports and cited captions, and exercise existing Sample QC and Contamination in both themes.
+
+## 5.39 Pseudobulk count evidence (wave 7, slice 10)
+
+**Sources checked 2026-10-25.** Crowell HL et al., *muscat detects subpopulation-specific
+state transitions from multi-sample multi-condition single-cell transcriptomics data*,
+Nature Communications 2020;11:6077, doi:10.1038/s41467-020-19894-4; and OSCA Multi-Sample,
+chapter 4, https://bioconductor.org/books/release/OSCA.multisample/multi-sample-comparisons.html.
+These describe raw sums within sample and supplied subpopulation and the distinction between
+cells and biological replicates. Published cell-count cutoffs are analysis choices, not
+universal adequacy guarantees. Only primary papers and methodological documentation were
+consulted. No external implementation source was used.
+
+**Adaptation and estimand.** This slice supplies exact count evidence, not differential
+expression. For each selected sample s, supplied nonempty type t, declared size bin b and
+Gene Expression feature g, compute Y[s,t,b,g] = sum of raw X[cell,g] over eligible cells.
+Subject, literal timepoint, tissue and sample remain recorded; never pool across libraries.
+Require one selected sample per subject/timepoint. Multiple visits remain repeated observations,
+not independent subjects. Feature ID, name, type and order must match across matrices; do not
+intersect panels, impute absent genes or merge repeated display names. Exclude other modalities.
+AnnData/MuData raw matrix selections and source hashes remain explicit. Nonnegative integer
+validation alone cannot establish that user-supplied data are unnormalized raw counts.
+
+**Membership.** Capture immutable saved phenotype parents with one dataset, definition, QC,
+receptor-size population and inclusive breakpoints. Reject mapped-size populations. Sizes count
+unique receptor cells within the source sample, not within each cell type and not across samples.
+Use all expression cells, including unmapped cells; neither graph filters nor visual selections
+implicitly restrict the matrix. Missing type takes precedence over unavailable unique clone
+size in disjoint exclusion accounting. Preserve exact barcode membership and all raw sparse
+Gene Expression counts, including excluded cells, for audit and source-free replay.
+
+**Availability.** Create every selected sample × union of observed nonempty types × declared
+bin. A group with no contributing cells has null counts and library total. A measured group
+contains all genes with implicit sparse zeros made explicit. Keep raw sums for groups below
+minimum cells (default 10, configurable 1–100000), but mark them ineligible; zero-library groups
+are also ineligible. There is no normalization, averaging, log transform, pseudocount, test or
+claim of adequate power. A category indicates sampled clone size, not specificity or causal
+expansion. Ascertainment and expression-derived labels can affect later inference.
+
+**Bounds and provenance.** Accept 1–32 selected samples, 100000 cells per source and 200000
+captured cells overall, 1–50000 Gene Expression features, 1–128 types, at most 2000000 source
+sparse entries per matrix and captured entries overall, and 2000000 output count slots.
+Counts and contributing cell/library totals must not exceed 9e15; integer overflow is refused.
+Source fingerprints, phenotype checksums, exact policies, per-cell counts and assignment reasons
+travel with the durable job/result and complete provider-aware export. No data are silently
+subsampled. Selection order does not change identity.
+
+**Visual.** Shared zero-based linear bars show contributing cells per sample/category for one
+supplied type. The minimum line is an evidence cutoff, not significance. Gray distinguishes
+ineligible measured groups; absent groups have no expression-count bar. Every raw library and
+cell exclusion is tabulated. No error bars, inferential p-values or normalized expression claims.
+
+**Example and validation.** The new `pseudobulk-study` preset uses the existing cell-state
+model with seed 20261102, four subjects, two visits, 420 cells/matrix and 48 possible clones.
+Its 24 artificial genes have independent conditional negative-binomial counts with size 4 and
+means 16 within the state block, 2 elsewhere. Inverse-rank clone probabilities generate uneven realized
+sizes. Supplied clouds illustrate states; they are not computed embeddings. This deliberately
+small demonstration is not a fitted biological model or a DE calibration fixture. Prior presets
+remain unchanged. An independent stdlib Python integer oracle covers missing, zero, absent,
+low-cell, repeated-visit and repeated-barcode controls. Integration checks independently parse
+all eight literal Matrix Market files and generating clone/annotation truth, comparing every
+feature sum and cell denominator. Check strict requests, mismatches, overflow, cancellation,
+checksums, provider terms, source-free replay, exact processor agreement, and both-theme UI.
+
+## 5.40 Paired pseudobulk differential expression (wave 7, slice 11)
+
+**Scope and sources.** M5 builds on §5.39's immutable raw sums. Crowell et al. (2020),
+Nature Communications 11:6077, doi:10.1038/s41467-020-19894-4, and OSCA Multi-Sample chapter 4
+(https://bioconductor.org/books/release/OSCA.multisample/multi-sample-comparisons.html,
+reviewed 2026-10-27) motivate preserving biological replication. OSCA uses moderated
+quasi-likelihood; ClonoLoom does **not** claim that pipeline. Anders & Huber (2010), Genome
+Biology 11:R106, doi:10.1186/gb-2010-11-10-r106, supplies median-of-ratios size factors.
+McCarthy, Chen & Smyth (2012), Nucleic Acids Research 40:4288–4297,
+doi:10.1093/nar/gks042, supplies the NB GLM/Cox–Reid method already validated in §5.33.
+Benjamini & Hochberg (1995), doi:10.1111/j.2517-6161.1995.tb02031.x, supplies BH.
+Only publications/documentation and public validation APIs are used; no external implementation
+source is incorporated. Runtime remains standard-library Go and browser-native JavaScript.
+
+**ClonoLoom's declared design.** One checked count parent, exact supplied type, literal
+timepoint, reference size bin and comparison size bin. Sample exclusions require reasons;
+other timepoints have an explicit outside-selection disposition. Every included subject must
+have both eligible groups, using the parent's minimum-cell rule and positive library totals.
+No incomplete pair is dropped automatically. More than one selected sample per subject is
+refused. Fixed effects are intercept, comparison and treatment-coded subject indicators;
+contrast is the comparison coefficient. This reuses the rank-checked paired design from §5.33.
+At least 25 complete pairs give 24 residual df; maximum 32 comes from the count parent.
+These are implementation/approximation guards, not power or independence guarantees. No
+additional batch column is inferred: subject-constant effects are blocked, while category-
+specific technical effects, cell labeling and selection can remain confounded. The count
+parent does not capture category-specific batch covariates.
+
+**Normalization and estimand.** For every gene positive in every selected observation,
+compute its across-observation geometric mean. Take the ordinary median of count/geometric-
+mean ratios per observation (average the two middle ratios for an even number), then divide
+factors by their geometric mean. Record every normalization gene and factor; use log factors
+as offsets. Compute this reference before the testing filter. Zero-containing genes are
+omitted only from normalization, never made positive by pseudocounts or silently removed from
+counts. Require at least ten normalization genes (ClonoLoom guard); otherwise refuse. Most
+reference genes must be unchanged or balanced in their changes. The estimand is category-
+associated relative expression under this scale, not absolute RNA per cell. Global RNA shifts,
+poor reference panels and composition effects can invalidate normalization. No per-cell average,
+integrated matrix or log-normalized counts enter the likelihood.
+
+**Fits and family.** Reuse `countmodel.FitDispersion` and `FitNB` unchanged: NB2 log link,
+variance μ+αμ², separate unmoderated gene-wise Cox–Reid adjusted-profile dispersion under the
+full model, search 1e-5–100 with explicit boundary/nonconvergence failures. The null omits only
+the category indicator and retains the full-model dispersion. LRT uses asymptotic chi-square(1);
+log2 effects and marginal normal Wald intervals use inverse fitted information. Intervals and
+p-values condition on fitted size factors/dispersion; neither estimation uncertainty is fully
+propagated. No empirical-Bayes moderation, quasi-likelihood, shrinkage, Poisson substitution,
+ridge or equivalence to edgeR/DESeq2. All-zero category/subject blocks retain unavailable fits.
+Default filter: raw count ≥10 in ≥25 of the selected pseudobulk observations, independent of
+effect direction; configurable count 1–1,000,000, prevalence 2–64 (not above actual n).
+BH family is every filter-eligible gene in this single type/time/contrast; failed fits occupy
+p=1 slots but remain displayed null. Filtered genes are outside the family. BH assumes
+independence or suitable positive dependence, and does not adjust intervals or other choices.
+Confidence defaults .95, allowed .8–.99. At most 1000 eligible genes are fitted (explicit
+resource bound, no truncation); retain 10–50,000 genes within the parent's two-million raw
+output-slot bound. Per-gene raw counts ≤1e9 and libraries ≤1e12 match the numerical engine.
+
+**Evidence and plots.** `pseudobulk-de` artifacts bind the parent checksum, raw groups,
+feature IDs/names/modalities, annotations, every disposition, effective options, model version,
+normalization gene set, full design/contrast, fitted coefficients/means/covariance and likelihoods.
+The parent retains cell membership. Replay needs no original file or parent; new comparisons
+verify the count parent. Complete CSVs keep counts, design/offsets and every gene, with unavailable
+inference blank. Provider NOTICE and source methods travel with exports. Browser geometry only:
+gene mean normalized count on a log x-axis versus log2 effect; no significance colors or p-value
+clipping; zero-based linear paired subject counts; separate conditional effect interval with zero
+reference. Zero counts plot at zero; failed fits stay visible in tables. Size categories imply
+neither antigen specificity nor causality; cells never inflate biological replication.
+
+**Artificial studies.** New model `clonoloom-artificial-pseudobulk-de-v1`, presets
+`pseudobulk-de-study` (seed 20261103) and `pseudobulk-de-null` (20261104), 28 subjects at baseline.
+Subject i=0..27: 48+i mod 5 singleton clones and eight larger clones with sizes
+[7,9,11,13,17,21,26,33]. Forty fictional genes; baseline per-cell mean (2+g)/3 for g=0..39,
+multiplied by a shared subject/gene Gamma(16,1)/16 and independent category/gene Gamma(5,1)/5,
+then independent conditional Poisson cells. Positive preset genes 1–2 multiply comparison means
+by 3, genes 3–4 by 1/3; null preset all folds 1. Gene 39 has mean .005, gene 40 zero, gene 38
+zero in subject 1. Known count/membership truth and all source hashes are separate. Fictional
+SIM TRA/TRB calls and stop-free junctions; correlated Gaussian layout x=1.7Z1,y=.6x+1.2Z2,
+independent of expression, is an illustration, not a fitted embedding. Existing gamma/Poisson
+and polar-normal samplers supply the published sampling methods (§5.39). No fitted biological,
+antigen, dropout or clinical model is claimed. Earlier presets remain byte-identical.
+
+**Independent validation.** `validation/reference/pseudobulk_de.py` uses NumPy ratios,
+statsmodels 0.14.6 public GLM and SciPy 1.17.0 optimization, chi-square/normal distributions and
+BH; it does not read ClonoLoom outputs. The 40-gene fixture compares all factors, normalized
+counts, designs, dispersion, coefficients, fitted means, covariance, likelihoods, effects,
+intervals and p/BH values. Separate `--controls` uses prespecified seed 20261105, 300 genes,
+28 pairs, 30 balanced threefold positive effects and 270 generating nulls, including the same
+three edge controls. Go compares all effect/inference outputs. There are 267 fitted nulls,
+15 nominal p≤.05 (5.6%), 250/267 conditional intervals covering zero (93.6%), and 30/30 positive
+fits with correct direction. This finite panel shares normalization and is not 300 independent
+studies or universal calibration. Prespecified diagnostic guards: ≥260 fitted nulls, rejection
+≤10%, coverage ≥90%, all 30 positive directions; these are regression guards, not claims of
+exact nominal error control. Existing §5.33 repeated null-trial checks continue unchanged.
+
+### 5.41 Complete cohort studies and release controls
+
+This slice introduces no new estimator. It composes the validated methods in §§5.31–5.40
+through their ordinary visible actions, pinning the exact design version, definition/QC,
+measurements and parents. The independent-unit rule remains grounded in Lazic (2010),
+[BMC Neuroscience 11:5](https://doi.org/10.1186/1471-2202-11-5); the primary paper was rechecked
+for this release. More measurements within a subject do not add independent subjects.
+The model-specific primary references and adaptations remain beside each implementation.
+
+**Controls declared before fitting.** Reuse positive/null independent and positive paired
+count generators. Add 12-control/20-stimulated independent subjects with alternating batches,
+and 16/16 subjects with batch exactly determined by group. The latter applies both the
+existing 1.2-fold B2 multiplier and group effects. Its batch and group columns are collinear;
+this is a design refusal control, not a negative control expected to yield a nonsignificant
+p-value. Missing cross-batch group observations cannot be recovered by deeper sequencing or
+by adding an unidentifiable batch term. Keep failed checks as versioned inspection records,
+excluded from analysis selection and rejected by the existing host-side design checks.
+
+Both new presets preserve the existing gamma-Poisson mechanism, long-tailed private receptors,
+48 shared receptors, uneven lognormal exposures, subject effects, streams and truth schema.
+Only declared group allocation/batch assignment and seeds change. Original preset digests
+remain pinned. The unbalanced design uses every generated subject without outcome selection;
+unequal group sizes alone do not violate estimability. Literal independent parsing of truth
+checks all observed counts, group sizes and confounding; count-matrix checks verify refusal
+or residual degrees of freedom. The existing independent statsmodels/SciPy reference includes 12/20 unbalanced designs
+with and without batch adjustment; the count-engine suite also runs 400 null trials per
+independent/paired/unbalanced layout. This is controlled software evidence, not a fitted
+human population, a power calculation or universal type-I error calibration.
+
+**Interpretation.** Three selected features enter six mean/rank tests and the declared BH
+family; feature tests do not adjust for batch. Count models use their own prespecified filter,
+BH family and explicit estimable batch term. The guide uses existing defaults/explicit values
+recorded in each artifact, not a search over results. Total-count offsets target relative
+abundance; generating count means are not the fitted estimand. Show all subject observations,
+paired links only for the same subject, linear zero-based CPM, log abundance on the MA x-axis,
+and separately labeled conditional marginal Wald intervals. Color denotes group/selection,
+never an automatic discovery or specificity verdict.
+
+**Release evidence.** The compatibility project is generated through the browser actions
+with all five full source studies, their separate truth, five saved design checks and sixteen
+saved results. Current workers reproduce decoded result bytes and identities; every source
+and original result checksum is checked. Verified original manifests are restored as parents
+so timestamps/job IDs do not masquerade as scientific changes. New fixture manifests are
+compressed without changing their decoded content. Older fixtures are never rewritten.
+Browser checks exercise visible controls, persisted reopening, exports, methods, populations
+and both-theme accessibility. Scientific references, cross-platform arithmetic, all platform
+builds and isolated performance budgets remain release gates.

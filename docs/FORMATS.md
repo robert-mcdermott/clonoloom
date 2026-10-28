@@ -715,3 +715,305 @@ The file includes parent documents/manifests, source fingerprints, definitions, 
 metadata, method citations and software provenance in `uns/clonoloom`. Download includes its
 manifest and source NOTICE. See [ANNDATA-EXPORT.md](ANNDATA-EXPORT.md) for the complete schema,
 independent round-trip validation, reading example and explicit resource limits.
+
+## Cohort design snapshots
+
+Projects may contain `cohortDesigns`: named, numbered versions of a checked two-group
+subject design check (passing or failed). Failed checks retain `ok: false`, all findings and
+annotations, and are unavailable as analysis inputs. Each record binds its dataset identity, source and metadata fingerprints,
+save time, and a complete `clonoloom-cohort-design` version 1 result. Results contain
+canonical inputs, a SHA-256 design ID, every sample's disposition, distinct-subject and
+sample counts, findings, descriptions and citations. Excluded samples retain annotations
+and reasons. Structural checks do not perform statistical inference or pool samples.
+The JSON export preserves the entire record; it is not a fitted model or an AIRR file.
+Old projects without this optional field continue to open. Source files are needed for new
+checks but not to inspect a saved snapshot. Group levels are ordered reference/comparison.
+
+## Subject feature tables
+
+`cohort-features` artifacts contain `cohort-features.json`, format
+`clonoloom-cohort-features` version 1. `selection` names the project design record,
+name, revision, canonical design ID and full input; `design` is its server-rechecked
+snapshot. `parent` is the complete saved diversity document; `parentManifest` preserves
+its lineage. `table.catalog` lists the ordered 13 features with IDs, names, units and
+formulas. `table.rows` contains each included sample's full design annotations, group
+and `values` in catalog order, each `{value, missing}`. Null is missing, never zero;
+`missing` is empty for an available value. All excluded annotations remain in `design`.
+
+The result manifest pins the design identity and diversity ID/SHA-256. Its durable job
+spec records the complete selection, parent hash, method version and source NOTICE.
+The result identity excludes only the NOTICE creation timestamp. New tables require an
+opened source dataset and exact complete sample-set agreement; saved tables need neither
+sources nor parents. The worker verifies the selected parent again before promotion.
+
+`POST /api/cohort-features` accepts `{design: {record, name, revision, id, input}, diversity,
+start?}`. `input` is the saved cohort input, not trusted cached checks. `start:false` probes
+without starting a job. `GET /api/cohort-features/{id}` returns manifest and result;
+`GET /api/cohort-features/{id}/download` produces the CSV, catalog, full result JSON,
+manifest and NOTICE ZIP. Restricted provider terms require `accept=1`, as for other exports.
+CSV is wide, one selected subject/group observation per row, with each numeric feature
+followed by its `_missing` reason column. Units/formulas are in `catalog.json`; definition,
+QC, input fingerprints and citations travel in the full JSON and NOTICE. No averaging,
+pooling, depth standardization, imputation or group inference occurs here.
+
+## Subject group comparisons
+
+`cohort-compare` artifacts contain `cohort-compare.json`, format `clonoloom-cohort-compare`
+version 1. `features` embeds the complete subject-feature document and `parentManifest` its
+manifest. `analysis` contains normalized `options`, `layout`, ordered `levels`, `family`,
+`tested`, method description and one `comparisons` entry per selected feature, in ID order.
+Each entry retains feature ID/unit/formula, selected reference/comparison n, complete pair
+count, missing count, every subject/sample/group/value, mean estimates, mean and probability
+effects, and the parametric/rank tests. Effects retain their own units, limits, interval meaning
+and unavailability reason. Tests retain statistic, degrees of freedom, raw/adjusted p, reason,
+randomization method, draws, tail count and nonzero-pair count. Inapplicable values are null;
+rank-only counters are zero where unused. Intervals are marginal, not BH-adjusted.
+
+`POST /api/cohort-compare` accepts `{features, options: {features, confidence?, permutations?,
+seed?}, start?}`. Outer `features` is the feature-artifact ID; inner `features` is 1–13 distinct
+catalog IDs. Confidence defaults to 0.95 (0.8–0.99), permutations to 9999 (999–99999), seed to
+20261025 (positive integer at most 2^53−1; zero selects the default). The normalized options,
+method version, parent ID and verified parent SHA-256 determine the `cc-` artifact identity.
+The server rebuilds the parent table from its embedded measurements and checks the design.
+No raw source or separate diversity artifact is required. `start:false` probes the result/job
+without starting work; durable replay rechecks the parent hash before computing.
+
+`GET /api/cohort-compare/{id}` verifies and returns manifest and result. The `/download`
+suffix returns `comparisons.csv` (two test/effect rows per selected feature), the complete
+`subject-features.csv`, full comparison JSON, manifest and NOTICE. Source provider terms
+require `accept=1` when restricted. Saved reads/exports need neither sources nor parents.
+Unavailable numbers become blank CSV cells with reason columns, never zero. The full JSON
+and NOTICE preserve design/exclusions, definition, QC, source fingerprints and method citations.
+The family is exactly 2K slots; untestable p=1 placeholders affect BH but remain null in output.
+Research §5.32 specifies the hypotheses, effect estimands, interval derivation and bounds.
+
+## Replicated clonotype count models
+
+`cohort-counts` artifacts contain `cohort-counts.json` (format `clonoloom-cohort-counts`,
+version 1). They embed the checksum-pinned subject-feature parent and manifest, canonical design
+matrix/column names/contrast, assigned totals/log offsets, all observed clonotype counts and CPM,
+filter eligibility/reasons, full/null fits and covariance, dispersion, log2 effects/Wald intervals,
+LRT/raw/BH p-values, family size, effective options and method. Missing inference is JSON null
+or blank CSV, with a reason; it is never replaced by an observed zero or fabricated p-value.
+
+`POST /api/cohort-counts` accepts `{features, options: {minCount?, minSamples?, adjustBatch?,
+confidence?}, start?}`. Defaults are 10, 12, false, 0.95. Creation requires the original dataset
+open to capture counts under the parent's exact definition/QC; integer source members are
+checked before aggregation. Missing retained counts refuse capture. Count totals must equal
+the parent's assigned abundance. A `start:false` probe returns identity/readiness without
+fitting. Job identity hashes the complete captured matrix, parent checksum, effective options
+and method version. The durable worker rechecks its parent and operates on that matrix without
+source reads. Saved results and exports need neither sources nor separate parent artifacts.
+
+`GET /api/cohort-counts/{id}` verifies the result. `/download` returns `comparisons.csv`,
+`design.csv`, `counts.csv`, full JSON, manifest and NOTICE; restricted provider terms require
+`accept=1`. CSV comparisons retain every filtered and failed clonotype; counts retain all
+assigned denominators. Design CSV lists sample, subject, group, batch, library total, log offset
+and every design column; JSON retains the contrast, exclusions, definition, QC and count unit.
+This is a bounded, two-group, unmoderated NB2 model with subject blocks for paired studies and
+optional batch; the exact statistical contract and limits are in research §5.33 and the
+[replicated count guide](site/pages/docs/cohort-counts.html).
+
+## Definition robustness
+
+`definition-robustness` artifacts store `definition-robustness.json`, format
+`clonoloom-definition-robustness`, method version 1. The document embeds its entire
+checksum-pinned `cohort-compare` parent and manifest. Each declared variant retains the
+normalized definition, exclusions, captured positive abundance vectors for every source sample,
+subject feature table, cohort result and across-audit BY values (null when unavailable).
+Failed alternatives keep their reason and family slots; baseline failure aborts.
+
+`POST /api/definition-robustness` takes `{comparison, definitions, start?}`; `definitions`
+contains 1–5 alternative definition objects and the saved baseline is prepended. Only
+junction/V/J resolution may vary; normalized policy changes and duplicates are refused.
+The original dataset must be open initially. Source counts must reproduce baseline features
+exactly; the immutable worker also reproduces baseline inference. The `rb-` identity hashes
+parent ID/checksum, declared definitions, captured evidence and method version. Replay uses
+that evidence plus the comparison parent, not raw files or feature/diversity grandparents.
+GET `/api/definition-robustness/{id}` verifies the artifact checksum. `/download` returns
+`sensitivity.csv`, complete JSON/manifest, per-definition feature CSVs and inherited NOTICE;
+provider terms require the established acceptance flow.
+
+The CSV keeps all definition/feature rows, both tests, raw p, within-definition BH,
+across-audit BY, effects/intervals, failures and descriptive summaries. Missing numbers are
+blank in CSV and null in JSON. Two tests × selected features × all definitions form the BY
+family, including unavailable slots. Marginal intervals are not multiplicity-adjusted;
+summary ranges are descriptive. No inference treats definitions as independent replications.
+Bounds and interpretive limits are in the [definition guide](site/pages/docs/definition-robustness.html)
+and research §5.34. This format does not equate individual clonotype identities across definitions.
+
+## Motif and sequence-signature screens
+
+`motifs` artifacts store `motifs.json` (format `clonoloom-motifs`, method version 1).
+`evidence` embeds the complete request, captured query/background TRBV-gene/full-AA-junction
+units, source sample list, exclusions, NOTICE, abundance unit and method version. Each unit
+retains its sample/subject/clonotype sets and descriptive summed abundance. Its identity is
+shared across arms when the same V/junction occurs in both; membership is unique within an arm.
+`analysis` retains options, both receptor arrays, shared-identity count, every matching stratum,
+the full pooled signature family, scores and reporting decisions. Group member indexes refer
+to their respective arm arrays. `start`/`end` are inclusive one-based motif-start windows;
+for global signatures they are the single variable position, marked `%` in the full junction.
+`allowed` contains its pairwise-positive BLOSUM62 residue set.
+
+Probabilities and scores are JSON null when untestable. `logP`/`logQ` are natural logarithms
+and remain informative if `p`/`q` underflow to zero; `score` is −log10(BY). A zero background
+match count gives null fold and an explicit reason. Untestable family slots remain present.
+The complete family is defined before reporting thresholds, including background-only groups.
+
+`POST /api/motifs` takes `{dataset, definition, filter, query, background, subjects?, options?,
+start?}`. Query/background are disjoint source sample names. Options default to
+`{minK:2,maxK:5,minMembers:3,q:0.05,minFold:2}`. `start:false` captures and probes readiness
+without submitting a job. Verified GET `/api/motifs/{id}` returns the manifest and document;
+`/group/{group}` returns the signature and Go-computed residue counts/frequencies.
+`/download` supplies `motifs.json`, `manifest.json`, complete `signatures.csv`, `receptors.csv`
+and NOTICE, preserving provider-term acknowledgement. CSV unavailable numbers are blank.
+
+Creation needs source evidence; saved inspection, export and durable replay do not. Captured
+request/arm/subject membership is revalidated in workers. Bounds, exact GLIPH2 adaptations and
+conditional scientific limits are in [the guide](site/pages/docs/motifs.html) and research §5.35.
+
+## Subject recurrence and HLA artifacts (wave 7, slice 7)
+
+`POST /api/convergence` takes `{motifs, selection}`. `motifs` is a checked saved motif
+artifact ID; selection contains `species:"human"`, explicit `samples`, `subjects`,
+`groups` and `alleles`. Each subject is `{id,samples,typing:{A:[call,call],B:[call,call]}}`;
+each sample belongs to exactly one named subject. Groups are 1–128 saved signature IDs.
+Alleles are 0–64 declared targets; an empty panel requests descriptive recurrence only.
+Use two explicit copies per tested locus, including duplicated homozygous calls. Calls are
+compared at two fields. Unresolved typing is retained as unknown, never inferred non-carriage.
+See [research §5.36](../clonoloom-spec/research.md#536-subject-recurrence-and-hla-association-wave-7-slice-7).
+
+`start:false` validates capture and probes readiness without submitting a job. The result ID
+is `cv-` plus 24 hex digits of the canonical captured-spec SHA-256. Samples/subjects sort
+canonically; group and target order remain declared. Target names normalize to two fields;
+absent/empty typing arrays represent the same unknown state. Nonempty raw calls are retained.
+The spec pins the parent manifest, checked parent result hash and method, source notice,
+selected membership and all eligible receptor/sample identities. It does not recalculate or
+combine motif scores. Durable replay needs neither original sources nor the parent directory.
+
+`GET /api/convergence/{id}` returns checked artifact metadata and `clonoloom-convergence`
+version 1 JSON. Analysis retains every subject, typed-locus status/reason, observed group and
+exact receptor recurrence, all declared group × allele slots, counts, frequencies, marginal
+Wilson bounds, descriptive differences, p/BY and natural-log probabilities. An unavailable
+number is JSON null. Each locus has its own complete typed/receptor-evaluable universe,
+including group-negative subjects. Untestable slots stay in the BY family with p=1 internally
+and null output; no displayed reporting subset changes multiplicity.
+
+`GET /api/convergence/{id}/download` writes `convergence.json`, `manifest.json`, `subjects.json`,
+`associations.csv`, `recurrence.csv` and `NOTICE.txt`. CSVs retain complete rows and reasons;
+unavailable numeric fields are blank. The subject declaration includes raw HLA typing and
+identifiers. Provider terms require the existing `?accept=1` acknowledgement. The result and
+its source/definition/QC provenance are checksum-verified before reading or exporting.
+
+## Contamination-evidence artifacts (wave 7, slice 8)
+
+`POST /api/contamination` takes `{dataset,species:"human",unrelated:true,samples,filter,options,pgen}`.
+Samples are 2–64 explicit `{name,subject,batch}` records; batch is optional and repeated samples
+reuse a subject ID. The declaration states that distinct IDs represent unrelated subjects.
+Options default to `{minCount:2,highFraction:0.01,ratio:20,highPgen:1e-8}`. An optional `pgen`
+is a compatible saved artifact ID, not an arbitrary probability mapping. `start:false`
+validates capture and probes readiness without submitting a job. Unknown JSON fields and
+multiple top-level objects are refused.
+
+The fixed identity is productive human bulk TRB, full nucleotide junction plus resolved V/J
+genes; the project definition is unchanged. Source QC is captured. Counts must be known
+nonnegative integers in reads, UMIs or templates. Retained productive TRB abundance supplies
+each sample's denominator, including rows with unevaluable nucleotide/gene evidence; reasons,
+retained rows and eligible abundance accompany it. Missing counts refuse capture. Single-cell,
+sequence-only and unknown-unit sources are outside this version.
+
+A `cnt-` content identity pins the canonical assignments, thresholds, source notice/definition,
+captured count matrix and optional Pgen manifest, checked hash and model metadata. Pgen parents
+must match dataset, QC, human organism and productive NT TRB V/J-gene definition. Their joint-
+gene setting remains explicit. Missing probabilities are null, distinct from model zero.
+No probabilities are inferred from sharing or supplied directly by a caller.
+
+`GET /api/contamination/{id}` returns checksum-verified `clonoloom-contamination` version 1
+JSON, with captured evidence, every cross-subject pair and every positive shared identity.
+Same-subject pairs are counted as excluded. Pair totals, fractions, review counts, high/unknown
+Pgen counts and missingness reasons remain complete. Review labels never remove matches.
+The capture is bounded to 5000 eligible identities and 200,000 shared pair/identity records;
+oversized jobs fail rather than truncate. No p-value or contamination probability is returned.
+
+`GET /api/contamination/{id}/download` supplies `contamination.json`, `manifest.json`,
+`samples.json`, `matches.csv`, `pairs.csv` and `NOTICE.txt`. Complete CSVs retain identifiers,
+NT/AA, counts, fractions, ratios, review/model-context labels and reasons; missing numeric
+fields are blank. The JSON also retains all private/unshared eligible identities. Subject IDs
+and sequences are included; provider terms use the existing `?accept=1` acknowledgement.
+Reopening and durable replay do not need source files or the Pgen parent directory.
+
+### Batch QC (`batch-qc`, wave 7 slice 9)
+
+`POST /api/batch-qc` accepts `dataset`, the saved QC `filter`, all `samples` as
+`{name,subject,batch,exclude}`, and `options:{threshold:3.5,minSamples:5}`.
+An empty exclusion reason includes the sample; a nonempty reason preserves an explicit
+exclusion. Every source sample must appear once. Included samples need subject/batch labels;
+at most one sample per subject per batch is allowed. Bounds are 2–256 source samples and
+32 included batches. Unknown fields and trailing JSON are refused. `start:false` checks
+whether the computed artifact is ready without starting a job.
+
+The immutable `bqc-…` identity includes normalized options/assignments, all captured metric
+values and numerators/denominators, source QC/unit/fingerprints, provider notice and method
+version. `batch-qc.json` has format `clonoloom-batch-qc`, version 1, a cited `description`,
+`evidence` and `analysis`. The analysis records the six fixed metric definitions, included
+sample and unique-subject counts, exclusions, and every batch × metric reference and sample
+observation. Reference medians/MADs use the declared transformed scale. A null transformed
+value or score has an explicit reason. Read a JSON `flag` only with its score/reason:
+unscored observations have a null score and do not constitute a below-threshold verdict.
+
+`GET /api/batch-qc/{id}` verifies the saved result's checksum. Durable jobs replay from
+captured metrics without original source files. `/download` returns a ZIP containing
+`batch-qc.json`, `manifest.json`, `samples.json`, `observations.csv` and `NOTICE.txt`.
+CSV contains every included sample × metric slot; unavailable numeric fields and unscored
+flags are blank. Excluded samples and all denominators remain in JSON. Provider restrictions
+use the existing 409/explicit `accept=1` flow. Subject IDs are retained; export is not
+implicitly de-identified. No source sample or QC filter is modified by a flag.
+
+## Pseudobulk count evidence (wave 7, slice 10)
+
+`POST /api/pseudobulk` accepts `phenotypes` (1–32 explicit saved IDs), `options` with a
+required supplied `annotation` column and `minCells` (default 10), and optional `start:false`.
+Unknown fields and trailing JSON are refused. All parents must share one receptor dataset,
+definition, QC, receptor size population and breakpoints. Original expression sources are
+fingerprint-verified for each new capture. Feature IDs/names/types/order must match exactly.
+No files, barcodes, cell types or samples are inferred from paths.
+
+The `pb-…` artifact, kind `pseudobulk`, contains `clonoloom-pseudobulk` version 1:
+`evidence` pins source/parent fingerprints, policies, subject/sample/time annotations, sparse
+raw Gene Expression counts and cell inclusion reasons; `analysis` contains all sample × type
+× bin groups, all feature sums, library totals, eligibility/reasons and cell denominators.
+Absent groups have null counts/total. Measured zeros are numeric zero. Low-cell groups keep
+raw counts but are ineligible. Counts and library totals are bounded at 9e15.
+
+`GET /api/pseudobulk/{id}` verifies saved checksums. `/download` includes `pseudobulk.json`,
+`manifest.json`, `cells.json`, complete `observations.csv` and `NOTICE.txt`. Every group × feature
+is exported; unavailable counts are blank. Provider terms require `accept=1`. Reopening and
+durable replay use captured evidence without source or parent files. Subject identifiers remain
+present. This format makes no differential-expression, normalization or significance claim.
+
+## Paired pseudobulk differential expression (wave 7, slice 11)
+
+`POST /api/pseudobulk-de` accepts `pseudobulk` (saved count artifact ID), `options`, and optional
+`start:false` for checked preparation without fitting. Strict JSON refuses unknown/trailing data.
+Options: exact `type`, literal `timepoint`, different `reference`/`comparison` size-bin labels;
+`exclude` maps sample names to reasons; `minCount` default 10, `minSamples` default 25,
+`confidence` default .95. At least 25 complete pairs; no automatic missing-pair deletion.
+
+The `pde-…` artifact, kind `pseudobulk-de`, contains `clonoloom-pseudobulk-de` version 1:
+`evidence` binds the normalized request, count-parent manifest/checksum, dataset, raw gene
+features/groups, sample annotations, minimum-cell rule, source description/NOTICE and method
+version. `analysis` records all sample dispositions, paired observations, full design/contrast,
+size factors and log offsets, normalization gene IDs, family/tested counts and all gene rows.
+Rows retain raw/normalized counts, mean normalized count, eligibility/reason, log2 effect,
+standard error, conditional interval, dispersion, LR, p/BH and successful full/null fits.
+Unavailable inference is JSON null and CSV blank; measured zero counts remain zero.
+
+New analyses verify the count parent but need no original sources. Durable replay uses captured
+raw groups without parents or sources. `GET /api/pseudobulk-de/{id}` checks result checksums.
+`/download` retains provider terms (`accept=1` only after acceptance) and includes
+`pseudobulk-de.json`, `manifest.json`, `parent-manifest.json`, `raw-evidence.json`, `genes.csv`,
+`design.csv`, `counts.csv`, `NOTICE.txt`. The raw evidence includes excluded groups and all
+features. Selected counts and design CSV columns share the saved canonical observation order;
+subject fixed-effect coding and comparison orientation are explicit. Cell membership remains
+in the pinned count parent. This is unmoderated NB2 with median-ratio offsets, not the full
+edgeR/DESeq2 pipeline; research §5.40 records assumptions, bounds and independent references.

@@ -24,6 +24,8 @@ act("annotate_samples", samples={"S01-1": {"timepoint": "day 0"}, "S01-2": {"tim
 diversity = act("measure_diversity")["data"]
 print(act("show_methods")["data"]["text"])</code></pre></div>
 
+      <h2 id="cohort">Check a cohort design</h2>
+      <p><code>check_cohort_design</code> checks an explicit subject-level design. Send <code>spec: {unit: "subject", layout: "independent", groupField: "condition", levels: ["control", "expanded"], exclude: {sample: "reason"}}</code>, plus optional <code>dataset</code>, <code>name</code> and <code>save: true</code>. Use <code>layout: "paired"</code> for within-subject observations. The answer includes sample membership, subject counts, findings and citations; it performs no statistical test. See <a href="cohort-design.html">Cohort study design</a>.</p>
       <h2 id="actions">The actions</h2>
       <div class="table-wrap">
         <table>
@@ -63,3 +65,33 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
       <p><code>flag_invariant</code> takes <code>species: "human" | "mouse"</code>, an optional dataset, and optionally <code>population: "MAIT" | "iNKT" | "GEM"</code>. It records the species and shows Clonotypes, returning the first 20 rows plus complete sample totals, matched and evaluable abundance and shares. The <a href="clonotypes.html#invariant">published sequence rules</a> do not establish phenotype or specificity.</p>
 <h2 id="bcell-inputs">B-cell sequence evidence</h2>
 <p>In wave 5, <code>inspect_bcell_inputs</code> opens <a href="bcell-inputs.html">B cells → Inputs</a>, returning evidence counts and at most 50 rearrangement summaries under the active QC filter. Optional <code>dataset</code> chooses the dataset and <code>select</code> inspects a row on that page, numbered from 1. It does not infer a germline or measure mutation.</p>
+
+<h2 id="cohort-features">Subject feature tables</h2>
+<p>Use <code>get_state</code> to find saved <code>cohortDesigns</code> and diversity <code>artifacts</code>. Call <code>build_cohort_features</code> with explicit <code>design</code> and <code>diversity</code> IDs from the same dataset. This keeps the saved subject/group observations and their units, missingness and provenance; it performs no group test. See <a href="cohort-features.html">Subject features</a>.</p>
+
+<h2 id="cohort-comparisons">Subject group comparisons</h2>
+<p>Call <code>compare_cohort</code> with an explicit saved feature-parent ID and <code>options: {features: ["hill1", "shannon"], confidence: 0.95, permutations: 9999, seed: 20261025}</code>. Both tests for each selected feature enter one BH family. The saved design determines independent or paired tests; missing observations never cause silent subject deletion. The response includes the artifact, family size, testable count and method description. See <a href="cohort-comparisons.html">Subject group comparisons</a> for assumptions, effects and interval meanings.</p>
+
+<h2 id="cohort-counts">Replicated clonotype counts</h2>
+<p>Call <code>fit_cohort_counts</code> with a saved feature-parent ID and <code>options: {minCount: 10, minSamples: 12, adjustBatch: true, confidence: 0.95}</code>. The original receptor dataset supplies the initial count snapshot under the saved definition/QC. The response includes the artifact, fitted count, eligible BH family and method. Paired designs add subject blocks; optional batch effects must be estimable. See <a href="cohort-counts.html">Replicated clonotype counts</a> for replication limits, relative-abundance estimands and conditional interval interpretation.</p>
+
+<h2 id="definition-robustness">Definition robustness</h2>
+<p>Call <code>audit_definitions</code> with <code>comparison</code> (a saved group-comparison artifact) and one to five alternative <code>definitions</code>. Preserve chain/cell/productivity policies; only junction and V/J resolution may vary. The original receptor source supplies the initial captured abundances under the pinned QC. All subjects, features, tests, confidence and seeds remain fixed. The response includes the artifact, complete BY family, descriptive feature summaries and method. See <a href="definition-robustness.html">Definition robustness</a> for the dependent-analysis, interval and interpretation limits.</p>
+
+<h2 id="motifs">Motifs and sequence signatures</h2>
+<p>Call <code>screen_motifs</code> with explicit <code>query</code> and <code>background</code> sample arrays, an optional dataset name/ID, and optional <code>{minK:2,maxK:5,minMembers:3,q:0.05,minFold:2}</code> settings. It captures the current AA definition, QC and subject annotations, then saves overlapping GLIPH2-style sequence groups with exact V/length matching, conditional Fisher scores and full-family BY. The response includes artifact, family, reported count and method. The <a href="motifs.html">motif guide</a> documents adaptations, bounds and why these are exploratory sequence hypotheses rather than independent-subject or antigen-specificity evidence.</p>
+
+<h2 id="convergence">Subject recurrence and HLA</h2>
+<p>Call <code>analyze_convergence</code> with a saved <code>motifs</code> ID and <code>selection: {species:"human", samples:[...], subjects:[{id, samples:[...], typing:{A:[call,call]}}], groups:[...], alleles:[...]}</code>. Each sample belongs to one subject; both allele copies are explicit. Empty alleles requests recurrence only. Declare the full subject universe and group/allele panel before viewing HLA outcomes. The response includes artifact, evaluable subjects, family, tested count and method. Saved replay and exports use captured evidence without sources or parent. See <a href="convergence.html">Subject recurrence and HLA</a> for missingness, locus universes, BY, marginal intervals and scientific limits.</p>
+
+<h2 id="contamination">Contamination evidence</h2>
+<p>Call <code>screen_contamination</code> with <code>species:"human"</code>, <code>unrelated:true</code>, and explicit <code>samples:[{name,subject,batch}]</code>. Optional <code>options:{minCount:2,highFraction:0.01,ratio:20,highPgen:1e-8}</code> controls review heuristics. Optional <code>pgen</code> names a compatible saved human productive NT TRB/V-and-J-gene result under identical QC. The screen uses a fixed nucleotide definition without changing the project’s, preserves all shared matches and returns artifact, pair/match counts and method. Read <a href="contamination.html">Contamination evidence</a> for units, missingness, publicness context and the limits of a flag.</p>
+
+<h2 id="batch-qc">Batch QC</h2>
+<p><code>screen_batch_qc</code> accepts a dataset, every sample as <code>{name,subject,batch,exclude}</code> and <code>options:{threshold:3.5,minSamples:5}</code>. Use explicit exclusion reasons for repeats or missing assignments. The result includes the artifact ID, included sample and unique-subject counts, and scientific description. See <a href="batch-qc.html">Batch QC</a> for metric denominators, unscored policies and interpretation.</p>
+
+<h2 id="pseudobulk">Pseudobulk count evidence</h2>
+<p><code>aggregate_pseudobulk</code> accepts explicit saved <code>phenotypes</code> IDs and <code>options</code> containing the supplied <code>annotation</code> column and <code>minCells</code> (default 10). It uses the visible Cells workflow and saves exact raw sums and cell membership. It performs no differential-expression test. See <a href="pseudobulk.html">Pseudobulk counts</a> for sample boundaries, missingness and export rules.</p>
+
+<h2 id="pseudobulk-de">Paired pseudobulk expression</h2>
+<p><code>compare_pseudobulk</code> accepts a saved <code>pseudobulk</code> count ID and <code>options</code>: exact supplied <code>type</code>, literal <code>timepoint</code>, <code>reference</code>/<code>comparison</code> size bins, optional <code>exclude</code> mapping sample names to reasons, <code>minCount</code> (10), <code>minSamples</code> (25) and <code>confidence</code> (.95). It uses the visible Cells workflow. At least 25 complete subject pairs are required. It returns the saved artifact, subject and family/tested counts and Go-generated description. See <a href="pseudobulk-de.html">paired pseudobulk expression</a> for unmoderated NB assumptions, normalization, conditional uncertainty and complete exports.</p>

@@ -1,0 +1,42 @@
+---
+title: Subject recurrence and HLA
+description: Inspect sequence-group recurrence across unique subjects and conditional HLA associations with explicit typing, denominators and scientific limits.
+lede: Ask whether a saved sequence group recurs across subjects, and whether its observed presence is associated with a declared HLA allele. Neither result establishes antigen specificity or HLA restriction.
+---
+<h2 id="run">Declare subjects and typing</h2>
+<ol>
+<li>Save a <a href="motifs.html">motif screen</a> under the intended TRB definition and QC. Declare the sequence groups and allele panel before inspecting HLA outcomes.</li>
+<li>Open Specificity → <strong>HLA</strong> and choose the saved screen. Expand <strong>Declare groups, samples, subjects and typing</strong>. Confirm human subjects, select comparable samples and give each sample exactly one subject ID.</li>
+<li>Select <strong>Prepare subject table from annotations</strong>. Review all suggested typing. Conflicting annotations require an explicit resolution. Each tested locus needs two allele copies: repeat a homozygous name. A missing copy is unknown.</li>
+<li>Choose saved signatures and a target allele panel, then select <strong>Analyze recurrence and HLA</strong>. Leave the allele panel empty for descriptive recurrence only.</li>
+</ol>
+<p>One subject contributes once across all selected samples. Receptor abundance, multiple member sequences and repeated visits never create independent observations. A subject without any eligible receptor evidence is unevaluable. Other subjects without a member have observed non-detection; unequal depth and repeated sampling can change detection opportunities.</p>
+
+<h2 id="read">Read the observed evidence</h2>
+<shot name="convergence" alt="Artificial subject study showing a planted QGHT group in 17 of 20 HLA-A*02:01 carriers and 1 of 8 non-carriers, with separate Wilson intervals and explicit typing exclusions">Thirty-two fictional subjects and 36 samples, with uneven counts and deliberately incomplete typing. Four unresolved HLA-A typings leave 28 evaluable subjects. The association is planted; it is not an observed biological discovery.</shot>
+<p>The group table and recurrence plot use all receptor-evaluable subjects. Exact receptor tables retain full V-gene/amino-acid-junction identities and subject lists. The HLA plot uses the complete typed universe for that locus, including subjects without the group. Carrier and non-carrier fractions share a fixed 0–100% axis and show exact counts and marginal 95% Wilson intervals. An absent denominator gives no point.</p>
+<p>The intervals are neither simultaneous nor BY-adjusted, and they do not describe uncertainty in the difference between fractions. The table reports that difference descriptively. Expand <strong>Every declared association</strong> and <strong>Subject membership, typing and exclusions</strong> for the complete evidence; no reporting threshold hides family members.</p>
+
+<h2 id="typing">Typing resolution and unknowns</h2>
+<p>Comparisons use two-field HLA names. Unambiguous two-, three- or four-field calls are accepted and raw text is retained. Loci A, B, C, DRB1, DQA1, DQB1, DPA1 and DPB1 require two explicit copies. Missing, incomplete, ambiguous, low-resolution, wrong-locus, G/P-group and expression-suffix calls make the entire locus unknown, never non-carriage. No suffix stripping, typing imputation, serotype conversion or HLA registry lookup is performed. Check typing quality and allele names against your source laboratory records.</p>
+<p>Each locus has its own complete-case subject universe, held fixed across groups and alleles at that locus. A subject can be evaluable for B and unknown for A. Variable-copy DRB3/4/5 loci, haplotype phase and class-II heterodimer inference are outside this implementation.</p>
+
+<h2 id="method">Conditional association and its limits</h2>
+<p>With N typed subjects, C carriers, G subjects with the group and A shared subjects, the test is the upper hypergeometric tail P(X≥A) conditional on N, C and G. Fewer than four evaluable subjects or constant carriage/group margins gives an unavailable test. The four-subject floor is a structural check, not a claim of adequate power. BY correction includes every declared group × allele slot, including unavailable tests. The original motif-screen scores remain separate.</p>
+<p>Independent, exchangeable subjects and comparable ascertainment are assumptions. Population structure, relatedness, linkage disequilibrium, repertoire depth, sampling opportunities and HLA-dependent recruitment can explain associations. BY does not repair confounding or selecting groups, alleles and samples after seeing outcomes. <strong>Observed recurrence is not proof of convergent recombination; HLA association is not restriction or antigen recognition.</strong> Validate hypotheses in independent cohorts and experiments.</p>
+<p>This is a ClonoLoom extension inspired by published GLIPH subject-level HLA analysis, not the published composite score or a claim of GLIPH2 equivalence. Its explicit diploid typing policy, full declared BY family and Wilson plots are implementation choices. Bounds are 200 subjects, 256 samples, 4000 captured receptor identities, 128 groups and 64 alleles.</p>
+
+<h2 id="example">Try the artificial study</h2>
+<p>Open <strong>Subject recurrence and HLA study</strong> from Examples. Its <code>truth/arms.json</code> and <code>truth/subjects.json</code> retain the exact assignments. Screen the declared arms with motif lengths 4–4, then select the QGHT length-17 signature starting at window 5–8 and the global ILMV signature. Declare HLA-A*02:01, HLA-B*07:02 and HLA-DRB1*15:01. The six-slot family includes the planted A association (p≈0.0007094; BY≈0.01043). The data use varied junctions and uneven shifted gamma-Poisson UMI counts, but no fitted haplotypes or antigen annotations.</p>
+
+<h2 id="save">Keep and reproduce the result</h2>
+<p>The result captures its checked parent, definition, QC, source provenance, explicit subject/typing declaration and sequence membership. Reopening and durable replay work without the parent artifact or source files. <strong>Export convergence ZIP</strong> provides complete JSON, manifest, subjects, association and recurrence CSVs, and NOTICE with source terms. Exports include subject identifiers and raw HLA typing. SVG/PNG/PDF captions retain the denominators, selections, method and limitations. Remote clients use <a href="remote-control.html#convergence"><code>analyze_convergence</code></a>.</p>
+
+<h2 id="sources">Method sources</h2>
+<ul>
+<li>Glanville et al. (2017). <a href="https://doi.org/10.1038/nature22976">Identifying specificity groups in the T cell receptor repertoire</a>. Subject-level HLA enrichment inspiration.</li>
+<li>Fisher (1922). <a href="https://doi.org/10.2307/2340521">On the interpretation of χ² from contingency tables, and the calculation of P</a>.</li>
+<li>Benjamini &amp; Yekutieli (2001). <a href="https://doi.org/10.1214/aos/1013699998">False discovery rate under dependency</a>.</li>
+<li>Wilson (1927). <a href="https://doi.org/10.1080/01621459.1927.10502953">Probable inference, the law of succession, and statistical inference</a>.</li>
+<li>IPD-IMGT/HLA. <a href="https://www.hla.alleles.org/pages/nomenclature/naming_alleles/">Naming alleles</a>.</li>
+</ul>

@@ -296,3 +296,262 @@ reopening, method-version refusal and job handlers. The `cell-modularity` browse
 visible/remote equivalence, filtering without changing the family, plot markers, parent-map
 highlighting, project undo/redo and saved reopening in both themes. Synthetic benchmarks do not
 establish biological specificity. See [MODULARITY.md](../docs/MODULARITY.md).
+
+### Cohort design membership
+
+`uv run --no-project validation/reference/cohort_design.py` independently tabulates every
+absent/A/B assignment of eight observations (two for each of four subjects) using SQLite.
+`TestCohortDesignAgainstExhaustiveSQL` checks the 6,561 membership cases for both independent
+and paired designs: sample counts, unique subjects, complete pairs and structural usability.
+The oracle imports no ClonoLoom code. This validates membership arithmetic, not statistical
+power or biological independence. Hand controls cover missingness, repeated observations,
+batch separation, exact time labels, canonical identity and invalid specifications.
+
+### Subject feature tables
+
+`uv run --no-project validation/reference/cohort_features.py` generates independent
+raw-abundance expectations using Python's standard library. The oracle includes empty,
+single-clone, equal, skewed, fractional, scaled and top-ten-boundary cases; Gini is computed
+by pairwise absolute differences instead of the production engine's sorted-rank sum.
+`TestCohortFeaturesAgainstRawAbundanceReference` checks all 13 table columns to relative/absolute
+1e-12, including exact missingness. Unit tests exercise explicit sample selection, paired
+identity, complete parent coverage and CSV/JSON null-versus-zero semantics. API tests cover
+durable replay, cancellation, exact provenance, malformed requests, checksum changes and
+source-free export. The `cohort-features` capture scene checks browser undo/redo, source-free
+reopening/download, saved annotation isolation, feature selection, Methods and both-theme
+WCAG A/AA. This table performs no new fit or hypothesis test.
+
+### Subject-level group comparisons
+
+`uv run --no-project validation/reference/cohort_compare.py` uses pinned SciPy 1.17.0 public
+APIs for Welch/paired t inference, confidence limits and BH. Independent itertools enumeration
+provides every label/sign assignment for tied, unbalanced, degenerate and minimum-size cases,
+using the declared absolute-centered two-sided tail. Rank statistics and probability effects
+are also checked by public API or direct pairwise wins. Monte Carlo with 99,999 draws is checked
+against exhaustive 184,756-label and 131,072-sign spaces (absolute tolerance 0.01). Numerical
+inference agrees within 1e-10 relative/absolute; exact tail counts agree exactly. Student
+references include 35 tails and 42 quantiles over df 0.5–9998, with relative 1e-10 tail and
+relative/absolute 1e-9 quantile tolerance.
+
+Core controls exhaust small tied conditional nulls for super-uniformity and simulate 2,000
+normal-model replicates per layout for mean-interval coverage and rejection. Tests preserve
+pair identity under row reordering, missingness without subject deletion, untestable BH slots,
+work bounds and cancellation. Complete Monte Carlo result bytes are pinned across arm64/amd64;
+compiler assembly is checked for fused arithmetic. API checks cover checksum-bound parents,
+durable replay, malformed inputs, standalone reopening/export and provider notices. The
+`cohort-compare` and `cohort-paired` browser scenes check visible/remote equivalence, exact point
+and pair counts, both figure exports, undo/redo, saved reopening, Methods, source-free ZIP and
+both-theme WCAG A/AA. Simulated illustrations validate mechanics, not biological inference.
+
+### Replicated count models
+
+`reference/count_model.py` uses public statsmodels 0.14.6 GLM NB2 and SciPy 1.17.0 optimization
+and chi-square APIs. Rebuild with `uv run validation/reference/count_model.py`. No ClonoLoom
+outputs or third-party implementation sources are read. Six fixtures cover balanced independent
+(16/16), paired (28 pairs) and unbalanced independent (12/20) designs, each with/without batch,
+unequal offsets and subject effects. Go checks fixed-alpha coefficients/likelihood, Cox–Reid
+alpha, coefficients, covariance, fitted means, full/null likelihoods, LRT and p. Tolerances are
+1e-9 for fixed likelihood, 1e-7 for fixed coefficients, 2e-6 for estimated likelihoods, and
+2e-5 for the remaining comparisons, scaled by max(1, absolute reference).
+
+`TestCountModelNullCalibration` uses 400 fixed-seed NB2 trials per layout, heterogeneous
+alpha 0.08/0.2/0.5 and uneven fixed exposures. Independent 16/16 subjects reject 26/400 at
+nominal 5% (6.5%), with 93.25% conditional Wald coverage. Twenty-eight pairs reject 18/400
+(4.5%) with 93.5% coverage. Unbalanced 12/20 subjects reject 25/400 (6.25%) with 93.5% coverage.
+All 400 fit in each layout. Guards require ≥380 fits, rejection ≤8% and coverage ≥92%; these
+finite Monte Carlo checks are not a general calibration guarantee. Initial 12-pair checks had
+8% rejection and 91% coverage, motivating the ≥24 residual-df production boundary. The
+approximate conditional intervals and observed coverage are disclosed in research §5.33.
+
+`TestReplicatedCountTruth` independently reads literal TSV fields for all three new presets,
+reconciles every observation including zeros, verifies shared/private identities and the effect
+panel, and checks source hashes and processor-stable whole-study digests. Numerical/model
+controls cover singular/aliased designs, insufficient replication, fractional/missing source
+counts before aggregation, incorrect totals, all-zero groups/subject blocks, boundary
+dispersion, cancellation, explicit BH slots and whole-result processor identity.
+
+API controls check immutable counts, saved definition/QC, parent integrity, source preservation,
+durable source-free replay, complete CSV/JSON, provider-term acknowledgment/NOTICE, and altered
+result refusal. `cohort-counts` and `cohort-counts-paired` browser scenes generate fresh examples,
+check exact point/pair counts and unfilled axes, visible/remote identity, undo/reopen, saved
+Methods, standalone ZIP and figure captions, both themes and accessibility. Visual review
+checks that observed CPM distributions, fitted ratios and conditional intervals remain distinct.
+
+`TestReplicatedCountExamplesAgainstTruth` also runs all three complete simulated repertoires
+through the production count pipeline using nucleotide-defined clonotypes. Independent and
+paired examples each fit all 48 eligible panel receptors; all eight generating changes have
+the correct effect direction. One of forty unchanged panel receptors in the independent
+example has BH≤0.05, versus zero in the paired example. The null example fits 45 eligible
+receptors and has zero BH≤0.05; three of its 48 panel receptors fail the prespecified count
+filter. These are recorded finite-study outcomes, not claims of guaranteed error control.
+
+### Definition robustness
+
+`validation/reference/robustness.py` independently groups literal synthetic AIRR-like rows
+under AA genes, NT genes, AA alleles and AA junction-only rules. Plain Python computes abundance,
+richness, entropy and Hill q=1; SciPy 1.17.0 computes Welch inference and BY. Exhaustive label
+assignment gives conditional rank tails. Generate with `uv run --no-project validation/reference/robustness.py`. `TestDefinitionRobustnessIndependentReference` compares
+all subject values, effects, marginal intervals, raw probabilities and the full BY family;
+its complete-result digest is pinned for arm64/amd64 agreement. This checks implementation,
+not the validity of a particular biological definition or population assumption.
+
+`internal/robustness` tests preserve failed slots, missing intervals, zero/null distinctions,
+policy/duplicate refusals, stale baselines, cancellation and identical replay. Summary direction
+uses estimates and uncertainty uses intervals; neither uses p-value thresholds. API tests
+exercise exact baseline inference, strict requests, saved identity, raw-source/grandparent-free
+replay, provider terms and full exports. Browser scene `definition-robustness` checks visible
+and remote equivalence, four complete forest rows, 32 subject observations, undo/redo,
+project reopening, source-free exports, figure provenance, Methods and accessibility in both themes.
+
+`TestDefinitionStudyTruth` generates the complete 32-subject study, independently regroups its
+literal truth and compares every positive abundance vector with the production AIRR/clonotype
+pipeline. The fixed seed retains 4,082 zeros and 3,590 singletons; richness changes sign across
+definitions (−244.125 to +64.125), while Shannon and Hill q=1 mean estimates remain negative.
+The study digest is pinned across processors. Earlier count presets retain their own original
+digests. This is a controlled partition/depth example, not fitted biology or a calibration claim.
+
+### Motifs and sequence signatures
+
+Generate the independent fixture with
+`uv run --no-project validation/reference/motifs.py` (SciPy 1.17.0, Biopython 1.86).
+The reference independently enumerates fixed local windows and exhaustive maximal positive
+BLOSUM62 residue subsets, then uses public SciPy Fisher and BY APIs. BLOSUM62 values are data
+read through Biopython's public API; no GLIPH implementation source is used. Go compares all
+811 signature memberships, matched denominators, raw/corrected probabilities and null slots.
+Full-result digests must agree on arm64 and amd64. Every residue-count column sums to its
+unique-query-member denominator.
+
+`internal/motifs` checks abundance invariance, repeated motifs, nontransitive positions and
+substitutions, full-family reporting invariance, bounds and cancellation. Exhaustive 4-of-8
+label allocations check conditional sequence-level tails and family invariance; they do not
+establish biological FDR. Simulator/API controls reconcile every captured identity/count
+against literal truth, preserve four global units despite repeated source rows, and retain
+old example digests. New example digests agree across processors.
+
+API tests cover strict selections/schema, captured evidence consistency, durable source-free
+replay, cancellation, checksums, provider terms, full ZIPs and Go residue profiles. Browser
+scene `motifs` checks remote/visible identity, positive local/global controls, full frequency
+geometry, undo/reopen, saved Methods, source-free export, figure provenance and both themes.
+The scientific contract and all GLIPH2 adaptations/limits are in research §5.35.
+
+### Subject recurrence and HLA association
+
+Regenerate the independent reference with
+`uv run --no-project validation/reference/convergence.py` (SciPy 1.17.0). Literal subject
+sets supply 12 group × allele slots; SciPy supplies hypergeometric upper tails, complete-family
+BY and Wilson score intervals. Go checks every contingency cell, frequency, interval,
+difference, null and recurrence count. A complete-result digest pins processor agreement.
+
+`internal/convergence` checks duplicate observations/abundance invariance, homozygous carriage,
+incomplete/ambiguous typing, recurrence-only mode, unavailable receptor evidence, bounds and
+cancellation. All 70 four-of-eight carrier assignments give super-uniform raw tails in a fixed
+exchangeable case. This finite check is not a guarantee of biological FDR or power.
+
+The new simulator digest preserves all 32 subjects, 36 samples and 1080 rows, including repeated
+sampling and four unknown A typings. The API test independently aggregates the literal planted
+truth, verifies 17/20 versus 1/8 in the 28-subject A universe, then removes sources and parent
+and checks exact durable replay, provider-aware complete ZIPs and tamper refusals. Earlier
+presets keep their pinned bytes.
+
+`node docs/capture/capture.mjs convergence --theme both` checks exact plot numerators and
+denominators, locus-specific universes, visible/remote artifact identity, raw typing controls,
+undo/redo, saved reopening, source/parent-free export, figure provenance, Methods and
+accessibility. Review both screenshots: fixed frequency scale, marginal interval labels,
+explicit artificial data and complete counts. Existing Networks is a sibling-view regression.
+
+### Contamination evidence
+
+`uv run --no-project validation/reference/contamination.py` builds an independent literal
+reference using Python set intersections and exact rational arithmetic. Go compares all pairs,
+shared identities, fractions, ratios, review/model-context categories and nulls; the complete
+result is digest-pinned on native and amd64 processors. There is no inferential test or
+claimed classifier calibration in this descriptive screen.
+
+Core tests cover same-subject exclusions, threshold invariance, high-Pgen/review overlap,
+model zero versus missing, unavailable depth, invalid inputs and cancellation. The API tests
+independently join every simulated truth row and verify all pair intersections and sample
+denominators. They check missing-count and single-cell refusals, unevaluable-sequence abundance
+retention, incompatible Pgen QC, absent Pgen, checksums, provider terms and exact replay with
+sources and Pgen parent removed. The example's 706 rows, repeat, three transfers, assigned
+shared controls and synonymous control are checked and byte-pinned. Existing Pgen references
+validate its probability engine; this slice does not reimplement it.
+
+`node docs/capture/capture.mjs contamination qc --theme both` checks every selected scatter
+fraction, visible/remote identity, dataset-toolbar restoration, undo/redo, reopening, source/parent-free exports, scientific
+figure captions, cited Methods, accessibility and the existing sample-QC view. Review both
+themes for readable equal log axes, denominator/threshold explanations and an explicit
+artificial-study label. More than 2000 shared points are not silently sampled.
+
+### Batch QC
+
+`uv run --no-project validation/reference/batch_qc.py` writes the independent standard-library
+reference: exact Fraction medians, raw MADs and 0.6745 arithmetic for fraction scores, with
+independent `math.log10` for count metrics. Go compares all 18 batch × metric groups and every
+observation, including zero-log values, missingness, small groups and zero MAD. Complete-result
+and simulator digests must agree on native and amd64 processors.
+
+API tests independently sum all 2427 generating rows to check every raw metric and denominator.
+They check explicit repeat/exclusion policies, productive-only QC's separate status universe,
+missing-count propagation, single-cell barcode deduplication, contig-weighted fractions and
+missing barcodes. Additional checks cover threshold invariance, cancellation, checksum refusals,
+provider terms, complete 144-observation CSV export and byte-identical source-free replay.
+
+`node docs/capture/capture.mjs batch-qc qc contamination --theme both` checks all 23 plotted
+productive fractions against saved evidence, small/constant reference controls, visible/remote
+identity, QC-tab source loading, undo/redo, reopening, source-free ZIP and figure exports, cited Methods and accessibility.
+Review both themes: common 0–1 fraction scale, exact sample points, explicit median lines and
+vertical-offset explanation, gray unscored observations and clear valid/scored denominators.
+The existing Sample QC and Contamination workflows are separate regression scenes.
+
+### Pseudobulk count evidence
+
+`uv run --no-project validation/reference/pseudobulk.py` regenerates a stdlib exact-integer
+oracle, including repeated visits/barcodes, missing annotations, unknown assignments, absent
+categories, measured zeros, zero libraries and low-cell groups. `TestPseudobulkIndependentReference`
+compares the complete result and pins native/amd64-identical bytes. Integration tests generate
+the eight-sample study and independently parse every Matrix Market entry and generating
+clone/annotation record to verify each feature sum and cell denominator. They also cover
+canonical selection order, strict requests, saved checksums, provider terms and replay after
+removing original sources and parents. Core tests exercise invalid identity, modality, bounds,
+count overflow, threshold invariance and cancellation. Browser scene `pseudobulk` checks visible
+and remote identity, complete exports, saved reopening, Methods and both-theme figure geometry.
+
+The slice-10 result digest is
+`f7b51cf23e2e5b404d7331d4f5092c1e4fd4de91df756629f82045acee33a3db`;
+the eight-sample simulator digest is
+`6ac6339c8dcd9b468a34dd746de193410625379170adb819d98c45bbd6173875`.
+The screenshot scene always generates a fresh study and verifies its model/sampling declaration.
+
+### Paired pseudobulk differential expression
+
+`uv run --no-project validation/reference/pseudobulk_de.py` regenerates the 40-gene independent
+NumPy/SciPy 1.17.0/statsmodels 0.14.6 reference. The script never reads application outputs:
+public GLM fits, bounded Cox–Reid optimization, chi-square/normal distributions and BH define
+all reference values. `--controls` writes the separate prespecified 300-gene panel, including
+30 balanced positive effects and 270 generating nulls. All normalization/design/fit/uncertainty
+outputs are compared; the full-result digest is checked on native arm64 and amd64. See research
+§5.40 for exact model choices and the diagnostic acceptance guard, which is not a universal
+calibration guarantee. The panel gives 15/267 nominal null rejections, 250/267 conditional
+intervals covering zero, and 30/30 positive fits with the correct direction.
+
+Core checks include normalization-reference invariance to the testing filter, insufficient
+normalization/replication, raw/feature/identity mismatches, incomplete pairs, explicit exclusion
+and literal-timepoint policies, all-zero-block BH slots, contrast reversal and cancellation.
+Integration checks generate the complete 28-subject study through the real reader, phenotype,
+count and DE endpoints; every fitted observation agrees with separate generating raw sums.
+Strict requests, preview/ready identity, checksum refusals, provider terms, complete CSV/ZIPs
+and byte-identical replay without sources or count parents are covered. Both positive and null
+presets are also independently reconstructed from their literal count/membership truth. The
+positive example has four BH≤.05 genes and the null example none for the fixed seeds; these
+single-example outcomes are descriptive, not a calibration criterion.
+
+`node docs/capture/capture.mjs pseudobulk-de pseudobulk --theme both` checks all fitted gene
+points, every paired observation and subject link, visible/remote identity, undo/redo, reopening,
+source/parent-free display/export, failed-fit inspection, cited Methods and accessibility. Review
+the effect and paired-observation/interval screenshots in both themes: artificial labels,
+correct scales and units, zero references, selection-only color, conditional interval labels,
+and no per-cell pseudoreplication. The complete count-evidence scene is a regression workflow.
+
+Pinned complete result: `d6f7d73fa3bd28d6e0111a8814949c644201df8afe78a0476cee22c8e73d4b33`.
+Positive simulator: `ee82857067124d03bf9652f59fb96bc0f82367e6d595e1a4e18bda17c69cd5e0`.
+Null simulator: `de25fa97c96c2ea177f8e3e84075be07d0dd5a805255dfd8f907aa975f456324`.

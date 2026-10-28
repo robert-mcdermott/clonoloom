@@ -114,6 +114,8 @@ async function showPlaces() {
 }
 
 async function checkAccessibility() {
+  // Modal/toast entrance opacity is not the resting contrast of the UI.
+  await sleep(250);
   const axe = join(DATA, 'axe-core/axe.min.js');
   if (!existsSync(axe)) throw new Error('The study accessibility check needs axe-core (node validation/fetch.mjs axe-core)');
   await js(`(0, eval)(${JSON.stringify(readFileSync(axe, 'utf8'))}); true`);
@@ -124,9 +126,457 @@ async function checkAccessibility() {
   if (violations.length) throw new Error(`Study accessibility: ${JSON.stringify(violations)}`);
 }
 
+// Cohort comparisons use only the saved subject table, with the raw observations
+// and mean-effect interval captured separately from the probability effect table.
+async function cohortComparisonScene(paired) {
+  await act('new_project', { name: paired ? 'Artificial paired subject comparison' : 'Artificial independent subject comparison' });
+  await act('open_example', { example: 'simulated-standard', download: true });
+  await act('measure_diversity');
+  const spec = { unit: 'subject', layout: paired ? 'paired' : 'independent', groupField: paired ? 'timepoint' : 'condition', levels: paired ? ['day 0','day 7'] : ['control','expanded'], exclude: {} };
+  if (paired) {
+    const samples = {};
+    for (let i=1;i<=6;i++) for (const j of [1,2]) samples[`S${String(i).padStart(2,'0')}-${j}`] = {timepoint:j===1?'day 0':'day 7'};
+    await act('annotate_samples', {samples});
+  } else for (let i=1;i<=6;i++) spec.exclude[`S${String(i).padStart(2,'0')}-2`]='Teaching selection: first observation per subject';
+  await act('check_cohort_design', {spec,name:paired?'Paired simulated observations':'First simulated observations',save:true});
+  const state=(await act('get_state')).data;
+  const feature=(await act('build_cohort_features',{design:state.cohortDesigns[0].id,diversity:state.artifacts.find((r)=>r.kind==='diversity').id})).data.artifact;
+  const options={features:feature,options:{features:['shannon','hill1'],confidence:.95,permutations:9999,seed:20261025}};
+  const result=(await act('compare_cohort',options)).data;
+  if(result.family!==4||result.tested!==4)throw new Error('Wrong comparison family');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCompareView,answer=v.state().answer;
+    const c=answer.result.analysis.comparisons[0];
+    if(c.points.length!==${paired?12:6}||c.pairs!==${paired?6:0})throw new Error('Wrong subject units');
+    if(document.querySelectorAll('.cohort-compare [data-sample]').length!==${paired?12:6}||document.querySelectorAll('.cohort-compare [data-subject]').length!==${paired?6:0})throw new Error('Point or pair geometry changed');
+    const id=v.state().artifact,snapshot=JSON.stringify(answer.result);
+    app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Comparison undo failed');
+    app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id});
+    window.comparisonCheck={id,snapshot};return true;
+  })()`);
+  await waitFor(`window.clonoloom.cohortCompareView?.state().status==='ready'`);
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCompareView;
+    if(JSON.stringify(v.state().answer.result)!==window.comparisonCheck.snapshot)throw new Error('Comparison changed on reopen');
+    await v.choose(${JSON.stringify(feature)});
+    const checkbox=document.querySelector('[aria-label="Compare Hill diversity q=1"]');checkbox.click();
+    [...document.querySelectorAll('.cohort-compare button')].find((b)=>b.textContent==='Compare selected features').click();return true;
+  })()`);
+  await waitFor(`window.clonoloom.cohortCompareView.state().status==='ready'`);
+  if(await js(`window.clonoloom.cohortCompareView.state().artifact`)!==result.artifact)throw new Error('Visible settings differ from remote settings');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCompareView,ensure=app.ensureDataset,create=URL.createObjectURL;let blob;
+    app.ensureDataset=async()=>{throw new Error('Sources unavailable')};URL.createObjectURL=(x)=>{blob=x;return create(x)};
+    try{await v.show(${JSON.stringify(result.artifact)});await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('Comparison ZIP unavailable without sources');}
+    finally{app.ensureDataset=ensure;URL.createObjectURL=create;}
+    const {figureBlob}=await import('./ui/figures.js');
+    for(const which of ['observations','effect']){const text=await (await figureBlob(v.plotSpec(which),'svg')).text();if(!text.includes('definition')||!text.includes('BH does not adjust intervals')||!text.includes('Contrast:')||!text.includes('Selected observations:'))throw new Error('Figure lost provenance');}
+    return true;
+  })()`);
+  await act('show_methods');
+  if(!await js(`document.querySelector('.methods-text').textContent.includes('BH family')`))throw new Error('Comparison methods absent');
+  await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.cohort-compare'),plot=root.querySelector('figure');root.closest('.workbench-scroll').scrollTop=plot.offsetTop-65;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
+async function countModelScene(paired) {
+  await act('new_project',{name:paired?'Paired repertoire count study':'Independent repertoire count study'});
+  await act('open_example',{example:paired?'simulated-counts-paired':'simulated-counts-independent',download:true});
+  const annotations={};
+  for(let i=0;i<(paired?28:32);i++)for(let j=0;j<(paired?2:1);j++)annotations[`S${String(i+1).padStart(2,'0')}-${j+1}`]={batch:`B${(i+j)%2+1}`,...(paired?{timepoint:j?'day 14':'day 0'}:{})};
+  await act('annotate_samples',{samples:annotations});
+  await act('measure_diversity');
+  await act('check_cohort_design',{name:paired?'Before and after stimulation':'Independent control and stimulated subjects',save:true,spec:{unit:'subject',layout:paired?'paired':'independent',groupField:paired?'timepoint':'condition',levels:paired?['day 0','day 14']:['control','stimulated'],exclude:{}}});
+  const state=(await act('get_state')).data;
+  const features=(await act('build_cohort_features',{design:state.cohortDesigns[0].id,diversity:state.artifacts.find((r)=>r.kind==='diversity').id})).data.artifact;
+  const options={minCount:10,minSamples:12,adjustBatch:true,confidence:.95};
+  const answer=(await act('fit_cohort_counts',{features,options})).data;
+  if(answer.tested<25||answer.family>48)throw new Error(`Unexpected model coverage ${JSON.stringify(answer)}`);
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCountsView,doc=v.state().answer.result,r=doc.analysis;
+    if(r.design.rows.length!==${paired?56:32}||r.design.residualDF<24)throw new Error('Count design wrong');
+    if(getComputedStyle(document.querySelector('.cohort-counts .plot-axis')).fill!=='none')throw new Error('Count axes unexpectedly filled');
+    if(document.querySelectorAll('.cohort-counts [data-clone]').length!==r.tested||document.querySelectorAll('.cohort-counts [data-sample]').length!==${paired?56:32}||document.querySelectorAll('.cohort-counts [data-subject]').length!==${paired?28:0})throw new Error('Count plot geometry wrong');
+    window.countCheck={id:v.state().artifact,snapshot:JSON.stringify(doc)};
+    app.store.undo();if(app.store.project.artifacts.some((a)=>a.id===window.countCheck.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:window.countCheck.id});return true;
+  })()`);
+  await waitFor(`window.clonoloom.cohortCountsView?.state().status==='ready'`);
+  await js(`(()=>{const v=window.clonoloom.cohortCountsView;if(JSON.stringify(v.state().answer.result)!==window.countCheck.snapshot)throw new Error('Saved count model changed');v.choose(${JSON.stringify(features)});document.querySelector('[aria-label="Adjust count model for batch"]').checked=true;[...document.querySelectorAll('.cohort-counts button')].find((b)=>b.textContent==='Fit replicated counts').click();return true})()`);
+  await waitFor(`window.clonoloom.cohortCountsView.state().status==='ready'`);
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.cohortCountsView;if(v.state().artifact!==window.countCheck.id)throw new Error('Visible settings differ');
+    const ensure=app.ensureDataset,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};URL.createObjectURL=(b)=>{blob=b;return create(b)};
+    try{await v.show(window.countCheck.id);await v.download();const b=new Uint8Array(await blob.arrayBuffer());if(b[0]!==80||b[1]!==75)throw new Error('ZIP failed');}finally{app.ensureDataset=ensure;URL.createObjectURL=create;}
+    const {figureBlob}=await import('./ui/figures.js');for(const which of ['ma','observations','effect']){const text=await(await figureBlob(v.plotSpec(which),'svg')).text();if(!text.includes('Contrast:')||!text.includes('conditional on fitted dispersion'))throw new Error('Count figure lost method/provenance');}
+    return true;
+  })()`);
+  await act('show_methods');if(!await js(`document.querySelector('.methods-text').textContent.includes('Cox–Reid')`))throw new Error('Count methods absent');await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.cohort-counts');root.closest('.workbench-scroll').scrollTop=root.querySelector('.count-result-title').offsetTop-65;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
+async function definitionAuditScene() {
+  await act('new_project',{name:'Definition-sensitive repertoire study'});
+  await act('open_example',{example:'simulated-definition-study',download:true});
+  const samples={};for(let i=0;i<32;i++)samples[`S${String(i+1).padStart(2,'0')}-1`]={batch:`B${i%2+1}`};
+  await act('annotate_samples',{samples});await act('measure_diversity');
+  await act('check_cohort_design',{name:'Control and stimulated subjects',save:true,spec:{unit:'subject',layout:'independent',groupField:'condition',levels:['control','stimulated'],exclude:{}}});
+  const state=(await act('get_state')).data;
+  const features=(await act('build_cohort_features',{design:state.cohortDesigns[0].id,diversity:state.artifacts.find((r)=>r.kind==='diversity').id})).data.artifact;
+  const comparison=(await act('compare_cohort',{features,options:{features:['hill1','richness','shannon'],confidence:.95,permutations:999,seed:20261025}})).data.artifact;
+  await js(`window.clonoloom.robustnessView.choose(${JSON.stringify(comparison)})`);
+  const definitions=await js(`(()=>{const p=window.clonoloom.cohortCompareView.state().answer.result.features.parent.definition;return [['nt','gene','NT · V/J genes'],['aa','allele','AA · V/J alleles'],['aa','none','AA · junction only']].map(([junction,r,name])=>({...p,junction,v:r,j:r,name}))})()`);
+  const answer=(await act('audit_definitions',{comparison,definitions})).data;
+  if(answer.family!==24)throw new Error('Wrong audit family');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.robustnessView;v.select('richness');const doc=v.state().answer.result,r=doc.analysis;
+    if(r.variants.length!==4||r.variants.some((x)=>x.table.rows.length!==32)||r.summaries.find((x)=>x.feature.id==='richness').direction!=='Effect direction changes across definitions')throw new Error('Audit lost definition-dependent richness');
+    if(document.querySelectorAll('.definition-robustness [data-estimate]').length!==4||document.querySelectorAll('.definition-robustness [data-lower]').length!==4)throw new Error('Forest geometry wrong');
+    if(JSON.stringify(r.variants[0].analysis)!==JSON.stringify(doc.parent.analysis))throw new Error('Baseline changed');
+    window.auditCheck={id:v.state().artifact,snapshot:JSON.stringify(doc)};
+    app.store.undo();if(app.store.project.artifacts.some((a)=>a.id===window.auditCheck.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:window.auditCheck.id});return true;
+  })()`);
+  await waitFor(`window.clonoloom.robustnessView?.state().status==='ready'`);
+  await js(`(async()=>{const v=window.clonoloom.robustnessView;if(JSON.stringify(v.state().answer.result)!==window.auditCheck.snapshot)throw new Error('Saved audit changed');await v.choose(${JSON.stringify(comparison)});[...document.querySelectorAll('.definition-robustness button')].find((b)=>b.textContent==='Audit definitions').click();return true})()`);
+  await waitFor(`window.clonoloom.robustnessView.state().status==='ready'`);
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.robustnessView;if(v.state().artifact!==window.auditCheck.id)throw new Error('Visible/remote settings differ');
+    const ensure=app.ensureDataset,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};URL.createObjectURL=(b)=>{blob=b;return create(b)};
+    try{await v.show(window.auditCheck.id);await v.download();const b=new Uint8Array(await blob.arrayBuffer());if(b[0]!==80||b[1]!==75)throw new Error('ZIP failed');}finally{app.ensureDataset=ensure;URL.createObjectURL=create;}
+    v.select('richness');const {figureBlob}=await import('./ui/figures.js');for(const which of ['effects','observations']){const text=await(await figureBlob(v.plotSpec(which),'svg')).text();if(!text.includes('Contrast:')||!text.includes('simultaneous')||!text.includes('declared order'))throw new Error('Figure lost provenance');}return true;
+  })()`);
+  await act('show_methods');if(!await js(`(()=>{const s=document.querySelector('.methods-text').textContent;return s.includes('Descriptive sensitivity')&&s.includes('synonymous')&&document.querySelector('.methods-references').textContent.includes('Specification curve')})()`))throw new Error('Audit/example methods absent');await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.definition-robustness');root.closest('.workbench-scroll').scrollTop=root.querySelector('.robustness-title').offsetTop-65;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
+async function motifScene() {
+  await act('new_project',{name:'Artificial sequence-signature study'});
+  await act('open_example',{example:'simulated-motif-study',download:true});
+  const query=Array.from({length:4},(_,i)=>`S${String(i+1).padStart(2,'0')}`),background=Array.from({length:8},(_,i)=>`S${String(i+5).padStart(2,'0')}`);
+  const out=(await act('screen_motifs',{query,background})).data;
+  if(!out.reported||out.family<1000)throw new Error('Motif positive control missing');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.motifsView,doc=v.state().answer.result,r=doc.analysis;
+    if(r.query.length!==108||r.background.length!==1000||!r.groups.some((g)=>g.kind==='global'&&g.reported))throw new Error('Wrong source units/global control');
+    const group=r.groups.filter((g)=>g.motif==='QGHT'&&g.reported).sort((a,b)=>b.query.length-a.query.length||a.id.localeCompare(b.id))[0];if(!group)throw new Error('Local control missing');await v.select(group.id);
+    const p=v.state().detail.profile;if(p.n!==group.query.length||p.counts.some((c)=>c.reduce((a,b)=>a+b,0)!==p.n))throw new Error('Profile denominator wrong');
+    if(document.querySelectorAll('.motifs-view [data-position]').length!==20*group.length)throw new Error('Profile geometry wrong');
+    const empty=r.groups.find((g)=>!g.query.length);if(!empty)throw new Error('Background-only control absent');await v.select(empty.id);if(v.plotSpec()!==null||!document.querySelector('.motifs-view').textContent.includes('No query members; residue frequencies are unavailable.'))throw new Error('Empty-query frequencies misrepresented');await v.select(group.id);app.store.notify(['jobs']);
+    window.motifCheck={id:v.state().answer.artifact.id,group:group.id,snapshot:JSON.stringify(doc)};
+    app.store.undo();if(app.store.project.artifacts.some((a)=>a.id===window.motifCheck.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:window.motifCheck.id});return true;
+  })()`);
+  await waitFor(`window.clonoloom.motifsView?.state().status==='ready'&&window.clonoloom.motifsView.state().detail`);
+  await js(`(async()=>{const v=window.clonoloom.motifsView;if(JSON.stringify(v.state().answer.result)!==window.motifCheck.snapshot)throw new Error('Saved motif result changed');v.configure(${JSON.stringify(query)},${JSON.stringify(background)});[...document.querySelectorAll('.motifs-view button')].find((b)=>b.textContent==='Screen motifs').click();return true})()`);
+  await waitFor(`window.clonoloom.motifsView.state().status==='ready'&&window.clonoloom.motifsView.state().detail`);
+  await js(`(async()=>{const app=window.clonoloom;let v=app.motifsView;if(v.state().answer.artifact.id!==window.motifCheck.id)throw new Error('Visible/remote settings differ');const ensure=app.ensureDataset,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};URL.createObjectURL=(b)=>{blob=b;return create(b)};try{await app.setMode('data');app.focusItem({kind:'result',id:window.motifCheck.id});for(let i=0;i<200;i++){if(app.motifsView?.state().status==='ready'&&app.motifsView.state().detail)break;await new Promise((r)=>setTimeout(r,50));}v=app.motifsView;if(v?.state().status!=='ready'||!v.state().detail)throw new Error('Source-free remount failed');await v.download();const b=new Uint8Array(await blob.arrayBuffer());if(b[0]!==80||b[1]!==75)throw new Error('ZIP unavailable');await v.select(window.motifCheck.group);}finally{app.ensureDataset=ensure;URL.createObjectURL=create;}const {figureBlob}=await import('./ui/figures.js');const text=await(await figureBlob(v.plotSpec(),'svg')).text();for(const phrase of ['frequency','pooled','ClonoLoom adaptation','Query samples:','not proven'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase);return true})()`);
+  await act('show_methods');if(!await js(`(()=>{const s=document.querySelector('.methods-text').textContent;return s.includes('Planted local QGHT')&&s.includes('No N/P boost')})()`))throw new Error('Motif methods absent');await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.motifs-view');root.closest('.workbench-scroll').scrollTop=root.querySelector('.motif-title').offsetTop-65;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
+async function convergenceScene() {
+  await act('new_project', { name: 'Artificial subject recurrence and HLA study' });
+  await act('open_example', { example: 'simulated-convergence-study', download: true });
+  const folder = join(places.examples, 'simulated-convergence-study');
+  const arms = JSON.parse(readFileSync(join(folder, 'truth/arms.json'), 'utf8'));
+  const subjects = JSON.parse(readFileSync(join(folder, 'truth/subjects.json'), 'utf8'));
+  const parent = (await act('screen_motifs', { ...arms, options: { minK: 4, maxK: 4 } })).data.artifact;
+  const groups = await js(`window.clonoloom.motifsView.state().answer.result.analysis.groups.filter((g)=>(g.kind==='local'&&g.motif==='QGHT'&&g.length===17&&g.start===5)||(g.kind==='global'&&g.allowed==='ILMV')).map((g)=>g.id)`);
+  if (groups.length !== 2) throw new Error('Planted signatures absent');
+  const selection = { species: 'human', samples: [...arms.query, ...arms.background], subjects, groups, alleles: ['HLA-A*02:01', 'HLA-B*07:02', 'HLA-DRB1*15:01'] };
+  const out = (await act('analyze_convergence', { motifs: parent, selection })).data;
+  if (out.subjects !== 32 || out.family !== 6) throw new Error('Wrong subject/family counts');
+  await js(`(async()=>{
+    const app=window.clonoloom,v=app.convergenceView,r=v.state().answer.result.analysis;
+    const group=r.recurrence.find((g)=>g.label.includes('QGHT')),index=r.associations.findIndex((x)=>x.group===group.id&&x.allele==='HLA-A*02:01'),x=r.associations[index];
+    if(group.subjects.length!==18||x.n!==28||x.carriers!==20||x.shared!==17||x.excluded!==4||x.noncarrier.matches!==1||x.noncarrier.total!==8)throw new Error('Wrong subject truth');
+    if(r.associations.some((x)=>x.locus!=='A'&&x.n!==32))throw new Error('Wrong locus universe');
+    v.select(index);const points=[...document.querySelectorAll('.convergence-view [data-estimate]')];
+    if(points.length!==2||points[0].dataset.matches!=='17'||points[0].dataset.total!=='20'||points[1].dataset.matches!=='1'||points[1].dataset.total!=='8')throw new Error('Frequency geometry wrong');
+    await v.loadParent(${JSON.stringify(parent)});v.configure(${JSON.stringify(selection)});
+    if(document.querySelector('[aria-label="Typing H01"]').value!==${JSON.stringify(Object.values(subjects[0].typing).flat().join(', '))})throw new Error('Raw typing control lost');
+    window.convergenceCheck={id:v.state().answer.artifact.id,index,snapshot:JSON.stringify(v.state().answer.result)};
+    [...document.querySelectorAll('.convergence-view button')].find((b)=>b.textContent==='Analyze recurrence and HLA').click();return true;
+  })()`);
+  await waitFor(`window.clonoloom.convergenceView.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,v=app.convergenceView,c=window.convergenceCheck;if(v.state().answer.artifact.id!==c.id)throw new Error('Visible/remote declaration differs');app.store.undo();if(app.store.project.artifacts.some((a)=>a.id===c.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:c.id});return true})()`);
+  await waitFor(`window.clonoloom.convergenceView?.state().status==='ready'`);
+  await js(`(async()=>{
+    const app=window.clonoloom,c=window.convergenceCheck;if(JSON.stringify(app.convergenceView.state().answer.result)!==c.snapshot)throw new Error('Saved result changed');
+    const ensure=app.ensureDataset,originalFetch=window.fetch,create=URL.createObjectURL;let blob;
+    app.ensureDataset=async()=>{throw new Error('Source unavailable')};window.fetch=(url,...args)=>{if(String(url).includes('api/motifs'))throw new Error('Parent unavailable');return originalFetch(url,...args)};URL.createObjectURL=(b)=>{blob=b;return create(b)};
+    try{await app.setMode('data');app.focusItem({kind:'result',id:c.id});for(let i=0;i<200;i++){if(app.convergenceView?.state().status==='ready')break;await new Promise((r)=>setTimeout(r,50));}const v=app.convergenceView;if(v?.state().status!=='ready')throw new Error('Source-free remount failed');await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('ZIP unavailable');v.select(c.index);const {figureBlob}=await import('./ui/figures.js');for(const which of ['hla','recurrence']){const text=await(await figureBlob(v.plotSpec(which),'svg')).text();for(const phrase of ['subjects','BY','Wilson','Selected samples','restriction','Glanville J','10.1080/01621459.1927.10502953'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase);}}
+    finally{app.ensureDataset=ensure;window.fetch=originalFetch;URL.createObjectURL=create;}return true;
+  })()`);
+  await act('show_methods');
+  if (!await js(`(()=>{const s=document.querySelector('.methods-text').textContent;return s.includes('32 fictional subjects')&&s.includes('typed-subject universe')&&document.querySelector('.methods-references').textContent.includes('Glanville')})()`)) throw new Error('Convergence/example methods absent');
+  await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.convergence-view');const scroller=root.closest('.workbench-scroll');scroller.scrollTop+=root.querySelector('.convergence-title').getBoundingClientRect().top-scroller.getBoundingClientRect().top-16;return true})()`);
+  await clearToasts(); await checkAccessibility();
+}
+
+async function batchQCScene() {
+ await act('new_project',{name:'Artificial sample quality and batch study'});
+ await act('open_example',{example:'simulated-batch-qc-study',download:true});
+ const samples=JSON.parse(readFileSync(join(places.examples,'simulated-batch-qc-study','truth/samples.json'),'utf8'));
+ const declaration={samples,options:{threshold:3.5,minSamples:5}};
+ const out=(await act('screen_batch_qc',declaration)).data;
+ if(out.samples!==24||out.subjects!==24)throw new Error('Batch subject/sample accounting differs');
+ await js(`(()=>{const app=window.clonoloom;app.focusItem({kind:'result',id:${JSON.stringify(out.artifact)}});app.qcView.show('contamination');return true})()`);
+ await waitFor(`window.clonoloom.contaminationView?.state().status==='idle'`);
+ await js(`(()=>{if(document.querySelectorAll('.contamination-view input[aria-label^="subject "]').length!==26)throw new Error('Switching QC tabs did not load source assignments');window.clonoloom.qcView.show('batch-qc');return true})()`);
+ await js(`(()=>{const v=window.clonoloom.batchQCView,r=v.state().answer.result.analysis,groups=r.groups.filter((g)=>g.metric==='productive'),points=[...document.querySelectorAll('.batch-qc-view [data-sample]')],values=groups.flatMap((g)=>g.observations).filter((p)=>p.transformed!=null);if(points.length!==values.length||points.length!==23)throw new Error('Plot omits sample values');for(const node of points){const p=values.find((p)=>r.evidence.samples[p.sample].assignment.name===node.dataset.sample);if(!p||String(p.value)!==node.dataset.value||String(p.transformed)!==node.dataset.transformed)throw new Error('Plot differs from evidence');}if(groups.find((g)=>g.batch==='run-C').scored!==0)throw new Error('Small group scored');if(r.groups.find((g)=>g.batch==='run-D'&&g.metric==='rows').mad!==0)throw new Error('Constant group control differs');window.batchQCCheck={id:v.state().answer.artifact.id,snapshot:JSON.stringify(v.state().answer.result)};v.configure(${JSON.stringify(declaration)});[...document.querySelectorAll('.batch-qc-view button')].find((b)=>b.textContent==='Screen batch QC').click();return true})()`);
+ await waitFor(`window.clonoloom.batchQCView?.state().status==='ready'`);
+ await js(`(async()=>{const app=window.clonoloom,v=app.batchQCView,c=window.batchQCCheck;if(v.state().answer.artifact.id!==c.id)throw new Error('Visible/remote identity differs');app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===c.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:c.id});return true})()`);
+ await waitFor(`window.clonoloom.batchQCView?.state().status==='ready'`);
+ await js(`(async()=>{const app=window.clonoloom,c=window.batchQCCheck;if(JSON.stringify(app.batchQCView.state().answer.result)!==c.snapshot)throw new Error('Saved result changed');const ensure=app.ensureDataset,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};URL.createObjectURL=(b)=>{blob=b;return create(b)};try{await app.setMode('data');app.focusItem({kind:'result',id:c.id});for(let i=0;i<200;i++){if(app.batchQCView?.state().status==='ready')break;await new Promise((r)=>setTimeout(r,50))}const v=app.batchQCView;if(v?.state().status!=='ready')throw new Error('Source-free remount failed');await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('ZIP failed');const {figureBlob}=await import('./ui/figures.js');const text=await(await figureBlob(v.plotSpec(),'svg')).text();for(const phrase of ['no quantitative meaning','Threshold:','QC:','0.6745','Iglewicz','no batch correction'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase);}finally{app.ensureDataset=ensure;URL.createObjectURL=create;}return true})()`);
+ await act('show_methods');if(!await js(`(()=>{const text=document.querySelector('.methods-text').textContent;return text.includes('26 samples from 25 fictional subjects')&&text.includes('zero MAD')&&document.querySelector('.methods-references').textContent.includes('Iglewicz')})()`))throw new Error('Methods missing');await act('close_dialogs');
+ await js(`(()=>{const root=document.querySelector('.batch-qc-view'),scroller=root.parentElement;scroller.scrollTop+=root.querySelector('.batch-qc-title').getBoundingClientRect().top-scroller.getBoundingClientRect().top-12;return true})()`);
+ await clearToasts();await checkAccessibility();
+}
+
+async function contaminationScene() {
+  await act('new_project',{name:'Artificial nucleotide sharing and carryover study'});
+  await act('open_example',{example:'simulated-contamination-study',download:true});
+  const samples=JSON.parse(readFileSync(join(places.examples,'simulated-contamination-study','truth/samples.json'),'utf8'));
+  await act('set_definition',{definition:{chains:['TRB'],junction:'nt',v:'gene',j:'gene',productiveOnly:true}});
+  const pgen=(await act('measure_generation',{models:'clonoloom',organism:'human',genes:false})).data.result;
+  const declaration={species:'human',unrelated:true,samples,pgen,options:{minCount:2,highFraction:.01,ratio:20,highPgen:1e-8}};
+  const out=(await act('screen_contamination',declaration)).data;
+  if(out.pairs!==35)throw new Error('Same-subject pair was not excluded');
+  // Switching from another dataset to a saved result must restore its toolbar context.
+  await js(`(async()=>{const app=window.clonoloom,store=app.store,id=${JSON.stringify(out.artifact)},original=store.project.datasets[0],ensure=app.ensureDataset;app.ensureDataset=async()=>{throw new Error('Navigation control has no source')};try{store.commit({...store.project,datasets:[...store.project.datasets,{...original,id:'qc-navigation-control',name:'Navigation control'}]},'Navigation control',['project']);app.focusItem({kind:'dataset',id:'qc-navigation-control'});await new Promise((r)=>setTimeout(r,50));if(document.querySelector('.workbench-head select[aria-label="Dataset"]').value!=='qc-navigation-control')throw new Error('Control dataset was not selected');app.focusItem({kind:'result',id});await new Promise((r)=>setTimeout(r,50));if(document.querySelector('.workbench-head select[aria-label="Dataset"]').value!==original.id)throw new Error('Saved result did not restore its dataset');store.undo();}finally{app.ensureDataset=ensure;}return true})()`);
+  await waitFor(`window.clonoloom.contaminationView?.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,v=app.contaminationView,r=v.state().answer.result.analysis,index=r.pairs.findIndex((p)=>r.evidence.samples[p.a].sample.name==='D01-1'&&r.evidence.samples[p.b].sample.name==='D02-1');v.select(index);const p=r.pairs[index],rows=r.matches.filter((m)=>m.a===p.a&&m.b===p.b);if(p.shared!==6||rows.filter((m)=>m.pattern==='Asymmetric observed fractions').length!==3)throw new Error('Planted sharing controls differ');const points=[...document.querySelectorAll('.contamination-view [data-receptor]')];if(points.length!==6||points.some((node)=>!rows.some((m)=>m.receptor===node.dataset.receptor&&String(m.fractionA)===node.dataset.fractionA&&String(m.fractionB)===node.dataset.fractionB)))throw new Error('Scatter fractions differ');window.contaminationCheck={id:v.state().answer.artifact.id,index,snapshot:JSON.stringify(v.state().answer.result)};v.configure(${JSON.stringify(declaration)});[...document.querySelectorAll('.contamination-view button')].find((b)=>b.textContent==='Screen contamination evidence').click();return true})()`);
+  await waitFor(`window.clonoloom.contaminationView?.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,v=app.contaminationView,c=window.contaminationCheck;if(v.state().answer.artifact.id!==c.id)throw new Error('Visible/remote settings differ');app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===c.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:c.id});return true})()`);
+  await waitFor(`window.clonoloom.contaminationView?.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,c=window.contaminationCheck;if(JSON.stringify(app.contaminationView.state().answer.result)!==c.snapshot)throw new Error('Saved evidence changed');const ensure=app.ensureDataset,originalFetch=window.fetch,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};window.fetch=(url,...args)=>{if(String(url).includes('api/pgen'))throw new Error('Pgen parent unavailable');return originalFetch(url,...args)};URL.createObjectURL=(b)=>{blob=b;return create(b)};try{await app.setMode('data');app.focusItem({kind:'result',id:c.id});for(let i=0;i<200;i++){if(app.contaminationView?.state().status==='ready')break;await new Promise((r)=>setTimeout(r,50))}const v=app.contaminationView;if(v?.state().status!=='ready')throw new Error('Source-free remount failed');v.select(c.index);await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('ZIP failed');const {figureBlob}=await import('./ui/figures.js');const text=await(await figureBlob(v.plotSpec(),'svg')).text();for(const phrase of ['no pseudocount','Thresholds:','QC','bbad230','checksum','unrelated'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase);}finally{app.ensureDataset=ensure;window.fetch=originalFetch;URL.createObjectURL=create;}return true})()`);
+  await act('show_methods');if(!await js(`(()=>{const s=document.querySelector('.methods-text').textContent;return s.includes('eight fictional subjects')&&s.includes('No sequence is removed')&&document.querySelector('.methods-references').textContent.includes('bbad230')})()`))throw new Error('Scientific methods absent');await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.contamination-view'),scroller=root.parentElement;scroller.scrollTop+=root.querySelector('.contamination-title').getBoundingClientRect().top-scroller.getBoundingClientRect().top-12;return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
 // --- Scenes --------------------------------------------------------------------------------------
 
+// Each prescribed cohort step goes through the public action and its normal view.
+async function guidedCohortScene(confounded) {
+  await act('new_project',{name:confounded?'Confounded artificial cohort':'Complete artificial cohort study'});
+  for (const preset of confounded ? ['counts-confounded'] : ['counts-independent','counts-null','counts-paired','counts-unbalanced']) {
+    const opened=(await act('open_example',{example:`simulated-${preset}`,download:true})).data;
+    await act('show',{view:'cohort',dataset:opened.dataset});
+    await waitFor(`Boolean(document.querySelector('.cohort-view .tracking-guide'))`);
+    const catalog=await(await fetch(`${URL}api/examples`)).json();
+    const example=catalog.examples.find((e)=>e.name===`simulated-${preset}`);
+    // Exercise the actual visible design button; later steps use the same action directly.
+    const before=await js('(window.clonoloom.store.project.cohortDesigns??[]).length');
+    await js(`document.querySelector('.cohort-view .tracking-guide button').click()`);
+    await waitFor(`(window.clonoloom.store.project.cohortDesigns??[]).length===${before+1}`);
+    for(const step of example.opens[0].steps.slice(1))await act(step.action,{dataset:opened.dataset,...step.args});
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods=await js(`document.querySelector('.methods-text').textContent`);
+    if(!methods.includes(confounded?'FAILED CHECK':'Saved Replicated')||!methods.includes('subject'))throw new Error('Cohort methods incomplete');
+    await act('close_dialogs');
+    if(!confounded)await js(`(()=>{const v=window.clonoloom.cohortCountsView,r=v.state().answer.result.analysis;if(document.querySelectorAll('.cohort-counts [data-sample]').length!==${preset==='counts-paired'?56:32})throw new Error('Count observations do not match study');if(document.querySelectorAll('.cohort-counts [data-clone]').length!==r.tested)throw new Error('MA plot omitted tested clones');return true})()`);
+  }
+  await js(`(async()=>{const a=window.clonoloom;await a.saveNow();await a.openProject(a.store.project.id);await a.setMode('cohort');const p=a.store.project,failed=p.cohortDesigns.find((d)=>!d.result.ok);if(${confounded}){if(!failed||p.artifacts.length)throw new Error('Confounded study inferred a result');await a.cohortView.choose(failed.dataset);await a.cohortView.configure({spec:failed.result.input.spec});if(a.cohortView.state().result.ok)throw new Error('Confounding lost on reopening');if(!document.querySelector('.cohort-saved').textContent.includes('Group is inseparable from batch'))throw new Error('Saved finding hidden');if([...document.querySelector('[aria-label="Feature design version"]').options].some((o)=>o.value===failed.id))throw new Error('Failed check offered for analysis');}else{const views={'cohort-features':'cohortFeaturesView','cohort-compare':'cohortCompareView','cohort-counts':'cohortCountsView'};for(const r of p.artifacts.filter((r)=>views[r.kind])){await a[views[r.kind]].show(r.id);if(a[views[r.kind]].state().status!=='ready')throw new Error('Saved evidence unavailable');}const last=p.cohortDesigns.at(-1);if(last.result.groups[0].subjects!==12||last.result.groups[1].subjects!==20)throw new Error('Unbalanced membership changed');await a.cohortView.choose(last.dataset);const v=a.cohortCountsView;await v.download();const root=document.querySelector('.cohort-counts');root.closest('.workbench-scroll').scrollTop=root.querySelector('.count-result-title').offsetTop-65;}return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
 const scenes = {
+  async 'cohort-study'(){await guidedCohortScene(false);},
+  async 'cohort-confounded'(){await guidedCohortScene(true);},
+ async ['pseudobulk-de'](){
+  await act('new_project',{name:'Artificial paired expression'});
+  await act('open_example',{example:'simulated-pseudobulk-de-study',download:true});
+  const truth=JSON.parse(readFileSync(join(places.examples,'simulated-pseudobulk-de-study','truth/truth.json'),'utf8'));
+  if(truth.model!=='clonoloom-artificial-pseudobulk-de-v1')throw new Error('Stale paired expression example');
+  await act('set_definition',{definition:{chains:['TRA','TRB'],junction:'aa',v:'gene',j:'gene',productiveOnly:true}});
+  const dataset=await js(`window.clonoloom.store.project.datasets[0].id`),names=await js(`window.clonoloom.store.project.datasets[0].samples`),parents=[];
+  if(names.length!==28)throw new Error('Expected 28 subject samples');
+  for(let i=0;i<names.length;i++){
+   const path=join(places.examples,'simulated-pseudobulk-de-study','expression',names[i]);
+   await act('inspect_expression',{path,cellsPath:join(path,'cells.tsv'),dataset,sample:i});
+   const p=await act('compute_cell_phenotypes',{population:'receptor',annotation:'cell_type',breakpoints:[1]});parents.push(p.data.artifact);
+  }
+  const counts=(await act('aggregate_pseudobulk',{phenotypes:parents,options:{annotation:'cell_type',minCells:10}})).data;
+  const timepoint=await js(`window.clonoloom.cellPseudobulkView.state().answer.result.evidence.input.samples[0].annotation.timepoint`);
+  const declaration={pseudobulk:counts.artifact,options:{type:'Artificial T cells',timepoint,reference:'1',comparison:'>1',minCount:10,minSamples:25,confidence:.95}};
+  const result=(await act('compare_pseudobulk',declaration)).data;
+  if(result.subjects!==28||result.family!==38||result.tested!==37)throw new Error('Paired expression accounting differs');
+  await js(`(async()=>{const v=window.clonoloom.cellPseudobulkDEView,r=v.state().answer.result.analysis,points=[...document.querySelectorAll('.pseudobulk-de-view circle[data-gene]')];if(points.length!==37||points.some((p)=>!r.rows.some((g)=>g.feature.id===p.dataset.gene&&g.log2Fold!=null)))throw new Error('Gene effect points differ');if(document.querySelectorAll('.pseudobulk-de-view circle[data-sample]').length!==56||document.querySelectorAll('.pseudobulk-de-view path[data-subject]').length!==28)throw new Error('Wrong biological units');window.pseudobulkDECheck={id:v.state().answer.artifact.id,snapshot:JSON.stringify(v.state().answer.result)};await v.configure(${JSON.stringify(declaration)});[...document.querySelectorAll('.pseudobulk-de-view button')].find((b)=>b.textContent==='Compare pseudobulk expression').click();return true})()`);
+  await waitFor(`window.clonoloom.cellPseudobulkDEView.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,v=app.cellPseudobulkDEView,c=window.pseudobulkDECheck;if(v.state().answer.artifact.id!==c.id)throw new Error('Visible/remote identity differs');app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===c.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:c.id});return true})()`);
+  await waitFor(`window.clonoloom.cellPseudobulkDEView?.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,c=window.pseudobulkDECheck;if(JSON.stringify(app.cellPseudobulkDEView.state().answer.result)!==c.snapshot)throw new Error('Reopening changed expression');const original=window.fetch,create=URL.createObjectURL;let blob;window.fetch=(url,...args)=>{if(['api/expression/','api/phenotypes/','api/pseudobulk/'].some((p)=>String(url).includes(p))&&!String(url).includes('pseudobulk-de'))throw new Error('Parent unavailable');return original(url,...args)};URL.createObjectURL=(b)=>{blob=b;return create(b)};try{const v=app.cellPseudobulkDEView;await v.show(c.id);await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('ZIP failed');const {figureBlob}=await import('./ui/figures.js');for(const which of ['ma','observations','effect']){const text=await(await figureBlob(v.plotSpec(which),'svg')).text();for(const phrase of ['subject','conditional','size','gks042','ClonoLoom'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase)}v.select('SIM-G38');if(!document.querySelector('.pseudobulk-de-view').textContent.includes('All-zero subject block'))throw new Error('Failed gene hidden');v.select('SIM-G01');}finally{window.fetch=original;URL.createObjectURL=create}return true})()`);
+  await act('show_methods');if(!await js(`document.querySelector('.methods-text').textContent.includes('Gamma(16')&&document.querySelector('.methods-references').textContent.includes('gks042')`))throw new Error('Paired methods absent');await act('close_dialogs');
+  await clearToasts();await checkAccessibility();
+  await js(`(()=>{const root=document.querySelector('.pseudobulk-de-view'),scroller=root.parentElement;scroller.scrollTop+=root.querySelectorAll('figure')[1].getBoundingClientRect().top-scroller.getBoundingClientRect().top-12;return true})()`);
+  await showPlaces();
+  const theme=await js(`document.documentElement.dataset.theme`);
+  await b.capture(join(IMAGES,`pseudobulk-de-pairs-${theme}.webp`),{format:'webp',quality:86});
+  await js(`(()=>{const root=document.querySelector('.pseudobulk-de-view'),scroller=root.parentElement;scroller.scrollTop+=root.querySelector('.pseudobulk-de-title').getBoundingClientRect().top-scroller.getBoundingClientRect().top-12;return true})()`);
+ },
+
+ async pseudobulk(){
+  await act('open_example',{example:'simulated-pseudobulk-study',download:true});
+  const truth=JSON.parse(readFileSync(join(places.examples,'simulated-pseudobulk-study','truth/truth.json'),'utf8'));
+  if(truth.model!=='clonoloom-artificial-pseudobulk-v1'||!truth.cloneSampling.includes('1/k'))throw new Error('Stale pseudobulk example');
+  const dataset=await js(`window.clonoloom.store.project.datasets[0].id`);
+  const names=await js(`window.clonoloom.store.project.datasets[0].samples`);
+  const parents=[];
+  for(let i=0;i<names.length;i++){
+   const path=join(places.examples,'simulated-pseudobulk-study','expression',names[i]);
+   await act('inspect_expression',{path,cellsPath:join(path,'cells.tsv'),dataset,sample:i});
+   const p=await act('compute_cell_phenotypes',{population:'receptor',annotation:'state',breakpoints:[1,5,10]});parents.push(p.data.artifact);
+  }
+  const declaration={phenotypes:parents,options:{annotation:'state',minCells:10}};
+  const out=(await act('aggregate_pseudobulk',declaration)).data;
+  if(out.subjects!==4)throw new Error('Pseudobulk subjects differ');
+  await js(`(()=>{const v=window.clonoloom.cellPseudobulkView,r=v.state().answer.result;if(r.evidence.input.samples.length!==8||r.analysis.groups.length!==96||r.analysis.coverage.some((x)=>x.cells!==420||x.included!==417))throw new Error('Pseudobulk accounting differs');const shown=r.analysis.groups.filter((g)=>g.type==='state A'&&g.cells>0),bars=[...document.querySelectorAll('.pseudobulk-view rect[data-cells]')];if(bars.length!==shown.length||bars.some((n)=>!shown.some((g)=>r.evidence.input.samples[g.sample].annotation.name===n.dataset.sample&&String(g.cells)===n.dataset.cells)))throw new Error('Coverage bars differ');window.pseudobulkCheck={id:v.state().answer.artifact.id,snapshot:JSON.stringify(v.state().answer.result)};v.configure(${JSON.stringify(declaration)});[...document.querySelectorAll('.pseudobulk-view button')].find((b)=>b.textContent==='Aggregate pseudobulk counts').click();return true})()`);
+  await waitFor(`window.clonoloom.cellPseudobulkView.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,v=app.cellPseudobulkView,c=window.pseudobulkCheck;if(v.state().answer.artifact.id!==c.id)throw new Error('Visible/remote identity differs');app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===c.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:c.id});return true})()`);
+  await waitFor(`window.clonoloom.cellPseudobulkView?.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,c=window.pseudobulkCheck;if(JSON.stringify(app.cellPseudobulkView.state().answer.result)!==c.snapshot)throw new Error('Reopening changed evidence');const original=window.fetch,ensure=app.ensureDataset,create=URL.createObjectURL;let blob;app.ensureDataset=async()=>{throw new Error('Source unavailable')};window.fetch=(url,...args)=>{if(String(url).includes('api/expression')||String(url).includes('api/phenotypes'))throw new Error('Source unavailable');return original(url,...args)};URL.createObjectURL=(b)=>{blob=b;return create(b)};try{await app.setMode('data');app.focusItem({kind:'result',id:c.id});for(let i=0;i<200;i++){if(app.cellPseudobulkView?.state().status==='ready')break;await new Promise((r)=>setTimeout(r,50))}const v=app.cellPseudobulkView;if(v?.state().status!=='ready')throw new Error('Source-free remount failed');await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('ZIP failed');const {figureBlob}=await import('./ui/figures.js');const text=await(await figureBlob(v.plotSpec(),'svg')).text();for(const phrase of ['raw','sample','not statistical significance','s41467','ClonoLoom'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase);}finally{window.fetch=original;app.ensureDataset=ensure;URL.createObjectURL=create;}return true})()`);
+  await act('show_methods');if(!await js(`document.querySelector('.methods-text').textContent.includes('negative-binomial')&&document.querySelector('.methods-references').textContent.includes('s41467')`))throw new Error('Methods absent');await act('close_dialogs');
+  await js(`(()=>{const root=document.querySelector('.pseudobulk-view'),scroller=root.parentElement;scroller.scrollTop+=root.querySelector('.pseudobulk-title').getBoundingClientRect().top-scroller.getBoundingClientRect().top-12;return true})()`);
+  await clearToasts();await checkAccessibility();
+ },
+
+ async ['batch-qc'](){await batchQCScene();},
+ async contamination() {await contaminationScene();},
+  async convergence() { await convergenceScene(); },
+  async motifs() { await motifScene(); },
+  async 'definition-robustness'() { await definitionAuditScene(); },
+  async 'cohort-counts'() { await countModelScene(false); },
+  async 'cohort-counts-paired'() { await countModelScene(true); },
+  async 'cohort-compare'() { await cohortComparisonScene(false); },
+  async 'cohort-paired'() { await cohortComparisonScene(true); },
+  async 'cohort-features'() {
+    await act('new_project', { name: 'Artificial subject feature study' });
+    await act('open_example', { example: 'simulated-standard', download: true });
+    await act('measure_diversity', { replicates: 20 });
+    const spec = { unit: 'subject', layout: 'independent', groupField: 'condition', levels: ['control', 'expanded'], exclude: {} };
+    for (let i = 1; i <= 6; i++) spec.exclude[`S${String(i).padStart(2, '0')}-2`] = 'Teaching selection: first simulated observation per subject';
+    await act('check_cohort_design', { spec, name: 'First simulated observations', save: true });
+    const state = (await act('get_state')).data;
+    const options = { design: state.cohortDesigns[0].id, diversity: state.artifacts.find((r) => r.kind === 'diversity').id };
+    const result = (await act('build_cohort_features', options)).data;
+    if (result.subjects !== 6 || result.observations !== 6) throw new Error('Subject features changed the replication unit');
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.cohortFeaturesView.state().artifact;
+      const saved = JSON.stringify(app.cohortFeaturesView.state().answer.result);
+      app.store.undo(); if (app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Feature undo failed');
+      app.store.redo(); if (!app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Feature redo failed');
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('data');
+      app.focusItem({kind:'result',id});
+      return { id, saved };
+    })()`).then((v) => { globalThis.featureSnapshot = v; });
+    await waitFor(`window.clonoloom.cohortFeaturesView?.state().status === 'ready'`);
+    if (await js(`JSON.stringify(window.clonoloom.cohortFeaturesView.state().answer.result)`) !== globalThis.featureSnapshot.saved) throw new Error('Feature reopening changed evidence');
+    // Current annotation edits must not rewrite the selected saved design.
+    await act('annotate_samples', { samples: { 'S01-1': { subject: 'changed-subject' } } });
+    const repeated = (await act('build_cohort_features', options)).data;
+    if (repeated.artifact !== result.artifact) throw new Error('Current annotations silently changed saved features');
+    await act('annotate_samples', { samples: { 'S01-1': { subject: 'S01' } } });
+    await js(`(async () => {
+      const app = window.clonoloom, original = app.ensureDataset, create = URL.createObjectURL;
+      let blob; app.ensureDataset = async () => { throw new Error('Sources unavailable'); };
+      URL.createObjectURL = (value) => { blob = value; return create(value); };
+      try {
+        await app.cohortFeaturesView.show(${JSON.stringify(result.artifact)});
+        await app.cohortFeaturesView.download();
+        const bytes = new Uint8Array(await blob.arrayBuffer());
+        if (bytes[0] !== 80 || bytes[1] !== 75) throw new Error('Feature ZIP download failed');
+      } finally { app.ensureDataset = original; URL.createObjectURL = create; }
+      const select = document.querySelector('[aria-label="Displayed feature"]');
+      select.value = 'hill1'; select.dispatchEvent(new Event('change'));
+      if (!document.querySelector('.cohort-features table caption').textContent.includes('Hill diversity q=1')) throw new Error('Feature selector failed');
+      return true;
+    })()`);
+    await js(`(() => {
+      const choose = (label, value) => { const input = document.querySelector('[aria-label="' + label + '"]'); input.value = value; input.dispatchEvent(new Event('change')); };
+      choose('Feature design version', ${JSON.stringify(options.design)});
+      choose('Diversity parent', ${JSON.stringify(options.diversity)});
+      [...document.querySelectorAll('.cohort-features button')].find((b) => b.textContent === 'Build subject feature table').click();
+      return true;
+    })()`);
+    await waitFor(`window.clonoloom.cohortFeaturesView.state().status === 'ready'`);
+    if (await js(`window.clonoloom.cohortFeaturesView.state().artifact`) !== result.artifact) throw new Error('Visible feature choices differ from remote result');
+    await js(`(() => {
+      const input = document.querySelector('[aria-label="Find feature observations"]'); input.value = 'S01'; input.dispatchEvent(new Event('change'));
+      if (document.querySelectorAll('.cohort-features table')[0].querySelectorAll('tbody tr').length !== 1) throw new Error('Observation filter failed');
+      const reset = document.querySelector('[aria-label="Find feature observations"]'); reset.value = ''; reset.dispatchEvent(new Event('change')); return true;
+    })()`);
+    await act('show_methods');
+    if (!await js(`document.querySelector('.methods-text').textContent.includes('Subject feature table')`)) throw new Error('Methods omitted subject features');
+    await clearToasts();
+    await checkAccessibility();
+    await act('close_dialogs');
+    await act('show', { view: 'cohort' });
+    await js(`(async () => { await window.clonoloom.cohortFeaturesView.show(${JSON.stringify(result.artifact)}); const root = document.querySelector('.cohort-features'); root.closest('.workbench-scroll').scrollTop = root.querySelector('.feature-result-title').offsetTop - 65; return true; })()`);
+    await clearToasts();
+    await checkAccessibility();
+  },
+  async 'cohort-design'() {
+    await act('new_project', { name: 'Artificial cohort design' });
+    await act('show', { view: 'cohort' });
+    await clearToasts();
+    await checkAccessibility();
+    await act('open_example', { example: 'simulated-standard', download: true });
+    const spec = { unit: 'subject', layout: 'independent', groupField: 'condition', levels: ['control', 'expanded'], exclude: {} };
+    const repeated = (await act('check_cohort_design', { spec })).data;
+    if (repeated.ok || repeated.subjects !== 6 || repeated.included !== 12 || !repeated.findings.some((f) => f.code === 'cohort-repeated-samples')) throw new Error('Repeated observations treated as independent subjects');
+    for (let i = 1; i <= 6; i++) spec.exclude[`S${String(i).padStart(2, '0')}-2`] = 'Teaching selection: first simulated observation per subject';
+    const checked = (await act('check_cohort_design', { spec, name: 'First simulated observations', save: true })).data;
+    if (!checked.ok || checked.subjects !== 6 || checked.included !== 6 || checked.excluded !== 6 || checked.groups.some((g) => g.subjects !== 3)) throw new Error('Incorrect subject-level cohort counts');
+    await js(`(async () => {
+      const app = window.clonoloom, id = app.store.project.cohortDesigns[0].id;
+      app.store.undo(); if (app.store.project.cohortDesigns?.length) throw new Error('Design undo failed');
+      app.store.redo(); if (app.store.project.cohortDesigns[0].id !== id) throw new Error('Design redo failed');
+      await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cohort');
+      return true;
+    })()`);
+    await waitFor('window.clonoloom.cohortView && !window.clonoloom.cohortView.state().busy');
+    if (!await js(`document.querySelector('.cohort-saved summary')?.textContent.includes('annotations as saved')`)) throw new Error('Saved design did not reopen');
+    const times = Object.fromEntries(checked.input.samples.map((s) => [s.name, { timepoint: s.name.endsWith('-1') ? 'day 0' : 'day 7' }]));
+    await act('annotate_samples', { samples: times });
+    const pairedSpec = { unit: 'subject', layout: 'paired', groupField: 'timepoint', levels: ['day 0', 'day 7'], exclude: {} };
+    const paired = (await act('check_cohort_design', { spec: pairedSpec })).data;
+    if (!paired.ok || paired.completePairs !== 6 || paired.subjects !== 6) throw new Error('Paired subject counts are wrong');
+    const unpaired = (await act('check_cohort_design', { spec: { ...pairedSpec, layout: 'independent' } })).data;
+    if (unpaired.ok || !unpaired.findings.some((f) => f.code === 'cohort-shared-subject')) throw new Error('Repeated subjects accepted as independent');
+    await act('annotate_samples', { samples: Object.fromEntries(checked.input.samples.map((s) => [s.name, { timepoint: s.timepoint }])) });
+    // An unavailable source must not hide the saved snapshot or prevent its export.
+    await js(`(async () => {
+      const app = window.clonoloom, original = app.ensureDataset;
+      app.ensureDataset = async () => ({ status: 'failed', error: 'Source unavailable (validation control)' });
+      try { await app.cohortView.choose(app.store.project.datasets[0].id); }
+      finally { app.ensureDataset = original; }
+      if (!document.querySelector('.cohort-saved summary').textContent.includes('current annotations unavailable')) throw new Error('Unavailable annotations mislabeled');
+      const create = URL.createObjectURL; let blob;
+      URL.createObjectURL = (value) => { blob = value; return create(value); };
+      try { [...document.querySelectorAll('.cohort-saved button')].find((b) => b.textContent === 'Export saved JSON').click(); }
+      finally { URL.createObjectURL = create; }
+      const exported = JSON.parse(await blob.text());
+      if (JSON.stringify(exported) !== JSON.stringify(app.store.project.cohortDesigns[0])) throw new Error('Export changed the saved record');
+      await app.cohortView.choose(app.store.project.datasets[0].id);
+      return true;
+    })()`);
+    await act('annotate_samples', { samples: { 'S01-1': { subject: 'changed-subject' } } });
+    await waitFor(`document.querySelector('.cohort-saved summary')?.textContent.includes('annotations changed')`);
+    await act('annotate_samples', { samples: { 'S01-1': { subject: 'S01' } } });
+    await act('check_cohort_design', { spec });
+    // Exercise the visible controls, including clearing and restoring an exclusion.
+    await js(`(() => { const input = document.querySelector('[aria-label="Exclusion reason for S01-2"]'); input.value = ''; input.dispatchEvent(new Event('change')); [...document.querySelectorAll('button')].find((b) => b.textContent === 'Check design').click(); return true; })()`);
+    await waitFor('window.clonoloom.cohortView.state().result !== null');
+    if (await js('window.clonoloom.cohortView.state().result.ok')) throw new Error('Visible exclusion edit did not affect design');
+    await act('check_cohort_design', { spec });
+    await clearToasts();
+    await checkAccessibility();
+  },
   async 'cell-study'() {
     await act('new_project', { name: 'Artificial single-cell study' });
     await act('open_example', { example: 'simulated-cell-states-clouds', download: true });
@@ -939,7 +1389,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom(name === 'examples' ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

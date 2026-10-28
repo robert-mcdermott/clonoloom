@@ -408,3 +408,233 @@ The release fixture retains all four samples and separate truth; analysis uses S
 Its 360 input cells yield 359 retained map cells, 358 uniquely assigned retained cells,
 ten clone profiles and 20 comparison tests at k = 2, 4. All 360 cells remain in the raw-count
 export. Those numbers check a fixed artificial workflow, not biological accuracy.
+
+## Replicated count studies
+
+The `counts-independent`, `counts-paired` and `counts-null` presets provide dedicated NB2
+count benchmarks (wave 7, slice 4). They contain 32 independent subjects, 28 complete pairs
+(day 0/day 14), and 32 independent null subjects respectively. Use, for example:
+
+```sh
+clonoloom simulate --preset counts-paired --out /path/to/count-study
+```
+
+Counts are simulated UMIs in AIRR `umi_count`. Each subject has 600 private fictional receptors
+with a long abundance tail, plus a shared panel of 48. Lognormal sampling exposures, subject
+effects, heterogeneous gamma–Poisson dispersions and two batches create variation. Four panel
+receptors have generating log2 effects +2, four −1.5 and forty zero; all group effects are zero
+in `counts-null`. This controlled panel is not a fitted model of human receptor sharing,
+recombination, antigen specificity or UMI errors. Seeds and full parameters are saved.
+
+`truth/observations.tsv` records every generating mean, exposure, dispersion, effect and count
+(including zero), plus sample, subject, group, batch and receptor identity. `truth/truth.json`
+records source hashes. Generator exposures differ from realized library totals, so the fitted
+total-offset log2 ratios need not equal generating effects exactly. The null example is a
+negative control, not a promise that every p-value exceeds 0.05.
+
+Open all root TSVs with `repertoires.airr.json`. Annotate B1/B2 from truth (alternating by
+zero-based subject plus visit); paired time labels are `day 0`/`day 14`. Save an explicit
+independent condition or paired timepoint design, measure diversity and build its features,
+then fit replicated counts with count ≥10 in ≥12 samples and batch adjustment. Each subject
+contributes one observation per selected group. The shared panel is usually eligible; private
+clonotypes stay in denominators and exports but fail this declared prevalence filter.
+
+## Definition-sensitive repertoire study
+
+`clonoloom simulate --preset definition-study --out <empty-folder>` generates 32 independent
+subjects (16 control, 16 stimulated), with model `clonoloom-definition-variants-v1` and seed
+20261028. It extends the replicated-count generator with a sparse private tail, mean
+1800/k^1.2 multiplied by exposure and by 1.6 in the comparison group. Uneven depths,
+gamma-Poisson variability and existing shared subject/batch effects remain. All 600 private
+nucleotide identities per subject are distinct; comparison subjects have synonymous triples
+sharing AA junctions, labeled arbitrarily TRBV5-1*01, TRBV5-1*02 and TRBV5-2*01, with J TRBJ2-7*01.
+Reference subjects have distinct private AA junctions. These are fictional sequences and
+arbitrary parseable gene labels, not fitted recombination or inferred germline assignments.
+
+The example deliberately makes observed-depth diversity depend on definition. It is suitable
+for demonstrating sensitivity, not estimating biological effects or validating power/FDR.
+Richness also depends on sampling depth: the audit does not rarefy or standardize coverage.
+The default seed has 4,082 zero and 3,590 singleton generating observations. Under four declared
+definitions, the simulated stimulated-minus-control richness effect spans −244.125 to +64.125
+observed clonotypes; this range is descriptive, not a confidence interval.
+
+`truth/observations.tsv` adds `v_call`, `j_call`, `junction_aa` to the count study's full truth,
+including every zero count. Its source files and metadata have checksums in `truth/truth.json`.
+The example is offered as **Definition-sensitive repertoire study**. Measure diversity, save
+an independent condition design, build features and compare richness/Shannon/Hill q=1 before
+opening Definition robustness. Record batch from truth as in the count examples; the feature
+comparison itself is the existing unadjusted two-group comparison. Existing count examples
+keep their previous bytes. Definition variants currently require independent groups and cannot be combined with the
+all-null count option. The truth’s `log2_effect` column describes the shared panel; the separate
+1.6 private-count scale is declared in the model and included in every recorded mean.
+
+## Query and background motif study
+
+`clonoloom simulate --preset motif-study --out <empty-folder>` makes a controlled local/global
+signature example (seed 20261029, model `clonoloom-motif-study-v1`). Four query subjects S01–S04
+have 30 rows each; eight background subjects S05–S12 have 125 each. CASS/EQYF boundaries and
+biased random central residues give junction lengths 15–17. Gene labels are arbitrary parseable
+TRBV calls, not inferred assignments. Codons translate exactly to the recorded junctions.
+
+Four global ILMV variants under TRBV7-9 are repeated across query subjects. Nine further rows
+per query subject carry local QGHT at starts 5–7 under TRBV5-1. Other V/junction identities are
+unique controls. Subject exposure is lognormal (log SD 0.45); counts are
+1+Poisson(Gamma(shape=4) × [5000/(rank+1)^1.2 × exposure]/4). The added one guarantees positive
+observed rows. Counts vary across subjects/ranks but remain descriptive, never motif weights.
+These construction choices are not fitted recombination, antigen labels or biological evidence.
+
+The Examples catalog offers **Query and background motif study**. Assign S01–S04 to query and
+S05–S12 to background in Specificity → Motifs. The default analysis has 108 query/1000 background
+units and 64,168 pooled signature slots (48,456 testable), with 110 reported local signatures and
+one global signature. Overlapping windows and shorter motifs account for multiple local hits;
+they are not independent discoveries. These are fixed positive controls, not power/FDR estimates.
+
+`truth/receptors.tsv` records every sample, subject, arm, V call, junction, count and planted
+signature; `truth/truth.json` records the model, study and source-file checksums. Repertoire
+metadata marks the study artificial. Earlier example presets retain their byte digests.
+
+## Subject recurrence and HLA study
+
+`clonoloom simulate --preset convergence-study --out <empty-folder>` generates 32 fictional
+subjects and 36 samples, seed 20261030, model `clonoloom-convergence-study-v1`. H01–H04 have
+second observations with the same sequence identities at different depths. Each sample has
+30 rows: variable full junctions, biased central residues and arbitrary TRBV labels. UMI counts
+are 1+Poisson(Gamma(shape=3) × [4000/(rank+1)^1.15 × exposure]/3), with lognormal exposure
+log-SD 0.5. Counts are descriptive; they never weight subject replication.
+
+The generator plants local QGHT (length 17, starting window 5–8) in 18 subjects and a global
+ILMV signature in 11. H01–H20 carry A*02:01; four other subjects have missing, low-resolution or
+expression-suffix A typing. With the declared three-allele panel A*02:01, B*07:02, DRB1*15:01,
+the QGHT/A test uses 28 subjects: 17/20 carriers versus 1/8 non-carriers. The six-slot family
+has p≈0.00070943549 and BY≈0.01042870 for that association. B and DRB1 remain evaluable in all
+32 subjects. Repeated samples must not turn 32 subjects into 36 independent observations.
+
+From Examples choose **Subject recurrence and HLA study**. Use `truth/arms.json` for the
+alternating query/background sample assignments, keeping repeats with their subject; screen
+with motif lengths 4–4. Select the two planted signatures and the panel above before HLA
+inspection. `truth/subjects.json` supplies explicit typing and sample assignments;
+`truth/receptors.tsv` lists every row's subject, arm, sequence, count and planted signature.
+`truth/truth.json` pins source hashes and the generator specification. Full source files and
+Repertoire metadata accompany the truth.
+
+This is a controlled demonstration of recurrence, missingness and conditional association,
+not fitted human haplotypes, realistic HLA population frequencies, V(D)J recombination or
+antigen recognition. Its constructed association cannot establish power or biological FDR.
+The [guide](site/pages/docs/convergence.html) and research §5.36 state the inference limits.
+
+## Cross-subject nucleotide sharing study
+
+`clonoloom simulate --preset contamination-study --out <empty-folder>` generates eight fictional
+subjects, nine samples and 706 rows (seed 20261031; model `clonoloom-contamination-study-v1`).
+Productive sequences use the existing length-selected human TRB simulator. Each subject has
+75 private sequences, plus three sequences assigned as biological-sharing controls. D01 has a
+second sample in a different batch. Three D01 identities with counts 3500/4700/5900 are copied
+into D02 at counts 7/11/15. A synonymous Cys-codon variant in D03 provides a same-AA/different-NT
+control. These are explicit construction choices, not fitted contamination mechanisms or
+independent stochastic re-generation of the shared sequences.
+
+Remaining observations use 1+Poisson(Gamma(shape=3) × [2500/(rank+1)^1.1 × exposure]/3), with
+lognormal exposure log-SD 0.55. The data have 604 eligible nucleotide/V/J identities, 35
+cross-subject sample pairs and 111 shared pair/identity records. The D01 repeat is excluded
+from same-subject comparison. D01-1/D02-1 has six matches, three with the planted fraction
+asymmetry; sample totals are 17316 and 10431 UMIs.
+
+From Examples choose **Cross-subject nucleotide sharing study**. `truth/samples.json` supplies
+subject/batch assignments; `truth/observations.tsv` retains every row's generating class,
+V/J, nucleotide junction and count. Source hashes, model, seed and specification are recorded
+in `truth/truth.json`. Optionally compute a compatible human productive NT TRB/V-and-J-gene Pgen
+parent before screening. Pgen categories come from that model, never the planted labels.
+
+No empirical index-hopping rate, population selection or classifier is fitted. Shared controls
+are designated truth, not proof of biological publicness. The positive example cannot establish
+real-world sensitivity or specificity. The [guide](site/pages/docs/contamination.html) and
+research §5.37 explain the conditional interpretations and bounded bulk-TRB scope.
+
+### Batch quality-control study
+
+`clonoloom simulate --preset batch-qc-study --out /path/to/new-study` generates the
+`batch-qc-study` v1 preset (seed 20261101), also available in Examples. Its 26 samples from
+25 fictional subjects contain 2427 rows. Explicit assignments include 24 subjects across
+four batches of 8, 8, 3 and 5; a repeated D01 sample and a missing-batch sample are excluded
+with reasons. The generating assignment list is `truth/samples.json`.
+
+The existing length-selected human TRB model supplies productive junctions. An internal TAA
+codon produces nonproductive controls with matching translated sequence and false flags.
+Missing productive flags, V/J calls and one count are deliberate controls. Counts use
+`1 + Poisson(Gamma(3) × 1800/(rank+1)^1.05 × exposure / 3)` with lognormal exposure log-SD
+0.38; ordinary samples contain 65–129 rows. Run A has a low-productivity observation and a
+missing-count observation. Run B has a lower generating productivity distribution; run C
+is too small for scores. Run D has exactly 80 rows per sample, exercising zero MAD for that
+metric while its other metrics vary. Generating probabilities differ from realized weighted
+fractions, which are computed from the exported source rows.
+
+All row-level generating observations are in `truth/observations.tsv`; model/seed, assignments
+and source hashes accompany them. These examples illustrate reference-distribution limits,
+missingness and descriptive flags, not empirical technical failure rates, randomized biology,
+classifier calibration or batch correction. Earlier example presets keep their pinned bytes.
+
+### Pseudobulk count study
+
+`--preset pseudobulk-study` uses the established artificial cell-state model with seed 20261102,
+four subjects, two visits (days 0 and 14), 420 matrix cells per sample and 48 possible paired
+clones per subject. It writes eight MEX matrices with 24 artificial genes, supplied `state`
+annotations, Gaussian illustration coordinates and complete generating truth/source hashes.
+Counts follow the existing independent conditional negative-binomial model (size 4, means
+16 in the state's eight-gene block and 2 elsewhere). Inverse-rank clone probabilities produce variable
+realized sample-scoped sizes. Missing annotation/receptor evidence and an all-zero cell are
+explicit controls. This is not a fitted biological cohort, specificity model or DE benchmark.
+
+Save each sample's phenotypes with receptor sizes, annotation `state` and inclusive breakpoints
+`1,5,10`; select the eight parents in Cells → Pseudobulk counts. Inspect all sample × state × bin
+counts, absent groups and minimum-cell eligibility. The current slice performs no inference.
+
+### Paired pseudobulk expression and null studies
+
+`--preset pseudobulk-de-study` (seed 20261103) and `--preset pseudobulk-de-null` (20261104)
+use `clonoloom-artificial-pseudobulk-de-v1`: 28 subjects, one baseline sample each, fictional
+paired TRA/TRB receptors and 40 artificial Gene Expression features. There are 48+i mod 5
+singleton clones for zero-based subject i and eight clones of sizes 7,9,11,13,17,21,26,33.
+The presets contain 5,233 expression cells and 10,466 receptor rows. Configurable subjects
+are 25–32; the model replaces other simulator modes.
+
+For zero-based gene g, mean per cell starts at (2+g)/3. A subject/gene Gamma(16,1)/16 multiplier
+is shared across categories. Independent category/gene Gamma(5,1)/5 multipliers precede
+conditional Poisson cell counts, producing variation between subject pseudobulks. Positive
+preset genes 1–2 have threefold comparison means, genes 3–4 one-third means; null preset all
+folds are one. Gene 39 has mean .005, gene 40 zero, and gene 38 is zero in subject 1. Counts are
+not duplicated between cells. Expression stream is 71000+i; Gaussian layout stream 72000+i.
+Receptors reuse the documented fictional stop-free junction generator with subject stream
+index 10i to keep all clone streams disjoint. Source metadata records a baseline at 0 days.
+Supplied coordinates x=1.7Z1,y=.6x+1.2Z2 illustrate one cloud; they are not an expression embedding.
+
+Save paired phenotypes with `cell_type`, receptor sizes and breakpoints `[1]`; aggregate all
+samples at minimum 10 cells. Compare `Artificial T cells`, the displayed literal baseline
+label, reference `1`, comparison `>1`, minimum count 10 in 25 observations. The same recipe
+applies to the null example. Full assignments, per-category raw gene sums, generating rates
+and hashes are in `truth/`. The model is a controlled software example, not fitted biology,
+antigen specificity or a universal calibration/power study. Research §5.40 documents the
+separate independent numerical controls and normalization assumptions.
+
+### Complete cohort controls
+
+Wave 7's guides use the existing independent positive (`counts-independent`, seed 20261026),
+null (`counts-null`, 20261027) and paired (`counts-paired`, 20261026) count studies, plus:
+
+- `counts-unbalanced`, seed 20261105: 32 independent subjects; the first 12 are control,
+  the next 20 stimulated. Batch remains alternating B1/B2, so both batches occur in each group.
+- `counts-confounded`, seed 20261106: 16 controls all in B1, 16 stimulated all in B2.
+  The existing 1.2-fold B2 mean multiplier and planted group effects both operate; the design
+  cannot distinguish them. No group inference is run.
+
+Both retain `clonoloom-replicated-counts-v1` and its raw truth, with the explicit `unbalanced`
+or `confounded` study parameter and distinct metadata study IDs. Earlier preset bytes do not
+change. These variants require 32 independent subjects and cannot be combined or used with
+paired/definition-variant modes. No outcome-based exclusions or resampling are involved.
+
+Five prescribed steps use existing methods: assign documented annotations and save the design,
+measure diversity/build subject features, compare richness/Shannon/Hill q=1 (95% marginal
+intervals, 9999 randomizations, seed 20261025), fit replicated counts (minCount 10, minSamples 12,
+batch adjustment, 95% conditional intervals), and open cited Methods. The confounded guide
+has only design and Methods. Null refers to generating group effects, not guaranteed fitted
+p-values. Count effects use realized library offsets, and need not equal absolute generator
+rates. These guides do not replace the independent calibration and reference tests.

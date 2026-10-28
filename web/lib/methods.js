@@ -97,7 +97,7 @@ const day = (iso) => String(iso ?? '').slice(0, 10);
 // clonotype definition) and clonotypes ({ id, describe, count, cells } from the program, or
 // null), results (the project's records of the results kept of it: lib/results.js), program:
 // { version, commit } }.
-export function methodsParagraph({ dataset, summary = null, filter = null, filterResult = null, definition = null, clonotypes = null, results = [], program }) {
+export function methodsParagraph({ dataset, summary = null, filter = null, filterResult = null, definition = null, clonotypes = null, results = [], cohortDesigns = [], program }) {
   const refs = [];
   const cite = (key, text = REFERENCES[key]) => {
     let i = refs.findIndex((r) => r.key === key);
@@ -108,6 +108,12 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     return `[${i + 1}]`;
   };
   const sentences = [];
+  for (const record of cohortDesigns.filter((d) => d.dataset === dataset.id)) {
+    const check = record.result;
+    sentences.push(`Cohort design ${record.name}, version ${record.revision} (${check.id}): ${check.ok ? 'structural checks passed' : 'FAILED CHECK; unavailable for inference'}. ${check.words.join(' ')}`);
+    for (const finding of check.findings ?? []) sentences.push(`${finding.code}: ${finding.detail}`);
+    for (const source of check.citations ?? []) sentences.push(`Design reference ${cite(`design:${source}`, source)}.`);
+  }
   const sources = dataset.sources ?? [];
   const files = sources.length === 1 ? 'The file' : `The ${count(sources.length)} files`;
 
@@ -120,15 +126,29 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   // Simulated data (clonoloom simulate): how they were made.
   const simulations = (summary?.samples ?? []).map((s) => s.repertoire).filter((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
   const bcellModels = ['clonoloom-simulated-clonoloom-artificial-bcell-v1', 'clonoloom-simulated-clonoloom-artificial-bcell-v2'];
-  const cellModels = ['clonoloom-simulated-cell-states', 'clonoloom-simulated-cell-states-clouds'];
+  const geneModels = ['clonoloom-simulated-pseudobulk-de-study', 'clonoloom-simulated-pseudobulk-de-null'];
+  if(simulations.some((r)=>geneModels.includes(r.studyId)))sentences.push('The artificial paired pseudobulk expression data use one baseline per subject (28 subjects in the presets), 48–52 singleton clones and eight larger clones per subject, fictional paired TRA/TRB receptors, and 40 artificial genes. Shared subject/gene Gamma(16,1)/16 and category/gene Gamma(5,1)/5 rates precede conditionally Poisson cell counts. Positive controls have threefold increases or decreases; the null preset has no generating category effect. Low-count, zero-gene and zero-subject controls remain explicit. Supplied correlated Gaussian coordinates are illustrative, not an expression embedding. Full assignments, generating rates, pseudobulk sums and source hashes are separate truth. This is a constructed benchmark, not fitted biology, antigen specificity or evidence that cells independently replicate subjects.');
+  const cellModels = ['clonoloom-simulated-cell-states', 'clonoloom-simulated-cell-states-clouds', 'clonoloom-simulated-pseudobulk-study'];
+  const batchQCModels=['clonoloom-simulated-batch-qc-study-v1'];
+  if(simulations.some((r)=>batchQCModels.includes(r.studyId)))sentences.push('The artificial batch-QC study contains 26 samples from 25 fictional subjects across four declared batches and explicit repeat/missing-batch exclusions. Length-selected human TRB junctions, deliberate stop codons and missing annotations accompany uneven shifted gamma-Poisson counts. A shifted batch, low-productivity observation, missing count, small group and constant row counts are construction controls, not calibrated biological effects or failure diagnoses.');
+  const contaminationModels=['clonoloom-simulated-contamination-study-v1'];
+  if(simulations.some((r)=>contaminationModels.includes(r.studyId)))sentences.push('The artificial contamination-evidence study has eight fictional subjects and nine samples, with a repeat, uneven shifted gamma-Poisson UMI counts, three planted transfers, independently shared controls and a synonymous control. Productive sequences follow ClonoLoom’s length-selected human TRB simulation model. Sharing labels are generating truth, not Pgen labels or proof of contamination; no empirical index-hopping rate or classifier is fitted.');
+  const convergenceModels = ['clonoloom-simulated-convergence-study-v1'];
+  if (simulations.some((r) => convergenceModels.includes(r.studyId))) sentences.push('The artificial convergence/HLA study has 32 fictional subjects and 36 samples, including four repeated observations. Varied junctions and uneven shifted gamma-Poisson UMI counts accompany planted QGHT recurrence and a conservative ILMV control. An association with HLA-A*02:01 and four unresolved A typings are construction choices, not fitted haplotypes, biological restriction or antigen evidence. Complete subject, typing, arm and receptor truth is retained.');
+  const motifModels = ['clonoloom-simulated-motif-study-v1'];
+  if (simulations.some((r) => motifModels.includes(r.studyId))) sentences.push('The artificial motif study contains four query and eight background subjects, variable junction lengths, biased central residues and arbitrary TRBV labels. Planted local QGHT and conservative global ILMV signatures are known construction choices, not antigen annotations. Uneven shifted gamma-Poisson UMI counts are descriptive, not statistical weights. Complete sequence, arm and signature truth is saved; this is not a fitted recombination model.');
+  const definitionModels = ['clonoloom-simulated-definition-variants-v1'];
+  if (simulations.some((r) => definitionModels.includes(r.studyId))) sentences.push('The definition-sensitivity study is artificial: long-tailed gamma-Poisson UMI counts, uneven sampling exposure and explicit synonymous junction/V-allele distinctions create different receptor partitions. Comparison subjects have triples of nucleotide junctions sharing an amino-acid junction and different V/allele calls, with a 1.6-fold private-count scale. The construction and observed depth are deliberately definition-sensitive; it is not a fitted biological population or a depth-standardized comparison. Complete generating and partition truth is retained.');
+  const countModels = ['clonoloom-simulated-replicated-counts-v1', 'clonoloom-simulated-counts-unbalanced', 'clonoloom-simulated-counts-confounded'];
   const trbModels = ['standard', 'null', 'small', 'car-t', 'transplant', 'vaccine'].map((name) => `clonoloom-simulated-${name}`);
   const bcellSimulation = simulations.some((r) => bcellModels.includes(r.studyId));
   const cellSimulations = simulations.filter((r) => cellModels.includes(r.studyId));
   const simulated = simulations.find((r) => trbModels.includes(r.studyId));
-  const unknown = [...new Set(simulations.filter((r) => ![...bcellModels, ...cellModels, ...trbModels].includes(r.studyId)).map((r) => r.studyId))];
+  const unknown = [...new Set(simulations.filter((r) => ![...geneModels, ...bcellModels, ...cellModels, ...definitionModels, ...batchQCModels, ...contaminationModels, ...convergenceModels, ...motifModels, ...countModels, ...trbModels].includes(r.studyId)).map((r) => r.studyId))];
+  if (simulations.some((r) => countModels.includes(r.studyId))) sentences.push('The replicated repertoire counts were simulated with heterogeneous gamma-Poisson variation, lognormal sampling exposures, subject effects, two batch levels, 48 shared fictional receptors and a private long-tailed background. Sparse increases/decreases or an all-null group contrast are recorded in the saved parameters and truth. Fictional stop-free junctions and SIM calls do not represent fitted human recombination or antigen specificity. Generator exposures differ from realized library totals; fitted total-count-offset effects describe relative repertoire abundance.');
   if (unknown.length) sentences.push(`The data include simulated studies ${joinList(unknown)}. These identifiers do not establish their generative model; consult each study's saved parameters and truth before describing how it was simulated.`);
   if (cellSimulations.length) {
-    sentences.push(`The paired TRA/TRB and expression data were made by ClonoLoom's artificial cell-state simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} (studies ${[...new Set(cellSimulations.map((r) => r.studyId.replace('clonoloom-simulated-', '')))].join(', ')}). Clones have fictional SIM gene calls and independently drawn junctions; cells draw clones uniformly and one of three states by the recorded sample-specific rule. The 24 artificial genes have conditionally independent negative-binomial counts (size 4; mean 16 in the state's eight-gene block, 2 otherwise). Supplied grid or Gaussian-cloud coordinates illustrate the known state, independently of the expression fit; they are not inferred embeddings. Forced missing evidence and an all-zero cell test bookkeeping. Separate truth records the model, assignments and source hashes. This controlled benchmark is not fitted biology, does not simulate antigen specificity, and does not make cells independent biological replicates.`);
+    sentences.push(`The paired TRA/TRB and expression data were made by ClonoLoom's artificial cell-state simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} (studies ${[...new Set(cellSimulations.map((r) => r.studyId.replace('clonoloom-simulated-', '')))].join(', ')}). Clones have fictional SIM gene calls and independently drawn junctions; cells draw clones uniformly (cell-state presets) or with probability proportional to inverse rank (pseudobulk-study), and one of three states by the recorded sample-specific rule. The 24 artificial genes have conditionally independent negative-binomial counts (size 4; mean 16 in the state's eight-gene block, 2 otherwise). Supplied grid or Gaussian-cloud coordinates illustrate the known state, independently of the expression fit; they are not inferred embeddings. Forced missing evidence and an all-zero cell test bookkeeping. Separate truth records the model, assignments and source hashes. This controlled benchmark is not fitted biology, does not simulate antigen specificity, and does not make cells independent biological replicates.`);
   }
   if (bcellSimulation) {
     sentences.push(`The artificial paired B-cell sequences were made by ClonoLoom's simulator ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)} (models ${[...new Set(simulations.filter((r) => bcellModels.includes(r.studyId)).map((r) => r.studyId.replace('clonoloom-simulated-', '')))].join(', ')}): fictional SIM gene calls, coding sequences with uniform proposed substitutions restricted to preserve junction anchors and avoid stop codons, a fixed seven-node family tree, deliberate back-mutations, and fixed forward isotype transitions. B cells were sampled independently at days -7, 14 and 28 of a simulated immunization from recorded family and node probabilities. Ancestors, ordered mutation events, isotypes and observed cell assignments are recorded in truth/. Supplied ancestor alignments and region coordinates are artificial; this is not a fitted SHM or affinity model. No read counts, UMI counts, sequencing errors or additional biological variance were simulated for these B cells.`);
@@ -377,7 +397,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
 
   // These descriptions and citations are computed in Go and kept with each immutable result.
   // Do not reconstruct scientific parameters from current controls or a plot selection.
-  for (const r of results.filter((r) => ['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export'].includes(r.kind))) {
+  for (const r of results.filter((r) => ['pseudobulk-de', 'pseudobulk', 'batch-qc', 'contamination', 'convergence', 'motifs', 'expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export', 'cohort-features', 'cohort-compare', 'definition-robustness', 'cohort-counts'].includes(r.kind))) {
     sentences.push(`Saved ${r.method || r.kind} result ${r.id}: ${r.describe || 'See the saved result for its effective parameters.'}${r.citation ? ` ${cite(`cell-method:${r.citation}`, r.citation)}` : ''}`);
   }
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

@@ -1,0 +1,307 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "d695abe3416d2540f4eeee252a0350b961d263bb70d9fbef0f422b0fb83b9baf"
+    },
+    {
+      "path": "S01-1.tsv",
+      "sha256": "3074d794d478558ff5037f584fae973a967edab310ef125dcb3b610f57ff87bc"
+    },
+    {
+      "path": "S01-2.tsv",
+      "sha256": "aa885b3fdb1ef1a208837c172b9a382579d686196c1ec947595af829d277590d"
+    },
+    {
+      "path": "S02-1.tsv",
+      "sha256": "579c8b95df58953ce1e220c170db88ead3a07f6c2b195480e7a637b1d934940b"
+    },
+    {
+      "path": "S02-2.tsv",
+      "sha256": "145aa2575ff8b87d2141caee1bacbd76a4dc55b95bbc67d8785b901a0664e318"
+    },
+    {
+      "path": "S03-1.tsv",
+      "sha256": "b3e22d7c7a435fe8ae1b2e4d606568e2ce85e342c95e95a0ff0785a1d0f30c0f"
+    },
+    {
+      "path": "S03-2.tsv",
+      "sha256": "1438ac10804748c08ea9e9ce9bd0dc5a337f72dcbcfc5e12d072183933d5c238"
+    },
+    {
+      "path": "S04-1.tsv",
+      "sha256": "ae04bd68e8b7f8772cdf6e7103297e6b6acd09f44b64b71b075b0cb1884290b9"
+    },
+    {
+      "path": "S04-2.tsv",
+      "sha256": "244acc8fb2362ff220a8f426ed8111d18f519c2cb0c3db9b3f9562626d628c55"
+    },
+    {
+      "path": "S05-1.tsv",
+      "sha256": "9ddacf6cf43671f0006ef44c7678efd666c745ac85293cbfd0a98a545b77f878"
+    },
+    {
+      "path": "S05-2.tsv",
+      "sha256": "6ff737dbfd5b2a0fe5aecb4a286ca536845b7d5d3a05cc008f4a7b79efdf17c3"
+    },
+    {
+      "path": "S06-1.tsv",
+      "sha256": "77469eee6db31085749d2b5f1eb5926516ce7e2c8e3d1c0823cb796eefeca367"
+    },
+    {
+      "path": "S06-2.tsv",
+      "sha256": "838e976f0fae3339b3d5761a07c12324eb9ffac3b0a0e634d5690c2b6e690cab"
+    },
+    {
+      "path": "S07-1.tsv",
+      "sha256": "b6fec3bb763922ffb43e5b8bc286f2eb2e5d7ffb902f96055b94f9e54d5cd8f0"
+    },
+    {
+      "path": "S07-2.tsv",
+      "sha256": "9d80dbdaa29f40ddf04ce6e1d729c50761ee7ac8395a2f28374138c9a1b30daa"
+    },
+    {
+      "path": "S08-1.tsv",
+      "sha256": "47e50b9d55b6418614295528d9146d1a96f89028dc67201fa42c21a2f6dae02f"
+    },
+    {
+      "path": "S08-2.tsv",
+      "sha256": "fdfd795dfef9589633c68f60b13e489db99e5db6906d6a3d004e88c1391e94fc"
+    },
+    {
+      "path": "S09-1.tsv",
+      "sha256": "d395303cc53572a58675cb2ca519e254efa5b788de1d5a144bfd7c7396f9473e"
+    },
+    {
+      "path": "S09-2.tsv",
+      "sha256": "84bf6725f762ace572428b9b7f178853b1641d7cfcdf1918df6b0787ec98b43f"
+    },
+    {
+      "path": "S10-1.tsv",
+      "sha256": "4cbff4758193e2b7dee9258c573a6904fa0e0c8fdb8438c68bc3f338529c9e76"
+    },
+    {
+      "path": "S10-2.tsv",
+      "sha256": "171090d417dbec7aee7def226094ec4a1c4341413564b7a7bb6b15191e207e9b"
+    },
+    {
+      "path": "S11-1.tsv",
+      "sha256": "cc97bcd5ea8d5d8b34d62f9d20e88cc24f74eb19a92e70bf1f16b716884a9f9f"
+    },
+    {
+      "path": "S11-2.tsv",
+      "sha256": "4dc68f2eacacfc642e69ecf34cd5e0e4865e064e967b554d1c1aed277c45642b"
+    },
+    {
+      "path": "S12-1.tsv",
+      "sha256": "261e797e4d1224cbb3aba35d75e286786452a0824b2b36cd01c63a4738141eae"
+    },
+    {
+      "path": "S12-2.tsv",
+      "sha256": "5e7dd179b9820e826e8784f77b4d7d0f75d0ae421ab6b57493f0fce3ced5a114"
+    },
+    {
+      "path": "S13-1.tsv",
+      "sha256": "fa5626f9105d04c412f7f57d98c56111ee169d41e705ea8822af8e276b387bec"
+    },
+    {
+      "path": "S13-2.tsv",
+      "sha256": "1196041e62661a9216b97d33a1d36c9c65afb33e997ce10dfdac28e52706717e"
+    },
+    {
+      "path": "S14-1.tsv",
+      "sha256": "40a25b9a963680cda8de0b28d42ee4305834604f23fe5d5e5d0e46badd0cf12d"
+    },
+    {
+      "path": "S14-2.tsv",
+      "sha256": "5ddfd201ce081a16e6c3e322b3f1967e2e32e520e43419db13bf151bd24dd437"
+    },
+    {
+      "path": "S15-1.tsv",
+      "sha256": "22ce802ddf6d37650cad2df35f9aee9ad5997719ade578c88d9c262495615c1e"
+    },
+    {
+      "path": "S15-2.tsv",
+      "sha256": "f4bcb0163d76f8bfd836161cb0905349ccb5d95fd759816e0793fcb9a630376c"
+    },
+    {
+      "path": "S16-1.tsv",
+      "sha256": "4e55686ba7a8723516c9533a8638c99580e1dbe1030d0319a3958750ba6a4672"
+    },
+    {
+      "path": "S16-2.tsv",
+      "sha256": "e43bceaf1afb99a730549c73a3777de159c7c3b028e6b37e39a911a666b7bde2"
+    },
+    {
+      "path": "S17-1.tsv",
+      "sha256": "2dc303601720976446278652e2719a995423b907e9847d1cf7d954469bbcbd9e"
+    },
+    {
+      "path": "S17-2.tsv",
+      "sha256": "2df1ca1cace8a1e21698572641970228dcb7b522c4e177d5d42288aa99fe7d95"
+    },
+    {
+      "path": "S18-1.tsv",
+      "sha256": "838c3ae485c6614930108e88491017b108c29783e69b7cceea1f634a8340fa33"
+    },
+    {
+      "path": "S18-2.tsv",
+      "sha256": "d6e35e85030bd61005dc97ce65682d14b6775b6de98d9971249dce0a7589b48e"
+    },
+    {
+      "path": "S19-1.tsv",
+      "sha256": "b882b23a8e05b20e68f089e3924a65d09b1a3df30c22f7bf0d1285ab7147c872"
+    },
+    {
+      "path": "S19-2.tsv",
+      "sha256": "d6325914d10a8e5b6a3547373898c5cc36042c420fabcd9cab9c29b20d3b073a"
+    },
+    {
+      "path": "S20-1.tsv",
+      "sha256": "3981894237581b95d0a7bf0a533137cda8e225776f76fc53b1db048529085376"
+    },
+    {
+      "path": "S20-2.tsv",
+      "sha256": "28b56c94ce4906027204026cbebda8594896ba6c0a759e513808a369d5f75881"
+    },
+    {
+      "path": "S21-1.tsv",
+      "sha256": "032eb6e6363b925269ecb625accf01fa85dab7c19f14e66316d132fa677d9a9b"
+    },
+    {
+      "path": "S21-2.tsv",
+      "sha256": "da7f2a4108126888e250560ae3e96f5f91e8e8061e52301d6b73f84597c612d9"
+    },
+    {
+      "path": "S22-1.tsv",
+      "sha256": "d0e4965371eed622edf71246ea7a0f757094448ae3258c1f875c0471e1ab0e97"
+    },
+    {
+      "path": "S22-2.tsv",
+      "sha256": "e0b22bec6827e6f3195460be1059a03edf2bf6646c474a6e8fb0c8e1df6faf0d"
+    },
+    {
+      "path": "S23-1.tsv",
+      "sha256": "319583280697892eb19396a62206d04e75f63002aca361754038d0979af8e1a1"
+    },
+    {
+      "path": "S23-2.tsv",
+      "sha256": "7a4f460d0a1e1f9e30c52cf158a16ad8d5dcee0db036ce0c1067c221760c56e0"
+    },
+    {
+      "path": "S24-1.tsv",
+      "sha256": "2744a03211610f084c7f8b4dee2828fea7af6c7e70e942f346a7e5812c09c41b"
+    },
+    {
+      "path": "S24-2.tsv",
+      "sha256": "a02b4afd8598b01e4a655bce5ac4e4ac4dc7a1f9d01a906a93d3ee89f482937d"
+    },
+    {
+      "path": "S25-1.tsv",
+      "sha256": "6670ce85f7d8f3780a96a897c5f807c9a1393bff2535859be0ce09027724cadc"
+    },
+    {
+      "path": "S25-2.tsv",
+      "sha256": "fd52c854eb48a99d89a0c74858ce998c9ff19e0c6e9d359ce9ec56b1ff44cc5d"
+    },
+    {
+      "path": "S26-1.tsv",
+      "sha256": "d20c4626245fb16c16c24c1833f7e48e65e2fbf5e868cbf58641e2a8caa89fbd"
+    },
+    {
+      "path": "S26-2.tsv",
+      "sha256": "6d4b0d1120a2a50f0d85ae2ece29e34d849924aae1d08f0f5b50b1990f95668d"
+    },
+    {
+      "path": "S27-1.tsv",
+      "sha256": "502a7121af4c1a3f12f6c9c4037ad03def6c30989a84539e030a647e7c3fe43f"
+    },
+    {
+      "path": "S27-2.tsv",
+      "sha256": "c2592bb0c4620854e7b036f2132d903d58e0f5dad3c809f38b27f560847b45c9"
+    },
+    {
+      "path": "S28-1.tsv",
+      "sha256": "ffd33dbc300e3bdf939d3134ea5bfdf8f5be9b91b9ce66b33a823361e12b1159"
+    },
+    {
+      "path": "S28-2.tsv",
+      "sha256": "416cf18ea59258f50d7cee4aa4e61a2dfe4322f6238b139283c50c4ba71d77ca"
+    },
+    {
+      "path": "repertoires.airr.json",
+      "sha256": "5ffb7d28ddec7044874ab3b8c723d41b5efb203becadb694aa8067de3c6a03a2"
+    },
+    {
+      "path": "truth/observations.tsv",
+      "sha256": "61c72e00efa190e67db2728cf12e31812356323b39b7329934c344f075ac0ca2"
+    }
+  ],
+  "model": "clonoloom-replicated-counts-v1",
+  "simulator": "ClonoLoom 0.7.0",
+  "study": {
+    "name": "counts-paired",
+    "title": "A replicated paired repertoire study",
+    "seed": 20261026,
+    "groups": null,
+    "samplesPerSubject": 0,
+    "templates": null,
+    "readsPerTemplate": 0,
+    "readsSize": 0,
+    "recombination": {
+      "vDeletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "d5Deletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "d3Deletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "jDeletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "vdInsertions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "composition": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "djInsertions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "composition": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "d2WithJ2": 0,
+      "selectLengths": false
+    },
+    "counts": {
+      "subjects": 28,
+      "layout": "paired",
+      "null": false
+    }
+  }
+}

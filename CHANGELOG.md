@@ -1,5 +1,137 @@
 # Changelog
 
+## 0.7.0 — 2026-10-27
+
+### Added
+
+- **Complete cohort studies and release preparation (wave 7, slice 12).** Guide positive,
+  null, unbalanced and paired artificial studies through saved designs, subject features,
+  group comparisons and batch-adjusted count models. Keep a fully confounded study's failed
+  design check, its findings and cited Methods; exclude failed checks from analysis selection.
+  Add 12/20-subject and fully confounded simulator controls with complete truth. Preserve
+  five studies and sixteen replayable results in the 0.7.0 compatibility fixture. Document
+  estimands, subject denominators, conditional intervals and simulation limits, with both-theme
+  workflow captures and release validation. Prepare application, web assets and citation
+  metadata for 0.7.0; clients and MCP remain Wave 8.
+
+- **Paired pseudobulk differential expression (wave 7, slice 11).** Compare two declared
+  receptor-size categories within subjects at one supplied cell type and literal timepoint.
+  Check complete pairs, preserve explicit exclusions, and fit raw gene counts with median-of-ratios
+  size-factor offsets, subject fixed effects and unmoderated NB2/Cox–Reid dispersion. Keep the
+  full design, count filter, BH family including failed-fit slots, conditional Wald intervals
+  and every raw observation. Require 25–32 subject pairs and at most 1000 eligible genes; no
+  implicit pooling, complete-case deletion, Poisson fallback or full edgeR/DESeq2 claim.
+  Add saved jobs, source/parent-free replay, provider-aware ZIPs, cited Methods and the visible
+  `compare_pseudobulk` action. Show gene abundance/effect, paired subject points and separate
+  conditional intervals. Include 28-subject positive/null examples with separate truth and
+  independent SciPy/statsmodels normalization, fit, null/positive and multiplicity controls.
+
+- **Pseudobulk count evidence (wave 7, slice 10).** Sum exact raw Gene Expression counts
+  per subject, sample, literal timepoint, supplied cell type and declared receptor-size
+  category. Preserve missing annotations, unavailable assignments, absent groups, measured
+  zeros, low-cell libraries, complete features and per-cell membership. Pin saved phenotype
+  parents, source hashes, definitions and QC; refuse implicit sample pooling or mismatched
+  feature panels. Add durable source-free replay, complete provider-aware exports, Cells
+  controls, remote aggregation, cited Methods and coverage plots in both themes. Provide an
+  eight-sample artificial count study and independent integer aggregation checks. This is
+  evidence preparation; no normalization, differential-expression test or specificity claim.
+
+- **Batch QC (wave 7, slice 9).** Compare six sample metrics within explicitly declared
+  batches using median/raw-MAD modified z-scores. Preserve every sample assignment, exclusion,
+  raw value, denominator and unscored reason; require one included observation per subject
+  per batch. Keep small groups, zero MAD and unavailable evidence unscored. Add common-scale
+  sample distributions, exact reference tables, immutable source-free replay and exports,
+  remote control and cited Methods. Provide a varied 26-sample artificial study with shifted,
+  low-productivity, missing-count, small-group and constant-value controls. Validate independent
+  references, every generating denominator, processor agreement and both-theme workflows.
+  Flags are descriptive review labels, never automatic removal, batch correction or biological
+  inference. Document assumptions, masking and the limits of within-batch references.
+
+- **Contamination evidence (wave 7, slice 8).** Inspect exact productive bulk TRB nucleotide
+  junction/V/J sharing between explicitly assigned unrelated human subjects. Preserve all
+  sample pairs and matches, complete retained-abundance denominators, eligible evidence and
+  exclusion reasons. Separate editable abundance/asymmetry review heuristics from optional
+  checksum-pinned nucleotide Pgen context; unknown Pgen remains unknown and high Pgen never
+  suppresses evidence. Add equal-log-axis plots, complete source-free replay/exports, remote
+  controls and cited Methods. Provide a varied eight-subject artificial study with a repeat,
+  planted transfers, assigned shared controls, a synonymous control and full truth. Validate
+  independent rational references, every simulated pair, processor agreement, saved workflows
+  and both-theme visuals. No source, direction, rate or proof of contamination is inferred;
+  no sequence is removed. Document the bounded human bulk-TRB scope and scientific limits.
+
+- **Convergence and HLA association (wave 7, slice 7).** Measure selected saved motif-group
+  recurrence across unique subjects, with explicit sample assignments and raw HLA typing.
+  Use complete two-field typed universes per locus, conditional hypergeometric enrichment
+  and BY over all declared group × allele slots. Preserve incomplete/ambiguous typing,
+  unavailable tests and full membership. Show subject fractions with marginal Wilson
+  intervals and descriptive recurrence, with cited methods and population/selection limits.
+  Add immutable replay, source/parent-free reopening, provider-aware complete exports,
+  remote control and a 32-subject artificial study with repeated samples, varied junctions,
+  uneven counts and full truth. Validate independent SciPy references, exact conditional
+  controls, processor agreement, saved workflows and both-theme visuals. Recurrence and
+  HLA association do not establish convergent recombination, restriction or specificity.
+
+- **Motifs and sequence-signature groups (wave 7, slice 6).** Screen explicit query and
+  background samples for overlapping local motifs and conservative global signatures.
+  Count unique TRBV/junction units, match exact V/length strata, and use conditional Fisher
+  tails with BY across the complete pooled signature family. Preserve nulls, exclusions,
+  captured evidence, replay, provider-aware exports, remote control and cited Methods.
+  Add complete query-member residue frequencies and a varied artificial study with planted
+  signatures, uneven counts and full truth. Document every GLIPH2 adaptation, omitted N/P
+  and composite scores, sequence-unit assumptions and lack of antigen-specificity proof.
+  Validate independent enumeration/SciPy probabilities, source/truth counts, processor
+  agreement, saved workflows and both-theme visuals.
+
+- **Definition robustness (wave 7, slice 5).** Audit saved subject-feature contrasts under
+  declared junction and V/J alternatives, preserving subjects, QC and inference settings.
+  Require exact baseline reproduction; retain failed alternatives, all correction slots,
+  assigned evidence and explicit direction/magnitude/interval summaries without p-threshold
+  verdicts. Add across-audit BY correction, forest and subject plots, complete exports,
+  immutable replay, remote controls and saved Methods. Provide a realistic sparse simulated
+  study with synonymous junctions, gene/allele distinctions, uneven depths and full truth.
+  Validate independent regrouping/SciPy references, processor agreement, source-free saved
+  workflows and both-theme screenshots. Document the bounded aggregate-feature scope and
+  distinguish descriptive sensitivity from joint specification-curve inference.
+
+- **Replicated clonotype counts (wave 7, slice 4).** Fit two-group NB2 models under saved
+  independent or paired subject designs, with assigned-library offsets, per-clonotype
+  Cox–Reid dispersion, optional estimable batch and explicit contrast/filter/BH family.
+  Require adequate residual replication; retain missing, separated, boundary and failed
+  inference explicitly, without Poisson fallback or silent subject removal. Add observed
+  subject/pair, MA-style and conditional Wald interval plots, complete captured counts,
+  immutable replay, remote controls, saved Methods and provider-aware exports. Provide
+  independent, paired and null simulations with heterogeneous variation and full truth.
+  Validate public statsmodels/SciPy references, null calibration and approximation limits,
+  source/truth consistency, processor agreement, saved workflows and both-theme visuals.
+
+- **Subject-level group comparisons (wave 7, slice 3).** Compare saved features under their
+  checked independent or paired subject design: Welch/paired t and conditional rank tests,
+  including ties and exact/seeded Monte Carlo tails. Show mean differences and conservative
+  probability effects with distinct marginal intervals; declare both tests for every selected
+  feature as one BH family. Keep missing observations and untestable results explicit, with
+  no silent subject deletion or cell-level replication. Add subject/pair and effect plots,
+  complete CSV/JSON and figure exports, immutable jobs, remote control, methods, undo and
+  standalone reopening. Validate against SciPy and exhaustive nulls, coverage controls,
+  processor agreement and browser workflows; document assumptions and scientific limits.
+
+- **Subject feature tables (wave 7, slice 2).** Join an explicit saved design version to
+  a checksum-pinned diversity result, keeping one selected sample per subject/group.
+  Export 13 features with defined units, null/zero distinctions and missing-value reasons;
+  retain the full design, exclusions, parent measurements, definition, QC and source notices.
+  Add an accessible paginated table, remote action, methods, undo/redo and source-free
+  reopening/export. Preserve paired identity without pooling, averaging or group testing.
+  Validate raw-abundance references, durable replay, checksum refusals and browser workflows.
+  Make long dialog bodies keyboard-scrollable for complete methods inspection.
+
+
+- **Cohort study designs (wave 7, slice 1).** Check explicit independent or paired
+  two-group designs with subjects as the unit, complete sample membership, recorded
+  exclusions and source-bound identity. Refuse repeated observations as independent
+  replicates, incomplete pairs and fully batch-confounded groups; preserve missingness
+  and sampling-context warnings. Add Cohort tables, named saved versions, annotation-change
+  detection, JSON export, undo and remote control. Clarify same-time samples in Tracking.
+  This slice checks study structure; statistical comparisons follow in later slices.
+
 ## 0.6.0 (2026-10-24)
 
 ### Added

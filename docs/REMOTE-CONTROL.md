@@ -60,9 +60,12 @@ act("open_data", paths=[table], mappings={table: {
 | `new_project` | Starts a new project (`name`). |
 | `open_data` | Opens files or folders as one dataset (`paths`, `name`). Another tool's CSV or TSV opens through a mapping of its columns, by path in `mappings`: `{columns: {junction_aa, junction, v_call, d_call, j_call, c_call, count, sample, locus, productive, cell_id, clone_id, sequence_id: a column's name}, unit: reads, umis, templates or cells (with a count), sample: one name for every row}` ([FORMATS.md](FORMATS.md#tables-with-mapped-columns)). Needs the token. |
 | `open_example` | Opens an example dataset (`example`, `opening`); `download: true` downloads openly licensed data first. |
-| `show` | Shows a view: `start`, `data`, `qc`, `clonotypes`, `repertoire`, `tracking`, `specificity` or `jobs` (`view`, `dataset`). |
+| `show` | Shows a view: `start`, `data`, `qc`, `clonotypes`, `repertoire`, `tracking`, `specificity`, `cohort` or `jobs` (`view`, `dataset`). |
 | `set_definition` | Chooses a dataset's clonotype definition: a `preset` by name, or a `definition` in full. |
 | `annotate_samples` | Sets samples' annotation (`dataset`; `samples`: by name, `{subject, timepoint, reference, tissue, cellSubset, condition, batch, hla}`, `""` to remove a field), as the Data view's samples table holds it. |
+| `build_cohort_features` | Shows Cohort and joins explicit `design` (saved design record ID including version suffix) and `diversity` (saved artifact ID from the same dataset). Discover both with `get_state`, which lists `cohortDesigns` (including `ok`, the check status) and `artifacts`. Returns the kept artifact ID, subject/observation counts and method description. Requires source opening only for the initial binding; saved results/export are source-free. No pooling or group test. |
+| `cohort_example_step` | Run one prescribed `step` (`design`, `features`, `compare`, `counts`) with explicit `preset` (`counts-independent`, `counts-paired`, `counts-null`, `counts-unbalanced`, `counts-confounded`) on its matching generated `dataset`. The design step assigns the documented artificial annotations; later steps pin its latest saved design version and matching features. Confounded examples permit only the design step. These teaching settings are not an automatic analysis of arbitrary data. |
+| `check_cohort_design` | Shows Cohort and checks `dataset` with `spec: {unit: "subject", layout: "independent" or "paired", groupField: "condition", levels: ["control", "expanded"], exclude: {sample: "reason"}}`. Group fields also include `timepoint`, `tissue`, `cellSubset`. Returns every sample’s disposition, subject counts, findings, sources’ dataset identity and citations; no inferential test. Optional `save: true` and `name` keep a named design-check version, including a failed check unavailable for inference in the project. |
 | `describe_subjects` | Shows the Tracking view and answers the dataset's subjects (`dataset`): each one's samples in time order with their time points read as days, its reference samples and replicates, and the checks' findings with their codes. |
 | `track_clonotypes` | Shows the Tracking view's Clonotypes part and follows clonotypes through each subject's samples in time order (a job; the result kept): `by` `reference` (each reference sample's `n` largest, 10 by default; the default), `largest` (each sample's `n` largest, 5 by default), `list` (`list`: clonotype IDs or junctions), `test` (the `n` most significant calls of the dataset's comparison, 20 by default: `test_expansion`) or `class` (`class`: `emerging`, `transient`, `contracting` or `persistent`; the `n` most significant against the dataset's base time point, 20 by default: `class_clonotypes`). Answers each subject's time points and each clonotype's count, frequency and 95% interval (Wilson's) at each, the samples taken at one time pooled (`dataset`, `subject`: the one shown). |
 | `class_clonotypes` | Shows the Tracking view's Classes part and, in each subject, tests each clonotype between a base time point and every later one by the dataset's test, and classes it: emerging, transient, contracting or persistent (a job; the result kept). Answers each subject's clonotypes by class, and its `count` (10 by default) most significant of a `class` (emerging by default) with their frequencies and calls (`dataset`; `base`: a time point's key, the first other than the reference sample's by default; `subject`: the one shown). |
@@ -343,3 +346,198 @@ linked clone definitions and verify expression-source and parent hashes. `GET
 /api/anndata-export/{id}/download` returns a ZIP with `cells.h5ad`, export record, manifest and
 NOTICE; restricted source terms require `accept=1` after acknowledgment. These GET endpoints
 work without parent/source files. See [ANNDATA-EXPORT.md](ANNDATA-EXPORT.md) for the schema.
+
+### Subject group comparisons (wave 7)
+
+`compare_cohort` accepts `{features, options: {features, confidence?, permutations?, seed?}}`.
+The outer `features` is a saved `cohort-features` artifact ID from `get_state`; the inner array
+selects catalog IDs, for example `{features:"cf-…", options:{features:["hill1","shannon"]}}`.
+Use real IDs from the open project. Both tests for each selected feature enter one explicit
+BH family. Independent designs use Welch/Mann–Whitney; paired designs use paired t/signed ranks.
+No subjects or pairs are silently deleted for missing values. The response includes the result
+artifact, family size, testable count and full method description.
+
+HTTP: `POST /api/cohort-compare` with the same fields and optional `start:false` to probe.
+Defaults: confidence 0.95, 9999 Monte Carlo draws, seed 20261025. Exact rank null spaces
+through 50000 assignments are enumerated; larger spaces use seeded Monte Carlo. Options and
+parent checksums determine identity. Tasks supports cancellation and replay. Creation uses
+only the saved feature parent; reopening/downloading a saved comparison needs no parents.
+`GET /api/cohort-compare/{id}/download` returns complete CSV/JSON/provenance with provider-term
+acknowledgment as for other exports. See FORMATS and research §5.32 for methods and limits.
+
+### Replicated clonotype counts (wave 7)
+
+`fit_cohort_counts` accepts a saved subject-feature parent and effective model settings:
+
+```json
+{"action":"fit_cohort_counts","args":{"features":"cf-…","options":{"minCount":10,"minSamples":12,"adjustBatch":true,"confidence":0.95}}}
+```
+
+The action captures counts from the original open receptor dataset, fits under the saved design
+and focuses the kept artifact. It returns artifact ID, fitted count, eligible family and method
+description. Paired subjects are blocked; batch adjustment must be requested and estimable.
+At least 12 subjects/group and 24 residual df are required. Raw and BH p-values accompany log2
+comparison/reference effects and conditional marginal Wald intervals. No Poisson fallback,
+composition normalization, automatic discovery labels or silent sample deletion is performed.
+
+HTTP uses `POST /api/cohort-counts` with the same fields, optionally `start:false`; the returned
+job can be polled/cancelled through `/api/jobs`. `GET /api/cohort-counts/{id}` and `/download`
+verify the saved result, with provider-term acknowledgment on restricted downloads. Durable
+replay needs the pinned feature parent but no raw source; saved reopening/export is standalone.
+See research §5.33 for assumptions, filtering, bounds and calibration limits.
+
+### Definition robustness (wave 7)
+
+`audit_definitions` starts from a saved `cohort-compare` artifact. Send `comparison` and
+1–5 `definitions`, retaining the parent's chain, cell, require-all and productivity policies.
+Only junction and V/J resolution may differ. For an AA productive bulk baseline, for example:
+
+```json
+{"action":"audit_definitions","args":{"comparison":"cc-<saved-id>","definitions":[{"name":"NT with V/J genes","junction":"nt","v":"gene","j":"gene","chains":[],"cells":"primary","productiveOnly":true,"requireAll":false,"vendor":false}]}}
+```
+
+The response gives the artifact, full BY family, per-feature direction/interval summaries and
+method description. The original dataset supplies the initial abundance snapshots under the
+pinned QC. Subjects, exclusions, features, tests, confidence and seeds stay fixed; choose
+reasonable alternatives before examining outcomes. Neither a p threshold nor across-definition
+pooling determines a robustness verdict. The audit covers aggregate features, not changing
+individual-clonotype identities. See the [guide](site/pages/docs/definition-robustness.html).
+
+HTTP accepts the same fields at `POST /api/definition-robustness`, optionally `start:false`.
+Use `/api/jobs` to poll/cancel. Verified GET `/api/definition-robustness/{id}` and `/download`
+work from saved results; ZIPs preserve source terms and full evidence. Durable replay needs
+the saved comparison and captured job specification, without original raw data.
+
+### Motifs and sequence-signature groups (wave 7)
+
+Call `screen_motifs` with `dataset` (name or ID; optional for the current dataset), explicit
+`query` and `background` sample-name arrays and optional `options`:
+
+```json
+{"query":["S01","S02","S03","S04"],"background":["S05","S06","S07","S08","S09","S10","S11","S12"],"options":{"minK":2,"maxK":5,"minMembers":3,"q":0.05,"minFold":2}}
+```
+
+The current AA definition, QC and project subject annotations are captured. The response gives
+the saved artifact, pooled family size, reported count and complete method description. The
+visible Specificity → Motifs controls use the same route. Samples must be distinct/disjoint;
+missing or ineligible source evidence is refused. Reporting settings do not change the family.
+
+HTTP uses `POST /api/motifs` with dataset ID, definition, filter, query/background, optional
+subject map/options and `start:false` for readiness probing. Poll/cancel through `/api/jobs`.
+GET `/api/motifs/{id}`, `/group/{group}` and `/download` inspect/export checksum-verified saved
+results. The ZIP retains all signatures, receptors, methods and source terms; sources are not
+needed to reopen or replay captured evidence. See [the motif guide](site/pages/docs/motifs.html)
+for bounds, GLIPH2 adaptations, conditional Fisher/BY assumptions and lack of specificity proof.
+
+### Subject recurrence and HLA association (wave 7)
+
+`analyze_convergence` accepts a saved `motifs` artifact ID and an explicit `selection`:
+
+```json
+{
+  "motifs": "saved-motif-artifact-id",
+  "selection": {
+    "species": "human",
+    "samples": ["sample-1", "sample-2"],
+    "subjects": [
+      {"id": "subject-1", "samples": ["sample-1"], "typing": {"A": ["HLA-A*02:01", "HLA-A*03:01"]}},
+      {"id": "subject-2", "samples": ["sample-2"], "typing": {"A": ["HLA-A*01:01", "HLA-A*24:02"]}}
+    ],
+    "groups": ["saved-signature-id"],
+    "alleles": ["HLA-A*02:01"]
+  }
+}
+```
+
+Replace illustrative IDs with saved IDs and use the complete intended subject universe;
+two subjects illustrate the schema, not a testable study. Each sample must come from the
+parent's captured arms and belong to exactly one named subject. Multiple samples of one
+subject are unioned. Supply both copies at each tested locus; missing/ambiguous typing is
+unknown. Empty alleles gives recurrence only. Declare signatures and alleles before inspecting
+outcomes. The result returns artifact ID, evaluable subjects, full family, tested count and
+method; Specificity → HLA uses the same route and saved artifact identity.
+
+HTTP uses `POST /api/convergence` with the same body (`start:false` validates/probes without
+submission). GET `/api/convergence/{id}` and `/download` reopen/export checked evidence.
+ZIPs include raw subject IDs/HLA typing, complete association and recurrence tables, and NOTICE;
+provider terms use `?accept=1`. Replay is source/parent-free. See the
+[guide](site/pages/docs/convergence.html) for typing rules, conditional tests and limits.
+
+### Contamination evidence (wave 7)
+
+`screen_contamination` opens QC → Contamination and runs the same screen as its visible controls:
+
+```json
+{
+  "species": "human",
+  "unrelated": true,
+  "samples": [
+    {"name": "sample-A", "subject": "subject-1", "batch": "lane-1"},
+    {"name": "sample-B", "subject": "subject-2", "batch": "lane-1"}
+  ],
+  "options": {"minCount": 2, "highFraction": 0.01, "ratio": 20, "highPgen": 1e-8}
+}
+```
+
+`dataset` optionally names the dataset; `pgen` optionally names a saved compatible nucleotide
+Pgen artifact. Every sample must exist and belong to a named subject; repeated samples reuse
+an ID and are not cross-subject evidence. The response contains `artifact`, cross-subject
+`pairs`, shared pair/identity `matches` and the method description. Thresholds are heuristic
+and no sequence is removed.
+
+For optional Pgen context, use `set_definition` with
+`{chains:["TRB"],junction:"nt",v:"gene",j:"gene",productiveOnly:true}`, then
+`measure_generation` with explicit human organism/model and the intended gene-joint setting.
+Pass its returned `result` ID to `screen_contamination`. Both parents must have identical QC.
+The screen itself always uses its fixed nucleotide definition without changing the project's.
+Unknown Pgen stays unknown, and high Pgen never clears a sample.
+
+HTTP takes the same fields plus dataset ID and recorded `filter` at `POST /api/contamination`;
+`start:false` probes without submission. GET `/api/contamination/{id}` and `/download` inspect
+or export checked captures. Raw subject/sequence evidence and source terms remain attached;
+provider terms use `?accept=1`. See the [guide](site/pages/docs/contamination.html).
+
+### Batch QC
+
+`screen_batch_qc` captures sample-level metrics under the selected dataset's QC and saves
+within-batch modified-z evidence. Supply every source sample, including explicit exclusions:
+
+```json
+{
+  "action": "screen_batch_qc",
+  "args": {
+    "dataset": "study dataset",
+    "samples": [
+      {"name": "D01-1", "subject": "D01", "batch": "run-A", "exclude": ""},
+      {"name": "D02-1", "subject": "D02", "batch": "run-A", "exclude": ""},
+      {"name": "D01-2", "subject": "D01", "batch": "run-A", "exclude": "Repeat: retain D01-1"}
+    ],
+    "options": {"threshold": 3.5, "minSamples": 5}
+  }
+}
+```
+
+This three-sample request illustrates assignment and exclusion structure; two included
+subjects are insufficient for scores under the declared five-subject minimum. A larger
+source requires its full assignment list. The generated batch-QC example supplies that
+list in `truth/samples.json`. The action returns `artifact`, included `samples`, unique
+`subjects` and the complete scientific description. It shares the visible controls' result
+identity, jobs and undo/redo. No active clonotype definition is used or changed.
+
+Subject repeats within one batch require explicit exclusions; repeats across batches remain
+visible in sample/subject counts and do not establish independent batches. Small groups and
+zero MAD yield null scores with reasons. A review flag does not remove data or correct batches.
+
+### Pseudobulk count evidence
+
+After saving one receptor-population phenotype result per sample with explicit subject/timepoint:
+
+```json
+{"action":"aggregate_pseudobulk","args":{"phenotypes":["pheno-…","pheno-…"],"options":{"annotation":"cell_type","minCells":10}}}
+```
+
+The action uses Cells' visible workflow and saves the same `pseudobulk` artifact. Parents must
+share definition/QC/size breakpoints and feature identities. The response includes artifact ID,
+eligible group count, subject count and method description. This sums raw counts; it does not
+fit a differential-expression model. Original sources are needed for capture, not saved replay
+or export. Download complete evidence from `GET /api/pseudobulk/{id}/download`.

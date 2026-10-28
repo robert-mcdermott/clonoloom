@@ -81,7 +81,9 @@ jobs:
       - name: go vet
         run: go vet ./...
       - name: go test
-        run: go test -race ./...
+        # Full release replay and scientific controls exceed the default ten minutes
+        # with race instrumentation; individual performance budgets remain unchanged.
+        run: go test -race -timeout 30m ./...
       - name: Cross-compile
         env:
           CGO_ENABLED: '0'

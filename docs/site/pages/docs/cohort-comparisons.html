@@ -1,0 +1,44 @@
+---
+title: Subject group comparisons
+description: Compare saved subject features with independent or paired tests, explicit multiplicity, effect intervals and subject plots.
+lede: A comparison uses the biological subjects in a saved design. It keeps the selected observations, tests a declared feature family and shows both effect size and uncertainty.
+---
+<h2 id="run">Compare a declared feature family</h2>
+<ol>
+<li>Check and save an independent or paired <a href="cohort-design.html">study design</a>, then build its <a href="cohort-features.html">subject feature table</a>.</li>
+<li>In Cohort → <strong>Group comparisons</strong>, choose that saved feature table. Select the features before inspecting test results; this declares the correction family.</li>
+<li>Choose a confidence level, Monte Carlo draw count and seed, then select <strong>Compare selected features</strong>. Small rank-test null spaces are enumerated exactly regardless of the Monte Carlo setting.</li>
+</ol>
+<p>Independent designs compare disjoint subjects. Paired designs compare two observations from each subject, aligned by subject identifier. Effects are always <strong>comparison minus reference</strong>. The saved design and feature measurements are rechecked; current annotations, definition and QC settings do not change an existing result.</p>
+
+<h2 id="independent">Independent subjects</h2>
+<p>Each feature receives a two-sided <strong>Welch t test</strong> and a <strong>Mann–Whitney U test</strong>. Welch estimates the difference in population means with unequal variances. Its small-sample interpretation needs plausible normal observations. The rank test compares identical distributions under exchangeable group labels; it does not test only median equality.</p>
+<shot name="cohort-compare" alt="Observed Hill diversity for three artificial control subjects and three expanded subjects, with a separate mean-difference confidence interval">Six independent subjects, selecting the first observation from each simulated subject. Each dot is a saved sample measurement; the lower panel shows the mean difference and its marginal 95% t interval. These artificial data demonstrate the workflow, not a biological finding.</shot>
+
+<h2 id="paired">Within-subject comparisons</h2>
+<p>Paired designs receive a two-sided <strong>paired t test</strong> and <strong>Wilcoxon signed-rank test</strong>. The mean effect uses each subject's difference. Paired t requires plausible normal differences; signed ranks require differences symmetric about zero with exchangeable signs. Exact zero differences are omitted from signed ranks, with the remaining number reported. All-zero differences have rank p=1.</p>
+<shot name="cohort-paired" alt="Six pairs of artificial subject observations joined by subject, with a separate mean-difference confidence interval">Two samples per subject are assigned demonstration labels “day 0” and “day 7.” The standard simulator did not generate a longitudinal treatment intervention. Lines preserve subject identity; twelve observations provide six pairs, not twelve independent subjects.</shot>
+<p>Hover over a point or paired link to inspect its identity. The complete observation table remains available below. Horizontal jitter separates points and has no quantitative meaning. Above 500 available observations, use the full table or export; the plot never silently subsamples.</p>
+
+<h2 id="effects">Two effect measures, distinct intervals</h2>
+<ul>
+<li><strong>Mean difference</strong> uses the feature's original units and a t confidence interval. The plot includes a zero reference line. Zero or non-finite standard error leaves the test and interval unavailable, while a finite estimate remains.</li>
+<li><strong>Probability of superiority</strong> estimates the chance that a randomly selected comparison subject exceeds an independent reference subject, giving ties half credit. In a paired design the corresponding probability is an increase within the same subject, giving zero differences half credit. Its conservative bounded-difference interval can span 0–1 at small sample sizes. It is a different estimand from a mean or median shift and is not an inversion of the rank test.</li>
+</ul>
+<p>All intervals are <strong>marginal, not adjusted for multiplicity</strong>. Parent diversity bootstrap intervals describe within-sample measurement uncertainty and are not used as uncertainty among subjects. A nonsignificant result does not establish equivalence or no effect.</p>
+
+<h2 id="family">Missing values and the BH family</h2>
+<p>For K selected features, both tests enter one Benjamini–Hochberg family of exactly 2K slots. Both raw and adjusted p-values remain visible. An unavailable observation leaves that feature untested; no subject or pair is silently removed. Untestable slots contribute p=1 to the correction denominator but remain unavailable in the results.</p>
+<p>BH control assumes independence or suitable positive dependence among null p-values; arbitrary dependence is not guaranteed. The family does not cover other results, contrasts or searching through features after viewing outcomes. No distribution pretest chooses the more favorable method.</p>
+<p>Rank tests use observed midranks, including ties, and inclusive absolute-centered two-sided tails. For unbalanced tied data this can differ from twice the smaller one-sided tail. Null spaces up to 50,000 assignments are exact. Larger spaces use seeded Monte Carlo with <code>(tail+1)/(draws+1)</code>, default 9,999 draws, and report the tail count. An excessive total work request fails explicitly; select fewer features or draws.</p>
+
+<h2 id="limits">Interpret within the study design</h2>
+<p>Structural checks do not establish biological independence, adequate power or freedom from confounding. Subjects sharing cages or other clusters may need a different model. These two-group analyses do not adjust covariates or batch effects, transform measurements, remove outliers, pool libraries or standardize depth. Richness and diversity remain sensitive to sampling depth. Keep the design's selection reasons and warnings with any interpretation.</p>
+
+<h2 id="save">Save, reopen and export</h2>
+<p>Results are immutable, support project undo/redo and reopen from Results. Creation needs the saved feature artifact, but no raw sources or separate diversity artifact. Saved comparisons reopen and export even when parents are absent. <strong>Export comparison ZIP</strong> includes both tests and effects in <code>comparisons.csv</code>, the full <code>subject-features.csv</code>, complete JSON, manifest and provider NOTICE. Missing numeric CSV cells are blank with reason columns. Source terms remain attached.</p>
+<p>Figure exports include units, pairing, sample counts, interval meaning, design warnings and provenance. Methods includes the saved comparison description and citations. Remote clients use <code>compare_cohort</code> with explicit feature-parent and feature IDs; see <a href="remote-control.html#cohort-comparisons">Remote control</a>.</p>
+
+<h2 id="sources">Sources and validation</h2>
+<p>Mean tests follow <a href="https://doi.org/10.1093/biomet/34.1-2.28">Welch (1947)</a> and <a href="https://doi.org/10.2307/2331554">Student (1908)</a>; rank tests follow <a href="https://doi.org/10.1214/aoms/1177730491">Mann and Whitney (1947)</a> and <a href="https://doi.org/10.2307/3001968">Wilcoxon (1945)</a>. Multiplicity follows <a href="https://doi.org/10.1111/j.2517-6161.1995.tb02031.x">Benjamini and Hochberg (1995)</a>; Monte Carlo tails follow <a href="https://doi.org/10.2202/1544-6115.1585">Phipson and Smyth (2010)</a>. Conservative probability bounds apply <a href="https://doi.org/10.1080/01621459.1963.10500830">Hoeffding (1963)</a> and <a href="https://doi.org/10.1017/CBO9781107359949.008">McDiarmid (1989)</a>.</p>
+<p>Independent SciPy references validate t inference and BH; independent exhaustive label/sign enumeration validates tied rank tails and Monte Carlo. Tests cover missingness, zero variance, exact null calibration, normal-model interval coverage, processor agreement, provenance and saved browser workflows. The exact estimands, derivations, choices and limits are recorded in the repository's research §5.32.</p>

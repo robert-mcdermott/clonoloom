@@ -177,7 +177,9 @@ export function mountTracking(app, container) {
       const samples = studySamples(store.project, d.id, open.summary);
       const design = await postJSON('api/study', { samples });
       const name = exampleOf(d, open.summary);
-      const example = name ? (await exampleList()).find((e) => e.name === name) : null;
+      const catalog = await exampleList();
+      const normalized = (path) => String(path).replaceAll('\\', '/');
+      const example = catalog.find((e) => e.name === name) ?? catalog.find((e) => e.name.startsWith('simulated-counts-') && e.path && d.sources.length && d.sources.every((s) => normalized(s.path).startsWith(normalized(e.path) + '/'))) ?? null;
       if (mine !== generation) return;
       spec = specOf(d, open, samples, design);
       state = { status: 'ready', dataset: d.id, design, samples, summary: open.summary, example };

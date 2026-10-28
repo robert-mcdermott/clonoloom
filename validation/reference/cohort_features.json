@@ -1,0 +1,243 @@
+{
+  "cases": [
+    {
+      "name": "empty",
+      "counts": [],
+      "expected": {
+        "shannon": null,
+        "hill1": null,
+        "hill2": null,
+        "evenness": null,
+        "clonality": null,
+        "simpson": null,
+        "giniSimpson": null,
+        "gini": null,
+        "maxFrequency": null,
+        "top10": null,
+        "coverage": null,
+        "abundance": 0,
+        "richness": 0
+      }
+    },
+    {
+      "name": "one",
+      "counts": [
+        8
+      ],
+      "expected": {
+        "shannon": -0.0,
+        "hill1": 1.0,
+        "hill2": 1.0,
+        "evenness": null,
+        "clonality": null,
+        "simpson": 1.0,
+        "giniSimpson": 0.0,
+        "gini": 0.0,
+        "maxFrequency": 1.0,
+        "top10": 1.0,
+        "coverage": 1.0,
+        "abundance": 8,
+        "richness": 1
+      }
+    },
+    {
+      "name": "one_singleton",
+      "counts": [
+        1
+      ],
+      "expected": {
+        "shannon": -0.0,
+        "hill1": 1.0,
+        "hill2": 1.0,
+        "evenness": null,
+        "clonality": null,
+        "simpson": 1.0,
+        "giniSimpson": 0.0,
+        "gini": 0.0,
+        "maxFrequency": 1.0,
+        "top10": 1.0,
+        "coverage": 1.0,
+        "abundance": 1,
+        "richness": 1
+      }
+    },
+    {
+      "name": "equal",
+      "counts": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "expected": {
+        "shannon": 1.3862943611198906,
+        "hill1": 4.0,
+        "hill2": 4.0,
+        "evenness": 1.0,
+        "clonality": 0.0,
+        "simpson": 0.25,
+        "giniSimpson": 0.75,
+        "gini": 0.0,
+        "maxFrequency": 0.25,
+        "top10": 1.0,
+        "coverage": 1.0,
+        "abundance": 16,
+        "richness": 4
+      }
+    },
+    {
+      "name": "skew",
+      "counts": [
+        1,
+        1,
+        2,
+        7,
+        19
+      ],
+      "expected": {
+        "shannon": 1.036130514706507,
+        "hill1": 2.8182905542441845,
+        "hill2": 2.1634615384615388,
+        "evenness": 0.6437840855503845,
+        "clonality": 0.35621591444961553,
+        "simpson": 0.4622222222222222,
+        "giniSimpson": 0.5377777777777778,
+        "gini": 0.56,
+        "maxFrequency": 0.6333333333333333,
+        "top10": 1.0,
+        "coverage": 0.9355555555555556,
+        "abundance": 30,
+        "richness": 5
+      }
+    },
+    {
+      "name": "singletons",
+      "counts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "expected": {
+        "shannon": 1.3862943611198906,
+        "hill1": 4.0,
+        "hill2": 4.0,
+        "evenness": 1.0,
+        "clonality": 0.0,
+        "simpson": 0.25,
+        "giniSimpson": 0.75,
+        "gini": 0.0,
+        "maxFrequency": 0.25,
+        "top10": 1.0,
+        "coverage": 0.18181818181818177,
+        "abundance": 4,
+        "richness": 4
+      }
+    },
+    {
+      "name": "no_doubletons",
+      "counts": [
+        1,
+        1,
+        4,
+        8
+      ],
+      "expected": {
+        "shannon": 1.0547209169068124,
+        "hill1": 2.871173746026733,
+        "hill2": 2.3902439024390247,
+        "evenness": 0.7608203181716593,
+        "clonality": 0.2391796818283407,
+        "simpson": 0.4183673469387755,
+        "giniSimpson": 0.5816326530612246,
+        "gini": 0.42857142857142855,
+        "maxFrequency": 0.5714285714285714,
+        "top10": 1.0,
+        "coverage": 0.8761904761904762,
+        "abundance": 14,
+        "richness": 4
+      }
+    },
+    {
+      "name": "fractional",
+      "counts": [
+        0.5,
+        1.5,
+        3.25
+      ],
+      "expected": {
+        "shannon": 0.8787513508906516,
+        "hill1": 2.4078912173105693,
+        "hill2": 2.110047846889952,
+        "evenness": 0.7998739500319952,
+        "clonality": 0.20012604996800476,
+        "simpson": 0.47392290249433106,
+        "giniSimpson": 0.526077097505669,
+        "gini": 0.3492063492063492,
+        "maxFrequency": 0.6190476190476191,
+        "top10": 1.0,
+        "coverage": null,
+        "abundance": 5.25,
+        "richness": 3
+      }
+    },
+    {
+      "name": "more_than_ten",
+      "counts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "expected": {
+        "shannon": 2.4051133527017625,
+        "hill1": 11.079686123365349,
+        "hill2": 10.11111111111111,
+        "evenness": 0.9376845377883173,
+        "clonality": 0.062315462211682715,
+        "simpson": 0.0989010989010989,
+        "giniSimpson": 0.9010989010989011,
+        "gini": 0.3076923076923077,
+        "maxFrequency": 0.14285714285714285,
+        "top10": 0.9340659340659341,
+        "coverage": 0.9892498805542284,
+        "abundance": 91,
+        "richness": 13
+      }
+    },
+    {
+      "name": "scaled",
+      "counts": [
+        10,
+        10,
+        20,
+        70,
+        190
+      ],
+      "expected": {
+        "shannon": 1.036130514706507,
+        "hill1": 2.8182905542441845,
+        "hill2": 2.1634615384615388,
+        "evenness": 0.6437840855503845,
+        "clonality": 0.35621591444961553,
+        "simpson": 0.4622222222222222,
+        "giniSimpson": 0.5377777777777778,
+        "gini": 0.56,
+        "maxFrequency": 0.6333333333333333,
+        "top10": 1.0,
+        "coverage": 1.0,
+        "abundance": 300,
+        "richness": 5
+      }
+    }
+  ]
+}

@@ -22,7 +22,7 @@ import { createProject, isEmptyProject, parseProject, rename, serializeProject }
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
 
-const VERSION = '0.6.0';
+const VERSION = '0.7.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -40,14 +40,7 @@ const MODES = [
   { id: 'bcells', label: 'B cells', icon: 'lineage', load: () => import('./ui/mode-bcells.js').then((m) => m.mountBCells) },
   { id: 'cells', label: 'Cells', icon: 'cell', load: () => import('./ui/mode-cells.js').then((m) => m.mountCells) },
   'sep',
-  {
-    id: 'cohort', label: 'Cohort', icon: 'samples',
-    load: async () => plannedMode({
-      title: 'Cohort', icon: 'samples',
-      purpose: 'Groups of subjects compared with the subject, not the sequence or the cell, as the unit: diversity, clonality, gene usage and specificity groups, with the test chosen from the design, effect sizes and intervals, and how the conclusion depends on the clonotype definition.',
-      steps: ['Describe the design: subjects, groups, timepoints, pairing.', 'Choose the metrics to compare.', 'Read the results with their corrections recorded.'],
-    }),
-  },
+  { id: 'cohort', label: 'Cohort', icon: 'samples', load: () => import('./ui/mode-cohort.js').then((m) => m.mountCohort) },
   {
     id: 'reports', label: 'Reports', icon: 'report',
     load: async () => plannedMode({
@@ -179,11 +172,13 @@ async function start() {
     store.setUI({ focus }, ['focus']);
     // A result opens in its view.
     const result = focus?.kind === 'result' ? store.project.artifacts.find((a) => a.id === focus.id) : null;
-    if (['expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export'].includes(result?.kind) && store.ui.mode !== 'cells') app.setMode('cells');
+    if (['cohort-features', 'cohort-compare', 'definition-robustness', 'cohort-counts'].includes(result?.kind) && store.ui.mode !== 'cohort') app.setMode('cohort');
+    if (['pseudobulk-de', 'pseudobulk', 'expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export'].includes(result?.kind) && store.ui.mode !== 'cells') app.setMode('cells');
     if (['families', 'germlines', 'shm', 'lineages', 'isotypes'].includes(result?.kind) && store.ui.mode !== 'bcells') app.setMode('bcells');
     if ((result?.kind === 'diversity' || result?.kind === 'rarefaction') && store.ui.mode !== 'repertoire') app.setMode('repertoire');
     if (['tracking', 'expansion', 'classes', 'attribution'].includes(result?.kind) && store.ui.mode !== 'tracking') app.setMode('tracking');
-    if (['tcrdist', 'pgen', 'neighborhoods', 'networks', 'specificity'].includes(result?.kind) && store.ui.mode !== 'specificity') app.setMode('specificity');
+    if (['contamination', 'batch-qc'].includes(result?.kind) && store.ui.mode !== 'qc') app.setMode('qc');
+    if (['convergence', 'motifs', 'tcrdist', 'pgen', 'neighborhoods', 'networks', 'specificity'].includes(result?.kind) && store.ui.mode !== 'specificity') app.setMode('specificity');
   };
 
   app.toggleDrawer = (open = !store.ui.drawer.open, tab = store.ui.drawer.tab) => {

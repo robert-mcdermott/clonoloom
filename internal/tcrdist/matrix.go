@@ -72,3 +72,22 @@ func Encode(s string) []uint8 {
 func Residues(a, b byte) int {
 	return int(table[codes[a]][codes[b]])
 }
+
+// PositiveSubstitution reports distinct standard residues with a positive BLOSUM62
+// score (Henikoff & Henikoff 1992, doi:10.1073/pnas.89.22.10915). Motif grouping
+// uses this explicit conservative-substitution rule, not a TCRdist cutoff.
+func PositiveSubstitution(a, b byte) bool {
+	if a == b {
+		return false
+	}
+	i, j := -1, -1
+	for k := range aminoAcids {
+		if aminoAcids[k] == a {
+			i = k
+		}
+		if aminoAcids[k] == b {
+			j = k
+		}
+	}
+	return i >= 0 && j >= 0 && blosum62[i][j] > 0
+}

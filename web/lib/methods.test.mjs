@@ -412,3 +412,72 @@ test('a renamed or unknown simulation does not imply the TRB model', () => {
   assert.match(text, /consult each study's saved parameters and truth/);
   assert.doesNotMatch(text, /GRCh38|power-law|negative-binomial|fictional SIM/);
 });
+
+test('cohort feature methods use saved observations and source parameters', () => {
+  const result = { id: 'cf-pinned', kind: 'cohort-features', method: 'Subject feature table', describe: 'Design Pre, version 2: 6 subjects, 6 observations; parent div-original, unit umis, no pooling.', citation: 'Jost 2006, doi:10.1111/j.2006.0030-1299.14714.x' };
+  const out = methodsParagraph({ dataset: pbmc, definition: { name: 'Current paired definition' }, program, results: [result] });
+  assert.match(out.text, /Saved Subject feature table result cf-pinned: Design Pre, version 2: 6 subjects, 6 observations; parent div-original, unit umis, no pooling/);
+  assert.ok(out.references.some((r) => r.includes('Jost 2006')));
+});
+
+test('definition audits retain their saved methods and the distinct synthetic model', () => {
+  const result={id:'rb-pinned',kind:'definition-robustness',method:'Descriptive definition sensitivity',describe:'Four declared definitions, 32 subjects, marginal intervals and 24 BY slots.',citation:'Simonsohn et al. 2020; Benjamini & Yekutieli 2001.'};
+  const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-definition-variants-v1'}}]};
+  const out=methodsParagraph({dataset:pbmc,summary,program,results:[result]});
+  assert.match(out.text,/Saved Descriptive definition sensitivity result rb-pinned/);assert.match(out.text,/synonymous/);assert.match(out.text,/not a fitted biological population/);assert.doesNotMatch(out.text,/SIM calls|identifiers do not establish|uniformly/);assert.ok(out.references.some((r)=>r.includes('Simonsohn')));
+});
+
+test('motif methods distinguish the adaptation and its artificial controls',()=>{
+ const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-motif-study-v1'}}]};
+ const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'mot-pinned',kind:'motifs',method:'GLIPH2-style adaptation',describe:'Matched V and length; pooled family; no N/P boost.',citation:'Huang et al. 2020.'}]});
+ assert.match(out.text,/Saved GLIPH2-style adaptation result mot-pinned/);assert.match(out.text,/not antigen annotations/);assert.match(out.text,/descriptive, not statistical weights/);assert.doesNotMatch(out.text,/identifiers do not establish/);assert.ok(out.references.some((r)=>r.includes('Huang')));
+});
+
+test('convergence methods preserve subject-level limits and artificial typing truth', () => {
+  const summary = { samples: [{ repertoire: { studyId: 'clonoloom-simulated-convergence-study-v1' } }] };
+  const out = methodsParagraph({ dataset: pbmc, summary, program, results: [{ id: 'cv-pinned', kind: 'convergence', method: 'Subject recurrence and HLA', describe: 'Complete typed-subject universes; conditional association, not restriction.', citation: 'Glanville et al. 2017.' }] });
+  assert.match(out.text, /Saved Subject recurrence and HLA result cv-pinned/);
+  assert.match(out.text, /32 fictional subjects and 36 samples/);
+  assert.match(out.text, /four unresolved A typings/);
+  assert.match(out.text, /not fitted haplotypes/);
+  assert.doesNotMatch(out.text, /identifiers do not establish/);
+  assert.ok(out.references.some((r) => r.includes('Glanville')));
+});
+
+test('contamination methods retain heuristic and artificial-control limits',()=>{
+  const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-contamination-study-v1'}}]};
+  const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'cnt-pinned',kind:'contamination',method:'Descriptive contamination evidence',describe:'Exact NT sharing; no removal or contamination verdict.',citation:'Li et al. 2023. doi:10.1093/bib/bbad230.'}]});
+  assert.match(out.text,/Saved Descriptive contamination evidence result cnt-pinned/);assert.match(out.text,/eight fictional subjects and nine samples/);assert.match(out.text,/not Pgen labels/);assert.doesNotMatch(out.text,/identifiers do not establish/);assert.ok(out.references.some((r)=>r.includes('bbad230')));
+});
+
+test('batch QC methods retain sample-level policy and construction limits',()=>{
+ const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-batch-qc-study-v1'}}]};
+ const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'bqc-pinned',kind:'batch-qc',method:'Descriptive batch QC',describe:'Zero MAD remains unscored; no correction.',citation:'Iglewicz and Hoaglin (1993).'}]});
+ assert.match(out.text,/Saved Descriptive batch QC result bqc-pinned/);assert.match(out.text,/26 samples from 25 fictional subjects/);assert.match(out.text,/not calibrated/);assert.ok(out.references.some((r)=>r.includes('Iglewicz')));
+});
+
+test('pseudobulk methods describe raw evidence and the known artificial model',()=>{
+ const summary={samples:[{repertoire:{studyId:'clonoloom-simulated-pseudobulk-study'}}]};
+ const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'pb-pinned',kind:'pseudobulk',method:'Exact raw pseudobulk sums',describe:'Absent groups remain unavailable; no differential-expression test.',citation:'Crowell et al. 2020. doi:10.1038/s41467-020-19894-4.'}]});
+ assert.match(out.text,/Saved Exact raw pseudobulk sums result pb-pinned/);assert.match(out.text,/negative-binomial/);assert.match(out.text,/not make cells independent biological replicates/);assert.doesNotMatch(out.text,/identifiers do not establish/);assert.ok(out.references.some((r)=>r.includes('s41467')));
+});
+
+test('paired gene methods preserve saved inference and distinguish the artificial gene model',()=>{
+ for(const preset of ['pseudobulk-de-study','pseudobulk-de-null']){
+  const summary={samples:[{repertoire:{studyId:`clonoloom-simulated-${preset}`}}]};
+  const result={id:'pde-pinned',kind:'pseudobulk-de',method:'Paired pseudobulk negative-binomial expression',describe:'Type T cells; 28 subjects; fixed subject effects, median-ratio offsets, conditional intervals and 38 BH slots.',citation:'Anders and Huber 2010; McCarthy et al. 2012. doi:10.1093/nar/gks042.'};
+  const out=methodsParagraph({dataset:pbmc,summary,program,results:[result]});
+  assert.match(out.text,/Saved Paired pseudobulk negative-binomial expression result pde-pinned/);assert.match(out.text,/Gamma\(16/);assert.match(out.text,/null preset has no generating category effect/);assert.doesNotMatch(out.text,/identifiers do not establish|24 artificial genes|GRCh38/);assert.ok(out.references.some((v)=>v.includes('gks042')));
+ }
+});
+
+
+test('failed cohort checks remain explicit in cited methods and never imply an analysis', () => {
+  const p=JSON.parse(readFileSync(new URL('../../validation/projects/0.7.0/project.json',import.meta.url),'utf8'));
+  const d=p.cohortDesigns.find((d)=>!d.result.ok),dataset=p.datasets.find((x)=>x.id===d.dataset);
+  const {text,references}=methodsParagraph({dataset,cohortDesigns:p.cohortDesigns,results:p.artifacts.filter((a)=>a.dataset===d.dataset),program});
+  assert.match(text,/FAILED CHECK; unavailable for inference/);
+  assert.match(text,/cohort-batch-confounded/);
+  assert.doesNotMatch(text,/Saved .* result/);
+  assert.ok(references.some((s)=>s.includes('1471-2202-11-5')));
+});

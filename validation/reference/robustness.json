@@ -1,0 +1,795 @@
+{
+  "scipy": "1.17.0",
+  "rows": [
+    {
+      "sample": "S0",
+      "nt": "TGTGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 2
+    },
+    {
+      "sample": "S0",
+      "nt": "TGCGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*02",
+      "j": "TRBJ1*01",
+      "count": 4
+    },
+    {
+      "sample": "S0",
+      "nt": "TGTGCTTTC",
+      "aa": "CAF",
+      "v": "TRBV2*01",
+      "j": "TRBJ1*01",
+      "count": 6
+    },
+    {
+      "sample": "S0",
+      "nt": "TGTGGTTTT",
+      "aa": "CGF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 8
+    },
+    {
+      "sample": "S0",
+      "nt": "TGTGATTTT",
+      "aa": "CDF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 0
+    },
+    {
+      "sample": "S0",
+      "nt": "TGTTCTTTT",
+      "aa": "CSF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 0
+    },
+    {
+      "sample": "S1",
+      "nt": "TGTGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 3
+    },
+    {
+      "sample": "S1",
+      "nt": "TGCGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*02",
+      "j": "TRBJ1*01",
+      "count": 7
+    },
+    {
+      "sample": "S1",
+      "nt": "TGTGCTTTC",
+      "aa": "CAF",
+      "v": "TRBV2*01",
+      "j": "TRBJ1*01",
+      "count": 11
+    },
+    {
+      "sample": "S1",
+      "nt": "TGTGGTTTT",
+      "aa": "CGF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 15
+    },
+    {
+      "sample": "S1",
+      "nt": "TGTGATTTT",
+      "aa": "CDF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 19
+    },
+    {
+      "sample": "S1",
+      "nt": "TGTTCTTTT",
+      "aa": "CSF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 0
+    },
+    {
+      "sample": "S2",
+      "nt": "TGTGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 4
+    },
+    {
+      "sample": "S2",
+      "nt": "TGCGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*02",
+      "j": "TRBJ1*01",
+      "count": 10
+    },
+    {
+      "sample": "S2",
+      "nt": "TGTGCTTTC",
+      "aa": "CAF",
+      "v": "TRBV2*01",
+      "j": "TRBJ1*01",
+      "count": 16
+    },
+    {
+      "sample": "S2",
+      "nt": "TGTGGTTTT",
+      "aa": "CGF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 22
+    },
+    {
+      "sample": "S2",
+      "nt": "TGTGATTTT",
+      "aa": "CDF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 21
+    },
+    {
+      "sample": "S2",
+      "nt": "TGTTCTTTT",
+      "aa": "CSF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 27
+    },
+    {
+      "sample": "S3",
+      "nt": "TGTGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 5
+    },
+    {
+      "sample": "S3",
+      "nt": "TGCGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*02",
+      "j": "TRBJ1*01",
+      "count": 13
+    },
+    {
+      "sample": "S3",
+      "nt": "TGTGCTTTC",
+      "aa": "CAF",
+      "v": "TRBV2*01",
+      "j": "TRBJ1*01",
+      "count": 21
+    },
+    {
+      "sample": "S3",
+      "nt": "TGTGGTTTT",
+      "aa": "CGF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 22
+    },
+    {
+      "sample": "S3",
+      "nt": "TGTGATTTT",
+      "aa": "CDF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 0
+    },
+    {
+      "sample": "S3",
+      "nt": "TGTTCTTTT",
+      "aa": "CSF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 0
+    },
+    {
+      "sample": "S4",
+      "nt": "TGTGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 18
+    },
+    {
+      "sample": "S4",
+      "nt": "TGCGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*02",
+      "j": "TRBJ1*01",
+      "count": 48
+    },
+    {
+      "sample": "S4",
+      "nt": "TGTGCTTTC",
+      "aa": "CAF",
+      "v": "TRBV2*01",
+      "j": "TRBJ1*01",
+      "count": 57
+    },
+    {
+      "sample": "S4",
+      "nt": "TGTGGTTTT",
+      "aa": "CGF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 29
+    },
+    {
+      "sample": "S4",
+      "nt": "TGTGATTTT",
+      "aa": "CDF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 32
+    },
+    {
+      "sample": "S4",
+      "nt": "TGTTCTTTT",
+      "aa": "CSF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 0
+    },
+    {
+      "sample": "S5",
+      "nt": "TGTGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 21
+    },
+    {
+      "sample": "S5",
+      "nt": "TGCGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*02",
+      "j": "TRBJ1*01",
+      "count": 57
+    },
+    {
+      "sample": "S5",
+      "nt": "TGTGCTTTC",
+      "aa": "CAF",
+      "v": "TRBV2*01",
+      "j": "TRBJ1*01",
+      "count": 72
+    },
+    {
+      "sample": "S5",
+      "nt": "TGTGGTTTT",
+      "aa": "CGF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 29
+    },
+    {
+      "sample": "S5",
+      "nt": "TGTGATTTT",
+      "aa": "CDF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 41
+    },
+    {
+      "sample": "S5",
+      "nt": "TGTTCTTTT",
+      "aa": "CSF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 46
+    },
+    {
+      "sample": "S6",
+      "nt": "TGTGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 24
+    },
+    {
+      "sample": "S6",
+      "nt": "TGCGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*02",
+      "j": "TRBJ1*01",
+      "count": 66
+    },
+    {
+      "sample": "S6",
+      "nt": "TGTGCTTTC",
+      "aa": "CAF",
+      "v": "TRBV2*01",
+      "j": "TRBJ1*01",
+      "count": 87
+    },
+    {
+      "sample": "S6",
+      "nt": "TGTGGTTTT",
+      "aa": "CGF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 36
+    },
+    {
+      "sample": "S6",
+      "nt": "TGTGATTTT",
+      "aa": "CDF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 0
+    },
+    {
+      "sample": "S6",
+      "nt": "TGTTCTTTT",
+      "aa": "CSF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 0
+    },
+    {
+      "sample": "S7",
+      "nt": "TGTGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 27
+    },
+    {
+      "sample": "S7",
+      "nt": "TGCGCTTTT",
+      "aa": "CAF",
+      "v": "TRBV1*02",
+      "j": "TRBJ1*01",
+      "count": 54
+    },
+    {
+      "sample": "S7",
+      "nt": "TGTGCTTTC",
+      "aa": "CAF",
+      "v": "TRBV2*01",
+      "j": "TRBJ1*01",
+      "count": 81
+    },
+    {
+      "sample": "S7",
+      "nt": "TGTGGTTTT",
+      "aa": "CGF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 36
+    },
+    {
+      "sample": "S7",
+      "nt": "TGTGATTTT",
+      "aa": "CDF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 45
+    },
+    {
+      "sample": "S7",
+      "nt": "TGTTCTTTT",
+      "aa": "CSF",
+      "v": "TRBV1*01",
+      "j": "TRBJ1*01",
+      "count": 0
+    }
+  ],
+  "variants": [
+    {
+      "definition": {
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene"
+      },
+      "values": [
+        {
+          "abundance": 20,
+          "hill1": 2.971004096610006,
+          "richness": 3,
+          "shannon": 1.0888999753452238
+        },
+        {
+          "abundance": 55,
+          "hill1": 3.870459836024482,
+          "richness": 4,
+          "shannon": 1.3533733206612335
+        },
+        {
+          "abundance": 100,
+          "hill1": 4.868729201546558,
+          "richness": 5,
+          "shannon": 1.582832958801673
+        },
+        {
+          "abundance": 61,
+          "hill1": 2.9893644364381706,
+          "richness": 3,
+          "shannon": 1.095060801743708
+        },
+        {
+          "abundance": 184,
+          "hill1": 3.7667255373284703,
+          "richness": 4,
+          "shannon": 1.3262060663072877
+        },
+        {
+          "abundance": 266,
+          "hill1": 4.696283941633911,
+          "richness": 5,
+          "shannon": 1.5467715452706956
+        },
+        {
+          "abundance": 213,
+          "hill1": 2.80161390907073,
+          "richness": 3,
+          "shannon": 1.0301956472254223
+        },
+        {
+          "abundance": 243,
+          "hill1": 3.7719778059794296,
+          "richness": 4,
+          "shannon": 1.3275994808672174
+        }
+      ],
+      "comparisons": [
+        {
+          "feature": "abundance",
+          "mean": 167.5,
+          "lower": 108.11612998036338,
+          "upper": 226.88387001963662,
+          "p": 0.0004671497744522898,
+          "rankP": 0.02857142857142857
+        },
+        {
+          "feature": "hill1",
+          "mean": 0.08426090584833101,
+          "lower": -1.3754729285336174,
+          "upper": 1.5439947402302785,
+          "p": 0.8918159061990656,
+          "rankP": 0.8857142857142857
+        },
+        {
+          "feature": "richness",
+          "mean": 0.25,
+          "lower": -1.2988331664467807,
+          "upper": 1.7988331664467807,
+          "p": 0.7051843757883935,
+          "rankP": 0.9142857142857143
+        },
+        {
+          "feature": "shannon",
+          "mean": 0.02765142077969629,
+          "lower": -0.3621025922807816,
+          "upper": 0.4174054338401742,
+          "p": 0.8675806517702072,
+          "rankP": 0.8857142857142857
+        }
+      ]
+    },
+    {
+      "definition": {
+        "junction": "nt",
+        "v": "gene",
+        "j": "gene"
+      },
+      "values": [
+        {
+          "abundance": 20,
+          "hill1": 3.5961154666243225,
+          "richness": 4,
+          "shannon": 1.2798542258336676
+        },
+        {
+          "abundance": 55,
+          "hill1": 4.325118580213887,
+          "richness": 5,
+          "shannon": 1.464439557398487
+        },
+        {
+          "abundance": 100,
+          "hill1": 5.294087867357898,
+          "richness": 6,
+          "shannon": 1.666590701203609
+        },
+        {
+          "abundance": 61,
+          "hill1": 3.5587440728257147,
+          "richness": 4,
+          "shannon": 1.2694076940873225
+        },
+        {
+          "abundance": 184,
+          "hill1": 4.647756931401578,
+          "richness": 5,
+          "shannon": 1.5363847228726917
+        },
+        {
+          "abundance": 266,
+          "hill1": 5.571016549009805,
+          "richness": 6,
+          "shannon": 1.7175775415978645
+        },
+        {
+          "abundance": 213,
+          "hill1": 3.5795254175604696,
+          "richness": 4,
+          "shannon": 1.2752302266978592
+        },
+        {
+          "abundance": 243,
+          "hill1": 4.663521597250338,
+          "richness": 5,
+          "shannon": 1.5397708702988218
+        }
+      ],
+      "comparisons": [
+        {
+          "feature": "abundance",
+          "mean": 167.5,
+          "lower": 108.11612998036338,
+          "upper": 226.88387001963662,
+          "p": 0.0004671497744522898,
+          "rankP": 0.02857142857142857
+        },
+        {
+          "feature": "hill1",
+          "mean": 0.42193862705009266,
+          "lower": -0.9868966688219731,
+          "upper": 1.8307739229221585,
+          "p": 0.49128436120252905,
+          "rankP": 0.4857142857142857
+        },
+        {
+          "feature": "richness",
+          "mean": 0.25,
+          "lower": -1.2988331664467807,
+          "upper": 1.7988331664467807,
+          "p": 0.7051843757883935,
+          "rankP": 0.9142857142857143
+        },
+        {
+          "feature": "shannon",
+          "mean": 0.09716779573603773,
+          "lower": -0.22245717813621796,
+          "upper": 0.4167927696082934,
+          "p": 0.4849983118812331,
+          "rankP": 0.4857142857142857
+        }
+      ]
+    },
+    {
+      "definition": {
+        "junction": "aa",
+        "v": "allele",
+        "j": "allele"
+      },
+      "values": [
+        {
+          "abundance": 20,
+          "hill1": 3.5961154666243225,
+          "richness": 4,
+          "shannon": 1.2798542258336676
+        },
+        {
+          "abundance": 55,
+          "hill1": 4.325118580213887,
+          "richness": 5,
+          "shannon": 1.464439557398487
+        },
+        {
+          "abundance": 100,
+          "hill1": 5.294087867357898,
+          "richness": 6,
+          "shannon": 1.666590701203609
+        },
+        {
+          "abundance": 61,
+          "hill1": 3.5587440728257147,
+          "richness": 4,
+          "shannon": 1.2694076940873225
+        },
+        {
+          "abundance": 184,
+          "hill1": 4.647756931401578,
+          "richness": 5,
+          "shannon": 1.5363847228726917
+        },
+        {
+          "abundance": 266,
+          "hill1": 5.571016549009805,
+          "richness": 6,
+          "shannon": 1.7175775415978645
+        },
+        {
+          "abundance": 213,
+          "hill1": 3.5795254175604696,
+          "richness": 4,
+          "shannon": 1.2752302266978592
+        },
+        {
+          "abundance": 243,
+          "hill1": 4.663521597250338,
+          "richness": 5,
+          "shannon": 1.5397708702988218
+        }
+      ],
+      "comparisons": [
+        {
+          "feature": "abundance",
+          "mean": 167.5,
+          "lower": 108.11612998036338,
+          "upper": 226.88387001963662,
+          "p": 0.0004671497744522898,
+          "rankP": 0.02857142857142857
+        },
+        {
+          "feature": "hill1",
+          "mean": 0.42193862705009266,
+          "lower": -0.9868966688219731,
+          "upper": 1.8307739229221585,
+          "p": 0.49128436120252905,
+          "rankP": 0.4857142857142857
+        },
+        {
+          "feature": "richness",
+          "mean": 0.25,
+          "lower": -1.2988331664467807,
+          "upper": 1.7988331664467807,
+          "p": 0.7051843757883935,
+          "rankP": 0.9142857142857143
+        },
+        {
+          "feature": "shannon",
+          "mean": 0.09716779573603773,
+          "lower": -0.22245717813621796,
+          "upper": 0.4167927696082934,
+          "p": 0.4849983118812331,
+          "rankP": 0.4857142857142857
+        }
+      ]
+    },
+    {
+      "definition": {
+        "junction": "aa",
+        "v": "none",
+        "j": "none"
+      },
+      "values": [
+        {
+          "abundance": 20,
+          "hill1": 1.9601317042077895,
+          "richness": 2,
+          "shannon": 0.6730116670092565
+        },
+        {
+          "abundance": 55,
+          "hill1": 2.9717475743276496,
+          "richness": 3,
+          "shannon": 1.089150188634518
+        },
+        {
+          "abundance": 100,
+          "hill1": 3.95727622250253,
+          "richness": 4,
+          "shannon": 1.3755559660075276
+        },
+        {
+          "abundance": 61,
+          "hill1": 1.922823252224819,
+          "richness": 2,
+          "shannon": 0.6537945498628333
+        },
+        {
+          "abundance": 184,
+          "hill1": 2.3741591824436266,
+          "richness": 3,
+          "shannon": 0.8646433463589511
+        },
+        {
+          "abundance": 266,
+          "hill1": 3.1783122700898025,
+          "richness": 4,
+          "shannon": 1.1563503232274843
+        },
+        {
+          "abundance": 213,
+          "hill1": 1.5751011127070644,
+          "richness": 2,
+          "shannon": 0.45431946876112594
+        },
+        {
+          "abundance": 243,
+          "hill1": 2.376197118744882,
+          "richness": 3,
+          "shannon": 0.8655013604939206
+        }
+      ],
+      "comparisons": [
+        {
+          "feature": "abundance",
+          "mean": 167.5,
+          "lower": 108.11612998036338,
+          "upper": 226.88387001963662,
+          "p": 0.0004671497744522898,
+          "rankP": 0.02857142857142857
+        },
+        {
+          "feature": "hill1",
+          "mean": -0.32705226731935344,
+          "lower": -1.8050271236052577,
+          "upper": 1.1509225889665509,
+          "p": 0.598363012199229,
+          "rankP": 0.8857142857142857
+        },
+        {
+          "feature": "richness",
+          "mean": 0.25,
+          "lower": -1.2988331664467807,
+          "upper": 1.7988331664467807,
+          "p": 0.7051843757883935,
+          "rankP": 0.9142857142857143
+        },
+        {
+          "feature": "shannon",
+          "mean": -0.1126744681681634,
+          "lower": -0.6712935780091742,
+          "upper": 0.44594464167284764,
+          "p": 0.6369683147956303,
+          "rankP": 0.8857142857142857
+        }
+      ]
+    }
+  ],
+  "features": [
+    "abundance",
+    "hill1",
+    "richness",
+    "shannon"
+  ],
+  "by": [
+    0.015167400921310978,
+    0.4638280223356023,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.015167400921310978,
+    0.4638280223356023,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.015167400921310978,
+    0.4638280223356023,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.015167400921310978,
+    0.4638280223356023,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ]
+}

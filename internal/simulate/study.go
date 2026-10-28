@@ -52,14 +52,33 @@ type Study struct {
 	// Series: a study over time (series.go), SamplesPerSubject then unused.
 	Series *Series `json:"series,omitempty"`
 	// BCells selects the artificial paired B-cell model; the TRB parameters above are unused.
-	BCells     *BCellStudy     `json:"bcells,omitempty"`
-	CellStates *CellStateStudy `json:"cellStates,omitempty"`
+	BCells        *BCellStudy         `json:"bcells,omitempty"`
+	PseudobulkDE  *PseudobulkDEStudy  `json:"pseudobulkDE,omitempty"`
+	CellStates    *CellStateStudy     `json:"cellStates,omitempty"`
+	BatchQC       *BatchQCStudy       `json:"batchQC,omitempty"`
+	Contamination *ContaminationStudy `json:"contamination,omitempty"`
+	Convergence   *ConvergenceStudy   `json:"convergence,omitempty"`
+	Motifs        *MotifStudy         `json:"motifs,omitempty"`
+	Counts        *CountStudy         `json:"counts,omitempty"`
 }
 
 // Presets are the studies `clonoloom simulate` starts from.
 var Presets = map[string]Study{
-	"cell-states":        {Name: "cell-states", Title: "An artificial paired T-cell and expression study with known states", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 120, Clones: 12}},
-	"cell-states-clouds": {Name: "cell-states-clouds", Title: "An artificial paired T-cell and expression study with supplied Gaussian clouds", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 360, Clones: 10, Layout: "gaussian"}},
+	"pseudobulk-de-study": {Name: "pseudobulk-de-study", Title: "An artificial paired pseudobulk expression study", Seed: 20261103, PseudobulkDE: &PseudobulkDEStudy{Subjects: 28}},
+	"pseudobulk-de-null":  {Name: "pseudobulk-de-null", Title: "An artificial null paired pseudobulk study", Seed: 20261104, PseudobulkDE: &PseudobulkDEStudy{Subjects: 28, Null: true}},
+	"batch-qc-study":      {Name: "batch-qc-study", Title: "An artificial batch-QC study", Seed: 20261101, BatchQC: &BatchQCStudy{}},
+	"contamination-study": {Name: "contamination-study", Title: "An artificial contamination-evidence study", Seed: 20261031, Contamination: &ContaminationStudy{}},
+	"convergence-study":   {Name: "convergence-study", Title: "An artificial subject recurrence and HLA study", Seed: 20261030, Convergence: &ConvergenceStudy{}},
+	"motif-study":         {Name: "motif-study", Title: "An artificial sequence-signature study", Seed: 20261029, Motifs: &MotifStudy{}},
+	"definition-study":    {Name: "definition-study", Title: "A definition-sensitive repertoire study", Seed: 20261028, Counts: &CountStudy{Subjects: 32, Layout: "independent", DefinitionVariants: true}},
+	"counts-paired":       {Name: "counts-paired", Title: "A replicated paired repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 28, Layout: "paired"}},
+	"counts-independent":  {Name: "counts-independent", Title: "A replicated independent repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 32, Layout: "independent"}},
+	"counts-unbalanced":   {Name: "counts-unbalanced", Title: "An unbalanced replicated repertoire study", Seed: 20261105, Counts: &CountStudy{Subjects: 32, Layout: "independent", Unbalanced: true}},
+	"counts-confounded":   {Name: "counts-confounded", Title: "A fully confounded repertoire study", Seed: 20261106, Counts: &CountStudy{Subjects: 32, Layout: "independent", Confounded: true}},
+	"counts-null":         {Name: "counts-null", Title: "A replicated null repertoire study", Seed: 20261027, Counts: &CountStudy{Subjects: 32, Layout: "independent", Null: true}},
+	"cell-states":         {Name: "cell-states", Title: "An artificial paired T-cell and expression study with known states", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 120, Clones: 12}},
+	"pseudobulk-study":    {Name: "pseudobulk-study", Title: "Artificial pseudobulk count evidence across subjects and timepoints", Seed: 20261102, CellStates: &CellStateStudy{Subjects: 4, CellsPerSample: 420, Clones: 48, Layout: "gaussian"}},
+	"cell-states-clouds":  {Name: "cell-states-clouds", Title: "An artificial paired T-cell and expression study with supplied Gaussian clouds", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 360, Clones: 10, Layout: "gaussian"}},
 	"bcell-immunization": {
 		Name: "bcell-immunization", Title: "An artificial B-cell immunization study with known families and ancestors",
 		Seed:   20261027,
@@ -197,6 +216,37 @@ var Presets = map[string]Study{
 
 // Check says what is wrong with a study's parameters.
 func (s Study) Check() error {
+	if s.PseudobulkDE != nil {
+		return s.PseudobulkDE.check(s)
+	}
+	if s.BatchQC != nil {
+		if s.Contamination != nil || s.Convergence != nil || s.Motifs != nil || s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
+			return fmt.Errorf("batch QC study replaces other models")
+		}
+		return nil
+	}
+
+	if s.Contamination != nil {
+		if s.Convergence != nil || s.Motifs != nil || s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
+			return fmt.Errorf("contamination study replaces other models")
+		}
+		return nil
+	}
+	if s.Convergence != nil {
+		if s.Motifs != nil || s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
+			return fmt.Errorf("convergence study replaces other simulation models")
+		}
+		return nil
+	}
+	if s.Motifs != nil {
+		if s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
+			return fmt.Errorf("motif study replaces other simulation models")
+		}
+		return nil
+	}
+	if s.Counts != nil {
+		return s.Counts.check(s)
+	}
 	if s.CellStates != nil {
 		return s.CellStates.check(s)
 	}
@@ -393,6 +443,24 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 	}
 	if entries, err := os.ReadDir(dir); err == nil && len(entries) > 0 {
 		return Summary{}, fmt.Errorf("%s is not empty", dir)
+	}
+	if s.PseudobulkDE != nil {
+		return runPseudobulkDE(ctx, s, dir, version, progress)
+	}
+	if s.BatchQC != nil {
+		return runBatchQC(ctx, s, dir, version, progress)
+	}
+	if s.Contamination != nil {
+		return runContamination(ctx, s, dir, version, progress)
+	}
+	if s.Convergence != nil {
+		return runConvergence(ctx, s, dir, version, progress)
+	}
+	if s.Motifs != nil {
+		return runMotifs(ctx, s, dir, version, progress)
+	}
+	if s.Counts != nil {
+		return runCounts(ctx, s, dir, version, progress)
 	}
 	if s.BCells != nil {
 		return runBCells(ctx, s, dir, version, progress)

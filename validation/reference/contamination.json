@@ -1,0 +1,335 @@
+{
+  "input": {
+    "samples": [
+      {
+        "sample": {
+          "name": "a",
+          "subject": "one",
+          "batch": "lane-1"
+        },
+        "total": 200,
+        "eligible": 112,
+        "rows": 3,
+        "excluded": {}
+      },
+      {
+        "sample": {
+          "name": "b",
+          "subject": "two",
+          "batch": "lane-1"
+        },
+        "total": 1000,
+        "eligible": 6,
+        "rows": 3,
+        "excluded": {}
+      },
+      {
+        "sample": {
+          "name": "repeat",
+          "subject": "one",
+          "batch": "lane-1"
+        },
+        "total": 250,
+        "eligible": 94,
+        "rows": 3,
+        "excluded": {}
+      },
+      {
+        "sample": {
+          "name": "c",
+          "subject": "three",
+          "batch": "lane-1"
+        },
+        "total": 100,
+        "eligible": 12,
+        "rows": 3,
+        "excluded": {}
+      },
+      {
+        "sample": {
+          "name": "empty",
+          "subject": "four",
+          "batch": "lane-1"
+        },
+        "total": 0,
+        "eligible": 0,
+        "rows": 3,
+        "excluded": {}
+      }
+    ],
+    "receptors": [
+      {
+        "id": "nt-64f27d810d134dc4e2b44880",
+        "v": "TRBV5-1",
+        "j": "TRBJ2-7",
+        "nt": "TGTGCTAGCAGCGATCATCGTGGTGCTAACGAGCAGTACTTT",
+        "counts": [
+          5,
+          4,
+          6,
+          10,
+          0
+        ],
+        "pgen": 0.001
+      },
+      {
+        "id": "nt-afe7911c8c3c17d576bf3430",
+        "v": "TRBV5-1",
+        "j": "TRBJ2-7",
+        "nt": "TGTGCTAGCAGCCAGGGTCATACCGCTAACGAGCAGTACTTT",
+        "counts": [
+          100,
+          2,
+          80,
+          0,
+          0
+        ],
+        "pgen": null
+      },
+      {
+        "id": "nt-e66a11227dc364327b8d69cf",
+        "v": "TRBV5-1",
+        "j": "TRBJ2-7",
+        "nt": "TGTGCTAGCAGCAATCAGGGTCATACCAACGAGCAGTACTTT",
+        "counts": [
+          7,
+          0,
+          8,
+          2,
+          0
+        ],
+        "pgen": 0
+      }
+    ]
+  },
+  "pairs": [
+    {
+      "a": 0,
+      "b": 1,
+      "shared": 2,
+      "review": 2,
+      "highPgen": 1,
+      "unknownPgen": 1,
+      "sharedA": 105,
+      "sharedB": 6,
+      "fractionA": 0.525,
+      "fractionB": 0.006
+    },
+    {
+      "a": 0,
+      "b": 3,
+      "shared": 2,
+      "review": 2,
+      "highPgen": 1,
+      "unknownPgen": 0,
+      "sharedA": 12,
+      "sharedB": 12,
+      "fractionA": 0.06,
+      "fractionB": 0.12
+    },
+    {
+      "a": 0,
+      "b": 4,
+      "shared": 0,
+      "review": 0,
+      "highPgen": 0,
+      "unknownPgen": 0,
+      "sharedA": 0,
+      "sharedB": 0,
+      "fractionA": null,
+      "fractionB": null
+    },
+    {
+      "a": 1,
+      "b": 2,
+      "shared": 2,
+      "review": 2,
+      "highPgen": 1,
+      "unknownPgen": 1,
+      "sharedA": 6,
+      "sharedB": 86,
+      "fractionA": 0.006,
+      "fractionB": 0.344
+    },
+    {
+      "a": 1,
+      "b": 3,
+      "shared": 1,
+      "review": 1,
+      "highPgen": 1,
+      "unknownPgen": 0,
+      "sharedA": 4,
+      "sharedB": 10,
+      "fractionA": 0.004,
+      "fractionB": 0.1
+    },
+    {
+      "a": 1,
+      "b": 4,
+      "shared": 0,
+      "review": 0,
+      "highPgen": 0,
+      "unknownPgen": 0,
+      "sharedA": 0,
+      "sharedB": 0,
+      "fractionA": null,
+      "fractionB": null
+    },
+    {
+      "a": 2,
+      "b": 3,
+      "shared": 2,
+      "review": 2,
+      "highPgen": 1,
+      "unknownPgen": 0,
+      "sharedA": 14,
+      "sharedB": 12,
+      "fractionA": 0.056,
+      "fractionB": 0.12
+    },
+    {
+      "a": 2,
+      "b": 4,
+      "shared": 0,
+      "review": 0,
+      "highPgen": 0,
+      "unknownPgen": 0,
+      "sharedA": 0,
+      "sharedB": 0,
+      "fractionA": null,
+      "fractionB": null
+    },
+    {
+      "a": 3,
+      "b": 4,
+      "shared": 0,
+      "review": 0,
+      "highPgen": 0,
+      "unknownPgen": 0,
+      "sharedA": 0,
+      "sharedB": 0,
+      "fractionA": null,
+      "fractionB": null
+    }
+  ],
+  "matches": [
+    {
+      "receptor": "nt-64f27d810d134dc4e2b44880",
+      "a": 0,
+      "b": 1,
+      "countA": 5,
+      "countB": 4,
+      "fractionA": 0.025,
+      "fractionB": 0.004,
+      "ratio": 6.25,
+      "review": true,
+      "pattern": "Shared high abundance",
+      "pgenClass": "High Pgen: plausible publicness"
+    },
+    {
+      "receptor": "nt-afe7911c8c3c17d576bf3430",
+      "a": 0,
+      "b": 1,
+      "countA": 100,
+      "countB": 2,
+      "fractionA": 0.5,
+      "fractionB": 0.002,
+      "ratio": 250.0,
+      "review": true,
+      "pattern": "Asymmetric observed fractions",
+      "pgenClass": "Unknown Pgen"
+    },
+    {
+      "receptor": "nt-64f27d810d134dc4e2b44880",
+      "a": 0,
+      "b": 3,
+      "countA": 5,
+      "countB": 10,
+      "fractionA": 0.025,
+      "fractionB": 0.1,
+      "ratio": 4.0,
+      "review": true,
+      "pattern": "Shared high abundance",
+      "pgenClass": "High Pgen: plausible publicness"
+    },
+    {
+      "receptor": "nt-e66a11227dc364327b8d69cf",
+      "a": 0,
+      "b": 3,
+      "countA": 7,
+      "countB": 2,
+      "fractionA": 0.035,
+      "fractionB": 0.02,
+      "ratio": 1.75,
+      "review": true,
+      "pattern": "Shared high abundance",
+      "pgenClass": "Below declared high-Pgen threshold"
+    },
+    {
+      "receptor": "nt-64f27d810d134dc4e2b44880",
+      "a": 1,
+      "b": 2,
+      "countA": 4,
+      "countB": 6,
+      "fractionA": 0.004,
+      "fractionB": 0.024,
+      "ratio": 6.0,
+      "review": true,
+      "pattern": "Shared high abundance",
+      "pgenClass": "High Pgen: plausible publicness"
+    },
+    {
+      "receptor": "nt-afe7911c8c3c17d576bf3430",
+      "a": 1,
+      "b": 2,
+      "countA": 2,
+      "countB": 80,
+      "fractionA": 0.002,
+      "fractionB": 0.32,
+      "ratio": 160.0,
+      "review": true,
+      "pattern": "Asymmetric observed fractions",
+      "pgenClass": "Unknown Pgen"
+    },
+    {
+      "receptor": "nt-64f27d810d134dc4e2b44880",
+      "a": 1,
+      "b": 3,
+      "countA": 4,
+      "countB": 10,
+      "fractionA": 0.004,
+      "fractionB": 0.1,
+      "ratio": 25.0,
+      "review": true,
+      "pattern": "Asymmetric observed fractions",
+      "pgenClass": "High Pgen: plausible publicness"
+    },
+    {
+      "receptor": "nt-64f27d810d134dc4e2b44880",
+      "a": 2,
+      "b": 3,
+      "countA": 6,
+      "countB": 10,
+      "fractionA": 0.024,
+      "fractionB": 0.1,
+      "ratio": 4.166666666666667,
+      "review": true,
+      "pattern": "Shared high abundance",
+      "pgenClass": "High Pgen: plausible publicness"
+    },
+    {
+      "receptor": "nt-e66a11227dc364327b8d69cf",
+      "a": 2,
+      "b": 3,
+      "countA": 8,
+      "countB": 2,
+      "fractionA": 0.032,
+      "fractionB": 0.02,
+      "ratio": 1.6,
+      "review": true,
+      "pattern": "Shared high abundance",
+      "pgenClass": "Below declared high-Pgen threshold"
+    }
+  ],
+  "sameSubjectPairs": 1
+}

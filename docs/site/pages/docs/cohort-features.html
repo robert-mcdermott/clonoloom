@@ -1,0 +1,36 @@
+---
+title: Subject feature tables
+description: Export exact saved sample measurements as subject-level cohort features, with units, missingness, design selection and source provenance.
+lede: A cohort table starts with the selected biological observations. Choose a saved study design and a saved diversity result to retain one sample per subject and selected group, with every value traceable to its source analysis.
+---
+<h2 id="build">Choose the evidence</h2>
+<ol>
+<li>Annotate subjects and groups, then check and save a named <a href="cohort-design.html">Cohort study design</a>. Select repeated samples explicitly with reasons; no library is automatically chosen or pooled.</li>
+<li>In Repertoire, <a href="diversity.html">measure diversity</a> under the desired clonotype definition and QC filter.</li>
+<li>In Cohort, scroll to <strong>Subject feature table</strong>. Choose the exact saved design version and diversity parent, then build the table. Both must refer to the same dataset and complete source sample set.</li>
+</ol>
+<p>The saved design's annotations and exclusions are used even if current annotations have changed. Save a new design version to use changed annotations. One row is one selected subject/group observation. An independent design has one row per subject; a paired design has two, linked by the same subject identifier. These rows are not independent replicates in a paired analysis.</p>
+<shot name="cohort-features" alt="Subject feature table for six artificial subjects, with three in each selected group, displaying observed Hill diversity q=1 from a saved diversity result">First observations from the simulated TRB study. The labels are simulation inputs, not evidence of a significant group effect. Each displayed value comes from its individual saved sample.</shot>
+
+<h2 id="values">Values and units</h2>
+<p>The fixed version 1 catalog contains assigned abundance, observed richness, Shannon entropy, observed Hill diversity of orders 1 and 2, Pielou evenness, Shannon clonality, Simpson concentration, Gini–Simpson index, Gini coefficient, largest-clone share, top-10-clone share and estimated sample coverage. The on-screen catalog and exported JSON define every formula and unit.</p>
+<ul>
+<li><strong>Assigned abundance</strong> is the sum of positive clonotype abundances after definition and QC, in the parent's cells, reads, UMIs, templates or sequences. It is not raw sequencing depth.</li>
+<li><strong>Shannon entropy</strong> is in nats; <strong>Hill diversity</strong> is in effective clonotypes. Shares and coverage are fractions, not percentages.</li>
+<li><strong>Coverage</strong> estimates abundance completeness, not the fraction of all clonotypes found. It requires whole abundances.</li>
+<li><strong>Empty samples</strong> retain zero abundance and observed richness. Other metrics are missing. Single-clone samples have undefined normalized Shannon evenness and clonality. Missing estimates retain their reasons.</li>
+</ul>
+<p>Switch the displayed feature to inspect observations, or search subject, group and sample labels. Tables show up to 50 matching rows per page. The CSV always includes all selected observations and all 13 features, with exact round-trip numeric precision. Display rounding does not alter exports.</p>
+
+<h2 id="interpret">Interpret the table</h2>
+<p>These are point estimates at each sample's observed depth. Observed richness and diversity depend on depth; the table does not rarefy, standardize coverage, average libraries, pool counts, impute missing values or test groups. Parent bootstrap intervals remain in the saved parent document and describe within-sample measurement uncertainty. They are not confidence intervals for differences among subjects. Use a saved table for <a href="cohort-comparisons.html">subject group comparisons</a> under its explicit independent or paired design.</p>
+<p>The table is a first set of sample/subject features for external modeling. Receptor-level, usage and other feature families are outside this initial catalog. Choosing selection rules after looking at outcomes can introduce bias; declare the scientific selection before using the table.</p>
+
+<h2 id="export">Reopen and export</h2>
+<p>The result is an immutable artifact in the project Results list, with undo/redo and a saved methods description. New tables require an opened source dataset to bind source fingerprints and notices. Saved tables reopen and export without the original files or diversity artifact.</p>
+<p><strong>Export feature table ZIP</strong> includes <code>subject-features.csv</code>, <code>catalog.json</code>, <code>cohort-features.json</code>, <code>manifest.json</code> and <code>NOTICE.txt</code>. The JSON retains all design annotations and exclusions, the exact parent measurements and manifest, definition, QC, abundance unit, source fingerprints, method versions and citations. Empty CSV numeric cells have companion <code>_missing</code> reason columns; JSON uses null. Provider terms remain attached to derived results.</p>
+<p>Remote clients discover saved design versions and artifacts with <code>get_state</code>, then use <code>build_cohort_features</code> with explicit <code>design</code> and <code>diversity</code> IDs. See <a href="remote-control.html">Remote control</a>.</p>
+
+<h2 id="sources">Sources and validation</h2>
+<p><a href="https://doi.org/10.1111/j.2006.0030-1299.14714.x">Jost (2006)</a> distinguishes entropy from effective diversity. Coverage follows <a href="https://doi.org/10.1890/11-1952.1">Chao and Jost (2012)</a>; diversity sampling methods follow <a href="https://doi.org/10.1890/13-0133.1">Chao et al. (2014)</a>. This table copies already validated measurements rather than refitting them. Catalog selection, missing-value labels and the exact join are ClonoLoom policies.</p>
+<p>An independent Python standard-library reference calculates all columns from raw abundances, including pairwise Gini differences. Controls include empty, single-clone, equal, skewed, fractional and scaled samples, singleton coverage and more than ten clones. Tests also verify selection, paired identity, missing versus zero, checksum refusal, durable replay, source-free export and CSV/JSON round trips.</p>

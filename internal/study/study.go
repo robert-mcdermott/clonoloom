@@ -214,7 +214,7 @@ func Describe(samples []Sample) Design {
 	add(Finding{Code: "study-bare-number", Severity: "note", Title: "Time points read as days", Count: len(bare), Of: timed, Examples: bare,
 		Detail: "A number without a unit is read as days.", Remedy: "Write the unit (week 4, month 3) where these are not days."})
 	add(Finding{Code: "study-replicates", Severity: "note", Title: "Samples taken at one time", Count: replicateGroups, Examples: replicated,
-		Detail: "Two or more samples of one subject at one time are replicates: their differences measure the biological and sampling variance that the expansion tests account for.", Remedy: ""})
+		Detail: "Two or more samples share a subject and time. Their technical or biological relationship must be established from the study design; they do not add independent subjects. Use only justified stable replicates to fit expansion variance.", Remedy: ""})
 	add(Finding{Code: "study-one-sample", Severity: "note", Title: "Subjects with one time point", Count: len(single), Of: subjects, Examples: single,
 		Detail: "A subject needs samples at two times or more for its clonotypes to be followed or tested between them.", Remedy: ""})
 	add(Finding{Code: "study-no-reference", Severity: "note", Title: "Subjects without a reference sample", Count: len(noReference), Of: subjects, Examples: noReference,

@@ -1,0 +1,212 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "c56c39abb849e21c45d9a09eea6e4894981517c177c7efafe4e884c5db895378"
+    },
+    {
+      "path": "S01-1.tsv",
+      "sha256": "1c53d6e11b45939451c9456a3c929e9ccc82d335d483055c68f39e506c57d786"
+    },
+    {
+      "path": "S02-1.tsv",
+      "sha256": "7f1ec2ac05e2cabccd774351fd938d003154d8db1d3a1ad91db37b0013c2ae39"
+    },
+    {
+      "path": "S03-1.tsv",
+      "sha256": "3c819a41274487b2c71a50b58f5eaf2ee9708a7542a2a8115183741e3a0087e3"
+    },
+    {
+      "path": "S04-1.tsv",
+      "sha256": "3ac1edaca9b05fbaa518ccb7f15d01f93f08a830f0ea12b0c6b773af638b8b94"
+    },
+    {
+      "path": "S05-1.tsv",
+      "sha256": "a31dbf1df2a6a1c0269013bf0b56502fe7cb97536d306c6af4f8f87e2e43dc76"
+    },
+    {
+      "path": "S06-1.tsv",
+      "sha256": "d1df085601254761b9cdd75543360dc863230369ed8bfa6a563f540d4b5b7440"
+    },
+    {
+      "path": "S07-1.tsv",
+      "sha256": "c92463ce84700e684ee4ae67e6718e7dd1d15e2fba31a9c6304e689041f9f6b3"
+    },
+    {
+      "path": "S08-1.tsv",
+      "sha256": "fe1cfd9a09b58bbac8c2fc5cdc6fcb881b6d2f13f04bea1f643008f84fb6894a"
+    },
+    {
+      "path": "S09-1.tsv",
+      "sha256": "eff63cd4dc5ad22b6ec829cebe6af597747638709d3a1851a4bdd79e69af99cc"
+    },
+    {
+      "path": "S10-1.tsv",
+      "sha256": "db65c3919e61af83e114605a1bb5c370a85d799575cf8d8a49ad8f990d330e34"
+    },
+    {
+      "path": "S11-1.tsv",
+      "sha256": "16cf9f10f736f676791ccd52d85bc55823e3b95283b2c32aebd9ae34d81edc03"
+    },
+    {
+      "path": "S12-1.tsv",
+      "sha256": "f1a6b5a0cb58cfa3e2746c84cf02838c5f516c512884cfb920fbc771781dfbec"
+    },
+    {
+      "path": "S13-1.tsv",
+      "sha256": "5c357ebfddb963328a5ab157666197a367ad1292ce3970cde8998ad90318e3e2"
+    },
+    {
+      "path": "S14-1.tsv",
+      "sha256": "a2c97b02842999ee7ba708ef76883e500b3172c432d13fe3a89bb207c9d35dfc"
+    },
+    {
+      "path": "S15-1.tsv",
+      "sha256": "8f7f7ed5a5ba9586e0744fcb660812ccb1e8c0e4ba7edb197e3c4b4a9baa79bb"
+    },
+    {
+      "path": "S16-1.tsv",
+      "sha256": "78cd092e1975850b41c4578c6f44d7888bd68df368082b2872596d3493306996"
+    },
+    {
+      "path": "S17-1.tsv",
+      "sha256": "84df18055f5b2e7f52c36d9e5decf33f7fd1152ae7960798cab78b17733d7dec"
+    },
+    {
+      "path": "S18-1.tsv",
+      "sha256": "47b11c81452bb41bdec4b42fbe6b69ee279e558dde3307ed18e687d09c41145b"
+    },
+    {
+      "path": "S19-1.tsv",
+      "sha256": "5ba8f130f0780b3b87374819470587dbbacd84edd31cf98d9a4bc38b60a32bbf"
+    },
+    {
+      "path": "S20-1.tsv",
+      "sha256": "017a82268e5fa8878f8e6efb1029b713aba75cb73ace257f7131e49d1ef00b7d"
+    },
+    {
+      "path": "S21-1.tsv",
+      "sha256": "f58723157d3177fb7151b7d10bc95c83840bfc0290b84141693d381880cc71e8"
+    },
+    {
+      "path": "S22-1.tsv",
+      "sha256": "f7bc654238381593c1664c57564a5c50d4e053f4a527df475a51931165014ff9"
+    },
+    {
+      "path": "S23-1.tsv",
+      "sha256": "4ebc377d27cc6d0531591fb68fd471d7a9869ef5c6e59aa3aca4fa3b7c2d88be"
+    },
+    {
+      "path": "S24-1.tsv",
+      "sha256": "c651e01e92bf4bdbbd42c8c705ad9f30c8303bad8f0b81aa7fac0bf7e6df327f"
+    },
+    {
+      "path": "S25-1.tsv",
+      "sha256": "7b56e8135d4ff766fe01db3b5152217805d0d470813b62e437ebd1bd96582557"
+    },
+    {
+      "path": "S26-1.tsv",
+      "sha256": "a93661ad17e3a1c4d0794d9b47135e2da5b0795bbdecf58690c646335f694a1f"
+    },
+    {
+      "path": "S27-1.tsv",
+      "sha256": "065c008021780ef73d1a3ada2d48d5ace4f2a8798bb95580375331f99214024b"
+    },
+    {
+      "path": "S28-1.tsv",
+      "sha256": "430ea460c4dce75acef6cf6ff51bc1adf11194372fdf3bb5d817a8a72c7a33f0"
+    },
+    {
+      "path": "S29-1.tsv",
+      "sha256": "a84210ef6021d32d7dda9f4b923dec810378555f7e4f414993c68ef1d62a666b"
+    },
+    {
+      "path": "S30-1.tsv",
+      "sha256": "3dc4d3057760969e7250f4cb820a9714ac1ac7be606dfebb641a22defc57c58f"
+    },
+    {
+      "path": "S31-1.tsv",
+      "sha256": "b10cfdc35d50990a3b12d825fc3bbdd675177f2a3497b597033c7411055cd704"
+    },
+    {
+      "path": "S32-1.tsv",
+      "sha256": "b893d6499282500c41f2764e0306e371cee16a9237a28ef6ef8527ce8481b325"
+    },
+    {
+      "path": "repertoires.airr.json",
+      "sha256": "2acfd01570f2baee39bb04405de9feef20b4ea3037772f0ef50a8e60932f482d"
+    },
+    {
+      "path": "truth/observations.tsv",
+      "sha256": "5c9536396ab60013a0646e5843c404eab00e195e5efdce32edc4d80e2c46f351"
+    }
+  ],
+  "model": "clonoloom-replicated-counts-v1",
+  "simulator": "ClonoLoom 0.7.0",
+  "study": {
+    "name": "counts-unbalanced",
+    "title": "An unbalanced replicated repertoire study",
+    "seed": 20261105,
+    "groups": null,
+    "samplesPerSubject": 0,
+    "templates": null,
+    "readsPerTemplate": 0,
+    "readsSize": 0,
+    "recombination": {
+      "vDeletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "d5Deletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "d3Deletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "jDeletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "vdInsertions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "composition": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "djInsertions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "composition": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "d2WithJ2": 0,
+      "selectLengths": false
+    },
+    "counts": {
+      "subjects": 32,
+      "layout": "independent",
+      "null": false,
+      "unbalanced": true
+    }
+  }
+}
