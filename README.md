@@ -261,8 +261,11 @@ from captured evidence and compares exact output bytes; original receptor source
 data capture are not rerun. Reports offers both modes with explicit limits.
 [Headless recipes](docs/HEADLESS.md) run batch QC and motif screens from named, checksum-pinned
 AIRR inputs, or replay supported certificates, without a browser or server. They retain
-normalized parameters, provider notices and a complete run inventory. The
-[Wave 8 plan](clonoloom-spec/roadmap.md) schedules further source coverage, checkpoints, reports, MCP
+normalized parameters, provider notices and a complete run inventory.
+[Analysis checkpoints](docs/CHECKPOINTS.md) keep immutable local settings and attached result
+bytes, compare exact recorded changes and recover through Undo/Redo. They do not back up
+original source files or replace scientific replay. The
+[Wave 8 plan](clonoloom-spec/roadmap.md) schedules further source coverage, reports, MCP
 and generated Python/R clients. Published binaries remain 0.7.0
 until the next release.
 

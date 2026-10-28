@@ -1040,3 +1040,14 @@ without changing certificate v1 or existing cohort scopes. Headless recipe v1
 normalized parameters and an optional clock. The final `clonoloom-run` v1 record inventories
 outputs and preserves completed/failed/differing/unavailable/cancelled outcomes. Neither is a
 project archive. See [HEADLESS.md](HEADLESS.md) for exact fields, bounds, support and exit codes.
+
+
+## Analysis checkpoints (Wave 8 development)
+
+`clonoloom-checkpoint` v1 is local immutable evidence: original `project.json` plus the original
+manifests and inventoried files of attached completed artifacts. Its `cp-<SHA256>` identity pins
+a sorted inventory; source paths are never opened. `clonoloom-checkpoint-diff` v1 contains complete
+raw before/after JSON strings beneath descriptive changes. Recovery restores analysis values and
+exact attached result bytes, retaining current project identity/history. Neither format is a
+certificate, portable archive or running-job state. See [CHECKPOINTS.md](CHECKPOINTS.md) for
+bounds, version checks, conflict refusal, cancellation, numeric precision and replay limits.

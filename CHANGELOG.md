@@ -4,6 +4,18 @@
 
 ### Added
 
+- **Checkpoints and analysis differences (wave 8, slice 4).** Preserve named immutable local
+  analysis checkpoints with exact project JSON, completed attached result files and SHA-256
+  inventories. Compare recorded sources, definitions, QC, populations, parameters and result
+  identities with raw JSON evidence, preserving numeric tokens, missing values and array order.
+  Recover missing result files without changing their bytes or overwriting conflicts; restore
+  analysis values through undo/redo while keeping current identity and history. Refuse stale
+  edits, incompatible versions, corrupt evidence and browser numeric loss. Expose the same
+  Reports workflow through shared actions and document its local recovery boundary: no original
+  source backup, running-job resume, implicit recomputation or expanded replay support.
+  Check recovered certificate identity and exact replay, independent inventories, compatibility
+  and both-theme artificial-study workflows. Keep version 0.7.0.
+
 - **Headless recipes and broader replay (wave 8, slice 3).** Add native `clonoloom run`
   with checksum-pinned named inputs, explicit batch task selection, new output directories,
   fixed/resolved recipe time, source validation findings, normalized recipes and run inventories.

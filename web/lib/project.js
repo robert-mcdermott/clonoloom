@@ -63,7 +63,7 @@ export function parseProject(text) {
     throw new Error(`The project was saved by a newer ClonoLoom (project version ${doc.version}; this program reads up to ${PROJECT_VERSION}). Update ClonoLoom to open it.`);
   }
   if (typeof doc.id !== 'string' || !ID_PATTERN.test(doc.id)) throw new Error('The project has no valid id.');
-  for (const field of ['datasets', 'artifacts', 'decisions', 'views', 'samples', 'filters', 'definitions', 'expression', 'cohortDesigns', 'history']) {
+  for (const field of ['datasets', 'artifacts', 'decisions', 'views', 'samples', 'filters', 'definitions', 'expression', 'cohortDesigns', 'history', 'checkpoints']) {
     if (field in doc && !Array.isArray(doc[field])) throw new Error(`The project's ${field} is not a list.`);
   }
   const base = createProject(typeof doc.name === 'string' ? doc.name : 'Untitled project', { id: doc.id, now: doc.created ?? doc.modified });
@@ -87,5 +87,5 @@ export function rename(project, name, now) {
 
 // Whether a project holds anything worth saving (an empty, untitled one is not saved).
 export function isEmptyProject(project) {
-  return !project.datasets.length && !project.artifacts.length && !project.decisions.length && !project.views.length && !(project.expression ?? []).length;
+  return !project.datasets.length && !project.artifacts.length && !project.decisions.length && !project.views.length && !(project.expression ?? []).length && !(project.checkpoints ?? []).length;
 }

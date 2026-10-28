@@ -3036,3 +3036,39 @@ Tests cover unsupported workers/methods, checksum changes, changed output, provi
 explicit batch selection, cancellation and non-overwrite. A registry-derived support matrix
 prevents unimplemented kinds being presented as covered. Reports show the new scopes in both
 light and dark themes without adding an unsupported biological interpretation.
+
+### 5.45 Analysis checkpoints and descriptive differences (wave 8, slice 4)
+
+**Boundary.** A checkpoint is preserved local analysis evidence, not a new scientific method or
+an execution-position checkpoint. The computational reproducibility distinction and NASEM (2019)
+reference in §5.43 apply: copying saved results is not recomputation, independent replication or
+validation of a study. No statistical estimator, plotting method or reference dataset changes.
+
+**ClonoLoom's choice.** Follow the Apache-2.0 CytoWeave 0.8.1 workflow of named analysis snapshots,
+comparison and undoable restoration. Preserve exact project bytes and all inventoried files of
+directly attached completed local artifacts, with their original manifests and captured notices.
+Go creates a bounded, versioned SHA-256 inventory. Staging, file synchronization and directory
+promotion precede publication; conflict checks precede recovery. Do not open recorded source paths,
+copy external source outputs, rewrite scientific JSON or repair conflicting evidence silently.
+
+Compare analysis structures and result methods, parameters, parent records, file inventories and
+manifest fingerprints. Keep raw JSON scalar tokens instead of converting numbers to floats;
+large integers, missing fields, nulls and array order retain their meaning. Descriptions name
+recorded changes, not causal effects, biological interpretations or recomputed significance.
+Configuration changes leave saved results' original settings untouched. Recovery restores analysis
+values with an undo entry while retaining current project identity/name/history/checkpoint references.
+The browser refuses numeric-token loss and stale responses; pending callbacks are invalidated.
+
+**Limits.** Original receptor/expression files, caches, unattached parents, installed reference
+libraries, running jobs and transient panel drafts are not backed up. Checkpoint references need
+the local library's immutable evidence; portable transfer remains the later archive contract.
+Interruption may leave verified unreferenced artifacts; retry is idempotent, but whole-library
+transactionality, hardware durability, authenticity and de-identification are not claimed.
+Certificate replay remains limited to its explicit five-kind matrix and captured-input boundaries.
+
+**Validation.** Delete a saved artificial-study result, recover its exact manifest/output bytes,
+confirm its original certificate fingerprint and rerun the supported scientific worker. Compare
+with the original record and replay digests, independently inventory saved bytes, exercise future
+versions, changed files, conflict refusal, cancellation, source-free recovery and undo/redo, and
+review the same workflow in both themes. Existing scientific controls continue to validate the
+unchanged calculations separately from recovery integrity.

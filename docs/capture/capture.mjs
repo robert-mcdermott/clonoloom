@@ -403,6 +403,37 @@ async function capturedCertificateScene(kind) {
 }
 
 const scenes = {
+  async checkpoints() {
+    await batchQCScene();
+    const artifact = await js('window.batchQCCheck.id');
+    await act('set_definition', {definition:{chains:[],junction:'aa',v:'gene',j:'gene'}});
+    const before = (await act('create_checkpoint', {name:'Declared batch QC study'})).data;
+    const certificate = (await act('inspect_certificate', {artifact})).data.certificate;
+    await js(`(()=>{const app=window.clonoloom,p=app.store.project;window.checkpointOriginal=JSON.stringify({datasets:p.datasets,artifacts:p.artifacts,samples:p.samples});app.store.commit({...p,datasets:p.datasets.map((d)=>({...d,definition:{...(d.definition??{}),junction:'nt'},filter:'f-review'})),filters:[...(p.filters??[]),{id:'f-review',name:'Proposed productive-only review',dataset:p.datasets[0].id,version:1,rules:{productiveOnly:true,minCount:3},reason:'Sensitivity review; no results recomputed'}],samples:(p.samples?.length?p.samples:[{dataset:p.datasets[0].id,sample:p.datasets[0].samples[0]}]).map((s,i)=>i===0?{...s,condition:'Review group'}:s)},'Prepare sensitivity review');return true})()`);
+    const after = (await act('create_checkpoint', {name:'Proposed sensitivity settings'})).data;
+    const diff = (await act('compare_checkpoint', {checkpoint:before.id, against:after.id})).data;
+    if (!diff.changes.some((c)=>c.category==='QC filters') || !diff.changes.some((c)=>c.category==='Clonotype definitions') || !diff.changes.some((c)=>c.category==='Sample populations and annotations')) throw new Error('Checkpoint categories missing');
+    // Delete only this disposable capture library's result, then recover its exact bytes.
+    rmSync(join(places.library,'artifacts',artifact),{recursive:true});
+    await act('recover_checkpoint', {checkpoint:before.id});
+    await js(`(()=>{const app=window.clonoloom,p=app.store.project;if(JSON.stringify({datasets:p.datasets,artifacts:p.artifacts,samples:p.samples})!==window.checkpointOriginal)throw new Error('Recovery altered analysis');app.store.undo();if(!app.store.project.filters.some((f)=>f.id==='f-review'))throw new Error('Recovery undo failed');app.store.redo();return true})()`);
+    await js(`(async()=>{const app=window.clonoloom;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('reports');return true})()`);
+    const restored = (await act('inspect_certificate', {artifact})).data.certificate;
+    if (restored.fingerprint !== certificate.fingerprint) throw new Error('Recovery changed saved evidence');
+    await js(`(async()=>{const response=await fetch('api/certificates/${artifact}/download'),r=await window.clonoloom.certificatesView.verify(await response.blob(),'${certificate.fingerprint}','replay');if(r.verdict!=='replay-match')throw new Error('Recovered evidence does not replay');return true})()`);
+    await js(`(async()=>{
+      const app=window.clonoloom,v=app.checkpointsView,originalFetch=window.fetch;let release,entered;
+      const gate=new Promise((r)=>{release=r}),started=new Promise((r)=>{entered=r});
+      window.fetch=async(...args)=>{const response=await originalFetch(...args);if(String(args[0]).includes('/recover')){entered();await gate;}return response};
+      try{const pending=v.recover('${before.id}');await started;app.store.commit({...app.store.project,recoverySentinel:'keep newer edit'},'Concurrent edit');release();let refused=false;try{await pending}catch(e){refused=e.message.includes('analysis changed')}if(!refused||app.store.project.recoverySentinel!=='keep newer edit')throw new Error('Stale recovery replaced a newer edit');}
+      finally{release();window.fetch=originalFetch;}
+      app.store.undo();await new Promise((r)=>setTimeout(r,0));
+      const pending=app.checkpointsView.compare('${before.id}');[...document.querySelectorAll('.checkpoints-view button')].find((b)=>b.textContent==='Cancel checkpoint operation').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||app.checkpointsView.state().busy||app.checkpointsView.state().difference)throw new Error('Checkpoint cancellation left a result');return true;
+    })()`);
+    await act('compare_checkpoint', {checkpoint:before.id, against:after.id});
+    await js(`(()=>{const root=document.querySelector('.checkpoints-view');root.querySelector('details')?.setAttribute('open','');root.closest('.workbench-scroll').scrollTop=0;return true})()`);
+    await clearToasts(); await checkAccessibility();
+  },
   async ['certificates-batch-qc']() { await capturedCertificateScene('batch-qc'); },
   async ['certificates-motifs']() { await capturedCertificateScene('motifs'); },
   async certificates() {
@@ -1424,7 +1455,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

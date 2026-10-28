@@ -563,3 +563,13 @@ See [the captured-evidence boundary](CERTIFICATES.md#exact-replay-boundary).
 for every registered worker, including explicit unavailable entries. Native
 [`clonoloom run`](HEADLESS.md) supplies named source snapshots without exposing new filesystem
 paths through remote control. It uses the existing capture functions and Go workers.
+
+
+### Checkpoint actions (wave 8 development)
+
+`create_checkpoint {name}`, `compare_checkpoint {checkpoint, against?}` and
+`recover_checkpoint {checkpoint}` run through Reports and the normal undo store. Comparison
+uses current analysis when `against` is omitted. Recovery reinstalls missing saved result files
+and restores analysis values, refusing conflicting bytes and stale edits. It does not read new
+source paths, resume jobs or perform scientific replay. Checkpoint IDs and evidence are local to
+the library. See [CHECKPOINTS.md](CHECKPOINTS.md) for the exact API and recovery limits.

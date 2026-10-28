@@ -87,6 +87,21 @@ export function remoteActions(app) {
   const lociOf = (summary) => Object.keys(summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
 
   const actions = {
+    async create_checkpoint({name}) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.checkpointsView, 5000, 'Checkpoints');
+      return {message:'Local checkpoint created; no scientific recomputation.', data:await view.create(name)};
+    },
+    async compare_checkpoint({checkpoint, against = ''}) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.checkpointsView, 5000, 'Checkpoints');
+      return {message:'Recorded evidence compared; no biological effects inferred.', data:await view.compare(checkpoint, against)};
+    },
+    async recover_checkpoint({checkpoint}) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.checkpointsView, 5000, 'Checkpoints');
+      return {message:'Saved analysis recovered; Undo is available. No scientific recomputation.', data:await view.recover(checkpoint)};
+    },
     async inspect_certificate({ artifact, accept = false }) {
       await app.setMode('reports');
       const view = await waitFor(() => app.certificatesView, 5000, 'Reports');

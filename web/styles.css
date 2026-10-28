@@ -974,3 +974,4 @@ textarea.tracking-list { width: 100%; font-family: var(--mono); font-size: 12px;
 
 /* Evidence identifiers remain readable without widening the Reports view. */
 .certificate-fingerprint { overflow-wrap: anywhere; }
+.checkpoint-change summary { overflow-wrap: anywhere; }

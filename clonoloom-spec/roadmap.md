@@ -17,7 +17,8 @@ requirement's status is in `requirements.md`; release changes are in `CHANGELOG.
 released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
 with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
 `wave8` branch. Slices 1 and 2 were committed and pushed as `b459f61` and `62b088b`.
-Slice 3 is implemented and validated, awaiting user commit; no 0.8.0 release is made.
+Slice 3 was committed and pushed as `59b8868`. Slice 4 is implemented and validated, awaiting
+the user's commit. No 0.8.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2914,7 +2915,7 @@ No commit, tag, release or publication is performed by this slice's implementati
 
 ### Slice 3: headless recipes and broader replay
 
-**Implemented and validated; awaiting user commit.** A6, O5, O9, N2/N4/N7.
+**Committed and pushed as `59b8868`.** A6, O5, O9, N2/N4/N7.
 
 - Add native `clonoloom run --recipe --input NAME=PATH --out NEW_DIR`, following the
   compatible CytoWeave/MaveScape named-input, private execution and run-record patterns;
@@ -2985,6 +2986,75 @@ Validation completed:
 Keep version 0.7.0. A6/O5 remain partial outside the published matrix. Checkpoints are slice 4;
 additional source/parent contracts must be mapped explicitly before expanding support.
 
+
+### Slice 4: checkpoints and analysis differences
+
+**Implemented and validated; awaiting the user's commit.** O7, O9, N2/N4/N7.
+
+- Add named immutable local checkpoints in Reports, using the compatible CytoWeave pattern
+  of snapshot, compare and undoable recovery. Preserve raw project JSON and every inventoried
+  file of each directly attached completed local result; include its original manifest and
+  captured notices. Publish staged, synced files only after all input checks succeed.
+- Record a versioned SHA-256 inventory with a content-derived checkpoint ID. Preserve source
+  paths and fingerprints as records; never open or copy original receptor/expression sources.
+  This is local recovery evidence, not a portable project/archive or a running-job checkpoint.
+- Bound requests/project evidence to 16 MiB, 128 attached results, 256 inventory files,
+  existing certificate member bounds and 512 MiB total. Refuse unavailable, changed, incomplete,
+  external-output or unsupported-version evidence rather than omit it. Separate unattached
+  parents/reference installations remain outside recovery; supported replay uses its existing
+  captured-input contracts.
+- Compare a checkpoint against the current analysis or another checkpoint of the same project.
+  Go reports changes to source records, definitions, QC, sample annotations/populations, cohort
+  designs, parameters, result identities and saved manifest/file fingerprints. Exact raw JSON
+  evidence underlies each description, retaining large integers, missing versus null, and array
+  order. Do not infer effect sizes, significance or biological consequences from configuration.
+- Recovery preflights all existing result destinations, refuses conflicts without overwrite,
+  and reinstalls missing result directories with original bytes. Retry is idempotent. Commit
+  analysis values through the existing browser undo store only after recovery succeeds; keep
+  current identity/name, history and checkpoint references. Invalidate pending analysis callbacks
+  on recovery and undo/redo. Refuse browser numeric-token loss and stale-project/edit responses.
+- Checkpoint creation/reference changes and recovery are undoable; immutable evidence remains
+  in the local library when a reference is undone. Interrupted recovery can leave verified
+  unreferenced results, never a falsely completed project restoration. A force-kill/power loss
+  is not a transactional whole-library backup guarantee.
+- Keep existing certificate format, replay scopes, scientific workers and version 0.7.0.
+  Check recovered certificate fingerprints and exact replay against the original. Exercise
+  malformed/corrupt/version/conflict/cancellation controls, old-project compatibility,
+  independent inventory checks and both-theme artificial-study workflows.
+
+Validation completed:
+
+- Full application/internal race suite passed with the thirty-minute allowance (application
+  581.904 s). Final checkpoint race controls passed in 2.282 s after the metadata-size guard.
+  No scientific worker, estimator, plotting geometry or existing release fixture changed.
+- Deleted-result recovery preserves every original manifest/output byte and the original
+  certificate fingerprint, then passes exact native scientific replay. Retry is idempotent.
+  The independent Python inventory/hash oracle, run through `uv`, confirms checkpoint identity,
+  all three fixture files and restored replay digests. amd64 recovery/replay controls passed
+  in 1.471 s alongside native arm64 validation.
+- Corrupt files, conflicting destinations, incomplete/external evidence, future versions,
+  cross-project requests, cancellation and stale edits are refused. Preflight checks all
+  destinations before installing any missing result. Old release project envelopes still parse;
+  minimal version-1 envelopes retain existing core-list defaults without changing saved bytes.
+  Large numeric tokens, missing/null and array order remain distinct. An exact-limit regression
+  verifies 4096 differences followed by unchanged fields succeeds and 4097 refuses truncation.
+- Parser fuzzing completed 1,099,342 executions in thirty seconds without failure. Go vet,
+  gofmt, browser/helper syntax and six CGO-free platform builds pass. All 155 JavaScript tests
+  and 14 contrast/color-vision checks pass. Independent cohort comparison/feature, batch-QC
+  and no-fused-operations controls pass (3.417 s); this is not the complete release suite.
+- Both-theme checkpoint workflows pass on the existing realistic artificial batch-QC study:
+  changed definition/QC/population records, deleted-result recovery, undo/redo, saved reopening,
+  unchanged certificate identity, exact replay, stale-edit refusal and cancellation. Both new
+  screenshots were reviewed. The initial capture assumed optional sample annotations existed;
+  its fixture now supplies those records explicitly. Existing cohort, batch-QC and motif
+  certificate workflows also pass in both themes; their unchanged screenshots are retained.
+- Site build passes with 50 pages and 61 screenshot references. The audit passes 196 checks
+  across 49 pages, two themes and two widths. Guides distinguish exact inventoried bytes from
+  recovered analysis values, and document local-only scope, numeric refusal, undo semantics,
+  interruption limits and unchanged scientific replay support. Version remains 0.7.0.
+
+Slice 5 remains self-checking reports. Portable transfer of checkpoint evidence belongs to the
+explicit project-archive contract in slice 10; no commit, tag, release or publication here.
 
 ## Later waves (outlined)
 

@@ -55,7 +55,7 @@ const DOCS = [
   { group: 'Cells', pages: [['cell-study', 'A complete study'], ['cells', 'Expression evidence'], ['pseudobulk', 'Pseudobulk counts'], ['pseudobulk-de', 'Pseudobulk expression']] },
   { group: 'B cells', pages: [['bcell-inputs', 'Sequence evidence'], ['bcell-families', 'Clonal families'], ['bcell-germlines', 'Germlines'], ['bcell-shm', 'Somatic hypermutation'], ['bcell-lineages', 'Lineage trees'], ['bcell-isotypes', 'Isotypes']] },
   { group: 'Cohorts', pages: [['cohort-study', 'Complete cohort studies'], ['cohort-design', 'Study design'], ['cohort-features', 'Subject features'], ['cohort-comparisons', 'Group comparisons'], ['cohort-counts', 'Replicated counts'], ['definition-robustness', 'Definition robustness']] },
-  { group: 'Results', pages: [['figures', 'Figures and exports'], ['record', 'The record'], ['certificates', 'Evidence certificates'], ['headless', 'Headless recipes']] },
+  { group: 'Results', pages: [['figures', 'Figures and exports'], ['record', 'The record'], ['certificates', 'Evidence certificates'], ['headless', 'Headless recipes'], ['checkpoints', 'Analysis checkpoints']] },
   { group: 'Reference', pages: [['simulation', 'Simulated studies'], ['remote-control', 'Remote control']] },
 ];
 const ORDER = DOCS.flatMap((g) => g.pages);

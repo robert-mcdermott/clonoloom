@@ -579,3 +579,26 @@ digests. It does not validate statistical calibration; `TestBatchQCIndependentRe
 `TestMotifsIndependentReference` retain that separate role for their existing method controls.
 The `certificates`, `certificates-batch-qc` and `certificates-motifs` capture scenes exercise
 integrity and exact replay in both themes using the existing realistic artificial studies.
+
+
+## Checkpoint recovery and descriptive differences (Wave 8, slice 4)
+
+`checkpoints_test.go` checks immutable inventories, exact numeric-token differences, missing/null,
+array order, source-free recovery and certificate identity/replay after deleting a saved result.
+Controls include corrupted project/result bytes, future formats, unsupported external outputs,
+conflicting destinations, preflight before any installation, cancellation, exact bounds and all
+old release project envelopes. `web/lib/checkpoints.test.mjs` checks references, numeric-loss
+refusal, preserved history and undo/redo with pending-callback invalidation.
+
+```sh
+mkdir -p /tmp/checkpoint-oracle
+CLONOLOOM_CHECKPOINT_ORACLE_DIR=/tmp/checkpoint-oracle go test . -run TestCheckpointRecoveryExactAndReplay
+UV_CACHE_DIR=/tmp/clonoloom-uv uv run --no-project validation/reference/checkpoint.py /tmp/checkpoint-oracle
+```
+
+The independent standard-library oracle checks the checkpoint identity, exact inventory bytes,
+original result manifest and recovered replay output digests. It does not validate scientific
+calibration. The `checkpoints` browser scene uses the existing artificial batch-QC study and
+exercises proposed sensitivity settings, comparison, deleted-result recovery, undo/redo, saved
+reopening, unchanged certificate identity, exact replay, stale-edit refusal and cancellation in
+both themes. Existing cohort/batch-QC/motif certificate scenes remain regression checks.

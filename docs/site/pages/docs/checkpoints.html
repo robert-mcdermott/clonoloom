@@ -1,0 +1,20 @@
+---
+title: Analysis checkpoints
+description: Preserve an analysis and its saved results, compare exact recorded differences, and recover with undo available.
+lede: Keep a named analysis state before revising a study, then see exactly what changed and return to its saved evidence.
+---
+<p class="callout">Wave 8 development: checkpoints require the development source. Recovery restores saved settings and result bytes. It does not recompute science or resume a running analysis.</p>
+<h2 id="save">Keep a checkpoint</h2>
+<p>Open <strong>Reports → Analysis checkpoints → Create checkpoint</strong> and give it a name. ClonoLoom preserves the recorded analysis and every inventoried file of its directly attached completed results in this computer's library. Missing, changed or unsupported evidence refuses the checkpoint, rather than silently omitting a result.</p>
+<h2 id="compare">Compare recorded changes</h2>
+<p>Select a checkpoint and compare it with the current analysis or another checkpoint of the same project. Expand a change to inspect the exact before/after JSON; export the complete difference report to keep it. Changes cover recorded sources, clonotype definitions, QC, sample annotations and populations, cohort designs, parameters and saved result identities.</p>
+<p>These descriptions do not estimate biological effects or significance. Array order matters; paths use indices starting at zero, and an absent field differs from null. Original source paths and fingerprints are compared as records without reopening the source files. Unchanged settings do not establish unchanged external data.</p>
+<shot name="checkpoints" alt="An artificial batch QC study's checkpoints, showing a proposed sensitivity revision and exact recorded analysis differences">The artificial study's saved QC result remains under its original parameters. Proposed settings are recorded changes, not recomputed findings.</shot>
+<h2 id="recover">Recover saved evidence</h2>
+<p>Select <strong>Recover checkpoint</strong>. ClonoLoom verifies its complete inventory and every destination before installing missing results. Conflicting existing bytes are refused without overwrite. The browser restores analysis values in one undoable edit; <strong>Undo</strong> returns to the previous analysis and <strong>Redo</strong> reapplies recovery. Pending callbacks from the earlier analysis cannot attach results to the restored one.</p>
+<p>The current project name, identity, history and checkpoint references remain; recovery adds a history entry. Original result files and manifests return with exactly their saved bytes. If numeric values could not survive a browser round trip exactly, recovery is refused. Reopening the project retains its checkpoint references.</p>
+<h2 id="limits">Know what recovery covers</h2>
+<p>Original receptor/expression sources, separate unattached parents, installed references, caches and running jobs are outside this local checkpoint. Keep the whole library backed up: project JSON alone does not carry checkpoint evidence. Undoing a checkpoint reference does not delete its immutable files.</p>
+<p>Interrupted recovery may leave verified unreferenced results or staging files. A retry is idempotent, but this is not a transactional whole-library backup or a hardware-failure guarantee. Captured identifiers, sequences, provider terms and interpretation limits remain; recovery does not de-identify data or grant redistribution rights.</p>
+<p>For supported results, use <a href="certificates.html">exact certificate replay</a> after recovery to rerun the existing scientific workers at their captured-input boundary. Storing a result in a checkpoint does not expand replay support. Changing settings does not retroactively change a saved result; compute a new result for the revised analysis.</p>
+<p>See the <a href="{{github}}/blob/main/docs/CHECKPOINTS.md">format, API, bounds and recovery reference</a> for the exact storage and comparison contracts.</p>

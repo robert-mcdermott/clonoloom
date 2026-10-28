@@ -94,6 +94,14 @@ export function createStore(initialProject) {
       state.project = next;
       notify(['project', ...topics]);
     },
+    // Recovery is undoable, but work started against the previous analysis must
+    // not attach its result to the recovered one.
+    recover(next, label = 'Recover checkpoint') {
+      this.commit(next, label, ['datasets', 'artifacts', 'focus', 'selection']);
+      state.generation += 1;
+      state.ui.focus = null;
+      state.ui.selection = null;
+    },
     // A check that the project open now is still open later: () => true until another is loaded.
     sameProject() {
       const generation = state.generation;
@@ -118,6 +126,7 @@ export function createStore(initialProject) {
     redoLabel: () => state.labels.future[state.labels.future.length - 1] ?? '',
     undo() {
       if (!state.past.length) return null;
+      state.generation += 1;
       state.future.push(state.project);
       const label = state.labels.past.pop();
       state.labels.future.push(label);
@@ -127,6 +136,7 @@ export function createStore(initialProject) {
     },
     redo() {
       if (!state.future.length) return null;
+      state.generation += 1;
       state.past.push(state.project);
       const label = state.labels.future.pop();
       state.labels.past.push(label);
