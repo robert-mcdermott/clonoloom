@@ -3217,7 +3217,7 @@ No commit, push, tag or release was performed. Slice 8 (Python client) follows m
 
 ### Slice 8: generated Python client
 
-**Implemented and validated; awaiting maintainer commit.** A4 first part. Follow the Apache-2.0
+**Committed as `f086392` and pushed by the maintainer.** A4 first part. Follow the Apache-2.0
 CytoWeave/MaveScape package layout, generated methods/help, remote.json discovery, standard-library
 HTTP transport and optional pandas helpers. Generate all 58 methods from a Go-checked catalog
 snapshot; CI checks both snapshot and generated-file drift. Python 3.10 is the minimum supported
@@ -3265,6 +3265,57 @@ Validation completed:
 
 No commit, push, tag, release or publication was performed. Slice 9 (generated R client) follows
 maintainer review; Python and R will share the action/permission/error contract and parity cases.
+
+### Slice 9: generated R client
+
+**Implemented and validated; awaiting maintainer commit.** Complete A4 using the Apache-2.0 CytoWeave/MaveScape
+R package pattern: generated `cl_*` functions, Rd help, S3 connections/results, curl transport
+and remote.json discovery. Share Python's catalog/API/policy, discovery precedence, explicit
+token isolation, typed failures, bounds, no retries and authoritative host grants/window review.
+
+Preserve JSON number tokens in a dedicated character-backed class rather than converting them
+to R doubles. Retain raw response bytes and native resultJSON. Distinguish omission, explicit
+NULL, empty objects and arrays, including singleton vectors in array parameters. Data frames
+use list columns preserving values; any lossy numeric conversion must be explicit and warned.
+No scientific computation, replay tolerance, new plot or inferred permission belongs here.
+
+Generate all functions/help and check drift. Validate numeric tokens, malformed/bounded JSON,
+vectors/nulls, discovery and refusal cases with fake HTTP fixtures and seeded parity cases.
+Build/install/check the R package, run Python regressions, and extend the isolated real-host
+driver to compare native R/Python/HTTP evidence and reviewed edits. Add CI and documented runnable
+examples; check the site in both themes. Keep version 0.7.0; portable archives remain slice 10.
+
+Validation completed:
+
+- All 58 R functions and Rd pages generate from the same Go-checked snapshot as Python;
+  generation drift, obsolete help, names and package version checks pass. The existing Python
+  generated files are unchanged. R CMD build/install/check passes with no errors, warnings or
+  notes on R 4.6.1 (curl 8.0.0, jsonlite 2.0.0); the Apache license and adaptation notice ship
+  in the package. CI adds release and oldrel-1 R checks; those remote matrix runs follow push.
+- Seven R test groups pass all 1,290 assertions, including 1,000 seeded exact-token round trips,
+  generated calls, faithful scalar/vector/null/object values, exact list-column frames, raw/native
+  evidence, discovery precedence/token isolation, version refusals and malformed/bounded JSON.
+  Unicode surrogates/NUL are refused explicitly. Millisecond timeout controls prevent accidental
+  unlimited timeouts from fractional seconds. HTTP failures, redirects, proxy isolation,
+  oversized results, ambiguous submitted outcomes and no-retry controls pass.
+- The installed R client and Python use one temporary, seeded vaccine project (five artificial
+  subjects, thirty samples; three observations of subject S01 opened). R/Python/direct HTTP
+  native query bytes match exactly at the same project state. Filtered rows retain scientific
+  values and full-table denominators while ranks change. Token/grant/null/unsafe-number refusals,
+  human rejection, timeout cancellation, named History and normal Undo/Redo pass. Both runnable
+  query examples execute. Only the test driver clicks review controls; no user library is used.
+- All seventeen Python regression tests pass. The full application/internal Go race suite and
+  amd64 catalog/five-kind HTML-certificate replay controls pass using valid cached results;
+  no native scientific code changed. Go vet, six CGO-free builds, JavaScript syntax, 163 browser
+  module tests and 14 contrast checks pass. CI YAML and the R matrix parse correctly.
+- The site builds 55 pages with 67 existing screenshot references. Its 216 accessibility/layout
+  checks across 54 pages, two themes and two widths pass with no violations or overflow.
+  No application plot or visual changes; no new scientific screenshots are needed. The R guide,
+  package help and research §5.50 explain representation, permissions, timeouts and scientific
+  limits. Exact certificate replay and release fixtures remain unchanged.
+
+No commit, push, tag, release or publication was performed. Slice 10 (portable project archives)
+follows maintainer review and commit.
 
 ## Later waves (outlined)
 

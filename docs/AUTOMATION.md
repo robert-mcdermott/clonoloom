@@ -1,7 +1,7 @@
 # Automation policy and review
 
 Wave 8 development, slice 6. Published 0.7.0 binaries predate this policy. The development
-host advertises API **2**, action catalog **1** and automation policy **1**. [MCP transport](MCP.md) is available in development slice 7; [Python](PYTHON.md) follows in development slice 8; R is slice 9. Application version remains 0.7.0.
+host advertises API **2**, action catalog **1** and automation policy **1**. [MCP transport](MCP.md) is available in development slice 7; [Python](PYTHON.md) and [R](R.md) are available in development slices 8–9. Application version remains 0.7.0.
 
 ## Explicit capabilities
 

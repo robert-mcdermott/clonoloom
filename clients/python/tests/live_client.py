@@ -76,4 +76,9 @@ except cl.ConnectionError as error:
 time.sleep(.5)
 idle()
 client.set_definition(preset='Nucleotide junction')
+if os.environ.get('CLONOLOOM_TEST_PARITY'):
+    final_native = client.query_clonotypes(limit=1000).data['resultJSON']
+    with urllib.request.urlopen(request) as response:
+        assert json.loads(response.read(), parse_float=Decimal)['data']['resultJSON'] == final_native
+    Path(os.environ['CLONOLOOM_TEST_PARITY']).write_bytes(final_native.encode('utf-8'))
 print('Python live checks passed: exact native HTTP parity, denominators, frames, grants/token/null/numeric refusals, human rejection, timeout and reviewed edit.', flush=True)

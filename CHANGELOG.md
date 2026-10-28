@@ -4,6 +4,15 @@
 
 ### Added
 
+- **Generated R client (wave 8, slice 9).** Share the 58-action catalog and permission contract
+  with Python. Generate functions and Rd help following the sibling applications' package
+  patterns. Preserve original JSON number tokens, native text and response bytes; distinguish
+  omission/null/arrays/objects and provide exact list-column frames. Keep explicit discovery,
+  compatibility checks before POST, host grants, human review and typed uncertain outcomes.
+  Bound streaming responses and refuse malformed evidence, implicit precision loss and retries.
+  Validate package build/install/check, fake HTTP fixtures and shared R/Python/HTTP native evidence
+  on a seeded simulated repertoire. Add CI and guides; scientific workers/replay stay unchanged.
+
 - **Generated Python client (wave 8, slice 8).** Generate 58 methods and argument/effect/review
   help from the shared Go catalog, with snapshot and generator drift checks in CI. Use explicit
   connection overrides, compatible API/catalog/policy checks before actions, typed errors and

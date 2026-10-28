@@ -696,3 +696,22 @@ retain full-table frequencies/definitions and filtered rank, exercise refusals a
 and verify actor-labelled History and normal Undo/Redo. It also executes the query example.
 The test driver alone clicks acceptance/rejection; no approval method exists in the client.
 Existing exact native certificate replay is checked separately. No new plot is added.
+
+### R client and shared evidence (wave 8, slice 9)
+
+```sh
+node clients/generate.mjs --check
+Rscript -e 'install.packages(c("curl", "jsonlite", "testthat", "withr", "pkgload"), repos="https://cloud.r-project.org")'
+node clients/test-r.mjs
+node clients/test-clients.mjs --r
+```
+
+The R driver runs fake HTTP fixtures and R CMD build/check in temporary directories. Exact
+number-token tests retain integer/decimal/exponent spelling, missing values and container shape;
+strict Unicode, duplicate-key, depth/size, permission, discovery and timeout controls fail
+explicitly. Generated functions/help are checked against the shared catalog. The shared browser
+workflow installs R temporarily and compares native R/Python/HTTP evidence from the same seeded
+artificial vaccination project. It exercises explicit grants, review/rejection, cancellation,
+History and Undo/Redo and runs both query examples. Only the test driver accepts proposals.
+List-column frames do not infer numeric types or renormalize scientific denominators. Package
+and transport checks do not replace native exact certificate replay or scientific calibration.

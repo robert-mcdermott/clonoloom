@@ -294,6 +294,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/r.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/rarefaction.html",
   "theme": "light",
   "width": "desktop",
@@ -665,6 +672,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/r.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/rarefaction.html",
   "theme": "dark",
   "width": "desktop",
@@ -1036,6 +1050,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/r.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/rarefaction.html",
   "theme": "light",
   "width": "phone",
@@ -1401,6 +1422,13 @@
  },
  {
   "page": "docs/qc.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/r.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

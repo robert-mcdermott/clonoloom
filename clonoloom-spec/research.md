@@ -3216,3 +3216,48 @@ simulated vaccine data and compares original HTTP/Python query strings and filte
 Check token/grant/null/unsafe-number refusals, human rejection, timeout cancellation, named
 History and Undo/Redo. Installed distributions, CI drift checks and existing native scientific
 replay regression tests are separate controls; none establish biological validity.
+
+### 5.50 Exact R client tokens and reviewed actions (wave 8, slice 9)
+
+**Sources.** Reviewed the Apache-2.0 CytoWeave/MaveScape R connection/result classes, generated
+functions/Rd help, package metadata and client CI/harnesses. Reviewed the official R
+[double representation](https://stat.ethz.ch/R-manual/R-devel/library/base/html/double.html),
+[jsonlite interface](https://cran.r-project.org/web/packages/jsonlite/refman/jsonlite.html),
+[curl streaming interface](https://cran.r-project.org/web/packages/curl/refman/curl.html),
+[libcurl millisecond timeout](https://curl.se/libcurl/c/CURLOPT_TIMEOUT_MS.html),
+[R package checks](https://cran.r-project.org/doc/manuals/r-release/R-exts.html), and
+[r-lib setup-r](https://github.com/r-lib/actions/tree/v2/setup-r) on 2026-10-28.
+These concern representation and transport, not a new scientific method.
+
+**ClonoLoom choices.** Share the Python catalog/API/policy, isolated discovery precedence and
+explicit host grants. Generate functions and help rather than maintaining a second action list.
+Recheck compatible versions before each POST; keep human review, caller-labelled History and
+Undo/Redo in the host. No automatic retry, host launch or acceptance function is added.
+
+Base R doubles cannot represent arbitrary JSON decimals or large integers. Preserve all number
+tokens in a character-backed scalar class, retaining their spelling and original raw response
+bytes/native JSON. A bounded tokenizer/parser handles syntax, depth, duplicate keys and UTF-8;
+jsonlite handles string escaping/decoding only. Validate surrogate pairs before string decoding
+and refuse NUL strings that R cannot represent. Refuse arithmetic/comparison on number tokens;
+explicit conversion warns about precision/range. Plain doubles retain their existing precision
+only, and unsafe double integers are refused. Arrays, objects, omission and null stay distinct.
+List-column frames preserve tokens; missing keys become NULL only in that convenience view.
+
+The curl transfer is bounded while streaming. Use millisecond timeouts to avoid truncating
+subsecond requests to zero (unlimited). Disable proxies and redirects; never borrow another
+library's token for an explicit URL. Outcomes after a submitted timeout are uncertain, with
+cooperative host cancellation and possible completed file effects. R's per-transfer timeout is
+not Python's per-socket-operation timeout; local parsing is outside either transport deadline.
+
+**Scientific boundary.** No new statistics, plotting, denominator change or replay tolerance.
+Exact token transport does not establish scientific validity or replace original certificate
+bytes. Native query filters keep definition, QC, source units and full-table frequencies while
+rank reflects membership. Arithmetic after explicit conversion is the caller's responsibility.
+
+**Validation design.** Test all generated functions and help, seeded exact-token round trips,
+Unicode/duplicate/depth/size failures, scalar/vector/null semantics, list frames, discovery,
+compatibility, no retry, permission refusals and ambiguous timeouts. Build/install/check the
+R package and compare R/Python native evidence bytes in one isolated simulated vaccination
+project. Test filtered row values, grants, rejection, cancellation, named History and Undo/Redo;
+execute both examples. Native Go scientific regression tests remain separate controls. No new
+plot is introduced; the site guide is audited in both themes and at phone/desktop widths.

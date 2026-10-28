@@ -1,0 +1,6 @@
+ClonoLoom R client
+Copyright 2026 Robert McDermott
+
+Licensed under the Apache License, Version 2.0 (licenses/LICENSE-APACHE-2.0.txt).
+Connection, generated-function/help and S3 result patterns are adapted from
+CytoWeave and MaveScape, by the same author under the same license.

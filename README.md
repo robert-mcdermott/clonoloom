@@ -243,6 +243,7 @@ It takes `-h` for its settings.
 - [Installing](docs/INSTALLING.md): release files, installers, upgrading, uninstalling.
 - [Formats](docs/FORMATS.md): what each reader reads and how.
 - [Remote control](docs/REMOTE-CONTROL.md): driving ClonoLoom from scripts.
+- [R client](docs/R.md): generated functions/help, explicit permissions, exact number tokens and list-column frames (wave 8 development).
 - [Python client](docs/PYTHON.md): generated methods, explicit permissions and exact JSON numbers (wave 8 development).
 - [MCP clients](docs/MCP.md): local stdio, explicit grants and window review (wave 8 development).
 - [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
@@ -272,12 +273,13 @@ session audit and bounded typed clonotype queries in wave 8 development (API 2).
 [MCP transport](docs/MCP.md) uses this shared policy and native results, with modern per-request
 metadata and explicit legacy initialization compatibility.
 The generated [Python client](docs/PYTHON.md) uses that action catalog, checks permission-contract
-versions and preserves int/Decimal values with optional pandas object columns.
+versions and preserves int/Decimal values with optional pandas object columns. The generated
+[R client](docs/R.md) shares the contract, retaining exact JSON number tokens and list-column frames.
 
 [Self-checking HTML reports](docs/HTML-REPORTS.md) package explicitly selected results with
 exact tables, existing figures, cited methods, notices and original certificates. Their offline
 browser check verifies embedded bytes, not scientific validity; native replay remains separate.
-The [Wave 8 plan](clonoloom-spec/roadmap.md) schedules further source coverage and the generated R client. Published binaries remain 0.7.0
+The [Wave 8 plan](clonoloom-spec/roadmap.md) schedules portable archives and further source coverage. Published binaries remain 0.7.0
 until the next release.
 
 ## Development
