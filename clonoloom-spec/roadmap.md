@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–9 are committed and pushed. Slice 10 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slices 1–10 are committed and pushed. Slice 11 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2593,7 +2593,7 @@ pass. Version stays 0.6.0; no commit, push, tag, release or publication. Slice 9
 
 ### Slice 10: pseudobulk count evidence
 
-**Implemented and validated; awaiting commit.** M5 foundation. Research §5.39 records primary sources,
+**Committed and pushed.** M5 foundation. Research §5.39 records primary sources,
 exact count and membership rules, the artificial model and limits. Differential expression
 remains slice 11; release preparation remains slice 12.
 
@@ -2642,7 +2642,61 @@ pseudobulk and refreshed AnnData screenshots are visually reviewed; the capture 
 fresh study and verifies its model to prevent stale example reuse. The site builds 45 pages
 with 53 screenshot sets; 44 audited pages pass all 176 theme/viewport checks with no problems.
 Formatting and diff checks pass. Version stays 0.6.0; no commit, push, tag, release or publication.
-Slice 11 has not begun.
+The maintainer committed and pushed slice 10 as `a90782b`.
+
+### Slice 11: paired pseudobulk differential expression
+
+**Implemented and validated; awaiting commit.** M5. Research §5.40 records sources, explicit
+adaptations, estimands, normalization assumptions and limits. Release preparation remains slice 12.
+
+- Consume a checked immutable count parent, one exact supplied type and literal timepoint,
+  two declared size categories, and explicit whole-sample exclusions with reasons. Require
+  both eligible categories for each included subject; never delete incomplete pairs silently.
+- Reuse the independently validated NB2/Cox–Reid engine with a full-rank subject-blocked
+  design and comparison contrast. Require 25–32 pairs (24 residual df minimum), not cells
+  as replicates. Record every disposition, raw group, design column and contrast.
+- Add median-of-ratios size factors from genes positive in every selected observation before
+  testing filters; record the reference set and log offsets. Require ten reference genes;
+  no pseudocount fallback. Document majority-unchanged/balanced-change assumptions.
+- Keep raw count/prevalence filters, all eligible genes in the BH family (failed fits as
+  p=1 placeholders, displayed unavailable), conditional marginal Wald intervals and failed
+  fits. No moderation, quasi-likelihood, Poisson fallback or edgeR/DESeq2 equivalence claim.
+- Save durable jobs with count-parent checksums, source/parent-free replay, complete raw/design/
+  gene exports, provider terms, cited Methods, undo/redo and visible/remote identity.
+- Show gene abundance/effects, zero-based paired subject counts and a separate conditional
+  interval. Color selection, not discoveries. Retain filtered/failed genes and all observations.
+- Add distinct 28-subject positive/null artificial expression presets, uneven receptor sizes,
+  subject/category variability, low/zero controls and full generating truth/source hashes.
+  Preserve earlier simulations. Version remains 0.6.0.
+
+Validation includes the independent 40-gene full-fit oracle and 300-gene null/positive panel,
+all generated raw-count truth, family/failure/normalization invariants, exact source-free replay,
+processor-identical digests, race/scientific/JavaScript/platform checks, both-theme browser
+workflows and visual inspection, complete methods/docs and a local site audit.
+
+**Validation completed:** full application/internal race checks pass (application 262.158 s).
+Final focused race checks pass for API replay/exports (231.381 s), core policies/contrast
+reversal/cancellation (117.451 s), simulators (4.851 s) and numerical/example controls
+(313.863 s). The full required-data scientific suite passes in 285.324 s, excluding unchanged
+performance budgets; it includes released-project compatibility and the compiler's no-FMA scan.
+The 40-gene oracle agrees on normalization, complete designs, full/null fits, covariance,
+likelihoods, effects, conditional intervals and BH. The separate 300-gene panel has 15/267
+nominal null rejections, 250/267 conditional intervals covering zero and 30/30 correct positive
+directions, disclosed as finite approximation diagnostics. Every selected example raw count
+matches generating truth. The positive/null examples each fit 37/38 eligible genes; respectively
+four/zero have BH≤.05 for the fixed seeds, not a calibration guarantee.
+
+Complete-result and both simulator digests agree on native arm64 and amd64. Earlier examples
+and released-project identities are unchanged. Go vet, six CGO-free platform builds, 143
+JavaScript tests and 14 contrast checks pass. Paired expression and count-evidence browser
+workflows pass in both themes: visible/remote identity, all gene/subject points and paired
+links, failed-fit display, undo/redo, reopening, source/parent-free exports and cited Methods.
+Both effect and paired-observation/conditional-interval figures are visually reviewed in both
+themes. The local site builds 46 pages with 55 screenshot sets; 45 audited pages pass all 180
+theme/viewport checks without accessibility problems or overflow. Formatting/diff checks pass.
+No commit, push, tag, release or publication; version remains 0.6.0.
+
+Slice 12 has not begun.
 
 ## Later waves (outlined)
 

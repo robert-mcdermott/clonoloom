@@ -989,3 +989,30 @@ raw counts but are ineligible. Counts and library totals are bounded at 9e15.
 is exported; unavailable counts are blank. Provider terms require `accept=1`. Reopening and
 durable replay use captured evidence without source or parent files. Subject identifiers remain
 present. This format makes no differential-expression, normalization or significance claim.
+
+## Paired pseudobulk differential expression (wave 7, slice 11)
+
+`POST /api/pseudobulk-de` accepts `pseudobulk` (saved count artifact ID), `options`, and optional
+`start:false` for checked preparation without fitting. Strict JSON refuses unknown/trailing data.
+Options: exact `type`, literal `timepoint`, different `reference`/`comparison` size-bin labels;
+`exclude` maps sample names to reasons; `minCount` default 10, `minSamples` default 25,
+`confidence` default .95. At least 25 complete pairs; no automatic missing-pair deletion.
+
+The `pde-…` artifact, kind `pseudobulk-de`, contains `clonoloom-pseudobulk-de` version 1:
+`evidence` binds the normalized request, count-parent manifest/checksum, dataset, raw gene
+features/groups, sample annotations, minimum-cell rule, source description/NOTICE and method
+version. `analysis` records all sample dispositions, paired observations, full design/contrast,
+size factors and log offsets, normalization gene IDs, family/tested counts and all gene rows.
+Rows retain raw/normalized counts, mean normalized count, eligibility/reason, log2 effect,
+standard error, conditional interval, dispersion, LR, p/BH and successful full/null fits.
+Unavailable inference is JSON null and CSV blank; measured zero counts remain zero.
+
+New analyses verify the count parent but need no original sources. Durable replay uses captured
+raw groups without parents or sources. `GET /api/pseudobulk-de/{id}` checks result checksums.
+`/download` retains provider terms (`accept=1` only after acceptance) and includes
+`pseudobulk-de.json`, `manifest.json`, `parent-manifest.json`, `raw-evidence.json`, `genes.csv`,
+`design.csv`, `counts.csv`, `NOTICE.txt`. The raw evidence includes excluded groups and all
+features. Selected counts and design CSV columns share the saved canonical observation order;
+subject fixed-effect coding and comparison orientation are explicit. Cell membership remains
+in the pinned count parent. This is unmoderated NB2 with median-ratio offsets, not the full
+edgeR/DESeq2 pipeline; research §5.40 records assumptions, bounds and independent references.

@@ -124,6 +124,7 @@ func (a *app) handleJobs() {
 	a.handleConvergenceJobs()
 	a.handleBatchQCJobs()
 	a.handlePseudobulkJobs()
+	a.handlePseudobulkDEJobs()
 	a.handleContaminationJobs()
 	a.handleCongaJobs()
 	a.handleAnnDataJobs()

@@ -217,6 +217,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/pseudobulk-de.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/pseudobulk.html",
   "theme": "light",
   "width": "desktop",
@@ -525,6 +532,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/pseudobulk-de.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/pseudobulk.html",
   "theme": "dark",
   "width": "desktop",
@@ -833,6 +847,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/pseudobulk-de.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/pseudobulk.html",
   "theme": "light",
   "width": "phone",
@@ -1135,6 +1156,13 @@
  },
  {
   "page": "docs/overlap.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/pseudobulk-de.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

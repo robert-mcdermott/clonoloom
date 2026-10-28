@@ -4,6 +4,18 @@
 
 ### Added
 
+- **Paired pseudobulk differential expression (wave 7, slice 11).** Compare two declared
+  receptor-size categories within subjects at one supplied cell type and literal timepoint.
+  Check complete pairs, preserve explicit exclusions, and fit raw gene counts with median-of-ratios
+  size-factor offsets, subject fixed effects and unmoderated NB2/Cox–Reid dispersion. Keep the
+  full design, count filter, BH family including failed-fit slots, conditional Wald intervals
+  and every raw observation. Require 25–32 subject pairs and at most 1000 eligible genes; no
+  implicit pooling, complete-case deletion, Poisson fallback or full edgeR/DESeq2 claim.
+  Add saved jobs, source/parent-free replay, provider-aware ZIPs, cited Methods and the visible
+  `compare_pseudobulk` action. Show gene abundance/effect, paired subject points and separate
+  conditional intervals. Include 28-subject positive/null examples with separate truth and
+  independent SciPy/statsmodels normalization, fit, null/positive and multiplicity controls.
+
 - **Pseudobulk count evidence (wave 7, slice 10).** Sum exact raw Gene Expression counts
   per subject, sample, literal timepoint, supplied cell type and declared receptor-size
   category. Preserve missing annotations, unavailable assignments, absent groups, measured

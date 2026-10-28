@@ -54,6 +54,7 @@ func (a *app) registerExpression(mux *http.ServeMux) {
 	a.registerConga(mux)
 	a.registerAnnData(mux)
 	a.registerPseudobulk(mux)
+	a.registerPseudobulkDE(mux)
 	mux.HandleFunc("POST /api/expression/open", a.handleExpressionOpen)
 	mux.HandleFunc("POST /api/expression/page", a.handleExpressionPage)
 }

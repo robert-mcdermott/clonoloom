@@ -587,3 +587,30 @@ explicit controls. This is not a fitted biological cohort, specificity model or 
 Save each sample's phenotypes with receptor sizes, annotation `state` and inclusive breakpoints
 `1,5,10`; select the eight parents in Cells → Pseudobulk counts. Inspect all sample × state × bin
 counts, absent groups and minimum-cell eligibility. The current slice performs no inference.
+
+### Paired pseudobulk expression and null studies
+
+`--preset pseudobulk-de-study` (seed 20261103) and `--preset pseudobulk-de-null` (20261104)
+use `clonoloom-artificial-pseudobulk-de-v1`: 28 subjects, one baseline sample each, fictional
+paired TRA/TRB receptors and 40 artificial Gene Expression features. There are 48+i mod 5
+singleton clones for zero-based subject i and eight clones of sizes 7,9,11,13,17,21,26,33.
+The presets contain 5,233 expression cells and 10,466 receptor rows. Configurable subjects
+are 25–32; the model replaces other simulator modes.
+
+For zero-based gene g, mean per cell starts at (2+g)/3. A subject/gene Gamma(16,1)/16 multiplier
+is shared across categories. Independent category/gene Gamma(5,1)/5 multipliers precede
+conditional Poisson cell counts, producing variation between subject pseudobulks. Positive
+preset genes 1–2 have threefold comparison means, genes 3–4 one-third means; null preset all
+folds are one. Gene 39 has mean .005, gene 40 zero, and gene 38 is zero in subject 1. Counts are
+not duplicated between cells. Expression stream is 71000+i; Gaussian layout stream 72000+i.
+Receptors reuse the documented fictional stop-free junction generator with subject stream
+index 10i to keep all clone streams disjoint. Source metadata records a baseline at 0 days.
+Supplied coordinates x=1.7Z1,y=.6x+1.2Z2 illustrate one cloud; they are not an expression embedding.
+
+Save paired phenotypes with `cell_type`, receptor sizes and breakpoints `[1]`; aggregate all
+samples at minimum 10 cells. Compare `Artificial T cells`, the displayed literal baseline
+label, reference `1`, comparison `>1`, minimum count 10 in 25 observations. The same recipe
+applies to the null example. Full assignments, per-category raw gene sums, generating rates
+and hashes are in `truth/`. The model is a controlled software example, not fitted biology,
+antigen specificity or a universal calibration/power study. Research §5.40 documents the
+separate independent numerical controls and normalization assumptions.

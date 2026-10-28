@@ -92,3 +92,6 @@ print(act("show_methods")["data"]["text"])</code></pre></div>
 
 <h2 id="pseudobulk">Pseudobulk count evidence</h2>
 <p><code>aggregate_pseudobulk</code> accepts explicit saved <code>phenotypes</code> IDs and <code>options</code> containing the supplied <code>annotation</code> column and <code>minCells</code> (default 10). It uses the visible Cells workflow and saves exact raw sums and cell membership. It performs no differential-expression test. See <a href="pseudobulk.html">Pseudobulk counts</a> for sample boundaries, missingness and export rules.</p>
+
+<h2 id="pseudobulk-de">Paired pseudobulk expression</h2>
+<p><code>compare_pseudobulk</code> accepts a saved <code>pseudobulk</code> count ID and <code>options</code>: exact supplied <code>type</code>, literal <code>timepoint</code>, <code>reference</code>/<code>comparison</code> size bins, optional <code>exclude</code> mapping sample names to reasons, <code>minCount</code> (10), <code>minSamples</code> (25) and <code>confidence</code> (.95). It uses the visible Cells workflow. At least 25 complete subject pairs are required. It returns the saved artifact, subject and family/tested counts and Go-generated description. See <a href="pseudobulk-de.html">paired pseudobulk expression</a> for unmoderated NB assumptions, normalization, conditional uncertainty and complete exports.</p>

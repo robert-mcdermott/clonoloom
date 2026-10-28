@@ -53,6 +53,7 @@ type Study struct {
 	Series *Series `json:"series,omitempty"`
 	// BCells selects the artificial paired B-cell model; the TRB parameters above are unused.
 	BCells        *BCellStudy         `json:"bcells,omitempty"`
+	PseudobulkDE  *PseudobulkDEStudy  `json:"pseudobulkDE,omitempty"`
 	CellStates    *CellStateStudy     `json:"cellStates,omitempty"`
 	BatchQC       *BatchQCStudy       `json:"batchQC,omitempty"`
 	Contamination *ContaminationStudy `json:"contamination,omitempty"`
@@ -63,6 +64,8 @@ type Study struct {
 
 // Presets are the studies `clonoloom simulate` starts from.
 var Presets = map[string]Study{
+	"pseudobulk-de-study": {Name: "pseudobulk-de-study", Title: "An artificial paired pseudobulk expression study", Seed: 20261103, PseudobulkDE: &PseudobulkDEStudy{Subjects: 28}},
+	"pseudobulk-de-null":  {Name: "pseudobulk-de-null", Title: "An artificial null paired pseudobulk study", Seed: 20261104, PseudobulkDE: &PseudobulkDEStudy{Subjects: 28, Null: true}},
 	"batch-qc-study":      {Name: "batch-qc-study", Title: "An artificial batch-QC study", Seed: 20261101, BatchQC: &BatchQCStudy{}},
 	"contamination-study": {Name: "contamination-study", Title: "An artificial contamination-evidence study", Seed: 20261031, Contamination: &ContaminationStudy{}},
 	"convergence-study":   {Name: "convergence-study", Title: "An artificial subject recurrence and HLA study", Seed: 20261030, Convergence: &ConvergenceStudy{}},
@@ -211,6 +214,9 @@ var Presets = map[string]Study{
 
 // Check says what is wrong with a study's parameters.
 func (s Study) Check() error {
+	if s.PseudobulkDE != nil {
+		return s.PseudobulkDE.check(s)
+	}
 	if s.BatchQC != nil {
 		if s.Contamination != nil || s.Convergence != nil || s.Motifs != nil || s.Counts != nil || s.CellStates != nil || s.BCells != nil || s.Series != nil || len(s.Groups) > 0 {
 			return fmt.Errorf("batch QC study replaces other models")
@@ -435,6 +441,9 @@ func Run(ctx context.Context, s Study, dir, version string, progress Progress) (
 	}
 	if entries, err := os.ReadDir(dir); err == nil && len(entries) > 0 {
 		return Summary{}, fmt.Errorf("%s is not empty", dir)
+	}
+	if s.PseudobulkDE != nil {
+		return runPseudobulkDE(ctx, s, dir, version, progress)
 	}
 	if s.BatchQC != nil {
 		return runBatchQC(ctx, s, dir, version, progress)

@@ -25,10 +25,13 @@ import (
 )
 
 func pseudobulkFixture(t *testing.T) (*app, http.Handler, pseudobulkRequest, string) {
+	return pseudobulkFixtureFor(t, "pseudobulk-study")
+}
+func pseudobulkFixtureFor(t *testing.T, preset string) (*app, http.Handler, pseudobulkRequest, string) {
 	t.Helper()
 	a, h := testApp(t)
 	dir := filepath.Join(t.TempDir(), "study")
-	sum, e := simulate.Run(context.Background(), simulate.Presets["pseudobulk-study"], dir, "validation", nil)
+	sum, e := simulate.Run(context.Background(), simulate.Presets[preset], dir, "validation", nil)
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -46,6 +49,9 @@ func pseudobulkFixture(t *testing.T) (*app, http.Handler, pseudobulkRequest, str
 	dataset, _ := a.datasets.get(ds.ID)
 	dataset.Credits = []credit{{Title: "Pseudobulk controls", License: "Fixture terms", LicenseClass: "terms", Citation: "Artificial count controls"}}
 	req := pseudobulkRequest{Options: pseudobulk.Options{Annotation: "state", MinCells: 10}}
+	if strings.HasPrefix(preset, "pseudobulk-de-") {
+		req.Options.Annotation = "cell_type"
+	}
 	for i, sample := range ds.Samples {
 		path := filepath.Join(dir, "expression", sample.Name)
 		rec = postJSON(t, h, "/api/expression/open", string(mustJSON(map[string]any{"path": path, "cellsPath": filepath.Join(path, "cells.tsv")})))
@@ -54,6 +60,11 @@ func pseudobulkFixture(t *testing.T) (*app, http.Handler, pseudobulkRequest, str
 			t.Fatal(rec.Code, rec.Body)
 		}
 		p := phenotypeRequest{ID: in.ID, Dataset: ds.ID, Sample: &i, Definition: clonotype.Definition{Chains: []string{"TRA", "TRB"}}, Annotation: study.Sample{Name: sample.Name, Subject: sample.Name[:3], Time: "visit " + sample.Name[4:]}, Options: phenotype.Options{Annotation: "state", Breakpoints: []int{1, 5, 10}}}
+		if strings.HasPrefix(preset, "pseudobulk-de-") {
+			p.Annotation.Time = "baseline"
+			p.Options.Annotation = "cell_type"
+			p.Options.Breakpoints = []int{1}
+		}
 		rec = postJSON(t, h, "/api/phenotypes", string(mustJSON(p)))
 		var started struct{ Artifact, Job string }
 		if rec.Code != 200 || json.Unmarshal(rec.Body.Bytes(), &started) != nil {

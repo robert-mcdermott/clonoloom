@@ -362,6 +362,38 @@ async function contaminationScene() {
 // --- Scenes --------------------------------------------------------------------------------------
 
 const scenes = {
+ async ['pseudobulk-de'](){
+  await act('new_project',{name:'Artificial paired expression'});
+  await act('open_example',{example:'simulated-pseudobulk-de-study',download:true});
+  const truth=JSON.parse(readFileSync(join(places.examples,'simulated-pseudobulk-de-study','truth/truth.json'),'utf8'));
+  if(truth.model!=='clonoloom-artificial-pseudobulk-de-v1')throw new Error('Stale paired expression example');
+  await act('set_definition',{definition:{chains:['TRA','TRB'],junction:'aa',v:'gene',j:'gene',productiveOnly:true}});
+  const dataset=await js(`window.clonoloom.store.project.datasets[0].id`),names=await js(`window.clonoloom.store.project.datasets[0].samples`),parents=[];
+  if(names.length!==28)throw new Error('Expected 28 subject samples');
+  for(let i=0;i<names.length;i++){
+   const path=join(places.examples,'simulated-pseudobulk-de-study','expression',names[i]);
+   await act('inspect_expression',{path,cellsPath:join(path,'cells.tsv'),dataset,sample:i});
+   const p=await act('compute_cell_phenotypes',{population:'receptor',annotation:'cell_type',breakpoints:[1]});parents.push(p.data.artifact);
+  }
+  const counts=(await act('aggregate_pseudobulk',{phenotypes:parents,options:{annotation:'cell_type',minCells:10}})).data;
+  const timepoint=await js(`window.clonoloom.cellPseudobulkView.state().answer.result.evidence.input.samples[0].annotation.timepoint`);
+  const declaration={pseudobulk:counts.artifact,options:{type:'Artificial T cells',timepoint,reference:'1',comparison:'>1',minCount:10,minSamples:25,confidence:.95}};
+  const result=(await act('compare_pseudobulk',declaration)).data;
+  if(result.subjects!==28||result.family!==38||result.tested!==37)throw new Error('Paired expression accounting differs');
+  await js(`(async()=>{const v=window.clonoloom.cellPseudobulkDEView,r=v.state().answer.result.analysis,points=[...document.querySelectorAll('.pseudobulk-de-view circle[data-gene]')];if(points.length!==37||points.some((p)=>!r.rows.some((g)=>g.feature.id===p.dataset.gene&&g.log2Fold!=null)))throw new Error('Gene effect points differ');if(document.querySelectorAll('.pseudobulk-de-view circle[data-sample]').length!==56||document.querySelectorAll('.pseudobulk-de-view path[data-subject]').length!==28)throw new Error('Wrong biological units');window.pseudobulkDECheck={id:v.state().answer.artifact.id,snapshot:JSON.stringify(v.state().answer.result)};await v.configure(${JSON.stringify(declaration)});[...document.querySelectorAll('.pseudobulk-de-view button')].find((b)=>b.textContent==='Compare pseudobulk expression').click();return true})()`);
+  await waitFor(`window.clonoloom.cellPseudobulkDEView.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,v=app.cellPseudobulkDEView,c=window.pseudobulkDECheck;if(v.state().answer.artifact.id!==c.id)throw new Error('Visible/remote identity differs');app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===c.id))throw new Error('Undo failed');app.store.redo();await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('data');app.focusItem({kind:'result',id:c.id});return true})()`);
+  await waitFor(`window.clonoloom.cellPseudobulkDEView?.state().status==='ready'`);
+  await js(`(async()=>{const app=window.clonoloom,c=window.pseudobulkDECheck;if(JSON.stringify(app.cellPseudobulkDEView.state().answer.result)!==c.snapshot)throw new Error('Reopening changed expression');const original=window.fetch,create=URL.createObjectURL;let blob;window.fetch=(url,...args)=>{if(['api/expression/','api/phenotypes/','api/pseudobulk/'].some((p)=>String(url).includes(p))&&!String(url).includes('pseudobulk-de'))throw new Error('Parent unavailable');return original(url,...args)};URL.createObjectURL=(b)=>{blob=b;return create(b)};try{const v=app.cellPseudobulkDEView;await v.show(c.id);await v.download();const bytes=new Uint8Array(await blob.arrayBuffer());if(bytes[0]!==80||bytes[1]!==75)throw new Error('ZIP failed');const {figureBlob}=await import('./ui/figures.js');for(const which of ['ma','observations','effect']){const text=await(await figureBlob(v.plotSpec(which),'svg')).text();for(const phrase of ['subject','conditional','size','gks042','ClonoLoom'])if(!text.includes(phrase))throw new Error('Figure provenance missing '+phrase)}v.select('SIM-G38');if(!document.querySelector('.pseudobulk-de-view').textContent.includes('All-zero subject block'))throw new Error('Failed gene hidden');v.select('SIM-G01');}finally{window.fetch=original;URL.createObjectURL=create}return true})()`);
+  await act('show_methods');if(!await js(`document.querySelector('.methods-text').textContent.includes('Gamma(16')&&document.querySelector('.methods-references').textContent.includes('gks042')`))throw new Error('Paired methods absent');await act('close_dialogs');
+  await clearToasts();await checkAccessibility();
+  await js(`(()=>{const root=document.querySelector('.pseudobulk-de-view'),scroller=root.parentElement;scroller.scrollTop+=root.querySelectorAll('figure')[1].getBoundingClientRect().top-scroller.getBoundingClientRect().top-12;return true})()`);
+  await showPlaces();
+  const theme=await js(`document.documentElement.dataset.theme`);
+  await b.capture(join(IMAGES,`pseudobulk-de-pairs-${theme}.webp`),{format:'webp',quality:86});
+  await js(`(()=>{const root=document.querySelector('.pseudobulk-de-view'),scroller=root.parentElement;scroller.scrollTop+=root.querySelector('.pseudobulk-de-title').getBoundingClientRect().top-scroller.getBoundingClientRect().top-12;return true})()`);
+ },
+
  async pseudobulk(){
   await act('open_example',{example:'simulated-pseudobulk-study',download:true});
   const truth=JSON.parse(readFileSync(join(places.examples,'simulated-pseudobulk-study','truth/truth.json'),'utf8'));
@@ -1331,7 +1363,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

@@ -521,3 +521,37 @@ The slice-10 result digest is
 the eight-sample simulator digest is
 `6ac6339c8dcd9b468a34dd746de193410625379170adb819d98c45bbd6173875`.
 The screenshot scene always generates a fresh study and verifies its model/sampling declaration.
+
+### Paired pseudobulk differential expression
+
+`uv run --no-project validation/reference/pseudobulk_de.py` regenerates the 40-gene independent
+NumPy/SciPy 1.17.0/statsmodels 0.14.6 reference. The script never reads application outputs:
+public GLM fits, bounded Cox–Reid optimization, chi-square/normal distributions and BH define
+all reference values. `--controls` writes the separate prespecified 300-gene panel, including
+30 balanced positive effects and 270 generating nulls. All normalization/design/fit/uncertainty
+outputs are compared; the full-result digest is checked on native arm64 and amd64. See research
+§5.40 for exact model choices and the diagnostic acceptance guard, which is not a universal
+calibration guarantee. The panel gives 15/267 nominal null rejections, 250/267 conditional
+intervals covering zero, and 30/30 positive fits with the correct direction.
+
+Core checks include normalization-reference invariance to the testing filter, insufficient
+normalization/replication, raw/feature/identity mismatches, incomplete pairs, explicit exclusion
+and literal-timepoint policies, all-zero-block BH slots, contrast reversal and cancellation.
+Integration checks generate the complete 28-subject study through the real reader, phenotype,
+count and DE endpoints; every fitted observation agrees with separate generating raw sums.
+Strict requests, preview/ready identity, checksum refusals, provider terms, complete CSV/ZIPs
+and byte-identical replay without sources or count parents are covered. Both positive and null
+presets are also independently reconstructed from their literal count/membership truth. The
+positive example has four BH≤.05 genes and the null example none for the fixed seeds; these
+single-example outcomes are descriptive, not a calibration criterion.
+
+`node docs/capture/capture.mjs pseudobulk-de pseudobulk --theme both` checks all fitted gene
+points, every paired observation and subject link, visible/remote identity, undo/redo, reopening,
+source/parent-free display/export, failed-fit inspection, cited Methods and accessibility. Review
+the effect and paired-observation/interval screenshots in both themes: artificial labels,
+correct scales and units, zero references, selection-only color, conditional interval labels,
+and no per-cell pseudoreplication. The complete count-evidence scene is a regression workflow.
+
+Pinned complete result: `d6f7d73fa3bd28d6e0111a8814949c644201df8afe78a0476cee22c8e73d4b33`.
+Positive simulator: `ee82857067124d03bf9652f59fb96bc0f82367e6d595e1a4e18bda17c69cd5e0`.
+Null simulator: `de25fa97c96c2ea177f8e3e84075be07d0dd5a805255dfd8f907aa975f456324`.

@@ -120,6 +120,8 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   // Simulated data (clonoloom simulate): how they were made.
   const simulations = (summary?.samples ?? []).map((s) => s.repertoire).filter((r) => r?.studyId?.startsWith('clonoloom-simulated-'));
   const bcellModels = ['clonoloom-simulated-clonoloom-artificial-bcell-v1', 'clonoloom-simulated-clonoloom-artificial-bcell-v2'];
+  const geneModels = ['clonoloom-simulated-pseudobulk-de-study', 'clonoloom-simulated-pseudobulk-de-null'];
+  if(simulations.some((r)=>geneModels.includes(r.studyId)))sentences.push('The artificial paired pseudobulk expression data use one baseline per subject (28 subjects in the presets), 48–52 singleton clones and eight larger clones per subject, fictional paired TRA/TRB receptors, and 40 artificial genes. Shared subject/gene Gamma(16,1)/16 and category/gene Gamma(5,1)/5 rates precede conditionally Poisson cell counts. Positive controls have threefold increases or decreases; the null preset has no generating category effect. Low-count, zero-gene and zero-subject controls remain explicit. Supplied correlated Gaussian coordinates are illustrative, not an expression embedding. Full assignments, generating rates, pseudobulk sums and source hashes are separate truth. This is a constructed benchmark, not fitted biology, antigen specificity or evidence that cells independently replicate subjects.');
   const cellModels = ['clonoloom-simulated-cell-states', 'clonoloom-simulated-cell-states-clouds', 'clonoloom-simulated-pseudobulk-study'];
   const batchQCModels=['clonoloom-simulated-batch-qc-study-v1'];
   if(simulations.some((r)=>batchQCModels.includes(r.studyId)))sentences.push('The artificial batch-QC study contains 26 samples from 25 fictional subjects across four declared batches and explicit repeat/missing-batch exclusions. Length-selected human TRB junctions, deliberate stop codons and missing annotations accompany uneven shifted gamma-Poisson counts. A shifted batch, low-productivity observation, missing count, small group and constant row counts are construction controls, not calibrated biological effects or failure diagnoses.');
@@ -136,7 +138,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const bcellSimulation = simulations.some((r) => bcellModels.includes(r.studyId));
   const cellSimulations = simulations.filter((r) => cellModels.includes(r.studyId));
   const simulated = simulations.find((r) => trbModels.includes(r.studyId));
-  const unknown = [...new Set(simulations.filter((r) => ![...bcellModels, ...cellModels, ...definitionModels, ...batchQCModels, ...contaminationModels, ...convergenceModels, ...motifModels, ...countModels, ...trbModels].includes(r.studyId)).map((r) => r.studyId))];
+  const unknown = [...new Set(simulations.filter((r) => ![...geneModels, ...bcellModels, ...cellModels, ...definitionModels, ...batchQCModels, ...contaminationModels, ...convergenceModels, ...motifModels, ...countModels, ...trbModels].includes(r.studyId)).map((r) => r.studyId))];
   if (simulations.some((r) => countModels.includes(r.studyId))) sentences.push('The replicated repertoire counts were simulated with heterogeneous gamma-Poisson variation, lognormal sampling exposures, subject effects, two batch levels, 48 shared fictional receptors and a private long-tailed background. Sparse increases/decreases or an all-null group contrast are recorded in the saved parameters and truth. Fictional stop-free junctions and SIM calls do not represent fitted human recombination or antigen specificity. Generator exposures differ from realized library totals; fitted total-count-offset effects describe relative repertoire abundance.');
   if (unknown.length) sentences.push(`The data include simulated studies ${joinList(unknown)}. These identifiers do not establish their generative model; consult each study's saved parameters and truth before describing how it was simulated.`);
   if (cellSimulations.length) {
@@ -389,7 +391,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
 
   // These descriptions and citations are computed in Go and kept with each immutable result.
   // Do not reconstruct scientific parameters from current controls or a plot selection.
-  for (const r of results.filter((r) => ['pseudobulk', 'batch-qc', 'contamination', 'convergence', 'motifs', 'expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export', 'cohort-features', 'cohort-compare', 'definition-robustness', 'cohort-counts'].includes(r.kind))) {
+  for (const r of results.filter((r) => ['pseudobulk-de', 'pseudobulk', 'batch-qc', 'contamination', 'convergence', 'motifs', 'expression-map', 'phenotypes', 'modularity', 'conga', 'anndata-export', 'cohort-features', 'cohort-compare', 'definition-robustness', 'cohort-counts'].includes(r.kind))) {
     sentences.push(`Saved ${r.method || r.kind} result ${r.id}: ${r.describe || 'See the saved result for its effective parameters.'}${r.citation ? ` ${cite(`cell-method:${r.citation}`, r.citation)}` : ''}`);
   }
   return { text: sentences.join(' '), references: refs.map((r, i) => `[${i + 1}] ${r.text}`) };

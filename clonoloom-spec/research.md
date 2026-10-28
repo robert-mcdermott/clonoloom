@@ -2773,3 +2773,96 @@ low-cell, repeated-visit and repeated-barcode controls. Integration checks indep
 all eight literal Matrix Market files and generating clone/annotation truth, comparing every
 feature sum and cell denominator. Check strict requests, mismatches, overflow, cancellation,
 checksums, provider terms, source-free replay, exact processor agreement, and both-theme UI.
+
+## 5.40 Paired pseudobulk differential expression (wave 7, slice 11)
+
+**Scope and sources.** M5 builds on §5.39's immutable raw sums. Crowell et al. (2020),
+Nature Communications 11:6077, doi:10.1038/s41467-020-19894-4, and OSCA Multi-Sample chapter 4
+(https://bioconductor.org/books/release/OSCA.multisample/multi-sample-comparisons.html,
+reviewed 2026-10-27) motivate preserving biological replication. OSCA uses moderated
+quasi-likelihood; ClonoLoom does **not** claim that pipeline. Anders & Huber (2010), Genome
+Biology 11:R106, doi:10.1186/gb-2010-11-10-r106, supplies median-of-ratios size factors.
+McCarthy, Chen & Smyth (2012), Nucleic Acids Research 40:4288–4297,
+doi:10.1093/nar/gks042, supplies the NB GLM/Cox–Reid method already validated in §5.33.
+Benjamini & Hochberg (1995), doi:10.1111/j.2517-6161.1995.tb02031.x, supplies BH.
+Only publications/documentation and public validation APIs are used; no external implementation
+source is incorporated. Runtime remains standard-library Go and browser-native JavaScript.
+
+**ClonoLoom's declared design.** One checked count parent, exact supplied type, literal
+timepoint, reference size bin and comparison size bin. Sample exclusions require reasons;
+other timepoints have an explicit outside-selection disposition. Every included subject must
+have both eligible groups, using the parent's minimum-cell rule and positive library totals.
+No incomplete pair is dropped automatically. More than one selected sample per subject is
+refused. Fixed effects are intercept, comparison and treatment-coded subject indicators;
+contrast is the comparison coefficient. This reuses the rank-checked paired design from §5.33.
+At least 25 complete pairs give 24 residual df; maximum 32 comes from the count parent.
+These are implementation/approximation guards, not power or independence guarantees. No
+additional batch column is inferred: subject-constant effects are blocked, while category-
+specific technical effects, cell labeling and selection can remain confounded. The count
+parent does not capture category-specific batch covariates.
+
+**Normalization and estimand.** For every gene positive in every selected observation,
+compute its across-observation geometric mean. Take the ordinary median of count/geometric-
+mean ratios per observation (average the two middle ratios for an even number), then divide
+factors by their geometric mean. Record every normalization gene and factor; use log factors
+as offsets. Compute this reference before the testing filter. Zero-containing genes are
+omitted only from normalization, never made positive by pseudocounts or silently removed from
+counts. Require at least ten normalization genes (ClonoLoom guard); otherwise refuse. Most
+reference genes must be unchanged or balanced in their changes. The estimand is category-
+associated relative expression under this scale, not absolute RNA per cell. Global RNA shifts,
+poor reference panels and composition effects can invalidate normalization. No per-cell average,
+integrated matrix or log-normalized counts enter the likelihood.
+
+**Fits and family.** Reuse `countmodel.FitDispersion` and `FitNB` unchanged: NB2 log link,
+variance μ+αμ², separate unmoderated gene-wise Cox–Reid adjusted-profile dispersion under the
+full model, search 1e-5–100 with explicit boundary/nonconvergence failures. The null omits only
+the category indicator and retains the full-model dispersion. LRT uses asymptotic chi-square(1);
+log2 effects and marginal normal Wald intervals use inverse fitted information. Intervals and
+p-values condition on fitted size factors/dispersion; neither estimation uncertainty is fully
+propagated. No empirical-Bayes moderation, quasi-likelihood, shrinkage, Poisson substitution,
+ridge or equivalence to edgeR/DESeq2. All-zero category/subject blocks retain unavailable fits.
+Default filter: raw count ≥10 in ≥25 of the selected pseudobulk observations, independent of
+effect direction; configurable count 1–1,000,000, prevalence 2–64 (not above actual n).
+BH family is every filter-eligible gene in this single type/time/contrast; failed fits occupy
+p=1 slots but remain displayed null. Filtered genes are outside the family. BH assumes
+independence or suitable positive dependence, and does not adjust intervals or other choices.
+Confidence defaults .95, allowed .8–.99. At most 1000 eligible genes are fitted (explicit
+resource bound, no truncation); retain 10–50,000 genes within the parent's two-million raw
+output-slot bound. Per-gene raw counts ≤1e9 and libraries ≤1e12 match the numerical engine.
+
+**Evidence and plots.** `pseudobulk-de` artifacts bind the parent checksum, raw groups,
+feature IDs/names/modalities, annotations, every disposition, effective options, model version,
+normalization gene set, full design/contrast, fitted coefficients/means/covariance and likelihoods.
+The parent retains cell membership. Replay needs no original file or parent; new comparisons
+verify the count parent. Complete CSVs keep counts, design/offsets and every gene, with unavailable
+inference blank. Provider NOTICE and source methods travel with exports. Browser geometry only:
+gene mean normalized count on a log x-axis versus log2 effect; no significance colors or p-value
+clipping; zero-based linear paired subject counts; separate conditional effect interval with zero
+reference. Zero counts plot at zero; failed fits stay visible in tables. Size categories imply
+neither antigen specificity nor causality; cells never inflate biological replication.
+
+**Artificial studies.** New model `clonoloom-artificial-pseudobulk-de-v1`, presets
+`pseudobulk-de-study` (seed 20261103) and `pseudobulk-de-null` (20261104), 28 subjects at baseline.
+Subject i=0..27: 48+i mod 5 singleton clones and eight larger clones with sizes
+[7,9,11,13,17,21,26,33]. Forty fictional genes; baseline per-cell mean (2+g)/3 for g=0..39,
+multiplied by a shared subject/gene Gamma(16,1)/16 and independent category/gene Gamma(5,1)/5,
+then independent conditional Poisson cells. Positive preset genes 1–2 multiply comparison means
+by 3, genes 3–4 by 1/3; null preset all folds 1. Gene 39 has mean .005, gene 40 zero, gene 38
+zero in subject 1. Known count/membership truth and all source hashes are separate. Fictional
+SIM TRA/TRB calls and stop-free junctions; correlated Gaussian layout x=1.7Z1,y=.6x+1.2Z2,
+independent of expression, is an illustration, not a fitted embedding. Existing gamma/Poisson
+and polar-normal samplers supply the published sampling methods (§5.39). No fitted biological,
+antigen, dropout or clinical model is claimed. Earlier presets remain byte-identical.
+
+**Independent validation.** `validation/reference/pseudobulk_de.py` uses NumPy ratios,
+statsmodels 0.14.6 public GLM and SciPy 1.17.0 optimization, chi-square/normal distributions and
+BH; it does not read ClonoLoom outputs. The 40-gene fixture compares all factors, normalized
+counts, designs, dispersion, coefficients, fitted means, covariance, likelihoods, effects,
+intervals and p/BH values. Separate `--controls` uses prespecified seed 20261105, 300 genes,
+28 pairs, 30 balanced threefold positive effects and 270 generating nulls, including the same
+three edge controls. Go compares all effect/inference outputs. There are 267 fitted nulls,
+15 nominal p≤.05 (5.6%), 250/267 conditional intervals covering zero (93.6%), and 30/30 positive
+fits with correct direction. This finite panel shares normalization and is not 300 independent
+studies or universal calibration. Prespecified diagnostic guards: ≥260 fitted nulls, rejection
+≤10%, coverage ≥90%, all 30 positive directions; these are regression guards, not claims of
+exact nominal error control. Existing §5.33 repeated null-trial checks continue unchanged.

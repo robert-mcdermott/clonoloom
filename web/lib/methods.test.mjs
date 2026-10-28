@@ -461,3 +461,12 @@ test('pseudobulk methods describe raw evidence and the known artificial model',(
  const out=methodsParagraph({dataset:pbmc,summary,program,results:[{id:'pb-pinned',kind:'pseudobulk',method:'Exact raw pseudobulk sums',describe:'Absent groups remain unavailable; no differential-expression test.',citation:'Crowell et al. 2020. doi:10.1038/s41467-020-19894-4.'}]});
  assert.match(out.text,/Saved Exact raw pseudobulk sums result pb-pinned/);assert.match(out.text,/negative-binomial/);assert.match(out.text,/not make cells independent biological replicates/);assert.doesNotMatch(out.text,/identifiers do not establish/);assert.ok(out.references.some((r)=>r.includes('s41467')));
 });
+
+test('paired gene methods preserve saved inference and distinguish the artificial gene model',()=>{
+ for(const preset of ['pseudobulk-de-study','pseudobulk-de-null']){
+  const summary={samples:[{repertoire:{studyId:`clonoloom-simulated-${preset}`}}]};
+  const result={id:'pde-pinned',kind:'pseudobulk-de',method:'Paired pseudobulk negative-binomial expression',describe:'Type T cells; 28 subjects; fixed subject effects, median-ratio offsets, conditional intervals and 38 BH slots.',citation:'Anders and Huber 2010; McCarthy et al. 2012. doi:10.1093/nar/gks042.'};
+  const out=methodsParagraph({dataset:pbmc,summary,program,results:[result]});
+  assert.match(out.text,/Saved Paired pseudobulk negative-binomial expression result pde-pinned/);assert.match(out.text,/Gamma\(16/);assert.match(out.text,/null preset has no generating category effect/);assert.doesNotMatch(out.text,/identifiers do not establish|24 artificial genes|GRCh38/);assert.ok(out.references.some((v)=>v.includes('gks042')));
+ }
+});

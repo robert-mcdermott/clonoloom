@@ -574,6 +574,14 @@ export function remoteActions(app) {
       return { message: 'Clonotype modularity saved.', data: { artifact: result.artifact.id, tested: result.result.analysis.tested, eligible: result.result.analysis.eligible, description: result.result.description } };
     },
 
+    async compare_pseudobulk(options = {}) {
+      await app.setMode('cells');
+      const view = await waitFor(() => app.cellPseudobulkDEView, 5000, 'Pseudobulk differential expression');
+      const result = await view.run(options);
+      if (!result) throw new ActionError('The project changed during the analysis.');
+      return {message:'Paired pseudobulk expression saved.',data:{artifact:result.artifact.id,subjects:result.result.analysis.observations.length/2,family:result.result.analysis.family,tested:result.result.analysis.tested,description:result.result.description}};
+    },
+
     async aggregate_pseudobulk(options = {}) {
       await app.setMode('cells');
       const view = await waitFor(() => app.cellPseudobulkView, 5000, 'Pseudobulk counts');
