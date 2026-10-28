@@ -265,6 +265,9 @@ normalized parameters, provider notices and a complete run inventory.
 [Analysis checkpoints](docs/CHECKPOINTS.md) keep immutable local settings and attached result
 bytes, compare exact recorded changes and recover through Undo/Redo. They do not back up
 original source files or replace scientific replay.
+[Automation permissions](docs/AUTOMATION.md) provide explicit host grants, named proposals,
+session audit and bounded typed clonotype queries in wave 8 development (API 2).
+
 [Self-checking HTML reports](docs/HTML-REPORTS.md) package explicitly selected results with
 exact tables, existing figures, cited methods, notices and original certificates. Their offline
 browser check verifies embedded bytes, not scientific validity; native replay remains separate.

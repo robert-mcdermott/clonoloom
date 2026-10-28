@@ -3116,6 +3116,57 @@ Validation completed:
 Keep version 0.7.0. Broader result contracts and portable project archives remain separate;
 automation policy is slice 6. No commit, tag, release or publication in this slice.
 
+### Slice 6: automation policy, proposals and typed queries
+
+**Implemented and validated; awaiting maintainer commit.** A2/A3 and the A1 foundation. API 2 changes automation from permissive
+remote control to read-only by default. One catalog declares conservative effect bounds;
+`--allow edits,compute,files,network` grants only the named capabilities. Non-read calls
+also require the local connection token. Grants never imply acceptance of a project edit.
+The window reviews named proposals against the exact current project; rejection, cancellation
+and stale proposals cannot execute. Accepted changes use normal Undo and a bounded session
+audit records requests and outcomes, including refusals. Cancellation is best effort for
+already-started file operations and workers; it cannot erase downloaded bytes or completed
+side effects. No automatic retry or rollback of scientific files.
+
+A bounded typed clonotype filter tree adds conjunction/disjunction/negation and declared
+numeric/string predicates, stable pagination and full-population denominators. There is no
+SQL, shell, expression evaluation, inferred missing value or statistical inference. Raw native
+JSON is retained for precise client decoding. Existing certificate replay and its five-kind
+support matrix remain unchanged; automation does not introduce another scientific engine.
+MCP and generated clients remain slices 7–9. Version stays 0.7.0.
+
+Validation completed:
+
+- Full application/internal race suite passed (application 1000.407 s, within the existing
+  thirty-minute limit). Final focused policy/query race checks passed in 2.034 s. The first
+  full run caught a new test fixture that collapsed to one productive clonotype; a second
+  productive identity supplies a literal 8/12 and 4/12 abundance oracle. No scientific
+  tolerance, method or existing fixture was changed.
+- Native query controls retain QC rules, full-table denominators, definition and source unit,
+  stable pagination, case-sensitive and multi-chain semantics. Strict schemas, duplicate keys,
+  numeric precision bounds, no SQL/shell, unknown fields, depth/node limits and bounded audit
+  are tested. Final decoder fuzzing passed 113,557 executions in twenty seconds.
+- amd64 policy/query and five-kind HTML-certificate replay controls passed in 15.066 s.
+  Existing native worker and certificate replay cases pass in the full race suite. This is
+  not the complete scientific release-validation campaign, which remains slice 15.
+- 163 JavaScript tests and 14 contrast checks pass. Both-theme browser workflows pass for
+  proposals/audit, reports and checkpoint recovery. They exercise existing-job refusal,
+  explicit acceptance/rejection, stale proposals, cancellation before and after acceptance,
+  blocked late writes, actor history, Undo/Redo and preservation of read-only/UI-only views.
+  Four new screenshots were reviewed. Initial browser checks caught lifecycle invalidation
+  and modal/drawer accessibility issues; these were corrected before the final runs.
+- Go vet, formatting, JavaScript syntax and six CGO-free platform builds pass. Site build
+  produces 52 pages and 65 screenshot references; its 204 desktop/mobile/theme audit checks
+  report no violations or overflow. Existing release fixtures and scientific workers remain
+  unchanged. Capture/fixture drivers explicitly grant capabilities, wait for existing work
+  and click visible acceptance controls; they never auto-retry failed edits.
+
+Audit is bounded to the last 500 host-session events, not persistent forensic history.
+Cancellation cannot undo already written/downloaded bytes; project Undo remains bounded to
+300 steps. Non-read automation refuses existing jobs/imports. Read-only query leases reject
+project writes without resetting the active scientific view. No commit, push, tag, release or
+site publication was performed. Slice 7 (MCP transport) is next after maintainer review.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |

@@ -10,6 +10,7 @@
 //
 // Needs Go (to build ClonoLoom) and Chrome, Chromium, Edge or Brave (CHROME=path).
 
+import { acceptAutomation, waitForAutomationIdle } from '../../validation/automation.mjs';
 import { spawn } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -54,7 +55,7 @@ let places = {};
 async function startClonoLoom({ examples = DATA } = {}) {
   const library = mkdtempSync(join(temp, 'library-'));
   places = { library, examples };
-  const server = spawn(binary, ['--remote-control', '--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples, '--cache-dir', join(temp, 'cache')], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
+  const server = spawn(binary, ['--remote-control', '--allow', 'edits,compute,files,network', '--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples, '--cache-dir', join(temp, 'cache')], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
   let output = '';
   server.stdout.on('data', (chunk) => { output += chunk; });
   const stop = async () => {
@@ -77,7 +78,8 @@ async function startClonoLoom({ examples = DATA } = {}) {
 
 // An action through remote control, as any script sends it.
 async function act(action, actionArgs = {}) {
-  const response = await fetch(`${URL}api/remote/action`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-ClonoLoom-Token': token }, body: JSON.stringify({ action, args: actionArgs, client: 'docs/capture' }) });
+  await waitForAutomationIdle(b);
+  const response = await acceptAutomation(fetch(`${URL}api/remote/action`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-ClonoLoom-Token': token }, body: JSON.stringify({ action, args: actionArgs, client: 'docs/capture' }) }), b);
   const result = await response.json();
   if (!result.ok) throw new Error(`${action}: ${result.message ?? result.error}`);
   return result;
@@ -403,6 +405,54 @@ async function capturedCertificateScene(kind) {
 }
 
 const scenes = {
+  async automation() {
+    await act('new_project',{name:'Artificial repertoire review'});
+    await act('open_example',{example:'simulated-vaccine',download:true});
+    const queryGeneration=await js('window.clonoloom.store.state.generation');
+    const full=JSON.parse((await act('query_clonotypes',{limit:1000})).data.resultJSON);
+    if(full.count<10 || full.rows.length<10)throw new Error('Unrepresentative query fixture');
+    const wanted=full.rows[3];
+    const filtered=JSON.parse((await act('query_clonotypes',{where:{all:[{field:'total',op:'gte',value:wanted.total},{field:'id',op:'eq',value:wanted.id}]},limit:1})).data.resultJSON);
+    if(filtered.matched!==1 || filtered.count!==full.count || filtered.rows[0].frequency!==wanted.frequency || filtered.definitionId!==full.definitionId)throw new Error('Query changed scientific denominator or definition');
+    if(await js('window.clonoloom.store.state.generation')!==queryGeneration)throw new Error('Read-only query reset existing views');
+    await act('show',{view:'Clonotypes'});
+    const beforeTheme=await js('window.clonoloom.store.state.generation');
+    await act('set_theme',{theme:'system'});
+    if(await js('window.clonoloom.store.state.generation')!==beforeTheme)throw new Error('UI-only action reset scientific views');
+    const headers={'Content-Type':'application/json','X-ClonoLoom-Token':token};
+    const raw=(action,args,signal)=>fetch(`${URL}api/remote/action`,{method:'POST',headers,body:JSON.stringify({action,args,client:'Research notebook'}),signal}).then(r=>r.json());
+    const proposal=()=>waitFor(`Boolean(document.querySelector('[data-automation-proposal]'))`);
+    const reject=()=>js(`(()=>{[...document.querySelectorAll('[data-automation-proposal] button')].find(b=>b.textContent==='Reject').click();return true})()`);
+    const accept=()=>js(`(()=>{document.querySelector('[data-automation-proposal] button.primary').click();return true})()`);
+    await js(`(()=>{const jobs=window.clonoloom.jobs;window.originalRunning=jobs.running;jobs.running=()=>[{id:'already-running',title:'Existing study',state:'running'}];return true})()`);
+    if((await raw('set_theme',{theme:'dark'})).code!=='busy')throw new Error('Automation interrupted an existing job');
+    await js(`(()=>{window.clonoloom.jobs.running=window.originalRunning;return true})()`);
+    let pending=raw('annotate_samples',{samples:{}}); await proposal(); await reject();
+    if((await pending).code!=='rejected')throw new Error('Rejection was not returned');
+    pending=raw('annotate_samples',{samples:{}});await proposal();
+    await js(`(()=>{const s=window.clonoloom.store;s.commit({...s.project,name:'Changed while proposal was open'},'Manual change');return true})()`);await accept();
+    if((await pending).code!=='stale-project')throw new Error('Stale proposal executed');
+    await js(`(()=>{window.clonoloom.store.undo();return true})()`);
+    const abort=new AbortController();pending=raw('annotate_samples',{samples:{}},abort.signal).catch(()=>null);await proposal();abort.abort();await pending;
+    await waitFor(`!document.querySelector('[data-automation-proposal]')`);
+    await act('set_definition',{preset:'Nucleotide junction'});
+    await js(`(()=>{const s=window.clonoloom.store;if(!s.undoLabel().includes('by docs/capture'))throw new Error('Missing actor');const next=s.project;s.undo();if(s.project===next)throw new Error('Undo failed');s.redo();if(s.project!==next)throw new Error('Redo failed');return true})()`);
+    // Cancel an already accepted asynchronous action and try a late attachment.
+    await js(`(()=>{const app=window.clonoloom;window.originalAction=app.actions.set_definition;app.actions.set_definition=async()=>{await new Promise(resolve=>{window.settleAutomation=resolve});app.store.commit({...app.store.project,name:'late cancelled write'},'Late write');return {message:'unexpected'};};return true})()`);
+    pending=raw('set_definition',{preset:'Nucleotide junction'});await proposal();await accept();
+    await waitFor(`Boolean(window.settleAutomation)`);
+    await js(`(()=>{[...document.querySelectorAll('.dialog button')].find(b=>b.textContent==='Cancel action').click();window.settleAutomation();return true})()`);
+    if((await pending).code!=='cancelled')throw new Error('Running cancellation did not report cancelled');
+    await js(`(()=>{const app=window.clonoloom;app.actions.set_definition=window.originalAction;if(app.store.project.name==='late cancelled write')throw new Error('Cancelled result attached');return true})()`);
+    const audit=await(await fetch(`${URL}api/remote/audit`,{headers})).json();
+    for(const status of ['requested','accepted','rejected','stale-project','cancelled','completed'])if(!audit.events.some(e=>e.state===status))throw new Error('Missing audit '+status);
+    await js(`(()=>{window.clonoloom.store.setUI({drawer:{open:true,tab:'automation'}},['drawer']);return true})()`);
+    await clearToasts();
+    pending=raw('set_definition',{preset:'Amino-acid junction, V and J genes'});await proposal();await checkAccessibility();
+    await b.capture(join(IMAGES,`automation-${await js(`window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'`)}.webp`),{format:'webp',quality:86});
+    await reject();await pending;
+    await js(`(()=>{window.clonoloom.store.setUI({drawer:{open:true,tab:'automation'}},['drawer']);return true})()`);
+  },
   async ['html-reports']() {
     await batchQCScene();
     const artifact=await js('window.batchQCCheck.id');
@@ -1493,7 +1543,7 @@ try {
         await clearToasts();
         await sleep(800);
         if(name!=='offline-report') await showPlaces();
-        await b.capture(join(IMAGES, `${name}-${theme}.webp`), { format: 'webp', quality: 86 });
+        await b.capture(join(IMAGES, `${name==='automation'?'automation-audit':name}-${theme}.webp`), { format: 'webp', quality: 86 });
         console.log(`${name} (${theme})`);
       } catch (error) {
         console.error(`${name} (${theme}) failed: ${error.message}`);

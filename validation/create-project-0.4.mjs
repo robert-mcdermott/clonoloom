@@ -1,6 +1,7 @@
 // Create the 0.4.0 compatibility project through the actual browser and remote actions.
 // Uses an isolated temporary library; refuses to overwrite an existing fixture.
 // node validation/create-project-0.4.mjs [new-output-directory]
+import { acceptAutomation, waitForAutomationIdle } from './automation.mjs';
 import { gzipSync } from 'node:zlib';
 import { spawn } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync, rmSync } from 'node:fs';
@@ -27,7 +28,7 @@ let places = {};
 async function startClonoLoom({ examples = DATA } = {}) {
   const library = mkdtempSync(join(temp, 'library-'));
   places = { library, examples };
-  const server = spawn(binary, ['--remote-control', '--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples, '--cache-dir', join(temp, 'cache')], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
+  const server = spawn(binary, ['--remote-control', '--allow', 'edits,compute,files,network', '--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples, '--cache-dir', join(temp, 'cache')], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
   let output = '';
   server.stdout.on('data', (chunk) => { output += chunk; });
   const stop = async () => {
@@ -50,7 +51,8 @@ async function startClonoLoom({ examples = DATA } = {}) {
 
 // An action through remote control, as any script sends it.
 async function act(action, actionArgs = {}) {
-  const response = await fetch(`${URL}api/remote/action`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-ClonoLoom-Token': token }, body: JSON.stringify({ action, args: actionArgs, client: 'docs/capture' }) });
+  await waitForAutomationIdle(b);
+  const response = await acceptAutomation(fetch(`${URL}api/remote/action`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-ClonoLoom-Token': token }, body: JSON.stringify({ action, args: actionArgs, client: 'docs/capture' }) }), b);
   const result = await response.json();
   if (!result.ok) throw new Error(`${action}: ${result.message ?? result.error}`);
   return result;

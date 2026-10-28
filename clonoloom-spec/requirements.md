@@ -161,8 +161,8 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | # | Requirement | Status |
 | --- | --- | --- |
 | A1 | `clonoloom mcp`: an MCP server, read-only by default; `--allow edits,compute,files,network` | planned (wave 8) |
-| A2 | Agent changes are proposals the user accepts or rejects; undoable; every call logged with the agent's name | planned (wave 8) |
-| A3 | A typed query tool: "which clonotypes meet these conditions" as a filter tree, never SQL or shell | planned (wave 8) |
+| A2 | Agent changes are proposals the user accepts or rejects; undoable; every call logged with the agent's name | done (wave 8, slice 6: API 2 grants, named window review, project Undo and last-500 session audit; file effects not rolled back; MCP transport in slice 7) |
+| A3 | A typed query tool: "which clonotypes meet these conditions" as a filter tree, never SQL or shell | done (wave 8, slice 6: bounded typed clonotype predicates, unchanged definition/QC and full-table denominators, native JSON text) |
 | A4 | Python and R clients generated from the tool list | planned (wave 8) |
 | A5 | An agent benchmark with tasks whose answers are known, graded by code | planned (wave 8) |
 | A6 | `clonoloom run --recipe --input --out`: headless runs, one dataset or a batch, friendly to cluster array tasks | partial (wave 8, slice 3: native named-input recipes, explicit batch task selection, source batch QC/motifs and five certificate replay kinds, checksum snapshots, effective recipe/run inventory, cancellation and no overwrite; other source kinds and cluster packaging remain) |

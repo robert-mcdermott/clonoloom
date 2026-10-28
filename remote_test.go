@@ -73,8 +73,16 @@ func attachPage(t *testing.T, server *httptest.Server, session string) (stop fun
 			}
 			var event remoteEvent
 			json.Unmarshal([]byte(strings.TrimPrefix(line, "data: ")), &event)
+			if event.Audit != nil || event.Cancel {
+				continue
+			}
 			outcome, _ := json.Marshal(remoteResult{OK: true, Message: event.Action + " by " + event.Client})
-			http.Post(server.URL+"/api/remote/result/"+event.ID, "application/json", strings.NewReader(string(outcome)))
+			req, _ := http.NewRequest("POST", server.URL+"/api/remote/result/"+event.ID, strings.NewReader(string(outcome)))
+			req.Header.Set("X-ClonoLoom-Session", session)
+			resp, err := http.DefaultClient.Do(req)
+			if err == nil {
+				resp.Body.Close()
+			}
 		}
 	}()
 	return func() { resp.Body.Close() }
@@ -99,6 +107,7 @@ func act(t *testing.T, server *httptest.Server, body, token string) (int, string
 
 func TestRemoteActionsArePerformedByThePage(t *testing.T) {
 	hub, server := remoteServer(t, "s1")
+	hub.allowed, _ = parseAutomationAllow("edits,compute,files,network")
 	if code, _ := act(t, server, `{"action": "get_state"}`, ""); code != http.StatusServiceUnavailable {
 		t.Errorf("no page: %d", code)
 	}

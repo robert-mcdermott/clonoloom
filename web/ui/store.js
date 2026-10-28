@@ -39,6 +39,11 @@ export function createStore(initialProject) {
     generation: 0,
   };
 
+  let automation = null;
+  const writable = () => {
+    if (automation?.readOnly) throw new Error('This automation call has no permission to edit the project.');
+    if (automation?.cancelled) throw new ProjectChangedError('Cancelled automation cannot attach further project changes.');
+  };
   let pending = new Set();
   let scheduled = false;
   const notify = (topics) => {
@@ -60,6 +65,29 @@ export function createStore(initialProject) {
   };
 
   return {
+    // Exclusive window automation. Invalidate work begun before this call, and again
+    // on cancellation, so existing sameProject guards also refuse late attachments.
+    beginAutomation(name, { readOnly = false, invalidate = !readOnly } = {}) {
+      if (automation) throw new Error('Automation is already running.');
+      if (invalidate) state.generation += 1;
+      const lease = { cancelled: false, readOnly };
+      automation = lease;
+      state.actor = name;
+      notify(['automation']);
+      return (release = false) => {
+        if (automation !== lease) return;
+        if (release) {
+          automation = null;
+          state.actor = null;
+          return;
+        }
+        if (!lease.cancelled) {
+          lease.cancelled = true;
+          state.generation += 1;
+          notify(['automation']);
+        }
+      };
+    },
     state,
     get project() {
       return state.project;
@@ -74,6 +102,7 @@ export function createStore(initialProject) {
     notify,
     // Replaces the project with an edited one, recording it for undo.
     commit(next, label = 'Edit', topics = ['project']) {
+      writable();
       if (!next || next === state.project) return;
       // A project built from another one (captured before that one was replaced).
       if (next.id !== state.project.id) throw new ProjectChangedError();
@@ -90,6 +119,7 @@ export function createStore(initialProject) {
     },
     // Replaces the project without an undo step (loading, background results).
     replace(next, topics = ['project']) {
+      writable();
       if (next.id !== state.project.id) throw new ProjectChangedError();
       state.project = next;
       notify(['project', ...topics]);
@@ -108,11 +138,13 @@ export function createStore(initialProject) {
       return () => state.generation === generation;
     },
     reset(next) {
+      writable();
       state.generation += 1;
+      const previous = state.project;
       state.project = next;
-      state.past = [];
+      state.past = state.actor ? [...state.past,previous].slice(-MAX_HISTORY) : [];
       state.future = [];
-      state.labels = { past: [], future: [] };
+      state.labels = { past: state.actor ? [...state.labels.past,`Start project (by ${state.actor})`].slice(-MAX_HISTORY) : [], future: [] };
       state.saved = next;
       notify(['project', 'history', 'project-loaded']);
     },

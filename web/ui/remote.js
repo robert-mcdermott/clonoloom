@@ -8,6 +8,7 @@
 import { cohortExampleStep } from './cohort-example.js';
 import { useInvariantSpecies } from '../lib/invariant.js';
 import { networkOptions } from '../lib/networks.js';
+import { automationWindow } from './automation.js';
 import { closeDialogs, toast } from './overlays.js';
 import { clonotypePresets } from './storage.js';
 import { showMethods } from './methods.js';
@@ -87,6 +88,15 @@ export function remoteActions(app) {
   const lociOf = (summary) => Object.keys(summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
 
   const actions = {
+    async query_clonotypes({dataset, where, offset = 0, limit = 200} = {}) {
+      const project = store.project, current = store.sameProject();
+      const d = datasetOf(dataset), summary = await openDataset(d);
+      const response = await fetch('api/clonotypes/query', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({dataset:summary.id,definition:datasetDefinition(d,lociOf(summary)),filter:datasetFilter(project,d)?.rules ?? {},where,offset,limit,sort:'total',desc:true})});
+      const resultJSON = await response.text();
+      if (!response.ok) throw new ActionError(JSON.parse(resultJSON).error ?? 'Query failed.');
+      if (!current() || store.project !== project) throw new ActionError('The project changed during the query; query again against its new state.');
+      return {message:'Clonotype query complete; full-table denominators retained. No statistical inference.',data:{resultJSON}};
+    },
     async export_html_report({artifacts,title='Saved analysis report',accept=false}) {
       await app.setMode('reports');
       const view=await waitFor(()=>app.htmlReportsView,5000,'HTML reports');
@@ -127,6 +137,8 @@ export function remoteActions(app) {
         message: `${project.name}: ${project.datasets.length} dataset${project.datasets.length === 1 ? '' : 's'}.`,
         data: {
           project: { id: project.id, name: project.name },
+          runningJobs: app.jobs.running().map(({id,title,state})=>({id,title,state})),
+          importing: store.state.busy.size > 0,
           view: ui.mode,
           focus: ui.focus ?? null,
           cohortDesigns: (project.cohortDesigns ?? []).map((d) => ({ id: d.id, name: d.name, revision: d.revision, dataset: d.dataset, design: d.result.id, ok: d.result.ok })),
@@ -964,6 +976,7 @@ export function remoteActions(app) {
 }
 
 export function installRemote(app) {
+  const automation = automationWindow(app);
   const actions = app.actions ?? remoteActions(app);
 
   async function perform(event) {
@@ -971,14 +984,14 @@ export function installRemote(app) {
     try {
       const action = actions[event.action];
       if (!action) throw new ActionError(`This page does not know the action ${event.action}: reload it.`);
-      const result = await action(event.args ?? {});
+      const result = await automation.run(event, action);
       outcome = { ok: true, message: result?.message ?? 'Done.', data: result?.data };
       app.log(`${event.client}: ${outcome.message}`);
     } catch (error) {
-      outcome = { ok: false, message: error.message };
+      outcome = { ok: false, code:error.code??'action-failed', message: error.message };
       app.log(`${event.client} asked for ${event.action}: ${error.message}`);
     }
-    await fetch(`api/remote/result/${encodeURIComponent(event.id)}`, { method: 'POST', body: JSON.stringify(outcome), headers: { 'Content-Type': 'application/json' } }).catch(() => {});
+    await fetch(`api/remote/result/${encodeURIComponent(event.id)}`, { method: 'POST', body: JSON.stringify(outcome), headers: { 'Content-Type': 'application/json', 'X-ClonoLoom-Session': app.info.session } }).catch(() => {});
   }
 
   // Only the run of ClonoLoom this page was opened from takes it as its window: when the
@@ -995,12 +1008,16 @@ export function installRemote(app) {
     });
     source.addEventListener('action', (message) => {
       try {
-        perform(JSON.parse(message.data));
+        const event=JSON.parse(message.data);
+        if(event.audit) {void automation.refresh();return;}
+        if(event.cancel) {automation.cancel(event.id);return;}
+        perform(event);
       } catch {
         // not an action
       }
     });
     source.onerror = async () => {
+      automation.cancel();
       source.close();
       const now = await fetch('api/info', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
       if (now?.session && now.session !== session) {
@@ -1013,5 +1030,5 @@ export function installRemote(app) {
     };
   };
   connect();
-  return { disconnect: () => source?.close(), actions };
+  return { disconnect: () => {automation.cancel();source?.close();}, actions };
 }

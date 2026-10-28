@@ -4,6 +4,14 @@
 
 ### Added
 
+- **Automation policy, proposals and typed queries (wave 8, slice 6).** API 2 defaults
+  to read-only remote control, with explicit host capabilities and token checks. Review
+  named proposals against the unchanged project, retain Undo/Redo and session audit,
+  and refuse stale/cancelled attachments. Bounded typed clonotype queries preserve
+  definition, QC, units, full-table denominators and native JSON numeric tokens.
+  No SQL/shell, new estimator, replay tolerance or expanded replay coverage. Cancellation
+  does not erase completed file effects; audit retains only the last 500 session events.
+
 - **Self-checking HTML reports (wave 8, slice 5).** Export one offline file for explicitly
   selected cohort features/comparisons/count models, batch QC and motif results. Preserve
   exact numeric tables, complete result records, original JSON/certificates, methods,

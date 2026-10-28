@@ -628,3 +628,32 @@ external fingerprints, changed bytes/code/styles, hidden failed content and zero
 The `html-reports` and `offline-report` capture scenes exercise export, stale edits, cancellation,
 saved scientific geometry and both-theme accessibility on the realistic artificial batch-QC study.
 Integrity/replay validation is separate from the existing independent scientific method controls.
+
+## Automation policy and typed queries (Wave 8, slice 6)
+
+`automation_test.go` checks the complete catalog, read-only defaults, explicit grants,
+token separation, strict argument shapes, duplicate keys, unsafe numeric arguments,
+bounded session audit and cancellation delivery. Typed-query truth tables cover paired
+chains, missing/ignored V values, case-sensitive text, Boolean composition and invalid trees.
+The native endpoint keeps literal 8/12 and 4/12 abundance frequencies under row selection,
+with unchanged definition, units and full table counts. Existing scientific workers and
+five-kind exact replay fixtures are unchanged.
+
+```sh
+go test -race -timeout 30m . ./internal/...
+go test . -run 'TestAutomation|TestTyped|TestRemote|TestEveryAction' -count=1
+go test . -run '^$' -fuzz FuzzTypedClonotypeFilter -fuzztime 20s
+node --test web/lib/*.test.mjs
+node docs/capture/capture.mjs automation html-reports checkpoints --theme both
+```
+
+The automation browser scene tests actual host dispatch and visible proposal decisions,
+stale-project refusal, HTTP cancellation while awaiting review, cancellation of an accepted
+asynchronous action, rejection of its late project write, named history and Undo/Redo.
+It queries the existing artificial vaccine study and checks original denominators; no new
+biological simulation or plotting method is introduced. Review the proposal and audit
+screenshots in both themes. Report/checkpoint scenes remain regression controls.
+
+Capture and fixture-builder scripts now start the host with explicit grants wait for existing jobs/imports, and click each
+visible acceptance button through `validation/automation.mjs`. This is test-driver behavior,
+not an application bypass or an auto-accept capability. Old release fixtures are unchanged.

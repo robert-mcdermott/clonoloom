@@ -52,14 +52,15 @@ export function mountDrawer(app) {
       resize.addEventListener('pointermove', move);
       resize.addEventListener('pointerup', up, { once: true });
     });
-    const head = h('div.drawer-head', { role: 'tablist', 'aria-label': 'Drawer' },
+    const head = h('div.drawer-head',
+      h('div', { role: 'tablist', 'aria-label': 'Drawer', style:'display:flex' },
       ...[...tabs].map(([id, tab]) => h(`button.drawer-tab${id === active ? '.active' : ''}`, {
         type: 'button', role: 'tab', 'aria-selected': id === active ? 'true' : 'false',
         onclick: () => app.store.setUI({ drawer: { open: true, tab: id } }, ['drawer']),
-      }, tab.label)),
+      }, tab.label))),
       h('span.spacer'),
       iconButton('close', 'Close the drawer (⌘J)', () => app.toggleDrawer(false), { class: 'small' }));
-    root.append(resize, head, h('div.drawer-body', { role: 'tabpanel' }, tabs.get(active).render(app)));
+    root.append(resize, head, h('div.drawer-body', { role: 'tabpanel', tabIndex:0 }, tabs.get(active).render(app)));
   }
 
   return {

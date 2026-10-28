@@ -3110,3 +3110,35 @@ geometry/styles, wrong independent fingerprints, provider terms, cancellation an
 Review both-theme application/report screenshots and accessibility; keep scientific calibration
 controls separate from integrity validation. Full motif screens may exceed report bounds; use
 their original certificate exports rather than silently dropping candidate groups.
+
+
+### 5.47 Automation permissions and typed row selection (wave 8, slice 6)
+
+**Sources and scope.** Reviewed the AIRR Data Commons
+[request components](https://docs.airr-community.org/en/stable/api/adc_api_requests.html)
+and [endpoints](https://docs.airr-community.org/en/stable/api/adc_api_endpoints.html)
+(2026-10-28): structured filters and bounded access are established API patterns.
+ClonoLoom's smaller local filter tree is not ADC protocol compatibility. Apache-2.0
+CytoWeave and MaveScape local action/proposal patterns inform named review, shared catalog
+and separation of caller labels from authority. No new scientific method is implemented.
+
+**Scientific boundary.** Query the post-definition/QC clonotype table. Filter row membership
+without renormalizing abundance; retain source units, full sample totals and excluded counts.
+Numeric thresholds use the native abundance representation and are bounded to 2^53−1;
+responses retain the original Go JSON text. V/J may be empty because the definition ignores
+those genes. Chain predicates are existential, not same-chain joins; negation includes rows
+that did not match, including empty fields. Case-sensitive literal matching is documented.
+Neither row selection nor capability acceptance proves biological validity or specificity.
+
+**Operational boundary.** Host capabilities are upper bounds on action effects; the window
+reviews state-changing proposals against the exact project state. Tokens cannot widen grants.
+Names are caller-supplied. Undo covers project edits, not file deletion or external rollback.
+Cancelled work can leave completed artifacts; later project attachments are refused. The last
+500 session audit records are operational evidence, not persistent scientific provenance.
+The five-kind native replay contract remains unchanged and requires exact result bytes.
+
+**Validation design.** Literal predicate truth tables include paired chains, absent V fields,
+case sensitivity, numeric bounds and Boolean nesting. Native endpoint tests compare filtered
+rows to unfiltered rows with unchanged frequencies/definitions/units. Browser checks exercise
+rejection, stale acceptance, cancellation, actor history, Undo/Redo and both-theme review/audit.
+Existing worker and certificate regression tests check scientific replay separately.

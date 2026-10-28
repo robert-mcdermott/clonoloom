@@ -190,6 +190,7 @@ func (q clonotypeQuery) matches(t *clonotype.Table, i int) bool {
 }
 
 type clonotypeRequest struct {
+	Where      *clonotypeFilter     `json:"where,omitempty"`
 	Species    string               `json:"species"`
 	Population string               `json:"population"`
 	Dataset    string               `json:"dataset"`
@@ -222,6 +223,8 @@ type sampleTotal struct {
 }
 
 type clonotypePage struct {
+	Filter       qc.Filter            `json:"filter"`
+	Where        *clonotypeFilter     `json:"where,omitempty"`
 	Invariant    *invariant.Result    `json:"invariant,omitempty"`
 	DefinitionID string               `json:"definitionId"`
 	Definition   clonotype.Definition `json:"definition"`
@@ -238,6 +241,7 @@ type clonotypePage struct {
 
 func (a *app) registerClonotypes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/clonotypes", a.handleClonotypes)
+	mux.HandleFunc("POST /api/clonotypes/query", func(w http.ResponseWriter, r *http.Request) { a.handleClonotypePage(w, r, true) })
 	mux.HandleFunc("POST /api/clonotypes/one", a.handleClonotype)
 	mux.HandleFunc("GET /api/clonotypes/presets", func(w http.ResponseWriter, r *http.Request) {
 		out := make([]map[string]any, len(clonotype.Presets))
@@ -281,11 +285,33 @@ func (a *app) clonotypeTable(req clonotypeRequest) (*dataset, *clonotypeEntry, i
 }
 
 func (a *app) handleClonotypes(w http.ResponseWriter, r *http.Request) {
+	a.handleClonotypePage(w, r, false)
+}
+func (a *app) handleClonotypePage(w http.ResponseWriter, r *http.Request, strict bool) {
 	var req clonotypeRequest
-	if err := json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(&req); err != nil {
+	body, readErr := io.ReadAll(http.MaxBytesReader(w, r.Body, 1<<20))
+	decodeErr := readErr
+	if decodeErr == nil {
+		if strict {
+			decodeErr = strictJSON(body, &req)
+		} else {
+			decodeErr = json.Unmarshal(body, &req)
+		}
+	}
+	if decodeErr != nil {
 		writeError(w, http.StatusBadRequest, "Send {\"dataset\", \"definition\", \"filter\", \"sort\", \"query\", \"offset\", \"limit\"}.")
 		return
 	}
+	nodes := 0
+	if err := req.Where.validate(1, &nodes); err != nil {
+		writeError(w, 400, err.Error())
+		return
+	}
+	if strict && (req.Offset < 0 || req.Limit < 0 || req.Limit > 1000) {
+		writeError(w, 400, "offset must be nonnegative; limit is 1–1000 (omitted/0 defaults to 200)")
+		return
+	}
+
 	ds, entry, status, err := a.clonotypeTable(req)
 	if err != nil {
 		code := ""
@@ -307,16 +333,19 @@ func (a *app) handleClonotypes(w http.ResponseWriter, r *http.Request) {
 		inv = entry.invariant(req.Species)
 	}
 	matched := order
-	if !req.Query.empty() || req.Population != "" {
+	if !req.Query.empty() || req.Population != "" || req.Where != nil {
 		matched = make([]int32, 0, 1024)
-		for _, i := range order {
+		for at, i := range order {
+			if at%1024 == 0 && r.Context().Err() != nil {
+				return
+			}
 			populationMatch := req.Population == ""
 			if inv != nil {
 				for p, name := range invariant.Populations {
 					populationMatch = populationMatch || (req.Population == name && inv.Flags[i][p] == invariant.Match)
 				}
 			}
-			if populationMatch && req.Query.matches(t, int(i)) {
+			if populationMatch && req.Query.matches(t, int(i)) && req.Where.matches(t, int(i)) {
 				matched = append(matched, i)
 			}
 		}
@@ -326,7 +355,7 @@ func (a *app) handleClonotypes(w http.ResponseWriter, r *http.Request) {
 		limit = 200
 	}
 	offset := max(0, req.Offset)
-	page := clonotypePage{DefinitionID: t.DefinitionID, Definition: t.Definition, Describe: t.Definition.Describe(), Unit: t.Unit, SingleCell: t.SingleCell,
+	page := clonotypePage{Filter: req.Filter, Where: req.Where, DefinitionID: t.DefinitionID, Definition: t.Definition, Describe: t.Definition.Describe(), Unit: t.Unit, SingleCell: t.SingleCell,
 		Count: len(t.Clonotypes), Matched: len(matched), Cells: t.Cells, Excluded: t.Excluded, Rows: []clonotypeRow{}}
 	var grand float64
 	for i, s := range ds.Result.Table.Samples {

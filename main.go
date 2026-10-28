@@ -63,6 +63,7 @@ type config struct {
 	cacheLimit  int64
 	offline     bool
 	remote      bool
+	allow       string
 	dev         bool
 	showVersion bool
 	files       []string
@@ -309,6 +310,7 @@ func parseConfig(args []string) (config, error) {
 	flags.BoolVar(&cfg.offline, "offline", false, "download nothing: ClonoLoom then reaches no other computer")
 	flags.StringVar(&cfg.cacheDir, "cache-dir", "", "folder for the table cache, which can be deleted and made again (default: <user cache dir>/clonoloom)")
 	cacheLimit := flags.String("cache-limit", "10GB", "size the table cache is kept within, removing what was used least recently (for example 500MB or 20GB; 0 for no limit)")
+	flags.StringVar(&cfg.allow, "allow", "", "automation capabilities: comma-separated edits,compute,files,network (default read-only; requires --remote-control)")
 	flags.BoolVar(&cfg.remote, "remote-control", false, "accept actions from programs on this computer at /api/remote/action (scripts, the documentation's screenshots)")
 	flags.BoolVar(&cfg.dev, "dev", false, "serve web/ from the working directory instead of the embedded copy")
 	flags.BoolVar(&cfg.showVersion, "version", false, "print the version and exit")
@@ -336,6 +338,12 @@ func parseConfig(args []string) (config, error) {
 	}
 	if cfg.dataDir == "" && err == nil {
 		cfg.dataDir = defaultDataDir()
+	}
+	if _, policyErr := parseAutomationAllow(cfg.allow); policyErr != nil {
+		return cfg, policyErr
+	}
+	if cfg.allow != "" && !cfg.remote {
+		return cfg, fmt.Errorf("--allow requires --remote-control")
 	}
 	cfg.files = files
 	return cfg, err
@@ -376,6 +384,7 @@ func newApp(cfg config) (*app, error) {
 	}
 	if cfg.remote {
 		a.remote = newRemoteHub(a.session)
+		a.remote.allowed, _ = parseAutomationAllow(cfg.allow)
 	}
 	if problems := a.files.add(cfg.files); len(problems) > 0 {
 		for _, problem := range problems {

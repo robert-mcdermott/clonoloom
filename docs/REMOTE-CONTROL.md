@@ -5,17 +5,21 @@ drive the open ClonoLoom window: open data, choose a clonotype definition, show 
 dataset's methods paragraph. Each action is performed in the window, where you see it, and what it
 changes goes into the project's history like any edit of yours, so it can be undone.
 
+See [Automation permissions](AUTOMATION.md) for the API 2 capability and proposal contract.
+
 ## Turn it on
 
 ```sh
-clonoloom --remote-control
+clonoloom --remote-control  # read-only
+# Grant the capabilities required by your workflow:
+clonoloom --remote-control --allow edits,compute,files,network
 ```
 
 ClonoLoom then writes `remote.json` to its data folder (`~/Library/Application Support/ClonoLoom`
 on macOS, `~/.config/ClonoLoom` on Linux, `%AppData%\ClonoLoom` on Windows, or `--data-dir`):
 
 ```json
-{ "url": "http://127.0.0.1:8860", "token": "…", "version": "0.2.0", "pid": 12345 }
+{ "url": "http://127.0.0.1:8860", "token": "…", "version": "0.7.0", "api": 2, "pid": 12345 }
 ```
 
 The file is readable by you only, and removed when ClonoLoom stops. Keep a ClonoLoom window open:
@@ -90,14 +94,14 @@ act("open_data", paths=[table], mappings={table: {
 
 - Only programs on this computer: requests from other computers, and web pages that reach the
   loopback port under another name, are refused.
-- Reading files by path (`open_data`) needs the `X-ClonoLoom-Token` header with the token in
+- Every non-read action needs explicit startup grants and the `X-ClonoLoom-Token` header with the token in
   `remote.json`, so another user of a shared computer cannot make your ClonoLoom read your files.
 - Data under a provider's terms of use (the immuneACCESS example) are never downloaded by a
   program: only you can accept their terms, in the window.
 - One action runs at a time, in the order they come; a page opened from an earlier run of
   ClonoLoom does not take actions (reload it).
 
-Agents (an MCP server whose changes you accept or reject) come in a later release.
+Named proposals and typed queries are available in wave 8 development. MCP transport and generated clients follow in slices 7–9. See [the policy contract](AUTOMATION.md) for cancellation, Undo and session audit limits.
 
 ### B-cell input evidence (wave 5)
 
