@@ -1,0 +1,23 @@
+---
+title: Headless recipes
+description: Run declared AIRR studies or replay captured evidence with checksum-pinned inputs and exact worker outputs.
+lede: Run one declared study in the terminal, keeping its inputs, effective parameters, methods and output checksums together.
+---
+<p class="callout">Wave 8 development: build the development source to use <code>clonoloom run</code>. Published 0.7.0 binaries predate this command. No browser, running application or network is required.</p>
+<h2 id="support">Choose a supported workflow</h2>
+<p>Source computation supports <strong>batch QC</strong> and <strong>motif screens</strong> from explicitly named AIRR TSV files (optionally gzip) and Repertoire metadata. Certificate replay supports these two kinds plus cohort features, comparisons and count models. Other workers are explicitly unavailable; durable resume alone is not a portable replay contract.</p>
+<p>The <a href="{{github}}/blob/main/docs/HEADLESS.md#supported-workflows">complete per-kind matrix</a> lists support and boundaries. The local <code>GET /api/certificates/support</code> endpoint lists every registered worker, including unsupported entries.</p>
+<h2 id="example">Try an artificial study</h2>
+<div class="code wrap"><pre><code>clonoloom simulate --preset batch-qc-study --out /tmp/clonoloom-qc-study
+node docs/examples/headless-recipe.mjs batch-qc /tmp/clonoloom-qc-study /tmp/clonoloom-qc-recipe.json /tmp/clonoloom-qc-run</code></pre></div>
+<p>Run the helper from the repository. It writes a new recipe and prints the complete command for review and execution. The recipe pins each input's size and SHA-256, uses the simulator's declared sample assignments and fixes the provenance clock. Its 26 artificial samples include missing values, small and uneven batches, zero MAD and explicit exclusions; 24 samples from 24 subjects enter the screen. Real studies need their own assignments.</p>
+<p>For the artificial motif study, use simulator preset <code>motif-study</code> and helper kind <code>motifs</code>, with new paths. Its 108 query and 1000 background units include planted signatures and null controls; they are not measured human data.</p>
+<h2 id="recipe">Declare inputs and the task</h2>
+<p>Recipes specify a version, logical task ID, operation, result kind, input filenames and hashes, parameters and optional source credits. Physical paths are passed with repeated <code>--input NAME=PATH</code>. Multiple tasks require <code>--task ID</code>; nothing is pooled implicitly. Source files are read-only and snapshotted before computation. An output directory must be new, even if an existing one is empty.</p>
+<p>The <a href="{{github}}/blob/main/docs/HEADLESS.md">recipe reference</a> describes fields, file limits, explicit cluster task selection, provider acknowledgment and cancellation. Use the same selected task's bindings with its effective recipe to reproduce resolved defaults and clock.</p>
+<h2 id="outputs">Keep the run record</h2>
+<p>Computation writes source validation findings, full scientific JSON, manifest, provider NOTICE, a certificate and an effective recipe. <code>run.json</code> records status, software, requested-recipe hash and every output checksum. Replay tasks retain the complete replay report. Exit 0 means the selected task completed; 1 means a computation or comparison failed; 2 means usage, input/output, unavailable replay or cancellation. Partial outputs and a missing final record are never success.</p>
+<p>Fixed inputs, effective parameters and provenance time give exact scientific bytes under the tested software contract. The clock is supplied provenance, not proof of execution time. A different requested recipe changes its recorded hash; verifier platform and software provenance can differ. No tolerance fallback is used.</p>
+<h2 id="limits">Read replay at its boundary</h2>
+<p>Source computation checks declared file bytes and performs ordinary capture. Certificate replay starts with captured evidence: batch sample measurements or motif sequence units. It does not repeat source extraction or upstream clonotyping. Batch flags remain descriptive; motif results use ClonoLoom's documented GLIPH2-style adaptation, without upstream-equivalence or antigen-specificity claims. See <a href="certificates.html">exact replay and its scientific limits</a>.</p>
+<p>Provider notices and method citations travel with the result. Supplied source credits cannot erase known restrictions; non-open recorded terms need explicit private-study acknowledgment before export. Captured identifiers and sequences are not de-identified.</p>

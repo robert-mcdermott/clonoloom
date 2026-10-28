@@ -16,7 +16,7 @@ export function mountReports(app, container) {
   const button = (title, action, disabled = false) => h('button.btn.small', { type: 'button', disabled: busy || disabled, onclick: () => action().catch((e) => { error = e.message; render(); }) }, title);
   async function inspect(id = chosen, { accept = false, prompt = false } = {}) {
     if (busy) throw new Error('Wait for the certificate operation.');
-    if (!current().some((r) => r.id === id)) throw new Error('Choose a supported saved cohort result in this project.');
+    if (!current().some((r) => r.id === id)) throw new Error('Choose a supported saved result in this project.');
     const valid = same(); chosen = id; record = null; report = null; error = ''; busy = true; render();
     try {
       const url = `api/certificates/${encodeURIComponent(id)}`;
@@ -68,9 +68,9 @@ export function mountReports(app, container) {
     const select = h('select.input', { 'aria-label': 'Certificate result', disabled: busy, onchange: (e) => { chosen = e.target.value; record = null; error = ''; render(); } },
       ...records.map((r) => h('option', { value: r.id, selected: r.id === chosen }, `${r.name} · ${r.id}`)));
     body.append(h('section.card', h('h2', 'Saved-result evidence certificates'),
-      h('p', 'Keep the exact saved recipe, output files, source fingerprints and provider notice in one checkable archive. Currently available for cohort feature tables, group comparisons and replicated counts.'),
+      h('p', 'Keep the exact saved recipe, output files, source fingerprints and provider notice in one checkable archive. Available for cohort feature tables, comparisons, count models, batch QC and motif screens.'),
       h('p.callout', 'Integrity checks compare recorded bytes. They do not recompute a statistic, verify original sources or separate parents, establish authenticity, or validate the study design. Captured evidence may contain raw counts, sequences, subject identifiers and paths; it is not de-identified.'),
-      records.length ? h('label.field', h('span', 'Saved result'), select) : h('p.muted', 'Save a cohort feature table, comparison or count model to prepare its certificate. Existing results of other kinds remain unchanged.'),
+      records.length ? h('label.field', h('span', 'Saved result'), select) : h('p.muted', 'Save a supported cohort, batch QC or motif result to prepare its certificate. Existing results of other kinds remain unchanged.'),
       h('div.btn-row', button('Inspect certificate', () => inspect(chosen, { prompt: true }), !chosen), button('Export integrity certificate', () => exportCertificate(chosen, { prompt: true }), !chosen))));
     if (error) body.append(h('p.callout.danger', { role: 'alert' }, error));
     if (record) body.append(h('section.card.certificate-record', h('h2', 'Recorded evidence'),
@@ -84,9 +84,9 @@ export function mountReports(app, container) {
     const terminal = h('p.muted', `Terminal: clonoloom verify --${verificationMode} FILE.certificate.clz`);
     const method = h('select.input', { 'aria-label': 'Certificate check', disabled: busy, onchange: (e) => { verificationMode = e.target.value; terminal.textContent = `Terminal: clonoloom verify --${verificationMode} FILE.certificate.clz`; } },
       h('option', { value: 'integrity', selected: verificationMode === 'integrity' }, 'Integrity only — saved bytes'),
-      h('option', { value: 'replay', selected: verificationMode === 'replay' }, 'Exact replay — captured cohort evidence'));
+      h('option', { value: 'replay', selected: verificationMode === 'replay' }, 'Exact replay — captured evidence'));
     const upload = h('input', { type: 'file', accept: '.clz,.zip', 'aria-label': 'Certificate file', disabled: busy, onchange: (e) => { const valid = same(); verify(e.target.files[0], expected.value.trim(), verificationMode).catch((e) => { if (valid()) { error = e.name === 'AbortError' ? 'Verification cancelled.' : e.message; render(); } }); } });
-    body.append(h('section.card.certificate-check', h('h2', 'Check or replay a certificate'), h('p', 'Integrity checks saved bytes. Replay runs the supported Go workers in a disposable store, checking embedded parent hashes and exact outputs. Original receptor files and upstream diversity computations are not checked or rerun. No recorded source paths are opened.'),
+    body.append(h('section.card.certificate-check', h('h2', 'Check or replay a certificate'), h('p', 'Integrity checks saved bytes. Replay runs the supported Go workers in a disposable store, checking embedded parent hashes and exact outputs. Original receptor files and upstream data capture are not checked or rerun; the report names each replay boundary. No recorded source paths are opened.'),
       h('label.field', h('span', 'Check to perform'), method),
       h('label.field', h('span', 'Expected fingerprint (optional)'), expected), h('label.field', h('span', 'Certificate archive'), upload),
       controller ? h('button.btn.small', { type: 'button', onclick: () => controller?.abort() }, 'Cancel verification') : null,

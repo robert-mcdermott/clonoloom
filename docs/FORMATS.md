@@ -1020,7 +1020,7 @@ edgeR/DESeq2 pipeline; research §5.40 records assumptions, bounds and independe
 
 ## Evidence certificates (wave 8 development)
 
-A single supported cohort result can be exported as `.certificate.clz`: a ZIP containing
+A single supported cohort, batch-QC or motif result can be exported as `.certificate.clz`: a ZIP containing
 `certificate.json` (format `clonoloom-certificate`, version 1), exact saved `manifest.json`,
 artifact files under `artifact/`, provider NOTICE and interpretation limits. This is not a
 project archive. Scope `recorded-artifact-bytes` and report `recomputed: false` explicitly
@@ -1031,5 +1031,12 @@ but captured evidence can contain raw data and identifiers; provider restriction
 Wave 8 slice 2 keeps certificate v1 unchanged and adds a separate `clonoloom-replay` v1
 report, scope `captured-cohort-evidence`. It embeds the integrity report, original manifest,
 current verifier software/platform, findings and ordered step digests/metadata comparisons.
-Only supported cohort workers execute in a temporary store; exact output/metadata agreement
+Only explicitly supported workers execute in a temporary store; exact output/metadata agreement
 is distinct from source verification and biological validity. See [replay scope and verdicts](CERTIFICATES.md#exact-replay-boundary).
+
+Wave 8 slice 3 adds `captured-batch-qc-evidence` and `captured-motif-evidence` replay scopes
+without changing certificate v1 or existing cohort scopes. Headless recipe v1
+(`clonoloom-run-recipe`) pins named input filenames, byte sizes and SHA-256, a selected task,
+normalized parameters and an optional clock. The final `clonoloom-run` v1 record inventories
+outputs and preserves completed/failed/differing/unavailable/cancelled outcomes. Neither is a
+project archive. See [HEADLESS.md](HEADLESS.md) for exact fields, bounds, support and exit codes.

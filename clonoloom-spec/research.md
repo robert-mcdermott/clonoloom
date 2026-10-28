@@ -3002,3 +3002,37 @@ floats; they compare report digests with actual archived input/output bytes. Sep
 statsmodels count-model references validate the unchanged scientific methods. Negative controls
 include a one-bit change to an effect, changed parent/metadata/recipe bindings, missing inputs,
 unsupported versions, wrong external fingerprint, corrupted ZIPs and cancellation/cleanup.
+
+### 5.44 Headless capture and additional replay boundaries (wave 8, slice 3)
+
+**Methods unchanged.** Batch QC retains §5.38's sample metrics, transformations, medians,
+MADs, 0.6745 scaling and descriptive thresholds, with the Iglewicz–Hoaglin reference already
+cited by its worker. Motifs retains §5.35's Glanville/Huang sources and explicitly documented
+GLIPH2-style ClonoLoom adaptations, sequence-unit definitions, testing family and limitations.
+No new estimator, enrichment test, correction or scientific visualization is introduced.
+The computational-reproduction distinction and NASEM source in §5.43 continue to apply.
+
+**ClonoLoom's implementation choice.** Add a bounded recipe v1 with exact named-file snapshots
+and explicit task selection. Invoke the same source readers, capture functions and Go workers
+as the application; serialize normalized defaults, source warnings, credits and a resolved
+provenance clock. Compatible Apache-2.0 CytoWeave 0.8.1 and MaveScape 0.8.0 patterns inform
+named inputs, private temporary execution, no-overwrite outputs and `run.json`. Their browser
+execution model is not required by these native workers. No arbitrary recorded actions execute.
+
+Source computation and certificate replay are separate operations. Batch certificate replay
+recomputes scores from captured sample QC; it does not independently extract those metrics from
+source files. Motif certificate replay recomputes from captured query/background units; it does
+not independently recreate clonotypes, validate the background population or establish upstream
+GLIPH2 equivalence. Descriptive QC flags are not contamination diagnoses, and sequence signatures
+are not proven antigen specificity. Full original result bytes and scientific manifest metadata
+must agree, without tolerance. Existing cohort report scopes and certificate bytes remain compatible.
+
+**Validation.** The original realistic batch/motif simulations retain their planted effects,
+null controls, exclusions, missingness and uneven sample sizes. Source-capture identity is
+checked against the application. Fixed-time repeat runs, relocated sources and both processor
+architectures check exact worker bytes; ordinary independent batch-QC/motif references check
+method calculations separately. Independent ZIP/hash inventory checks bind actual exported bytes.
+Tests cover unsupported workers/methods, checksum changes, changed output, provider gates,
+explicit batch selection, cancellation and non-overwrite. A registry-derived support matrix
+prevents unimplemented kinds being presented as covered. Reports show the new scopes in both
+light and dark themes without adding an unsupported biological interpretation.

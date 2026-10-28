@@ -106,6 +106,9 @@ func init() {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "run" {
+		os.Exit(runHeadless(os.Args[2:], os.Stdout, os.Stderr))
+	}
 	if len(os.Args) > 1 && os.Args[1] == "verify" {
 		os.Exit(runVerify(os.Args[2:], os.Stdout, os.Stderr))
 	}
@@ -311,7 +314,7 @@ func parseConfig(args []string) (config, error) {
 	flags.BoolVar(&cfg.showVersion, "version", false, "print the version and exit")
 	noOpen := flags.Bool("no-open", false, "same as --window none")
 	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: clonoloom [flags] [repertoire tables (AIRR .tsv, Cell Ranger contig .csv, immunoSEQ exports), Cell Ranger output folders, projects (.clz) or folders of them...]\n       clonoloom simulate [flags]   (a simulated study with its truth; clonoloom simulate -h)\n       clonoloom verify (--integrity | --replay) FILE.certificate.clz   (clonoloom verify -h)")
+		fmt.Fprintln(flags.Output(), "Usage: clonoloom [flags] [repertoire tables (AIRR .tsv, Cell Ranger contig .csv, immunoSEQ exports), Cell Ranger output folders, projects (.clz) or folders of them...]\n       clonoloom simulate [flags]   (a simulated study with its truth; clonoloom simulate -h)\n       clonoloom verify (--integrity | --replay) FILE.certificate.clz   (clonoloom verify -h)\n       clonoloom run --recipe RECIPE.json --input NAME=PATH --out NEW_DIR   (clonoloom run -h)")
 		flags.PrintDefaults()
 	}
 	files, err := parseArgs(flags, args)

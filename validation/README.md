@@ -555,3 +555,27 @@ and no per-cell pseudoreplication. The complete count-evidence scene is a regres
 Pinned complete result: `d6f7d73fa3bd28d6e0111a8814949c644201df8afe78a0476cee22c8e73d4b33`.
 Positive simulator: `ee82857067124d03bf9652f59fb96bc0f82367e6d595e1a4e18bda17c69cd5e0`.
 Null simulator: `de25fa97c96c2ea177f8e3e84075be07d0dd5a805255dfd8f907aa975f456324`.
+
+
+## Headless source runs and broader exact replay (Wave 8, slice 3)
+
+`run_test.go` compares application/headless capture and complete batch-QC/motif result bytes,
+pinned on arm64 and amd64. It checks relocated inputs and fixed-time repeat runs, source
+warnings, provider terms, explicit task selection, malformed schemas, file/hash bounds,
+cancellation and no overwrite. Certificate API/native replay shares the existing workers;
+changed results differ and unsupported worker versions remain unavailable. The per-kind
+support matrix is checked against all registered workers and the browser's offered kinds.
+
+Generate the documented artificial studies with `docs/examples/headless-recipe.mjs`, run the
+printed commands and save a native replay report. Independently check each exported inventory:
+
+```sh
+UV_CACHE_DIR=/tmp/clonoloom-uv uv run --no-project validation/reference/headless_run.py RUN_DIR REPLAY_JSON
+```
+
+The standard-library oracle reads actual exported bytes and ZIP members, without reformatting
+scientific JSON. It checks all six outputs, original manifest/NOTICE identity and replay output
+digests. It does not validate statistical calibration; `TestBatchQCIndependentReference` and
+`TestMotifsIndependentReference` retain that separate role for their existing method controls.
+The `certificates`, `certificates-batch-qc` and `certificates-motifs` capture scenes exercise
+integrity and exact replay in both themes using the existing realistic artificial studies.

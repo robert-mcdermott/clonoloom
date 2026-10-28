@@ -710,3 +710,16 @@ func (m *Manager) remove(ids []string) {
 		os.Remove(filepath.Join(m.dir, id+".json"))
 	}
 }
+
+// Kinds lists the registered worker kinds without exposing or executing handlers.
+// Capability matrices must distinguish portable support from resumable jobs.
+func (m *Manager) Kinds() []string {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	out := make([]string, 0, len(m.kinds))
+	for name := range m.kinds {
+		out = append(out, name)
+	}
+	sort.Strings(out)
+	return out
+}

@@ -1,7 +1,7 @@
 # Saved-result evidence certificates
 
-Wave 8 adds **evidence certificates**, starting with saved cohort feature tables,
-group comparisons and replicated count models. They keep a result's exact original manifest,
+Wave 8 adds **evidence certificates**, supporting saved cohort feature tables,
+group comparisons, replicated count models, batch QC and motif screens. They keep a result's exact original manifest,
 recorded recipe, output files and provider notice. Choose an integrity check or exact replay
 from captured evidence. Neither mode verifies original source files, project history, authorship
 or scientific assumptions.
@@ -42,7 +42,7 @@ implementations are available under **Reports → Check or replay a certificate*
 check, optionally enter a separately retained fingerprint, then choose the archive. The report
 can be downloaded as the exact host JSON, preserving large integers and original numeric tokens. **Cancel verification** stops the request and running worker.
 The file is uploaded only to the application's loopback host. No recorded source paths are
-followed; only the three supported cohort workers may execute during replay.
+followed; only the five explicitly supported workers may execute during replay.
 
 ## Exact replay boundary
 
@@ -51,6 +51,8 @@ followed; only the three supported cohort workers may execute during replay.
 | `cohort-features` | Design checks and subject feature table | Captured diversity measurements and source provenance |
 | `cohort-compare` | Feature parent, comparison tests, effects, intervals and correction family | Captured diversity measurements |
 | `cohort-counts` | Feature parent, sample-total checks and the negative-binomial model | Captured repertoire count matrix; no recount of source sequences |
+| `batch-qc` | Batch medians, MADs and descriptive flags | Captured sample QC measurements; no source-metric extraction |
+| `motifs` | Existing GLIPH2-style ClonoLoom adaptation, recorded testing family and options | Captured query/background sequence units; no source clonotype recapture |
 
 Replay first verifies archive integrity, then the embedded parent bytes against their manifest
 and the recipe's pinned hash. A disposable artifact store runs the existing Go job handlers.
@@ -63,7 +65,9 @@ to the next worker. New job IDs, execution timestamps and software do not replac
 record or masquerade as a scientific difference. Temporary evidence and outputs are removed
 on completion or cancellation, without changing the open library or project.
 
-The separate `clonoloom-replay` version-1 report has scope `captured-cohort-evidence`. It includes
+The separate `clonoloom-replay` version-1 report retains scope `captured-cohort-evidence` for
+the three cohort kinds. Batch QC uses `captured-batch-qc-evidence`; motifs uses
+`captured-motif-evidence`. Each report names its specific boundary and limits. It includes
 the integrity report, original manifest, current verifier software/platform, findings and
 ordered steps with artifact/kind, expected and actual SHA-256, verdict and `metadataMatched`.
 `recomputed` means the requested target worker produced output, even if that output differs;
@@ -83,6 +87,12 @@ diversity computations are outside this boundary. A replay match does not establ
 calibration, sound study design, replication with new data, causality or biological truth.
 See [NASEM (2019)](https://doi.org/10.17226/25303) and the project's
 [scientific rationale](../clonoloom-spec/research.md#543-exact-replay-from-captured-cohort-evidence-wave-8-slice-2).
+
+Batch QC remains descriptive: flags neither establish contamination nor justify automatic
+correction. Motif replay is not equivalence to upstream GLIPH2, population-calibrated inference
+or proof of antigen specificity. Methods and scientific references are unchanged (research
+§§5.35 and 5.38). [Headless recipes](HEADLESS.md) can also capture and compute these two
+kinds from explicitly pinned source files; that is a separate operation from certificate replay.
 
 ## Record and limits
 
@@ -124,6 +134,8 @@ remote control here.
 
 HTTP clients on the existing permitted local origin can use:
 
+- `GET /api/certificates/support` lists all registered workers, including unsupported kinds,
+  with certificate/replay/source-run flags, scope and limits. See the [complete matrix](HEADLESS.md#supported-workflows).
 - `GET /api/certificates/{id}` for an inventory (unsupported/changed results return 409).
 - `GET /api/certificates/{id}/download` for the ZIP, with `X-ClonoLoom-Certificate` fingerprint.
 - `POST /api/certificates/verify[?mode=integrity|replay&expect=SHA256]` with an archive body.

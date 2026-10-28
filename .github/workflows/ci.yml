@@ -108,7 +108,7 @@ jobs:
       - name: Syntax check
         run: |
           shopt -s nullglob
-          for file in web/app.js web/ui/*.js web/lib/*.js web/workers/*.js validation/*.mjs docs/capture/*.mjs docs/site/*.mjs docs/site/assets/*.js; do node --check "$file"; done
+          for file in web/app.js web/ui/*.js web/lib/*.js web/workers/*.js validation/*.mjs docs/capture/*.mjs docs/examples/*.mjs docs/site/*.mjs docs/site/assets/*.js; do node --check "$file"; done
       - name: node --test
         run: node --test "web/lib/**/*.test.mjs"
       - name: The website built, every link, anchor and screenshot checked (docs/site/build.mjs)

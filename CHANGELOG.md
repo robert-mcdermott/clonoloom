@@ -4,6 +4,18 @@
 
 ### Added
 
+- **Headless recipes and broader replay (wave 8, slice 3).** Add native `clonoloom run`
+  with checksum-pinned named inputs, explicit batch task selection, new output directories,
+  fixed/resolved recipe time, source validation findings, normalized recipes and run inventories.
+  Compute batch QC and motif screens through existing capture functions and Go workers;
+  replay five supported certificate kinds without a browser, server or network. Extend Reports
+  certificates to batch QC and motifs with exact output/metadata comparison and separate
+  captured-input scopes. Publish the complete worker support matrix; unsupported kinds fail
+  explicitly. Keep provider terms, descriptive-QC and GLIPH2-adaptation limits visible; no
+  source recapture, upstream equivalence or specificity claim. Validate relocation, repeat-run
+  bytes, both processor architectures, input/worker refusals, independent inventories and
+  both-theme realistic artificial-study workflows. Keep version 0.7.0.
+
 - **Exact cohort certificate replay (wave 8, slice 2).** Add `verify --replay` and an explicit
   Reports replay mode for cohort features, comparisons and count models. Verify embedded
   parent hashes and recipe bindings, rerun the existing Go workers in a disposable store,

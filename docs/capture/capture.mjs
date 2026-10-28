@@ -385,7 +385,26 @@ async function guidedCohortScene(confounded) {
   await clearToasts();await checkAccessibility();
 }
 
+async function capturedCertificateScene(kind) {
+  if (kind === 'batch-qc') await batchQCScene(); else await motifScene();
+  const artifact = await js(`window.clonoloom.store.project.artifacts.find((a)=>a.kind===${JSON.stringify(kind)}).id`);
+  const record = (await act('inspect_certificate', {artifact})).data.certificate;
+  const scope = kind === 'batch-qc' ? 'captured-batch-qc-evidence' : 'captured-motif-evidence';
+  await js(`(async()=>{
+    const v=window.clonoloom.certificatesView,response=await fetch('api/certificates/${artifact}/download'),blob=await response.blob();
+    const integrity=await v.verify(blob,'${record.fingerprint}');if(integrity.verdict!=='integrity-match'||integrity.recomputed)throw new Error('Integrity contract changed');
+    const r=await v.verify(blob,'${record.fingerprint}','replay');
+    if(r.verdict!=='replay-match'||r.scope!=='${scope}'||!r.recomputed||r.steps.length!==1||!r.steps[0].metadataMatched||r.steps[0].expectedSHA256!==r.steps[0].actualSHA256)throw new Error('Captured replay is not exact');
+    if(!r.limits.includes(${JSON.stringify(kind === 'batch-qc' ? 'descriptive' : 'GLIPH2 equivalence')}))throw new Error('Method limit absent');
+    if(!document.querySelector('.certificate-verdict').textContent.includes('Exact replay match — captured evidence'))throw new Error('Wrong visible verdict');
+    const card=document.querySelector('.certificate-check');card.closest('.workbench-scroll').scrollTop=card.offsetTop-65;return true;
+  })()`);
+  await clearToasts(); await checkAccessibility();
+}
+
 const scenes = {
+  async ['certificates-batch-qc']() { await capturedCertificateScene('batch-qc'); },
+  async ['certificates-motifs']() { await capturedCertificateScene('motifs'); },
   async certificates() {
     await act('new_project', {name:'Artificial cohort evidence'});
     const opened=(await act('open_example',{example:'simulated-counts-independent',download:true})).data;
@@ -1405,7 +1424,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name === 'certificates' || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

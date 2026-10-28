@@ -16,8 +16,8 @@ requirement's status is in `requirements.md`; release changes are in `CHANGELOG.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–7 are merged and
 released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
 with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
-`wave8` branch. Slice 1 was committed and pushed as `b459f61`. Slice 2 is implemented
-and validated, awaiting the maintainer's commit. Slice 3 is next; no 0.8.0 release is made.
+`wave8` branch. Slices 1 and 2 were committed and pushed as `b459f61` and `62b088b`.
+Slice 3 is implemented and validated, awaiting user commit; no 0.8.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2845,7 +2845,7 @@ released or published by the implementation workflow.
 
 ### Slice 2: exact scientific replay from captured cohort evidence
 
-**Implemented and validated; awaiting maintainer commit.** O5, N2/N4/N7.
+**Committed and pushed as `62b088b`.** O5, N2/N4/N7.
 
 - Reuse the existing feature, comparison and count-model job handlers in a disposable
   native-Go artifact store. Integrity verification is a prerequisite, never a substitute.
@@ -2910,6 +2910,80 @@ Validation completed:
 
 Keep version 0.7.0. Broader result support and headless recipes remain slice 3; O5 remains partial.
 No commit, tag, release or publication is performed by this slice's implementation workflow.
+
+
+### Slice 3: headless recipes and broader replay
+
+**Implemented and validated; awaiting user commit.** A6, O5, O9, N2/N4/N7.
+
+- Add native `clonoloom run --recipe --input NAME=PATH --out NEW_DIR`, following the
+  compatible CytoWeave/MaveScape named-input, private execution and run-record patterns;
+  no browser, listening port, shell, arbitrary action or network dependency.
+- Recipe v1 selects one study/task. Multiple tasks require `--task ID`; never pool them or
+  infer scheduler/environment selection. Each selected input declares a logical name,
+  filename, size and SHA-256. Snapshot exact regular-file bytes before reading them and
+  refuse missing/extra/changed bindings. Preserve explicit input ordering and metadata.
+- Start source computation with batch QC and motif screens through their existing capture
+  functions and workers. Accept explicitly listed AIRR TSV (optionally gzip) and AIRR
+  Repertoire metadata, not implicit directory traversal or unmapped vendor formats.
+  This is a bounded initial headless interface, not a claim that every UI action is portable.
+- Add certificate export/replay for batch QC and motifs, keeping the three cohort kinds.
+  Batch replay recomputes descriptive scores from captured sample QC; motif replay recomputes
+  the existing GLIPH2-style ClonoLoom adaptation from captured sequence units. No source
+  recapture or upstream GLIPH2 equivalence is implied. Keep kind-specific limits and scopes.
+- Preserve certificate v1 and old cohort report scopes. Compare exact result bytes and
+  scientific metadata through the same replay worker path. A changed, unsupported or
+  incomplete result is never a match. Publish a tested per-kind matrix for all registered
+  workers; unsupported kinds are visible, not silently omitted or treated as resumable replay.
+- Effective recipes record normalized parameters and the resolved clock. A fixed recipe time
+  pins notice, artifact and job provenance for repeatable output bytes; absent time is resolved
+  once and written into the effective recipe. Keep actual input snapshots private and temporary.
+- Output directories must be new. Export complete JSON results, original methods/provenance,
+  NOTICE, certificate, validation findings, effective recipe and a checksum inventory in
+  `run.json`; replay tasks write their full replay report. Partial/failed/cancelled runs never
+  get success status. Retain failure diagnostics, not a misleading success marker.
+- Preserve known provider terms plus explicitly supplied source credits. Restricted source
+  diagnostics/evidence require the existing explicit private-study acknowledgment, represented
+  by `--accept-terms`. Replay of an already supplied certificate retains the existing verifier
+  contract. Do not claim de-identification or relax method assumptions.
+- Test application/headless capture and output identity, input relocation, fixed-time repeat
+  runs, explicit batch selection, hashes/limits/unknown fields, provider terms, cancellation,
+  no overwrite, numeric tokens and exact replay for both new kinds. Reuse the realistic
+  artificial batch-QC and motif studies and review both-theme certificate workflows.
+
+Validation completed:
+
+- Full application/internal race suite passed with the thirty-minute allowance (application
+  594.896 s). Final targeted race controls passed in 69.151 s after the manifest-byte fix.
+  Earlier targeted checks passed in 80.186 s. No existing release fixtures were changed.
+- Both realistic artificial source studies match application capture and worker output bytes.
+  Relocated input bindings and fixed effective-recipe reruns preserve all six inventoried
+  outputs. Scientific result digests are pinned on arm64 and amd64; the amd64 final controls
+  passed in 18.724 s. Source/certificate provider gates, explicit task selection, malformed
+  inputs, changed hashes/results, unsupported methods, cancellation and no-overwrite pass.
+- The documented recipe helper was exercised with freshly generated batch-QC and motif studies.
+  Both CLI computations and native certificate replays pass. The independent Python ZIP/hash
+  oracle, run through `uv`, checks six outputs per run, archived bytes and replay digests.
+  It caught a re-encoded standalone manifest; exports now preserve the original manifest bytes,
+  with an added regression test and successful independent checks for both studies.
+- Existing independent batch-QC/motif method references and the no-fused-operations check
+  passed (2.746 s). No estimator, inference method, plotting geometry or release fixture was
+  changed. This slice does not claim the complete scientific/performance release suite.
+- Recipe parser fuzzing completed 742,638 executions in thirty seconds without failure.
+  Go vet, gofmt, browser/helper syntax and six CGO-free platform builds pass. All 152 JavaScript
+  tests and 14 contrast/color-vision checks pass.
+- The existing cohort and both new certificate workflows pass in light and dark themes;
+  all six screenshots were reviewed. The underlying batch/motif scenes still check source
+  units, planted controls, missingness/exclusions, figure geometry, methods and source-free
+  saved reopening. A capture-script fingerprint lookup initially addressed the response wrapper;
+  using its certificate field corrected the harness, and all new scenes then passed.
+- Site build passes with 49 pages and 60 screenshot references. The audit passes 192 checks
+  across 48 pages, two themes and two widths. Documentation describes the source/replay
+  distinction, fixed provenance time, output-status/exit contracts, forced-kill cleanup limits
+  and the narrower recipe input bounds.
+
+Keep version 0.7.0. A6/O5 remain partial outside the published matrix. Checkpoints are slice 4;
+additional source/parent contracts must be mapped explicitly before expanding support.
 
 
 ## Later waves (outlined)

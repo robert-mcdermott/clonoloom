@@ -1,8 +1,7 @@
 package main
 
-// Cohort evidence certificates: exact saved bytes and captured provider notices.
-// The bounded first slice covers features, comparisons and replicated counts. Other
-// kinds are explicitly refused until their source/notice/replay contracts are mapped.
+// Evidence certificates preserve exact saved bytes and captured provider notices.
+// certificateSupportMatrix bounds the mapped source/notice/replay contracts.
 import (
 	"bytes"
 	"context"
@@ -57,8 +56,8 @@ func (a *app) certificateNotice(id string) (artifacts.Manifest, export.Notice, e
 		return m, export.Notice{}, errors.New("artifact identity differs from its directory")
 	}
 	var notice export.Notice
-	if m.Kind != cohortFeaturesKind && m.Kind != cohortCompareKind && m.Kind != cohortCountsKind {
-		return m, notice, errors.New("integrity certificates currently support cohort-features, cohort-compare and cohort-counts results")
+	if _, ok := certificateSupportFor(m.Kind); !ok {
+		return m, notice, errors.New("this result kind has no supported certificate contract")
 	}
 	raw, err = read(m.Kind+".json", certificate.MaxFileBytes)
 	if err != nil {
@@ -87,8 +86,16 @@ func (a *app) certificateNotice(id string) (artifacts.Manifest, export.Notice, e
 		var doc cohortCountsDocument
 		err = json.Unmarshal(raw, &doc)
 		notice = doc.Features.Notice
+	case batchqcKind:
+		var doc batchqcDocument
+		err = json.Unmarshal(raw, &doc)
+		notice = doc.Evidence.Notice
+	case motifsKind:
+		var doc motifsDocument
+		err = json.Unmarshal(raw, &doc)
+		notice = doc.Evidence.Notice
 	default:
-		return m, notice, errors.New("integrity certificates currently support cohort-features, cohort-compare and cohort-counts results")
+		return m, notice, errors.New("this result kind has no supported certificate contract")
 	}
 	if err != nil {
 		return m, notice, err
@@ -151,6 +158,7 @@ func (a *app) makeCertificate(ctx context.Context, m artifacts.Manifest, n expor
 }
 
 func (a *app) registerCertificates(mux *http.ServeMux) {
+	mux.HandleFunc("GET /api/certificates/support", func(w http.ResponseWriter, r *http.Request) { writeJSON(w, a.workflowSupport()) })
 	serve := func(w http.ResponseWriter, r *http.Request) {
 		m, n, err := a.certificateNotice(r.PathValue("id"))
 		if err != nil {

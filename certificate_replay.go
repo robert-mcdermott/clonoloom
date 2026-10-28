@@ -77,9 +77,11 @@ func replayCertificate(ctx context.Context, in io.ReaderAt, size int64, expected
 		return fail(err)
 	}
 	r.Original = &m
-	if m.Kind != cohortFeaturesKind && m.Kind != cohortCompareKind && m.Kind != cohortCountsKind {
-		return fail(errors.New("replay supports cohort-features, cohort-compare and cohort-counts only"))
+	support, supported := certificateSupportFor(m.Kind)
+	if !supported {
+		return fail(errors.New("this result kind has no supported certificate replay contract"))
 	}
+	r.Scope, r.Limits = support.Scope, support.Limits
 	output, err := evidence.Read(ctx, "artifact/"+m.Kind+".json", certificate.MaxFileBytes)
 	if err != nil {
 		return fail(err)
@@ -96,10 +98,12 @@ func replayCertificate(ctx context.Context, in io.ReaderAt, size int64, expected
 	manager := jobs.NewManager()
 	defer manager.Close()
 	a := &app{artifacts: store, jobs: manager}
-	a.handleCohortFeaturesJobs()
-	a.handleCohortCompareJobs()
-	a.handleCohortCountsJobs()
-	err = replayCohort(ctx, a, m, output, &r)
+	a.handleReplayJobs()
+	if m.Kind == batchqcKind || m.Kind == motifsKind {
+		err = replayCaptured(ctx, a, m, output, &r)
+	} else {
+		err = replayCohort(ctx, a, m, output, &r)
+	}
 	if err != nil {
 		return fail(err)
 	}
@@ -246,6 +250,10 @@ func replayCohort(ctx context.Context, a *app, m artifacts.Manifest, raw []byte,
 	if err = installReplayParent(a, pm, parentRaw); err != nil {
 		return err
 	}
+	return replayWorker(ctx, a, m, raw, r, work)
+}
+
+func replayWorker(ctx context.Context, a *app, m artifacts.Manifest, raw []byte, r *replayReport, work jobs.Func) error {
 	job, _, err := a.jobs.Submit(m.Kind, "Certificate replay", m.ID, m.Lineage.Job.Spec, work)
 	if err != nil {
 		return err
@@ -308,4 +316,53 @@ func installReplayParent(a *app, m artifacts.Manifest, raw []byte) error {
 		return err
 	}
 	return os.WriteFile(filepath.Join(filepath.Dir(path), "manifest.json"), mustJSON(m), 0600)
+}
+
+// These workers take complete captured inputs, without a separate artifact parent.
+func replayCaptured(ctx context.Context, a *app, m artifacts.Manifest, raw []byte, r *replayReport) error {
+	if m.Lineage.Job == nil || m.Lineage.Job.Kind != m.Kind {
+		return errors.New("recorded worker recipe unavailable")
+	}
+	if len(m.Files) != 1 || m.Files[0].Location != artifacts.InArtifact || m.Files[0].Path != m.Kind+".json" || m.Files[0].Size != int64(len(raw)) || m.Files[0].SHA256 != replayDigest(raw) {
+		r.Verdict = "differs"
+		return errors.New("result inventory differs")
+	}
+	var id string
+	switch m.Kind {
+	case batchqcKind:
+		var s batchqcSpec
+		if err := replaySpec(m.Lineage.Job.Spec, &s); err != nil {
+			return err
+		}
+		if err := s.check(); err != nil {
+			return err
+		}
+		id = s.artifactID()
+		if s.Notice.DatasetID != s.Dataset || len(s.Notice.Files) == 0 {
+			return errors.New("captured source notice is incomplete")
+		}
+	case motifsKind:
+		var s motifsSpec
+		if err := replaySpec(m.Lineage.Job.Spec, &s); err != nil {
+			return err
+		}
+		if err := s.check(); err != nil {
+			return err
+		}
+		id = s.artifactID()
+		if s.Notice.DatasetID != s.Dataset || len(s.Notice.Files) == 0 {
+			return errors.New("captured source notice is incomplete")
+		}
+	default:
+		return errors.New("unsupported captured worker")
+	}
+	if id != m.ID {
+		r.Verdict = "differs"
+		return errors.New("recipe artifact identity differs")
+	}
+	work, err := a.jobs.Remake(m.Kind, m.Lineage.Job.Spec)
+	if err != nil {
+		return err
+	}
+	return replayWorker(ctx, a, m, raw, r, work)
 }

@@ -545,7 +545,7 @@ or export. Download complete evidence from `GET /api/pseudobulk/{id}/download`.
 ### Certificate actions (wave 8 development)
 
 `show` accepts `reports`. `inspect_certificate` and `export_certificate` take a supported
-saved cohort `artifact` ID and optional explicit provider-term `accept`. Both use the visible
+saved cohort, batch-QC or motif `artifact` ID and optional explicit provider-term `accept`. Both use the visible
 Reports view and return its record/fingerprint; export downloads a `.certificate.clz` through
 the browser. These actions do not recompute statistics or read new source paths. File checking
 is available by Reports upload or `clonoloom verify --integrity`; see
@@ -558,3 +558,8 @@ cancellation. HTTP 200 carries a report; inspect `verdict` for `replay-match`, `
 `unavailable`. It does not read arbitrary source paths or populate the current project.
 Reports provides an explicit mode selector, cancellation and the complete downloadable report.
 See [the captured-evidence boundary](CERTIFICATES.md#exact-replay-boundary).
+
+`GET /api/certificates/support` returns the per-kind certificate, replay and source-run matrix
+for every registered worker, including explicit unavailable entries. Native
+[`clonoloom run`](HEADLESS.md) supplies named source snapshots without exposing new filesystem
+paths through remote control. It uses the existing capture functions and Go workers.
