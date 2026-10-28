@@ -7,6 +7,8 @@ changes goes into the project's history like any edit of yours, so it can be und
 
 See [Automation permissions](AUTOMATION.md) for the API 2 capability and proposal contract.
 
+For a local MCP client, use [`clonoloom mcp`](MCP.md); both transports share this policy.
+
 ## Turn it on
 
 ```sh

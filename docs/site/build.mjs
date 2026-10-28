@@ -56,7 +56,7 @@ const DOCS = [
   { group: 'B cells', pages: [['bcell-inputs', 'Sequence evidence'], ['bcell-families', 'Clonal families'], ['bcell-germlines', 'Germlines'], ['bcell-shm', 'Somatic hypermutation'], ['bcell-lineages', 'Lineage trees'], ['bcell-isotypes', 'Isotypes']] },
   { group: 'Cohorts', pages: [['cohort-study', 'Complete cohort studies'], ['cohort-design', 'Study design'], ['cohort-features', 'Subject features'], ['cohort-comparisons', 'Group comparisons'], ['cohort-counts', 'Replicated counts'], ['definition-robustness', 'Definition robustness']] },
   { group: 'Results', pages: [['figures', 'Figures and exports'], ['record', 'The record'], ['certificates', 'Evidence certificates'], ['headless', 'Headless recipes'], ['checkpoints', 'Analysis checkpoints'], ['html-reports', 'Self-checking reports']] },
-  { group: 'Reference', pages: [['simulation', 'Simulated studies'], ['remote-control', 'Remote control'], ['automation', 'Automation permissions']] },
+  { group: 'Reference', pages: [['simulation', 'Simulated studies'], ['remote-control', 'Remote control'], ['automation', 'Automation permissions'], ['mcp', 'MCP clients']] },
 ];
 const ORDER = DOCS.flatMap((g) => g.pages);
 

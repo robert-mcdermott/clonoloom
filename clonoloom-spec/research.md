@@ -3142,3 +3142,40 @@ case sensitivity, numeric bounds and Boolean nesting. Native endpoint tests comp
 rows to unfiltered rows with unchanged frequencies/definitions/units. Browser checks exercise
 rejection, stale acceptance, cancellation, actor history, Undo/Redo and both-theme review/audit.
 Existing worker and certificate regression tests check scientific replay separately.
+
+### 5.48 MCP stdio and exact scientific transport (wave 8, slice 7)
+
+**Sources.** Official MCP specifications, checked 2026-10-28:
+[2026-07-28 versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning),
+[stdio](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio),
+[tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools),
+[schema](https://modelcontextprotocol.io/specification/2026-07-28/schema),
+[progress](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/progress),
+[cancellation](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/cancellation)
+and [2025-11-25 lifecycle](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle).
+Reviewed Apache-2.0 CytoWeave (`19d47bb`) and MaveScape (`c997e39`) stdio hosting, lazy window,
+action catalog and lifecycle patterns. Their older handshake implementation is not a substitute
+for the modern per-request contract. No external scientific implementation is incorporated.
+
+**ClonoLoom choices.** Support modern metadata/discovery plus one explicit legacy protocol;
+never inherit identity/capabilities for modern requests. Advertise only tools, filtered by fixed
+launch grants. Reuse one HTTP/MCP authorization and validation boundary, and the existing visible
+proposal/Undo/audit path. Bound input/output, active calls and session IDs. Progress measures
+waiting time, not a scientific calculation's completeness. Cancel pending work on notification
+or EOF; do not claim rollback of finished file effects. Use a dedicated local library; live-host
+checks are best effort rather than a global process lock. Detailed bounds are in `docs/MCP.md`.
+
+**Scientific limits.** Retain native numeric tokens in text and structured result content;
+refuse oversized output rather than silently truncate evidence. A client must independently
+preserve JSON precision. Transport consistency does not establish authenticity or scientific
+validity. Existing Go methods, definitions, QC, denominators, seeds, subject units and five-kind
+exact certificate replay remain unchanged. Filtered query ranks change with membership;
+abundances and frequencies retain the full post-definition/QC table denominator.
+
+**Validation design.** Protocol fixtures test modern/legacy lifecycle, malformed metadata,
+identity isolation, permissions before window opening, catalog parity, exact unsafe-integer and
+decimal transport, output bounds, progress, cancellation and shutdown. Decoder fuzzing tests
+framing recovery. A real subprocess and browser compare HTTP/MCP native query strings on the
+same simulated repertoire, check filtered rows and full denominators, human review, history,
+Undo/Redo, both-theme accessibility and EOF cleanup. Scientific replay checks remain separate
+from transport tests; no new plot or biological inference is introduced.

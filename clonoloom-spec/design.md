@@ -65,9 +65,10 @@ product requirements' first sketch (statistics in browser workers), for four rea
 - **Scale.** A bulk immunoSEQ sample holds up to a few million rearrangements, a cohort tens of
   millions. TCRdist neighborhoods, generation probabilities and clustering are quadratic or heavy.
   These need goroutines across all cores and memory the browser does not give a page.
-- **One implementation.** Headless runs (`clonoloom run`), certificates (`clonoloom verify`) and the
-  MCP server compute without a page. With all science in Go, each method exists once and is tested
-  once (`go test`), and a headless run cannot differ from the window.
+- **One implementation.** Headless runs (`clonoloom run`) and certificate verification
+  (`clonoloom verify`) compute without a page. MCP uses the normal window for proposal review and
+  dispatch; its scientific actions call the same Go methods. Each method exists once and is
+  tested once (`go test`), with exact replay checked against supported captured evidence.
 - **The same bits everywhere.** Go's arithmetic is IEEE 754 on every platform once fused
   multiply-adds are controlled and transcendental functions go through `internal/dmath`
   (`conventions.md`). JavaScript engines need the same care in a second language.
@@ -152,7 +153,8 @@ again.
 | --- | --- | --- |
 | SituCraft 0.9.0 | `security.go`, `window.go`, `records.go`, `browser_*.go` | renames only |
 | SituCraft 0.9.0 | `main.go`, `local.go`, `store.go` | renames; file kinds (AIRR tables, vendor outputs, folders) |
-| SituCraft 0.9.0 | `remote.go`, `output.go`, `connection.go`, `mcp.go` framework, `run.go`/`verify.go` pattern | transport kept; actions and tools new (waves 2 and 8) |
+| SituCraft 0.9.0 | `remote.go`, `output.go`, `connection.go`, `run.go`/`verify.go` pattern | transport kept; actions and tools new (waves 2 and 8) |
+| CytoWeave 0.8.1 and MaveScape 0.8.0 | `mcp.go` hosting/lazy-window pattern | modern per-request metadata plus explicit legacy compatibility; shared ClonoLoom grants/review and exact JSON bounds (wave 8, slice 7) |
 | SituCraft 0.9.0 | `internal/random`, `internal/dmath`, `internal/stats`, `internal/jobs`, `internal/artifacts`, `internal/hdf5`, `internal/anndata`, `internal/parquet` | copied with tests when a slice needs them |
 | SituCraft 0.9.0 | `web/ui/dom.js`, `overlays.js`, `store.js`, `palette.js`, `icons.js`, `sidebar.js`, `inspector.js`, `drawer.js`, `storage.js` | renames; ClonoLoom's views |
 | SituCraft 0.9.0 | `web/lib/sha256.js`, `colormaps.js`, `colorvision.js`, `project.js` pattern, `zip.js`, `png.js`, `pdf.js`, `figures.js`, `methods.js`, `certificate.js` | copied with tests when a slice needs them |

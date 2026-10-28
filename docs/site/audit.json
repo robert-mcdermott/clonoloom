@@ -224,6 +224,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/mcp.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/motifs.html",
   "theme": "light",
   "width": "desktop",
@@ -581,6 +588,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/mcp.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/motifs.html",
   "theme": "dark",
   "width": "desktop",
@@ -938,6 +952,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/mcp.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/motifs.html",
   "theme": "light",
   "width": "phone",
@@ -1289,6 +1310,13 @@
  },
  {
   "page": "docs/index.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/mcp.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

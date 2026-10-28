@@ -3118,7 +3118,7 @@ automation policy is slice 6. No commit, tag, release or publication in this sli
 
 ### Slice 6: automation policy, proposals and typed queries
 
-**Implemented and validated; awaiting maintainer commit.** A2/A3 and the A1 foundation. API 2 changes automation from permissive
+**Committed and pushed by the maintainer (`1b38572`).** A2/A3 and the A1 foundation. API 2 changes automation from permissive
 remote control to read-only by default. One catalog declares conservative effect bounds;
 `--allow edits,compute,files,network` grants only the named capabilities. Non-read calls
 also require the local connection token. Grants never imply acceptance of a project edit.
@@ -3166,6 +3166,54 @@ Cancellation cannot undo already written/downloaded bytes; project Undo remains 
 300 steps. Non-read automation refuses existing jobs/imports. Read-only query leases reject
 project writes without resetting the active scientific view. No commit, push, tag, release or
 site publication was performed. Slice 7 (MCP transport) is next after maintainer review.
+
+### Slice 7: MCP transport
+
+**Implemented and validated; awaiting maintainer commit.** A1/N5. `clonoloom mcp` follows
+Apache-2.0 CytoWeave/MaveScape's stdio subprocess, normal local host, lazy window and shared
+catalog patterns. MCP 2026-07-28 uses per-request metadata/discovery; 2025-11-25 has explicit
+initialization compatibility. Modern calls never inherit an earlier client's identity or
+capabilities. stdout is exclusively JSON-RPC; diagnostics/help/version use stderr.
+
+HTTP and MCP share grants, argument validation, window dispatch and bounded audit. Tool lists
+include only actions allowed by the fixed launch grants; hidden actions cannot bypass them.
+Edits retain human proposal review, stale-state refusal, caller-labelled History and Undo/Redo.
+There is no approval tool, arbitrary SQL/shell endpoint, new estimator or replay engine.
+
+Bound frames (2 MiB), arguments (1 MiB), output (16 MiB), active calls (16) and session IDs
+(65,536). Preserve native numeric tokens in text and structured results; refuse oversized
+responses explicitly rather than truncating scientific evidence. Progress is elapsed waiting
+time, not percent complete. Cancellation and EOF cancel pending calls without promising rollback
+of completed files or artifacts. Use a dedicated library; known live hosts are refused, with
+best-effort detection rather than a global process lock. Protocol choices and sources are in
+research §5.48 and `docs/MCP.md`. Version remains 0.7.0.
+
+Validation completed:
+
+- Full application/internal race suite passed (application 863.599 s). Final focused MCP,
+  shared-policy and HTTP race checks passed in 2.880 s. Cases cover modern/legacy negotiation,
+  metadata isolation, strict framing/IDs, grants before window opening, catalog/review parity,
+  progress/cancellation/EOF, bounded concurrency/output and live-library refusal.
+- Decoder fuzzing passed 297,319 executions in twenty seconds. Native JSON transport retains
+  integer/decimal tokens beyond ordinary double precision; oversized output returns an error
+  rather than a partial success. Scientific input schemas and workers are unchanged.
+- amd64 MCP/policy/query and five-kind HTML-certificate exact-replay controls passed in
+  14.641 s. Existing native worker and certificate controls passed in the full race suite.
+  Full scientific release calibration remains slice 15; this slice changes no replay limits.
+- Real stdio subprocess/browser checks pass for both protocol modes, explicit grants, human
+  rejection/acceptance, cancellation, actor History, Undo/Redo and pending-proposal EOF cleanup.
+  HTTP and MCP return identical native query strings for the same simulated repertoires.
+  Filtered rows retain abundance, full-table frequencies and definition; displayed rank changes
+  with membership. The initial test incorrectly expected rank to stay fixed; its oracle was
+  corrected without changing scientific behavior.
+- 163 JavaScript tests, 14 contrast checks and both-theme browser accessibility checks pass.
+  Four new screenshots were reviewed, with simulated data and no invented biological inference.
+  The audit workflow exposed missing clonotype grid cell/header roles; these were repaired.
+- Go vet, formatting, syntax checks and all six CGO-free platform builds pass. The site builds
+  53 pages with 67 screenshot references. All 208 checks across 52 pages, two themes and two
+  widths pass without accessibility violations or overflow. No site publication was performed.
+
+No commit, push, tag or release was performed. Slice 8 (Python client) follows maintainer review.
 
 ## Later waves (outlined)
 

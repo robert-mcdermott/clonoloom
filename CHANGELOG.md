@@ -4,6 +4,15 @@
 
 ### Added
 
+- **MCP transport (wave 8, slice 7).** `clonoloom mcp` hosts the normal local window
+  over bounded stdio JSON-RPC. Support MCP 2026-07-28 per-request discovery and explicit
+  2025-11-25 initialization compatibility. Share the HTTP action catalog, grants, argument
+  validation, human proposal review and audit; client metadata never widens permissions.
+  Preserve native JSON numeric tokens, refuse oversized results without truncating success,
+  and support progress/cancellation and EOF cleanup. Document exact replay and completed
+  file-effect limits. Repair missing clonotype grid cell/header accessibility roles exposed
+  by the both-theme MCP audit workflow. No new scientific method or changed replay tolerance.
+
 - **Automation policy, proposals and typed queries (wave 8, slice 6).** API 2 defaults
   to read-only remote control, with explicit host capabilities and token checks. Review
   named proposals against the unchanged project, retain Undo/Redo and session audit,

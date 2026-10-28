@@ -243,6 +243,7 @@ It takes `-h` for its settings.
 - [Installing](docs/INSTALLING.md): release files, installers, upgrading, uninstalling.
 - [Formats](docs/FORMATS.md): what each reader reads and how.
 - [Remote control](docs/REMOTE-CONTROL.md): driving ClonoLoom from scripts.
+- [MCP clients](docs/MCP.md): local stdio, explicit grants and window review (wave 8 development).
 - [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.
 - [Design](clonoloom-spec/design.md): how it is built and why.
@@ -267,12 +268,13 @@ bytes, compare exact recorded changes and recover through Undo/Redo. They do not
 original source files or replace scientific replay.
 [Automation permissions](docs/AUTOMATION.md) provide explicit host grants, named proposals,
 session audit and bounded typed clonotype queries in wave 8 development (API 2).
+[MCP transport](docs/MCP.md) uses this shared policy and native results, with modern per-request
+metadata and explicit legacy initialization compatibility.
 
 [Self-checking HTML reports](docs/HTML-REPORTS.md) package explicitly selected results with
 exact tables, existing figures, cited methods, notices and original certificates. Their offline
 browser check verifies embedded bytes, not scientific validity; native replay remains separate.
-The [Wave 8 plan](clonoloom-spec/roadmap.md) schedules further source coverage, automation policy, MCP
-and generated Python/R clients. Published binaries remain 0.7.0
+The [Wave 8 plan](clonoloom-spec/roadmap.md) schedules further source coverage and generated Python/R clients. Published binaries remain 0.7.0
 until the next release.
 
 ## Development

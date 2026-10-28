@@ -657,3 +657,26 @@ screenshots in both themes. Report/checkpoint scenes remain regression controls.
 Capture and fixture-builder scripts now start the host with explicit grants wait for existing jobs/imports, and click each
 visible acceptance button through `validation/automation.mjs`. This is test-driver behavior,
 not an application bypass or an auto-accept capability. Old release fixtures are unchanged.
+
+## MCP transport (wave 8, slice 7)
+
+`go test -race -run 'TestMCP|TestAutomation|TestRemote' .` checks the modern/legacy protocol,
+metadata isolation, exact JSON numeric tokens, catalog/grant parity, review metadata, refusal
+before window opening, frame/output/concurrency bounds, progress/cancellation and EOF.
+`go test -run '^$' -fuzz '^FuzzMCPFrame$' -fuzztime 20s .` exercises framing/decoding.
+
+For the actual stdio subprocess and normal window (Chrome/Chromium plus the existing
+`simulated-vaccine` and `axe-core` validation cache):
+
+```sh
+go build -o /tmp/clonoloom-mcp-check .
+node validation/mcp.mjs /tmp/clonoloom-mcp-check
+# Regenerate only this workflow's four documentation screenshots:
+node validation/mcp.mjs /tmp/clonoloom-mcp-check --capture
+```
+
+The harness starts an isolated offline host with explicit edits/compute/files grants and clicks
+visible proposal buttons. It checks HTTP/MCP query-string parity, full-table denominators,
+filtered rank semantics, rejection/cancellation, actor history, Undo/Redo, both-theme axe checks,
+legacy/modern coexistence and pending-call EOF cleanup. It does not infer scientific validity
+from protocol success; native worker and exact five-kind certificate replay checks run separately.

@@ -107,6 +107,9 @@ func init() {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "mcp" {
+		os.Exit(runMCP(os.Args[2:], os.Stdin, os.Stdout, os.Stderr))
+	}
 	if len(os.Args) > 1 && os.Args[1] == "run" {
 		os.Exit(runHeadless(os.Args[2:], os.Stdout, os.Stderr))
 	}
@@ -299,8 +302,13 @@ func start(cfg config, out io.Writer) (*runningServer, error) {
 const handOffTime = 5 * time.Second
 
 func parseConfig(args []string) (config, error) {
+	return parseConfigFor(args, os.Stderr, false)
+}
+
+func parseConfigFor(args []string, out io.Writer, remote bool) (config, error) {
 	var cfg config
 	flags := flag.NewFlagSet("clonoloom", flag.ContinueOnError)
+	flags.SetOutput(out)
 	flags.StringVar(&cfg.host, "host", "127.0.0.1", "host interface to bind")
 	flags.IntVar(&cfg.port, "port", defaultPort, "preferred localhost port")
 	flags.StringVar(&cfg.window, "window", "app", "how to show ClonoLoom: app (a desktop window from Chrome, Edge, Brave or Chromium, else the default browser), browser (the default browser) or none")
@@ -311,12 +319,12 @@ func parseConfig(args []string) (config, error) {
 	flags.StringVar(&cfg.cacheDir, "cache-dir", "", "folder for the table cache, which can be deleted and made again (default: <user cache dir>/clonoloom)")
 	cacheLimit := flags.String("cache-limit", "10GB", "size the table cache is kept within, removing what was used least recently (for example 500MB or 20GB; 0 for no limit)")
 	flags.StringVar(&cfg.allow, "allow", "", "automation capabilities: comma-separated edits,compute,files,network (default read-only; requires --remote-control)")
-	flags.BoolVar(&cfg.remote, "remote-control", false, "accept actions from programs on this computer at /api/remote/action (scripts, the documentation's screenshots)")
+	flags.BoolVar(&cfg.remote, "remote-control", remote, "accept actions from programs on this computer at /api/remote/action (scripts, the documentation's screenshots)")
 	flags.BoolVar(&cfg.dev, "dev", false, "serve web/ from the working directory instead of the embedded copy")
 	flags.BoolVar(&cfg.showVersion, "version", false, "print the version and exit")
 	noOpen := flags.Bool("no-open", false, "same as --window none")
 	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: clonoloom [flags] [repertoire tables (AIRR .tsv, Cell Ranger contig .csv, immunoSEQ exports), Cell Ranger output folders, projects (.clz) or folders of them...]\n       clonoloom simulate [flags]   (a simulated study with its truth; clonoloom simulate -h)\n       clonoloom verify (--integrity | --replay) FILE.certificate.clz   (clonoloom verify -h)\n       clonoloom run --recipe RECIPE.json --input NAME=PATH --out NEW_DIR   (clonoloom run -h)")
+		fmt.Fprintln(flags.Output(), "Usage: clonoloom mcp [flags]   (stdio automation; read-only unless --allow is explicit)\n       clonoloom [flags] [repertoire tables (AIRR .tsv, Cell Ranger contig .csv, immunoSEQ exports), Cell Ranger output folders, projects (.clz) or folders of them...]\n       clonoloom simulate [flags]   (a simulated study with its truth; clonoloom simulate -h)\n       clonoloom verify (--integrity | --replay) FILE.certificate.clz   (clonoloom verify -h)\n       clonoloom run --recipe RECIPE.json --input NAME=PATH --out NEW_DIR   (clonoloom run -h)")
 		flags.PrintDefaults()
 	}
 	files, err := parseArgs(flags, args)

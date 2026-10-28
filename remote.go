@@ -243,32 +243,54 @@ func (h *remoteHub) serveAction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	event := remoteEvent{Action: request.Action, Args: request.Args, Client: clientName(request.Client)}
+	outcome, failure := h.execute(r.Context(), event, subtle.ConstantTimeCompare([]byte(r.Header.Get(remoteTokenHeader)), []byte(h.token)) == 1, nil)
+	if failure != nil {
+		if r.Context().Err() == nil {
+			writeErrorCode(w, failure.status, failure.code, failure.message)
+		}
+		return
+	}
+	writeJSON(w, outcome)
+}
+
+type actionFailure struct {
+	status        int
+	code, message string
+}
+
+// execute is the single policy boundary for HTTP and trusted local stdio callers.
+// A capability grant never substitutes for the window's separate proposal review.
+func (h *remoteHub) execute(ctx context.Context, event remoteEvent, authorized bool, ready func(context.Context) error) (remoteResult, *actionFailure) {
 	h.record(event, "requested")
 	state := "refused"
 	defer func() { h.record(event, state) }()
-	action, known := findAction(request.Action)
-	if !known {
-		writeError(w, http.StatusNotFound, fmt.Sprintf("No action %q: GET /api/remote/tools lists them.", request.Action))
-		return
+	fail := func(status int, code, message string) (remoteResult, *actionFailure) {
+		return remoteResult{}, &actionFailure{status, code, message}
 	}
-	if (len(action.Effects) > 1) && subtle.ConstantTimeCompare([]byte(r.Header.Get(remoteTokenHeader)), []byte(h.token)) != 1 {
-		writeError(w, http.StatusUnauthorized, "Non-read automation needs the "+remoteTokenHeader+" header with the token in remote.json (in ClonoLoom's data folder).")
-		return
+	action, known := findAction(event.Action)
+	if !known {
+		return fail(404, "unknown-action", fmt.Sprintf("No action %q: consult the action catalog.", event.Action))
+	}
+	if len(action.Effects) > 1 && !authorized {
+		return fail(401, "unauthorized", "Non-read automation needs the "+remoteTokenHeader+" header with the token in remote.json (in ClonoLoom's data folder).")
 	}
 	for _, effect := range action.Effects {
 		if !h.allowed[effect] {
-			writeErrorCode(w, http.StatusForbidden, "permission-denied", "Automation requires explicit --allow "+effect+"; no action was sent to the window.")
-			return
+			return fail(403, "permission-denied", "Automation requires explicit --allow "+effect+"; no action was sent to the window.")
 		}
 	}
-	if err := validateActionArgs(request.Args, action.InputSchema); err != nil {
-		writeErrorCode(w, 400, "invalid-arguments", err.Error())
-		return
+	if err := validateActionArgs(event.Args, action.InputSchema); err != nil {
+		return fail(400, "invalid-arguments", err.Error())
 	}
-	event.Title = action.Title
-	event.Effects = action.Effects
-	event.Review = action.Review
-	outcome, err := h.dispatch(r.Context(), event)
+	event.Title, event.Effects, event.Review = action.Title, action.Effects, action.Review
+	var err error
+	if ready != nil {
+		err = ready(ctx)
+	}
+	var outcome remoteResult
+	if err == nil {
+		outcome, err = h.dispatch(ctx, event)
+	}
 	state = "failed"
 	if err == nil {
 		if outcome.OK {
@@ -276,20 +298,16 @@ func (h *remoteHub) serveAction(w http.ResponseWriter, r *http.Request) {
 		} else if outcome.Code != "" {
 			state = outcome.Code
 		}
-	} else if errors.Is(err, context.Canceled) {
+		return outcome, nil
+	}
+	if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
 		state = "cancelled"
+		return fail(499, "cancelled", err.Error())
 	}
-	switch {
-	case err == nil:
-		writeJSON(w, outcome)
-	case errors.Is(err, errPageTimeout):
-		writeError(w, http.StatusGatewayTimeout, err.Error())
-	case errors.Is(err, errNoPage), errors.Is(err, errPageBusy), errors.Is(err, errPageGone):
-		writeError(w, http.StatusServiceUnavailable, err.Error())
-	case errors.Is(err, context.Canceled), errors.Is(err, context.DeadlineExceeded):
-	default:
-		writeError(w, http.StatusBadGateway, err.Error())
+	if errors.Is(err, errPageTimeout) {
+		return fail(504, "window-timeout", err.Error())
 	}
+	return fail(503, "window-unavailable", err.Error())
 }
 
 // dispatch sends an event to the most recently opened page and waits for its result, one at a
@@ -301,6 +319,9 @@ func (h *remoteHub) dispatch(ctx context.Context, event remoteEvent) (remoteResu
 		return remoteResult{}, ctx.Err()
 	}
 	defer func() { <-h.turn }()
+	if err := ctx.Err(); err != nil {
+		return remoteResult{}, err
+	}
 	h.mu.Lock()
 	var client *remoteClient
 	if len(h.clients) > 0 {

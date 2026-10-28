@@ -218,6 +218,7 @@ export function mountClonotypes(app, container) {
     }, label, sort.by === by ? icon(sort.desc ? 'chevronDown' : 'chevronUp') : null);
     header.append(h('span.ctable-th.r', '#'), col('Junction', 'junction'), col('V', 'v'), col('J', 'j'), ...(meta.invariant ? [h('span.ctable-th', 'Invariant rules')] : []), col('Total', 'total', true), h('span.ctable-th.r', 'Frequency'), col('Samples', 'samples', true),
       ...sampleColumns().map((s, i) => col(s.name, `sample:${i}`, true, `Sort by the abundance in ${s.name}`)));
+    for (const cell of header.children) cell.setAttribute('role', 'columnheader');
   }
 
   const fetching = new Set();
@@ -261,7 +262,7 @@ export function mountClonotypes(app, container) {
         continue;
       }
       const chains = r.chains.length ? r.chains : [{ locus: '', junction: r.vendor ?? '' }];
-      windowEl.append(h(`div.ctable-row${selected === r.id ? '.selected' : ''}`, {
+      const row = h(`div.ctable-row${selected === r.id ? '.selected' : ''}`, {
         role: 'row', style: { gridTemplateColumns: tpl }, title: r.id,
         onclick: () => select(r.id),
       },
@@ -274,7 +275,9 @@ export function mountClonotypes(app, container) {
       h('span.r', pct(r.frequency)),
       h('span.r', String(r.samples)),
 
-      ...samples.map((s, i) => h('span.r', r.in[String(i)] ? count(r.in[String(i)]) : h('span.muted', '·')))));
+      ...samples.map((s, i) => h('span.r', r.in[String(i)] ? count(r.in[String(i)]) : h('span.muted', '·'))));
+      for (const cell of row.children) cell.setAttribute('role', 'gridcell');
+      windowEl.append(row);
     }
   }
 
