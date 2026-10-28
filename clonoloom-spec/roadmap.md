@@ -3268,7 +3268,7 @@ maintainer review; Python and R will share the action/permission/error contract 
 
 ### Slice 9: generated R client
 
-**Implemented and validated; awaiting maintainer commit.** Complete A4 using the Apache-2.0 CytoWeave/MaveScape
+**Committed as `a7efd18` and pushed by the maintainer.** Complete A4 using the Apache-2.0 CytoWeave/MaveScape
 R package pattern: generated `cl_*` functions, Rd help, S3 connections/results, curl transport
 and remote.json discovery. Share Python's catalog/API/policy, discovery precedence, explicit
 token isolation, typed failures, bounds, no retries and authoritative host grants/window review.
@@ -3315,6 +3315,82 @@ Validation completed:
   limits. Exact certificate replay and release fixtures remain unchanged.
 
 No commit, push, tag, release or publication was performed. Slice 10 (portable project archives)
+follows maintainer review and commit.
+
+### Slice 10: portable project archives
+
+**Implemented and validated; awaiting maintainer review and commit.**
+
+**Plan recorded before implementation.** Complete D12's portable archive contract with a
+versioned `.clz` ZIP containing original project/history bytes, attached immutable artifact
+files, available artifact parents, checkpoint evidence, provider notices and a sorted SHA-256
+inventory. Preserve source documents and scientific numeric tokens without decode-to-float.
+Import creates local path bindings separately; originals remain inspectable evidence.
+
+Source bytes are opt-in, fingerprint-checked and included only for open providers or explicitly
+authorized user-owned data. Restricted/unknown-provider sources remain omitted; missing,
+changed and unsupported sources have explicit inventory statuses. Captured restricted evidence
+requires the existing private-use acknowledgment and retains notices; an archive is not a
+redistribution license or de-identification. Never follow recorded source paths on import.
+
+Validate all ZIP names, types, counts, compressed/expanded bounds, inventory hashes, project
+versions and dependency identities before promotion. Reject traversal, links, case collisions,
+special files, unlisted content and destination conflicts. Stage under the local library; never
+overwrite projects/results/checkpoints. Partial interruption may leave verified unreferenced
+files, not a successful project import. Preserve checkpoint bytes and apply portable source
+bindings when recovering imported checkpoints. No recipes or workers execute during inspection.
+
+Expose export, inspection and import in the window and shared reviewed action catalog, regenerate
+both clients, and document the new catalog version. Validate hostile/corrupt archives, exact
+round trips, cross-release projects, source policy, cancellation/conflicts, real browser reopening
+and both-theme visuals. Keep version 0.7.0 and existing scientific/replay methods unchanged.
+
+Validation completed:
+
+- Version 1 archives retain original project/history, result and checkpoint bytes, including
+  scientific large integers, decimal tokens, negative zero and valid checkpoint-record whitespace.
+  Sorted SHA-256 inventories and pinned fingerprints verify every member. Missing mandatory
+  results/checkpoints refuse export/import; available artifact parents are retained recursively.
+- Source inclusion is off by default. Open provider licenses or explicit authority for user-owned
+  sources are required; restricted original files remain excluded. Captured restricted evidence
+  requires private-use acknowledgment and retains credits/notices. Omitted, restricted, missing,
+  changed and unsupported sources have explicit statuses and empty working paths. No source path
+  from an original machine is followed during import.
+- ZIP tests reject traversal, links, devices, reserved/ambiguous/nonportable names, case and
+  file/directory collisions, unsupported methods/encryption, corrupt hashes, duplicate JSON keys,
+  wrong versions, forged source pointers, unlisted files and oversized counts/metadata. Metadata
+  duplication is bounded before constructing a large inventory. Existing projects and conflicting
+  or incomplete results/checkpoints are refused before writes. Cancellation and partial-file
+  limits are documented; this is not a transactional whole-library backup.
+- Original evidence remains under imports/<fingerprint>; only the working project receives local
+  paths and archive status. Imported checkpoints recover with verified bindings; new local
+  checkpoints work normally; re-export retains old checkpoint sources after original paths vanish.
+  Every v0.2–v0.7 project reopens with original receptor dataset identities and artifact bytes;
+  the v0.6 expression matrix/annotations also retain their original input identity.
+- A seeded artificial vaccination study transfers between two isolated hosts after moving the
+  original files away. Native clonotype query JSON, saved diversity evidence and checkpoint files
+  are byte-identical. Rejected import proposals write no project; stale inspection/cancellation
+  controls pass. Both new screenshots were inspected; both-theme application accessibility passes.
+  The transfer test is added to CI. No new scientific figure, estimator or replay tolerance.
+- Catalog 2 exposes 61 actions through HTTP, MCP and generated Python/R wrappers. Source export
+  requires review even without project edits. Import requires read/edits/compute/files because
+  opening the project may rebuild dataset tables; each missing grant is tested. Saved analyses
+  are not recomputed. Native import/export integrity is distinct from five-kind certificate replay.
+- The complete Go suite passes, including the scientific validation package. Internal scientific
+  race checks, archive/cross-release race controls and focused application permission/MCP checks
+  pass. Initial broad race checks exposed obsolete catalog/review assertions and concurrent
+  generated-catalog drift; the catalog was regenerated, assertions updated and all affected
+  checks rerun successfully. No scientific validation failure remained. Bounded decoder smoke
+  fuzzing, Go vet and six CGO-free platform builds pass.
+- All 167 browser module tests and 14 contrast checks pass. Python's 17 regression tests pass;
+  R passes 1,296 assertions and package build/check without errors, warnings, notes or skipped
+  tests. Live R/Python/HTTP parity, reviewed edits, rejection, cancellation, History/Undo and both
+  query examples pass. Client generation drift checks pass with catalog 2.
+- The site builds 56 pages with 68 screenshot references; all 220 accessibility/layout checks
+  across 55 pages, two themes and two widths pass. Guides, format/source/recovery limits,
+  requirements, research §5.51 and changelog are updated. Version remains 0.7.0.
+
+No commit, push, tag, release or publication was performed. Slice 11 (export de-identification)
 follows maintainer review and commit.
 
 ## Later waves (outlined)

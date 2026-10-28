@@ -217,6 +217,12 @@ jobs:
         # default on hosted runners; each performance test still enforces its own budget.
         run: go test -v -timeout 20m ./validation/
 
+      - name: Portable archive transfer and both-theme accessibility
+        run: |
+          go build -o "$RUNNER_TEMP/clonoloom-archives" .
+          node validation/fetch.mjs axe-core
+          node validation/project-archives.mjs "$RUNNER_TEMP/clonoloom-archives"
+
   installers:
     name: Installer syntax
     needs: changed

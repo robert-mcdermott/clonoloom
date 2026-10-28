@@ -88,6 +88,17 @@ export function remoteActions(app) {
   const lociOf = (summary) => Object.keys(summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
 
   const actions = {
+    async export_project_archive(options = {}) {
+      await app.setMode('reports');
+      return {message:'Portable project archive downloaded; no scientific recomputation.', data:await app.archives.exportArchive(options)};
+    },
+    async inspect_project_archive({path, expected = ''}) {
+      await app.setMode('reports');
+      return {message:'Archive inventory verified; no files imported or recipes executed.', data:await app.archives.inspect(path,{expected})};
+    },
+    async import_project_archive({path, expected, accept = false}) {
+      return {message:'Project imported with exact saved evidence and verified local bindings.', data:await app.archives.importArchive(path,{expected,accept})};
+    },
     async query_clonotypes({dataset, where, offset = 0, limit = 200} = {}) {
       const project = store.project, current = store.sameProject();
       const d = datasetOf(dataset), summary = await openDataset(d);

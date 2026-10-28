@@ -1,6 +1,6 @@
 // Checkpoints retain Go-owned evidence; browser recovery edits project values with
 // the ordinary undo/redo store. No scientific result is parsed or recomputed here.
-const ENVELOPE = new Set(['format', 'version', 'id', 'name', 'created', 'modified', 'history', 'checkpoints']);
+const ENVELOPE = new Set(['format', 'version', 'id', 'name', 'created', 'modified', 'history', 'checkpoints', 'portableArchive']);
 const numericTokens = (text) => (text.match(/"(?:\\.|[^"\\])*"|-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/g) ?? []).filter((s) => !s.startsWith('"'));
 export function checkpointAnalysis(text) {
   const value = JSON.parse(text);

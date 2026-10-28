@@ -52,7 +52,9 @@ Creation and recovery have normal undo entries. Undoing creation removes its ref
 immutable evidence directory. Undoing recovery changes project values, not immutable artifact files.
 Checkpoints are not deleted, renamed or overwritten by this interface. Keep the whole local library
 backed up; a project JSON alone does not carry checkpoint evidence. Portable transfer belongs to the
-later archive contract, not this slice.
+[portable archive contract](PROJECT-ARCHIVES.md). Archives preserve checkpoint originals and
+apply verified local source bindings during recovery; later local checkpoints record those
+bindings normally. The current portable archive marker survives recovery.
 
 ## Read differences precisely
 

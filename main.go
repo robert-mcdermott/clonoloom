@@ -506,6 +506,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerCache(mux)
 	a.registerCertificates(mux)
 	a.registerCheckpoints(mux)
+	a.registerProjectArchives(mux)
 	a.registerHTMLReports(mux)
 	a.registerAnalyses(mux)
 	a.registerTCRdist(mux)

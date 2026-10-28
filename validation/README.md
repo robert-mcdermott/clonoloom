@@ -715,3 +715,21 @@ artificial vaccination project. It exercises explicit grants, review/rejection, 
 History and Undo/Redo and runs both query examples. Only the test driver accepts proposals.
 List-column frames do not infer numeric types or renormalize scientific denominators. Package
 and transport checks do not replace native exact certificate replay or scientific calibration.
+
+## Portable project archives (wave 8, slice 10)
+
+```sh
+go test -race -run '^TestPortable' -timeout 10m .
+go build -o /tmp/clonoloom-archives .
+node validation/fetch.mjs axe-core
+node validation/project-archives.mjs /tmp/clonoloom-archives
+```
+
+Add `--screenshots` to refresh the archive scene in both themes. The browser driver creates its
+own seeded vaccine files and two libraries, moves the originals out of reach, rejects one import
+proposal, then accepts a transfer and compares exact native query and immutable evidence bytes.
+It recovers an imported checkpoint, tests stale/cancelled inspection, and audits both themes.
+Only the driver accepts review proposals. Native tests additionally cover hostile ZIPs, bounded
+metadata, permission/status contracts, no overwrite, original JSON tokens/whitespace, re-export,
+local post-import checkpoints, and reopening each v0.2–v0.7 project fixture. Transfer success
+is not scientific recomputation; existing certificate replay and method validation remain separate.

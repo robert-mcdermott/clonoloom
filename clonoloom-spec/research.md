@@ -3261,3 +3261,42 @@ R package and compare R/Python native evidence bytes in one isolated simulated v
 project. Test filtered row values, grants, rejection, cancellation, named History and Undo/Redo;
 execute both examples. Native Go scientific regression tests remain separate controls. No new
 plot is introduced; the site guide is audited in both themes and at phone/desktop widths.
+
+### 5.51 Portable project evidence and safe archive boundaries
+
+**Sources and scope (2026-10-28).** Consulted Go's official
+[archive/zip contract](https://pkg.go.dev/archive/zip) and
+[traversal-resistant file access](https://go.dev/blog/osroot). Reviewed the Apache-2.0 SituCraft
+project-archive pattern for separate originals and working path bindings; ClonoLoom's checkpoint,
+artifact inventory and exact JSON contracts require stricter member verification. This is storage
+and transport work, not a new statistical method or a new claim of compatibility with an external
+scientific pipeline. No external scientific implementation is incorporated.
+
+**Choices.** Keep original documents and scientific numeric tokens as bytes/RawMessage. A
+canonical sorted inventory binds file paths, sizes, hashes, source status/credits and dependencies.
+Read every ZIP member within per-file and total bounds; CRC is supplementary to SHA-256. Never
+trust ZIP path cleaning alone. Reject absolute/traversing paths, links/devices, file/directory
+collisions, case aliases and platform-reserved names. Use bounded ASCII member names to avoid
+cross-platform Unicode normalization aliases; original Unicode document content remains intact.
+Confine extraction with os.Root and exclusive file creation. Preflight conflicts and stage before
+publishing the complete project last; assume a user-owned library without concurrent hostile
+writers. Interrupted imports can leave unreferenced evidence or partial/staging files and are not
+whole-library transactions.
+
+Separate original evidence from local working paths. Resolve only documented receptor/expression
+source fields and verify their recorded SHA-256/size. Never read old machine paths on import.
+Unavailable sources get empty bindings with explicit statuses. Preserve checkpoint bytes and use
+verified imported bindings for recovery/re-export. Source files need opt-in inclusion and recorded
+open licenses or explicit authority for user-owned inputs. Restricted sources stay excluded;
+captured restricted evidence retains private-use acknowledgment and notices. Integrity hashes do
+not grant permission, authenticate authors, remove identifiers or validate biological conclusions.
+
+**Validation boundary.** Round-trip large integer/decimal/negative-zero JSON tokens and immutable
+project/history/result/checkpoint bytes. Verify source policy, changed/missing inputs, corruption,
+unsafe archives, identity conflicts, cancellation and v0.2–v0.7 project reopening. Use two isolated
+libraries and a seeded artificial vaccination example; move original source paths away before
+import, compare native clonotype query bytes and recover a checkpoint. This validates recorded
+units/definitions/denominators without adding an estimator or inference. Existing five-kind exact
+certificate replay remains separate, with unchanged limits. Inspect both-theme screenshots and
+run accessibility checks; no scientific plot geometry changes. Shared actions retain explicit
+host grants and human review; generated Python/R wrappers follow catalog 2 with exact JSON handling.

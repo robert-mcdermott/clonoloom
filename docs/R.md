@@ -2,7 +2,7 @@
 
 The wave 8 development R package follows CytoWeave/MaveScape: generated `cl_*` functions and
 help, S3 connections/results, a small curl transport, remote.json discovery and record frames.
-It shares the Python client's action API **2**, catalog **1** and permission policy **1**.
+It shares the Python client's action API **2**, catalog **2** and permission policy **1**.
 Package/application version remains **0.7.0** until the wave release; published 0.7.0 hosts
 predate this contract. Use a development host and matching checkout.
 

@@ -107,7 +107,7 @@ export function relocate(project, id, paths, now = new Date().toISOString()) {
     datasets: project.datasets.map((d) => {
       if (d.id !== id) return d;
       const n = d.sources.length;
-      return { ...d, sources: d.sources.map((s, i) => ({ ...s, path: paths[i] ?? s.path })), metadata: (d.metadata ?? []).map((m, i) => ({ ...m, path: paths[n + i] ?? m.path })) };
+      return { ...d, sources: d.sources.map((s, i) => ({ ...s, path: paths[i] ?? s.path, ...(s.archiveStatus && paths[i] ? {archiveStatus: 'rebound'} : {}) })), metadata: (d.metadata ?? []).map((m, i) => ({ ...m, path: paths[n + i] ?? m.path, ...(m.archiveStatus && paths[n + i] ? {archiveStatus: 'rebound'} : {}) })) };
     }),
   }, now);
 }

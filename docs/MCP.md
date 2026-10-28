@@ -1,7 +1,7 @@
 # MCP: the local research window
 
 Wave 8 development, slice 7. Published 0.7.0 binaries predate this transport. The application
-version remains 0.7.0; action API 2, catalog 1 and automation policy 1 are independent versions.
+version remains 0.7.0; action API 2, catalog 2 and automation policy 1 are independent versions.
 
 ## Connect a client
 

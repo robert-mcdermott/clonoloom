@@ -279,7 +279,10 @@ versions and preserves int/Decimal values with optional pandas object columns. T
 [Self-checking HTML reports](docs/HTML-REPORTS.md) package explicitly selected results with
 exact tables, existing figures, cited methods, notices and original certificates. Their offline
 browser check verifies embedded bytes, not scientific validity; native replay remains separate.
-The [Wave 8 plan](clonoloom-spec/roadmap.md) schedules portable archives and further source coverage. Published binaries remain 0.7.0
+[Portable project archives](docs/PROJECT-ARCHIVES.md) transfer exact project/history, results and
+checkpoints with opt-in permitted sources, bounded inventories and verified local bindings.
+Inspect before import; conflicts refuse overwrite. The [Wave 8 plan](clonoloom-spec/roadmap.md)
+schedules de-identification and further source coverage. Published binaries remain 0.7.0
 until the next release.
 
 ## Development

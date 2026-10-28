@@ -2,11 +2,78 @@
 from ._json import UNSET
 
 API_VERSION = 2
-CATALOG_VERSION = 1
+CATALOG_VERSION = 2
 POLICY_VERSION = 1
 
 class Tools:
     """Actions generated from the host catalog; changes require window review."""
+
+    def export_project_archive(self, *, accept=UNSET, include_sources=UNSET, own_sources=UNSET):
+        """
+        Export portable project archive.
+
+        Download the current project, history, immutable results and checkpoints with an exact
+        inventory. Source bytes are opt-in; restricted provider sources are always omitted. No
+        scientific recomputation.
+
+        Effects: read, files. Window review: required.
+
+        accept (optional; omitted by default): Acknowledge private-use restrictions on captured
+        provider evidence; never permits restricted source inclusion.
+
+        include_sources (optional; omitted by default): Include fingerprint-checked permitted
+        source bytes; default false.
+
+        own_sources (optional; omitted by default): Explicit authority to include sources with
+        no recorded provider license; default false.
+
+        Returns a Result with exact int/Decimal values. None sends JSON null; UNSET omits an
+        optional argument.
+        """
+        return self.call("export_project_archive", **{"accept": accept, "includeSources": include_sources, "ownSources": own_sources})
+
+    def inspect_project_archive(self, path, *, expected=UNSET):
+        """
+        Inspect portable project archive.
+
+        Verify a local archive's complete bounded inventory without extracting files or
+        executing recipes. Return original project JSON as text and all source statuses.
+
+        Effects: read, files. Window review: not required.
+
+        path (required): Absolute local .clz archive path.
+
+        expected (optional; omitted by default): Optional independently retained SHA-256 archive
+        fingerprint.
+
+        Returns a Result with exact int/Decimal values. None sends JSON null; UNSET omits an
+        optional argument.
+        """
+        return self.call("inspect_project_archive", **{"path": path, "expected": expected})
+
+    def import_project_archive(self, path, expected, *, accept=UNSET):
+        """
+        Import portable project archive.
+
+        Verify and import an inspected archive into the library without overwriting a project or
+        conflicting evidence. Open the imported project with verified local source bindings.
+        Opening may rebuild dataset tables; saved analyses are not recomputed. Partial
+        cancellation may leave verified unreferenced files.
+
+        Effects: read, edits, compute, files. Window review: required.
+
+        path (required): Absolute local .clz archive path.
+
+        expected (required): Required fingerprint from inspection or an independently trusted
+        record.
+
+        accept (optional; omitted by default): Acknowledge private-use restrictions on captured
+        provider evidence.
+
+        Returns a Result with exact int/Decimal values. None sends JSON null; UNSET omits an
+        optional argument.
+        """
+        return self.call("import_project_archive", **{"path": path, "expected": expected, "accept": accept})
 
     def query_clonotypes(self, *, dataset=UNSET, limit=UNSET, offset=UNSET, where=UNSET):
         """

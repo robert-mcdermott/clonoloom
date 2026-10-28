@@ -36,7 +36,9 @@ func TestAutomationCatalogAndGrants(t *testing.T) {
 				t.Fatal(e)
 			}
 		}
-		if edits != a.Review {
+		// Export can include original sources and therefore needs explicit review even
+		// though it does not edit the project. Inspection remains unreviewed.
+		if (edits || a.Name == "export_project_archive") != a.Review {
 			t.Fatalf("review drift: %s", a.Name)
 		}
 	}
@@ -244,5 +246,20 @@ func TestTypedFilterNodeBound(t *testing.T) {
 	nodes = 0
 	if tree.validate(1, &nodes) == nil {
 		t.Fatal("65-node tree accepted")
+	}
+}
+
+func TestPortableArchiveRequiresEveryGrant(t *testing.T) {
+	for _, missing := range []string{"edits", "compute", "files"} {
+		t.Run(missing, func(t *testing.T) {
+			hub, server := remoteServer(t, "archive-grants")
+			hub.allowed = map[string]bool{"read": true, "edits": true, "compute": true, "files": true}
+			delete(hub.allowed, missing)
+			body := `{"action":"import_project_archive","args":{"path":"/tmp/study.clz","expected":"` + strings.Repeat("a", 64) + `"}}`
+			code, result := act(t, server, body, hub.token)
+			if code != 403 || !strings.Contains(result, "permission-denied") {
+				t.Fatal(code, result)
+			}
+		})
 	}
 }

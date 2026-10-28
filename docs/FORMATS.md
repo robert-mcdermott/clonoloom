@@ -1061,3 +1061,15 @@ inventory bytes. It is an offline HTML envelope, not a new certificate or scient
 format. Go renders exact numeric tokens in tables; the browser checks bytes and places existing
 figure marks. Unsupported/oversized evidence is refused without row truncation. See
 [HTML-REPORTS.md](HTML-REPORTS.md) for fields, limits, provider gates and the trusted-checker boundary.
+
+
+## Portable project archives (Wave 8 development)
+
+Version 1 `.clz` ZIPs retain original project/history, inventoried results and available parents,
+checkpoint closure, notices and optionally permitted sources. A sorted SHA-256 inventory binds
+all members; the record fingerprint excludes its own fingerprint field. Import preserves those
+bytes under `imports/<fingerprint>` and creates a separate working project with verified local
+source paths. No scientific computation runs. Unsupported paths/versions, missing mandatory
+evidence, altered members and destination conflicts refuse import. See
+[PROJECT-ARCHIVES.md](PROJECT-ARCHIVES.md) for the exact schema, bounds, source permissions,
+checkpoint bindings and interruption limits.

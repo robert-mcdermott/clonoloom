@@ -1,8 +1,97 @@
 {
   "api": 2,
-  "catalogVersion": 1,
+  "catalogVersion": 2,
   "policyVersion": 1,
   "tools": [
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": true,
+      "name": "export_project_archive",
+      "title": "Export portable project archive",
+      "description": "Download the current project, history, immutable results and checkpoints with an exact inventory. Source bytes are opt-in; restricted provider sources are always omitted. No scientific recomputation.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Acknowledge private-use restrictions on captured provider evidence; never permits restricted source inclusion.",
+            "type": "boolean"
+          },
+          "includeSources": {
+            "description": "Include fingerprint-checked permitted source bytes; default false.",
+            "type": "boolean"
+          },
+          "ownSources": {
+            "description": "Explicit authority to include sources with no recorded provider license; default false.",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": false,
+      "name": "inspect_project_archive",
+      "title": "Inspect portable project archive",
+      "description": "Verify a local archive's complete bounded inventory without extracting files or executing recipes. Return original project JSON as text and all source statuses.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "expected": {
+            "description": "Optional independently retained SHA-256 archive fingerprint.",
+            "type": "string"
+          },
+          "path": {
+            "description": "Absolute local .clz archive path.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "import_project_archive",
+      "title": "Import portable project archive",
+      "description": "Verify and import an inspected archive into the library without overwriting a project or conflicting evidence. Open the imported project with verified local source bindings. Opening may rebuild dataset tables; saved analyses are not recomputed. Partial cancellation may leave verified unreferenced files.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Acknowledge private-use restrictions on captured provider evidence.",
+            "type": "boolean"
+          },
+          "expected": {
+            "description": "Required fingerprint from inspection or an independently trusted record.",
+            "type": "string"
+          },
+          "path": {
+            "description": "Absolute local .clz archive path.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "expected"
+        ],
+        "type": "object"
+      }
+    },
     {
       "effects": [
         "read",

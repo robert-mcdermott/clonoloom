@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Portable project archives (wave 8, slice 10).** Transfer original project/history, result
+  and checkpoint bytes in a versioned, bounded `.clz` inventory. Include sources only by explicit
+  choice and policy; retain missing, changed, omitted, restricted and unsupported statuses.
+  Verify every member before installing, reject unsafe paths/links/aliases and destination
+  conflicts, and preserve originals separately from verified local working bindings. Recover
+  imported checkpoints and re-export without original machine paths. Add window inspection and
+  reviewed HTTP/MCP actions; catalog 2 generates 61 Python/R methods. Validate cross-release
+  reopening, hostile inputs, exact native evidence and both-theme views. No scientific workers,
+  plotting methods, replay tolerances or release fixtures change.
+
 - **Generated R client (wave 8, slice 9).** Share the 58-action catalog and permission contract
   with Python. Generate functions and Rd help following the sibling applications' package
   patterns. Preserve original JSON number tokens, native text and response bytes; distinguish

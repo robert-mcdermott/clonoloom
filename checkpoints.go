@@ -24,7 +24,7 @@ import (
 const checkpointProjectLimit = 16 << 20
 const checkpointLimits = "Local checkpoint recovery restores recorded analysis settings and attached completed result files, not original receptor/expression sources, separate unattached parents, reference installations, running jobs or a whole library. It performs no scientific recomputation. Exact certificate replay remains limited to the published per-kind support matrix. Recorded differences are descriptive, not effects, significance or biological validation. Evidence can contain identifiers, sequences and paths; it is not de-identified or a redistribution license."
 
-var checkpointEnvelope = map[string]bool{"format": true, "version": true, "id": true, "name": true, "created": true, "modified": true, "history": true, "checkpoints": true}
+var checkpointEnvelope = map[string]bool{"format": true, "version": true, "id": true, "name": true, "created": true, "modified": true, "history": true, "checkpoints": true, "portableArchive": true}
 
 type checkpointRecord struct {
 	Format   string             `json:"format"`
@@ -581,6 +581,10 @@ func (a *app) registerCheckpoints(mux *http.ServeMux) {
 		if operation == "recover" {
 			if b.Against != "" {
 				writeError(w, 400, "Recovery takes one checkpoint.")
+				return
+			}
+			if err = a.portableCheckpoint(r.Context(), b.Project, &d); err != nil {
+				writeError(w, 409, err.Error())
 				return
 			}
 			if err = a.recoverCheckpoint(r.Context(), d); err != nil {

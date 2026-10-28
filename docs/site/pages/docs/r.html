@@ -3,7 +3,7 @@ title: R client
 description: Generated R functions with explicit host permissions, exact JSON number tokens and list-column data frames.
 lede: Drive the normal research window from R. Preserve original evidence and review proposed project changes before they run.
 ---
-<p>Wave 8 development, slice 9. Use R 4.1 or later and a development host with API 2, catalog 1 and permission policy 1. The package and application remain version 0.7.0 until release; published 0.7.0 hosts predate this contract.</p>
+<p>Wave 8 development, slice 9. Use R 4.1 or later and a development host with API 2, catalog 2 and permission policy 1. The package and application remain version 0.7.0 until release; published 0.7.0 hosts predate this contract.</p>
 <h2 id="install">Install from the checkout</h2>
 <div class="code"><pre><code>Rscript -e 'install.packages(c("curl", "jsonlite"), repos="https://cloud.r-project.org")'
 R CMD INSTALL clients/r
@@ -20,7 +20,7 @@ result &lt;- cl_query_clonotypes(
 evidence &lt;- cl_native(result)
 rows &lt;- cl_records(result)
 frame &lt;- as.data.frame(result)  # list columns preserve tokens</code></pre></div>
-<p>All 58 functions and their help come from the same action catalog as <a href="python.html">Python</a> and <a href="mcp.html">MCP</a>. Generated arguments use snake_case names. Filtering retains current definition, QC, source units and the full-table frequency denominator; displayed ranks reflect selected membership.</p>
+<p>All 61 functions and their help come from the same action catalog as <a href="python.html">Python</a> and <a href="mcp.html">MCP</a>. Generated arguments use snake_case names. Filtering retains current definition, QC, source units and the full-table frequency denominator; displayed ranks reflect selected membership.</p>
 <h2 id="numbers">Preserve numbers and missingness</h2>
 <p>Every JSON number retains its original text in a <code>clonoloom_number</code> token. This includes large integers, decimal digits, exponents and negative zero. Use <code>cl_number("9007199254740993")</code> to send an exact number token; host argument bounds still apply. Original response bytes remain in <code>result$raw_json</code>, and <code>cl_native(result)</code> decodes the original native query string.</p>
 <p><code>as.character(token)</code> gives exact text. Arithmetic and comparisons on tokens fail. Explicit <code>as.numeric(token)</code> warns that precision or range may be lost. Already rounded R values cannot recover original digits. List-column frames retain tokens and nulls; missing keys become NULL only in this convenience view. Keep records and raw evidence when that distinction matters.</p>

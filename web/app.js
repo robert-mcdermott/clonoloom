@@ -17,9 +17,12 @@ import { mountInspector } from './ui/inspector.js';
 import { mountDrawer } from './ui/drawer.js';
 import { openPalette } from './ui/palette.js';
 import { colorVisionFriendly, setColorVisionFriendly } from './lib/colormaps.js';
-import { createProject, isEmptyProject, parseProject, rename, serializeProject } from './lib/project.js';
+import { createProject, isEmptyProject, rename, serializeProject } from './lib/project.js';
 import { UNITS, addDataset, datasetFiles, datasetRecord, datasetUnit, relocate } from './lib/datasets.js';
 import { datasetDefinition } from './lib/definitions.js';
+
+import { parseExactProject as parseProject } from './lib/project-archives.js';
+import { createProjectArchives } from './ui/project-archives.js';
 
 const VERSION = '0.7.0';
 
@@ -109,6 +112,8 @@ async function start() {
   // Readers of files opened in the browser by kind, registered by the slices that build them:
   // kind → async (item).
   app.importers = new Map();
+  app.archives = createProjectArchives(app);
+  app.importers.set('project', async ({file}) => { await app.setMode('reports'); await app.archives.inspect(file); });
 
   app.sidebar = mountSidebar(app);
   app.inspector = mountInspector(app);
@@ -202,6 +207,7 @@ async function start() {
         groups.set(key, [...(groups.get(key) ?? []), item]);
       }
     }
+    for (const item of items.filter((item) => item.kind === 'project')) { await app.setMode('reports'); await app.archives.inspect(item.path); }
     for (const group of groups.values()) await app.openData(group.map((item) => item.path));
   };
 
@@ -286,11 +292,8 @@ async function start() {
       try {
         let summary = await getDataset(record.id);
         if (!summary) {
-          // Tables read through a mapping of their columns are read through it again.
-          const mappings = Object.fromEntries(record.sources.filter((s) => s.mapping).map((s) => [s.path, s.mapping]));
-          summary = await openDataset(record.sources.some((s) => s.imgtGroup)
-            ? { inputs: datasetFiles(record), name: record.name }
-            : { paths: datasetFiles(record).map((s) => s.path), name: record.name, ...(Object.keys(mappings).length ? { mappings } : {}) });
+          if (datasetFiles(record).some((s) => s.archiveStatus && !['included', 'rebound'].includes(s.archiveStatus))) throw Object.assign(new Error('This archive omitted some source files. Locate the original files by their recorded fingerprints before reopening.'), {code:'missing'});
+          summary = await openDataset({ inputs: datasetFiles(record), name: record.name });
         }
         if (summary.id !== record.id) {
           const state = { status: 'changed', summary, error: 'The files are not those the project recorded: their contents changed.' };
@@ -494,8 +497,7 @@ async function start() {
   }
   app.openLibrary = openLibraryDialog;
 
-  // The project document as JSON (the .clz archive, bundling its data where licenses allow, comes
-  // in wave 8: requirement D12).
+  // The plain project document remains available beside portable .clz archives.
   function exportProjectJSON() {
     downloadBlob(new Blob([serializeProject(store.project)], { type: 'application/json' }), `${store.project.name.replace(/[^\w.-]+/g, '_') || 'project'}.clonoloom.json`);
   }
@@ -516,6 +518,7 @@ async function start() {
       { label: 'Example data…', icon: 'flask', onSelect: () => app.showExamples() },
       '-',
       { section: 'Export' },
+      { label: 'Portable project archive (.clz)', icon: 'download', onSelect: () => app.setMode('reports') },
       { label: 'Project document (JSON)', icon: 'download', onSelect: exportProjectJSON },
       { label: 'Clonotypes of the dataset in focus (CSV)', icon: 'download', onSelect: () => exportFocused('clonotypes') },
       { label: 'Its rearrangements (AIRR TSV)', icon: 'download', onSelect: () => exportFocused('rearrangements') },
