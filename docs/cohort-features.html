@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subject feature tables · ClonoLoom</title>
+  <meta name="description" content="Export exact saved sample measurements as subject-level cohort features, with units, missingness, design selection and source provenance." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/cohort-features.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Subject feature tables" />
+  <meta property="og:description" content="Export exact saved sample measurements as subject-level cohort features, with units, missingness, design selection and source provenance." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/cohort-features.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="contamination.html">Contamination evidence</a></li>
+          <li><a href="batch-qc.html">Batch QC</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="motifs.html">Motifs and sequence signatures</a></li>
+          <li><a href="convergence.html">Subject recurrence and HLA</a></li>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html">Specificity databases</a></li>
+        </ul>
+        <h4>Cells</h4>
+        <ul>
+          <li><a href="cell-study.html">A complete study</a></li>
+          <li><a href="cells.html">Expression evidence</a></li>
+          <li><a href="pseudobulk.html">Pseudobulk counts</a></li>
+          <li><a href="pseudobulk-de.html">Pseudobulk expression</a></li>
+        </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
+        <h4>Cohorts</h4>
+        <ul>
+          <li><a href="cohort-study.html">Complete cohort studies</a></li>
+          <li><a href="cohort-design.html">Study design</a></li>
+          <li><a href="cohort-features.html" aria-current="page">Subject features</a></li>
+          <li><a href="cohort-comparisons.html">Group comparisons</a></li>
+          <li><a href="cohort-counts.html">Replicated counts</a></li>
+          <li><a href="definition-robustness.html">Definition robustness</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Subject feature tables</h1>
+      <p class="doc-lede">A cohort table starts with the selected biological observations. Choose a saved study design and a saved diversity result to retain one sample per subject and selected group, with every value traceable to its source analysis.</p>
+
+<h2 id="build">Choose the evidence</h2>
+<ol>
+<li>Annotate subjects and groups, then check and save a named <a href="cohort-design.html">Cohort study design</a>. Select repeated samples explicitly with reasons; no library is automatically chosen or pooled.</li>
+<li>In Repertoire, <a href="diversity.html">measure diversity</a> under the desired clonotype definition and QC filter.</li>
+<li>In Cohort, scroll to <strong>Subject feature table</strong>. Choose the exact saved design version and diversity parent, then build the table. Both must refer to the same dataset and complete source sample set.</li>
+</ol>
+<p>The saved design's annotations and exclusions are used even if current annotations have changed. Save a new design version to use changed annotations. One row is one selected subject/group observation. An independent design has one row per subject; a paired design has two, linked by the same subject identifier. These rows are not independent replicates in a paired analysis.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cohort-features-dark.webp" width="2000" height="1250" loading="lazy" alt="Subject feature table for six artificial subjects, with three in each selected group, displaying observed Hill diversity q=1 from a saved diversity result" /><img class="shot-light" src="../assets/img/cohort-features-light.webp" width="2000" height="1250" loading="lazy" alt="Subject feature table for six artificial subjects, with three in each selected group, displaying observed Hill diversity q=1 from a saved diversity result" /></div>
+        <figcaption>First observations from the simulated TRB study. The labels are simulation inputs, not evidence of a significant group effect. Each displayed value comes from its individual saved sample.</figcaption>
+      </figure>
+
+<h2 id="values">Values and units</h2>
+<p>The fixed version 1 catalog contains assigned abundance, observed richness, Shannon entropy, observed Hill diversity of orders 1 and 2, Pielou evenness, Shannon clonality, Simpson concentration, Gini–Simpson index, Gini coefficient, largest-clone share, top-10-clone share and estimated sample coverage. The on-screen catalog and exported JSON define every formula and unit.</p>
+<ul>
+<li><strong>Assigned abundance</strong> is the sum of positive clonotype abundances after definition and QC, in the parent's cells, reads, UMIs, templates or sequences. It is not raw sequencing depth.</li>
+<li><strong>Shannon entropy</strong> is in nats; <strong>Hill diversity</strong> is in effective clonotypes. Shares and coverage are fractions, not percentages.</li>
+<li><strong>Coverage</strong> estimates abundance completeness, not the fraction of all clonotypes found. It requires whole abundances.</li>
+<li><strong>Empty samples</strong> retain zero abundance and observed richness. Other metrics are missing. Single-clone samples have undefined normalized Shannon evenness and clonality. Missing estimates retain their reasons.</li>
+</ul>
+<p>Switch the displayed feature to inspect observations, or search subject, group and sample labels. Tables show up to 50 matching rows per page. The CSV always includes all selected observations and all 13 features, with exact round-trip numeric precision. Display rounding does not alter exports.</p>
+
+<h2 id="interpret">Interpret the table</h2>
+<p>These are point estimates at each sample's observed depth. Observed richness and diversity depend on depth; the table does not rarefy, standardize coverage, average libraries, pool counts, impute missing values or test groups. Parent bootstrap intervals remain in the saved parent document and describe within-sample measurement uncertainty. They are not confidence intervals for differences among subjects. Use a saved table for <a href="cohort-comparisons.html">subject group comparisons</a> under its explicit independent or paired design.</p>
+<p>The table is a first set of sample/subject features for external modeling. Receptor-level, usage and other feature families are outside this initial catalog. Choosing selection rules after looking at outcomes can introduce bias; declare the scientific selection before using the table.</p>
+
+<h2 id="export">Reopen and export</h2>
+<p>The result is an immutable artifact in the project Results list, with undo/redo and a saved methods description. New tables require an opened source dataset to bind source fingerprints and notices. Saved tables reopen and export without the original files or diversity artifact.</p>
+<p><strong>Export feature table ZIP</strong> includes <code>subject-features.csv</code>, <code>catalog.json</code>, <code>cohort-features.json</code>, <code>manifest.json</code> and <code>NOTICE.txt</code>. The JSON retains all design annotations and exclusions, the exact parent measurements and manifest, definition, QC, abundance unit, source fingerprints, method versions and citations. Empty CSV numeric cells have companion <code>_missing</code> reason columns; JSON uses null. Provider terms remain attached to derived results.</p>
+<p>Remote clients discover saved design versions and artifacts with <code>get_state</code>, then use <code>build_cohort_features</code> with explicit <code>design</code> and <code>diversity</code> IDs. See <a href="remote-control.html">Remote control</a>.</p>
+
+<h2 id="sources">Sources and validation</h2>
+<p><a href="https://doi.org/10.1111/j.2006.0030-1299.14714.x">Jost (2006)</a> distinguishes entropy from effective diversity. Coverage follows <a href="https://doi.org/10.1890/11-1952.1">Chao and Jost (2012)</a>; diversity sampling methods follow <a href="https://doi.org/10.1890/13-0133.1">Chao et al. (2014)</a>. This table copies already validated measurements rather than refitting them. Catalog selection, missing-value labels and the exact join are ClonoLoom policies.</p>
+<p>An independent Python standard-library reference calculates all columns from raw abundances, including pairwise Gini differences. Controls include empty, single-clone, equal, skewed, fractional and scaled samples, singleton coverage and more than ten clones. Tests also verify selection, paired identity, missing versus zero, checksum refusal, durable replay, source-free export and CSV/JSON round trips.</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="cohort-design.html"><span>Previous</span>Study design</a>
+        <a class="next" href="cohort-comparisons.html"><span>Next</span>Group comparisons</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

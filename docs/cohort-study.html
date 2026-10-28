@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Complete cohort studies · ClonoLoom</title>
+  <meta name="description" content="Follow positive, null, unbalanced, paired and confounded artificial cohorts from explicit subject designs to saved comparisons and count models." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/cohort-study.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Complete cohort studies" />
+  <meta property="og:description" content="Follow positive, null, unbalanced, paired and confounded artificial cohorts from explicit subject designs to saved comparisons and count models." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/cohort-study.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="contamination.html">Contamination evidence</a></li>
+          <li><a href="batch-qc.html">Batch QC</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="motifs.html">Motifs and sequence signatures</a></li>
+          <li><a href="convergence.html">Subject recurrence and HLA</a></li>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html">Specificity databases</a></li>
+        </ul>
+        <h4>Cells</h4>
+        <ul>
+          <li><a href="cell-study.html">A complete study</a></li>
+          <li><a href="cells.html">Expression evidence</a></li>
+          <li><a href="pseudobulk.html">Pseudobulk counts</a></li>
+          <li><a href="pseudobulk-de.html">Pseudobulk expression</a></li>
+        </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
+        <h4>Cohorts</h4>
+        <ul>
+          <li><a href="cohort-study.html" aria-current="page">Complete cohort studies</a></li>
+          <li><a href="cohort-design.html">Study design</a></li>
+          <li><a href="cohort-features.html">Subject features</a></li>
+          <li><a href="cohort-comparisons.html">Group comparisons</a></li>
+          <li><a href="cohort-counts.html">Replicated counts</a></li>
+          <li><a href="definition-robustness.html">Definition robustness</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Complete cohort studies</h1>
+      <p class="doc-lede">Start with the subjects and sampling design. Follow the same visible steps for usable studies, and retain the failed check when the design cannot identify the comparison.</p>
+
+<h2 id="choose">Choose an artificial study</h2>
+<p>Generate one of these examples locally, open its files, and choose <strong>Cohort → Guided steps</strong> (also available in Tracking). These are controlled software demonstrations with fictional receptors and complete generating truth. They are not fitted human populations or antigen-specificity models.</p>
+<div class="table-wrap"><table><thead><tr><th>Example</th><th>Subjects and observations</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>Replicated independent clonotype counts</td><td>16 control + 16 stimulated; 32 samples</td><td>Positive effects with heterogeneous gamma-Poisson counts and uneven sampling depths.</td></tr>
+<tr><td>Replicated counts with no group effect</td><td>16 + 16; 32 samples</td><td>All generating group effects are zero; subject, batch and sampling variation remain.</td></tr>
+<tr><td>Unbalanced cohort study</td><td>12 control + 20 stimulated; 32 samples</td><td>Both batches occur in each group. Unequal group sizes do not by themselves make a contrast unidentifiable.</td></tr>
+<tr><td>Replicated paired clonotype counts</td><td>28 subjects, day 0 and day 14; 56 samples</td><td>Repeated samples are paired within subjects, with a subject-blocked count model.</td></tr>
+<tr><td>Fully confounded cohort study</td><td>16 controls in B1 + 16 stimulated in B2</td><td>Batch and group effects cannot be separated. Keep the failed check; run no group inference.</td></tr>
+</tbody></table></div>
+<h2 id="steps">Follow the saved analysis chain</h2>
+<ol>
+<li><strong>Record subjects, groups and batches.</strong> This teaching step applies the generator's documented annotations and saves a named design check. Every sample stays in the report. In real studies, supply the actual design rather than borrowing these assignments.</li>
+<li><strong>Save observed-depth subject features.</strong> Measure diversity, then bind the exact diversity result to the saved design version. Each subject/group observation retains its own sample's values, units, missingness, definition and QC. Richness remains dependent on observed sampling depth.</li>
+<li><strong>Compare three declared subject features.</strong> The guide selects richness, Shannon entropy and Hill diversity q=1, with 95% marginal intervals, 9,999 requested randomizations and seed 20261025. Both mean and rank tests enter the declared BH family. These feature tests do not adjust for batch; read the sampling/design limits.</li>
+<li><strong>Fit counts with an explicit batch term.</strong> Use raw clonotype UMI counts, total-count offsets, minimum count 10 in at least 12 observations, 95% conditional intervals and an estimable batch term. The paired study also includes subject blocks. Inspect filtered/failed fits and the full multiplicity family. These are unmoderated NB2 fits, not full edgeR or DESeq2.</li>
+<li><strong>Keep methods and references.</strong> Each result is saved automatically with exact parents and parameters. Export complete tables and source notices from its view. Reopen the saved results without refitting. Repeating the design step creates a new version; rebuild its feature table before continuing.</li>
+</ol>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cohort-study-dark.webp" width="2000" height="1250" loading="lazy" alt="Saved unbalanced cohort count analysis with 12 control and 20 stimulated subject observations, abundance and fitted effects, and a separate conditional effect interval" /><img class="shot-light" src="../assets/img/cohort-study-light.webp" width="2000" height="1250" loading="lazy" alt="Saved unbalanced cohort count analysis with 12 control and 20 stimulated subject observations, abundance and fitted effects, and a separate conditional effect interval" /></div>
+        <figcaption>Every point in the selected-clonotype panel is one subject observation. No subjects were removed to balance the groups. The selected clone illustrates an effect near zero; color marks selection and group, not discovery.</figcaption>
+      </figure>
+<h2 id="refusal">Keep an unidentifiable design visible</h2>
+<p>The fully confounded example has a 1.2-fold generating B2 effect as well as planted group effects. No within-batch group comparison exists. The guide saves its failed check, including the complete batch membership, and stops. More cells, deeper sequencing or adding a batch term cannot restore the missing comparison. The saved check is marked <strong>FAILED CHECK</strong>, cannot be selected as a feature design, and appears in cited Methods. It is an inspection record, not a fitted result.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cohort-confounded-dark.webp" width="2000" height="1250" loading="lazy" alt="Fully confounded artificial design with 16 subjects in each group, a saved failed check, and an explicit group-inseparable-from-batch finding" /><img class="shot-light" src="../assets/img/cohort-confounded-light.webp" width="2000" height="1250" loading="lazy" alt="Fully confounded artificial design with 16 subjects in each group, a saved failed check, and an explicit group-inseparable-from-batch finding" /></div>
+        <figcaption>A failed design check is a useful result of design review. Zero analysis artifacts are created for this example.</figcaption>
+      </figure>
+<h2 id="interpret">Interpret the evidence</h2>
+<p>Count effects are changes in relative repertoire abundance conditional on library offsets and the fitted design. They need not equal the generator's absolute count effects. The abundance/effect panel has a logarithmic horizontal abundance scale and a linear log2-effect axis centered on zero. Subject observations use a zero-based linear CPM scale; paired links join the same subject. Raw CPM points are not batch-adjusted fitted values. Wald intervals treat the fitted dispersion as known and are marginal, not BH-adjusted simultaneous intervals.</p>
+<p>Uneven counts, a private long tail and subject variation make these examples useful for exercising research workflows; their particular sample sizes and filters are software policies, not power recommendations. One null study does not establish calibration or guarantee zero small p-values. The independent scientific suite separately checks numerical reference values, null panels and positive controls. A structural pass does not establish randomization, independence, absence of hidden confounding or a causal effect.</p>
+<h2 id="replay">Compatibility and scientific basis</h2>
+<p>The 0.7.0 compatibility project retains all five studies, five design checks and sixteen analysis artifacts. Validation reopens the sources and recomputes each saved diversity, feature, comparison and count result byte for byte. Complete source and truth hashes are checked, and older release projects remain part of the same regression suite.</p>
+<p>The subject-unit distinction follows <a href="https://doi.org/10.1186/1471-2202-11-5">Lazic (2010)</a>. Count modeling and exact adaptations are documented with sources in <a href="cohort-counts.html">Replicated counts</a>; group estimands and multiplicity in <a href="cohort-comparisons.html">Group comparisons</a>. See <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/SIMULATION.md">simulation rules</a> and <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/clonoloom-spec/research.md">research notes</a>. No new inferential method is introduced by these guides.</p>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="bcell-isotypes.html"><span>Previous</span>Isotypes</a>
+        <a class="next" href="cohort-design.html"><span>Next</span>Study design</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

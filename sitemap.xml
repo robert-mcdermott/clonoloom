@@ -7,6 +7,8 @@
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/getting-started.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/opening-data.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/qc.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/contamination.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/batch-qc.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/clonotypes.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/diversity.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/rarefaction.html</loc></url>
@@ -17,6 +19,8 @@
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/tests.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/classes.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/attribution.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/motifs.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/convergence.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/tcrdist.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/neighborhoods.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/generation.html</loc></url>
@@ -24,12 +28,20 @@
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/database.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/cell-study.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/cells.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/pseudobulk.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/pseudobulk-de.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/bcell-inputs.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/bcell-families.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/bcell-germlines.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/bcell-shm.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/bcell-lineages.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/bcell-isotypes.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/cohort-study.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/cohort-design.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/cohort-features.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/cohort-comparisons.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/cohort-counts.html</loc></url>
+  <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/definition-robustness.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/figures.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/record.html</loc></url>
   <url><loc>https://robert-mcdermott.github.io/clonoloom/docs/simulation.html</loc></url>

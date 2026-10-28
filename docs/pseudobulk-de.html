@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pseudobulk differential expression · ClonoLoom</title>
+  <meta name="description" content="Paired gene expression across declared receptor-size categories, with subject replication and complete count evidence." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/pseudobulk-de.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Pseudobulk differential expression" />
+  <meta property="og:description" content="Paired gene expression across declared receptor-size categories, with subject replication and complete count evidence." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/pseudobulk-de.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="contamination.html">Contamination evidence</a></li>
+          <li><a href="batch-qc.html">Batch QC</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="motifs.html">Motifs and sequence signatures</a></li>
+          <li><a href="convergence.html">Subject recurrence and HLA</a></li>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html">Specificity databases</a></li>
+        </ul>
+        <h4>Cells</h4>
+        <ul>
+          <li><a href="cell-study.html">A complete study</a></li>
+          <li><a href="cells.html">Expression evidence</a></li>
+          <li><a href="pseudobulk.html">Pseudobulk counts</a></li>
+          <li><a href="pseudobulk-de.html" aria-current="page">Pseudobulk expression</a></li>
+        </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
+        <h4>Cohorts</h4>
+        <ul>
+          <li><a href="cohort-study.html">Complete cohort studies</a></li>
+          <li><a href="cohort-design.html">Study design</a></li>
+          <li><a href="cohort-features.html">Subject features</a></li>
+          <li><a href="cohort-comparisons.html">Group comparisons</a></li>
+          <li><a href="cohort-counts.html">Replicated counts</a></li>
+          <li><a href="definition-robustness.html">Definition robustness</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Pseudobulk differential expression</h1>
+      <p class="doc-lede">Compare two receptor-size categories within subjects at one timepoint and supplied cell type. Inspect effects, subject observations and conditional uncertainty together.</p>
+
+<h2 id="prepare">Declare the comparison</h2>
+<ol><li>Save <a href="pseudobulk.html">pseudobulk count evidence</a> with the same receptor definition, QC, supplied cell-type column and size breakpoints across samples.</li><li>In <strong>Cells → Pseudobulk differential expression</strong>, choose that saved count result. Explicitly choose the supplied type, literal timepoint, reference category and comparison category.</li><li>Record any whole-sample exclusions with reasons. Every included subject must have both categories above the parent's minimum cell count and a positive raw library. Absent or low-cell groups cause refusal; no subject is silently dropped.</li><li>Choose the raw count/prevalence filter before inspecting effects, then select <strong>Compare pseudobulk expression</strong>.</li></ol>
+<p>This bounded, unmoderated model requires 25–32 complete subject pairs: 50–64 pseudobulk observations, with one sample per subject at the chosen timepoint. It does not combine visits, samples or tissues, or treat cells as independent subjects. Twenty-five pairs is a numerical/approximation guard for this implementation, not a power recommendation. The four-subject count-evidence example is intentionally too small.</p>
+<h2 id="effects">Read the effects with their observations</h2>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/pseudobulk-de-dark.webp" width="2000" height="1250" loading="lazy" alt="Artificial paired pseudobulk gene effects plotted against normalized count abundance, with explicit subject replication and conditional inference limits" /><img class="shot-light" src="../assets/img/pseudobulk-de-light.webp" width="2000" height="1250" loading="lazy" alt="Artificial paired pseudobulk gene effects plotted against normalized count abundance, with explicit subject replication and conditional inference limits" /></div>
+        <figcaption>Forty fictional genes in a constructed 28-subject study. Each plotted point is a fitted gene; color highlights selection, not statistical discovery.</figcaption>
+      </figure>
+<p>The horizontal axis is mean size-factor-normalized count, on a logarithmic scale; the vertical axis is the fitted comparison/reference log2 expression ratio. Zero means equal modeled relative expression. Failed eligible fits and filtered genes stay in the table and complete export. Gene IDs remain distinct even when names coincide.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/pseudobulk-de-pairs-dark.webp" width="2000" height="1250" loading="lazy" alt="Paired subject expression observations and a separate conditional Wald effect interval for one artificial gene" /><img class="shot-light" src="../assets/img/pseudobulk-de-pairs-light.webp" width="2000" height="1250" loading="lazy" alt="Paired subject expression observations and a separate conditional Wald effect interval for one artificial gene" /></div>
+        <figcaption>Each dot is one subject/category pseudobulk. Lines join the same subject, and horizontal jitter only separates overlaps. The observations use a zero-based linear count scale.</figcaption>
+      </figure>
+<p>Observed counts are divided by the saved size factor, with no pseudocount or per-cell average. The separate interval describes the fitted log2 ratio, not the distribution of observations. Its confidence level is marginal and conditional on estimated dispersion and size factors; BH does not adjust the interval. Neither a small p-value nor a size category proves antigen specificity, proliferation or causality.</p>
+<h2 id="method">What the model estimates</h2>
+<p>The design has an intercept, a comparison indicator and one fixed-effect column for each subject except the reference subject. The contrast targets the category coefficient. The full design, contrast, residual degrees of freedom, raw libraries, cell counts, size factors and offsets are inspectable and exported. Subject-constant effects are blocked, but category-specific confounding is not resolved. The saved count parent has no separate category-specific batch covariate.</p>
+<p>Median-of-ratios normalization follows Anders and Huber: for each gene positive in every selected pseudobulk, divide its count by its across-observation geometric mean; take the median ratio in each observation, then center factors to geometric mean one. ClonoLoom requires at least ten qualifying genes and records their IDs. This reference set is computed before the gene filter. Zero-containing genes remain in raw counts and can be tested, but do not estimate factors. There is no pseudocount fallback. The normalization assumes most reference genes are unchanged or changes are balanced; global RNA changes, poor reference panels and composition effects can invalidate that interpretation.</p>
+<p>Raw counts use an NB2 log-link model, variance = mean + dispersion × mean², with log size-factor offsets. Each gene has a separate Cox–Reid adjusted-profile dispersion estimate. Nested full/null likelihoods at that fitted dispersion give an asymptotic one-degree-of-freedom likelihood-ratio test. Marginal normal Wald intervals use the fitted information matrix. Dispersion search boundaries, all-zero subject blocks/categories, ill-conditioning and nonconvergence remain explicit unavailable fits. No Poisson fallback, subject deletion or ridge is used to force a result.</p>
+<p>This is ClonoLoom's unmoderated implementation using the established count-model engine. It does not implement empirical-Bayes dispersion moderation, quasi-likelihood, effect shrinkage, the full edgeR pipeline or DESeq2. It does not fully propagate dispersion or normalization uncertainty. Small or heterogeneous studies can need other models. The complete raw count matrix is available for those analyses.</p>
+<h2 id="family">Filtering and multiplicity</h2>
+<p>The defaults require at least 10 raw counts in at least 25 selected pseudobulk observations; these are observations, not 25 subjects in each category. The filter ignores effect direction and p-values. At most 1000 eligible genes can be fitted; larger requests are refused, not truncated. Up to 50,000 genes are retained within the count parent's two-million group × feature slot bound.</p>
+<p>BH covers every count/prevalence-eligible gene for this one type, timepoint and contrast. Failed eligible fits occupy p=1 family slots, while their displayed p and adjusted p stay unavailable. Filtered genes are outside the family. BH requires independence or suitable positive dependence; it does not cover other comparisons, cell-type definitions, thresholds or exploratory choices. Expression-defined cell labels and receptor-size selection may introduce selection bias.</p>
+<h2 id="example">Artificial positive and null controls</h2>
+<p>Open <strong>Paired pseudobulk expression study</strong> or <strong>Null pseudobulk expression study</strong>. Save all 28 paired TRA/TRB phenotype results with annotation <code>cell_type</code>, receptor-population sizes and breakpoints <code>1</code>. Aggregate with minimum 10 cells, then compare <code>Artificial T cells</code> at the displayed literal baseline timepoint (<code>0 day (artificial baseline)</code> in the generated metadata), reference <code>1</code>, comparison <code>&gt;1</code>.</p>
+<p>Each subject has 48–52 singleton clones and eight larger clones of uneven sizes. Forty fictional genes have shared subject/gene and category/gene gamma rates followed by Poisson cell counts; this creates subject-level pseudobulk variation. Two genes increase threefold and two decrease threefold in the positive preset. The null preset has no generating category effect. Low-count, zero-gene and zero-subject controls exercise missing inference. Supplied Gaussian coordinates are illustrative clouds, not an embedding. Full generating rates, assignments, raw sums and hashes are in <code>truth/</code>.</p>
+<p>Independent NumPy/SciPy/statsmodels references check normalization, fitted values, likelihoods, covariance, intervals and BH. A separate prespecified 300-gene control panel yielded 15 nominal p≤0.05 results among 267 fitted null genes (5.6%), with 250 conditional intervals covering zero (93.6%); all 30 positive controls had the correct direction. This finite constructed panel, sharing normalization factors, is not a universal calibration or power guarantee.</p>
+<h2 id="save">Save and export</h2>
+<p>The immutable result pins its count-parent checksum and contains every raw group, annotation and disposition. New comparisons need the checked count artifact but no original expression files. Saved results replay without parents or sources. The ZIP includes the result, manifests, all raw evidence, every selected raw gene count, the design and offsets, the complete gene table and provider NOTICE. Figures retain methods and citations. Remote control uses <a href="remote-control.html#pseudobulk-de"><code>compare_pseudobulk</code></a>.</p>
+<h2 id="sources">Methods and sources</h2>
+<ul><li><a href="https://doi.org/10.1038/s41467-020-19894-4">Crowell et al. (2020), muscat</a> and <a href="https://bioconductor.org/books/release/OSCA.multisample/multi-sample-comparisons.html">OSCA Multi-Sample, chapter 4</a>: replicate-aware pseudobulk analysis. OSCA's moderated quasi-likelihood workflow differs from this implementation.</li><li><a href="https://doi.org/10.1186/gb-2010-11-10-r106">Anders and Huber (2010)</a>: median-of-ratios normalization.</li><li><a href="https://doi.org/10.1093/nar/gks042">McCarthy, Chen and Smyth (2012)</a>: negative-binomial GLMs and Cox–Reid dispersion.</li><li><a href="https://doi.org/10.1111/j.2517-6161.1995.tb02031.x">Benjamini and Hochberg (1995)</a>: false discovery rate correction.</li></ul>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="pseudobulk.html"><span>Previous</span>Pseudobulk counts</a>
+        <a class="next" href="bcell-inputs.html"><span>Next</span>Sequence evidence</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -58,6 +58,8 @@
         <h4>Quality and clonotypes</h4>
         <ul>
           <li><a href="qc.html">Quality control</a></li>
+          <li><a href="contamination.html">Contamination evidence</a></li>
+          <li><a href="batch-qc.html">Batch QC</a></li>
           <li><a href="clonotypes.html">Clonotypes</a></li>
         </ul>
         <h4>Repertoires</h4>
@@ -77,6 +79,8 @@
         </ul>
         <h4>Specificity</h4>
         <ul>
+          <li><a href="motifs.html">Motifs and sequence signatures</a></li>
+          <li><a href="convergence.html">Subject recurrence and HLA</a></li>
           <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
           <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
           <li><a href="generation.html">Generation probabilities</a></li>
@@ -87,6 +91,8 @@
         <ul>
           <li><a href="cell-study.html">A complete study</a></li>
           <li><a href="cells.html">Expression evidence</a></li>
+          <li><a href="pseudobulk.html">Pseudobulk counts</a></li>
+          <li><a href="pseudobulk-de.html">Pseudobulk expression</a></li>
         </ul>
         <h4>B cells</h4>
         <ul>
@@ -96,6 +102,15 @@
           <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
           <li><a href="bcell-lineages.html">Lineage trees</a></li>
           <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
+        <h4>Cohorts</h4>
+        <ul>
+          <li><a href="cohort-study.html">Complete cohort studies</a></li>
+          <li><a href="cohort-design.html">Study design</a></li>
+          <li><a href="cohort-features.html">Subject features</a></li>
+          <li><a href="cohort-comparisons.html">Group comparisons</a></li>
+          <li><a href="cohort-counts.html">Replicated counts</a></li>
+          <li><a href="definition-robustness.html">Definition robustness</a></li>
         </ul>
         <h4>Results</h4>
         <ul>
@@ -121,11 +136,13 @@
           <thead><tr><th>Subject</th><th>Pages</th><th>What you do there</th></tr></thead>
           <tbody>
             <tr><td>Start</td><td><a href="getting-started.html">Getting started</a>, <a href="opening-data.html">Opening data</a></td><td>Install, try an example, open your own data or another tool's table, and check them</td></tr>
-            <tr><td>Quality and clonotypes</td><td><a href="qc.html">Quality control</a>, <a href="clonotypes.html">Clonotypes</a></td><td>See each sample's quality and the vendor's numbers recomputed, filter rows with a reason, and choose what a clonotype is</td></tr>
+            <tr><td>Quality and clonotypes</td><td><a href="qc.html">Quality control</a>, <a href="contamination.html">Contamination evidence</a>, <a href="batch-qc.html">Batch QC</a>, <a href="clonotypes.html">Clonotypes</a></td><td>See each sample's quality and the vendor's numbers recomputed, filter rows with a reason, and choose what a clonotype is</td></tr>
             <tr><td>Repertoires</td><td><a href="diversity.html">Diversity</a>, <a href="rarefaction.html">Rarefaction</a>, <a href="genes.html">Genes and junctions</a>, <a href="overlap.html">Overlap</a></td><td>Measure each sample's diversity, compare samples at equal coverage, count their genes, junction lengths and amino acids, and measure how much they overlap, each with its uncertainty</td></tr>
             <tr><td>Tracking</td><td><a href="subjects.html">Subjects and time points</a>, <a href="tracking.html">Following clonotypes</a>, <a href="tests.html">Expanded and contracted clonotypes</a>, <a href="classes.html">Classes across time points</a>, <a href="attribution.html">Attribution to a reference</a></td><td>Give samples their subjects, time points and reference samples, checked before anything is followed; follow clonotypes through each subject's time points, each frequency with its interval; test each clonotype between two time points, with false discoveries controlled, and class it across several; measure each sample against its reference sample</td></tr>
-            <tr><td>Specificity</td><td><a href="tcrdist.html">Similar receptors (TCRdist)</a>, <a href="neighborhoods.html">Neighborhoods and backgrounds</a>, <a href="generation.html">Generation probabilities</a>, <a href="networks.html">Clonotype networks</a>, <a href="database.html">Specificity databases</a></td><td>Compare every T-cell clonotype with every other by TCRdist, as tcrdist3 computes it, and find each one's neighbors and nearest, loop by loop; find the neighborhoods a background does not explain; compute how likely recombination alone is to make each clonotype, as OLGA computes it</td></tr>
+            <tr><td>Specificity</td><td><a href="motifs.html">Motifs and sequence signatures</a>, <a href="convergence.html">Subject recurrence and HLA</a>, <a href="tcrdist.html">Similar receptors (TCRdist)</a>, <a href="neighborhoods.html">Neighborhoods and backgrounds</a>, <a href="generation.html">Generation probabilities</a>, <a href="networks.html">Clonotype networks</a>, <a href="database.html">Specificity databases</a></td><td>Compare every T-cell clonotype with every other by TCRdist, as tcrdist3 computes it, and find each one's neighbors and nearest, loop by loop; find the neighborhoods a background does not explain; compute how likely recombination alone is to make each clonotype, as OLGA computes it</td></tr>
+            <tr><td>Cells</td><td><a href="cells.html">Expression evidence</a>, <a href="pseudobulk.html">Pseudobulk counts</a>, <a href="pseudobulk-de.html">Paired expression</a></td><td>Inspect raw cell evidence and paired gene expression while preserving subject and sample boundaries</td></tr>
             <tr><td>B cells</td><td><a href="bcell-inputs.html">Sequence evidence</a>, <a href="bcell-families.html">Families</a>, <a href="bcell-germlines.html">Germlines</a>, <a href="bcell-shm.html">SHM</a>, <a href="bcell-lineages.html">Lineages</a>, <a href="bcell-isotypes.html">Isotypes</a></td><td>Inspect annotated sequences, choose a family threshold, reconstruct reference projections, measure evaluable substitutions, explore tree uncertainty and summarize observed constant calls; follow the <a href="simulation.html#immunization">artificial immunization workflow</a></td></tr>
+            <tr><td>Cohorts</td><td><a href="cohort-design.html">Study design</a>, <a href="cohort-features.html">Subject features</a>, <a href="cohort-comparisons.html">Group comparisons</a>, <a href="cohort-counts.html">Replicated counts</a>, <a href="definition-robustness.html">Definition robustness</a></td><td>Select biological observations, save designs and features, and compare subjects with explicit tests, effect intervals and provenance</td></tr>
             <tr><td>Results</td><td><a href="figures.html">Figures and exports</a>, <a href="record.html">The record</a></td><td>Save figures and export data with their provenance and license; the project, its history and the methods paragraph</td></tr>
             <tr><td>Reference</td><td><a href="simulation.html">Simulated studies</a>, <a href="remote-control.html">Remote control</a></td><td>Studies whose truth is known, to check methods against; drive ClonoLoom from scripts and notebooks</td></tr>
           </tbody>
