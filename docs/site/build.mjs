@@ -54,7 +54,7 @@ const DOCS = [
   { group: 'Specificity', pages: [['motifs', 'Motifs and sequence signatures'], ['convergence', 'Subject recurrence and HLA'], ['tcrdist', 'Similar receptors (TCRdist)'], ['neighborhoods', 'Neighborhoods and backgrounds'], ['generation', 'Generation probabilities'], ['networks', 'Clonotype networks'], ['database', 'Specificity databases']] },
   { group: 'Cells', pages: [['cell-study', 'A complete study'], ['cells', 'Expression evidence'], ['pseudobulk', 'Pseudobulk counts'], ['pseudobulk-de', 'Pseudobulk expression']] },
   { group: 'B cells', pages: [['bcell-inputs', 'Sequence evidence'], ['bcell-families', 'Clonal families'], ['bcell-germlines', 'Germlines'], ['bcell-shm', 'Somatic hypermutation'], ['bcell-lineages', 'Lineage trees'], ['bcell-isotypes', 'Isotypes']] },
-  { group: 'Cohorts', pages: [['cohort-design', 'Study design'], ['cohort-features', 'Subject features'], ['cohort-comparisons', 'Group comparisons'], ['cohort-counts', 'Replicated counts'], ['definition-robustness', 'Definition robustness']] },
+  { group: 'Cohorts', pages: [['cohort-study', 'Complete cohort studies'], ['cohort-design', 'Study design'], ['cohort-features', 'Subject features'], ['cohort-comparisons', 'Group comparisons'], ['cohort-counts', 'Replicated counts'], ['definition-robustness', 'Definition robustness']] },
   { group: 'Results', pages: [['figures', 'Figures and exports'], ['record', 'The record']] },
   { group: 'Reference', pages: [['simulation', 'Simulated studies'], ['remote-control', 'Remote control']] },
 ];

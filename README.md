@@ -16,8 +16,8 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Current release:** 0.6.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-Wave 7 development adds saved subject designs, feature tables, two-group comparisons and
+**Current release:** 0.7.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+Version 0.7.0 adds saved subject designs, feature tables, two-group comparisons and
 [replicated clonotype count models](docs/site/pages/docs/cohort-counts.html), and
 [definition robustness](docs/site/pages/docs/definition-robustness.html) and
 [GLIPH2-style motif screens](docs/site/pages/docs/motifs.html) with explicit adaptations and
@@ -33,6 +33,8 @@ supplied cell types and receptor-size categories, with explicit coverage and mis
 subject-blocked gene models, median-ratio offsets, explicit testing families and conditional
 intervals, with independent null/positive controls. The unmoderated model requires at least
 25 complete subject pairs; its limitations and complete raw-count exports remain explicit.
+[Complete guided cohort studies](docs/site/pages/docs/cohort-study.html) demonstrate positive,
+null, unbalanced, paired and confounded designs, including saved failed checks.
 
 **B cells:** inspect AIRR or joined IMGT/HighV-QUEST sequence evidence, find families at an
 explicit threshold, reconstruct D-masked germlines, measure somatic hypermutation, explore
@@ -262,7 +264,7 @@ node docs/site/build.mjs /tmp/site       # the website, every link checked (docs
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.6.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.7.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Example data

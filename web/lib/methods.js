@@ -97,7 +97,7 @@ const day = (iso) => String(iso ?? '').slice(0, 10);
 // clonotype definition) and clonotypes ({ id, describe, count, cells } from the program, or
 // null), results (the project's records of the results kept of it: lib/results.js), program:
 // { version, commit } }.
-export function methodsParagraph({ dataset, summary = null, filter = null, filterResult = null, definition = null, clonotypes = null, results = [], program }) {
+export function methodsParagraph({ dataset, summary = null, filter = null, filterResult = null, definition = null, clonotypes = null, results = [], cohortDesigns = [], program }) {
   const refs = [];
   const cite = (key, text = REFERENCES[key]) => {
     let i = refs.findIndex((r) => r.key === key);
@@ -108,6 +108,12 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
     return `[${i + 1}]`;
   };
   const sentences = [];
+  for (const record of cohortDesigns.filter((d) => d.dataset === dataset.id)) {
+    const check = record.result;
+    sentences.push(`Cohort design ${record.name}, version ${record.revision} (${check.id}): ${check.ok ? 'structural checks passed' : 'FAILED CHECK; unavailable for inference'}. ${check.words.join(' ')}`);
+    for (const finding of check.findings ?? []) sentences.push(`${finding.code}: ${finding.detail}`);
+    for (const source of check.citations ?? []) sentences.push(`Design reference ${cite(`design:${source}`, source)}.`);
+  }
   const sources = dataset.sources ?? [];
   const files = sources.length === 1 ? 'The file' : `The ${count(sources.length)} files`;
 
@@ -133,7 +139,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   if (simulations.some((r) => motifModels.includes(r.studyId))) sentences.push('The artificial motif study contains four query and eight background subjects, variable junction lengths, biased central residues and arbitrary TRBV labels. Planted local QGHT and conservative global ILMV signatures are known construction choices, not antigen annotations. Uneven shifted gamma-Poisson UMI counts are descriptive, not statistical weights. Complete sequence, arm and signature truth is saved; this is not a fitted recombination model.');
   const definitionModels = ['clonoloom-simulated-definition-variants-v1'];
   if (simulations.some((r) => definitionModels.includes(r.studyId))) sentences.push('The definition-sensitivity study is artificial: long-tailed gamma-Poisson UMI counts, uneven sampling exposure and explicit synonymous junction/V-allele distinctions create different receptor partitions. Comparison subjects have triples of nucleotide junctions sharing an amino-acid junction and different V/allele calls, with a 1.6-fold private-count scale. The construction and observed depth are deliberately definition-sensitive; it is not a fitted biological population or a depth-standardized comparison. Complete generating and partition truth is retained.');
-  const countModels = ['clonoloom-simulated-replicated-counts-v1'];
+  const countModels = ['clonoloom-simulated-replicated-counts-v1', 'clonoloom-simulated-counts-unbalanced', 'clonoloom-simulated-counts-confounded'];
   const trbModels = ['standard', 'null', 'small', 'car-t', 'transplant', 'vaccine'].map((name) => `clonoloom-simulated-${name}`);
   const bcellSimulation = simulations.some((r) => bcellModels.includes(r.studyId));
   const cellSimulations = simulations.filter((r) => cellModels.includes(r.studyId));

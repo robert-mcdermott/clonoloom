@@ -13,11 +13,14 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"clonoloom/internal/countmodel"
+	"clonoloom/internal/study"
 )
 
 // Read literal TSV fields independently of the repertoire readers/count-model code.
 func TestReplicatedCountTruth(t *testing.T) {
-	for _, name := range []string{"counts-independent", "counts-paired", "counts-null"} {
+	for _, name := range []string{"counts-independent", "counts-paired", "counts-null", "counts-unbalanced", "counts-confounded"} {
 		t.Run(name, func(t *testing.T) {
 			s := Presets[name]
 			dir := filepath.Join(t.TempDir(), "study")
@@ -73,6 +76,34 @@ func TestReplicatedCountTruth(t *testing.T) {
 			truths := read("truth/observations.tsv")
 			if len(truths) != 1+sum.Samples*648 || len(observed) != sum.Samples {
 				t.Fatal("missing truth/sample", len(truths), sum)
+			}
+			// Derive the design directly from literal truth, independently of metadata/UI.
+			annotations := map[string]study.CohortSample{}
+			for _, r := range truths[1:] {
+				group := "control"
+				if r[2] == "1" {
+					group = "stimulated"
+				}
+				annotations[r[0]] = study.CohortSample{Name: r[0], Subject: r[1], Condition: group, Batch: r[3]}
+			}
+			input := study.CohortInput{Dataset: "truth", Spec: study.CohortSpec{Unit: "subject", Layout: s.Counts.Layout, GroupField: "condition", Levels: []string{"control", "stimulated"}, Exclude: map[string]string{}}}
+			for _, a := range annotations {
+				input.Samples = append(input.Samples, a)
+			}
+			design, e := study.CheckCohort(input)
+			if e != nil || design.OK == s.Counts.Confounded {
+				t.Fatal("unexpected design disposition", design, e)
+			}
+			matrix, e := countmodel.Design(input, true)
+			if s.Counts.Confounded {
+				if e == nil {
+					t.Fatal("fit confounded design")
+				}
+			} else if e != nil || matrix.ResidualDF < 24 {
+				t.Fatal("unusable prescribed model", matrix.ResidualDF, e)
+			}
+			if s.Counts.Unbalanced && (design.Groups[0].Subjects != 12 || design.Groups[1].Subjects != 20) {
+				t.Fatal("unbalanced membership changed")
 			}
 			shared := map[string]bool{}
 			private := map[string]string{}
@@ -141,7 +172,7 @@ func TestReplicatedCountTruth(t *testing.T) {
 					t.Fatal(f, e)
 				}
 			}
-			want := map[string]string{"counts-independent": "9f32c8b288a383f7ba77d695a2a267f80e9998f38bc4ec9628a722ed599d4777", "counts-paired": "aa62df0fb1d16d419da36e7735611601d13b59cc77bd31de122f55096378eb4e", "counts-null": "16e8754335e1918b272bf9a42a9fe14d46107e242e57fb5471283e01d21c3afb"}
+			want := map[string]string{"counts-unbalanced": "03dca5f1ca70eed0cdc3b5ae25be30820ab40a61a8e2361c2f1f4cd15eb87091", "counts-confounded": "3d51d1f077686d8111452413b5b0681c1dc3ea6917ce287fe6fbc8e0e73f1cc7", "counts-independent": "9f32c8b288a383f7ba77d695a2a267f80e9998f38bc4ec9628a722ed599d4777", "counts-paired": "aa62df0fb1d16d419da36e7735611601d13b59cc77bd31de122f55096378eb4e", "counts-null": "16e8754335e1918b272bf9a42a9fe14d46107e242e57fb5471283e01d21c3afb"}
 			if got := fmt.Sprintf("%x", hash.Sum(nil)); got != want[name] {
 				t.Errorf("digest %s", got)
 			}

@@ -20,7 +20,7 @@ export function cohortDesigns(project, dataset) {
 }
 
 export function saveCohortDesign(project, result, name = 'Design', now = new Date().toISOString()) {
-  if (!result?.ok || result.format !== 'clonoloom-cohort-design' || result.version !== 1) throw new Error('Only a checked, usable cohort design can be saved.');
+  if (typeof result?.ok !== 'boolean' || result.format !== 'clonoloom-cohort-design' || result.version !== 1) throw new Error('Only a completed cohort design check can be saved.');
   const dataset = project.datasets.find((d) => d.id === result.input.dataset);
   if (!dataset) throw new Error('The design’s dataset is no longer in this project.');
   const title = String(name).trim() || 'Design';

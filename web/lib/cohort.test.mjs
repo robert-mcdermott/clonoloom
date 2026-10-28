@@ -35,10 +35,21 @@ test('saved cohort versions are immutable, round-trip and undo without rewriting
   store.redo(); assert.equal(store.project.cohortDesigns[0].revision, 1);
 });
 
-test('invalid cohort designs and malformed project fields are refused', () => {
+test('unfinished cohort checks and malformed project fields are refused', () => {
   const p = base();
-  assert.throws(() => saveCohortDesign(p, { ...report(p), ok: false }), /checked/);
+  assert.throws(() => saveCohortDesign(p, { ...report(p), ok: null }), /completed/);
   assert.throws(() => saveCohortDesign({ ...p, datasets: [] }, report(p)), /dataset/);
   assert.throws(() => parseProject(JSON.stringify({ ...p, cohortDesigns: {} })), /not a list/);
   assert.equal(parseProject(serializeProject(p)).cohortDesigns, undefined);
+});
+
+
+test('failed checks retain the findings and annotations without claiming a usable design', () => {
+  const p = base(), r = { ...report(p), ok: false, findings: [{code:'cohort-batch-confounded', severity:'error'}] };
+  const saved = saveCohortDesign(p, r, 'Confounded');
+  const back = parseProject(serializeProject(saved)).cohortDesigns[0];
+  assert.equal(back.result.ok, false);
+  assert.deepEqual(back.result.findings, r.findings);
+  r.findings.length = 0;
+  assert.equal(back.result.findings.length, 1);
 });

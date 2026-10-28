@@ -25,7 +25,7 @@ export function mountCohortFeatures(app, container) {
     if (busy()) throw new Error('Wait for the current feature table.');
     const record = (store.project.cohortDesigns ?? []).find((d) => d.id === (options.design ?? design));
     const diversity = options.diversity ?? parent;
-    if (!record || !diversity) throw new Error('Choose a saved design version and a saved diversity result.');
+    if (!record?.result.ok || !diversity) throw new Error('Choose a saved design version and a saved diversity result.');
     if (!store.project.artifacts.some((a) => a.id === diversity && a.kind === 'diversity' && a.dataset === record.dataset)) throw new Error('Choose a diversity result from the design’s dataset.');
     const token = ++serial, same = store.sameProject(); status = 'loading'; error = ''; answer = null; loaded = ''; job = ''; draw();
     try {
@@ -54,7 +54,7 @@ export function mountCohortFeatures(app, container) {
   }
   function draw() {
     clear(root);
-    const designs = store.project.cohortDesigns ?? [], selected = designs.find((d) => d.id === design);
+    const designs = (store.project.cohortDesigns ?? []).filter((d) => d.result.ok), selected = designs.find((d) => d.id === design);
     const parents = store.project.artifacts.filter((r) => r.kind === 'diversity' && r.dataset === selected?.dataset);
     if (parent && !parents.some((r) => r.id === parent)) parent = '';
     root.append(h('h2#subject-features', 'Subject feature table'), h('p', 'Choose a saved design version and diversity result. Each selected subject/group observation keeps its sample’s measurements. Paired designs retain two rows per subject.'),

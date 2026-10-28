@@ -361,7 +361,33 @@ async function contaminationScene() {
 
 // --- Scenes --------------------------------------------------------------------------------------
 
+// Each prescribed cohort step goes through the public action and its normal view.
+async function guidedCohortScene(confounded) {
+  await act('new_project',{name:confounded?'Confounded artificial cohort':'Complete artificial cohort study'});
+  for (const preset of confounded ? ['counts-confounded'] : ['counts-independent','counts-null','counts-paired','counts-unbalanced']) {
+    const opened=(await act('open_example',{example:`simulated-${preset}`,download:true})).data;
+    await act('show',{view:'cohort',dataset:opened.dataset});
+    await waitFor(`Boolean(document.querySelector('.cohort-view .tracking-guide'))`);
+    const catalog=await(await fetch(`${URL}api/examples`)).json();
+    const example=catalog.examples.find((e)=>e.name===`simulated-${preset}`);
+    // Exercise the actual visible design button; later steps use the same action directly.
+    const before=await js('(window.clonoloom.store.project.cohortDesigns??[]).length');
+    await js(`document.querySelector('.cohort-view .tracking-guide button').click()`);
+    await waitFor(`(window.clonoloom.store.project.cohortDesigns??[]).length===${before+1}`);
+    for(const step of example.opens[0].steps.slice(1))await act(step.action,{dataset:opened.dataset,...step.args});
+    await waitFor(`Boolean(document.querySelector('.methods-text'))`);
+    const methods=await js(`document.querySelector('.methods-text').textContent`);
+    if(!methods.includes(confounded?'FAILED CHECK':'Saved Replicated')||!methods.includes('subject'))throw new Error('Cohort methods incomplete');
+    await act('close_dialogs');
+    if(!confounded)await js(`(()=>{const v=window.clonoloom.cohortCountsView,r=v.state().answer.result.analysis;if(document.querySelectorAll('.cohort-counts [data-sample]').length!==${preset==='counts-paired'?56:32})throw new Error('Count observations do not match study');if(document.querySelectorAll('.cohort-counts [data-clone]').length!==r.tested)throw new Error('MA plot omitted tested clones');return true})()`);
+  }
+  await js(`(async()=>{const a=window.clonoloom;await a.saveNow();await a.openProject(a.store.project.id);await a.setMode('cohort');const p=a.store.project,failed=p.cohortDesigns.find((d)=>!d.result.ok);if(${confounded}){if(!failed||p.artifacts.length)throw new Error('Confounded study inferred a result');await a.cohortView.choose(failed.dataset);await a.cohortView.configure({spec:failed.result.input.spec});if(a.cohortView.state().result.ok)throw new Error('Confounding lost on reopening');if(!document.querySelector('.cohort-saved').textContent.includes('Group is inseparable from batch'))throw new Error('Saved finding hidden');if([...document.querySelector('[aria-label="Feature design version"]').options].some((o)=>o.value===failed.id))throw new Error('Failed check offered for analysis');}else{const views={'cohort-features':'cohortFeaturesView','cohort-compare':'cohortCompareView','cohort-counts':'cohortCountsView'};for(const r of p.artifacts.filter((r)=>views[r.kind])){await a[views[r.kind]].show(r.id);if(a[views[r.kind]].state().status!=='ready')throw new Error('Saved evidence unavailable');}const last=p.cohortDesigns.at(-1);if(last.result.groups[0].subjects!==12||last.result.groups[1].subjects!==20)throw new Error('Unbalanced membership changed');await a.cohortView.choose(last.dataset);const v=a.cohortCountsView;await v.download();const root=document.querySelector('.cohort-counts');root.closest('.workbench-scroll').scrollTop=root.querySelector('.count-result-title').offsetTop-65;}return true})()`);
+  await clearToasts();await checkAccessibility();
+}
+
 const scenes = {
+  async 'cohort-study'(){await guidedCohortScene(false);},
+  async 'cohort-confounded'(){await guidedCohortScene(true);},
  async ['pseudobulk-de'](){
   await act('new_project',{name:'Artificial paired expression'});
   await act('open_example',{example:'simulated-pseudobulk-de-study',download:true});
@@ -1363,7 +1389,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-counts') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

@@ -44,7 +44,7 @@ export async function showMethods(app, dataset) {
   const credited = dataset.credits?.length ? dataset : { ...dataset, credits: summary.credits ?? [] };
   const results = ['pseudobulk-de', 'pseudobulk', 'batch-qc', 'contamination', 'convergence', 'motifs', 'definition-robustness', 'cohort-counts', 'cohort-compare', 'cohort-features', 'diversity', 'rarefaction', 'usage', 'overlap', 'tracking', 'expansion', 'classes', 'attribution', 'tcrdist', 'pgen', 'neighborhoods', 'families', 'germlines', 'shm', 'lineages', 'isotypes'].flatMap((kind) => resultsOf(store.project, dataset.id, kind));
   results.push(...cellResultsForDataset(store.project, dataset.id));
-  const { text, references } = methodsParagraph({ dataset: credited, summary, filter, filterResult, definition, clonotypes, results, program: { version: app.version, commit: app.commit } });
+  const { text, references } = methodsParagraph({ dataset: credited, summary, filter, filterResult, definition, clonotypes, results, cohortDesigns: store.project.cohortDesigns ?? [], program: { version: app.version, commit: app.commit } });
   const all = `${text}\n\nReferences\n${references.join('\n')}`;
   showDialog({
     title: `Methods · ${dataset.name}`,

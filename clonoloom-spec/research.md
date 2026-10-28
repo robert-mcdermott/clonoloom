@@ -2866,3 +2866,51 @@ fits with correct direction. This finite panel shares normalization and is not 3
 studies or universal calibration. Prespecified diagnostic guards: ≥260 fitted nulls, rejection
 ≤10%, coverage ≥90%, all 30 positive directions; these are regression guards, not claims of
 exact nominal error control. Existing §5.33 repeated null-trial checks continue unchanged.
+
+### 5.41 Complete cohort studies and release controls
+
+This slice introduces no new estimator. It composes the validated methods in §§5.31–5.40
+through their ordinary visible actions, pinning the exact design version, definition/QC,
+measurements and parents. The independent-unit rule remains grounded in Lazic (2010),
+[BMC Neuroscience 11:5](https://doi.org/10.1186/1471-2202-11-5); the primary paper was rechecked
+for this release. More measurements within a subject do not add independent subjects.
+The model-specific primary references and adaptations remain beside each implementation.
+
+**Controls declared before fitting.** Reuse positive/null independent and positive paired
+count generators. Add 12-control/20-stimulated independent subjects with alternating batches,
+and 16/16 subjects with batch exactly determined by group. The latter applies both the
+existing 1.2-fold B2 multiplier and group effects. Its batch and group columns are collinear;
+this is a design refusal control, not a negative control expected to yield a nonsignificant
+p-value. Missing cross-batch group observations cannot be recovered by deeper sequencing or
+by adding an unidentifiable batch term. Keep failed checks as versioned inspection records,
+excluded from analysis selection and rejected by the existing host-side design checks.
+
+Both new presets preserve the existing gamma-Poisson mechanism, long-tailed private receptors,
+48 shared receptors, uneven lognormal exposures, subject effects, streams and truth schema.
+Only declared group allocation/batch assignment and seeds change. Original preset digests
+remain pinned. The unbalanced design uses every generated subject without outcome selection;
+unequal group sizes alone do not violate estimability. Literal independent parsing of truth
+checks all observed counts, group sizes and confounding; count-matrix checks verify refusal
+or residual degrees of freedom. The existing independent statsmodels/SciPy reference includes 12/20 unbalanced designs
+with and without batch adjustment; the count-engine suite also runs 400 null trials per
+independent/paired/unbalanced layout. This is controlled software evidence, not a fitted
+human population, a power calculation or universal type-I error calibration.
+
+**Interpretation.** Three selected features enter six mean/rank tests and the declared BH
+family; feature tests do not adjust for batch. Count models use their own prespecified filter,
+BH family and explicit estimable batch term. The guide uses existing defaults/explicit values
+recorded in each artifact, not a search over results. Total-count offsets target relative
+abundance; generating count means are not the fitted estimand. Show all subject observations,
+paired links only for the same subject, linear zero-based CPM, log abundance on the MA x-axis,
+and separately labeled conditional marginal Wald intervals. Color denotes group/selection,
+never an automatic discovery or specificity verdict.
+
+**Release evidence.** The compatibility project is generated through the browser actions
+with all five full source studies, their separate truth, five saved design checks and sixteen
+saved results. Current workers reproduce decoded result bytes and identities; every source
+and original result checksum is checked. Verified original manifests are restored as parents
+so timestamps/job IDs do not masquerade as scientific changes. New fixture manifests are
+compressed without changing their decoded content. Older fixtures are never rewritten.
+Browser checks exercise visible controls, persisted reopening, exports, methods, populations
+and both-theme accessibility. Scientific references, cross-platform arithmetic, all platform
+builds and isolated performance budgets remain release gates.

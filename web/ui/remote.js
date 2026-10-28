@@ -5,6 +5,7 @@
 // same actions with their arguments (actions.go, GET /api/remote/tools); a Go test checks the two
 // lists agree. Adapted from SituCraft 0.9.0 web/ui/remote.js.
 
+import { cohortExampleStep } from './cohort-example.js';
 import { useInvariantSpecies } from '../lib/invariant.js';
 import { networkOptions } from '../lib/networks.js';
 import { closeDialogs, toast } from './overlays.js';
@@ -95,7 +96,7 @@ export function remoteActions(app) {
           project: { id: project.id, name: project.name },
           view: ui.mode,
           focus: ui.focus ?? null,
-          cohortDesigns: (project.cohortDesigns ?? []).map((d) => ({ id: d.id, name: d.name, revision: d.revision, dataset: d.dataset, design: d.result.id })),
+          cohortDesigns: (project.cohortDesigns ?? []).map((d) => ({ id: d.id, name: d.name, revision: d.revision, dataset: d.dataset, design: d.result.id, ok: d.result.ok })),
           artifacts: project.artifacts.map((r) => ({ id: r.id, kind: r.kind, name: r.name, dataset: r.dataset })),
           datasets: project.datasets.map((d) => ({
             id: d.id, name: d.name, formats: d.formats, unit: datasetUnit(d) || null, singleCell: d.singleCell, rows: d.rows, samples: d.samples,
@@ -187,6 +188,10 @@ export function remoteActions(app) {
       const next = annotate(store.project, edits, 'Annotated by a program');
       if (next !== store.project) store.commit(next, `Annotate samples of ${d.name}`);
       return { message: `${d.name}: ${count(edits.length, 'value')} set on ${count(Object.keys(samples).length, 'sample')}.`, data: { dataset: d.id, values: edits.length } };
+    },
+
+    async cohort_example_step(options = {}) {
+      return cohortExampleStep(app, actions, datasetOf(options.dataset), options);
     },
 
     async check_cohort_design({ dataset, spec, name, save }) {

@@ -183,7 +183,7 @@ func remakeFixture(t *testing.T, dir string, each func(t *testing.T, file string
 	}
 	for _, kept := range p.Artifacts {
 		t.Run(kept.ID, func(t *testing.T) {
-			if remakeCellFixture(t, a, dir, kept.ID, kept.Kind, each) {
+			if remakeCohortFixture(t, a, dir, kept.ID, kept.Kind, each) || remakeCellFixture(t, a, dir, kept.ID, kept.Kind, each) {
 				return
 			}
 			var m struct {

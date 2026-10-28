@@ -28,6 +28,7 @@ lede: Start with the biological units. A study with twelve samples from six subj
 
 <h2 id="record">Save and inspect the record</h2>
 <p><strong>Save design</strong> rechecks the current annotations and creates a named version in the project. It records the source-derived dataset identity, all design annotations (subject, condition, time point, tissue, cell subset and batch, including excluded samples), reference direction, pairing, exclusions, findings, descriptions and citations. A SHA-256 identity identifies the canonical design inputs. Save versions can be undone and redone. Saved snapshots remain inspectable and exportable even when source files are unavailable; checking a new design requires reopening those sources.</p>
+<p>A failed check can also be kept with <strong>Save failed check</strong>. Its saved heading and Methods identify it as failed; it is absent from usable feature-design choices, and the host refuses analysis. See the <a href="cohort-study.html">complete guided cohort studies</a> for unbalanced and confounded examples.</p>
 <p><strong>Export saved JSON</strong> includes the complete membership and source record. Later analyses must bind the exact saved design and recheck test-specific assumptions. This design snapshot is not a fitted model or an analysis artifact.</p>
 <p>Scripts use <code>check_cohort_design</code>, with the same checks and optional save operation; see <a href="remote-control.html">Remote control</a>.</p>
 

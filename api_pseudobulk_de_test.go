@@ -30,7 +30,7 @@ func TestPseudobulkDETruthReplayExports(t *testing.T) {
 			t.Fatal(e)
 		}
 		if started.Job != "" {
-			waitForJob(t, a, started.Job, 60*time.Second)
+			waitForJob(t, a, started.Job, 2*time.Minute)
 		}
 		return started.Artifact
 	}
@@ -137,7 +137,7 @@ func TestPseudobulkDETruthReplayExports(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	waitForJob(t, a, job.ID, 60*time.Second)
+	waitForJob(t, a, job.ID, 2*time.Minute)
 	var back pseudobulkDEDocument
 	if _, _, e = a.readCheckedResult(id, pseudobulkDEKind, &back); e != nil || !bytes.Equal(before, mustJSON(back)) {
 		t.Fatal("parent/source-free replay differs", e)

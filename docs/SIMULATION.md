@@ -614,3 +614,27 @@ applies to the null example. Full assignments, per-category raw gene sums, gener
 and hashes are in `truth/`. The model is a controlled software example, not fitted biology,
 antigen specificity or a universal calibration/power study. Research §5.40 documents the
 separate independent numerical controls and normalization assumptions.
+
+### Complete cohort controls
+
+Wave 7's guides use the existing independent positive (`counts-independent`, seed 20261026),
+null (`counts-null`, 20261027) and paired (`counts-paired`, 20261026) count studies, plus:
+
+- `counts-unbalanced`, seed 20261105: 32 independent subjects; the first 12 are control,
+  the next 20 stimulated. Batch remains alternating B1/B2, so both batches occur in each group.
+- `counts-confounded`, seed 20261106: 16 controls all in B1, 16 stimulated all in B2.
+  The existing 1.2-fold B2 mean multiplier and planted group effects both operate; the design
+  cannot distinguish them. No group inference is run.
+
+Both retain `clonoloom-replicated-counts-v1` and its raw truth, with the explicit `unbalanced`
+or `confounded` study parameter and distinct metadata study IDs. Earlier preset bytes do not
+change. These variants require 32 independent subjects and cannot be combined or used with
+paired/definition-variant modes. No outcome-based exclusions or resampling are involved.
+
+Five prescribed steps use existing methods: assign documented annotations and save the design,
+measure diversity/build subject features, compare richness/Shannon/Hill q=1 (95% marginal
+intervals, 9999 randomizations, seed 20261025), fit replicated counts (minCount 10, minSamples 12,
+batch adjustment, 95% conditional intervals), and open cited Methods. The confounded guide
+has only design and Methods. Null refers to generating group effects, not guaranteed fitted
+p-values. Count effects use realized library offsets, and need not equal absolute generator
+rates. These guides do not replace the independent calibration and reference tests.

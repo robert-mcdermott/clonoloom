@@ -1,8 +1,18 @@
 # Changelog
 
-## Unreleased
+## 0.7.0 — 2026-10-27
 
 ### Added
+
+- **Complete cohort studies and release preparation (wave 7, slice 12).** Guide positive,
+  null, unbalanced and paired artificial studies through saved designs, subject features,
+  group comparisons and batch-adjusted count models. Keep a fully confounded study's failed
+  design check, its findings and cited Methods; exclude failed checks from analysis selection.
+  Add 12/20-subject and fully confounded simulator controls with complete truth. Preserve
+  five studies and sixteen replayable results in the 0.7.0 compatibility fixture. Document
+  estimands, subject denominators, conditional intervals and simulation limits, with both-theme
+  workflow captures and release validation. Prepare application, web assets and citation
+  metadata for 0.7.0; clients and MCP remain Wave 8.
 
 - **Paired pseudobulk differential expression (wave 7, slice 11).** Compare two declared
   receptor-size categories within subjects at one supplied cell type and literal timepoint.

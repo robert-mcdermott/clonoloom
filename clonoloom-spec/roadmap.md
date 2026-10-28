@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
 released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–10 are committed and pushed. Slice 11 is implemented and validated, awaiting the maintainer’s commit; no wave 7 release has been made.
+`wave7`. Slices 1–11 are committed and pushed. Slice 12 is implemented and validated, awaiting maintainer commit; no wave 7 release has been made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2646,7 +2646,7 @@ The maintainer committed and pushed slice 10 as `a90782b`.
 
 ### Slice 11: paired pseudobulk differential expression
 
-**Implemented and validated; awaiting commit.** M5. Research §5.40 records sources, explicit
+**Committed** (`d1521e7`). M5. Research §5.40 records sources, explicit
 adaptations, estimands, normalization assumptions and limits. Release preparation remains slice 12.
 
 - Consume a checked immutable count parent, one exact supplied type and literal timepoint,
@@ -2696,7 +2696,54 @@ themes. The local site builds 46 pages with 55 screenshot sets; 45 audited pages
 theme/viewport checks without accessibility problems or overflow. Formatting/diff checks pass.
 No commit, push, tag, release or publication; version remains 0.6.0.
 
-Slice 12 has not begun.
+### Slice 12: complete cohort studies and release 0.7.0
+
+**Implemented and validated; awaiting maintainer commit.** E3, O2, N7. Research §5.41 records the
+control designs, interpretation and release evidence. Five offline guides use the ordinary
+visible actions: independent positive, null, unbalanced 12/20, paired 28-subject and fully
+confounded 16/16 studies. Count truth and model identities are retained; no new inferential
+method is introduced. Failed design checks remain versioned, exportable and cited, with
+analysis selection and host checks excluding them.
+
+The 0.7.0 project contains all five source studies, complete truth, five design checks and
+sixteen saved results. Real durable workers replay the four usable design → diversity →
+features → comparison/count chains byte for byte. Exact original parent manifests are
+restored only after checksum/result verification, preserving provenance in child documents.
+Old release fixtures remain unchanged. New manifest files are gzip-compressed in the fixture
+because captured raw counts make plain manifests large; their decoded bytes are unchanged.
+
+Application, citation and HTML asset-cache versions are 0.7.0. Release/tag/publication remain
+the maintainer's actions after commit, CI and merge. Wave 8 covers clients and MCP.
+
+Validation fixes include the catalog's new total of 66 guided steps, two-minute waits for
+pseudobulk test jobs, and an explicit 30-minute CI race-package timeout. The application
+race suite now takes longer than Go's default ten minutes; a local full-cache scientific
+race run also exceeded a 20-minute package limit. These are harness deadlines, not relaxed
+scientific tolerances or performance budgets. A narrow-screen table overflow in the new
+guide was fixed before the final site audit.
+
+Release checks: application/internal Go race tests passed (application 625.981 s).
+The remaining scientific race cases passed in a separate 670.828 s run after the
+full-cache run's package timeout, with no scientific assertion relaxed. The required-data
+scientific suite passed in 328.640 s: 74 top-level tests passed, with four optional checks
+skipped (live publisher downloads, two maintainer-selected HDF5 checks, and maintainer-only
+VDJdb). Native and amd64 fixture replay, designs and new simulator digests agreed. Go vet,
+six CGO-free platform builds, 149 JavaScript tests, syntax checks and 14 contrast checks
+passed. All 112 browser scene/theme runs passed; 57 screenshot pairs were reviewed, including
+the final cohort workflow/refusal recaptures. The site builds 47 pages with 57 screenshot
+sets; its 184 desktop/mobile/theme audit checks report no violations or overflow. Shell
+installer syntax passed; PowerShell parsing remains a CI check because `pwsh` is unavailable
+locally. No old release fixture was changed.
+
+All six performance budgets passed without race instrumentation (147.633 s total): one
+million rearrangements read/validated in 1.590 s at 58 bytes/row plus junctions; 100 samples
+reopened in 148 ms; a searched million-clonotype page in 38.485 ms; 10,000 neighborhood
+centroids against 99,997 background receptors in 2.801 s; one million generation probabilities
+in 82.793 s with no generated receptor assigned zero probability; and neighbors of 100,000
+paired TCRs in 49.539 s at 1.3 GB. Parallel timings are on ten processors. The homepage's
+scale timings were refreshed and the final 47-page site rebuilt locally. No commit, tag,
+release or site publication was performed.
+
 
 ## Later waves (outlined)
 

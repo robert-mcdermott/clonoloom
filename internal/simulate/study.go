@@ -73,6 +73,8 @@ var Presets = map[string]Study{
 	"definition-study":    {Name: "definition-study", Title: "A definition-sensitive repertoire study", Seed: 20261028, Counts: &CountStudy{Subjects: 32, Layout: "independent", DefinitionVariants: true}},
 	"counts-paired":       {Name: "counts-paired", Title: "A replicated paired repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 28, Layout: "paired"}},
 	"counts-independent":  {Name: "counts-independent", Title: "A replicated independent repertoire study", Seed: 20261026, Counts: &CountStudy{Subjects: 32, Layout: "independent"}},
+	"counts-unbalanced":   {Name: "counts-unbalanced", Title: "An unbalanced replicated repertoire study", Seed: 20261105, Counts: &CountStudy{Subjects: 32, Layout: "independent", Unbalanced: true}},
+	"counts-confounded":   {Name: "counts-confounded", Title: "A fully confounded repertoire study", Seed: 20261106, Counts: &CountStudy{Subjects: 32, Layout: "independent", Confounded: true}},
 	"counts-null":         {Name: "counts-null", Title: "A replicated null repertoire study", Seed: 20261027, Counts: &CountStudy{Subjects: 32, Layout: "independent", Null: true}},
 	"cell-states":         {Name: "cell-states", Title: "An artificial paired T-cell and expression study with known states", Seed: 20261028, CellStates: &CellStateStudy{Subjects: 2, CellsPerSample: 120, Clones: 12}},
 	"pseudobulk-study":    {Name: "pseudobulk-study", Title: "Artificial pseudobulk count evidence across subjects and timepoints", Seed: 20261102, CellStates: &CellStateStudy{Subjects: 4, CellsPerSample: 420, Clones: 48, Layout: "gaussian"}},

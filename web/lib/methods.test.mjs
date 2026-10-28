@@ -470,3 +470,14 @@ test('paired gene methods preserve saved inference and distinguish the artificia
   assert.match(out.text,/Saved Paired pseudobulk negative-binomial expression result pde-pinned/);assert.match(out.text,/Gamma\(16/);assert.match(out.text,/null preset has no generating category effect/);assert.doesNotMatch(out.text,/identifiers do not establish|24 artificial genes|GRCh38/);assert.ok(out.references.some((v)=>v.includes('gks042')));
  }
 });
+
+
+test('failed cohort checks remain explicit in cited methods and never imply an analysis', () => {
+  const p=JSON.parse(readFileSync(new URL('../../validation/projects/0.7.0/project.json',import.meta.url),'utf8'));
+  const d=p.cohortDesigns.find((d)=>!d.result.ok),dataset=p.datasets.find((x)=>x.id===d.dataset);
+  const {text,references}=methodsParagraph({dataset,cohortDesigns:p.cohortDesigns,results:p.artifacts.filter((a)=>a.dataset===d.dataset),program});
+  assert.match(text,/FAILED CHECK; unavailable for inference/);
+  assert.match(text,/cohort-batch-confounded/);
+  assert.doesNotMatch(text,/Saved .* result/);
+  assert.ok(references.some((s)=>s.includes('1471-2202-11-5')));
+});

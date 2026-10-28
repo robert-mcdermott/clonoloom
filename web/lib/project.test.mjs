@@ -112,3 +112,17 @@ test('the B-cell release retains analysis choices, IMGT grouping and its result 
     }
   }
 });
+
+
+test('the cohort release retains every study, usable and failed checks, and analysis parents', () => {
+  const p = parseProject(readFileSync(new URL('../../validation/projects/0.7.0/project.json', import.meta.url), 'utf8'));
+  assert.equal(p.datasets.length, 5);
+  assert.equal(p.cohortDesigns.length, 5);
+  assert.equal(p.artifacts.length, 16);
+  for (const d of p.cohortDesigns) {
+    const kinds = p.artifacts.filter((a) => a.dataset === d.dataset).map((a) => a.kind);
+    assert.deepEqual(kinds, d.result.ok ? ['diversity','cohort-features','cohort-compare','cohort-counts'] : []);
+  }
+  const failed=p.cohortDesigns.find((d)=>!d.result.ok);
+  assert.ok(failed.result.findings.some((f)=>f.code==='cohort-batch-confounded'));
+});

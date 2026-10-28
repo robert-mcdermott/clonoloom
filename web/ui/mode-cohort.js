@@ -10,8 +10,9 @@ import { GROUP_FIELDS, cohortSamples, cohortSpec, cohortDesigns, saveCohortDesig
 
 export function mountCohort(app, container) {
   const { store } = app;
-  let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : store.project.datasets[0]?.id;
+  let chosen = store.ui.focus?.kind === 'dataset' ? store.ui.focus.id : store.project.artifacts.find((a) => store.ui.focus?.kind === 'result' && a.id === store.ui.focus.id)?.dataset ?? store.project.datasets[0]?.id;
   let samples = [], spec = cohortSpec(), result = null, error = '', busy = false, search = '', name = 'Design';
+  let example = null;
   let generation = 0, sourceProject = null, loaded = false;
   const body = h('div.view-body.cohort-view');
   const featuresBody = h('div.view-body.cohort-view');
@@ -38,7 +39,7 @@ export function mountCohort(app, container) {
     const mine = ++generation;
     sourceProject = store.project;
     const d = dataset();
-    samples = []; loaded = false; result = null; error = ''; busy = true; render();
+    samples = []; example = null; loaded = false; result = null; error = ''; busy = true; render();
     if (!d) { busy = false; render(); return; }
     try {
       const opened = await app.ensureDataset(d);
@@ -46,6 +47,10 @@ export function mountCohort(app, container) {
       if (store.project !== sourceProject) return load();
       if (opened.status !== 'open') throw new Error(opened.error ?? 'The dataset could not be opened.');
       samples = cohortSamples(store.project, d.id, opened.summary);
+      const catalog = await app.examples.refresh();
+      const normalized = (path) => String(path).replaceAll('\\', '/');
+      example = catalog?.find((e) => e.name.startsWith('simulated-counts-') && e.path && d.sources.length && d.sources.every((s) => normalized(s.path).startsWith(normalized(e.path) + '/'))) ?? null;
+      if (mine !== generation || store.project !== sourceProject) return;
       loaded = true;
     } catch (e) { if (mine === generation) error = e.message; }
     if (mine === generation) { busy = false; render(); }
@@ -77,6 +82,13 @@ export function mountCohort(app, container) {
     for (const d of store.project.datasets) select.append(h('option', { value: d.id, selected: d.id === chosen }, d.name));
     clear(body);
     if (!dataset()) { body.append(h('div.empty', icon('samples'), h('h2', 'Describe the study before comparing groups'), h('p', 'Open a dataset, then annotate its subjects and groups in Data.'))); return; }
+    if (example) body.append(h('details.card.tracking-guide', {open:true}, h('summary', h('b','Guided steps'), ` · ${example.title}`),
+      h('ol.tracking-steps', ...example.opens.flatMap((o) => o.steps ?? []).map((step) => h('li', h('div.tracking-step',
+        h('div', h('b',step.title), h('p.muted.small',step.words)), h('button.btn.small', {type:'button', disabled:busy, onclick:async (e) => {
+          const button=e.currentTarget; button.disabled=true;
+          try { const answer=await app.actions[step.action]({dataset:chosen,...step.args}); toast(answer.message ?? 'Done.',{kind:'ok'}); }
+          catch(error){toast(error.message,{kind:'error'});} finally{button.disabled=false;}
+        }},icon('play'),'Do it')))))));
     const levels = [...new Set(samples.map((s) => s[spec.groupField]).filter(Boolean))].sort();
     const saved = cohortDesigns(store.project, chosen);
     const card = h('section.card.cohort-design', h('h2', 'Study design'),
@@ -89,7 +101,7 @@ export function mountCohort(app, container) {
       h('p.muted.small', 'Labels match exactly. No automatic pooling, covariate adjustment or deletion of incomplete pairs. This view checks and saves the design; it performs no statistical test.'),
       h('div.btn-row', h('button.btn.primary.small', { type: 'button', disabled: busy, onclick: () => check().catch(reportError) }, busy ? 'Reading…' : 'Check design'),
         h('input.input.small', { value: name, 'aria-label': 'Design name', onchange: (e) => { name = e.target.value.trim() || 'Design'; } }),
-        h('button.btn.small', { type: 'button', disabled: busy || !result?.ok, onclick: () => check({ save: true }).catch(reportError) }, 'Save design')));
+        h('button.btn.small', { type: 'button', disabled: busy || !result, onclick: () => check({ save: true }).catch(reportError) }, result && !result.ok ? 'Save failed check' : 'Save design')));
     body.append(card);
     if (error) card.append(h('p.callout.danger', { role: 'alert' }, error));
     if (result) {
@@ -118,8 +130,9 @@ export function mountCohort(app, container) {
     tableBox.append(h('input.input.small', { type: 'search', value: search, placeholder: 'Find a sample or subject', 'aria-label': 'Find a sample or subject', oninput: (e) => { search = e.target.value; drawRows(); } }), rowsBox);
     drawRows(); body.append(tableBox);
     if (saved.length) body.append(h('section.card', h('h2', 'Saved designs'), ...saved.map((record) => h('details.cohort-saved', { 'data-design': record.id },
-      h('summary', `${record.name}, version ${record.revision} · ${!loaded ? 'current annotations unavailable' : cohortDesignChanged(record, samples) ? 'annotations changed' : 'annotations as saved'}`),
+      h('summary', `${record.name}, version ${record.revision}${record.result.ok ? '' : ' · FAILED CHECK — unavailable for analysis'} · ${!loaded ? 'current annotations unavailable' : cohortDesignChanged(record, samples) ? 'annotations changed' : 'annotations as saved'}`),
       ...record.result.words.map((w) => h('p', w)),
+      ...record.result.findings.map((f) => h(`div.callout.${f.severity === 'error' ? 'danger' : 'warn'}`, h('b', f.title), h('p', f.detail))),
       h('div.table-wrap', { tabIndex: 0 }, h('table.data', h('caption', 'Saved sample membership (first 100; complete record in JSON)'),
         h('thead', h('tr', ...['Sample', 'Subject', 'Group', 'Disposition'].map((v) => h('th', v)))),
         h('tbody', ...record.result.rows.slice(0, 100).map((r) => h('tr', h('td', r.name), h('td', r.subject || 'Missing'), h('td', r.group || 'Missing'), h('td', r.included ? 'Included' : r.reason)))))),

@@ -1,0 +1,2804 @@
+{
+  "Repertoire": [
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S01-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S01-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S01-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S01-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S02-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S02-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S02-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S02-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S03-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S03-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S03-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S03"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S03-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S03-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S03-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S03"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S04-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S04-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S04-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S04"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S04-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S04-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S04-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S04"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S05-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S05-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S05-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S05"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S05-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S05-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S05-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S05"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S06-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S06-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S06-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S06"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S06-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S06-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S06-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S06"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S07-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S07-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S07-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S07"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S07-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S07-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S07-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S07"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S08-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S08-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S08-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S08"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S08-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S08-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S08-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S08"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S09-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S09-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S09-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S09"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S09-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S09-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S09-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S09"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S10-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S10-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S10-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S10"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S10-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S10-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S10-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S10"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S11-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S11-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S11-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S11"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S11-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S11-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S11-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S11"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S12-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S12-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S12-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S12"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S12-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S12-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S12-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S12"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S13-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S13-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S13-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S13"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S13-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S13-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S13-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S13"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S14-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S14-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S14-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S14"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S14-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S14-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S14-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S14"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S15-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S15-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S15-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S15"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S15-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S15-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S15-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S15"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S16-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S16-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S16-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S16"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S16-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S16-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S16-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S16"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S17-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S17-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S17-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S17"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S17-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S17-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S17-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S17"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S18-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S18-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S18-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S18"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S18-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S18-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S18-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S18"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S19-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S19-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S19-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S19"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S19-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S19-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S19-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S19"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S20-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S20-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S20-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S20"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S20-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S20-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S20-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S20"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S21-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S21-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S21-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S21"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S21-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S21-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S21-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S21"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S22-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S22-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S22-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S22"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S22-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S22-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S22-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S22"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S23-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S23-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S23-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S23"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S23-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S23-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S23-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S23"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S24-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S24-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S24-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S24"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S24-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S24-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S24-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S24"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S25-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S25-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S25-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S25"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S25-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S25-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S25-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S25"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S26-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S26-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S26-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S26"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S26-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S26-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S26-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S26"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S27-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S27-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S27-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S27"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S27-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S27-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S27-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S27"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S28-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S28-1",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 0,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S28-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S28"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "S28-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.7.0"
+        }
+      ],
+      "repertoire_id": "S28-2",
+      "sample": [
+        {
+          "collection_time_point_reference": "simulated stimulation",
+          "collection_time_point_relative": 14,
+          "collection_time_point_relative_unit": {
+            "id": "UO:0000033",
+            "label": "day"
+          },
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "S28-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-replicated-counts-v1",
+        "study_title": "A replicated paired repertoire study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "paired stimulation"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "S28"
+      }
+    }
+  ]
+}

@@ -21,12 +21,17 @@ type CountStudy struct {
 	Subjects           int    `json:"subjects"`
 	Layout             string `json:"layout"`
 	Null               bool   `json:"null"`
+	Unbalanced         bool   `json:"unbalanced,omitempty"`
+	Confounded         bool   `json:"confounded,omitempty"`
 	DefinitionVariants bool   `json:"definitionVariants,omitempty"`
 }
 
 func (c CountStudy) check(s Study) error {
 	if c.Subjects < 12 || c.Subjects > 32 || (c.Layout != "paired" && c.Layout != "independent") || c.Layout == "independent" && c.Subjects%2 != 0 {
 		return fmt.Errorf("count study needs 12–32 subjects, paired or independent layout, and even subjects for independent groups")
+	}
+	if (c.Unbalanced || c.Confounded) && (c.Layout != "independent" || c.Subjects != 32 || c.DefinitionVariants || c.Unbalanced && c.Confounded) {
+		return fmt.Errorf("unbalanced/confounded controls require 32 independent subjects and one control variant")
 	}
 	if c.DefinitionVariants && (c.Layout != "independent" || c.Null) {
 		return fmt.Errorf("definition-variant study requires independent groups and cannot be an all-null count study")
@@ -85,9 +90,18 @@ func runCounts(ctx context.Context, s Study, dir, version string, progress Progr
 			sample := fmt.Sprintf("%s-%d", id, visit+1)
 			group := visit
 			if c.Layout == "independent" {
-				group = subject / (c.Subjects / 2)
+				boundary := c.Subjects / 2
+				if c.Unbalanced {
+					boundary = 12
+				}
+				if subject >= boundary {
+					group = 1
+				}
 			}
 			batch := (subject + visit) % 2
+			if c.Confounded {
+				batch = group
+			}
 			exposure := dmath.Exp(.45 * r.Normal())
 			var out strings.Builder
 			out.WriteString("sequence_id\tsequence\trev_comp\tproductive\tv_call\td_call\tj_call\tsequence_alignment\tgermline_alignment\tjunction\tjunction_aa\tv_cigar\td_cigar\tj_cigar\tlocus\tumi_count\trepertoire_id\n")
@@ -176,6 +190,9 @@ func runCounts(ctx context.Context, s Study, dir, version string, progress Progr
 			ms["collection_time_point_relative_unit"] = map[string]any{"id": "UO:0000033", "label": "day"}
 			ms["collection_time_point_reference"] = "simulated stimulation"
 			meta["study"].(map[string]any)["study_id"] = "clonoloom-simulated-replicated-counts-v1"
+			if c.Unbalanced || c.Confounded {
+				meta["study"].(map[string]any)["study_id"] = "clonoloom-simulated-" + s.Name
+			}
 			if c.DefinitionVariants {
 				meta["study"].(map[string]any)["study_id"] = "clonoloom-simulated-definition-variants-v1"
 			}
@@ -192,6 +209,13 @@ func runCounts(ctx context.Context, s Study, dir, version string, progress Progr
 	}
 	sum.Files = append(sum.Files, "repertoires.airr.json")
 	readme := fmt.Sprintf("# %s\n\nArtificial replicated-count benchmark v1, seed %d. %d subjects, %s layout.\n48 shared fictional receptors and 600 private receptors per subject, with a long-tailed abundance distribution.\nCounts represent simulated UMIs (AIRR umi_count). Gamma-Poisson counts have heterogeneous dispersions; sampling exposures vary lognormally.\nShared receptors have subject effects and a 1.2-fold B2 batch effect. Four shared receptors increase fourfold,\nfour decrease by 2^1.5, and forty are unchanged (all effects zero in the null preset).\nBatch is B1/B2 alternating by zero-based subject plus visit. Truth records every mean, dispersion, exposure, effect and count.\nThe exposure is a generator scale, not the realized library total: total-count-offset effects are relative repertoire effects.\nFictional stop-free junctions and SIM genes do not imply specificity or a biological recombination model.\nOpen root TSVs and AIRR metadata together; annotate the recorded batches before batch-adjusted modeling.\n", s.Title, s.Seed, c.Subjects, c.Layout)
+	if c.Unbalanced {
+		readme += "\nUnbalanced control: 12 control and 20 stimulated subjects, with both batches represented in each group. No subjects were excluded or selected by outcome.\n"
+	}
+	if c.Confounded {
+		readme = strings.ReplaceAll(readme, "Batch is B1/B2 alternating by zero-based subject plus visit.", "Batch is B1 for every control and B2 for every stimulated subject: batch and condition are fully confounded.")
+		readme += "\nThis design cannot distinguish a batch effect from a group effect. Retain the failed design check; do not fit or interpret a group contrast.\n"
+	}
 	if c.DefinitionVariants {
 		readme = strings.ReplaceAll(readme, "Fictional stop-free junctions and SIM genes", "Fictional stop-free junctions and arbitrary gene labels")
 		readme += "\nDefinition-sensitivity model v1: private receptor means use 1800/k^1.2, multiplied by 1.6 in the comparison group.\nComparison subjects have triples of distinct synonymous nucleotide junctions sharing one amino-acid junction,\nwith arbitrary V labels TRBV5-1*01, TRBV5-1*02 and TRBV5-2*01 (J TRBJ2-7*01). Reference subjects have distinct amino-acid junctions.\nThis deliberately creates definition-dependent grouping and unequal observed depth; it is not a fitted population model.\nAll 600 private nucleotide identities remain distinct per subject. V/J/AA truth records the exact partitions.\nRichness is measured at observed depth, without rarefaction; the audit cannot resolve depth or ascertainment bias.\n"
