@@ -9,13 +9,15 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are complete. Wave 7 is underway below; the first four slices cover subject designs, features, comparisons and replicated counts.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–7 are complete. Wave 8 is planned below: verifiable records, reproducible execution and supported automation.
 
 **Progress** is marked here as each slice is committed: done, next or to come. Each
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
-**Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
-released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–11 are committed and pushed. Slice 12 is implemented and validated, awaiting maintainer commit; no wave 7 release has been made.
+**Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–7 are merged and
+released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
+with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
+`wave8` branch. Slice 1 is implemented and validated, awaiting the maintainer's commit;
+slice 2 is next. No 0.8.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2698,7 +2700,7 @@ No commit, push, tag, release or publication; version remains 0.6.0.
 
 ### Slice 12: complete cohort studies and release 0.7.0
 
-**Implemented and validated; awaiting maintainer commit.** E3, O2, N7. Research §5.41 records the
+**Done:** committed as `b4fe1c2`, merged in PR #7 and released as 0.7.0. E3, O2, N7. Research §5.41 records the
 control designs, interpretation and release evidence. Five offline guides use the ordinary
 visible actions: independent positive, null, unbalanced 12/20, paired 28-subject and fully
 confounded 16/16 studies. Count truth and model identities are retained; no new inferential
@@ -2745,10 +2747,105 @@ scale timings were refreshed and the final 47-page site rebuilt locally. No comm
 release or site publication was performed.
 
 
+
+## 0.8.0: record and reach (wave 8)
+
+The record must distinguish **unchanged saved evidence**, **recomputed results** and
+**scientific interpretation**. A digest proves none of the study's assumptions and is not an
+authenticity signature. Each verifier reports exactly what it checked, what differs and what
+it could not check. Automation uses the same recorded actions and Go computations as the UI.
+
+### Wave 8 sequence
+
+| Slice | Scope and requirements | Acceptance before the next slice |
+| --- | --- | --- |
+| 1 | Saved-result evidence certificates and offline integrity checks (O5 foundation, O9, X5, N2/N4) | Bounded versioned archive; exact saved manifest/recipe/results and provider NOTICE; external fingerprint pinning; native Go `verify --integrity`; explicit no-recomputation verdict; Reports inspection/export/checking; cohort features/comparisons/counts first; corruption, bounds, traversal, cancellation and provider tests |
+| 2 | Scientific certificate replay (O5) | First replay the three cohort kinds through real workers in an isolated temporary store; verify original source/parent bindings where needed; preserve original provenance separately; exact bytes and explicit differs/unavailable outcomes; no missing-input success or tolerance fallback |
+| 3 | Headless recipes and broader replay coverage (A6, O5) | Versioned effective recipe, named inputs and output folder, no overwrite by default, cancellation/exit/report contracts; shared Go workers; one study or explicit batch task; publish a tested per-kind support matrix and refuse unsupported kinds rather than silently omitting results |
+| 4 | Checkpoints and analysis differences (O7) | Immutable project checkpoints; plain-language changes to sources, definitions, QC, parameters, populations and result identities; exact evidence beneath descriptions; undo/redo and version compatibility |
+| 5 | Self-checking HTML reports (O6, O1/O2) | Offline report of explicitly selected results, figures, methods, references and limits; complete denominators and accessible tables; distinguish checksum checks from recomputation; no external resources or unescaped metadata |
+| 6 | Automation policy, proposals and typed queries (A2/A3, A1 foundation) | One versioned action catalog with explicit read/edit/compute/file/network effects; no arbitrary SQL/shell; read-only defaults; visible named proposals, acceptance/rejection, undo and audit history; cancellation and stale-project handling |
+| 7 | MCP transport (A1, N5) | Stdio JSON-RPC, supported protocol negotiation, tools from the action catalog, explicit capability grants, bounded output/progress/cancellation, logs on stderr; tests against the current official specification and sibling transport patterns |
+| 8 | Generated Python client (A4 first part) | Generate from the same catalog; connection discovery and explicit overrides, version negotiation, typed errors, faithful arrays/nulls and exact JSON numbers; optional dataframe helpers; fake-server and real-host tests using uv |
+| 9 | Generated R client (A4 completion) | Same connection/action/error contract as Python, generated help and wrappers, explicit vector/list/null handling and precision; package checks, fake-server and shared real-host parity fixtures |
+| 10 | Portable project archives (D12, O9, N4) | Project/history/artifact inventories, safe bounded extraction, portable path rebinding by fingerprints; source inclusion only when permitted; explicit omitted/restricted/missing sources and complete cross-release reopening |
+| 11 | Export de-identification (O10) | Explicit subject pseudonyms, requested free-text/HLA removal, provenance of transformations and separate identity map; do not mutate source projects or imply anonymization; no hidden identifiers in manifests, plots or nested evidence |
+| 12 | Parquet exports (O3) | Explicit schemas, units, definition/QC/provenance, exact integer counts and nulls; deterministic bounded writer with independent reader checks; provider notices and export-policy integration |
+| 13 | Agent benchmark (A5) | Known-truth tasks over the visible/MCP/client contracts, code-based grading, proposal/refusal and error cases, reproducible local runner; separate task success from scientific validity |
+| 14 | Container and cluster execution (P6, A6) | Small headless build, non-root execution, explicit read-only inputs/output mounts, signal handling, no browser requirement for Go computation, offline and reproducible example jobs |
+| 15 | Complete record-and-reach study and release 0.8.0 | Worked cross-interface study, support matrix and all limits reviewed; full scientific/platform/accessibility/performance validation; new compatibility fixture and reviewed screenshots; versions changed only here; maintainer commits, merges, tags and publishes |
+
+Later slices may be re-cut at their boundary when evidence warrants a smaller increment;
+acceptance requirements and changes to this sequence are recorded here before implementation.
+No source from incompatible-licensed implementations is used.
+
+### Sister-project patterns and decisions
+
+- Inspected Apache-2.0 CytoWeave 0.8.1 (`19d47bb`) and MaveScape 0.8.0 (`c997e39`) locally: `mcp.go`, `verify.go`, client
+  transports and `clients/generate.mjs`. Preserve one action catalog, versioned API contracts,
+  generated wrappers/help, `remote.json` discovery, explicit connection overrides, structured
+  errors, stdout reserved for MCP, cancellation and visible named proposals. Generated-client
+  drift checks belong in CI; host settings remain opt-in rather than inferred from clients.
+- The siblings drive browser computations for verification. ClonoLoom deliberately uses its
+  existing Go workers directly, without introducing a browser requirement or a second scientific
+  implementation. Bit-for-bit arithmetic remains mandatory; no approximate-equality success. The current
+  official MCP transport specification (2026-07-28; research §5.42) differs from the siblings'
+  older handshake model; slice 7 rechecks protocol requirements and explicit compatibility.
+- Slice 1's certificate is a single-result `.certificate.clz`, separate from the later portable
+  project archive. Its scope is `recorded-artifact-bytes`. It contains the immutable saved
+  manifest, recipe, outputs and provider notice; recorded original-source/parent fingerprints
+  are evidence, not checks performed. A separate fingerprint can be pinned with `--expect`.
+- Begin with the three cohort result kinds that already retain complete source-free evidence
+  and provider notices. Other kinds are refused explicitly until their contracts are mapped.
+  The first slice does not claim O5 complete and never presents integrity as scientific replay.
+- Verify ZIP members in place with strict inventory, size, duplicate/path and checksum checks;
+  extract nothing and never follow a recipe's source paths. Unsupported versions fail closed.
+  Use existing restricted-provider confirmation and mark captured raw evidence as data.
+- Keep the application version at 0.7.0 throughout development. Wave 8 release metadata and
+  published-site updates wait for slice 15 and the maintainer's normal release sequence.
+
+### Slice 1: saved-result evidence certificates
+
+**Implemented and validated; awaiting maintainer commit.** O5 foundation, O9, X5, N2/N4.
+Reports prepares and inspects cohort feature/comparison/count certificates. A browser-upload
+check and `clonoloom verify --integrity` use the same Go verifier, return explicit inventory
+findings, and never claim source verification, authenticity, recomputation or scientific validity.
+The CLI writes an optional verification report only to a new path. Provider restrictions remain
+visible even after the source dataset and parent artifacts are absent. The archive retains the
+exact original bytes; neither source data nor earlier release fixtures are modified.
+
+Validation:
+
+- Application and internal-package race tests passed (application 373.549 s), including
+  earlier-release compatibility. Final focused race tests cover certificate export/checking,
+  source-free CLI/API agreement, provider terms, command usage, configuration and action parity.
+- Native arm64 and amd64 checks agree on the pinned certificate fingerprint and source-free
+  API/CLI outcomes. An independent Python-standard-library ZIP/JSON/SHA-256 oracle, run with
+  `uv`, checks original numeric/null/zero tokens and recipe bytes. Thirty seconds of fuzzing
+  completed 1,437 executions without failure. Regression cases cover corruption, duplicate
+  keys/members, unknown versions, traversal, links, cancellation, changed inputs, prefixed path
+  lengths and the separate inventory/metadata size bounds.
+- Targeted cohort and count-model scientific references plus the no-fused-operations check
+  passed (4.574 s). This slice adds no estimator or statistical plot; it preserves saved
+  evidence without numeric conversion. The complete scientific and performance suites remain
+  part of release validation, rather than being claimed by these targeted checks.
+- Go vet and six CGO-free platform builds passed. All browser-module syntax checks and
+  151 JavaScript tests passed, alongside 14 contrast/color-vision checks.
+- Both-theme browser workflows check visible/remote export identity, uploaded integrity,
+  wrong fingerprints, truncated archives and saved-project reopening. Both new screenshots
+  were reviewed. The site builds 48 pages with 58 screenshots; the final accessibility/layout
+  audit passed 188 checks (47 pages, two themes, two widths), after correcting a phone-width
+  command-example overflow with the existing wrapping code-block style.
+
+Keep version 0.7.0. Scientific replay is slice 2; no certificate in this slice claims that
+sources or parents were independently checked, that statistics were recomputed, or that a
+checksum establishes authenticity or biological validity. Nothing is committed, tagged,
+released or published by the implementation workflow.
+
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |
 | 9 | 0.9.0 | Suite and public data | ADC queries, overlap with public cohorts, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |
 | 10 | 1.0.0 | Hardening | Budgets met, accessibility audit, documentation complete, external beta feedback addressed |

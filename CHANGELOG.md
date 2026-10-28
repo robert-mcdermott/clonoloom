@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **Saved-result evidence certificates (wave 8, slice 1).** Plan Wave 8 and introduce
+  bounded single-result integrity archives for cohort features, comparisons and count models.
+  Preserve exact manifests, recipes, outputs, source fingerprints and provider notices. Add
+  Reports inspection/export/checking, shared remote actions and native `verify --integrity`,
+  with external fingerprint pinning, explicit no-recomputation verdicts and non-overwriting
+  JSON reports. Refuse unsafe, ambiguous, oversized or changed archives; extract nothing and
+  follow no recorded source paths. Keep provider restrictions and captured-data limits visible.
+  Validate independent ZIP/JSON/SHA-256 checks, corruption and refusal cases, source-free
+  CLI/API agreement, both-theme workflows and compatibility. Keep version 0.7.0; scientific
+  replay, MCP and generated clients follow in the recorded Wave 8 sequence.
+
 ## 0.7.0 — 2026-10-27
 
 ### Added

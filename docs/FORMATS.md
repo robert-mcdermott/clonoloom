@@ -1017,3 +1017,13 @@ features. Selected counts and design CSV columns share the saved canonical obser
 subject fixed-effect coding and comparison orientation are explicit. Cell membership remains
 in the pinned count parent. This is unmoderated NB2 with median-ratio offsets, not the full
 edgeR/DESeq2 pipeline; research §5.40 records assumptions, bounds and independent references.
+
+## Evidence certificates (wave 8 development)
+
+A single supported cohort result can be exported as `.certificate.clz`: a ZIP containing
+`certificate.json` (format `clonoloom-certificate`, version 1), exact saved `manifest.json`,
+artifact files under `artifact/`, provider NOTICE and interpretation limits. This is not a
+project archive. Scope `recorded-artifact-bytes` and report `recomputed: false` explicitly
+exclude scientific replay. See [CERTIFICATES.md](CERTIFICATES.md) for the canonical record,
+fingerprint, size/path limits, integrity verdicts and native CLI. No source files are added,
+but captured evidence can contain raw data and identifiers; provider restrictions still apply.

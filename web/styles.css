@@ -971,3 +971,6 @@ textarea.tracking-list { width: 100%; font-family: var(--mono); font-size: 12px;
 .cohort-view .callout { display: block; }
 .cohort-view .callout p { margin-top: 4px; }
 .cohort-saved { margin: 10px 0; }
+
+/* Evidence identifiers remain readable without widening the Reports view. */
+.certificate-fingerprint { overflow-wrap: anywhere; }

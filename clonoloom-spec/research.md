@@ -2914,3 +2914,42 @@ compressed without changing their decoded content. Older fixtures are never rewr
 Browser checks exercise visible controls, persisted reopening, exports, methods, populations
 and both-theme accessibility. Scientific references, cross-platform arithmetic, all platform
 builds and isolated performance budgets remain release gates.
+
+### 5.42 Evidence integrity, replay and automation boundaries
+
+Wave 8 slice 1 introduces no statistical estimator or biological inference. It preserves
+original result bytes, including nulls and exact numeric tokens, and checks their inventory
+using Go's standard-library SHA-256. The hash standard is NIST, FIPS 180-4 (2015),
+[doi:10.6028/NIST.FIPS.180-4](https://doi.org/10.6028/NIST.FIPS.180-4), rechecked for this slice.
+A digest detects changed bytes relative to a record, not authorship or correctness.
+ClonoLoom's choice is to label every successful first-slice check `integrity-match`, set
+`recomputed: false`, require `--integrity` on the CLI, and accept an independently retained
+`--expect` fingerprint. No inference is drawn from a successful integrity check.
+
+The version-1 record is a specified compact Go JSON encoding (not JCS), with ordered file
+entries and SHA-256 over the record without its fingerprint. Original scientific JSON and
+manifest bytes are never reserialized. ZIP readers check bounds, CRCs, duplicates, paths,
+inventory completeness and correspondence to the saved manifest. No extraction, source-path
+resolution or recipe execution occurs. Raw captured evidence may still contain identifiers;
+provider NOTICE and export restrictions are preserved and no anonymization is claimed.
+
+The first supported kinds are cohort-features, cohort-compare and cohort-counts, whose
+immutable documents retain the design, measurement parents, full reported values and notices.
+Parent/source fingerprints are recorded provenance, not checks performed. Scientific
+recomputation follows through shared Go workers with exact equality and explicit unavailable
+outcomes; no cross-engine approximate-equality exception is imported from the siblings.
+
+Reviewed local Apache-2.0 patterns: CytoWeave 0.8.1 (`19d47bb`) and MaveScape 0.8.0
+(`c997e39`), especially certificate inventories, verifier exit/report contracts, `mcp.go`,
+client transports and generators. Preserve one action catalog and generated-client drift
+checks. Their browser-based computation is not transplanted into ClonoLoom. The official
+[MCP transport specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports)
+was checked during planning: its per-request metadata/current protocol differs from the
+siblings' older handshake model. Slice 7 must recheck the then-current specification and
+implement explicit compatibility rather than blindly copy the older transport.
+
+Validation uses the Python standard library's independent ZIP reader, JSON encoder and
+SHA-256 against a small deterministic certificate, plus exact numeric-token preservation,
+changed/missing/extra/duplicate members, invalid paths/versions, external fingerprint mismatch,
+cancellation, provider restrictions and native CLI/API agreement after source/parent removal.
+Scientific cohort references remain separate checks; integrity alone is never calibration.

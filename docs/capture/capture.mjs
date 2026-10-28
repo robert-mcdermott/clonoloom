@@ -386,6 +386,21 @@ async function guidedCohortScene(confounded) {
 }
 
 const scenes = {
+  async certificates() {
+    await act('new_project', {name:'Artificial cohort evidence'});
+    const opened=(await act('open_example',{example:'simulated-counts-independent',download:true})).data;
+    for(const step of ['design','features','compare']) await act('cohort_example_step',{dataset:opened.dataset,preset:'counts-independent',step});
+    const state=(await act('get_state')).data;
+    const artifact=state.artifacts.find((r)=>r.kind==='cohort-compare').id;
+    const record=(await act('inspect_certificate',{artifact})).data.certificate;
+    await waitFor(`Boolean(document.querySelector('.certificate-record'))`);
+    await js(`[...document.querySelectorAll('button')].find((b)=>b.textContent==='Export integrity certificate').click()`);
+    await waitFor(`!window.clonoloom.certificatesView.state().busy`);
+    const exported=(await act('export_certificate',{artifact})).data;
+    if(exported.fingerprint!==record.fingerprint)throw new Error('Visible and remote certificates differ');
+    await js(`(async()=>{const a=window.clonoloom,v=a.certificatesView,r=await fetch('api/certificates/${artifact}/download'),blob=await r.blob();const pass=await v.verify(blob,'${record.fingerprint}');if(pass.verdict!=='integrity-match'||pass.recomputed||!document.querySelector('.certificate-verdict').textContent.includes('not recomputed'))throw new Error('Integrity mislabeled');const wrong=await v.verify(blob,'${'0'.repeat(64)}');if(wrong.verdict!=='differs')throw new Error('External fingerprint ignored');const broken=await v.verify(blob.slice(0,blob.size-15));if(broken.verdict!=='differs')throw new Error('Truncated ZIP accepted');await v.verify(blob);await a.saveNow();await a.openProject(a.store.project.id);await a.setMode('reports');const reopened=await a.certificatesView.inspect('${artifact}');if(reopened.certificate.fingerprint!=='${record.fingerprint}')throw new Error('Certificate changed on project reopening');await a.certificatesView.verify(blob,'${record.fingerprint}');return true})()`);
+    await clearToasts(); await checkAccessibility();
+  },
   async 'cohort-study'(){await guidedCohortScene(false);},
   async 'cohort-confounded'(){await guidedCohortScene(true);},
  async ['pseudobulk-de'](){
@@ -1389,7 +1404,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name === 'certificates' || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

@@ -149,7 +149,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | O2 | Methods paragraph with numbered references, written from the record (versions, references and their versions, public datasets with accession and download date, parameters) | partial (wave 1, slice 7: a paragraph per dataset, from the record: the data's source, license and date, the format and reader, the unit, the validator's findings, the filter with what it kept, the clonotype definition and its ID, ClonoLoom's version and commit, with numbered references; wave 2: diversity, rarefaction, gene usage, overlap and tables read through a column mapping; wave 5: family thresholds, reference hashes, mutation denominators, tree uncertainty and observed isotypes with cited methods; wave 6, slice 10: correct paired cell-state simulation description and all saved Cells analyses with effective descriptions/references, linked to their explicit dataset/input bindings; grown in every wave) |
 | O3 | Exports: AIRR-C Rearrangement, Clone, Cell and Repertoire; AnnData; Parquet; CSV; FASTA; Newick | partial (wave 2, slice 8: the rearrangements as AIRR Rearrangement TSV with each one's clonotype, the clonotype table and every analysis's result as CSV; wave 5, slice 1: retained AIRR sequence evidence round-trips with missing and invalid values preserved; slice 2: IMGT evidence and native annotation JSON round-trip; AIRR Clone, Cell and Repertoire to come; wave 5: germline/lineage FASTA and lineage Newick implemented; wave 6, slice 9: AnnData raw counts, receptor links, annotations, embeddings and provenance; wave 8: Parquet) |
 | O4 | Excel workbooks with provenance sheets; GraphPad Prism export | planned (wave 9) |
-| O5 | Certificates: inputs' fingerprints, the recipe, every reported number; `clonoloom verify` recomputes and compares bit for bit | planned (wave 8) |
+| O5 | Certificates: inputs' fingerprints, the recipe, every reported number; `clonoloom verify` recomputes and compares bit for bit | partial (wave 8, slice 1: bounded evidence archives for cohort features/comparisons/counts; exact byte inventory, provider notices, Reports and native integrity-only verification; scientific replay and broader result coverage remain slices 2–3) |
 | O6 | Self-checking HTML reports that open in any browser | planned (wave 8) |
 | O7 | Checkpoints with plain-language differences between analysis versions | planned (wave 8) |
 | O8 | MiAIRR completeness checklist | planned (wave 9) |
@@ -185,7 +185,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | X2 | Index-sort and FCS phenotypes from CytoWeave linked to single-cell V(D)J | planned (wave 9) |
 | X3 | MaveScape effect maps aligned to a clone's sequence and mutations | parked |
 | X4 | Clone labels mapped to cells in tissue (SituCraft) | parked |
-| X5 | Suite-wide certificate, methods-reference and public-data catalog conventions | planned (wave 8) |
+| X5 | Suite-wide certificate, methods-reference and public-data catalog conventions | partial (wave 8, slice 1: sibling certificate/transport/client patterns reviewed; shared inventory, fingerprint and explicit verdict conventions; ClonoLoom computes verification in Go; broader conventions follow) |
 
 ## Quality, security and accessibility
 

@@ -25,7 +25,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const count = (n, noun) => `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`;
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', cohort: 'cohort', jobs: 'jobs' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', cohort: 'cohort', reports: 'reports', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.
@@ -87,6 +87,19 @@ export function remoteActions(app) {
   const lociOf = (summary) => Object.keys(summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
 
   const actions = {
+    async inspect_certificate({ artifact, accept = false }) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.certificatesView, 5000, 'Reports');
+      const value = await view.inspect(artifact, { accept });
+      return { message: 'Recorded evidence inventoried; no scientific recomputation.', data: value };
+    },
+    async export_certificate({ artifact, accept = false }) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.certificatesView, 5000, 'Reports');
+      const value = await view.exportCertificate(artifact, { accept });
+      if (!value) throw new ActionError('No certificate was exported.');
+      return { message: 'Integrity certificate downloaded; no scientific recomputation.', data: value };
+    },
     async get_state() {
       const { project, ui } = store;
       const list = await app.examples.refresh();

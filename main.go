@@ -106,6 +106,9 @@ func init() {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "verify" {
+		os.Exit(runVerify(os.Args[2:], os.Stdout, os.Stderr))
+	}
 	if len(os.Args) > 1 && os.Args[1] == "simulate" {
 		os.Exit(runSimulate(os.Args[2:], os.Stdout, os.Stderr))
 	}
@@ -308,7 +311,7 @@ func parseConfig(args []string) (config, error) {
 	flags.BoolVar(&cfg.showVersion, "version", false, "print the version and exit")
 	noOpen := flags.Bool("no-open", false, "same as --window none")
 	flags.Usage = func() {
-		fmt.Fprintln(flags.Output(), "Usage: clonoloom [flags] [repertoire tables (AIRR .tsv, Cell Ranger contig .csv, immunoSEQ exports), Cell Ranger output folders, projects (.clz) or folders of them...]\n       clonoloom simulate [flags]   (a simulated study with its truth; clonoloom simulate -h)")
+		fmt.Fprintln(flags.Output(), "Usage: clonoloom [flags] [repertoire tables (AIRR .tsv, Cell Ranger contig .csv, immunoSEQ exports), Cell Ranger output folders, projects (.clz) or folders of them...]\n       clonoloom simulate [flags]   (a simulated study with its truth; clonoloom simulate -h)\n       clonoloom verify --integrity FILE.certificate.clz   (saved bytes only; clonoloom verify -h)")
 		flags.PrintDefaults()
 	}
 	files, err := parseArgs(flags, args)
@@ -481,6 +484,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerReferences(mux)
 	a.registerJobs(mux)
 	a.registerCache(mux)
+	a.registerCertificates(mux)
 	a.registerAnalyses(mux)
 	a.registerTCRdist(mux)
 	a.registerPgen(mux)

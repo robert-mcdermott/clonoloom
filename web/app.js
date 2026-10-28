@@ -15,7 +15,6 @@ import { installRemote, remoteActions } from './ui/remote.js';
 import { mountSidebar } from './ui/sidebar.js';
 import { mountInspector } from './ui/inspector.js';
 import { mountDrawer } from './ui/drawer.js';
-import { plannedMode } from './ui/mode-planned.js';
 import { openPalette } from './ui/palette.js';
 import { colorVisionFriendly, setColorVisionFriendly } from './lib/colormaps.js';
 import { createProject, isEmptyProject, parseProject, rename, serializeProject } from './lib/project.js';
@@ -41,14 +40,7 @@ const MODES = [
   { id: 'cells', label: 'Cells', icon: 'cell', load: () => import('./ui/mode-cells.js').then((m) => m.mountCells) },
   'sep',
   { id: 'cohort', label: 'Cohort', icon: 'samples', load: () => import('./ui/mode-cohort.js').then((m) => m.mountCohort) },
-  {
-    id: 'reports', label: 'Reports', icon: 'report',
-    load: async () => plannedMode({
-      title: 'Reports', icon: 'report',
-      purpose: 'Results others can check: figures with the clonotype definition and abundance unit in their legends, a methods paragraph written from what was actually done with numbered references, AIRR-compliant exports, and certificates that recompute every number.',
-      steps: ['Analyze.', 'Choose the figures and results to report.', 'Export.'],
-    }),
-  },
+  { id: 'reports', label: 'Reports', icon: 'report', load: () => import('./ui/mode-reports.js').then((m) => m.mountReports) },
   { id: 'jobs', label: 'Jobs', icon: 'jobs', load: () => import('./ui/mode-jobs.js').then((m) => m.mountJobs) },
 ];
 

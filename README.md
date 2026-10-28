@@ -252,6 +252,14 @@ It takes `-h` for its settings.
   citations.
 - [Conventions](clonoloom-spec/conventions.md): code, science and terminology rules.
 
+## Wave 8 development
+
+[Evidence certificates](docs/CERTIFICATES.md) preserve exact saved cohort result bytes with
+provider notices. Reports and `clonoloom verify --integrity` check the inventory without
+scientific recomputation. The [Wave 8 plan](clonoloom-spec/roadmap.md) schedules replay,
+headless runs, reports, MCP and generated Python/R clients. Published binaries remain 0.7.0
+until the next release.
+
 ## Development
 
 ```sh

@@ -541,3 +541,12 @@ share definition/QC/size breakpoints and feature identities. The response includ
 eligible group count, subject count and method description. This sums raw counts; it does not
 fit a differential-expression model. Original sources are needed for capture, not saved replay
 or export. Download complete evidence from `GET /api/pseudobulk/{id}/download`.
+
+### Certificate actions (wave 8 development)
+
+`show` accepts `reports`. `inspect_certificate` and `export_certificate` take a supported
+saved cohort `artifact` ID and optional explicit provider-term `accept`. Both use the visible
+Reports view and return its record/fingerprint; export downloads a `.certificate.clz` through
+the browser. These actions do not recompute statistics or read new source paths. File checking
+is available by Reports upload or `clonoloom verify --integrity`; see
+[CERTIFICATES.md](CERTIFICATES.md). MCP and generated clients follow later in Wave 8.
