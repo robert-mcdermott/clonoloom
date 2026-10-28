@@ -3179,3 +3179,40 @@ framing recovery. A real subprocess and browser compare HTTP/MCP native query st
 same simulated repertoire, check filtered rows and full denominators, human review, history,
 Undo/Redo, both-theme accessibility and EOF cleanup. Scientific replay checks remain separate
 from transport tests; no new plot or biological inference is introduced.
+
+### 5.49 Exact Python client values and explicit host authority (wave 8, slice 8)
+
+**Sources.** Reviewed Apache-2.0 CytoWeave 0.8.1 (`19d47bb`) and MaveScape 0.8.0 (`c997e39`)
+client transports, generated wrappers/help and real-host harnesses. Reviewed official Python
+[JSON hooks](https://docs.python.org/3/library/json.html),
+[Decimal](https://docs.python.org/3/library/decimal.html),
+[urllib](https://docs.python.org/3/library/urllib.request.html), pandas
+[DataFrame dtype controls](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html)
+and [uv CI integration](https://docs.astral.sh/uv/guides/integration/github/) on 2026-10-28.
+These are transport/representation references, not new scientific methods.
+
+**ClonoLoom choices.** Generate methods from the same Go-checked catalog as HTTP/MCP; keep
+package version separate from action API/catalog/policy. Check compatible versions before every
+action. Explicit URL overrides cannot inherit an unrelated discovered token. Refuse proxies,
+redirects and non-loopback endpoints. The host grants and human review remain authoritative;
+the client cannot accept proposals or expand capabilities. Never retry an edit automatically.
+
+Decode integers as int and decimal/exponent tokens as Decimal, retaining original response bytes
+and native resultJSON. Encode finite Decimal arguments as number tokens, independent of ordinary
+float conversion. Preserve arrays, empty objects and null; UNSET denotes omitted top-level
+arguments. Bound input/output and reject ambiguous/malformed evidence. Decimal exponent limits
+are explicit failures even when the caller disables arithmetic traps. Later client arithmetic
+and conversions remain outside the exact transport guarantee.
+
+Optional pandas frames use object columns. Absent record keys become None in that convenience
+view; original records/raw text retain the distinction. No implicit numeric dtype inference,
+renormalization, denominator change, estimator or plotting method is introduced. Native query
+ranks reflect selected membership; science and five-kind certificate replay stay in Go.
+
+**Validation design.** Exercise every generated method, discovery precedence and incompatible
+versions, malformed/oversized responses, redirects, token isolation, timeout/no-retry, int/Decimal
+literal controls and object frames on Python 3.10 and 3.13. A real isolated host/window uses seeded
+simulated vaccine data and compares original HTTP/Python query strings and filtered row values.
+Check token/grant/null/unsafe-number refusals, human rejection, timeout cancellation, named
+History and Undo/Redo. Installed distributions, CI drift checks and existing native scientific
+replay regression tests are separate controls; none establish biological validity.

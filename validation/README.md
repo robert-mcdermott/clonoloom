@@ -680,3 +680,19 @@ visible proposal buttons. It checks HTTP/MCP query-string parity, full-table den
 filtered rank semantics, rejection/cancellation, actor history, Undo/Redo, both-theme axe checks,
 legacy/modern coexistence and pending-call EOF cleanup. It does not infer scientific validity
 from protocol success; native worker and exact five-kind certificate replay checks run separately.
+
+## Generated Python client (wave 8, slice 8)
+
+`clients/README.md` records generation, drift, package and uv test commands. CI tests Python 3.10
+and 3.13 with optional pandas present. Fake servers exercise every generated method, exact
+integer/Decimal literals, omission/null/array shape, object frames, discovery, compatibility,
+malformed/bounded responses, redirects and no retry. The standard-library suite also runs
+without pandas, skipping only that optional helper's check.
+
+`node clients/test-clients.mjs` builds an isolated normal host and generates a seeded vaccine
+study, without existing user libraries or provider downloads. It runs the Python client through
+real HTTP and visible window review. Controls compare original native query JSON to direct HTTP,
+retain full-table frequencies/definitions and filtered rank, exercise refusals and timeout,
+and verify actor-labelled History and normal Undo/Redo. It also executes the query example.
+The test driver alone clicks acceptance/rejection; no approval method exists in the client.
+Existing exact native certificate replay is checked separately. No new plot is added.

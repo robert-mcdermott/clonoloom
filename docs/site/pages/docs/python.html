@@ -1,0 +1,39 @@
+---
+title: Python client
+description: Generated Python methods with explicit host permissions, exact JSON numbers and optional pandas object columns.
+lede: Drive the normal research window from Python. Keep native numbers exact and review project changes before they run.
+---
+<p>Wave 8 development, slice 8. Use Python 3.10 or later and the development host with API 2, catalog 1 and permission policy 1. Package/application version stays 0.7.0 until the wave release; published 0.7.0 hosts predate this contract.</p>
+<h2 id="install">Install from the checkout</h2>
+<div class="code"><pre><code>uv add /absolute/path/to/clonoloom/clients/python
+# Optional pandas helper:
+uv add '/absolute/path/to/clonoloom/clients/python[pandas]'
+
+clonoloom --remote-control --allow edits,compute,files</code></pre></div>
+<p>Start the host separately and keep its window open. Without explicit grants, remote access is read-only. The client neither starts a host nor changes permissions. Edits require a person to accept the proposal in the window; accepted changes use named History and normal Undo/Redo. Read <a href="automation.html">Automation permissions</a>.</p>
+<h2 id="query">Query the current repertoire</h2>
+<div class="code"><pre><code>from decimal import Decimal
+import clonoloom
+
+cl = clonoloom.connect(client='Research notebook')
+print(cl.permissions())
+# Open a dataset in ClonoLoom first.
+result = cl.query_clonotypes(
+    where={'field': 'total', 'op': 'gte', 'value': Decimal('2')},
+    limit=10,
+)
+evidence = result.native()
+rows = result.records()
+print(evidence['count'], evidence['matched'], evidence['definitionId'])
+frame = result.frame()  # optional pandas; exact object columns</code></pre></div>
+<p>Generated methods share the host's action catalog and map Python snake_case arguments to the original API names. Query filtering changes membership and displayed rank, retaining current definition, QC, source units and the full-table frequency denominator. It is not statistical inference.</p>
+<h2 id="numbers">Keep numbers and missing values exact</h2>
+<p>Integer tokens become Python <code>int</code>; fractional/exponent tokens become <code>Decimal</code>. Original response bytes remain in <code>result.raw_json</code>, and native query text remains in <code>result.data['resultJSON']</code>. <code>native()</code> decodes that text without converting through float. Finite Decimal arguments are sent as numbers, not quoted strings.</p>
+<p><code>UNSET</code> omits an optional argument. <code>None</code> sends JSON null, which the host may refuse. Lists remain arrays, including empty lists; dictionaries remain objects. Non-finite numbers, tuples, sets and non-string object keys are refused. Host numeric bounds still apply.</p>
+<p>Optional pandas frames use object columns, preserving int/Decimal/None values instead of inferring float columns. Missing dictionary keys become None only in that convenience view. Keep records/raw JSON when that distinction matters. Later arithmetic, dtype conversion and plotting are the caller's choices; the client adds no scientific engine or plot.</p>
+<h2 id="connection">Connect to the intended host</h2>
+<p><code>connect(data_dir=...)</code> reads that library's remote.json. An explicit URL uses only an explicitly supplied token; it never borrows a token from another library. Environment URL/token and default-library discovery follow documented precedence. Only local loopback HTTP is accepted, and proxies and redirects are disabled.</p>
+<p>Every action checks the live API/catalog/policy versions before submission. Incompatible hosts fail without sending the action. Typed errors retain the host code, HTTP status and action; the client never retries an edit or accepts a proposal.</p>
+<h2 id="limits">Bounds and scientific limits</h2>
+<p>Requests are bounded to 1 MiB and responses to 16 MiB. Oversized or malformed responses are explicit failures, not partial successes. A timeout or disconnected caller can leave completed file effects; inspect state before resubmitting. Original certificates and their <a href="certificates.html">exact replay limits</a> remain authoritative. Client objects and DataFrames do not replace original evidence bytes or establish biological validity.</p>
+<p>The <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/PYTHON.md">complete Python guide</a> covers connection precedence, typed errors, timeouts and precision limits. The <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/clients/examples/query_clonotypes.py">query example</a> is runnable with uv. Methods and tests follow the sister applications' generated-client pattern; <a href="mcp.html">MCP</a> shares the same action policy.</p>

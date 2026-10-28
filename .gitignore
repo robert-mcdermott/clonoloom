@@ -9,3 +9,8 @@
 __pycache__/
 /*.zip
 /*.clz
+
+/clients/python/src/*.egg-info/
+/clients/python/build/
+/clients/python/dist/
+/clients/python/.venv/

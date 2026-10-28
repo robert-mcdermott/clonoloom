@@ -4,6 +4,15 @@
 
 ### Added
 
+- **Generated Python client (wave 8, slice 8).** Generate 58 methods and argument/effect/review
+  help from the shared Go catalog, with snapshot and generator drift checks in CI. Use explicit
+  connection overrides, compatible API/catalog/policy checks before actions, typed errors and
+  unchanged host grants/window review. Preserve exact int/Decimal values, original response and
+  native query text, omitted versus null arguments, arrays and optional pandas object columns.
+  Bound JSON and refuse redirects, malformed responses and automatic retries. Validate fake
+  servers, installed distributions and a real host/window using seeded simulated data. Keep
+  scientific workers, five-kind exact replay, version 0.7.0 and release fixtures unchanged.
+
 - **MCP transport (wave 8, slice 7).** `clonoloom mcp` hosts the normal local window
   over bounded stdio JSON-RPC. Support MCP 2026-07-28 per-request discovery and explicit
   2025-11-25 initialization compatibility. Share the HTTP action catalog, grants, argument

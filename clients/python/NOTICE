@@ -1,0 +1,6 @@
+ClonoLoom Python client
+Copyright 2026 Robert McDermott
+
+Licensed under the Apache License, Version 2.0 (LICENSE).
+Connection, generated-method and Result patterns are adapted from the sibling
+CytoWeave and MaveScape clients, by the same author under the same license.

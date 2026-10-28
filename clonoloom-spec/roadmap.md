@@ -3169,7 +3169,7 @@ site publication was performed. Slice 7 (MCP transport) is next after maintainer
 
 ### Slice 7: MCP transport
 
-**Implemented and validated; awaiting maintainer commit.** A1/N5. `clonoloom mcp` follows
+**Committed and pushed by the maintainer (`315f398`).** A1/N5. `clonoloom mcp` follows
 Apache-2.0 CytoWeave/MaveScape's stdio subprocess, normal local host, lazy window and shared
 catalog patterns. MCP 2026-07-28 uses per-request metadata/discovery; 2025-11-25 has explicit
 initialization compatibility. Modern calls never inherit an earlier client's identity or
@@ -3214,6 +3214,57 @@ Validation completed:
   widths pass without accessibility violations or overflow. No site publication was performed.
 
 No commit, push, tag or release was performed. Slice 8 (Python client) follows maintainer review.
+
+### Slice 8: generated Python client
+
+**Implemented and validated; awaiting maintainer commit.** A4 first part. Follow the Apache-2.0
+CytoWeave/MaveScape package layout, generated methods/help, remote.json discovery, standard-library
+HTTP transport and optional pandas helpers. Generate all 58 methods from a Go-checked catalog
+snapshot; CI checks both snapshot and generated-file drift. Python 3.10 is the minimum supported
+version. Package and application version remain 0.7.0; the published host predates this contract.
+
+Check action API 2, catalog 1 and permission policy 1 before every action. Keep explicit URL,
+token and library overrides separate; no discovered token goes to an unrelated explicit URL.
+Disable proxies/redirects and require loopback HTTP. Preserve authoritative host grants and human
+proposal review. Typed errors retain status/action/code and ambiguous completion; never retry,
+launch a host, expand a grant or accept a proposal automatically.
+
+Decode numbers as int/Decimal and retain raw HTTP bytes and native resultJSON. Encode finite
+Decimal values as number tokens without float conversion. Distinguish omitted UNSET from explicit
+None/null, arrays and empty containers. Optional pandas object columns preserve original values;
+missing record keys become None only in that convenience view. Bound inputs/responses/nesting,
+reject malformed and non-finite evidence, and document Python's numeric representation limits.
+No scientific worker, plotting method, replay tolerance or replay kind changes. Original
+certificate bytes remain authoritative. Sources and choices are in research §5.49.
+
+Validation completed:
+
+- Full application/internal race suite passed (application 789.063 s). Native scientific worker
+  and exact replay controls remain unchanged. amd64 catalog and five-kind HTML-certificate replay
+  controls passed in 26.735 s. Full scientific release calibration remains slice 15.
+- Seventeen Python tests pass on both Python 3.10 and 3.13 with pandas, covering all generated
+  methods, precision, omission/null/arrays, object frames, discovery, versions, typed failures,
+  bounds, malformed responses, redirects, timeout and no retry. One thousand seeded exact-value
+  round trips compare the encoder to the standard JSON decoder with Decimal. The standard-library
+  run passes with only the optional pandas check skipped. Disabled Decimal traps cannot turn
+  invalid exponents into accepted NaN evidence.
+- Real host/window validation generates a seeded vaccine study (five artificial subjects,
+  thirty samples) in a temporary directory and opens three observations of one subject. Python
+  and direct HTTP return identical native query strings; filtered rows retain scientific values,
+  definition and full-table frequencies while displayed rank changes. Token/grant/null/unsafe-
+  number refusals, human rejection, timeout cancellation, named History and Undo/Redo pass.
+  The documented query example executes against the same host; the test driver alone clicks
+  proposal controls. No public data download or user library is involved.
+- Wheel and source distributions build with uv and install in isolated environments. Installed
+  package checks verify version, generated methods and exact values. CI adds Python 3.10/3.13,
+  catalog/generator drift, fake-server, wheel-install and real-host checks. No package publication.
+- Go vet, formatting, JavaScript syntax, all six CGO-free platform builds, 163 JavaScript tests
+  and 14 contrast checks pass. The site builds 54 pages with 67 existing screenshot references;
+  all 212 checks across 53 pages, two themes and two widths pass without accessibility violations
+  or overflow. No application visual or scientific plot changes; no new screenshots are needed.
+
+No commit, push, tag, release or publication was performed. Slice 9 (generated R client) follows
+maintainer review; Python and R will share the action/permission/error contract and parity cases.
 
 ## Later waves (outlined)
 
