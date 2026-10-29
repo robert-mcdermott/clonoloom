@@ -3451,3 +3451,50 @@ or confidence interval. The evaluation-context and limitation principle is consi
 [NIST AI RMF 1.0, 2023](https://doi.org/10.6028/NIST.AI.100-1), without claiming certification.
 Exact replay remains the five-kind certificate/headless contract; successful tool execution,
 review acceptance, state restoration and checksum identity do not enlarge its scientific scope.
+
+### 5.55 Container identity is separate from scientific replay
+
+Wave 8 slice 14 packages the same Go `run`/`verify` workers. The sibling applications' named
+input and explicit-task patterns remain relevant, but their headless browser dependency is
+unnecessary here. No scientific method, floating-point tolerance or supported kind is added.
+Source batch QC/motifs and the five captured-evidence replay kinds retain §§5.44 and 5.35/5.38's
+scope and method citations. A container checksum identifies image content, not study validity,
+source authenticity or complete upstream reproducibility.
+
+The Dockerfile pins the official Go 1.26.6 Alpine multi-platform builder index by SHA-256 and
+uses CGO-free offline compilation into a `scratch` runtime. Its allowlisted context is tested
+against injected excluded files; the exported runtime inventory contains the program, notices
+and mount points, without a separate source tree, shell or browser. The executable retains its
+usual embedded assets and fixtures. Go license/patent
+notices are included with the program notices. The supplied revision and dirty-state label
+are operator assertions. Keep image ID/digest, source revision and native run record together;
+whole-image timestamps and verifier-platform provenance are outside scientific-byte equality.
+
+Runtime commands explicitly choose non-root UID/GID, read-only rootfs and inputs, disjoint
+writable outputs, bounded scratch, no network, dropped capabilities and no-new-privileges.
+The command helper prints an argument-safe command and never executes it. It does not rewrite
+scientific parameters or infer provider consent. Permissions derive from the runtime/host,
+not from an image label. These choices follow the official [Dockerfile reference](https://docs.docker.com/reference/dockerfile/),
+[Docker run controls](https://docs.docker.com/engine/containers/run/) and
+[Podman run controls](https://docs.podman.io/en/latest/markdown/podman-run.1.html).
+Podman's additional automatic tmpfs mounts require an explicit read-only-tmpfs choice.
+
+Replay bundle generation copies bounded regular certificate files exactly, pins each input and
+assigns separate task IDs; it performs no scientific transformation or pooling. Input hashes
+are not independent signature evidence. The [Slurm array contract](https://slurm.schedmd.com/job_array.html)
+uses an explicit checked index, and [sbatch's B:TERM warning](https://slurm.schedmd.com/sbatch.html)
+reaches the batch process replaced by `exec`. The example refuses existing destinations and
+propagates native exit status. Selection and native/container replay are locally exercised;
+actual scheduler allocation, policy, log creation and hard-kill grace remain site concerns.
+[Apptainer's default binds](https://apptainer.org/docs/user/latest/bind_paths_and_mounts.html)
+and OCI conversion require separate integration validation; no Apptainer support is claimed.
+
+Validation compares every inventoried scientific output byte between native and container
+source runs on the representative artificial batch-QC and motif studies, then checks archive
+members/hashes with the independent Python inventory reader. All five replay kinds must match
+exactly; a one-bit changed estimate with valid archive checksums must differ, and a future method
+must remain unavailable. Mount and input-pin refusals, explicit terms, existing outputs and
+SIGTERM cancellation are separate operational controls. A handled signal yields cancelled/exit
+2 and removes scratch; OOM, SIGKILL and power failure may not leave a final run record. These
+checks do not turn descriptive batch flags into diagnoses or motif groups into validated
+antigen specificity. The image is an execution environment, not new scientific evidence.

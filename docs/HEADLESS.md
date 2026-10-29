@@ -156,3 +156,12 @@ diagnostics or scientific exports; this acknowledges private-study restrictions,
 permission. Existing supplied certificates retain the verifier's contract. Evidence may contain
 identifiers and sequences and is not de-identified. Matching bytes do not prove authorship or
 scientific validity.
+
+## Container and cluster packaging
+
+The [container and cluster guide](CONTAINERS.md) packages these same commands in a small
+non-root OCI image, with explicit read-only inputs, disjoint writable outputs, bounded scratch
+and no network. Command-printing and replay-bundle helpers preserve original recipe/certificate
+bytes. An explicit native Slurm array example selects one task and a new output per index.
+Packaging adds no source kind, numerical tolerance or replay scope; runtime permissions and
+cluster allocation remain operator choices.

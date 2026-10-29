@@ -108,13 +108,40 @@ jobs:
       - name: Syntax check
         run: |
           shopt -s nullglob
-          for file in web/app.js web/ui/*.js web/lib/*.js web/workers/*.js benchmark/*.mjs validation/*.mjs docs/capture/*.mjs docs/examples/*.mjs docs/site/*.mjs docs/site/assets/*.js; do node --check "$file"; done
+          for file in web/app.js web/ui/*.js web/lib/*.js web/workers/*.js benchmark/*.mjs cluster/*.mjs validation/*.mjs docs/capture/*.mjs docs/examples/*.mjs docs/site/*.mjs docs/site/assets/*.js; do node --check "$file"; done
       - name: node --test
-        run: node --test "web/lib/**/*.test.mjs" benchmark/*.test.mjs
+        run: node --test "web/lib/**/*.test.mjs" benchmark/*.test.mjs cluster/*.test.mjs
       - name: The website built, every link, anchor and screenshot checked (docs/site/build.mjs)
         run: node docs/site/build.mjs "$RUNNER_TEMP/site"
       - name: Validation
         run: node validation/run.mjs --require-data
+
+  containers:
+    name: Native container and cluster contracts
+    timeout-minutes: 15
+    needs: changed
+    if: needs.changed.outputs.test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.6'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.1'
+          python-version: '3.13'
+      - name: Explicit build context allowlist is current
+        run: node validation/container-context-files.mjs
+      - name: Local image only; offline compilation and explicit source revision
+        run: docker build --network=none --build-arg "REVISION=$GITHUB_SHA" -t clonoloom:ci .
+      - name: Filtered build context and minimal runtime inventory
+        run: node validation/container-context.mjs docker clonoloom:ci "$RUNNER_TEMP/container-context"
+      - name: Exact science, five replay kinds, mount refusals and SIGTERM
+        run: node validation/containers.mjs docker clonoloom:ci "$RUNNER_TEMP/container-validation"
 
   python-client:
     name: Python client (${{ matrix.python }})

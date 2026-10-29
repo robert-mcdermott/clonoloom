@@ -45,6 +45,8 @@ web/index.html, web/styles.css, web/app.js     app shell
 web/lib/*.js         pure modules: no DOM, no globals, importable by Node
 web/lib/*.test.mjs   node:test unit tests, one file per module
 web/ui/*.js          DOM components (only these touch document/window)
+Dockerfile, .dockerignore  pinned native OCI build and allowlisted build context
+cluster/             explicit batch-task examples; no automatic scheduler submission
 benchmark/           versioned agent tasks, independent truth, explicit fixture review and local reports
 validation/          checks against independent references and known truth
 validation/reference/  committed reference numbers, each with the script that made it

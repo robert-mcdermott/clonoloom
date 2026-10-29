@@ -1,0 +1,38 @@
+---
+title: Containers and clusters
+description: Run native recipes and exact captured-evidence replay with explicit mounts, permissions and cluster task selection.
+lede: Package the same Go workers for a server or cluster. Declare the inputs, writable paths and one task; preserve the scientific replay boundary.
+---
+<p>Wave 8 development, slice 14. Published v0.7.0 binaries predate this workflow; application version remains 0.7.0.</p>
+<h2 id="build">A small native image</h2>
+<p>The multi-stage Dockerfile pins the official Go builder by digest and produces a static program in a shell-free runtime. The image defaults to a non-root numeric user and help, with no browser or server startup. The allowlisted build context contains compilation inputs and embedded assets; the runtime contains the program and license notices. No registry publication is configured.</p>
+<div class="code"><pre><code>revision="$(git rev-parse HEAD)"
+if test -n "$(git status --porcelain)"; then revision="${revision}-dirty"; fi
+docker build --network=none --build-arg "REVISION=$revision" -t clonoloom:local .
+image_id="$(docker image inspect clonoloom:local --format '{{.Id}}')"</code></pre></div>
+<p>The builder may require an initial download. Compilation has no module/toolchain network access. Keep the image ID and inspect record with the source revision; an operator-supplied revision is provenance, not authentication.</p>
+<h2 id="permissions">Explicit writable boundaries</h2>
+<table><thead><tr><th scope="col">Resource</th><th scope="col">Run policy</th></tr></thead><tbody>
+<tr><th scope="row">Inputs</th><td>Only the chosen input directory, mounted read-only</td></tr>
+<tr><th scope="row">Outputs</th><td>A separate writable parent; each result directory must be new</td></tr>
+<tr><th scope="row">Scratch</th><td>A bounded temporary filesystem, separate from scientific inputs</td></tr>
+<tr><th scope="row">Privileges</th><td>Non-root UID/GID, read-only root filesystem, dropped capabilities and no-new-privileges</td></tr>
+<tr><th scope="row">Network</th><td>None during computation; use the inspected local image without an implicit pull</td></tr>
+<tr><th scope="row">Provider terms</th><td>No automatic acknowledgment or redistribution permission</td></tr>
+</tbody></table>
+<p>The command helper prints the full policy for review and never executes it. It rejects overlapping input/output mounts, linked inputs, mutable image tags and existing destinations. Podman needs its explicit read-only-tmpfs setting; rootless ownership and SELinux labels depend on the site.</p>
+<h2 id="task">Select one replay task</h2>
+<p>A private bundle helper copies selected certificates without rewriting their bytes, pins each with size and SHA-256, and writes a versioned recipe plus an explicit task list. One array index selects one named certificate task. There is no implicit pooling or automatic restart.</p>
+<div class="code"><pre><code>node docs/examples/cluster-replay.mjs /absolute/new-bundle \
+  batch-qc /absolute/qc/result.certificate.clz \
+  motifs /absolute/motifs/result.certificate.clz
+node docs/examples/container-run.mjs docker "$image_id" \
+  /absolute/new-bundle replay.json task-000 \
+  /absolute/existing-results replay-000</code></pre></div>
+<p>For Slurm, the included native batch script quotes paths, checks the index and preserves the native exit status. The operator chooses allocation and submits the job. Local tests exercise array selection without a scheduler. Apptainer conversion and site-specific launchers are not validated here; their mount, environment and signal behavior require separate checks.</p>
+<h2 id="exact">Keep scientific evidence exact</h2>
+<p>Source computation remains limited to batch QC and motifs. Certificate replay covers those two kinds plus cohort features, comparisons and count models. Native/container scientific files are compared byte for byte. One-bit changes fail, unsupported methods remain unavailable, and no tolerance fallback is introduced.</p>
+<p>Replay begins with captured evidence, not upstream source parsing or clonotyping. A container does not establish treatment effects, antigen specificity or independent replication. Methods, citations, source restrictions and identifiers stay with the evidence. Read the existing <a href="headless.html">headless support matrix</a> and <a href="certificates.html">replay limits</a>.</p>
+<h2 id="stop">Cancellation and incomplete output</h2>
+<p>SIGTERM reaches the native process directly. Handled cancellation reports exit 2 and a cancelled record, then cleans temporary snapshots. Hard kills, OOM and scheduler time limits can leave partial outputs. A directory or a matching checksum alone is not a successful scientific run; inspect the final record and exit status.</p>
+<p>The <a href="{{github}}/blob/main/docs/CONTAINERS.md">complete container and cluster guide</a> includes reproducible artificial-study commands, numeric ownership, scratch sizing, failure cases, tests and official runtime/scheduler references. No publication or scheduler submission is automatic.</p>

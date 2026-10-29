@@ -32,7 +32,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | P3 | Ports 8860–8879, clear of the siblings' (Proteoscope 8765–8814, CytoWeave 8770–8789, MaveScape 8820–8839, SituCraft 8840–8859), checked by a test | done (wave 1, slice 1) |
 | P4 | `--offline`, `--data-dir`, `--cache-dir`, `--cache-limit`, `--examples-dir`, `--remote-control`, `--host`, `--port`, `--window`, `--version` (prints `clonoloom X.Y.Z`) | done (wave 1: `--offline`, `--data-dir`, `--examples-dir`, `--host`, `--port`, `--window`, `--version`; wave 2: `--remote-control`, `--cache-dir`, `--cache-limit`) |
 | P5 | Light and dark themes, color-vision-friendly palettes, keyboard operation, WCAG AA contrast, plots described in text | planned (wave 1, every wave) |
-| P6 | A container build file for the headless commands (AIRR Software WG guidance) | planned (wave 8) |
+| P6 | A container build file for the headless commands (AIRR Software WG guidance) | done (wave 8, slice 14: pinned multi-stage native OCI build, non-root runtime, explicit mounts/network/privileges, exact parity and signal validation; no registry publication) |
 | P7 | Apache-2.0; no third-party runtime dependencies in Go or JavaScript; nothing under an incompatible license copied in or bundled | done (wave 1, slice 1; every slice keeps it: the only data built in is HGNC's gene list, CC0) |
 | P8 | Data never leave the computer; loopback only; no telemetry; the only outbound requests are downloads and public-data queries the user starts, to an allow-list of hosts | planned (wave 1) |
 
@@ -165,7 +165,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 | A3 | A typed query tool: "which clonotypes meet these conditions" as a filter tree, never SQL or shell | done (wave 8, slice 6: bounded typed clonotype predicates, unchanged definition/QC and full-table denominators, native JSON text) |
 | A4 | Python and R clients generated from the tool list | done (wave 8, slices 8–9: generated Python/R clients and help, exact numeric values/tokens and faithful frames, explicit host policy, package/fake-server/shared real-host validation) |
 | A5 | An agent benchmark with tasks whose answers are known, graded by code | wave 8 slice 13: eight versioned contract tasks, independent truth, four transports, explicit fixture review, reference/empty controls and optional bounded candidate adapter; no model-performance or general scientific-validity claim |
-| A6 | `clonoloom run --recipe --input --out`: headless runs, one dataset or a batch, friendly to cluster array tasks | partial (wave 8, slice 3: native named-input recipes, explicit batch task selection, source batch QC/motifs and five certificate replay kinds, checksum snapshots, effective recipe/run inventory, cancellation and no overwrite; other source kinds and cluster packaging remain) |
+| A6 | `clonoloom run --recipe --input --out`: headless runs, one dataset or a batch, friendly to cluster array tasks | partial (wave 8, slice 3: native named-input recipes, explicit batch task selection, source batch QC/motifs and five certificate replay kinds, checksum snapshots, effective recipe/run inventory, cancellation and no overwrite; slice 14 adds OCI packaging and explicit replay arrays; other source kinds remain unavailable) |
 | A7 | Remote control from local programs (the documentation's screenshots, later agents) | done (wave 2, slice 1: eleven actions, token for reading files, `remote.json`; the screenshots use it; agents in wave 8) |
 
 ## Examples and learning

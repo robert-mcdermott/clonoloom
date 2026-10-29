@@ -3613,6 +3613,88 @@ requirements, research §5.54, NOTICE, changelog and CI are updated. CI runs onl
 never a paid model. No commit, tag, release or publication was made. Slice 14 (container/cluster)
 is next; release preparation remains slice 15.
 
+**Slice 13 committed and pushed as d63cc53.**
+
+### Slice 14: container and cluster execution
+
+**Plan recorded before implementation.** Package the existing native `run` and `verify`
+commands in a multi-stage, digest-pinned Go build and small non-root OCI image. Preserve
+source and replay support, exact scientific bytes, provider terms and failure statuses.
+No browser, package manager or alternate scientific implementation belongs in the runtime.
+Use an allowlisted build context; include only compilation inputs, embedded fixtures and
+license notices. Record the supplied source revision honestly and keep version 0.7.0.
+
+Document explicit read-only input, writable output and temporary-scratch mounts, numeric
+user/group ownership, no network, dropped capabilities, resource limits and read-only rootfs.
+Use exec-form process startup and SIGTERM forwarding with the existing cancellation contract.
+Image defaults do not substitute for runtime permissions; do not grant host directories,
+remote-control capabilities, provider acknowledgment or network implicitly.
+
+Provide a portable, explicit Slurm replay-array example over versioned recipes and individually
+pinned certificates. Generate a new private input bundle without rewriting scientific evidence;
+select exactly one named task per array index and reserve a distinct new output folder. Keep
+native execution available for sites without a container runtime. Scheduler allocation,
+container availability and site policies remain operator choices; no submission, image push or
+release automation is added. Document Apptainer integration limits honestly if it cannot be
+validated here rather than claiming untested runtime support.
+
+Validate the image's non-root/configuration/filesystem boundary, source computation for batch
+QC and motifs, exact native/container output parity and certificate replay, refused changed
+inputs and existing outputs, explicit provider terms, unsupported kinds, cancellation and
+unchanged sources. Test array selection/refusal without a scheduler, preserving native exit
+codes and task isolation. Use existing independent inventory/science controls, inspect both
+Linux architecture builds where feasible, and add a bounded CI container job plus guides,
+requirements, research citations and roadmap results. No commit, tag, release or publication.
+
+**Completed implementation.** The digest-pinned official Go 1.26.6 build produces a CGO-free
+native image with a numeric non-root default, exec-form entrypoint, SIGTERM and only the program,
+mount points and ClonoLoom/Go notices in the runtime filesystem. An explicit generated allowlist
+contains 345 compilation/embedded-asset files. CI checks list drift and the actual builder/runtime
+inventories; injected excluded files must remain absent. No registry publication is configured.
+
+The container command helper prints a shell-quoted command using an inspected local image ID,
+disjoint read-only inputs/writable output parent, explicit bounded scratch, no network, no new
+privileges, dropped capabilities and non-root numeric ownership. It refuses existing outputs,
+linked inputs and unsafe bindings, and never executes the command or acknowledges provider terms.
+Original recipe parameters remain native JSON. Rootless Podman, SELinux and remote-engine mount
+ownership are documented operator choices; image defaults do not enforce the runtime policy.
+
+A private replay-bundle helper copies bounded regular certificate files without rewriting their
+bytes, pins each file and writes a versioned recipe plus task index. The native Slurm example
+selects exactly one listed task and a distinct new output per array job/task, quotes every path,
+uses exec for signal forwarding and propagates the native status. It submits nothing and never
+silently resumes an existing output. Array selection is locally tested; actual Slurm allocation,
+log policy and Apptainer conversion/runtime integration remain unvalidated site concerns.
+
+Validation completed locally:
+
+- Linux arm64 and emulated Linux amd64 passed both artificial source workflows and all five
+  certificate replay kinds through Podman. Every inventoried scientific source-run output is
+  byte-identical to native output; the independent Python ZIP/inventory checker also passed.
+  These checks establish the existing software replay contract, not biological validity.
+- Valid-checksum one-bit scientific changes report differs; unsupported methods report
+  unavailable. Changed input pins, existing destinations, read-only input/rootfs writes and
+  missing scratch are refused. Restricted source computation requires explicit acknowledgment.
+- All five bundled tasks replay through the native array script and the container. Invalid
+  indices/IDs and existing destinations fail. Handled SIGTERM returns exit 2 with a cancelled
+  record and cleaned scratch. Original source hashes remain unchanged. Hard-kill/OOM recovery
+  and actual scheduler behavior are not claimed by these tests.
+- Focused Go race coverage passed for exact workers, difference/unavailable cases, all four
+  cohort release-fixture designs, cancellation, report protection, both source workers, recipe
+  bounds and task refusals. The initial ten-minute cumulative timeout was resolved by rerunning
+  the complete selection with the project's 30-minute limit; it passed in 671 seconds. No Go
+  production worker changed, and the unrelated full Go suite was not rerun for this slice.
+- **228 JavaScript tests** passed, including 19 bundle/array/container-helper controls. Go vet,
+  syntax/format checks and the 64-action generated-client drift check passed. Both-theme guide
+  screenshots were inspected; the site builds 60 pages with 72 screenshot assets and passes
+  all **236** desktop/phone accessibility/layout checks.
+
+The container/headless guides, site page, CI, conventions, requirements, research §5.55 and
+changelog are updated. Source computation remains batch QC/motifs; exact captured-evidence replay
+remains the same five kinds. No scientific worker, numerical tolerance, action catalog or version
+changed. No commit, push, tag, release, image publication or scheduler submission was performed.
+Slice 15 (final study and release preparation) follows after maintainer review and commit.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |

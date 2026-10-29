@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Containers and cluster execution (wave 8, slice 14).** Package the existing native Go
+  workers in a digest-pinned multi-stage build and small non-root, shell-free OCI runtime.
+  Allowlist build inputs and retain program/runtime license notices. Print reviewed commands
+  with pinned local image IDs, disjoint read-only input/writable output mounts, bounded scratch,
+  no network and explicit privilege/resource limits. Add private byte-preserving replay bundles
+  and an explicit native Slurm array example without automatic submission or acknowledgment.
+  Validate native/container byte parity, all five replay kinds, scientific differences,
+  unavailable methods, mount/overwrite/provider refusals and SIGTERM cancellation. Add CI and
+  operational/scientific limits; source support, replay tolerances and version 0.7.0 stay unchanged.
+
 - **Agent contract benchmark (wave 8, slice 13).** Add eight versioned tasks on independently
   enumerated artificial AIRR inputs, with separate answer, native-evidence and permission
   grades. Exercise counts, fixed denominators, missing versus zero, reviewed grouping changes
