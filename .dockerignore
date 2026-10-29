@@ -231,6 +231,7 @@
 !internal/track/track.go
 !internal/usage/usage.go
 !internal/validate/validate.go
+!internal/workbook/workbook.go
 !local.go
 !main.go
 !mcp.go
@@ -372,4 +373,6 @@
 !web/ui/tracking-attribution.js
 !web/ui/tracking-classes.js
 !web/ui/tracking-tests.js
+!web/ui/workbooks.js
 !window.go
+!workbooks.go

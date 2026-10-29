@@ -279,6 +279,13 @@ jobs:
           go test -run 'TestParquet|TestWriterIndependentFixture' . ./internal/parquet
           uv run --no-project --with pyarrow==26.0.0 --with duckdb==2.0.0 validation/reference/parquet_exports.py "$CLONOLOOM_PARQUET_FIXTURES"
 
+      - name: Excel evidence against an independent workbook reader
+        env:
+          CLONOLOOM_WORKBOOK_OUT: ${{ runner.temp }}/workbook-fixtures
+        run: |
+          go test -run TestWorkbook . ./internal/workbook
+          uv run --no-project --with openpyxl==3.1.5 validation/reference/workbook.py "$CLONOLOOM_WORKBOOK_OUT"
+
   installers:
     name: Installer syntax
     needs: changed

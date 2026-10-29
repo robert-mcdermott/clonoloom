@@ -1,5 +1,21 @@
 # Validation
 
+Wave 9 slice 10: independently audit every exported XLSX node, type, exact scalar token,
+missingness state and companion hash with openpyxl 3.1.5, XML/ZIP parsing and Decimal:
+
+```sh
+CLONOLOOM_WORKBOOK_OUT=/tmp/clonoloom-workbooks go test -run TestWorkbook . ./internal/workbook
+uv run --no-project --with openpyxl==3.1.5 validation/reference/workbook.py /tmp/clonoloom-workbooks
+CLONOLOOM_WORKBOOK_OUT=/tmp/clonoloom-workbooks node docs/capture/capture.mjs workbooks --theme both
+uv run --no-project --with openpyxl==3.1.5 validation/reference/workbook.py /tmp/clonoloom-workbooks
+```
+
+The last audit includes the actual browser download. Native tests also check restricted-source
+acknowledgment, changed evidence, bounds, malformed exact JSON, injection strings and cancellation.
+The screenshot study is artificial; the precision stress fixture is not biological data.
+See [the Excel contract](../docs/EXCEL.md), including the limits of spreadsheet re-saving.
+
+
 Wave 9 slice 6: `uv run --no-project validation/reference/cellranger_json.py` independently
 checks exact JSON/Decimal values, source hashes and shared CSV/AIRR values in the declared
 artificial contig fixtures. Run `go test ./internal/reads ./validation -run TestCellRangerJSON`

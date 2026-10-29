@@ -458,6 +458,22 @@ const scenes = {
     await reject();await pending;
     await js(`(()=>{window.clonoloom.store.setUI({drawer:{open:true,tab:'automation'}},['drawer']);return true})()`);
   },
+  async ['workbooks']() {
+    await batchQCScene();
+    const artifact=await js('window.batchQCCheck.id');
+    await js(`window.clonoloom.setMode('reports')`);
+    if(await js(`document.querySelector('.workbooks-view input[type=checkbox]').checked`))throw new Error('Workbook selected implicitly');
+    const exported=await js(`window.clonoloom.workbooksView.exportWorkbook(['${artifact}'],{title:'Artificial batch QC study · recorded evidence'})`);
+    if(!/^[a-f0-9]{64}$/.test(exported.fingerprint)||exported.recomputed)throw new Error('Workbook export contract');
+    await js(`(()=>{const root=document.querySelector('.workbooks-view');if(!root.querySelector('input[type=checkbox]').checked)root.querySelector('input[type=checkbox]').click();root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    // Refuse a completed response after a newer project edit, then exercise cancellation.
+    await js(`(async()=>{const app=window.clonoloom,v=app.workbooksView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).includes('reports/workbook')){entered();await gate}return response};try{const pending=v.exportWorkbook(['${artifact}']);await started;app.store.commit({...app.store.project,reportSentinel:'keep'},'Concurrent workbook edit');release();let refused=false;try{await pending}catch(e){refused=e.message.includes('analysis changed')}if(!refused||app.store.project.reportSentinel!=='keep')throw new Error('Stale workbook export');}finally{release();window.fetch=original}app.store.undo();await new Promise(r=>setTimeout(r,0));const pending=app.workbooksView.exportWorkbook(['${artifact}']);[...document.querySelectorAll('.workbooks-view button')].find(b=>b.textContent==='Cancel workbook export').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||app.workbooksView.state().busy)throw new Error('Workbook cancellation');return true})()`);
+    await js(`(async()=>{const v=window.clonoloom.workbooksView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async()=>{entered();await gate;return new Response(JSON.stringify({error:'Artificial workbook refusal control'}),{status:409,headers:{'Content-Type':'application/json'}})};try{const pending=v.exportWorkbook(['${artifact}']);await started;let refused=false;try{await v.exportWorkbook(['${artifact}'])}catch(e){refused=e.message.includes('Wait')}if(!refused||!document.querySelector('.workbooks-view input').disabled)throw new Error('Concurrent workbook submission');release();try{await pending}catch{}if(v.state().busy||!document.querySelector('.workbooks-view [role=alert]')?.textContent.includes('Artificial workbook refusal control'))throw new Error('Workbook error hidden');return true}finally{release();window.fetch=original}})()`);
+    await js(`(async()=>{const original=URL.createObjectURL;try{URL.createObjectURL=(blob)=>{window.workbookDownload=blob;return original(blob)};await window.clonoloom.workbooksView.exportWorkbook(['${artifact}'],{title:'Artificial batch QC study · recorded evidence'});return true}finally{URL.createObjectURL=original}})()`);
+    if(process.env.CLONOLOOM_WORKBOOK_OUT){mkdirSync(process.env.CLONOLOOM_WORKBOOK_OUT,{recursive:true});writeFileSync(join(process.env.CLONOLOOM_WORKBOOK_OUT,'browser-batch.zip'),Buffer.from(await js(`window.workbookDownload.arrayBuffer().then(b=>Array.from(new Uint8Array(b)))`)));}
+    await js(`(()=>{const root=document.querySelector('.workbooks-view');if(!root.querySelector('input[type=checkbox]').checked)root.querySelector('input[type=checkbox]').click();root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    await clearToasts();await checkAccessibility();
+  },
   async ['html-reports']() {
     await batchQCScene();
     const artifact=await js('window.batchQCCheck.id');
@@ -1857,7 +1873,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name === 'html-reports' || name === 'offline-report' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name === 'workbooks' || name === 'html-reports' || name === 'offline-report' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

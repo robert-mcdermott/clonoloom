@@ -514,6 +514,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerDeidentification(mux)
 	a.registerParquet(mux)
 	a.registerHTMLReports(mux)
+	a.registerWorkbooks(mux)
 	a.registerAnalyses(mux)
 	a.registerTCRdist(mux)
 	a.registerPgen(mux)

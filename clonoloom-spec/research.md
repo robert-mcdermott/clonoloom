@@ -3848,3 +3848,39 @@ capture manifests, but do not extend the exact scientific replay contract to liv
 All fixtures and screenshots are artificial, explicitly labeled and independently checked; no
 provider implementation or incompatible-licensed source was examined. See
 [ADC-OVERLAP.md](../docs/ADC-OVERLAP.md) for the complete contract and budgets.
+
+### 5.66 Exact saved evidence in Excel workbooks
+
+**Decision (wave 9, slice 10).** Export the five already mapped saved-result contracts as bounded,
+formula-free native SpreadsheetML, with full result and original manifest node indices and
+unchanged JSON/certificate/notice companions. A node is not a biological experimental unit;
+never infer independent replicates or rearrange a saved paired design from worksheet rows.
+Retain original nested denominator, exclusion, testing-family and missingness records. No
+biological method or plot is added; recorded citations and scientific limits travel with each result.
+
+The format sources are Microsoft's [SpreadsheetML document structure](https://learn.microsoft.com/en-us/office/open-xml/spreadsheet/structure-of-a-spreadsheetml-document)
+and [cell reference](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet.cell),
+plus [RFC 6901](https://www.rfc-editor.org/rfc/rfc6901) for unambiguous JSON paths. Use explicit
+inline text, boolean and numeric cells; never infer string identifiers or execute formula-like
+text. JSON scalar token text is independent of spreadsheet numeric representation. Original
+JSON retains full bytes, including insignificant document whitespace and object ordering.
+
+Microsoft's [Excel limits](https://support.microsoft.com/en-us/excel/excel-specifications-and-limits?app=wp)
+and [floating-point explanation](https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/floating-point-arithmetic-inaccurate-result)
+motivate conservative numeric admission: at most 15 significant decimal digits, zero or absolute
+magnitude 1e-300 through 1e300, with negative zero kept as text. This is an application policy,
+not Excel's exact full range. Decimal fractions can still require binary rounding; exact tokens
+remain text for every scalar. Missing/null, empty string/container, absent path and zero are
+distinct, with no unavailable-to-zero conversion. Refuse explicit node/text/XML/evidence bounds
+rather than silently drop information. Very long stored cells can require the formula bar or
+native JSON to inspect fully.
+
+The Apache-2.0 CytoWeave workbook's header/width/freeze/provenance presentation was consulted;
+ClonoLoom's stdlib Go writer and exact evidence mapping are native. No third-party runtime
+package or external scientific implementation is introduced. Independent openpyxl 3.1.5,
+XML/ZIP parsing and Decimal checks compare all mapped nodes and token/cell types against the
+original five kinds and a dedicated artificial edge-case fixture. LibreOffice opening/rendering
+is an interoperability exercise, not validation that editing/re-saving preserves the original:
+it can convert booleans to formulas, remove empty cells and normalize line endings. The original
+ZIP and native companion bytes remain the evidence. See [Excel](../docs/EXCEL.md) for the complete
+scope, bounds and sources, and the existing certificate contract for separate exact replay.

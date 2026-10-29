@@ -294,6 +294,12 @@ Inspect before import; conflicts refuse overwrite.
 [De-identification exports](docs/DEIDENTIFICATION.md) prepare separate pseudonymized dataset
 tables, with explicit free-text/HLA removal, preserved scientific values and a separately requested
 private identity map. They do not sanitize existing archives or establish anonymity.
+[Excel evidence workbooks](docs/EXCEL.md) (unreleased wave 9) preserve exact scalar tokens,
+typed values and full provenance for explicitly selected cohort, batch QC and motif results.
+Precision-sensitive numbers stay text; native JSON, notices and certificates accompany the XLSX.
+Worksheet rows are JSON nodes, not independent subjects; spreadsheet precision and re-saving
+limits remain explicit.
+
 [Typed Parquet exports](docs/PARQUET.md) preserve native clonotype and rearrangement evidence
 with nullable counts, explicit provenance and an optional pseudonymized representation.
 The [worked record-and-reach study](docs/RECORD-STUDY.md) connects these interfaces with exact

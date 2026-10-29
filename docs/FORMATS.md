@@ -1159,3 +1159,13 @@ The [pseudonymized export](DEIDENTIFICATION.md) optionally accepts `storageForma
 existing mapping/removal policy runs before conversion, text tables become typed files and
 `schema.json` is added. Public footers contain sanitized provenance only; the private map
 remains separate. Existing text output stays the default and preserves its v1 contract.
+
+## Excel evidence workbooks (wave 9, slice 10)
+
+`clonoloom-workbook.zip` contains `results.xlsx`, unchanged result/manifest JSON, provider notices,
+native certificates and a version 1 `clonoloom-workbook` inventory with SHA-256 hashes and sheet
+mapping. Five saved-result kinds are mapped. Every JSON node has an explicit type/path; each
+scalar retains its original token as text. Numeric admission is conservative and never guesses
+string types, dates or formulas. Null, empty and absent values remain distinct from zero.
+See [EXCEL.md](EXCEL.md) for exact precision policy, bounds, provider acknowledgment, spreadsheet
+editing limits and the distinction between node rows and biological experimental units.

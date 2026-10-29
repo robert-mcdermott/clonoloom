@@ -4392,6 +4392,75 @@ Version 0.8.0, reader cache 5, scientific identity 1, historical fixtures, numer
 automation permissions and exact replay contracts remain unchanged. No commit, push, tag,
 release or publication was made. Slice 10 has not started.
 
+### Slice 10: precision-preserving Excel evidence workbooks
+
+**Slice 9 committed as `173ec98`. Plan before implementation.** Extend the existing explicitly
+selected saved-result report workflow with a native, dependency-free XLSX presentation. Keep
+the five mapped saved-result/notice contracts (cohort features/comparisons/count models, batch
+QC and motif screens), not untyped inference from arbitrary CSV columns. Each result and full
+manifest becomes a complete typed JSON-node worksheet, with pointer, source type, spreadsheet
+value, exact original scalar token and container child count. This preserves nested denominators,
+exclusions, identifiers, zero, false, null, empty strings and absent fields without guessed joins.
+Use conservative numeric cells within Excel's 15-digit/range limits; otherwise text. Preserve
+original result/manifest bytes and native certificates as ZIP companions; carry methods, provider
+notices and complete parameters, with no new estimator/replay claim. Bound work, refuse rather
+than truncate, prevent formula/link injection, test with an independent workbook reader and
+review both-theme UI and a rendered workbook. No new automation action or version change.
+
+**Implemented.**
+
+- Native stdlib SpreadsheetML writer with explicit text/number/boolean cells, exact original
+  scalar tokens, RFC 6901 paths, complete container rows and full original manifest indexing.
+  Strings never become dates or formulas; null/absent/empty/zero remain distinct. Numeric
+  admission is conservative (15 significant digits, zero or absolute magnitude 1e-300–1e300,
+  negative zero as text). Native companions remain authoritative for original bytes.
+- Reports workflow selects 1–8 mapped saved results, verifies their existing certificate/file
+  contracts, carries methods/citations/provider terms, and downloads a deterministic XLSX plus
+  original JSON/manifests/notices/certificates in a hashed ZIP. Full parameters, denominators,
+  exclusions and source fingerprints remain present. No new estimator or replay claim.
+- Explicit combined-node, cell, text, XML and companion-evidence bounds; refuse oversized
+  evidence rather than omit rows. Provider acknowledgment, cancellation, concurrent-submit
+  refusal and stale-project suppression. No new automation action or client/MCP permission.
+- Frozen/filterable headers, visible column boundaries and landscape printing with repeated
+  headers. Reviewed precision controls and an artificial batch-study overview in LibreOffice.
+  Document spreadsheet display limits and loss of the exact-evidence contract after re-saving:
+  a spreadsheet application can replace booleans with formulas, discard empty-string cells or
+  normalize line endings. Keep original native companions; cell rows are not independent subjects.
+- Independent openpyxl/XML/ZIP/Decimal reader for every node/token/type in all five mapped kinds
+  and the real browser download, plus CI integration. Original release fixtures remain immutable;
+  use bounded native count/motif controls for successful export and explicitly refuse an oversized
+  historical result. The numerical edge-case fixture is declared artificial format data.
+- Documented contract, precision policy, scientific limits, primary format sources, sibling
+  attribution and both-theme screenshots. O4 remains partial: other workbook mappings are outside
+  this contract, and GraphPad Prism remains slice 11.
+
+**Validation completed.**
+
+- Full application race suite: 1,199.532 s; full internal/scientific race suite passes, including
+  the validation package in 975.153 s. Existing opt-in published-download/container checks remain
+  skipped when their external inputs are not requested. Historical fixtures and replay hashes
+  remain unchanged.
+- Final focused workbook race controls pass (62.549 s application tests); amd64 workbook/API
+  controls pass (7.825 s application, 0.962 s writer). Cover all five native kinds, mixed selections,
+  original bytes, deterministic output, certificate integrity, restricted terms, altered evidence,
+  cancellation, invalid JSON/Unicode, formula-like strings, numeric boundaries and explicit refusal.
+- Independent openpyxl 3.1.5/XML/ZIP/Decimal audit: 66,663 typed JSON nodes across five native
+  result/provenance exports, the actual browser ZIP and 33 precision-control nodes; all original
+  scalar tokens, value-cell types, missingness states and companion hashes agree. Seven precision
+  fixture numbers deliberately remain text. CI runs this independent audit.
+- Both-theme artificial-study browser controls pass for empty initial selection, successful
+  download, errors, cancellation, stale responses and concurrent-submit prevention. Both screenshots
+  reviewed; independent LibreOffice rendering checked the Read me and precision sheets, including
+  literal escape-looking text, identifiers and exact scalar columns. Re-save limits are documented.
+- All 233 JavaScript tests, Go vet and six CGO-free darwin/linux/windows × amd64/arm64 builds pass.
+  Site build: 61 pages / 83 screenshot pairs; 240 accessibility/layout checks pass. Container source
+  allowlist: 375 inputs. Formatting and `git diff --check` are clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances,
+automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 11 has not started.
+
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Exact Excel evidence workbooks (wave 9, slice 10).** Export explicitly selected saved
+  cohort, batch QC and motif results with typed JSON-node value/provenance sheets, original
+  scalar tokens, methods, notices and native JSON/certificate companions. Keep precision-sensitive
+  numbers and all identifiers as text; distinguish null, absent fields, empty values and zero.
+  Refuse oversized or changed evidence and preserve provider acknowledgment. Add independent
+  workbook-reader controls, artificial both-theme browser validation and clear spreadsheet
+  precision, editing and scientific limits. No new estimator or replay/automation contract.
+
 - **Observed public-cohort overlap (wave 9, slice 9).** Compare one local sample with explicitly
   selected, checksum-verified ADC captures under a named productive/locus/exact-junction
   presence contract. Report eligible/excluded records, shared/union counts, Jaccard and
