@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Evidence certificates · ClonoLoom</title>
+  <meta name="description" content="Preserve and check exact saved result bytes without confusing integrity with scientific recomputation." />
+  <link rel="canonical" href="https://robert-mcdermott.github.io/clonoloom/docs/certificates.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Evidence certificates" />
+  <meta property="og:description" content="Preserve and check exact saved result bytes without confusing integrity with scientific recomputation." />
+  <meta property="og:url" content="https://robert-mcdermott.github.io/clonoloom/docs/certificates.html" />
+  <meta property="og:image" content="https://robert-mcdermott.github.io/clonoloom/assets/img/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07090e" />
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script>try { const t = localStorage.getItem('clonoloom-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script src="../assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="../#features">Features</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a href="../install.html">Install</a>
+        <a href="../science.html">Science</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-button" href="https://github.com/robert-mcdermott/clonoloom" aria-label="ClonoLoom on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        </a>
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch between light and dark">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <button class="icon-button nav-toggle" type="button" aria-label="Menu" aria-controls="site-nav" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Documentation">
+      <button class="btn docs-menu-toggle" type="button" aria-expanded="false">Documentation menu <span aria-hidden="true">▾</span></button>
+      <nav>
+        <h4>Start</h4>
+        <ul>
+          <li><a href="./">Overview</a></li>
+          <li><a href="getting-started.html">Getting started</a></li>
+          <li><a href="opening-data.html">Opening data</a></li>
+        </ul>
+        <h4>Quality and clonotypes</h4>
+        <ul>
+          <li><a href="qc.html">Quality control</a></li>
+          <li><a href="contamination.html">Contamination evidence</a></li>
+          <li><a href="batch-qc.html">Batch QC</a></li>
+          <li><a href="clonotypes.html">Clonotypes</a></li>
+        </ul>
+        <h4>Repertoires</h4>
+        <ul>
+          <li><a href="diversity.html">Diversity</a></li>
+          <li><a href="rarefaction.html">Rarefaction</a></li>
+          <li><a href="genes.html">Genes and junctions</a></li>
+          <li><a href="overlap.html">Overlap</a></li>
+        </ul>
+        <h4>Tracking</h4>
+        <ul>
+          <li><a href="subjects.html">Subjects and time points</a></li>
+          <li><a href="tracking.html">Following clonotypes</a></li>
+          <li><a href="tests.html">Expanded and contracted clonotypes</a></li>
+          <li><a href="classes.html">Classes across time points</a></li>
+          <li><a href="attribution.html">Attribution to a reference</a></li>
+        </ul>
+        <h4>Specificity</h4>
+        <ul>
+          <li><a href="motifs.html">Motifs and sequence signatures</a></li>
+          <li><a href="convergence.html">Subject recurrence and HLA</a></li>
+          <li><a href="tcrdist.html">Similar receptors (TCRdist)</a></li>
+          <li><a href="neighborhoods.html">Neighborhoods and backgrounds</a></li>
+          <li><a href="generation.html">Generation probabilities</a></li>
+          <li><a href="networks.html">Clonotype networks</a></li>
+          <li><a href="database.html">Specificity databases</a></li>
+        </ul>
+        <h4>Cells</h4>
+        <ul>
+          <li><a href="cell-study.html">A complete study</a></li>
+          <li><a href="cells.html">Expression evidence</a></li>
+          <li><a href="pseudobulk.html">Pseudobulk counts</a></li>
+          <li><a href="pseudobulk-de.html">Pseudobulk expression</a></li>
+        </ul>
+        <h4>B cells</h4>
+        <ul>
+          <li><a href="bcell-inputs.html">Sequence evidence</a></li>
+          <li><a href="bcell-families.html">Clonal families</a></li>
+          <li><a href="bcell-germlines.html">Germlines</a></li>
+          <li><a href="bcell-shm.html">Somatic hypermutation</a></li>
+          <li><a href="bcell-lineages.html">Lineage trees</a></li>
+          <li><a href="bcell-isotypes.html">Isotypes</a></li>
+        </ul>
+        <h4>Cohorts</h4>
+        <ul>
+          <li><a href="cohort-study.html">Complete cohort studies</a></li>
+          <li><a href="cohort-design.html">Study design</a></li>
+          <li><a href="cohort-features.html">Subject features</a></li>
+          <li><a href="cohort-comparisons.html">Group comparisons</a></li>
+          <li><a href="cohort-counts.html">Replicated counts</a></li>
+          <li><a href="definition-robustness.html">Definition robustness</a></li>
+        </ul>
+        <h4>Results</h4>
+        <ul>
+          <li><a href="record-study.html">A complete record study</a></li>
+          <li><a href="figures.html">Figures and exports</a></li>
+          <li><a href="record.html">The record</a></li>
+          <li><a href="certificates.html" aria-current="page">Evidence certificates</a></li>
+          <li><a href="headless.html">Headless recipes</a></li>
+          <li><a href="containers.html">Containers and clusters</a></li>
+          <li><a href="checkpoints.html">Analysis checkpoints</a></li>
+          <li><a href="project-archives.html">Portable archives</a></li>
+          <li><a href="deidentification.html">De-identification</a></li>
+          <li><a href="parquet.html">Typed Parquet exports</a></li>
+          <li><a href="html-reports.html">Self-checking reports</a></li>
+        </ul>
+        <h4>Reference</h4>
+        <ul>
+          <li><a href="simulation.html">Simulated studies</a></li>
+          <li><a href="remote-control.html">Remote control</a></li>
+          <li><a href="automation.html">Automation permissions</a></li>
+          <li><a href="mcp.html">MCP clients</a></li>
+          <li><a href="python.html">Python client</a></li>
+          <li><a href="r.html">R client</a></li>
+          <li><a href="agent-benchmark.html">Agent benchmark</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="main" class="doc">
+      <h1>Evidence certificates</h1>
+      <p class="doc-lede">Keep a result's recorded evidence, then check that its bytes agree. Integrity and scientific reproducibility are separate questions.</p>
+
+<p class="callout">ClonoLoom 0.8.0: integrity certificates currently support cohort feature tables, group comparisons, replicated count models, batch QC and motif screens. Choose integrity checking or exact replay from captured evidence. See the <a href="headless.html">headless workflow support matrix</a> for exact boundaries.</p>
+<h2 id="prepare">Preserve a saved result</h2>
+<p>Open <strong>Reports</strong>, choose a supported saved result and select <strong>Inspect certificate</strong>. The inventory names every saved file and its SHA-256. Keep the certificate fingerprint separately if you need to recognize that exact record later. Select <strong>Export integrity certificate</strong> to download its <code>.certificate.clz</code> archive.</p>
+<p>The archive retains the exact saved manifest, recipe and result bytes, provider notice and interpretation limits. Original source files and separate parent artifacts are not bundled. Captured evidence can nevertheless contain raw counts, sequences, subject identifiers and paths; this is not a de-identified export. Provider terms still apply after the original dataset is closed.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/certificates-dark.webp" width="2000" height="1250" loading="lazy" alt="Reports view showing exact replay of an artificial cohort comparison, its captured-input boundary and matching output digests" /><img class="shot-light" src="../assets/img/certificates-light.webp" width="2000" height="1250" loading="lazy" alt="Reports view showing exact replay of an artificial cohort comparison, its captured-input boundary and matching output digests" /></div>
+        <figcaption>The example uses an artificial cohort with known generating truth. A matching checksum does not establish that its scientific model is appropriate.</figcaption>
+      </figure>
+<h2 id="check">Check an archive</h2>
+<p>Under <strong>Check or replay a certificate</strong>, select <strong>Integrity only</strong> or <strong>Exact replay</strong>, optionally enter the independently recorded fingerprint, then choose the archive. The local Go host checks it without opening recorded source paths. Replay runs only the supported Go workers in a disposable store. Export the verification JSON to retain the outcome; use <strong>Cancel verification</strong> to stop.</p>
+<div class="code wrap"><pre><code>clonoloom verify --integrity result.certificate.clz
+clonoloom verify --replay --expect SHA256 --report replay.json result.certificate.clz</code></pre></div>
+<p>The terminal command needs no browser, running application or network. Replace <code>SHA256</code> with the separately recorded fingerprint. The report path must be new. Exit 0 means the requested check matched; 1 means invalid or differing evidence; 2 means unavailable replay or an operational failure. Choose exactly one mode; a bare command never silently substitutes integrity for replay.</p>
+<h2 id="interpret">Read the verdict precisely</h2>
+<p><strong>Integrity match — not recomputed</strong> means the bytes agree with the saved inventory. No statistic has been recomputed, original source or separate parent checked, authorship authenticated, or scientific assumption validated. A digest is not a signature: anyone who can replace the contents and checksums can make a new internally consistent record. Pinning a separately retained fingerprint detects a different record.</p>
+<p><strong>Exact replay match — captured evidence</strong> means every supported worker output byte and scientific metadata matched. Feature tables are rebuilt from embedded diversity measurements; comparison tests and count models are rerun, including embedded feature parents. Count models use captured counts. Original receptor files and upstream diversity computations are not verified or rerun. Matching calculations do not establish model calibration, replication with new data or biological truth.</p>
+<p><strong>Replay differs</strong> and <strong>Replay unavailable</strong> are separate outcomes. Unknown methods, incomplete evidence and failed worker checks never become a match. The JSON report retains original provenance separately from the current verifier and lists exact expected/recomputed digests for completed steps. New job IDs and timestamps do not replace original provenance.</p>
+<p>The original subject units, denominators, missing values, fitted results, conditional intervals and method references remain in the saved evidence without numeric conversion. Their interpretation and limitations remain those of the original analysis. See the <a href="cohort-study.html">complete cohort study</a> and <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/CERTIFICATES.md">format, bounds and command reference</a>.</p>
+
+<h2 id="other-evidence">Batch QC and motif evidence</h2>
+<p>Batch QC replay recomputes descriptive medians, MADs and flags from captured sample QC measurements. It does not repeat source parsing or diagnose contamination. Motif replay recomputes the existing GLIPH2-style ClonoLoom adaptation from captured sequence units, with the recorded testing family. It does not establish upstream GLIPH2 equivalence or antigen specificity. Each report states its own captured-input scope.</p>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/certificates-batch-qc-dark.webp" width="2000" height="1250" loading="lazy" alt="Exact batch QC replay report with its descriptive scope and matching output digests" /><img class="shot-light" src="../assets/img/certificates-batch-qc-light.webp" width="2000" height="1250" loading="lazy" alt="Exact batch QC replay report with its descriptive scope and matching output digests" /></div>
+        <figcaption>Artificial batch study with missing values, small batches and declared exclusions. Exact replay retains those limits.</figcaption>
+      </figure>
+<figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/certificates-motifs-dark.webp" width="2000" height="1250" loading="lazy" alt="Exact motif replay report naming the GLIPH2 adaptation and its scientific limits" /><img class="shot-light" src="../assets/img/certificates-motifs-light.webp" width="2000" height="1250" loading="lazy" alt="Exact motif replay report naming the GLIPH2 adaptation and its scientific limits" /></div>
+        <figcaption>Artificial query/background sequence units with planted signatures and null controls. Replay agreement does not prove antigen specificity.</figcaption>
+      </figure>
+
+      <nav class="doc-pager" aria-label="Pages">
+        <a class="prev" href="record.html"><span>Previous</span>The record</a>
+        <a class="next" href="headless.html"><span>Next</span>Headless recipes</a>
+      </nav>
+    </main>
+
+    <aside class="toc" aria-label="On this page">
+      <h4>On this page</h4>
+      <ul></ul>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="../"><img src="../assets/img/logo.svg" alt="" width="30" height="30" /><span>Clono<b>Loom</b></span></a>
+          <p>A local-first workbench for T- and B-cell receptor repertoires: data checked, clonotypes defined explicitly, repertoires measured with their uncertainty, on your own computer, every step on record. Free and open source under the Apache License 2.0.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="../#features">Features</a></li>
+            <li><a href="../install.html">Install</a></li>
+            <li><a href="../science.html">Science</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/blob/main/CHANGELOG.md">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Documentation</h4>
+          <ul>
+            <li><a href="../docs/getting-started.html">Getting started</a></li>
+            <li><a href="../docs/clonotypes.html">Clonotypes</a></li>
+            <li><a href="../docs/diversity.html">Diversity</a></li>
+            <li><a href="../docs/overlap.html">Overlap</a></li>
+            <li><a href="../docs/figures.html">Figures and exports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Project</h4>
+          <ul>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom">GitHub</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/releases">Releases</a></li>
+            <li><a href="https://github.com/robert-mcdermott/clonoloom/issues">Issues</a></li>
+            <li><a href="../science.html#cite">Cite ClonoLoom</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">ClonoLoom is licensed under the Apache License 2.0. It is for research use only: it is not a medical device and makes no diagnostic claims. See <a href="../science.html#credits">credits</a>.</div>
+    </div>
+  </footer>
+</body>
+</html>
