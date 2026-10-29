@@ -1017,3 +1017,89 @@ features. Selected counts and design CSV columns share the saved canonical obser
 subject fixed-effect coding and comparison orientation are explicit. Cell membership remains
 in the pinned count parent. This is unmoderated NB2 with median-ratio offsets, not the full
 edgeR/DESeq2 pipeline; research §5.40 records assumptions, bounds and independent references.
+
+## Evidence certificates (0.8.0)
+
+A single supported cohort, batch-QC or motif result can be exported as `.certificate.clz`: a ZIP containing
+`certificate.json` (format `clonoloom-certificate`, version 1), exact saved `manifest.json`,
+artifact files under `artifact/`, provider NOTICE and interpretation limits. This is not a
+project archive. Scope `recorded-artifact-bytes` and report `recomputed: false` explicitly
+exclude scientific replay. See [CERTIFICATES.md](CERTIFICATES.md) for the canonical record,
+fingerprint, size/path limits, integrity verdicts and native CLI. No source files are added,
+but captured evidence can contain raw data and identifiers; provider restrictions still apply.
+
+Wave 8 slice 2 keeps certificate v1 unchanged and adds a separate `clonoloom-replay` v1
+report, scope `captured-cohort-evidence`. It embeds the integrity report, original manifest,
+current verifier software/platform, findings and ordered step digests/metadata comparisons.
+Only explicitly supported workers execute in a temporary store; exact output/metadata agreement
+is distinct from source verification and biological validity. See [replay scope and verdicts](CERTIFICATES.md#exact-replay-boundary).
+
+Wave 8 slice 3 adds `captured-batch-qc-evidence` and `captured-motif-evidence` replay scopes
+without changing certificate v1 or existing cohort scopes. Headless recipe v1
+(`clonoloom-run-recipe`) pins named input filenames, byte sizes and SHA-256, a selected task,
+normalized parameters and an optional clock. The final `clonoloom-run` v1 record inventories
+outputs and preserves completed/failed/differing/unavailable/cancelled outcomes. Neither is a
+project archive. See [HEADLESS.md](HEADLESS.md) for exact fields, bounds, support and exit codes.
+
+
+## Analysis checkpoints (0.8.0)
+
+`clonoloom-checkpoint` v1 is local immutable evidence: original `project.json` plus the original
+manifests and inventoried files of attached completed artifacts. Its `cp-<SHA256>` identity pins
+a sorted inventory; source paths are never opened. `clonoloom-checkpoint-diff` v1 contains complete
+raw before/after JSON strings beneath descriptive changes. Recovery restores analysis values and
+exact attached result bytes, retaining current project identity/history. Neither format is a
+certificate, portable archive or running-job state. See [CHECKPOINTS.md](CHECKPOINTS.md) for
+bounds, version checks, conflict refusal, cancellation, numeric precision and replay limits.
+
+## Self-checking HTML reports (0.8.0)
+
+`clonoloom-html-report` v1 inventories exact embedded content, geometry source, stylesheet,
+original result JSON and native certificates for 1–8 explicitly selected supported results.
+Its scope is `embedded-report-bytes`; its SHA-256 fingerprint hashes the exact Go-encoded
+inventory bytes. It is an offline HTML envelope, not a new certificate or scientific replay
+format. Go renders exact numeric tokens in tables; the browser checks bytes and places existing
+figure marks. Unsupported/oversized evidence is refused without row truncation. See
+[HTML-REPORTS.md](HTML-REPORTS.md) for fields, limits, provider gates and the trusted-checker boundary.
+
+
+## Portable project archives (0.8.0)
+
+Version 1 `.clz` ZIPs retain original project/history, inventoried results and available parents,
+checkpoint closure, notices and optionally permitted sources. A sorted SHA-256 inventory binds
+all members; the record fingerprint excludes its own fingerprint field. Import preserves those
+bytes under `imports/<fingerprint>` and creates a separate working project with verified local
+source paths. No scientific computation runs. Unsupported paths/versions, missing mandatory
+evidence, altered members and destination conflicts refuse import. See
+[PROJECT-ARCHIVES.md](PROJECT-ARCHIVES.md) for the exact schema, bounds, source permissions,
+checkpoint bindings and interruption limits.
+
+## De-identification table exports (0.8.0)
+
+Slice 11 adds `clonoloom-deidentified-tables` v1, an allowlisted ZIP of native scientific tables,
+pseudonymized identities, explicitly retained sample annotations and fresh inventory/notice.
+The separate `clonoloom-private-identity-map` v1 never enters that ZIP. Retained table values
+match ordinary native exports under the same definition and QC; original scientific artifacts
+and source files stay unchanged. Unsupported nested provenance refuses AIRR export. Existing
+archives, reports and certificates retain their identities and are not transformed. See
+[DEIDENTIFICATION.md](DEIDENTIFICATION.md) for exact fields, linkage/removal rules, bounds,
+private review/download behavior and scientific/privacy limits.
+
+## Typed Parquet dataset exports (wave 8, slice 12)
+
+The [Parquet guide](PARQUET.md) defines the version 1 mapped native-table format. Ordinary
+exports contain clonotypes or AIRR rearrangements, optional invariant sample denominators,
+`schema.json`, NOTICE and a SHA-256 inventory. Nullable INT64 counts distinguish zero and
+missing; conversion refuses fractions and native counts beyond 2^53−1. Native AIRR flags
+become BOOLEAN; other evidence stays UTF-8 text, including invalid annotations. Original
+identities, source provenance, effective definition/QC and units remain explicit.
+
+Clonotype sample columns use stable positional keys plus a sample-name map. Invariant shares
+retain DOUBLE native precision, full retained-abundance denominators and rule limitations.
+Parquet footers repeat the corresponding schema and notice. This is not a fresh verification
+of source files, a general result converter, a Parquet reader or a scientific replay certificate.
+
+The [pseudonymized export](DEIDENTIFICATION.md) optionally accepts `storageFormat:"parquet"`: its
+existing mapping/removal policy runs before conversion, text tables become typed files and
+`schema.json` is added. Public footers contain sanitized provenance only; the private map
+remains separate. Existing text output stays the default and preserves its v1 contract.

@@ -1,0 +1,24 @@
+---
+title: MCP clients
+description: Connect a local MCP client to ClonoLoom with explicit grants, visible review and exact native results.
+lede: A local MCP client drives the same research window and methods. Give it explicit capabilities and review proposed changes before they run.
+---
+<p>ClonoLoom 0.8.0. 7.0.</p>
+<h2 id="connect">Connect a client</h2>
+<div class="code"><pre><code>clonoloom mcp --data-dir /absolute/path/to/mcp-library
+# Local data, computation and proposed edits:
+clonoloom mcp --data-dir /absolute/path/to/mcp-library --allow edits,compute,files</code></pre></div>
+<p>Configure your MCP client's executable and argument array with these values. Default access is read-only. Use one host per library and a dedicated directory. The normal local window opens on the first permitted tool call. With <code>--window none</code>, open the address printed to stderr. Discovery and tool lists need no window. Closing stdin cancels pending work and stops the owned host. stdout is exclusively JSON-RPC.</p>
+<h2 id="review">Review proposed changes</h2>
+<p>Tool discovery lists only actions allowed by the launch grants. Knowing another action's name cannot widen them. Both HTTP and MCP use the same argument validation, window review, History and bounded audit. Client capabilities and names do not grant application permissions. There is no tool to accept proposals. Read <a href="automation.html">Automation permissions</a> for cancellation, Undo and file-effect limits.</p>
+<shot name="mcp" alt="A named MCP notebook proposes a clonotype definition change in an artificial vaccination study">A person reviews the exact arguments before a definition change. These are simulated repertoires from one subject at three observations, not a treatment-effect analysis.</shot>
+<shot name="mcp-audit" alt="The session audit lists MCP requests and a rejected definition proposal">The host retains its last 500 audit events. Caller names are supplied by clients, not authenticated identities.</shot>
+<h2 id="versions">Two explicit protocol modes</h2>
+<p>MCP 2026-07-28 uses <code>server/discover</code> and per-request protocol/capability metadata. MCP 2025-11-25 uses <code>initialize</code> followed by <code>notifications/initialized</code>. Modern requests never inherit a previous client's label or capabilities. Only tools are advertised; there is no network MCP endpoint, sampling or server-initiated request.</p>
+<h2 id="exact">Keep exact results</h2>
+<p>Text and structured content carry the native result envelope without a floating-point decoding round trip. Typed clonotype queries retain native JSON text, current definition and QC, source units and full-table denominators. Filtering changes membership and displayed rank, without renormalizing frequencies. Use a precision-preserving client decoder and original certificate bytes for exact replay.</p>
+<p>MCP adds no scientific method or replay tolerance. <a href="certificates.html">Certificate replay</a> keeps its existing five-kind captured-input boundary. Transport success and human acceptance do not prove biological validity or specificity.</p>
+<h2 id="limits">Bounds and cancellation</h2>
+<p>Input frames are at most 2 MiB, arguments 1 MiB and outgoing tool responses 16 MiB. Oversized results return an explicit error, never truncated success; the action may already have completed. At most 16 calls wait concurrently and one window action executes at a time. Request IDs are unique within a process, bounded to 65,536 requests. String IDs/tokens have a 512-byte encoded bound; numeric IDs/tokens must be safe integers.</p>
+<p>Optional five-second progress messages measure elapsed waiting time, not percent complete. Cancel by request ID; no later messages are emitted after cancellation is processed. Completed file effects can remain. Reinspect state before resubmitting. Window connection waits are bounded to 40 seconds and window actions to ten minutes. Known live hosts using the same library are refused, but this is not an interprocess lock.</p>
+<p>The <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/MCP.md">complete MCP guide</a> includes configuration, protocol examples and precise limits, with links to the official specification. The implementation follows the <a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio">stdio transport</a>, <a href="https://modelcontextprotocol.io/specification/2026-07-28/server/tools">tools contract</a> and <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle">legacy lifecycle</a>.</p>

@@ -45,6 +45,9 @@ web/index.html, web/styles.css, web/app.js     app shell
 web/lib/*.js         pure modules: no DOM, no globals, importable by Node
 web/lib/*.test.mjs   node:test unit tests, one file per module
 web/ui/*.js          DOM components (only these touch document/window)
+Dockerfile, .dockerignore  pinned native OCI build and allowlisted build context
+cluster/             explicit batch-task examples; no automatic scheduler submission
+benchmark/           versioned agent tasks, independent truth, explicit fixture review and local reports
 validation/          checks against independent references and known truth
 validation/reference/  committed reference numbers, each with the script that made it
 validation/projects/   a project saved by each release, which every later one must open
@@ -148,8 +151,9 @@ ClonoLoom is for research use. It is not a medical device and makes no diagnosti
 
 ## Tests and validation
 
-- `go test ./...` and `node --test "web/lib/**/*.test.mjs"` are fast (seconds), deterministic, and
-  check numbers against independently known values: hand-computed, published, simulated truth, or
+- Unit checks and `node --test "web/lib/**/*.test.mjs"` are fast and deterministic. Complete
+  Go scientific/release suites take longer; use the documented timeouts and bounded batches
+  when needed, preserving every check and tolerance. Check numbers against independently known values: hand-computed, published, simulated truth, or
   an independent tool's output committed under `validation/reference/` with the script that
   produced it and the tool's version.
 - Readers are checked against independent readers (the `airr` library, pandas, scirpy) on every
@@ -177,3 +181,13 @@ Replicated clonotype count inference lives in `internal/countmodel/`: Go owns th
 count capture, offsets, NB2 fitting, dispersion, intervals and correction family. Browser plots
 only lay out saved CPM/effects; failed fits and filtered counts retain provenance. No Poisson
 fallback, silent subject deletion or unvalidated moderation is allowed. See research §5.33.
+
+The 0.8.0 record-and-reach study joins supported transports without changing scientific methods.
+Keep original native JSON as evidence; compare bytes separately from independent truth checks.
+Checkpoint restore, certificate integrity, captured-evidence replay and source recomputation are
+distinct operations. The worked guide states their supported kinds and limits. New release
+fixtures may normalize reopening paths only in a separate portable project; original project,
+checkpoint, certificate and result bytes remain intact. Never rewrite older release fixtures.
+Reviewed action startup invalidates older asynchronous work without resetting loaded scientific
+views; actual project replacement/recovery/cancellation still invalidates those views. Undo and
+Redo notify selection listeners so still-selected immutable results reload.

@@ -108,13 +108,129 @@ jobs:
       - name: Syntax check
         run: |
           shopt -s nullglob
-          for file in web/app.js web/ui/*.js web/lib/*.js web/workers/*.js validation/*.mjs docs/capture/*.mjs docs/site/*.mjs docs/site/assets/*.js; do node --check "$file"; done
+          for file in web/app.js web/ui/*.js web/lib/*.js web/workers/*.js benchmark/*.mjs cluster/*.mjs validation/*.mjs docs/capture/*.mjs docs/examples/*.mjs docs/site/*.mjs docs/site/assets/*.js; do node --check "$file"; done
       - name: node --test
-        run: node --test "web/lib/**/*.test.mjs"
+        run: node --test "web/lib/**/*.test.mjs" benchmark/*.test.mjs cluster/*.test.mjs
       - name: The website built, every link, anchor and screenshot checked (docs/site/build.mjs)
         run: node docs/site/build.mjs "$RUNNER_TEMP/site"
       - name: Validation
         run: node validation/run.mjs --require-data
+
+  containers:
+    name: Native container and cluster contracts
+    timeout-minutes: 15
+    needs: changed
+    if: needs.changed.outputs.test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.6'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.1'
+          python-version: '3.13'
+          enable-cache: false # The container oracle uses only the Python standard library.
+      - name: Explicit build context allowlist is current
+        run: node validation/container-context-files.mjs
+      - name: Local image only; offline compilation and explicit source revision
+        run: docker build --network=none --build-arg "REVISION=$GITHUB_SHA" -t clonoloom:ci .
+      - name: Filtered build context and minimal runtime inventory
+        run: node validation/container-context.mjs docker clonoloom:ci "$RUNNER_TEMP/container-context"
+      - name: Exact science, five replay kinds, mount refusals and SIGTERM
+        run: node validation/containers.mjs docker clonoloom:ci "$RUNNER_TEMP/container-validation"
+
+  python-client:
+    name: Python client (${{ matrix.python }})
+    needs: changed
+    if: needs.changed.outputs.test == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.10', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.1'
+          python-version: ${{ matrix.python }}
+      - name: Catalog and generated wrappers are current
+        run: |
+          go test -run '^TestTheClientsToolListIsCurrent$' .
+          node clients/generate.mjs --check
+      - name: Python exact JSON and fake-server tests
+        env:
+          PYTHONPATH: clients/python/src
+          CLONOLOOM_REQUIRE_PANDAS: '1'
+        run: uv run --no-project --python '${{ matrix.python }}' --with pandas clients/python/tests/test_client.py -v
+      - name: Build and install wheel in an isolated uv environment
+        run: |
+          uv build clients/python --out-dir "$RUNNER_TEMP/client-dist"
+          wheels=("$RUNNER_TEMP/client-dist/"*.whl)
+          uv run --no-project --python '${{ matrix.python }}' --with "${wheels[0]}" clients/python/tests/package_smoke.py
+      - name: Real host and reviewed Python actions on simulated data
+        if: matrix.python == '3.13'
+        run: node clients/test-clients.mjs
+
+  r-client:
+    name: R client (${{ matrix.r }})
+    needs: changed
+    if: needs.changed.outputs.test == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        r: ['release', 'oldrel-1']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.r }}
+          use-public-rspm: true
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.1'
+          python-version: '3.13'
+          enable-cache: ${{ matrix.r == 'release' }} # Only the live cross-client checks install Python dependencies.
+      - name: R packages for client and validation
+        run: Rscript -e 'install.packages(c("curl", "jsonlite", "testthat", "withr", "pkgload"))'
+      - name: Catalog and generated clients are current
+        run: |
+          go test -run '^TestTheClientsToolListIsCurrent$' .
+          node clients/generate.mjs --check
+      - name: R exact JSON, local HTTP fixtures and installed package check
+        run: node clients/test-r.mjs
+      - name: R and Python exact evidence and reviewed actions on the same host
+        if: matrix.r == 'release'
+        run: node clients/test-clients.mjs --r
+      - name: Agent benchmark controls through HTTP, MCP, Python and R
+        if: matrix.r == 'release'
+        run: |
+          go build -o "$RUNNER_TEMP/clonoloom-benchmark" .
+          node validation/fetch.mjs axe-core
+          node validation/agent-benchmark.mjs "$RUNNER_TEMP/clonoloom-benchmark" "$RUNNER_TEMP/agent-benchmark"
+
+      - name: Complete worked study and offline report
+        if: matrix.r == 'release'
+        run: |
+          node validation/create-project-0.8.mjs "$RUNNER_TEMP/record-study"
+          node validation/record-study.mjs
 
   data:
     name: Readers on real data
@@ -142,6 +258,26 @@ jobs:
         # The combined reference and budget checks can exceed Go's ten-minute package
         # default on hosted runners; each performance test still enforces its own budget.
         run: go test -v -timeout 20m ./validation/
+
+      - name: Portable archive transfer and both-theme accessibility
+        run: |
+          go build -o "$RUNNER_TEMP/clonoloom-archives" .
+          node validation/fetch.mjs axe-core
+          node validation/project-archives.mjs "$RUNNER_TEMP/clonoloom-archives"
+
+      - name: Explicit de-identification and both-theme accessibility
+        run: node validation/deidentification.mjs "$RUNNER_TEMP/clonoloom-archives"
+
+      - name: Native and pseudonymized Parquet with both-theme accessibility
+        run: node validation/parquet.mjs "$RUNNER_TEMP/clonoloom-archives"
+
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - name: Parquet files against independent PyArrow and DuckDB readers
+        env:
+          CLONOLOOM_PARQUET_FIXTURES: ${{ runner.temp }}/parquet-fixtures
+        run: |
+          go test -run 'TestParquet|TestWriterIndependentFixture' . ./internal/parquet
+          uv run --no-project --with pyarrow==26.0.0 --with duckdb==2.0.0 validation/reference/parquet_exports.py "$CLONOLOOM_PARQUET_FIXTURES"
 
   installers:
     name: Installer syntax

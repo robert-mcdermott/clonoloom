@@ -1,5 +1,190 @@
 # Changelog
 
+## Unreleased
+
+## 0.8.0 — 2026-10-28
+
+### Added
+
+- **Complete record-and-reach study and 0.8.0 compatibility fixture.** Connect the window,
+  HTTP/MCP/Python/R, checkpoints, self-checking reports, certificates, exact headless replay
+  and portable archive transfer on one declared artificial batch-QC study. Retain complete
+  source truth, original scientific bytes and explicit descriptive limits. Add future-release
+  reopening/replay/recovery checks without modifying older fixtures. Align application,
+  citation, web cache keys and generated client packages at 0.8.0; API 2, catalog 4 and policy 1
+  remain unchanged. Refresh worked guides and both-theme presentation for release review.
+  Fix reviewed automation clearing loaded scientific inputs/results: invalidate older
+  asynchronous attachments separately from project/view reset; retain cancellation guards.
+  Reload still-selected saved results after Undo/Redo instead of leaving their views empty.
+
+- **Containers and cluster execution (wave 8, slice 14).** Package the existing native Go
+  workers in a digest-pinned multi-stage build and small non-root, shell-free OCI runtime.
+  Allowlist build inputs and retain program/runtime license notices. Print reviewed commands
+  with pinned local image IDs, disjoint read-only input/writable output mounts, bounded scratch,
+  no network and explicit privilege/resource limits. Add private byte-preserving replay bundles
+  and an explicit native Slurm array example without automatic submission or acknowledgment.
+  Validate native/container byte parity, all five replay kinds, scientific differences,
+  unavailable methods, mount/overwrite/provider refusals and SIGTERM cancellation. Add CI and
+  operational/scientific limits; source support and replay tolerances stay unchanged.
+
+- **Agent contract benchmark (wave 8, slice 13).** Add eight versioned tasks on independently
+  enumerated artificial AIRR inputs, with separate answer, native-evidence and permission
+  grades. Exercise counts, fixed denominators, missing versus zero, reviewed grouping changes
+  and refusals through HTTP, MCP, Python and R. Require explicit fixture grants and scripted
+  review; retain exact scientific JSON, provenance, failures and task denominators. Add a
+  bounded opt-in JSONL candidate adapter, scripted/empty controls, accessible both-theme
+  reports and CI. Public controls validate the harness, not general model or scientific
+  competence. No model service is run by default; the local candidate is not OS-sandboxed.
+  Keep catalog 4, scientific workers and exact replay contracts unchanged.
+
+- **Typed Parquet dataset exports (wave 8, slice 12).** Export native clonotypes and retained
+  AIRR rearrangements with nullable integer counts, boolean flags, explicit sample-column maps,
+  definition/QC/units, provider notices and hashed inventories. Preserve invariant-rule
+  denominators and native annotation text; refuse fractional or ambiguous counts without
+  rounding. Add Parquet to the existing reviewed pseudonymized workflow with sanitized footers
+  and a separate private map. Adapt the Apache-2.0 SituCraft writer with bounded optional columns
+  and cancellation, without runtime dependencies. Add reviewed automation and generated clients
+  (catalog 4, 64 actions), independent PyArrow/DuckDB parity controls and both-theme validation.
+  This is a mapped native-table representation, not restored input precision or a replay certificate.
+
+- **Explicit de-identification exports (wave 8, slice 11).** Prepare and review fresh subject,
+  sample, cell and sequence pseudonyms in a separate dataset-table ZIP. Choose free-text/HLA
+  removal explicitly, preserve retained native scientific values, units, QC and definitions,
+  and download the private identity map separately. Refuse unmapped nested evidence, stale
+  receipts and oversized outputs; keep originals and provider terms unchanged. Add reviewed
+  shared actions and generated Python/R methods (catalog 3, 63 actions), scientific-parity and
+  disclosure checks, and a representative both-theme workflow. This is pseudonymization, not
+  anonymity or de-identification of existing archives, reports or replay certificates.
+
+- **Portable project archives (wave 8, slice 10).** Transfer original project/history, result
+  and checkpoint bytes in a versioned, bounded `.clz` inventory. Include sources only by explicit
+  choice and policy; retain missing, changed, omitted, restricted and unsupported statuses.
+  Verify every member before installing, reject unsafe paths/links/aliases and destination
+  conflicts, and preserve originals separately from verified local working bindings. Recover
+  imported checkpoints and re-export without original machine paths. Add window inspection and
+  reviewed HTTP/MCP actions; catalog 2 generates 61 Python/R methods. Validate cross-release
+  reopening, hostile inputs, exact native evidence and both-theme views. No scientific workers,
+  plotting methods, replay tolerances or release fixtures change.
+
+- **Generated R client (wave 8, slice 9).** Share the 58-action catalog and permission contract
+  with Python. Generate functions and Rd help following the sibling applications' package
+  patterns. Preserve original JSON number tokens, native text and response bytes; distinguish
+  omission/null/arrays/objects and provide exact list-column frames. Keep explicit discovery,
+  compatibility checks before POST, host grants, human review and typed uncertain outcomes.
+  Bound streaming responses and refuse malformed evidence, implicit precision loss and retries.
+  Validate package build/install/check, fake HTTP fixtures and shared R/Python/HTTP native evidence
+  on a seeded simulated repertoire. Add CI and guides; scientific workers/replay stay unchanged.
+
+- **Generated Python client (wave 8, slice 8).** Generate 58 methods and argument/effect/review
+  help from the shared Go catalog, with snapshot and generator drift checks in CI. Use explicit
+  connection overrides, compatible API/catalog/policy checks before actions, typed errors and
+  unchanged host grants/window review. Preserve exact int/Decimal values, original response and
+  native query text, omitted versus null arguments, arrays and optional pandas object columns.
+  Bound JSON and refuse redirects, malformed responses and automatic retries. Validate fake
+  servers, installed distributions and a real host/window using seeded simulated data. Keep
+  scientific workers, five-kind exact replay, version 0.7.0 and release fixtures unchanged.
+
+- **MCP transport (wave 8, slice 7).** `clonoloom mcp` hosts the normal local window
+  over bounded stdio JSON-RPC. Support MCP 2026-07-28 per-request discovery and explicit
+  2025-11-25 initialization compatibility. Share the HTTP action catalog, grants, argument
+  validation, human proposal review and audit; client metadata never widens permissions.
+  Preserve native JSON numeric tokens, refuse oversized results without truncating success,
+  and support progress/cancellation and EOF cleanup. Document exact replay and completed
+  file-effect limits. Repair missing clonotype grid cell/header accessibility roles exposed
+  by the both-theme MCP audit workflow. No new scientific method or changed replay tolerance.
+
+- **Automation policy, proposals and typed queries (wave 8, slice 6).** API 2 defaults
+  to read-only remote control, with explicit host capabilities and token checks. Review
+  named proposals against the unchanged project, retain Undo/Redo and session audit,
+  and refuse stale/cancelled attachments. Bounded typed clonotype queries preserve
+  definition, QC, units, full-table denominators and native JSON numeric tokens.
+  No SQL/shell, new estimator, replay tolerance or expanded replay coverage. Cancellation
+  does not erase completed file effects; audit retains only the last 500 session events.
+
+- **Self-checking HTML reports (wave 8, slice 5).** Export one offline file for explicitly
+  selected cohort features/comparisons/count models, batch QC and motif results. Preserve
+  exact numeric tables, complete result records, original JSON/certificates, methods,
+  references and provider notices. Reuse existing plot geometry with explicit unavailable
+  states and keep feature/motif reports tables-only. Check embedded content, downloads,
+  geometry and styles before display, optionally against a separately retained fingerprint.
+  Keep integrity distinct from scientific replay, authenticity and biological validity.
+  Refuse changed/unsupported/oversized evidence and stale exports; retain provider gates,
+  cancellation, exact native replay and clear bounds. Version remains 0.7.0.
+
+- **Checkpoints and analysis differences (wave 8, slice 4).** Preserve named immutable local
+  analysis checkpoints with exact project JSON, completed attached result files and SHA-256
+  inventories. Compare recorded sources, definitions, QC, populations, parameters and result
+  identities with raw JSON evidence, preserving numeric tokens, missing values and array order.
+  Recover missing result files without changing their bytes or overwriting conflicts; restore
+  analysis values through undo/redo while keeping current identity and history. Refuse stale
+  edits, incompatible versions, corrupt evidence and browser numeric loss. Expose the same
+  Reports workflow through shared actions and document its local recovery boundary: no original
+  source backup, running-job resume, implicit recomputation or expanded replay support.
+  Check recovered certificate identity and exact replay, independent inventories, compatibility
+  and both-theme artificial-study workflows. Keep version 0.7.0.
+
+- **Headless recipes and broader replay (wave 8, slice 3).** Add native `clonoloom run`
+  with checksum-pinned named inputs, explicit batch task selection, new output directories,
+  fixed/resolved recipe time, source validation findings, normalized recipes and run inventories.
+  Compute batch QC and motif screens through existing capture functions and Go workers;
+  replay five supported certificate kinds without a browser, server or network. Extend Reports
+  certificates to batch QC and motifs with exact output/metadata comparison and separate
+  captured-input scopes. Publish the complete worker support matrix; unsupported kinds fail
+  explicitly. Keep provider terms, descriptive-QC and GLIPH2-adaptation limits visible; no
+  source recapture, upstream equivalence or specificity claim. Validate relocation, repeat-run
+  bytes, both processor architectures, input/worker refusals, independent inventories and
+  both-theme realistic artificial-study workflows. Keep version 0.7.0.
+
+- **Exact cohort certificate replay (wave 8, slice 2).** Add `verify --replay` and an explicit
+  Reports replay mode for cohort features, comparisons and count models. Verify embedded
+  parent hashes and recipe bindings, rerun the existing Go workers in a disposable store,
+  and compare complete output bytes and scientific metadata without tolerance fallback.
+  Preserve original provenance separately from the verifier; report exact match, differences
+  and unavailable replay. Recompute from captured diversity measurements/count matrices;
+  do not imply source-file verification, diversity refitting, authenticity or scientific validity.
+  Add cancellation, changed-input checks, twelve release controls, one-bit difference and
+  missing/unsupported-evidence controls, independent report checks and both-theme coverage.
+  Keep version 0.7.0 and existing certificate bytes unchanged.
+
+- **Saved-result evidence certificates (wave 8, slice 1).** Plan Wave 8 and introduce
+  bounded single-result integrity archives for cohort features, comparisons and count models.
+  Preserve exact manifests, recipes, outputs, source fingerprints and provider notices. Add
+  Reports inspection/export/checking, shared remote actions and native `verify --integrity`,
+  with external fingerprint pinning, explicit no-recomputation verdicts and non-overwriting
+  JSON reports. Refuse unsafe, ambiguous, oversized or changed archives; extract nothing and
+  follow no recorded source paths. Keep provider restrictions and captured-data limits visible.
+  Validate independent ZIP/JSON/SHA-256 checks, corruption and refusal cases, source-free
+  CLI/API agreement, both-theme workflows and compatibility. Keep version 0.7.0; scientific
+  replay, MCP and generated clients follow in the recorded Wave 8 sequence.
+
+
+### Fixed
+
+- **Docker and CI portability.** Recognize Docker's engine-created console placeholder and
+  mount-table link in the minimal runtime inventory, while naming and rejecting unexpected
+  payload files. Use explicit `readonly=false` bind mounts accepted by both Docker and Podman
+  in the command helper and validation. Disable unused uv caches and let both R matrix jobs
+  finish independently; the old-R package checks had passed before cache cleanup failed.
+
+### Validation
+
+- Complete root/internal Go race coverage in bounded batches, with timed-out cohort replay
+  rechecked using its complete parent chain. All 74 configured scientific/reference checks,
+  six unchanged performance budgets, amd64 release-project replay, Go vet and six platform
+  builds pass. Optional external-data checks remain explicitly separate.
+- All 231 JavaScript tests, 17 Python tests, 1,302 R assertions, client package checks,
+  generated-catalog drift checks and live HTTP/MCP/Python/R permission/precision controls pass.
+- Independent Parquet and AnnData readers retain native scientific values. All five report
+  kinds pass offline integrity and altered-content checks; the new worked study passes exact
+  transport, recovery, replay and source-unavailable archive transfer. Benchmark script controls
+  and Linux arm64 container/source/replay/mount/cancellation checks pass with explicit limits.
+- All 126 browser scene checks pass across both themes; all 73 screenshot pairs are reviewed.
+  The 61-page site passes 240 accessibility/layout checks; all 14 application contrast checks
+  pass. Scientific calculations, replay tolerances and older release fixtures are unchanged.
+- The CI follow-up passes actual Docker and Podman container contracts on Linux arm64,
+  Docker build-context exclusion and unexpected-runtime-file controls, and all 231 JavaScript
+  tests. Exact scientific replay and permission boundaries remain unchanged.
+
 ## 0.7.0 — 2026-10-27
 
 ### Added

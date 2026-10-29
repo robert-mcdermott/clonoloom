@@ -1,0 +1,1148 @@
+{
+  "Repertoire": [
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D01-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D01-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D01-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-A"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D02-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D02-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D02-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-A"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D02"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D03-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D03-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D03-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-A"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D03"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D04-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D04-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D04-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-A"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D04"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D05-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D05-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D05-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-A"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D05"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D06-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D06-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D06-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-A"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D06"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D07-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D07-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D07-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-A"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D07"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D08-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D08-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D08-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-A"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D08"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D09-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D09-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D09-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-B"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D09"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D10-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D10-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D10-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-B"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D10"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D11-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D11-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D11-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-B"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D11"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D12-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D12-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D12-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-B"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D12"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D13-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D13-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D13-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-B"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D13"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D14-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D14-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D14-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-B"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D14"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D15-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D15-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D15-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-B"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D15"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D16-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D16-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D16-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-B"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D16"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D17-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D17-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D17-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-C"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D17"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D18-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D18-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D18-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-C"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D18"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D19-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D19-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D19-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-C"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D19"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D20-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D20-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D20-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-D"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D20"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D21-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D21-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D21-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-D"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D21"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D22-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D22-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D22-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-D"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D22"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D23-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D23-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D23-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-D"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D23"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D24-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D24-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D24-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-D"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D24"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D01-2.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D01-2",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D01-2",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": "run-A"
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D01"
+      }
+    },
+    {
+      "data_processing": [
+        {
+          "data_processing_files": [
+            "D25-1.tsv"
+          ],
+          "data_processing_id": "simulated",
+          "primary_annotation": true,
+          "software_versions": "ClonoLoom simulate 0.8.0"
+        }
+      ],
+      "repertoire_id": "D25-1",
+      "sample": [
+        {
+          "pcr_target": [
+            {
+              "pcr_target_locus": "TRB"
+            }
+          ],
+          "sample_id": "D25-1",
+          "template_class": "DNA",
+          "tissue": {
+            "id": "UBERON:0000178",
+            "label": "blood"
+          }
+        }
+      ],
+      "study": {
+        "study_id": "clonoloom-simulated-batch-qc-study-v1",
+        "study_title": "An artificial batch-QC study"
+      },
+      "subject": {
+        "diagnosis": [
+          {
+            "study_group_description": ""
+          }
+        ],
+        "species": {
+          "id": "NCBITAXON:9606",
+          "label": "Homo sapiens"
+        },
+        "subject_id": "D25"
+      }
+    }
+  ]
+}

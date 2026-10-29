@@ -1,6 +1,20 @@
 [
  {
+  "page": "docs/agent-benchmark.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/attribution.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/automation.html",
   "theme": "light",
   "width": "desktop",
   "violations": [],
@@ -70,6 +84,20 @@
   "overflow": 0
  },
  {
+  "page": "docs/certificates.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/checkpoints.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/classes.html",
   "theme": "light",
   "width": "desktop",
@@ -119,6 +147,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/containers.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/contamination.html",
   "theme": "light",
   "width": "desktop",
@@ -141,6 +176,13 @@
  },
  {
   "page": "docs/definition-robustness.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/deidentification.html",
   "theme": "light",
   "width": "desktop",
   "violations": [],
@@ -182,7 +224,28 @@
   "overflow": 0
  },
  {
+  "page": "docs/headless.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/html-reports.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/index.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/mcp.html",
   "theme": "light",
   "width": "desktop",
   "violations": [],
@@ -224,6 +287,20 @@
   "overflow": 0
  },
  {
+  "page": "docs/parquet.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/project-archives.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/pseudobulk-de.html",
   "theme": "light",
   "width": "desktop",
@@ -238,6 +315,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/python.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/qc.html",
   "theme": "light",
   "width": "desktop",
@@ -245,7 +329,21 @@
   "overflow": 0
  },
  {
+  "page": "docs/r.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/rarefaction.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/record-study.html",
   "theme": "light",
   "width": "desktop",
   "violations": [],
@@ -322,7 +420,21 @@
   "overflow": 0
  },
  {
+  "page": "docs/agent-benchmark.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/attribution.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/automation.html",
   "theme": "dark",
   "width": "desktop",
   "violations": [],
@@ -392,6 +504,20 @@
   "overflow": 0
  },
  {
+  "page": "docs/certificates.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/checkpoints.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/classes.html",
   "theme": "dark",
   "width": "desktop",
@@ -441,6 +567,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/containers.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/contamination.html",
   "theme": "dark",
   "width": "desktop",
@@ -463,6 +596,13 @@
  },
  {
   "page": "docs/definition-robustness.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/deidentification.html",
   "theme": "dark",
   "width": "desktop",
   "violations": [],
@@ -504,7 +644,28 @@
   "overflow": 0
  },
  {
+  "page": "docs/headless.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/html-reports.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/index.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/mcp.html",
   "theme": "dark",
   "width": "desktop",
   "violations": [],
@@ -546,6 +707,20 @@
   "overflow": 0
  },
  {
+  "page": "docs/parquet.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/project-archives.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/pseudobulk-de.html",
   "theme": "dark",
   "width": "desktop",
@@ -560,6 +735,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/python.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/qc.html",
   "theme": "dark",
   "width": "desktop",
@@ -567,7 +749,21 @@
   "overflow": 0
  },
  {
+  "page": "docs/r.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/rarefaction.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/record-study.html",
   "theme": "dark",
   "width": "desktop",
   "violations": [],
@@ -644,7 +840,21 @@
   "overflow": 0
  },
  {
+  "page": "docs/agent-benchmark.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/attribution.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/automation.html",
   "theme": "light",
   "width": "phone",
   "violations": [],
@@ -714,6 +924,20 @@
   "overflow": 0
  },
  {
+  "page": "docs/certificates.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/checkpoints.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/classes.html",
   "theme": "light",
   "width": "phone",
@@ -763,6 +987,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/containers.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/contamination.html",
   "theme": "light",
   "width": "phone",
@@ -785,6 +1016,13 @@
  },
  {
   "page": "docs/definition-robustness.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/deidentification.html",
   "theme": "light",
   "width": "phone",
   "violations": [],
@@ -826,7 +1064,28 @@
   "overflow": 0
  },
  {
+  "page": "docs/headless.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/html-reports.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/index.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/mcp.html",
   "theme": "light",
   "width": "phone",
   "violations": [],
@@ -868,6 +1127,20 @@
   "overflow": 0
  },
  {
+  "page": "docs/parquet.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/project-archives.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/pseudobulk-de.html",
   "theme": "light",
   "width": "phone",
@@ -882,6 +1155,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/python.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/qc.html",
   "theme": "light",
   "width": "phone",
@@ -889,7 +1169,21 @@
   "overflow": 0
  },
  {
+  "page": "docs/r.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/rarefaction.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/record-study.html",
   "theme": "light",
   "width": "phone",
   "violations": [],
@@ -966,7 +1260,21 @@
   "overflow": 0
  },
  {
+  "page": "docs/agent-benchmark.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/attribution.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/automation.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],
@@ -1036,6 +1344,20 @@
   "overflow": 0
  },
  {
+  "page": "docs/certificates.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/checkpoints.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/classes.html",
   "theme": "dark",
   "width": "phone",
@@ -1085,6 +1407,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/containers.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/contamination.html",
   "theme": "dark",
   "width": "phone",
@@ -1107,6 +1436,13 @@
  },
  {
   "page": "docs/definition-robustness.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/deidentification.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],
@@ -1148,7 +1484,28 @@
   "overflow": 0
  },
  {
+  "page": "docs/headless.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/html-reports.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/index.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/mcp.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],
@@ -1190,6 +1547,20 @@
   "overflow": 0
  },
  {
+  "page": "docs/parquet.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/project-archives.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/pseudobulk-de.html",
   "theme": "dark",
   "width": "phone",
@@ -1204,6 +1575,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/python.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/qc.html",
   "theme": "dark",
   "width": "phone",
@@ -1211,7 +1589,21 @@
   "overflow": 0
  },
  {
+  "page": "docs/r.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/rarefaction.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/record-study.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

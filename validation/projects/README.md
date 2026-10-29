@@ -146,3 +146,20 @@ fixture artifact files, including `manifest.json`, are stored with a `.gz` suffi
 job specs capture raw evidence. Decompression preserves exact original bytes. Earlier fixtures
 retain their original storage conventions. JavaScript also checks project byte round-tripping,
 all usable result chains, and retention of the failed confounding check in cited Methods.
+
+## 0.8.0 — record and reach
+
+Created by `node validation/create-project-0.8.mjs` through an isolated MCP/HTTP host,
+normal window and generated Python/R clients. The full artificial batch-QC study retains
+26 observations, complete source/truth files and one native batch-QC result. All four transports
+return identical native query JSON. A reviewed definition change is compared and recovered;
+certificate and headless replay are exact. Archive import/recovery preserves evidence after
+removing original source paths.
+
+`project.json` changes only reopening paths to fixture-relative locations; `original-project.json`,
+checkpoint files, certificate, HTML report and portable archive retain their original bytes.
+Scientific artifact files and manifests use lossless gzip storage. `projects_record_test.go`
+replays the captured native worker, checks source truth, verifies the pinned certificate/archive,
+and restores removed result files from the recorded checkpoint without recomputation. The common
+release tests also reopen the source dataset and transfer the project through the archive contract.
+Saved query text checks transport fidelity, not an independent biological result.

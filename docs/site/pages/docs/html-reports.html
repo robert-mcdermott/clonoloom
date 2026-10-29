@@ -1,0 +1,21 @@
+---
+title: Self-checking HTML reports
+description: Share explicitly selected saved results in an offline file with exact tables, existing figures and checkable evidence.
+lede: Keep the results, their methods and their original evidence together, with a clear distinction between checking bytes and rerunning science.
+---
+<p class="callout">ClonoLoom 0.8.0: HTML report export currently is available in 0.8.0. Available in ClonoLoom 0.8.0.</p>
+<h2 id="export">Choose the saved results</h2>
+<p>Open <strong>Reports → Self-checking HTML report</strong>, enter a title and select one to eight results. Cohort features, comparisons, replicated count models, batch QC and motif screens are supported within the documented size bounds. Selection starts empty; other results are not silently included.</p>
+<shot name="html-reports" alt="Reports view with one artificial batch QC result explicitly selected for a self-checking HTML export">The fingerprint identifies the exported record. Keep it separately if you need to recognize that record later.</shot>
+<p>Choose <strong>Export self-checking HTML</strong>. The file carries original result JSON, native certificates, complete tables, recorded methods, references and provider notices. Restricted evidence requires acknowledgment of all selected results’ terms and remains for private study under those terms.</p>
+<h2 id="check">Open and check offline</h2>
+<p>Open the downloaded HTML in a modern browser with JavaScript enabled. It needs no application server, network or source files. The checker verifies exact embedded content, downloads, figure geometry code and styles before displaying the report. Optionally enter the independently retained report fingerprint and check again. Failed checks hide the report and downloads; disabled JavaScript never shows a successful verdict.</p>
+<p><strong>Integrity match does not mean recomputed.</strong> Download a native certificate at the end and use its supplied <code>clonoloom verify --replay --expect …</code> command for a separate scientific replay. Existing <a href="certificates.html">captured-input and method limits</a> still apply.</p>
+<h2 id="science">Read complete evidence</h2>
+<p>Tables preserve exact saved numeric tokens, every result row, missing values, exclusions, denominators and testing families. Expand their sections to read nested evidence. The full original manifest and captured recipe remain in the certificate; the visible provenance table avoids duplicating large input matrices.</p>
+<shot name="offline-report" alt="Offline report showing all recorded plottable sample abundance values across four artificial batches, with missingness and unscored groups stated">The existing batch-QC geometry and captions are reused. Unavailable values stay in the complete tables; median lines are not confidence intervals.</shot>
+<p>Reports reuse the existing cohort observation/effect plots, count-model overview and all batch-QC metrics. Feature and motif results are tables-only. Plot ticks may be rounded for readability; the tables and downloaded JSON retain exact values. Unsupported or oversized geometry is labeled unavailable rather than replaced with a selected subset.</p>
+<h2 id="limits">Keep the limits visible</h2>
+<p>Checksums do not establish authorship, sound study design, calibrated inference, causality or biological truth. Someone able to replace the checker, contents and hashes can forge a consistent page. An independently retained fingerprint needs a trusted checker. Original sources and separate parent files are outside the report; native replay does not independently repeat upstream source capture.</p>
+<p>Batch flags remain descriptive. Count models describe relative repertoire abundance with their recorded assumptions. Motif screens remain the documented GLIPH2-style adaptation, without proving antigen specificity. Captured identifiers, sequences and paths are not de-identified, and provider rights are unchanged.</p>
+<p>Reports have explicit file, content and table bounds. Oversized selections fail rather than drop rows; large motif screens may need their ordinary certificate exports. See the <a href="{{github}}/blob/main/docs/HTML-REPORTS.md">complete report contract, bounds and API</a>.</p>

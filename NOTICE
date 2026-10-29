@@ -7,9 +7,15 @@ ClonoLoom's host, interface shell, installers and workflows are adapted from its
 SituCraft, MaveScape, CytoWeave and Proteoscope (https://github.com/robert-mcdermott), by the same
 author under the same license.
 
+The repository-only agent benchmark follows CytoWeave's Apache-2.0 task/grader and control
+pattern, using ClonoLoom's own fixtures, permission policy and native scientific evidence.
+
 The HDF5 metadata checksum helper and export writer are adapted from SituCraft's HDF5 writer
 under the same Apache-2.0 license. The writer is extended for AnnData data types and encodings.
 They implement Bob Jenkins' public-domain lookup3/hashlittle checksum.
+
+The flat Parquet writer and compact-protocol emission are adapted from SituCraft v0.9.0
+under the same Apache-2.0 license, extended for nullable fields and bounded scientific exports.
 
 The beta and Student t distribution helpers in internal/stats are adapted from SituCraft's
 Apache-2.0 statistics helpers by the same author.

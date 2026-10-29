@@ -16,8 +16,13 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Current release:** 0.7.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-Version 0.7.0 adds saved subject designs, feature tables, two-group comparisons and
+**Prepared release:** 0.8.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+Version 0.8.0 adds exact evidence certificates and replay, checkpoints, offline reports,
+portable archives, explicit automation, generated Python/R clients, typed exports and native
+container jobs. Follow the [complete worked study](docs/RECORD-STUDY.md). Release publication
+remains a separate maintainer action.
+
+Version 0.7.0 introduced saved subject designs, feature tables, two-group comparisons and
 [replicated clonotype count models](docs/site/pages/docs/cohort-counts.html), and
 [definition robustness](docs/site/pages/docs/definition-robustness.html) and
 [GLIPH2-style motif screens](docs/site/pages/docs/motifs.html) with explicit adaptations and
@@ -243,6 +248,11 @@ It takes `-h` for its settings.
 - [Installing](docs/INSTALLING.md): release files, installers, upgrading, uninstalling.
 - [Formats](docs/FORMATS.md): what each reader reads and how.
 - [Remote control](docs/REMOTE-CONTROL.md): driving ClonoLoom from scripts.
+- [R client](docs/R.md): generated functions/help, explicit permissions, exact number tokens and list-column frames (0.8.0).
+- [Python client](docs/PYTHON.md): generated methods, explicit permissions and exact JSON numbers (0.8.0).
+- [Containers and clusters](docs/CONTAINERS.md): non-root native execution, explicit mounts and exact replay arrays (0.8.0).
+- [Agent contract benchmark](docs/AGENT-BENCHMARK.md): known-truth tasks, code grading and explicit fixture permissions (0.8.0).
+- [MCP clients](docs/MCP.md): local stdio, explicit grants and window review (0.8.0).
 - [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.
 - [Design](clonoloom-spec/design.md): how it is built and why.
@@ -252,10 +262,47 @@ It takes `-h` for its settings.
   citations.
 - [Conventions](clonoloom-spec/conventions.md): code, science and terminology rules.
 
+## Record and reach (0.8.0)
+
+[Evidence certificates](docs/CERTIFICATES.md) preserve exact saved cohort, batch-QC and motif result bytes with
+provider notices. Reports and `clonoloom verify --integrity` check the inventory without
+scientific recomputation. `clonoloom verify --replay` reruns the five supported kinds
+from captured evidence and compares exact output bytes; original receptor sources and upstream
+data capture are not rerun. Reports offers both modes with explicit limits.
+[Headless recipes](docs/HEADLESS.md) run batch QC and motif screens from named, checksum-pinned
+AIRR inputs, or replay supported certificates, without a browser or server. They retain
+normalized parameters, provider notices and a complete run inventory.
+[Analysis checkpoints](docs/CHECKPOINTS.md) keep immutable local settings and attached result
+bytes, compare exact recorded changes and recover through Undo/Redo. They do not back up
+original source files or replace scientific replay.
+[Automation permissions](docs/AUTOMATION.md) provide explicit host grants, named proposals,
+session audit and bounded typed clonotype queries (API 2).
+[MCP transport](docs/MCP.md) uses this shared policy and native results, with modern per-request
+metadata and explicit legacy initialization compatibility.
+The generated [Python client](docs/PYTHON.md) uses that action catalog, checks permission-contract
+versions and preserves int/Decimal values with optional pandas object columns. The generated
+[R client](docs/R.md) shares the contract, retaining exact JSON number tokens and list-column frames.
+
+[Self-checking HTML reports](docs/HTML-REPORTS.md) package explicitly selected results with
+exact tables, existing figures, cited methods, notices and original certificates. Their offline
+browser check verifies embedded bytes, not scientific validity; native replay remains separate.
+[Portable project archives](docs/PROJECT-ARCHIVES.md) transfer exact project/history, results and
+checkpoints with opt-in permitted sources, bounded inventories and verified local bindings.
+Inspect before import; conflicts refuse overwrite.
+[De-identification exports](docs/DEIDENTIFICATION.md) prepare separate pseudonymized dataset
+tables, with explicit free-text/HLA removal, preserved scientific values and a separately requested
+private identity map. They do not sanitize existing archives or establish anonymity.
+[Typed Parquet exports](docs/PARQUET.md) preserve native clonotype and rearrangement evidence
+with nullable counts, explicit provenance and an optional pseudonymized representation.
+The [worked record-and-reach study](docs/RECORD-STUDY.md) connects these interfaces with exact
+evidence and clear limits. The [agent benchmark](docs/AGENT-BENCHMARK.md) grades local contract
+tasks; [container and cluster jobs](docs/CONTAINERS.md) retain explicit permissions and exact replay.
+The [roadmap](clonoloom-spec/roadmap.md) records release validation and remaining supported-scope gaps.
+
 ## Development
 
 ```sh
-go test -race ./...                      # the Go program
+go test -race -timeout 30m ./...         # the Go program
 node --test "web/lib/**/*.test.mjs"      # the browser modules
 node validation/run.mjs                  # checks against references (validation/README.md)
 go run . --dev --window none             # serve web/ from disk at http://127.0.0.1:8860
@@ -264,7 +311,7 @@ node docs/site/build.mjs /tmp/site       # the website, every link checked (docs
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.7.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.8.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Example data

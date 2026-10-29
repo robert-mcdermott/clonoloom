@@ -1,0 +1,158 @@
+[
+  {
+    "name": "D01-1",
+    "subject": "D01",
+    "batch": "run-A",
+    "exclude": ""
+  },
+  {
+    "name": "D02-1",
+    "subject": "D02",
+    "batch": "run-A",
+    "exclude": ""
+  },
+  {
+    "name": "D03-1",
+    "subject": "D03",
+    "batch": "run-A",
+    "exclude": ""
+  },
+  {
+    "name": "D04-1",
+    "subject": "D04",
+    "batch": "run-A",
+    "exclude": ""
+  },
+  {
+    "name": "D05-1",
+    "subject": "D05",
+    "batch": "run-A",
+    "exclude": ""
+  },
+  {
+    "name": "D06-1",
+    "subject": "D06",
+    "batch": "run-A",
+    "exclude": ""
+  },
+  {
+    "name": "D07-1",
+    "subject": "D07",
+    "batch": "run-A",
+    "exclude": ""
+  },
+  {
+    "name": "D08-1",
+    "subject": "D08",
+    "batch": "run-A",
+    "exclude": ""
+  },
+  {
+    "name": "D09-1",
+    "subject": "D09",
+    "batch": "run-B",
+    "exclude": ""
+  },
+  {
+    "name": "D10-1",
+    "subject": "D10",
+    "batch": "run-B",
+    "exclude": ""
+  },
+  {
+    "name": "D11-1",
+    "subject": "D11",
+    "batch": "run-B",
+    "exclude": ""
+  },
+  {
+    "name": "D12-1",
+    "subject": "D12",
+    "batch": "run-B",
+    "exclude": ""
+  },
+  {
+    "name": "D13-1",
+    "subject": "D13",
+    "batch": "run-B",
+    "exclude": ""
+  },
+  {
+    "name": "D14-1",
+    "subject": "D14",
+    "batch": "run-B",
+    "exclude": ""
+  },
+  {
+    "name": "D15-1",
+    "subject": "D15",
+    "batch": "run-B",
+    "exclude": ""
+  },
+  {
+    "name": "D16-1",
+    "subject": "D16",
+    "batch": "run-B",
+    "exclude": ""
+  },
+  {
+    "name": "D17-1",
+    "subject": "D17",
+    "batch": "run-C",
+    "exclude": ""
+  },
+  {
+    "name": "D18-1",
+    "subject": "D18",
+    "batch": "run-C",
+    "exclude": ""
+  },
+  {
+    "name": "D19-1",
+    "subject": "D19",
+    "batch": "run-C",
+    "exclude": ""
+  },
+  {
+    "name": "D20-1",
+    "subject": "D20",
+    "batch": "run-D",
+    "exclude": ""
+  },
+  {
+    "name": "D21-1",
+    "subject": "D21",
+    "batch": "run-D",
+    "exclude": ""
+  },
+  {
+    "name": "D22-1",
+    "subject": "D22",
+    "batch": "run-D",
+    "exclude": ""
+  },
+  {
+    "name": "D23-1",
+    "subject": "D23",
+    "batch": "run-D",
+    "exclude": ""
+  },
+  {
+    "name": "D24-1",
+    "subject": "D24",
+    "batch": "run-D",
+    "exclude": ""
+  },
+  {
+    "name": "D01-2",
+    "subject": "D01",
+    "batch": "run-A",
+    "exclude": "Repeated observation: retain D01-1"
+  },
+  {
+    "name": "D25-1",
+    "subject": "D25",
+    "batch": "",
+    "exclude": "Batch not recorded"
+  }
+]

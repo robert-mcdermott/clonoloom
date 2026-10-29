@@ -8,6 +8,7 @@
 import { cohortExampleStep } from './cohort-example.js';
 import { useInvariantSpecies } from '../lib/invariant.js';
 import { networkOptions } from '../lib/networks.js';
+import { automationWindow } from './automation.js';
 import { closeDialogs, toast } from './overlays.js';
 import { clonotypePresets } from './storage.js';
 import { showMethods } from './methods.js';
@@ -25,7 +26,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const count = (n, noun) => `${n.toLocaleString('en-US')} ${noun}${n === 1 ? '' : 's'}`;
 
 // The views by the names scripts use.
-const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', cohort: 'cohort', jobs: 'jobs' };
+const VIEWS = { start: 'welcome', welcome: 'welcome', data: 'data', qc: 'qc', clonotypes: 'clonotypes', repertoire: 'repertoire', tracking: 'tracking', specificity: 'specificity', cohort: 'cohort', reports: 'reports', jobs: 'jobs' };
 
 // One of `options` (strings) by a forgiving name: exact, then ignoring case, then the one that
 // starts with or contains it. Errors list the choices.
@@ -87,6 +88,72 @@ export function remoteActions(app) {
   const lociOf = (summary) => Object.keys(summary.samples.reduce((acc, s) => Object.assign(acc, s.loci), {}));
 
   const actions = {
+    async export_parquet({dataset, ...options} = {}) {
+      const chosen = datasetOf(dataset);
+      await app.setMode('reports');
+      return {message:'Native Parquet ZIP downloaded with original identifiers and scientific provenance.',data:await app.parquet.export(chosen.id,options)};
+    },
+    async prepare_deidentified_export({dataset, ...options} = {}) {
+      const chosen = datasetOf(dataset);
+      await app.setMode('reports');
+      return {message:'Pseudonymized export prepared for review; nothing downloaded or changed in the project.',data:await app.deidentification.prepare(chosen.id,options)};
+    },
+    async download_deidentified_export(options) {
+      return {message:'Reviewed file downloaded; the identity map is always separate.',data:await app.deidentification.download(options)};
+    },
+    async export_project_archive(options = {}) {
+      await app.setMode('reports');
+      return {message:'Portable project archive downloaded; no scientific recomputation.', data:await app.archives.exportArchive(options)};
+    },
+    async inspect_project_archive({path, expected = ''}) {
+      await app.setMode('reports');
+      return {message:'Archive inventory verified; no files imported or recipes executed.', data:await app.archives.inspect(path,{expected})};
+    },
+    async import_project_archive({path, expected, accept = false}) {
+      return {message:'Project imported with exact saved evidence and verified local bindings.', data:await app.archives.importArchive(path,{expected,accept})};
+    },
+    async query_clonotypes({dataset, where, offset = 0, limit = 200} = {}) {
+      const project = store.project, current = store.sameProject();
+      const d = datasetOf(dataset), summary = await openDataset(d);
+      const response = await fetch('api/clonotypes/query', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({dataset:summary.id,definition:datasetDefinition(d,lociOf(summary)),filter:datasetFilter(project,d)?.rules ?? {},where,offset,limit,sort:'total',desc:true})});
+      const resultJSON = await response.text();
+      if (!response.ok) throw new ActionError(JSON.parse(resultJSON).error ?? 'Query failed.');
+      if (!current() || store.project !== project) throw new ActionError('The project changed during the query; query again against its new state.');
+      return {message:'Clonotype query complete; full-table denominators retained. No statistical inference.',data:{resultJSON}};
+    },
+    async export_html_report({artifacts,title='Saved analysis report',accept=false}) {
+      await app.setMode('reports');
+      const view=await waitFor(()=>app.htmlReportsView,5000,'HTML reports');
+      return {message:'Self-checking HTML downloaded; no scientific recomputation.',data:await view.exportReport(artifacts,{title,accept})};
+    },
+    async create_checkpoint({name}) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.checkpointsView, 5000, 'Checkpoints');
+      return {message:'Local checkpoint created; no scientific recomputation.', data:await view.create(name)};
+    },
+    async compare_checkpoint({checkpoint, against = ''}) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.checkpointsView, 5000, 'Checkpoints');
+      return {message:'Recorded evidence compared; no biological effects inferred.', data:await view.compare(checkpoint, against)};
+    },
+    async recover_checkpoint({checkpoint}) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.checkpointsView, 5000, 'Checkpoints');
+      return {message:'Saved analysis recovered; Undo is available. No scientific recomputation.', data:await view.recover(checkpoint)};
+    },
+    async inspect_certificate({ artifact, accept = false }) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.certificatesView, 5000, 'Reports');
+      const value = await view.inspect(artifact, { accept });
+      return { message: 'Recorded evidence inventoried; no scientific recomputation.', data: value };
+    },
+    async export_certificate({ artifact, accept = false }) {
+      await app.setMode('reports');
+      const view = await waitFor(() => app.certificatesView, 5000, 'Reports');
+      const value = await view.exportCertificate(artifact, { accept });
+      if (!value) throw new ActionError('No certificate was exported.');
+      return { message: 'Integrity certificate downloaded; no scientific recomputation.', data: value };
+    },
     async get_state() {
       const { project, ui } = store;
       const list = await app.examples.refresh();
@@ -94,6 +161,8 @@ export function remoteActions(app) {
         message: `${project.name}: ${project.datasets.length} dataset${project.datasets.length === 1 ? '' : 's'}.`,
         data: {
           project: { id: project.id, name: project.name },
+          runningJobs: app.jobs.running().map(({id,title,state})=>({id,title,state})),
+          importing: store.state.busy.size > 0,
           view: ui.mode,
           focus: ui.focus ?? null,
           cohortDesigns: (project.cohortDesigns ?? []).map((d) => ({ id: d.id, name: d.name, revision: d.revision, dataset: d.dataset, design: d.result.id, ok: d.result.ok })),
@@ -931,6 +1000,7 @@ export function remoteActions(app) {
 }
 
 export function installRemote(app) {
+  const automation = automationWindow(app);
   const actions = app.actions ?? remoteActions(app);
 
   async function perform(event) {
@@ -938,14 +1008,14 @@ export function installRemote(app) {
     try {
       const action = actions[event.action];
       if (!action) throw new ActionError(`This page does not know the action ${event.action}: reload it.`);
-      const result = await action(event.args ?? {});
+      const result = await automation.run(event, action);
       outcome = { ok: true, message: result?.message ?? 'Done.', data: result?.data };
       app.log(`${event.client}: ${outcome.message}`);
     } catch (error) {
-      outcome = { ok: false, message: error.message };
+      outcome = { ok: false, code:error.code??'action-failed', message: error.message };
       app.log(`${event.client} asked for ${event.action}: ${error.message}`);
     }
-    await fetch(`api/remote/result/${encodeURIComponent(event.id)}`, { method: 'POST', body: JSON.stringify(outcome), headers: { 'Content-Type': 'application/json' } }).catch(() => {});
+    await fetch(`api/remote/result/${encodeURIComponent(event.id)}`, { method: 'POST', body: JSON.stringify(outcome), headers: { 'Content-Type': 'application/json', 'X-ClonoLoom-Session': app.info.session } }).catch(() => {});
   }
 
   // Only the run of ClonoLoom this page was opened from takes it as its window: when the
@@ -962,12 +1032,16 @@ export function installRemote(app) {
     });
     source.addEventListener('action', (message) => {
       try {
-        perform(JSON.parse(message.data));
+        const event=JSON.parse(message.data);
+        if(event.audit) {void automation.refresh();return;}
+        if(event.cancel) {automation.cancel(event.id);return;}
+        perform(event);
       } catch {
         // not an action
       }
     });
     source.onerror = async () => {
+      automation.cancel();
       source.close();
       const now = await fetch('api/info', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
       if (now?.session && now.session !== session) {
@@ -980,5 +1054,5 @@ export function installRemote(app) {
     };
   };
   connect();
-  return { disconnect: () => source?.close(), actions };
+  return { disconnect: () => {automation.cancel();source?.close();}, actions };
 }

@@ -9,13 +9,16 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–6 are complete. Wave 7 is underway below; the first four slices cover subject designs, features, comparisons and replicated counts.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–7 are released. Wave 8 completes verifiable records, reproducible execution and supported automation; slice 15 prepares 0.8.0 for maintainer review.
 
 **Progress** is marked here as each slice is committed: done, next or to come. Each
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
-**Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–6 are merged and
-released as 0.2.0–0.6.0, and the 0.6.0 product site is published. Wave 7 starts on
-`wave7`. Slices 1–11 are committed and pushed. Slice 12 is implemented and validated, awaiting maintainer commit; no wave 7 release has been made.
+**Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–7 are merged and
+released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
+with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
+`wave8` branch. Slices 1–15 are committed and pushed, most recently `4573c93`.
+Slice 15 completes the worked study and release preparation below; CI portability corrections
+are recorded in its follow-up. No 0.8.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -2698,7 +2701,7 @@ No commit, push, tag, release or publication; version remains 0.6.0.
 
 ### Slice 12: complete cohort studies and release 0.7.0
 
-**Implemented and validated; awaiting maintainer commit.** E3, O2, N7. Research §5.41 records the
+**Done:** committed as `b4fe1c2`, merged in PR #7 and released as 0.7.0. E3, O2, N7. Research §5.41 records the
 control designs, interpretation and release evidence. Five offline guides use the ordinary
 visible actions: independent positive, null, unbalanced 12/20, paired 28-subject and fully
 confounded 16/16 studies. Count truth and model identities are retained; no new inferential
@@ -2745,10 +2748,1082 @@ scale timings were refreshed and the final 47-page site rebuilt locally. No comm
 release or site publication was performed.
 
 
+
+## 0.8.0: record and reach (wave 8)
+
+The record must distinguish **unchanged saved evidence**, **recomputed results** and
+**scientific interpretation**. A digest proves none of the study's assumptions and is not an
+authenticity signature. Each verifier reports exactly what it checked, what differs and what
+it could not check. Automation uses the same recorded actions and Go computations as the UI.
+
+### Wave 8 sequence
+
+| Slice | Scope and requirements | Acceptance before the next slice |
+| --- | --- | --- |
+| 1 | Saved-result evidence certificates and offline integrity checks (O5 foundation, O9, X5, N2/N4) | Bounded versioned archive; exact saved manifest/recipe/results and provider NOTICE; external fingerprint pinning; native Go `verify --integrity`; explicit no-recomputation verdict; Reports inspection/export/checking; cohort features/comparisons/counts first; corruption, bounds, traversal, cancellation and provider tests |
+| 2 | Scientific certificate replay (O5) | First replay the three cohort kinds through real workers in an isolated temporary store; verify original source/parent bindings where needed; preserve original provenance separately; exact bytes and explicit differs/unavailable outcomes; no missing-input success or tolerance fallback |
+| 3 | Headless recipes and broader replay coverage (A6, O5) | Versioned effective recipe, named inputs and output folder, no overwrite by default, cancellation/exit/report contracts; shared Go workers; one study or explicit batch task; publish a tested per-kind support matrix and refuse unsupported kinds rather than silently omitting results |
+| 4 | Checkpoints and analysis differences (O7) | Immutable project checkpoints; plain-language changes to sources, definitions, QC, parameters, populations and result identities; exact evidence beneath descriptions; undo/redo and version compatibility |
+| 5 | Self-checking HTML reports (O6, O1/O2) | Offline report of explicitly selected results, figures, methods, references and limits; complete denominators and accessible tables; distinguish checksum checks from recomputation; no external resources or unescaped metadata |
+| 6 | Automation policy, proposals and typed queries (A2/A3, A1 foundation) | One versioned action catalog with explicit read/edit/compute/file/network effects; no arbitrary SQL/shell; read-only defaults; visible named proposals, acceptance/rejection, undo and audit history; cancellation and stale-project handling |
+| 7 | MCP transport (A1, N5) | Stdio JSON-RPC, supported protocol negotiation, tools from the action catalog, explicit capability grants, bounded output/progress/cancellation, logs on stderr; tests against the current official specification and sibling transport patterns |
+| 8 | Generated Python client (A4 first part) | Generate from the same catalog; connection discovery and explicit overrides, version negotiation, typed errors, faithful arrays/nulls and exact JSON numbers; optional dataframe helpers; fake-server and real-host tests using uv |
+| 9 | Generated R client (A4 completion) | Same connection/action/error contract as Python, generated help and wrappers, explicit vector/list/null handling and precision; package checks, fake-server and shared real-host parity fixtures |
+| 10 | Portable project archives (D12, O9, N4) | Project/history/artifact inventories, safe bounded extraction, portable path rebinding by fingerprints; source inclusion only when permitted; explicit omitted/restricted/missing sources and complete cross-release reopening |
+| 11 | Export de-identification (O10) | Explicit subject pseudonyms, requested free-text/HLA removal, provenance of transformations and separate identity map; do not mutate source projects or imply anonymization; no hidden identifiers in manifests, plots or nested evidence |
+| 12 | Parquet exports (O3) | Explicit schemas, units, definition/QC/provenance, exact integer counts and nulls; deterministic bounded writer with independent reader checks; provider notices and export-policy integration |
+| 13 | Agent benchmark (A5) | Known-truth tasks over the visible/MCP/client contracts, code-based grading, proposal/refusal and error cases, reproducible local runner; separate task success from scientific validity |
+| 14 | Container and cluster execution (P6, A6) | Small headless build, non-root execution, explicit read-only inputs/output mounts, signal handling, no browser requirement for Go computation, offline and reproducible example jobs |
+| 15 | Complete record-and-reach study and release 0.8.0 | Worked cross-interface study, support matrix and all limits reviewed; full scientific/platform/accessibility/performance validation; new compatibility fixture and reviewed screenshots; versions changed only here; maintainer commits, merges, tags and publishes |
+
+Later slices may be re-cut at their boundary when evidence warrants a smaller increment;
+acceptance requirements and changes to this sequence are recorded here before implementation.
+No source from incompatible-licensed implementations is used.
+
+### Sister-project patterns and decisions
+
+- Inspected Apache-2.0 CytoWeave 0.8.1 (`19d47bb`) and MaveScape 0.8.0 (`c997e39`) locally: `mcp.go`, `verify.go`, client
+  transports and `clients/generate.mjs`. Preserve one action catalog, versioned API contracts,
+  generated wrappers/help, `remote.json` discovery, explicit connection overrides, structured
+  errors, stdout reserved for MCP, cancellation and visible named proposals. Generated-client
+  drift checks belong in CI; host settings remain opt-in rather than inferred from clients.
+- The siblings drive browser computations for verification. ClonoLoom deliberately uses its
+  existing Go workers directly, without introducing a browser requirement or a second scientific
+  implementation. Bit-for-bit arithmetic remains mandatory; no approximate-equality success. The current
+  official MCP transport specification (2026-07-28; research §5.42) differs from the siblings'
+  older handshake model; slice 7 rechecks protocol requirements and explicit compatibility.
+- Slice 1's certificate is a single-result `.certificate.clz`, separate from the later portable
+  project archive. Its scope is `recorded-artifact-bytes`. It contains the immutable saved
+  manifest, recipe, outputs and provider notice; recorded original-source/parent fingerprints
+  are evidence, not checks performed. A separate fingerprint can be pinned with `--expect`.
+- Begin with the three cohort result kinds that already retain complete source-free evidence
+  and provider notices. Other kinds are refused explicitly until their contracts are mapped.
+  The first slice does not claim O5 complete and never presents integrity as scientific replay.
+- Verify ZIP members in place with strict inventory, size, duplicate/path and checksum checks;
+  extract nothing and never follow a recipe's source paths. Unsupported versions fail closed.
+  Use existing restricted-provider confirmation and mark captured raw evidence as data.
+- Keep the application version at 0.7.0 throughout development. Wave 8 release metadata and
+  published-site updates wait for slice 15 and the maintainer's normal release sequence.
+
+### Slice 1: saved-result evidence certificates
+
+**Committed and pushed as `b459f61`.** O5 foundation, O9, X5, N2/N4.
+Reports prepares and inspects cohort feature/comparison/count certificates. A browser-upload
+check and `clonoloom verify --integrity` use the same Go verifier, return explicit inventory
+findings, and never claim source verification, authenticity, recomputation or scientific validity.
+The CLI writes an optional verification report only to a new path. Provider restrictions remain
+visible even after the source dataset and parent artifacts are absent. The archive retains the
+exact original bytes; neither source data nor earlier release fixtures are modified.
+
+Validation:
+
+- Application and internal-package race tests passed (application 373.549 s), including
+  earlier-release compatibility. Final focused race tests cover certificate export/checking,
+  source-free CLI/API agreement, provider terms, command usage, configuration and action parity.
+- Native arm64 and amd64 checks agree on the pinned certificate fingerprint and source-free
+  API/CLI outcomes. An independent Python-standard-library ZIP/JSON/SHA-256 oracle, run with
+  `uv`, checks original numeric/null/zero tokens and recipe bytes. Thirty seconds of fuzzing
+  completed 1,437 executions without failure. Regression cases cover corruption, duplicate
+  keys/members, unknown versions, traversal, links, cancellation, changed inputs, prefixed path
+  lengths and the separate inventory/metadata size bounds.
+- Targeted cohort and count-model scientific references plus the no-fused-operations check
+  passed (4.574 s). This slice adds no estimator or statistical plot; it preserves saved
+  evidence without numeric conversion. The complete scientific and performance suites remain
+  part of release validation, rather than being claimed by these targeted checks.
+- Go vet and six CGO-free platform builds passed. All browser-module syntax checks and
+  151 JavaScript tests passed, alongside 14 contrast/color-vision checks.
+- Both-theme browser workflows check visible/remote export identity, uploaded integrity,
+  wrong fingerprints, truncated archives and saved-project reopening. Both new screenshots
+  were reviewed. The site builds 48 pages with 58 screenshots; the final accessibility/layout
+  audit passed 188 checks (47 pages, two themes, two widths), after correcting a phone-width
+  command-example overflow with the existing wrapping code-block style.
+
+Keep version 0.7.0. Scientific replay is slice 2; no certificate in this slice claims that
+sources or parents were independently checked, that statistics were recomputed, or that a
+checksum establishes authenticity or biological validity. Nothing is committed, tagged,
+released or published by the implementation workflow.
+
+
+### Slice 2: exact scientific replay from captured cohort evidence
+
+**Committed and pushed as `62b088b`.** O5, N2/N4/N7.
+
+- Reuse the existing feature, comparison and count-model job handlers in a disposable
+  native-Go artifact store. Integrity verification is a prerequisite, never a substitute.
+- Accept the existing version-1 certificates without rewriting them. Verify the embedded
+  parent result's exact bytes against both its own manifest and the recorded recipe binding.
+  Replay feature parents before dependent comparisons/count models, then restore their
+  verified original manifests inside the disposable store so new timestamps/job IDs do not
+  change downstream scientific bytes. Never install the expected target output before running
+  its worker. Check the recipe identity and scientific manifest metadata as well as every
+  output byte; no numeric tolerance, rounding or missing-input fallback.
+- The explicit computation boundary is **captured cohort evidence**: checked design and
+  subject features from embedded diversity measurements; comparison tests/effects from those
+  features; negative-binomial refitting from the captured count matrix. Original receptor files,
+  source-file fingerprints and upstream diversity fits are not independently verified or
+  recomputed. Their recorded provenance is retained, not relabeled as new verification.
+- `verify --replay` and Reports upload use the same host path. Keep `--integrity` explicit and
+  backward compatible. Report `replay-match`, `differs` or `unavailable`, with per-step hashes,
+  scientific-metadata comparison, original manifest and current verifier software/platform.
+  Exit 0 only for the requested match, 1 for a difference/invalid archive and 2 for unavailable
+  replay or operational failure. Report files never overwrite existing paths.
+- Unknown kinds/method versions, incomplete captured inputs or failed worker checks cannot
+  succeed. Only allowlisted workers run; no saved source path, shell command or network resource
+  is opened. Recheck input bytes when reading them after integrity verification. Propagate
+  cancellation and remove the temporary store on success, failure or interruption.
+- Keep scientific validity distinct from computational agreement: matching output does not
+  establish model calibration, sound design, authorship, replication with new data or biology.
+  Cite NASEM (2019) alongside the unchanged method references in research §5.43.
+- Validate every supported result from the four 0.7.0 cohort controls, including positive/null,
+  unbalanced and paired designs, on native arm64 and amd64. Add independent evidence/report
+  digest checks, one-bit output changes, parent/metadata/recipe refusal, cancellation and
+  cleanup controls. Exercise both UI modes and both themes and review the updated screenshots.
+
+Validation completed:
+
+- Application/internal race suite passed with the repository's thirty-minute timeout
+  (application 1,038.178 s). Final targeted race checks passed (32.538 s), covering later
+  verdict refinements, changed parent manifests, duplicate recipe keys, unsupported inputs,
+  cancellation, cleanup, CLI usage, fail-fast report-path refusal and action parity.
+- All twelve release cohort controls reproduced exact output bytes and scientific metadata
+  on native arm64 and amd64. The amd64 replay/byte checks passed in 56.128 s. CLI/API/native
+  reports agree; original manifests remain unchanged. Original release fixtures were not edited.
+- The independent Python ZIP/report oracle, run through `uv`, checked all twelve archives,
+  original provenance and step digests. It preserves raw nested JSON tokens rather than
+  re-encoding floats. Targeted cohort/count-model reference and no-fused-operations checks
+  passed (3.391 s); existing scientific estimators are unchanged.
+- Final verdict controls passed (11.583 s), including one-bit effect differences, scientific
+  metadata changes, missing captured data, altered parent bindings and worker refusal after
+  a completed parent step. During validation a duplicate-key test initially assumed compact
+  fixture JSON and made no change; the corrected control prepends the duplicate regardless
+  of indentation and passes. A redundant focused race run hit Go's default ten-minute timeout;
+  the successful full run and final targeted checks use the existing thirty-minute allowance.
+- Archive/evidence fuzzing completed 113,515 executions in thirty seconds without failure.
+  Direct tests cover input changes after integrity checking, caller read bounds and cancellation.
+- Go vet, formatting, browser syntax, six CGO-free builds, 152 JavaScript tests and 14
+  contrast/color-vision checks passed. Both-theme browser workflows cover visible mode/file
+  controls, exact replay, cancellation without a verdict, corrupt input, saved reopening and
+  exact report downloads, including an integer beyond JavaScript's exact range. Both updated
+  screenshots were reviewed; no statistical plot or estimator is added.
+- The site builds 48 pages with 58 screenshots. Its final audit passed 188 checks across
+  47 pages, two themes and two widths. The complete scientific/performance release suite is
+  not claimed by this slice's targeted reference checks.
+
+Keep version 0.7.0. Broader result support and headless recipes remain slice 3; O5 remains partial.
+No commit, tag, release or publication is performed by this slice's implementation workflow.
+
+
+### Slice 3: headless recipes and broader replay
+
+**Committed and pushed as `59b8868`.** A6, O5, O9, N2/N4/N7.
+
+- Add native `clonoloom run --recipe --input NAME=PATH --out NEW_DIR`, following the
+  compatible CytoWeave/MaveScape named-input, private execution and run-record patterns;
+  no browser, listening port, shell, arbitrary action or network dependency.
+- Recipe v1 selects one study/task. Multiple tasks require `--task ID`; never pool them or
+  infer scheduler/environment selection. Each selected input declares a logical name,
+  filename, size and SHA-256. Snapshot exact regular-file bytes before reading them and
+  refuse missing/extra/changed bindings. Preserve explicit input ordering and metadata.
+- Start source computation with batch QC and motif screens through their existing capture
+  functions and workers. Accept explicitly listed AIRR TSV (optionally gzip) and AIRR
+  Repertoire metadata, not implicit directory traversal or unmapped vendor formats.
+  This is a bounded initial headless interface, not a claim that every UI action is portable.
+- Add certificate export/replay for batch QC and motifs, keeping the three cohort kinds.
+  Batch replay recomputes descriptive scores from captured sample QC; motif replay recomputes
+  the existing GLIPH2-style ClonoLoom adaptation from captured sequence units. No source
+  recapture or upstream GLIPH2 equivalence is implied. Keep kind-specific limits and scopes.
+- Preserve certificate v1 and old cohort report scopes. Compare exact result bytes and
+  scientific metadata through the same replay worker path. A changed, unsupported or
+  incomplete result is never a match. Publish a tested per-kind matrix for all registered
+  workers; unsupported kinds are visible, not silently omitted or treated as resumable replay.
+- Effective recipes record normalized parameters and the resolved clock. A fixed recipe time
+  pins notice, artifact and job provenance for repeatable output bytes; absent time is resolved
+  once and written into the effective recipe. Keep actual input snapshots private and temporary.
+- Output directories must be new. Export complete JSON results, original methods/provenance,
+  NOTICE, certificate, validation findings, effective recipe and a checksum inventory in
+  `run.json`; replay tasks write their full replay report. Partial/failed/cancelled runs never
+  get success status. Retain failure diagnostics, not a misleading success marker.
+- Preserve known provider terms plus explicitly supplied source credits. Restricted source
+  diagnostics/evidence require the existing explicit private-study acknowledgment, represented
+  by `--accept-terms`. Replay of an already supplied certificate retains the existing verifier
+  contract. Do not claim de-identification or relax method assumptions.
+- Test application/headless capture and output identity, input relocation, fixed-time repeat
+  runs, explicit batch selection, hashes/limits/unknown fields, provider terms, cancellation,
+  no overwrite, numeric tokens and exact replay for both new kinds. Reuse the realistic
+  artificial batch-QC and motif studies and review both-theme certificate workflows.
+
+Validation completed:
+
+- Full application/internal race suite passed with the thirty-minute allowance (application
+  594.896 s). Final targeted race controls passed in 69.151 s after the manifest-byte fix.
+  Earlier targeted checks passed in 80.186 s. No existing release fixtures were changed.
+- Both realistic artificial source studies match application capture and worker output bytes.
+  Relocated input bindings and fixed effective-recipe reruns preserve all six inventoried
+  outputs. Scientific result digests are pinned on arm64 and amd64; the amd64 final controls
+  passed in 18.724 s. Source/certificate provider gates, explicit task selection, malformed
+  inputs, changed hashes/results, unsupported methods, cancellation and no-overwrite pass.
+- The documented recipe helper was exercised with freshly generated batch-QC and motif studies.
+  Both CLI computations and native certificate replays pass. The independent Python ZIP/hash
+  oracle, run through `uv`, checks six outputs per run, archived bytes and replay digests.
+  It caught a re-encoded standalone manifest; exports now preserve the original manifest bytes,
+  with an added regression test and successful independent checks for both studies.
+- Existing independent batch-QC/motif method references and the no-fused-operations check
+  passed (2.746 s). No estimator, inference method, plotting geometry or release fixture was
+  changed. This slice does not claim the complete scientific/performance release suite.
+- Recipe parser fuzzing completed 742,638 executions in thirty seconds without failure.
+  Go vet, gofmt, browser/helper syntax and six CGO-free platform builds pass. All 152 JavaScript
+  tests and 14 contrast/color-vision checks pass.
+- The existing cohort and both new certificate workflows pass in light and dark themes;
+  all six screenshots were reviewed. The underlying batch/motif scenes still check source
+  units, planted controls, missingness/exclusions, figure geometry, methods and source-free
+  saved reopening. A capture-script fingerprint lookup initially addressed the response wrapper;
+  using its certificate field corrected the harness, and all new scenes then passed.
+- Site build passes with 49 pages and 60 screenshot references. The audit passes 192 checks
+  across 48 pages, two themes and two widths. Documentation describes the source/replay
+  distinction, fixed provenance time, output-status/exit contracts, forced-kill cleanup limits
+  and the narrower recipe input bounds.
+
+Keep version 0.7.0. A6/O5 remain partial outside the published matrix. Checkpoints are slice 4;
+additional source/parent contracts must be mapped explicitly before expanding support.
+
+
+### Slice 4: checkpoints and analysis differences
+
+**Committed and pushed as `1874fc7`.** O7, O9, N2/N4/N7.
+
+- Add named immutable local checkpoints in Reports, using the compatible CytoWeave pattern
+  of snapshot, compare and undoable recovery. Preserve raw project JSON and every inventoried
+  file of each directly attached completed local result; include its original manifest and
+  captured notices. Publish staged, synced files only after all input checks succeed.
+- Record a versioned SHA-256 inventory with a content-derived checkpoint ID. Preserve source
+  paths and fingerprints as records; never open or copy original receptor/expression sources.
+  This is local recovery evidence, not a portable project/archive or a running-job checkpoint.
+- Bound requests/project evidence to 16 MiB, 128 attached results, 256 inventory files,
+  existing certificate member bounds and 512 MiB total. Refuse unavailable, changed, incomplete,
+  external-output or unsupported-version evidence rather than omit it. Separate unattached
+  parents/reference installations remain outside recovery; supported replay uses its existing
+  captured-input contracts.
+- Compare a checkpoint against the current analysis or another checkpoint of the same project.
+  Go reports changes to source records, definitions, QC, sample annotations/populations, cohort
+  designs, parameters, result identities and saved manifest/file fingerprints. Exact raw JSON
+  evidence underlies each description, retaining large integers, missing versus null, and array
+  order. Do not infer effect sizes, significance or biological consequences from configuration.
+- Recovery preflights all existing result destinations, refuses conflicts without overwrite,
+  and reinstalls missing result directories with original bytes. Retry is idempotent. Commit
+  analysis values through the existing browser undo store only after recovery succeeds; keep
+  current identity/name, history and checkpoint references. Invalidate pending analysis callbacks
+  on recovery and undo/redo. Refuse browser numeric-token loss and stale-project/edit responses.
+- Checkpoint creation/reference changes and recovery are undoable; immutable evidence remains
+  in the local library when a reference is undone. Interrupted recovery can leave verified
+  unreferenced results, never a falsely completed project restoration. A force-kill/power loss
+  is not a transactional whole-library backup guarantee.
+- Keep existing certificate format, replay scopes, scientific workers and version 0.7.0.
+  Check recovered certificate fingerprints and exact replay against the original. Exercise
+  malformed/corrupt/version/conflict/cancellation controls, old-project compatibility,
+  independent inventory checks and both-theme artificial-study workflows.
+
+Validation completed:
+
+- Full application/internal race suite passed with the thirty-minute allowance (application
+  581.904 s). Final checkpoint race controls passed in 2.282 s after the metadata-size guard.
+  No scientific worker, estimator, plotting geometry or existing release fixture changed.
+- Deleted-result recovery preserves every original manifest/output byte and the original
+  certificate fingerprint, then passes exact native scientific replay. Retry is idempotent.
+  The independent Python inventory/hash oracle, run through `uv`, confirms checkpoint identity,
+  all three fixture files and restored replay digests. amd64 recovery/replay controls passed
+  in 1.471 s alongside native arm64 validation.
+- Corrupt files, conflicting destinations, incomplete/external evidence, future versions,
+  cross-project requests, cancellation and stale edits are refused. Preflight checks all
+  destinations before installing any missing result. Old release project envelopes still parse;
+  minimal version-1 envelopes retain existing core-list defaults without changing saved bytes.
+  Large numeric tokens, missing/null and array order remain distinct. An exact-limit regression
+  verifies 4096 differences followed by unchanged fields succeeds and 4097 refuses truncation.
+- Parser fuzzing completed 1,099,342 executions in thirty seconds without failure. Go vet,
+  gofmt, browser/helper syntax and six CGO-free platform builds pass. All 155 JavaScript tests
+  and 14 contrast/color-vision checks pass. Independent cohort comparison/feature, batch-QC
+  and no-fused-operations controls pass (3.417 s); this is not the complete release suite.
+- Both-theme checkpoint workflows pass on the existing realistic artificial batch-QC study:
+  changed definition/QC/population records, deleted-result recovery, undo/redo, saved reopening,
+  unchanged certificate identity, exact replay, stale-edit refusal and cancellation. Both new
+  screenshots were reviewed. The initial capture assumed optional sample annotations existed;
+  its fixture now supplies those records explicitly. Existing cohort, batch-QC and motif
+  certificate workflows also pass in both themes; their unchanged screenshots are retained.
+- Site build passes with 50 pages and 61 screenshot references. The audit passes 196 checks
+  across 49 pages, two themes and two widths. Guides distinguish exact inventoried bytes from
+  recovered analysis values, and document local-only scope, numeric refusal, undo semantics,
+  interruption limits and unchanged scientific replay support. Version remains 0.7.0.
+
+Slice 5 remains self-checking reports. Portable transfer of checkpoint evidence belongs to the
+explicit project-archive contract in slice 10; no commit, tag, release or publication here.
+
+### Slice 5: self-checking HTML reports
+
+**Implemented and validated; awaiting the user's commit.** O6, O1/O2, O9, N2/N4/N7.
+
+- Export one offline HTML file for one to eight explicitly selected saved results from the
+  five existing certificate kinds. Reuse original result/manifest bytes, provider gates,
+  notices, methods and references; do not open source paths or imply project-wide coverage.
+- Go renders complete exact-value tables and recorded evidence without float conversion.
+  Embed native replayable certificates and result JSON downloads. Bound exports and refuse
+  unsupported, changed, malformed or oversized evidence rather than silently drop records.
+- Reuse existing batch-QC, cohort comparison and count-model figure geometry. Show all
+  applicable plots within declared bounds, never select discoveries or compute new statistics.
+  Feature tables and motif screens retain complete tables; no new visualization method here.
+- A standalone browser checker verifies the exact report-content bytes and embedded download
+  bytes before displaying them. Allow an independently retained report fingerprint. No network
+  resources, source paths, external fonts or unescaped metadata. State unsupported/failed checks
+  explicitly; checksums are not scientific replay, signatures or biological validation.
+- Preserve exact numeric tokens in tables/downloads; browser numbers are used only for existing
+  figure geometry, with explicit refusal of unsafe integer geometry. Carry full denominators,
+  missing/exclusion reasons, correction families, methods and kind-specific scientific limits.
+- Exercise offline checks, tampered evidence/content, independently pinned fingerprints,
+  source-free reopening, provider gates, stale edits/cancellation, exact certificate replay,
+  hostile labels, complete tables and existing figure geometry. Review both-theme screenshots.
+
+Validation completed:
+
+- Full application/internal race suite passed with the thirty-minute allowance (application
+  715.737 s). Final targeted report/action race controls passed in 136.523 s; amd64 controls
+  passed in 19.254 s. Exact original result/certificate bytes and native replay pass for all
+  five kinds, including the full release count-model result with about 19,000 clonotypes.
+  Existing release fixtures, scientific workers and estimator/plotting modules are unchanged.
+- Repeated exports with fixed selection/order, title, evidence and build are byte-identical.
+  Multi-result selection stays explicit. Provider gates, cancellation, stale edits, corrupt
+  files, unsupported requests, numeric tokens, missing/null and table limits are checked.
+  The full large motif study exceeds the bounded report contract; native certificates remain
+  available. A smaller captured artificial motif fixture validates its report/replay path.
+- The independent Python oracle, run through `uv`, checks five reports' inventories, exact
+  result bytes, ZIP members, certificate fingerprints and native replay digests. The offline
+  browser harness opens all five as local files, with no server or network requests, and
+  verifies figures, independent fingerprints, changed evidence, altered geometry/styles and
+  hidden failed content. Final regenerated exports passed in 5.598 s.
+- Table-parser fuzzing completed 506,908 executions in thirty seconds without failure.
+  Go vet, gofmt, browser/helper syntax and six CGO-free platform builds pass. All 158 JavaScript
+  tests and 14 contrast/color-vision checks pass. Independent cohort feature/comparison,
+  batch-QC/motif and no-fused-operations controls pass (7.369 s), plus the independent
+  statsmodels count-model reference (0.274 s). This is not the complete scientific release suite.
+- Application export and offline-figure workflows pass in both themes, including accessibility,
+  visible remote selection/title, cancellation and stale-response refusal. All four screenshots
+  were reviewed. A capture assertion initially counted all included samples rather than only
+  available metric values; it now checks every plotted sample and coordinate against recorded
+  evidence. Missing values remain in the complete tables. Initial export bounds were adjusted
+  to retain full release count-model rows while avoiding duplicate large captured recipes.
+- Site build passes with 51 pages and 63 screenshot references. The audit passes 200 checks
+  across 50 pages, two themes and two widths. Guides document numeric precision, geometry
+  coverage/unavailable states, all bounds, original recipe downloads, provider restrictions,
+  the trusted-checker boundary and the distinction from scientific replay and validity.
+
+Keep version 0.7.0. Broader result contracts and portable project archives remain separate;
+automation policy is slice 6. No commit, tag, release or publication in this slice.
+
+### Slice 6: automation policy, proposals and typed queries
+
+**Committed and pushed by the maintainer (`1b38572`).** A2/A3 and the A1 foundation. API 2 changes automation from permissive
+remote control to read-only by default. One catalog declares conservative effect bounds;
+`--allow edits,compute,files,network` grants only the named capabilities. Non-read calls
+also require the local connection token. Grants never imply acceptance of a project edit.
+The window reviews named proposals against the exact current project; rejection, cancellation
+and stale proposals cannot execute. Accepted changes use normal Undo and a bounded session
+audit records requests and outcomes, including refusals. Cancellation is best effort for
+already-started file operations and workers; it cannot erase downloaded bytes or completed
+side effects. No automatic retry or rollback of scientific files.
+
+A bounded typed clonotype filter tree adds conjunction/disjunction/negation and declared
+numeric/string predicates, stable pagination and full-population denominators. There is no
+SQL, shell, expression evaluation, inferred missing value or statistical inference. Raw native
+JSON is retained for precise client decoding. Existing certificate replay and its five-kind
+support matrix remain unchanged; automation does not introduce another scientific engine.
+MCP and generated clients remain slices 7–9. Version stays 0.7.0.
+
+Validation completed:
+
+- Full application/internal race suite passed (application 1000.407 s, within the existing
+  thirty-minute limit). Final focused policy/query race checks passed in 2.034 s. The first
+  full run caught a new test fixture that collapsed to one productive clonotype; a second
+  productive identity supplies a literal 8/12 and 4/12 abundance oracle. No scientific
+  tolerance, method or existing fixture was changed.
+- Native query controls retain QC rules, full-table denominators, definition and source unit,
+  stable pagination, case-sensitive and multi-chain semantics. Strict schemas, duplicate keys,
+  numeric precision bounds, no SQL/shell, unknown fields, depth/node limits and bounded audit
+  are tested. Final decoder fuzzing passed 113,557 executions in twenty seconds.
+- amd64 policy/query and five-kind HTML-certificate replay controls passed in 15.066 s.
+  Existing native worker and certificate replay cases pass in the full race suite. This is
+  not the complete scientific release-validation campaign, which remains slice 15.
+- 163 JavaScript tests and 14 contrast checks pass. Both-theme browser workflows pass for
+  proposals/audit, reports and checkpoint recovery. They exercise existing-job refusal,
+  explicit acceptance/rejection, stale proposals, cancellation before and after acceptance,
+  blocked late writes, actor history, Undo/Redo and preservation of read-only/UI-only views.
+  Four new screenshots were reviewed. Initial browser checks caught lifecycle invalidation
+  and modal/drawer accessibility issues; these were corrected before the final runs.
+- Go vet, formatting, JavaScript syntax and six CGO-free platform builds pass. Site build
+  produces 52 pages and 65 screenshot references; its 204 desktop/mobile/theme audit checks
+  report no violations or overflow. Existing release fixtures and scientific workers remain
+  unchanged. Capture/fixture drivers explicitly grant capabilities, wait for existing work
+  and click visible acceptance controls; they never auto-retry failed edits.
+
+Audit is bounded to the last 500 host-session events, not persistent forensic history.
+Cancellation cannot undo already written/downloaded bytes; project Undo remains bounded to
+300 steps. Non-read automation refuses existing jobs/imports. Read-only query leases reject
+project writes without resetting the active scientific view. No commit, push, tag, release or
+site publication was performed. Slice 7 (MCP transport) is next after maintainer review.
+
+### Slice 7: MCP transport
+
+**Committed and pushed by the maintainer (`315f398`).** A1/N5. `clonoloom mcp` follows
+Apache-2.0 CytoWeave/MaveScape's stdio subprocess, normal local host, lazy window and shared
+catalog patterns. MCP 2026-07-28 uses per-request metadata/discovery; 2025-11-25 has explicit
+initialization compatibility. Modern calls never inherit an earlier client's identity or
+capabilities. stdout is exclusively JSON-RPC; diagnostics/help/version use stderr.
+
+HTTP and MCP share grants, argument validation, window dispatch and bounded audit. Tool lists
+include only actions allowed by the fixed launch grants; hidden actions cannot bypass them.
+Edits retain human proposal review, stale-state refusal, caller-labelled History and Undo/Redo.
+There is no approval tool, arbitrary SQL/shell endpoint, new estimator or replay engine.
+
+Bound frames (2 MiB), arguments (1 MiB), output (16 MiB), active calls (16) and session IDs
+(65,536). Preserve native numeric tokens in text and structured results; refuse oversized
+responses explicitly rather than truncating scientific evidence. Progress is elapsed waiting
+time, not percent complete. Cancellation and EOF cancel pending calls without promising rollback
+of completed files or artifacts. Use a dedicated library; known live hosts are refused, with
+best-effort detection rather than a global process lock. Protocol choices and sources are in
+research §5.48 and `docs/MCP.md`. Version remains 0.7.0.
+
+Validation completed:
+
+- Full application/internal race suite passed (application 863.599 s). Final focused MCP,
+  shared-policy and HTTP race checks passed in 2.880 s. Cases cover modern/legacy negotiation,
+  metadata isolation, strict framing/IDs, grants before window opening, catalog/review parity,
+  progress/cancellation/EOF, bounded concurrency/output and live-library refusal.
+- Decoder fuzzing passed 297,319 executions in twenty seconds. Native JSON transport retains
+  integer/decimal tokens beyond ordinary double precision; oversized output returns an error
+  rather than a partial success. Scientific input schemas and workers are unchanged.
+- amd64 MCP/policy/query and five-kind HTML-certificate exact-replay controls passed in
+  14.641 s. Existing native worker and certificate controls passed in the full race suite.
+  Full scientific release calibration remains slice 15; this slice changes no replay limits.
+- Real stdio subprocess/browser checks pass for both protocol modes, explicit grants, human
+  rejection/acceptance, cancellation, actor History, Undo/Redo and pending-proposal EOF cleanup.
+  HTTP and MCP return identical native query strings for the same simulated repertoires.
+  Filtered rows retain abundance, full-table frequencies and definition; displayed rank changes
+  with membership. The initial test incorrectly expected rank to stay fixed; its oracle was
+  corrected without changing scientific behavior.
+- 163 JavaScript tests, 14 contrast checks and both-theme browser accessibility checks pass.
+  Four new screenshots were reviewed, with simulated data and no invented biological inference.
+  The audit workflow exposed missing clonotype grid cell/header roles; these were repaired.
+- Go vet, formatting, syntax checks and all six CGO-free platform builds pass. The site builds
+  53 pages with 67 screenshot references. All 208 checks across 52 pages, two themes and two
+  widths pass without accessibility violations or overflow. No site publication was performed.
+
+No commit, push, tag or release was performed. Slice 8 (Python client) follows maintainer review.
+
+### Slice 8: generated Python client
+
+**Committed as `f086392` and pushed by the maintainer.** A4 first part. Follow the Apache-2.0
+CytoWeave/MaveScape package layout, generated methods/help, remote.json discovery, standard-library
+HTTP transport and optional pandas helpers. Generate all 58 methods from a Go-checked catalog
+snapshot; CI checks both snapshot and generated-file drift. Python 3.10 is the minimum supported
+version. Package and application version remain 0.7.0; the published host predates this contract.
+
+Check action API 2, catalog 1 and permission policy 1 before every action. Keep explicit URL,
+token and library overrides separate; no discovered token goes to an unrelated explicit URL.
+Disable proxies/redirects and require loopback HTTP. Preserve authoritative host grants and human
+proposal review. Typed errors retain status/action/code and ambiguous completion; never retry,
+launch a host, expand a grant or accept a proposal automatically.
+
+Decode numbers as int/Decimal and retain raw HTTP bytes and native resultJSON. Encode finite
+Decimal values as number tokens without float conversion. Distinguish omitted UNSET from explicit
+None/null, arrays and empty containers. Optional pandas object columns preserve original values;
+missing record keys become None only in that convenience view. Bound inputs/responses/nesting,
+reject malformed and non-finite evidence, and document Python's numeric representation limits.
+No scientific worker, plotting method, replay tolerance or replay kind changes. Original
+certificate bytes remain authoritative. Sources and choices are in research §5.49.
+
+Validation completed:
+
+- Full application/internal race suite passed (application 789.063 s). Native scientific worker
+  and exact replay controls remain unchanged. amd64 catalog and five-kind HTML-certificate replay
+  controls passed in 26.735 s. Full scientific release calibration remains slice 15.
+- Seventeen Python tests pass on both Python 3.10 and 3.13 with pandas, covering all generated
+  methods, precision, omission/null/arrays, object frames, discovery, versions, typed failures,
+  bounds, malformed responses, redirects, timeout and no retry. One thousand seeded exact-value
+  round trips compare the encoder to the standard JSON decoder with Decimal. The standard-library
+  run passes with only the optional pandas check skipped. Disabled Decimal traps cannot turn
+  invalid exponents into accepted NaN evidence.
+- Real host/window validation generates a seeded vaccine study (five artificial subjects,
+  thirty samples) in a temporary directory and opens three observations of one subject. Python
+  and direct HTTP return identical native query strings; filtered rows retain scientific values,
+  definition and full-table frequencies while displayed rank changes. Token/grant/null/unsafe-
+  number refusals, human rejection, timeout cancellation, named History and Undo/Redo pass.
+  The documented query example executes against the same host; the test driver alone clicks
+  proposal controls. No public data download or user library is involved.
+- Wheel and source distributions build with uv and install in isolated environments. Installed
+  package checks verify version, generated methods and exact values. CI adds Python 3.10/3.13,
+  catalog/generator drift, fake-server, wheel-install and real-host checks. No package publication.
+- Go vet, formatting, JavaScript syntax, all six CGO-free platform builds, 163 JavaScript tests
+  and 14 contrast checks pass. The site builds 54 pages with 67 existing screenshot references;
+  all 212 checks across 53 pages, two themes and two widths pass without accessibility violations
+  or overflow. No application visual or scientific plot changes; no new screenshots are needed.
+
+No commit, push, tag, release or publication was performed. Slice 9 (generated R client) follows
+maintainer review; Python and R will share the action/permission/error contract and parity cases.
+
+### Slice 9: generated R client
+
+**Committed as `a7efd18` and pushed by the maintainer.** Complete A4 using the Apache-2.0 CytoWeave/MaveScape
+R package pattern: generated `cl_*` functions, Rd help, S3 connections/results, curl transport
+and remote.json discovery. Share Python's catalog/API/policy, discovery precedence, explicit
+token isolation, typed failures, bounds, no retries and authoritative host grants/window review.
+
+Preserve JSON number tokens in a dedicated character-backed class rather than converting them
+to R doubles. Retain raw response bytes and native resultJSON. Distinguish omission, explicit
+NULL, empty objects and arrays, including singleton vectors in array parameters. Data frames
+use list columns preserving values; any lossy numeric conversion must be explicit and warned.
+No scientific computation, replay tolerance, new plot or inferred permission belongs here.
+
+Generate all functions/help and check drift. Validate numeric tokens, malformed/bounded JSON,
+vectors/nulls, discovery and refusal cases with fake HTTP fixtures and seeded parity cases.
+Build/install/check the R package, run Python regressions, and extend the isolated real-host
+driver to compare native R/Python/HTTP evidence and reviewed edits. Add CI and documented runnable
+examples; check the site in both themes. Keep version 0.7.0; portable archives remain slice 10.
+
+Validation completed:
+
+- All 58 R functions and Rd pages generate from the same Go-checked snapshot as Python;
+  generation drift, obsolete help, names and package version checks pass. The existing Python
+  generated files are unchanged. R CMD build/install/check passes with no errors, warnings or
+  notes on R 4.6.1 (curl 8.0.0, jsonlite 2.0.0); the Apache license and adaptation notice ship
+  in the package. CI adds release and oldrel-1 R checks; those remote matrix runs follow push.
+- Seven R test groups pass all 1,290 assertions, including 1,000 seeded exact-token round trips,
+  generated calls, faithful scalar/vector/null/object values, exact list-column frames, raw/native
+  evidence, discovery precedence/token isolation, version refusals and malformed/bounded JSON.
+  Unicode surrogates/NUL are refused explicitly. Millisecond timeout controls prevent accidental
+  unlimited timeouts from fractional seconds. HTTP failures, redirects, proxy isolation,
+  oversized results, ambiguous submitted outcomes and no-retry controls pass.
+- The installed R client and Python use one temporary, seeded vaccine project (five artificial
+  subjects, thirty samples; three observations of subject S01 opened). R/Python/direct HTTP
+  native query bytes match exactly at the same project state. Filtered rows retain scientific
+  values and full-table denominators while ranks change. Token/grant/null/unsafe-number refusals,
+  human rejection, timeout cancellation, named History and normal Undo/Redo pass. Both runnable
+  query examples execute. Only the test driver clicks review controls; no user library is used.
+- All seventeen Python regression tests pass. The full application/internal Go race suite and
+  amd64 catalog/five-kind HTML-certificate replay controls pass using valid cached results;
+  no native scientific code changed. Go vet, six CGO-free builds, JavaScript syntax, 163 browser
+  module tests and 14 contrast checks pass. CI YAML and the R matrix parse correctly.
+- The site builds 55 pages with 67 existing screenshot references. Its 216 accessibility/layout
+  checks across 54 pages, two themes and two widths pass with no violations or overflow.
+  No application plot or visual changes; no new scientific screenshots are needed. The R guide,
+  package help and research §5.50 explain representation, permissions, timeouts and scientific
+  limits. Exact certificate replay and release fixtures remain unchanged.
+
+No commit, push, tag, release or publication was performed. Slice 10 (portable project archives)
+follows maintainer review and commit.
+
+### Slice 10: portable project archives
+
+**Committed as `205045c` and pushed by the maintainer.**
+
+**Plan recorded before implementation.** Complete D12's portable archive contract with a
+versioned `.clz` ZIP containing original project/history bytes, attached immutable artifact
+files, available artifact parents, checkpoint evidence, provider notices and a sorted SHA-256
+inventory. Preserve source documents and scientific numeric tokens without decode-to-float.
+Import creates local path bindings separately; originals remain inspectable evidence.
+
+Source bytes are opt-in, fingerprint-checked and included only for open providers or explicitly
+authorized user-owned data. Restricted/unknown-provider sources remain omitted; missing,
+changed and unsupported sources have explicit inventory statuses. Captured restricted evidence
+requires the existing private-use acknowledgment and retains notices; an archive is not a
+redistribution license or de-identification. Never follow recorded source paths on import.
+
+Validate all ZIP names, types, counts, compressed/expanded bounds, inventory hashes, project
+versions and dependency identities before promotion. Reject traversal, links, case collisions,
+special files, unlisted content and destination conflicts. Stage under the local library; never
+overwrite projects/results/checkpoints. Partial interruption may leave verified unreferenced
+files, not a successful project import. Preserve checkpoint bytes and apply portable source
+bindings when recovering imported checkpoints. No recipes or workers execute during inspection.
+
+Expose export, inspection and import in the window and shared reviewed action catalog, regenerate
+both clients, and document the new catalog version. Validate hostile/corrupt archives, exact
+round trips, cross-release projects, source policy, cancellation/conflicts, real browser reopening
+and both-theme visuals. Keep version 0.7.0 and existing scientific/replay methods unchanged.
+
+Validation completed:
+
+- Version 1 archives retain original project/history, result and checkpoint bytes, including
+  scientific large integers, decimal tokens, negative zero and valid checkpoint-record whitespace.
+  Sorted SHA-256 inventories and pinned fingerprints verify every member. Missing mandatory
+  results/checkpoints refuse export/import; available artifact parents are retained recursively.
+- Source inclusion is off by default. Open provider licenses or explicit authority for user-owned
+  sources are required; restricted original files remain excluded. Captured restricted evidence
+  requires private-use acknowledgment and retains credits/notices. Omitted, restricted, missing,
+  changed and unsupported sources have explicit statuses and empty working paths. No source path
+  from an original machine is followed during import.
+- ZIP tests reject traversal, links, devices, reserved/ambiguous/nonportable names, case and
+  file/directory collisions, unsupported methods/encryption, corrupt hashes, duplicate JSON keys,
+  wrong versions, forged source pointers, unlisted files and oversized counts/metadata. Metadata
+  duplication is bounded before constructing a large inventory. Existing projects and conflicting
+  or incomplete results/checkpoints are refused before writes. Cancellation and partial-file
+  limits are documented; this is not a transactional whole-library backup.
+- Original evidence remains under imports/<fingerprint>; only the working project receives local
+  paths and archive status. Imported checkpoints recover with verified bindings; new local
+  checkpoints work normally; re-export retains old checkpoint sources after original paths vanish.
+  Every v0.2–v0.7 project reopens with original receptor dataset identities and artifact bytes;
+  the v0.6 expression matrix/annotations also retain their original input identity.
+- A seeded artificial vaccination study transfers between two isolated hosts after moving the
+  original files away. Native clonotype query JSON, saved diversity evidence and checkpoint files
+  are byte-identical. Rejected import proposals write no project; stale inspection/cancellation
+  controls pass. Both new screenshots were inspected; both-theme application accessibility passes.
+  The transfer test is added to CI. No new scientific figure, estimator or replay tolerance.
+- Catalog 2 exposes 61 actions through HTTP, MCP and generated Python/R wrappers. Source export
+  requires review even without project edits. Import requires read/edits/compute/files because
+  opening the project may rebuild dataset tables; each missing grant is tested. Saved analyses
+  are not recomputed. Native import/export integrity is distinct from five-kind certificate replay.
+- The complete Go suite passes, including the scientific validation package. Internal scientific
+  race checks, archive/cross-release race controls and focused application permission/MCP checks
+  pass. Initial broad race checks exposed obsolete catalog/review assertions and concurrent
+  generated-catalog drift; the catalog was regenerated, assertions updated and all affected
+  checks rerun successfully. No scientific validation failure remained. Bounded decoder smoke
+  fuzzing, Go vet and six CGO-free platform builds pass.
+- All 167 browser module tests and 14 contrast checks pass. Python's 17 regression tests pass;
+  R passes 1,296 assertions and package build/check without errors, warnings, notes or skipped
+  tests. Live R/Python/HTTP parity, reviewed edits, rejection, cancellation, History/Undo and both
+  query examples pass. Client generation drift checks pass with catalog 2.
+- The site builds 56 pages with 68 screenshot references; all 220 accessibility/layout checks
+  across 55 pages, two themes and two widths pass. Guides, format/source/recovery limits,
+  requirements, research §5.51 and changelog are updated. Version remains 0.7.0.
+
+No commit, push, tag, release or publication was performed. Slice 11 (export de-identification)
+follows maintainer review and commit.
+
+### Slice 11: explicit de-identification exports
+
+**Status: committed as `1c10c3e`; maintainer reports pushed.**
+
+**Plan recorded before implementation.** Implement O10 as a dedicated, versioned dataset-table
+export, following CytoWeave's allowlisted-copy approach. Do not relabel ordinary archives,
+certificates, HTML reports, figures or arbitrary nested artifacts as de-identified. Those formats
+retain original evidence and require separately mapped transformations before support can expand.
+This slice's ZIP contains only native clonotype CSV, optional AIRR rearrangements, a sample
+annotation table, a fresh transformation inventory and provider notice. No original project,
+history, paths, source documents, manifests, recipes, checkpoints, embedded images or binary
+attachments may enter it. Unsupported nested scientific annotations refuse the AIRR export
+rather than being silently stripped; clonotype-only export remains an explicit alternative.
+
+Prepare and review before download. Generate fresh cryptographically random pseudonyms for
+subjects and samples; scope cell/sequence aliases by sample and preserve missing identities.
+Display the complete subject correspondence locally. Require explicit choices for dropping
+free-text annotations and HLA (both selected initially). Preserve sample membership, counts,
+units, QC, clonotype definition, missingness and all retained native scientific field values.
+Keep the original dataset/project/artifacts untouched. A separately requested identity-map
+file retains original identifiers, metadata and source fingerprints for private audit; it is
+never included in the shareable ZIP or its public inventory. Pseudonyms are stable within one
+prepared export, fresh across preparations, and not derived from names without a secret key.
+
+Retained sequences, stable scientific identifiers, rare measurements and optional annotations
+can enable linkage. No anonymity, privacy-risk measurement, legal certification or exact replay
+of a transformed artifact is claimed. Provider terms remain authoritative. Refuse unsafe or
+unsupported metadata instead of silently broadening a privacy claim. Bound preparation, files,
+identity maps and ephemeral storage; fingerprint-pin both downloads and reject stale browser
+state. Add reviewed shared actions and regenerate both clients with the next catalog version.
+
+Validate field-by-field equality with ordinary scientific exports, subject/sample/cell linkage,
+missingness, disclosure canaries across every ZIP member, source immutability, restricted-data
+policy, separate-map retrieval, cancellation/bounds and UI stale state. Use representative seeded
+studies and inspect both themes; no new scientific estimator or figure is introduced. Document
+supported scope, removed fields, scientific limits and cited rationale. Keep version 0.7.0.
+
+
+**Implementation.** Added the native v1 allowlisted table ZIP and separate private map, fresh
+per-preparation HMAC pseudonyms, native scientific-field parity, effective annotation removal,
+provider attribution, bounded in-memory lifetime and fingerprint-pinned separate downloads.
+The window shows every subject correspondence and clears review when choices or project change.
+Both shared actions require explicit capabilities and human review; catalog 3 generates 63
+Python/R wrappers without changing their numeric-token or permission contracts. Existing source
+files, project/history, saved artifacts, replay methods, scientific plots and version 0.7.0 remain
+unchanged. Unsupported nested provenance refuses AIRR export; clonotype-only scope is explicit.
+
+**Validation.** Native boundary and focused race tests pass, as do 169 JavaScript tests,
+17 Python tests, 1,300 R assertions and R CMD build/install/check without errors, warnings or
+notes. Live R/Python/HTTP native-evidence checks, Go vet and all six CGO-free platform builds
+pass. The browser workflow verifies 46,447 retained rearrangements and 27,215 clonotypes across
+six observations of two simulated vaccination subjects, unchanged native queries/project bytes,
+review rejection, separate downloads, changed choices, stale edits and cancellation. Both-theme
+screenshots were reviewed; browser accessibility, 14 contrast/color-vision checks and 224 site
+checks across 56 pages/two themes/two widths pass. The complete
+`go test -race -timeout 30m ./...` suite passes (application 1,093.950 s; scientific validation
+940.147 s); existing performance budgets intentionally skip under race instrumentation.
+No scientific workers or performance-budget definitions changed.
+
+Guides, format contract, implementation citations (research §5.52), scoped requirement O10,
+site page, screenshots, CI and changelog are updated. No commit, push, tag, release or site
+publication was performed. Slice 12 (Parquet exports) follows maintainer review and commit. Release preparation remains slice 15.
+
+
+### Slice 12: typed Parquet dataset exports
+
+**Committed and pushed as `9ed6767`.**
+
+**Plan recorded before implementation.** Follow the wave sequence: this slice implements the
+Parquet portion of O3, not release preparation. Correct the stale slice-11 closing note; keep
+application/client versions at 0.7.0. Adapt only the Apache-2.0 SituCraft v0.9.0 writer and compact
+protocol emission, extending it for optional columns, cancellation, failure handling and explicit
+bounds. Do not import a general reader or runtime dependency. Consult the Apache Parquet/Thrift
+specifications; validate generated files with independent PyArrow and DuckDB readers.
+
+Export mapped native dataset tables (clonotypes and rearrangements) with flat versioned schemas,
+metadata for effective definition/QC, abundance units, native source fingerprints, provider notices,
+and exact table population. Use native CSV/AIRR exporters as the scientific source so this adds no
+second computation. Assign stable sample-column keys with an explicit name map to avoid collision
+with scientific column names. Write missing values as null, explicit zero as zero, flags as bool,
+and counts as signed INT64 only when native float64 values are finite, nonnegative, integral and
+within the consecutive exact-integer range (2^53−1). Refuse ambiguous/fractional counts, never
+round or claim to restore input precision already lost before export. Keep other retained AIRR
+evidence as native text, including invalid annotations; this is not an AIRR schema replacement.
+
+Add explicit Parquet options to the window and a reviewed shared export action; regenerate the
+Python/R catalog. Integrate an optional Parquet representation into slice 11's pseudonymized
+export: run the existing identifier/removal policy first, keep sanitized provenance in every
+footer/schema, and never put its private map or original paths/fingerprints in the public bundle.
+Existing raw Parquet exports retain original identities and are clearly labeled as such. Saved
+analysis artifacts and unsupported nested table types remain outside this mapped export contract.
+
+Use deterministic GZIP/PLAIN v1 pages, RLE definition levels, fixed column/row-group ordering and
+sorted metadata. Bound input, pages, groups, metadata and output; complete validation before any
+HTTP download succeeds. Preserve provider acknowledgment, cancellation and stale-project guards.
+Test exact independent integer/null/boolean/text decoding, empty/multiple groups, byte stability,
+invalid input/writer failures, native-table parity, identity-map separation and provider refusal.
+Exercise a seeded representative vaccination dataset and inspect both-theme presentation. Update
+formats, guides, research, requirements, changelog and CI; no commit/tag/release/publication.
+
+**Implementation.** Added the bounded standard-library writer, native typed-table ZIP route,
+schema/notice footer metadata and exact member inventories. Preserve native clonotype and AIRR
+table order, nullable counts/flags, explicit sample-column mappings, original source provenance
+and optional invariant-rule denominators/shares. Ordinary exports clearly retain identifiers.
+The existing pseudonymized workflow optionally emits Parquet after its removal/mapping policy;
+footers contain only sanitized public provenance and the private map remains separate. Text
+output stays the default. Negative, fractional, infinite and ambiguous large counts refuse
+without rounding; native missing values stay null. No scientific worker or replay rule changes.
+
+Added Reports and Clonotypes export choices, stale-project/cancellation guards and reviewed
+`export_parquet` automation. Catalog 4 generates 64 Python/R wrappers; API 2, permission policy 1
+and application/client version 0.7.0 remain unchanged. Updated guides, formats, scoped O3,
+implementation citations (§5.53), NOTICE, CI and changelog. Validation uses independent PyArrow
+26.0.0 and DuckDB 2.0.0, including explicit physical-type assertions for native AIRR count names
+instead of relying solely on the emitted schema.
+
+**Validation.** Final native export/boundary and focused race checks pass, including nullable
+AIRR `duplicate_count`, `umi_count` and `templates`, refusal of unsafe counts, source immutability,
+provider policy, sanitized footers, separate identity maps and writer resource/failure bounds.
+PyArrow 26.0.0 and DuckDB 2.0.0 pass 16 independent reader/bundle checks against native evidence;
+the bounded adapter fuzz run completed 11,288 executions without failure. The browser verifies
+46,447 rearrangements and 27,215 clonotypes across six observations of two seeded vaccination
+subjects, unchanged query/project evidence, reviewed rejection, stale state and cancellation.
+Native/pseudonymized Parquet and existing text-export screenshots were reviewed in both themes.
+
+Pass 169 JavaScript tests, 17 Python tests, 1,302 R assertions and R CMD build/install/check
+without errors, warnings or notes; live Python/R/HTTP exact-evidence checks; Go vet; all six
+CGO-free platform builds; 14 contrast/color-vision checks; and 228 site accessibility/layout
+checks across 57 pages, two themes and two widths. The local site builds 58 pages; no publication.
+
+Complete Go race coverage finished in batches. The initial `go test -race -timeout 30m ./...`
+hit its cumulative timeout while portable-release reopening and pseudobulk controls were actively
+computing, without assertion failures or race reports. These application/reference tests run
+sequentially. Retain the preceding successful checks and rerun every interrupted and remaining
+entry (31 application/test-seed entries and 23 scientific-reference entries) with verbose race
+instrumentation: both batches pass (986.531 s and 898.286 s respectively). Final Parquet changes
+also pass their focused race suite. Existing costly performance/simulation controls intentionally
+skip under race instrumentation and remain in CI's non-race data job; no scientific assertions,
+numeric tolerances, performance budgets or release fixtures were changed.
+
+Ready for maintainer review and commit. No commit, push, tag, release or publication was performed.
+Slice 13 (agent benchmark) follows; container/cluster work is slice 14 and release preparation
+remains slice 15.
+
+### Slice 13: known-truth agent benchmark
+
+**Plan recorded before implementation.** Implement A5 as a versioned local task suite, following
+CytoWeave's Apache-2.0 task/grader/reference/empty-control pattern and ClonoLoom's existing real
+host/window and Python/R validation drivers. Keep the benchmark outside the shipped runtime.
+Use a small deterministic artificial AIRR study with independently enumerated receptor groups,
+UMI counts, missingness and repeated-subject observations. Grade known arithmetic and state
+changes from code, not an LLM or the application result being treated as its own truth.
+
+Cover full-table counts, filtered frequencies with unchanged denominators, missing versus zero,
+definition-dependent grouping, explicit proposal rejection and denied/invalid calls. Distinguish
+answer correctness, observed task completion and permission behavior from scientific validity.
+Do not infer antigen specificity, biological expansion, independent replication from repeated
+samples or exact replay from successful tool execution. Keep scientific numeric evidence as
+original native JSON text, with strict structured answers and no approximate-success fallback.
+
+Run reference and empty baselines through the real local contracts; exercise HTTP, stdio MCP
+and generated Python/R clients. Provide a bounded external-program adapter with argument arrays,
+explicit opt-in, a documented JSON-lines tool/answer contract and no shell invocation. No paid
+model or external agent is run as part of implementation. Record command identity, software and
+benchmark/fixture fingerprints, task selection, repetitions, tool evidence, failures and review
+policy. Reference controls validate the harness, not agent capability; open fixtures are not a
+held-out generalization test. Never publish a model leaderboard without actual model runs.
+
+Require explicit benchmark grants and scripted-review opt-in. Use isolated temporary libraries
+and generated inputs, no network grant, bounded calls/output/deadlines and no automatic retries.
+The test reviewer may click only the exact declared fixture proposal, with explicit rejection
+tasks; it is not an agent approval API or an operating-system sandbox. Separate setup from scored
+actions. Test graders with wrong, incomplete and fabricated answers, missing evidence, changed
+state, malformed protocol and failure controls. Show task denominators and limits in a local
+accessible report, review both themes, update documentation/CI/research/requirements/changelog,
+and keep application/client version 0.7.0 and action catalog 4 unchanged. No commit or release.
+
+
+**Completed implementation.** Benchmark and fixture format 1 contain eight code-graded tasks
+on 32 artificial AIRR rows (two subjects/four observations). Literal per-group/per-sample truth
+is independently aggregated from the generated TSVs. The normal native results must retain
+five groups/248 UMIs, explicit exclusions and zero counts, and full-population denominators;
+the reviewed amino-acid-only grouping has four groups and the same abundance. The fixture is
+not a receptor-generation model, specificity validation or biological treatment simulation.
+
+The isolated runner supports HTTP, stdio MCP, Python and R with exact native text and raw
+transport evidence. HTTP pre-dispatch refusals retain their original 400/403 envelopes; client
+exceptions identify their own origin. Structured answer, evidence and permission grades remain
+separate. All selected attempts, including failures, remain in denominators. The optional
+trusted JSONL candidate adapter uses explicit argv, sequential bounded calls, strict numeric
+tokens, output/deadline limits and no shell or automatic retries. It is not an OS sandbox.
+Both host grants and exact fixture-only scripted review require explicit opt-in. Existing
+application/client versions, catalog 4, scientific methods and replay scopes remain unchanged.
+
+Validation completed locally:
+
+- All **32/32 reference tasks** passed through the four live transports. Exact native query
+  bytes match between transports; independent arithmetic grading is a separate check.
+- **0/8 no-action controls** passed, as intended. **3/3 scripted JSONL controls** and **6/6
+  scaled/repeated controls** passed. Repeated native evidence is identical. These are scripts,
+  not evaluated models; neither repetitions nor count scaling establish independent samples.
+- A live negative control refused an out-of-policy action and rejected an unexpected proposal,
+  preserving project/input state. Correct answers and native evidence did not override its
+  permission failure. Unit controls cover malformed/duplicate/concurrent/oversize protocol,
+  timeouts, call limits, numeric rounding, incorrect science, omitted evidence and state drift.
+- **209 JavaScript tests** passed (169 existing plus 40 benchmark checks). Focused Go race tests
+  for MCP/remote/client contracts, Go vet and the 64-action generated-client drift check passed.
+  No Go runtime or scientific worker changed; the earlier full scientific suite was not rerun.
+- The report's **four desktop/phone, light/dark layouts** passed axe-core and overflow checks.
+  The mobile scrolling table was made keyboard-focusable. Both-theme screenshots were inspected.
+  A saved-report validation command rechecks grades/hashes and presentation without rerunning
+  scientific actions. The site build checks 59 pages and 72 screenshot assets; all **232**
+  site accessibility/layout checks passed. Final focused R definition/precision checks passed
+  after tightening exact grant validation and runtime-version provenance.
+
+The runner guide, scientific interpretation, site page, automation guide, conventions,
+requirements, research §5.54, NOTICE, changelog and CI are updated. CI runs only local controls,
+never a paid model. No commit, tag, release or publication was made. Slice 14 (container/cluster)
+is next; release preparation remains slice 15.
+
+**Slice 13 committed and pushed as d63cc53.**
+
+### Slice 14: container and cluster execution
+
+**Plan recorded before implementation.** Package the existing native `run` and `verify`
+commands in a multi-stage, digest-pinned Go build and small non-root OCI image. Preserve
+source and replay support, exact scientific bytes, provider terms and failure statuses.
+No browser, package manager or alternate scientific implementation belongs in the runtime.
+Use an allowlisted build context; include only compilation inputs, embedded fixtures and
+license notices. Record the supplied source revision honestly and keep version 0.7.0.
+
+Document explicit read-only input, writable output and temporary-scratch mounts, numeric
+user/group ownership, no network, dropped capabilities, resource limits and read-only rootfs.
+Use exec-form process startup and SIGTERM forwarding with the existing cancellation contract.
+Image defaults do not substitute for runtime permissions; do not grant host directories,
+remote-control capabilities, provider acknowledgment or network implicitly.
+
+Provide a portable, explicit Slurm replay-array example over versioned recipes and individually
+pinned certificates. Generate a new private input bundle without rewriting scientific evidence;
+select exactly one named task per array index and reserve a distinct new output folder. Keep
+native execution available for sites without a container runtime. Scheduler allocation,
+container availability and site policies remain operator choices; no submission, image push or
+release automation is added. Document Apptainer integration limits honestly if it cannot be
+validated here rather than claiming untested runtime support.
+
+Validate the image's non-root/configuration/filesystem boundary, source computation for batch
+QC and motifs, exact native/container output parity and certificate replay, refused changed
+inputs and existing outputs, explicit provider terms, unsupported kinds, cancellation and
+unchanged sources. Test array selection/refusal without a scheduler, preserving native exit
+codes and task isolation. Use existing independent inventory/science controls, inspect both
+Linux architecture builds where feasible, and add a bounded CI container job plus guides,
+requirements, research citations and roadmap results. No commit, tag, release or publication.
+
+**Completed implementation.** The digest-pinned official Go 1.26.6 build produces a CGO-free
+native image with a numeric non-root default, exec-form entrypoint, SIGTERM and only the program,
+mount points and ClonoLoom/Go notices in the runtime filesystem. An explicit generated allowlist
+contains 345 compilation/embedded-asset files. CI checks list drift and the actual builder/runtime
+inventories; injected excluded files must remain absent. No registry publication is configured.
+
+The container command helper prints a shell-quoted command using an inspected local image ID,
+disjoint read-only inputs/writable output parent, explicit bounded scratch, no network, no new
+privileges, dropped capabilities and non-root numeric ownership. It refuses existing outputs,
+linked inputs and unsafe bindings, and never executes the command or acknowledges provider terms.
+Original recipe parameters remain native JSON. Rootless Podman, SELinux and remote-engine mount
+ownership are documented operator choices; image defaults do not enforce the runtime policy.
+
+A private replay-bundle helper copies bounded regular certificate files without rewriting their
+bytes, pins each file and writes a versioned recipe plus task index. The native Slurm example
+selects exactly one listed task and a distinct new output per array job/task, quotes every path,
+uses exec for signal forwarding and propagates the native status. It submits nothing and never
+silently resumes an existing output. Array selection is locally tested; actual Slurm allocation,
+log policy and Apptainer conversion/runtime integration remain unvalidated site concerns.
+
+Validation completed locally:
+
+- Linux arm64 and emulated Linux amd64 passed both artificial source workflows and all five
+  certificate replay kinds through Podman. Every inventoried scientific source-run output is
+  byte-identical to native output; the independent Python ZIP/inventory checker also passed.
+  These checks establish the existing software replay contract, not biological validity.
+- Valid-checksum one-bit scientific changes report differs; unsupported methods report
+  unavailable. Changed input pins, existing destinations, read-only input/rootfs writes and
+  missing scratch are refused. Restricted source computation requires explicit acknowledgment.
+- All five bundled tasks replay through the native array script and the container. Invalid
+  indices/IDs and existing destinations fail. Handled SIGTERM returns exit 2 with a cancelled
+  record and cleaned scratch. Original source hashes remain unchanged. Hard-kill/OOM recovery
+  and actual scheduler behavior are not claimed by these tests.
+- Focused Go race coverage passed for exact workers, difference/unavailable cases, all four
+  cohort release-fixture designs, cancellation, report protection, both source workers, recipe
+  bounds and task refusals. The initial ten-minute cumulative timeout was resolved by rerunning
+  the complete selection with the project's 30-minute limit; it passed in 671 seconds. No Go
+  production worker changed, and the unrelated full Go suite was not rerun for this slice.
+- **228 JavaScript tests** passed, including 19 bundle/array/container-helper controls. Go vet,
+  syntax/format checks and the 64-action generated-client drift check passed. Both-theme guide
+  screenshots were inspected; the site builds 60 pages with 72 screenshot assets and passes
+  all **236** desktop/phone accessibility/layout checks.
+
+The container/headless guides, site page, CI, conventions, requirements, research §5.55 and
+changelog are updated. Source computation remains batch QC/motifs; exact captured-evidence replay
+remains the same five kinds. No scientific worker, numerical tolerance, action catalog or version
+changed. No commit, push, tag, release, image publication or scheduler submission was performed.
+Slice 15 (final study and release preparation) follows after maintainer review and commit.
+
+**Slice 14 committed and pushed as `7e96917`.**
+
+### Slice 15: complete record-and-reach study and release 0.8.0
+
+**Plan recorded before implementation.** Complete the wave with a worked artificial batch-QC
+study connecting the ordinary window, exact HTTP/MCP/Python/R query evidence, checkpoint
+comparison/recovery, a self-checking HTML report, certificate verification/replay and portable
+archive transfer. Use the existing simulator and native methods; retain source truth, units,
+subjects, batches, unavailable scores and all samples. Descriptive QC flags are not diagnoses,
+treatment effects, automatic exclusions or corrected data. Distinguish unchanged saved bytes,
+recomputed captured evidence and biological interpretation at every boundary.
+
+Create a new 0.8.0 compatibility fixture through real reviewed actions in an isolated library.
+Keep portable reopening paths separate from original scientific provenance, include the new
+checkpoint/certificate/archive contracts, and test exact future reopening/replay. Never edit
+older release fixtures. Add a worked guide and site page, refresh representative wave-8 screenshots
+in both themes and review all existing scientific scenes through the established browser driver.
+Review the full support/permission matrix without expanding unsupported scientific methods.
+
+Bump application, citation, web cache keys and generated client packages to 0.8.0 only in this
+slice. Consolidate the release changelog and remove stale development-only instructions while
+keeping historical release records intact. Add version/fixture drift checks where needed.
+Run complete Go race coverage, required-data scientific/reference checks, processor compatibility,
+six platform builds, performance budgets, JavaScript/Python/R/package/live-client checks, offline
+report and archive controls, container replay, benchmark baselines and site accessibility.
+Use bounded batches for slow suites if necessary; do not weaken scientific tolerances or budgets.
+Record every completed check and material local limitation. The maintainer alone commits, merges,
+tags, publishes the release and publishes the site; this slice performs none of those actions.
+
+
+**Implementation.** The complete worked guide and 0.8.0 fixture connect the ordinary window,
+HTTP, MCP, generated Python/R clients, checkpoint comparison/recovery, offline HTML reports,
+certificates, pinned native replay and portable archive transfer. The artificial batch-QC
+study retains 26 observations, 2,427 generating rows, declared batches/exclusions and complete
+truth. Its plots retain raw denominators, missing values and unscored groups. Flags remain
+descriptive; no treatment, automatic exclusion, batch-correction or specificity inference is added.
+
+The four transports retain identical original query JSON. A reviewed definition change leaves
+the saved QC result untouched; recovery restores the original query. Transfer into a fresh
+library with original source paths unavailable preserves query and result bytes and supports
+checkpoint recovery. The 51-file compatibility fixture keeps original project, checkpoint,
+certificate, report, archive and scientific bytes alongside a separately serialized portable
+project. All earlier release fixtures are unchanged. Native tests verify exact future replay,
+recovery and source/truth hashes; CI runs the complete worked integration and offline report.
+
+Release testing found that accepted automation reset loaded expression inputs and completed
+views. Action startup now invalidates earlier asynchronous attachments separately from project
+replacement. Cancellation, recovery and Undo/Redo still invalidate stale work; Undo/Redo notify
+selection listeners to reload still-selected saved results. Unit and real browser checks cover
+these boundaries. Capture scripts now await explicit saved-result reopening after history
+changes, use the current action schema and isolated ports, and frame the checkpoint panel itself.
+The source-run checksum test pins its original software provenance, preserving its existing
+scientific hashes across the release-version change. No scientific worker or tolerance changes.
+
+Application, citation, web cache keys and generated client packages are 0.8.0. API 2, catalog 4,
+permission policy 1 and the 64-action catalog stay unchanged. The guides and support matrix
+distinguish integrity, restoration, captured-evidence replay and source computation. Certificates
+and HTML reports cover five kinds; source recipes cover batch QC and motifs. Broader O5/A6
+contracts, actual Slurm scheduling and Apptainer integration remain explicitly outside this release.
+
+
+Validation completed locally:
+
+- **176 root test/fuzz-seed entries** passed with race instrumentation, in bounded batches;
+  all **49 internal packages** passed their race suites. The large paired cohort replay first
+  exceeded its two-minute job wait under competing validation load; its complete parent chain
+  passed on recheck. The original source-run hashes also passed with their captured version
+  pinned. No numerical tolerance or performance budget was relaxed. The container-fixture
+  generator is opt-in and ran separately in the real runtime check; the optional publisher
+  download test was not enabled. Seven wave-8 fuzz targets each passed 20 seconds of mutation.
+- **74 scientific/reference tests** passed with all eleven configured data sources required.
+  Four optional publisher/public-HDF5/VDJdb checks were not configured. Every release fixture
+  reopened/replayed on arm64 and amd64; the pre-0.3 value-comparison contract stays unchanged,
+  and later scientific outputs retain exact bytes. Go vet and all six CGO-free builds passed.
+- **231 JavaScript tests**, **17 Python tests**, **1,302 R assertions**, Python wheel/source
+  build and installed smoke checks, and R package build/install/check passed. Generated
+  clients match all 64 catalog actions. Live Python/R and both MCP protocol contracts passed
+  permission, precision, review/rejection/cancellation and Undo/Redo checks.
+- Independent PyArrow 26.0.0 and DuckDB 2.0.0 checks passed all **16 reader/bundle controls**.
+  AnnData 0.12.6 independently reread and rewrote all **360 × 24** saved counts and their
+  identifiers, annotations, receptor links and supplied/computed coordinates.
+- The complete worked integration passed, including clean bounded driver shutdown. All five
+  supported offline report kinds passed exact fingerprints, changed-byte refusal and zero
+  network requests; the worked report's four layouts retain all six native figures. Benchmark
+  controls passed **32/32** transport tasks, **3/3** scripted JSONL tasks and **6/6** repeated
+  controls, with **0/8** empty controls succeeding as intended. Permission failures remain
+  separate from correct answers. No model or biological performance was evaluated.
+- Linux arm64 Podman passed both source workflows, all five replay kinds and array tasks,
+  exact native/container scientific files, independent inventories, differences/unavailable
+  outcomes, explicit terms, mount/input/overwrite refusals and handled SIGTERM cleanup. The
+  actual build context contains **345** allowlisted inputs; injected exclusions remain absent.
+  Slice 14's Linux amd64 runtime checks remain recorded separately. This slice does not claim
+  native Windows UI execution, PowerShell execution, a Slurm scheduler or Apptainer validation.
+- All **126 browser scene checks** passed across both themes, including plot/native-value and
+  source-free reopening controls. All **73 screenshot pairs** were reviewed; the checkpoint
+  screenshot was corrected to show its own panel. The site builds **61 pages** and passes all
+  **240** accessibility/layout checks, alongside **14** application contrast/color-vision checks.
+
+
+- All **six performance budgets** passed in a separate non-race run on ten cores: a million
+  rearrangements read/validated in **1.509 s** at **58 bytes/row** plus junctions; 100 cached
+  samples reopened in **125 ms**; a searched 200-row page of 999,690 clonotypes in **38.004 ms**;
+  10,000 neighborhoods against 99,997 background receptors in **1.177 s**; a million generation
+  probabilities in **41.955 s**; 100,000 paired-TCR neighbors in **36.597 s**, using **1.3 GB**.
+  Original limits remain unchanged; these are local timings, not universal runtime promises.
+
+**Slice 15 committed and pushed as `4573c93`.** Wave 8 implementation and release preparation
+are complete. CI run `40807882153` found two early portability failures: Docker adds
+`dev/console` and `etc/mtab` to exported containers, unlike the locally tested Podman inventory;
+the old-R job passed package checks but failed when setup-uv tried to save an unused cache.
+The R matrix then cancelled the release-R job.
+
+**CI follow-up, awaiting maintainer commit.** Allow those two exact engine-created paths and
+report unexpected runtime member names. Disable the unused container/old-R uv caches and
+let both R matrix jobs complete independently. Real Docker validation additionally exposed
+the Podman-only bare `rw` bind-mount option; use explicit `readonly=false` in both the command
+helper and validation, preserving writable-output/scratch and read-only-input boundaries.
+Actual Docker and Podman Linux arm64 checks pass for both source kinds, all five exact replay
+kinds, array tasks, refusals and SIGTERM cleanup. Docker's filtered build context contains
+345 allowed inputs; exclusion canaries stay absent and an injected unexpected runtime file
+is rejected by name. All 231 JavaScript tests pass. No scientific worker, tolerance, fixture
+or permission scope changed. Hosted CI must pass on the follow-up before the maintainer
+creates the wave-8 PR and follows the usual merge/release/site sequence. No commit, push, PR,
+merge, tag, release, image publication, scheduler submission or product-site publication was
+performed for this follow-up. Wave 9 planning follows that release; no wave-9 work was started.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 8 | 0.8.0 | Record and reach | Certificates and `verify`, `run`, reports, MCP, Python and R clients, agent benchmark, archives, de-identification, container file |
 | 9 | 0.9.0 | Suite and public data | ADC queries, overlap with public cohorts, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |
 | 10 | 1.0.0 | Hardening | Budgets met, accessibility audit, documentation complete, external beta feedback addressed |

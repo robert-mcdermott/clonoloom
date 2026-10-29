@@ -1,0 +1,17 @@
+Package: clonoloom
+Type: Package
+Title: Reviewed Local Automation of 'ClonoLoom'
+Version: 0.8.0
+Authors@R: person("Robert", "McDermott", email = "robert.c.mcdermott@gmail.com", role = c("aut", "cre"))
+Description: Drives the normal local 'ClonoLoom' repertoire analysis host using
+    generated actions, explicit permissions and human proposal review. Preserves
+    exact JSON number tokens and original evidence without numeric conversion.
+    Scientific computations remain in the host, with no client-side estimator.
+License: Apache License (== 2.0)
+URL: https://github.com/robert-mcdermott/clonoloom
+BugReports: https://github.com/robert-mcdermott/clonoloom/issues
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports: curl (>= 8.0.0), jsonlite (>= 2.0.0)
+Suggests: testthat (>= 3.2.0), withr
+Config/testthat/edition: 3

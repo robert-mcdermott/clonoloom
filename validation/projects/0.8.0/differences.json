@@ -1,0 +1,16 @@
+{
+  "format": "clonoloom-checkpoint-diff",
+  "version": 1,
+  "before": "cp-a05c6ea24083ec46649baeb827f45b9ca7e156696a729ba9be64bf64d03b5217",
+  "after": "current analysis",
+  "changes": [
+    {
+      "category": "Clonotype definitions",
+      "path": "/datasets/0/definition",
+      "summary": "Clonotype definitions: /datasets/0/definition added.",
+      "beforeJSON": "(absent)",
+      "afterJSON": "{\"name\":\"Amino-acid junction only\",\"chains\":null,\"junction\":\"aa\",\"v\":\"none\",\"j\":\"none\",\"productiveOnly\":true,\"cells\":\"primary\"}"
+    }
+  ],
+  "limits": "Local checkpoint recovery restores recorded analysis settings and attached completed result files, not original receptor/expression sources, separate unattached parents, reference installations, running jobs or a whole library. It performs no scientific recomputation. Exact certificate replay remains limited to the published per-kind support matrix. Recorded differences are descriptive, not effects, significance or biological validation. Evidence can contain identifiers, sequences and paths; it is not de-identified or a redistribution license."
+}

@@ -170,7 +170,7 @@ func TestGuidedStepsAreActions(t *testing.T) {
 			for _, s := range o.Steps {
 				steps++
 				a, ok := known[s.Action]
-				if !ok || a.reads || s.Title == "" || s.Words == "" {
+				if !ok || s.Action == "open_data" || s.Title == "" || s.Words == "" {
 					t.Errorf("%s: step %q, action %s", g.Name, s.Title, s.Action)
 					continue
 				}

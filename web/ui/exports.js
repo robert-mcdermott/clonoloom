@@ -39,10 +39,14 @@ function download(url) {
 }
 
 // exportDataset exports a dataset's rearrangements or clonotypes under its definition and filter.
-export async function exportDataset(app, d, what) {
+export async function exportDataset(app, d, what, format = 'text') {
   const state = app.datasetStates.get(d.id);
   const loci = Object.keys(state?.summary?.samples?.reduce((acc, s) => Object.assign(acc, s.loci), {}) ?? {});
   if (!(await asked(d, true))) return;
+  if (format === 'parquet') {
+    await app.setMode('reports');
+    return app.parquet.export(d.id, {what, accept: restrictedOf(d).length > 0}).catch(() => {});
+  }
   const params = new URLSearchParams({ species: invariantSpecies(d), what, dataset: d.id, definition: JSON.stringify(datasetDefinition(d, loci)), filter: JSON.stringify(datasetFilter(app.store.project, d)?.rules ?? {}) });
   if (restrictedOf(d).length) params.set('accept', '1');
   download(`api/export?${params}`);

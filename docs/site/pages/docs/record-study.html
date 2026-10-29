@@ -1,0 +1,26 @@
+---
+title: A complete record-and-reach study
+description: Follow one simulated study through exact query evidence, checkpoints, offline reports, portable archives and scientific replay.
+lede: Keep the same evidence across the window, clients and headless jobs. Know what was restored, what was recomputed and what remains a scientific judgment.
+---
+<h2 id="study">Start with a declared artificial study</h2>
+<p>ClonoLoom 0.8.0 connects the normal window, HTTP, MCP, Python and R with the same native workers. This worked study uses the 26-observation <strong>Batch quality-control study</strong>: four included batches have 8, 8, 3 and 5 subjects, with two explicitly excluded observations. Complete generating truth accompanies all 2,427 artificial rows.</p>
+<shot name="batch-qc" alt="Simulated sample productive fractions across four batches, including flagged and unscored observations">A descriptive review screen, not a treatment effect or automatic deletion rule. Fractions retain their raw denominators; missing values and zero MAD remain explicit.</shot>
+<p>Use threshold 3.5 and minimum five evaluable subjects. Each point is one sample; median lines are not confidence intervals. A shifted batch can have no within-batch flags. The existing <a href="batch-qc.html">Batch QC methods and limits</a> explain the metric scales, denominators and modified-score convention.</p>
+<h2 id="clients">Keep client evidence exact</h2>
+<p>Grant only <code>edits,compute,files</code> and run offline in an isolated library. Keep the normal window open for named proposal review. The worked fixture queries the same host through HTTP, MCP, Python and R, comparing the original native JSON strings byte for byte. Paging does not change the full-table frequency denominator. Transport agreement is separate from independent validation of a scientific method.</p>
+<p>Use <a href="python.html">Python int/Decimal values</a> or <a href="r.html">R exact number tokens</a>, retaining original result text. Clients cannot approve their own proposals or enlarge the host’s grants. See <a href="automation.html">Automation permissions</a> and <a href="mcp.html">MCP connections</a>.</p>
+<h2 id="recover">Compare and recover a definition change</h2>
+<ol><li>Save a checkpoint with the original definition and completed batch-QC result.</li><li>Review an amino-acid-only grouping change and compare the recorded analysis.</li><li>Recover the checkpoint. The original query evidence returns without recomputing the saved statistic.</li></ol>
+<shot name="record-study" alt="Checkpoint comparison of an explicitly reviewed clonotype definition change in a simulated study">Recovery restores settings and completed files. It does not back up original sources, resume a running job or establish a biological effect.</shot>
+<h2 id="verify">Separate integrity from replay</h2>
+<p>Export the selected result as a certificate and a self-checking HTML report. The report contains complete tables, existing figures, cited methods and provider notices. Its browser checks saved bytes. Native <code>verify --replay</code> recomputes captured evidence and requires exact outputs and scientific metadata; it does not redo upstream parsing, alignment or clonotyping.</p>
+<div class="code"><pre><code>clonoloom verify --integrity result.certificate.clz
+clonoloom verify --replay result.certificate.clz</code></pre></div>
+<p>A separately retained fingerprint can be supplied with <code>--expect</code>. Matching bytes are not an authenticity signature or validation of experimental assumptions.</p>
+<h2 id="transfer">Transfer and select one headless task</h2>
+<p>Explicitly include permitted sources in a portable archive, inspect its fingerprint and review import in a fresh library. The fixture verifies identical queries, checkpoint recovery and saved scientific files after removing the original source paths. Import can reopen dataset tables; saved analyses are not recomputed.</p>
+<p>Prepare a pinned replay bundle and select one task with <code>clonoloom run</code>. The <a href="containers.html">container guide</a> adds explicit non-root execution, read-only input mounts, separate output/scratch and no network. Scheduler submission remains an operator action.</p>
+<h2 id="limits">Read the support matrix</h2>
+<p>Exact replay and HTML reports cover batch QC, motifs and the three cohort kinds. Headless source computation covers batch QC and motifs. Other kinds remain unavailable; there is no approximate-success fallback. Checkpoints, archives and reports preserve evidence but do not de-identify it. Parquet and explicitly pseudonymized dataset tables are separate mapped exports, not rewritten replay certificates.</p>
+<p>The <a href="{{github}}/blob/main/docs/RECORD-STUDY.md">complete worked guide</a> contains commands, permissions, the boundary matrix and scientific references. The 0.8.0 compatibility fixture retains source truth, original evidence, checkpoint, report, certificate and archive. All earlier release fixtures remain unchanged.</p>

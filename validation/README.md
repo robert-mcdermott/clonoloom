@@ -555,3 +555,272 @@ and no per-cell pseudoreplication. The complete count-evidence scene is a regres
 Pinned complete result: `d6f7d73fa3bd28d6e0111a8814949c644201df8afe78a0476cee22c8e73d4b33`.
 Positive simulator: `ee82857067124d03bf9652f59fb96bc0f82367e6d595e1a4e18bda17c69cd5e0`.
 Null simulator: `de25fa97c96c2ea177f8e3e84075be07d0dd5a805255dfd8f907aa975f456324`.
+
+
+## Headless source runs and broader exact replay (Wave 8, slice 3)
+
+`run_test.go` compares application/headless capture and complete batch-QC/motif result bytes,
+pinned on arm64 and amd64. It checks relocated inputs and fixed-time repeat runs, source
+warnings, provider terms, explicit task selection, malformed schemas, file/hash bounds,
+cancellation and no overwrite. Certificate API/native replay shares the existing workers;
+changed results differ and unsupported worker versions remain unavailable. The per-kind
+support matrix is checked against all registered workers and the browser's offered kinds.
+
+Generate the documented artificial studies with `docs/examples/headless-recipe.mjs`, run the
+printed commands and save a native replay report. Independently check each exported inventory:
+
+```sh
+UV_CACHE_DIR=/tmp/clonoloom-uv uv run --no-project validation/reference/headless_run.py RUN_DIR REPLAY_JSON
+```
+
+The standard-library oracle reads actual exported bytes and ZIP members, without reformatting
+scientific JSON. It checks all six outputs, original manifest/NOTICE identity and replay output
+digests. It does not validate statistical calibration; `TestBatchQCIndependentReference` and
+`TestMotifsIndependentReference` retain that separate role for their existing method controls.
+The `certificates`, `certificates-batch-qc` and `certificates-motifs` capture scenes exercise
+integrity and exact replay in both themes using the existing realistic artificial studies.
+
+
+## Checkpoint recovery and descriptive differences (Wave 8, slice 4)
+
+`checkpoints_test.go` checks immutable inventories, exact numeric-token differences, missing/null,
+array order, source-free recovery and certificate identity/replay after deleting a saved result.
+Controls include corrupted project/result bytes, future formats, unsupported external outputs,
+conflicting destinations, preflight before any installation, cancellation, exact bounds and all
+old release project envelopes. `web/lib/checkpoints.test.mjs` checks references, numeric-loss
+refusal, preserved history and undo/redo with pending-callback invalidation.
+
+```sh
+mkdir -p /tmp/checkpoint-oracle
+CLONOLOOM_CHECKPOINT_ORACLE_DIR=/tmp/checkpoint-oracle go test . -run TestCheckpointRecoveryExactAndReplay
+UV_CACHE_DIR=/tmp/clonoloom-uv uv run --no-project validation/reference/checkpoint.py /tmp/checkpoint-oracle
+```
+
+The independent standard-library oracle checks the checkpoint identity, exact inventory bytes,
+original result manifest and recovered replay output digests. It does not validate scientific
+calibration. The `checkpoints` browser scene uses the existing artificial batch-QC study and
+exercises proposed sensitivity settings, comparison, deleted-result recovery, undo/redo, saved
+reopening, unchanged certificate identity, exact replay, stale-edit refusal and cancellation in
+both themes. Existing cohort/batch-QC/motif certificate scenes remain regression checks.
+
+## Self-checking HTML reports (Wave 8, slice 5)
+
+`reports_test.go` verifies exact JSON/certificate bytes and native replay for all five supported
+kinds, including the complete release count-model fixture (about 19,000 clonotypes). The motif
+fixture uses a bounded subset of artificial captured units; the large full screen can exceed
+report bounds and remains available through native certificates. Repeat exports are byte-identical
+for fixed evidence, title, order and build. Controls cover complete selection, hostile labels,
+numeric tokens, missing/null, table bounds, unknown requests, provider terms, changed files and
+cancellation. No existing release fixture is rewritten.
+
+```sh
+mkdir -p /tmp/report-oracle
+CLONOLOOM_REPORT_ORACLE_DIR=/tmp/report-oracle go test -timeout 10m . -run TestHTMLReportsExactEvidenceAndReplay
+UV_CACHE_DIR=/tmp/clonoloom-uv uv run --no-project validation/reference/html_report.py /tmp/report-oracle/*.html
+node validation/html-report.mjs /tmp/report-oracle
+```
+
+The independent Python oracle checks raw report members, native ZIP inventories, original
+result/manifest identity and replay digests, without re-encoding scientific JSON. The browser
+harness opens local files with no server and checks all five kinds, complete figures, wrong
+external fingerprints, changed bytes/code/styles, hidden failed content and zero network requests.
+`web/lib/report-check.test.mjs` tests the portable checker with Node's independent SHA-256.
+The `html-reports` and `offline-report` capture scenes exercise export, stale edits, cancellation,
+saved scientific geometry and both-theme accessibility on the realistic artificial batch-QC study.
+Integrity/replay validation is separate from the existing independent scientific method controls.
+
+## Automation policy and typed queries (Wave 8, slice 6)
+
+`automation_test.go` checks the complete catalog, read-only defaults, explicit grants,
+token separation, strict argument shapes, duplicate keys, unsafe numeric arguments,
+bounded session audit and cancellation delivery. Typed-query truth tables cover paired
+chains, missing/ignored V values, case-sensitive text, Boolean composition and invalid trees.
+The native endpoint keeps literal 8/12 and 4/12 abundance frequencies under row selection,
+with unchanged definition, units and full table counts. Existing scientific workers and
+five-kind exact replay fixtures are unchanged.
+
+```sh
+go test -race -timeout 30m . ./internal/...
+go test . -run 'TestAutomation|TestTyped|TestRemote|TestEveryAction' -count=1
+go test . -run '^$' -fuzz FuzzTypedClonotypeFilter -fuzztime 20s
+node --test web/lib/*.test.mjs
+node docs/capture/capture.mjs automation html-reports checkpoints --theme both
+```
+
+The automation browser scene tests actual host dispatch and visible proposal decisions,
+stale-project refusal, HTTP cancellation while awaiting review, cancellation of an accepted
+asynchronous action, rejection of its late project write, named history and Undo/Redo.
+It queries the existing artificial vaccine study and checks original denominators; no new
+biological simulation or plotting method is introduced. Review the proposal and audit
+screenshots in both themes. Report/checkpoint scenes remain regression controls.
+
+Capture and fixture-builder scripts now start the host with explicit grants wait for existing jobs/imports, and click each
+visible acceptance button through `validation/automation.mjs`. This is test-driver behavior,
+not an application bypass or an auto-accept capability. Old release fixtures are unchanged.
+
+## MCP transport (wave 8, slice 7)
+
+`go test -race -run 'TestMCP|TestAutomation|TestRemote' .` checks the modern/legacy protocol,
+metadata isolation, exact JSON numeric tokens, catalog/grant parity, review metadata, refusal
+before window opening, frame/output/concurrency bounds, progress/cancellation and EOF.
+`go test -run '^$' -fuzz '^FuzzMCPFrame$' -fuzztime 20s .` exercises framing/decoding.
+
+For the actual stdio subprocess and normal window (Chrome/Chromium plus the existing
+`simulated-vaccine` and `axe-core` validation cache):
+
+```sh
+go build -o /tmp/clonoloom-mcp-check .
+node validation/mcp.mjs /tmp/clonoloom-mcp-check
+# Regenerate only this workflow's four documentation screenshots:
+node validation/mcp.mjs /tmp/clonoloom-mcp-check --capture
+```
+
+The harness starts an isolated offline host with explicit edits/compute/files grants and clicks
+visible proposal buttons. It checks HTTP/MCP query-string parity, full-table denominators,
+filtered rank semantics, rejection/cancellation, actor history, Undo/Redo, both-theme axe checks,
+legacy/modern coexistence and pending-call EOF cleanup. It does not infer scientific validity
+from protocol success; native worker and exact five-kind certificate replay checks run separately.
+
+## Generated Python client (wave 8, slice 8)
+
+`clients/README.md` records generation, drift, package and uv test commands. CI tests Python 3.10
+and 3.13 with optional pandas present. Fake servers exercise every generated method, exact
+integer/Decimal literals, omission/null/array shape, object frames, discovery, compatibility,
+malformed/bounded responses, redirects and no retry. The standard-library suite also runs
+without pandas, skipping only that optional helper's check.
+
+`node clients/test-clients.mjs` builds an isolated normal host and generates a seeded vaccine
+study, without existing user libraries or provider downloads. It runs the Python client through
+real HTTP and visible window review. Controls compare original native query JSON to direct HTTP,
+retain full-table frequencies/definitions and filtered rank, exercise refusals and timeout,
+and verify actor-labelled History and normal Undo/Redo. It also executes the query example.
+The test driver alone clicks acceptance/rejection; no approval method exists in the client.
+Existing exact native certificate replay is checked separately. No new plot is added.
+
+### R client and shared evidence (wave 8, slice 9)
+
+```sh
+node clients/generate.mjs --check
+Rscript -e 'install.packages(c("curl", "jsonlite", "testthat", "withr", "pkgload"), repos="https://cloud.r-project.org")'
+node clients/test-r.mjs
+node clients/test-clients.mjs --r
+```
+
+The R driver runs fake HTTP fixtures and R CMD build/check in temporary directories. Exact
+number-token tests retain integer/decimal/exponent spelling, missing values and container shape;
+strict Unicode, duplicate-key, depth/size, permission, discovery and timeout controls fail
+explicitly. Generated functions/help are checked against the shared catalog. The shared browser
+workflow installs R temporarily and compares native R/Python/HTTP evidence from the same seeded
+artificial vaccination project. It exercises explicit grants, review/rejection, cancellation,
+History and Undo/Redo and runs both query examples. Only the test driver accepts proposals.
+List-column frames do not infer numeric types or renormalize scientific denominators. Package
+and transport checks do not replace native exact certificate replay or scientific calibration.
+
+## Portable project archives (wave 8, slice 10)
+
+```sh
+go test -race -run '^TestPortable' -timeout 10m .
+go build -o /tmp/clonoloom-archives .
+node validation/fetch.mjs axe-core
+node validation/project-archives.mjs /tmp/clonoloom-archives
+```
+
+Add `--screenshots` to refresh the archive scene in both themes. The browser driver creates its
+own seeded vaccine files and two libraries, moves the originals out of reach, rejects one import
+proposal, then accepts a transfer and compares exact native query and immutable evidence bytes.
+It recovers an imported checkpoint, tests stale/cancelled inspection, and audits both themes.
+Only the driver accepts review proposals. Native tests additionally cover hostile ZIPs, bounded
+metadata, permission/status contracts, no overwrite, original JSON tokens/whitespace, re-export,
+local post-import checkpoints, and reopening each v0.2–v0.7 project fixture. Transfer success
+is not scientific recomputation; existing certificate replay and method validation remain separate.
+
+
+## De-identification export boundaries (wave 8, slice 11)
+
+`node validation/deidentification.mjs /path/to/clonoloom --screenshots` creates an isolated host
+and a seeded artificial vaccination study: six observations of two explicitly annotated subjects,
+46,447 retained rearrangements and 27,215 clonotypes under the default definition. It checks
+unchanged project JSON and native query evidence, reviewed/rejected downloads, a separately
+requested private identity map, changed removal choices, stale project edits and cancellation.
+It audits both themes with axe-core and optionally captures the Reports review panel. Review
+clicks belong only to this validation driver; production clients never accept proposals.
+
+`go test -run TestDeidentification .` compares every nonidentity AIRR field and every scientific
+clonotype CSV cell with ordinary exports, verifies within-sample cell/sequence correspondence,
+repeated subjects and missing subjects, and checks identity canaries across every public member.
+Controls cover explicit annotation retention/removal, HLA in retained text, unsupported nested
+provenance, provider permissions, source immutability, pinning/replacement, malformed requests,
+context cancellation, alias framing and bounded correspondence/output. This validates the
+mapped table-copy contract; it does not certify anonymity, sanitize other formats or replay a
+transformed scientific artifact. See [the scope and limits](../docs/DEIDENTIFICATION.md).
+
+## Typed Parquet tables (wave 8, slice 12)
+
+The writer is a representation layer; scientific values come from ordinary native exporters.
+Generate deterministic controls and actual export bundles, then decode them with two independent
+readers (validation-only packages; the Go runtime stays standard-library-only):
+
+```sh
+CLONOLOOM_PARQUET_FIXTURES=/tmp/clonoloom-parquet go test -run 'TestParquet|TestWriterIndependentFixture' . ./internal/parquet
+UV_CACHE_DIR=/tmp/clonoloom-uv uv run --no-project --with pyarrow==26.0.0 --with duckdb==2.0.0 validation/reference/parquet_exports.py /tmp/clonoloom-parquet
+node validation/parquet.mjs /path/to/clonoloom --screenshots
+```
+
+PyArrow 26.0.0 and DuckDB 2.0.0 compare every field against native CSV/AIRR, including count
+units, null/zero, boolean flags, sample-column maps, invariant shares and full denominators.
+They check schema/NOTICE metadata, inventories, empty/multiple groups, exact INT64 extrema,
+Unicode and signed zero. Full INT64 controls test encoding only: the native adapter refuses
+fractional/non-finite values and counts above 2^53−1 because its source count model is float64.
+It cannot restore precision already lost before export. Native NaN remains missing.
+
+The public pseudonymized ZIP is decoded before disclosure checks: compressed bytes alone are
+not a sufficient privacy test. Compare all retained scientific fields against native values
+using the separate private map, check repeated/missing subject linkage and verify source bytes
+are unchanged. Keep provider restrictions, nested-evidence refusals and private-map separation.
+Native tests cover cancellation, malformed schemas/settings, sticky/short writes, count limits,
+page/group/output bounds and fixed-metadata byte stability. Fuzz the bounded native adapter with
+`go test -run '^$' -fuzz '^FuzzNativeParquet$' -fuzztime 20s .`.
+
+The isolated browser uses six observations of two seeded simulated vaccination subjects
+(46,447 rearrangements; 27,215 clonotypes), checks unchanged project/native query evidence,
+explicit proposal rejection, both output representations, cancellation and stale-project state.
+It audits both themes and optionally writes the native and pseudonymized Parquet screenshots.
+No biological inference, new estimator or scientific figure is introduced. See
+[the format and limits](../docs/PARQUET.md) and research §5.53.
+
+
+## Complete record-and-reach study (wave 8, slice 15)
+
+The immutable `projects/0.8.0` fixture connects one artificial 26-observation batch-QC study
+across the window, HTTP, MCP, Python, R, checkpoints, certificates, HTML reports, native replay
+and portable archives. The full generating truth and original evidence are retained; a separate
+portable project changes only reopening paths. Earlier release fixtures are never rewritten.
+
+```sh
+node validation/create-project-0.8.mjs /absolute/new-fixture
+node validation/record-study.mjs
+go test -v -timeout 30m -run 'TestRecordRelease|TestReleaseVersions|TestEveryReleasesProject' .
+```
+
+The generator builds a real host in isolated temporary libraries with explicit
+`edits,compute,files` grants and no network grant. Only this validation driver reviews its
+declared proposals. It compares original native query JSON across all four transports, keeps
+saved QC bytes unchanged through a definition edit, restores the checkpoint, verifies and
+replays the certificate, runs a pinned headless task, and transfers the archive after making
+original source paths unavailable. Exact byte agreement is separate from independent scientific
+truth. `--screenshots` captures the worked comparison in both themes. R, uv, Go, Node, Chrome
+and the cached axe-core validator are required. CI exercises the integration on its current R job.
+
+The saved-report check runs without a host or sources. It requires integrity match, all six
+native figures, explicit unavailable evidence, failure on a wrong retained fingerprint, zero
+HTTP requests and accessible desktop/phone layouts in both themes. It never recomputes science.
+See [the worked guide](../docs/RECORD-STUDY.md) for the full support and interpretation limits.
+
+Release validation includes every root Go test (bounded race batches if needed), internal
+packages, required-data independent references, six CGO-free platform builds, amd64 project
+replay, the performance budgets without race instrumentation or competing heavy work, all
+JavaScript/client/package checks, live permissions and benchmark controls, independent export
+readers, container boundaries, both-theme scene captures and the complete site audit.
+Preserve all numerical tolerances. A timed-out test is rerun to completion; a partial pass is
+not a completed check. Actual cluster scheduling, Apptainer and native Windows UI execution
+remain separate platform/site validation, not inferred from cross-compilation.

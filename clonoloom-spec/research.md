@@ -2914,3 +2914,618 @@ compressed without changing their decoded content. Older fixtures are never rewr
 Browser checks exercise visible controls, persisted reopening, exports, methods, populations
 and both-theme accessibility. Scientific references, cross-platform arithmetic, all platform
 builds and isolated performance budgets remain release gates.
+
+### 5.42 Evidence integrity, replay and automation boundaries
+
+Wave 8 slice 1 introduces no statistical estimator or biological inference. It preserves
+original result bytes, including nulls and exact numeric tokens, and checks their inventory
+using Go's standard-library SHA-256. The hash standard is NIST, FIPS 180-4 (2015),
+[doi:10.6028/NIST.FIPS.180-4](https://doi.org/10.6028/NIST.FIPS.180-4), rechecked for this slice.
+A digest detects changed bytes relative to a record, not authorship or correctness.
+ClonoLoom's choice is to label every successful first-slice check `integrity-match`, set
+`recomputed: false`, require `--integrity` on the CLI, and accept an independently retained
+`--expect` fingerprint. No inference is drawn from a successful integrity check.
+
+The version-1 record is a specified compact Go JSON encoding (not JCS), with ordered file
+entries and SHA-256 over the record without its fingerprint. Original scientific JSON and
+manifest bytes are never reserialized. ZIP readers check bounds, CRCs, duplicates, paths,
+inventory completeness and correspondence to the saved manifest. No extraction, source-path
+resolution or recipe execution occurs. Raw captured evidence may still contain identifiers;
+provider NOTICE and export restrictions are preserved and no anonymization is claimed.
+
+The first supported kinds are cohort-features, cohort-compare and cohort-counts, whose
+immutable documents retain the design, measurement parents, full reported values and notices.
+Parent/source fingerprints are recorded provenance, not checks performed. Scientific
+recomputation follows through shared Go workers with exact equality and explicit unavailable
+outcomes; no cross-engine approximate-equality exception is imported from the siblings.
+
+Reviewed local Apache-2.0 patterns: CytoWeave 0.8.1 (`19d47bb`) and MaveScape 0.8.0
+(`c997e39`), especially certificate inventories, verifier exit/report contracts, `mcp.go`,
+client transports and generators. Preserve one action catalog and generated-client drift
+checks. Their browser-based computation is not transplanted into ClonoLoom. The official
+[MCP transport specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports)
+was checked during planning: its per-request metadata/current protocol differs from the
+siblings' older handshake model. Slice 7 must recheck the then-current specification and
+implement explicit compatibility rather than blindly copy the older transport.
+
+Validation uses the Python standard library's independent ZIP reader, JSON encoder and
+SHA-256 against a small deterministic certificate, plus exact numeric-token preservation,
+changed/missing/extra/duplicate members, invalid paths/versions, external fingerprint mismatch,
+cancellation, provider restrictions and native CLI/API agreement after source/parent removal.
+Scientific cohort references remain separate checks; integrity alone is never calibration.
+
+### 5.43 Exact replay from captured cohort evidence (wave 8, slice 2)
+
+**Source.** National Academies of Sciences, Engineering, and Medicine (2019),
+*Reproducibility and Replicability in Science*, [doi:10.17226/25303](https://doi.org/10.17226/25303),
+[summary](https://www.nationalacademies.org/read/25303/chapter/3) and
+[computational reproducibility](https://www.nationalacademies.org/read/25303/chapter/7).
+The report distinguishes computational agreement using the same inputs and procedures from
+replication using newly collected data. ClonoLoom's choice is stricter exact output-byte
+comparison at an explicitly declared captured-input boundary; neither matching computations
+nor immutable records establish scientific validity.
+
+**Boundary and implementation.** Keep certificate v1 and its integrity interpretation unchanged.
+A separate `clonoloom-replay` v1 report has scope `captured-cohort-evidence`. After full integrity
+checking, reread required members against their pinned hashes. Decode bounded embedded parent
+results and manifests, verify parent/result hash and recipe/identity bindings, and install only
+those verified inputs in an isolated temporary store. Feature replay checks the recorded design
+and recomputes `study.SubjectFeatures` from saved diversity measurements. Comparison replay runs
+that feature worker first, then the ordinary `cohort.Compute` worker. Count replay runs the
+feature worker, checks sample totals and fits `countmodel.Compute` on the recipe's captured
+matrix. No new estimator, inference claim or tolerance is introduced; §§5.30–5.33 retain the
+methods, estimands, testing families and conditional-inference limitations.
+
+Compare every output byte, then manifest identity/name/dataset, method, parameters, job kind/spec,
+parents and summary. The file inventories bind those outputs independently. Original validation
+findings, timestamps, job IDs and software provenance remain in the report's original manifest;
+new execution times/IDs are not scientific equality criteria. The current verifier's software,
+commit when available, and platform are separate. Verified original parent manifests are restored
+only within the temporary store after exact feature reproduction, preserving downstream embedded
+provenance. Expected target output is never installed as a computed result.
+
+**Limits.** Original receptor files and their fingerprints, separate parent files, upstream
+clonotyping/diversity computations, and project history are not checked against external evidence.
+An embedded diversity measurement is an input, not an independently reproduced diversity estimate.
+Count replay refits captured counts; it does not reconstruct them from source sequences. Parent
+hash agreement establishes internal binding, not authorship. Coordinated replacement of data,
+recipes and hashes can still produce a matching record; use a separately retained fingerprint to
+recognize the intended archive. Model adequacy, calibration, subject independence, causal effects,
+antigen specificity and biological truth are outside this verification. Reports show these limits.
+
+**Failure and validation.** Integrity failure or changed outputs/metadata returns `differs`;
+unsupported methods/kinds, missing required captured inputs or worker failure returns `unavailable`.
+No unperformed step becomes a success. All twelve saved feature/comparison/count results across
+four 0.7.0 artificial controls are replayed without their original sources or library parents.
+Independent Python ZIP/hash checks preserve raw JSON numeric tokens rather than round-tripping
+floats; they compare report digests with actual archived input/output bytes. Separate cohort and
+statsmodels count-model references validate the unchanged scientific methods. Negative controls
+include a one-bit change to an effect, changed parent/metadata/recipe bindings, missing inputs,
+unsupported versions, wrong external fingerprint, corrupted ZIPs and cancellation/cleanup.
+
+### 5.44 Headless capture and additional replay boundaries (wave 8, slice 3)
+
+**Methods unchanged.** Batch QC retains §5.38's sample metrics, transformations, medians,
+MADs, 0.6745 scaling and descriptive thresholds, with the Iglewicz–Hoaglin reference already
+cited by its worker. Motifs retains §5.35's Glanville/Huang sources and explicitly documented
+GLIPH2-style ClonoLoom adaptations, sequence-unit definitions, testing family and limitations.
+No new estimator, enrichment test, correction or scientific visualization is introduced.
+The computational-reproduction distinction and NASEM source in §5.43 continue to apply.
+
+**ClonoLoom's implementation choice.** Add a bounded recipe v1 with exact named-file snapshots
+and explicit task selection. Invoke the same source readers, capture functions and Go workers
+as the application; serialize normalized defaults, source warnings, credits and a resolved
+provenance clock. Compatible Apache-2.0 CytoWeave 0.8.1 and MaveScape 0.8.0 patterns inform
+named inputs, private temporary execution, no-overwrite outputs and `run.json`. Their browser
+execution model is not required by these native workers. No arbitrary recorded actions execute.
+
+Source computation and certificate replay are separate operations. Batch certificate replay
+recomputes scores from captured sample QC; it does not independently extract those metrics from
+source files. Motif certificate replay recomputes from captured query/background units; it does
+not independently recreate clonotypes, validate the background population or establish upstream
+GLIPH2 equivalence. Descriptive QC flags are not contamination diagnoses, and sequence signatures
+are not proven antigen specificity. Full original result bytes and scientific manifest metadata
+must agree, without tolerance. Existing cohort report scopes and certificate bytes remain compatible.
+
+**Validation.** The original realistic batch/motif simulations retain their planted effects,
+null controls, exclusions, missingness and uneven sample sizes. Source-capture identity is
+checked against the application. Fixed-time repeat runs, relocated sources and both processor
+architectures check exact worker bytes; ordinary independent batch-QC/motif references check
+method calculations separately. Independent ZIP/hash inventory checks bind actual exported bytes.
+Tests cover unsupported workers/methods, checksum changes, changed output, provider gates,
+explicit batch selection, cancellation and non-overwrite. A registry-derived support matrix
+prevents unimplemented kinds being presented as covered. Reports show the new scopes in both
+light and dark themes without adding an unsupported biological interpretation.
+
+### 5.45 Analysis checkpoints and descriptive differences (wave 8, slice 4)
+
+**Boundary.** A checkpoint is preserved local analysis evidence, not a new scientific method or
+an execution-position checkpoint. The computational reproducibility distinction and NASEM (2019)
+reference in §5.43 apply: copying saved results is not recomputation, independent replication or
+validation of a study. No statistical estimator, plotting method or reference dataset changes.
+
+**ClonoLoom's choice.** Follow the Apache-2.0 CytoWeave 0.8.1 workflow of named analysis snapshots,
+comparison and undoable restoration. Preserve exact project bytes and all inventoried files of
+directly attached completed local artifacts, with their original manifests and captured notices.
+Go creates a bounded, versioned SHA-256 inventory. Staging, file synchronization and directory
+promotion precede publication; conflict checks precede recovery. Do not open recorded source paths,
+copy external source outputs, rewrite scientific JSON or repair conflicting evidence silently.
+
+Compare analysis structures and result methods, parameters, parent records, file inventories and
+manifest fingerprints. Keep raw JSON scalar tokens instead of converting numbers to floats;
+large integers, missing fields, nulls and array order retain their meaning. Descriptions name
+recorded changes, not causal effects, biological interpretations or recomputed significance.
+Configuration changes leave saved results' original settings untouched. Recovery restores analysis
+values with an undo entry while retaining current project identity/name/history/checkpoint references.
+The browser refuses numeric-token loss and stale responses; pending callbacks are invalidated.
+
+**Limits.** Original receptor/expression files, caches, unattached parents, installed reference
+libraries, running jobs and transient panel drafts are not backed up. Checkpoint references need
+the local library's immutable evidence; portable transfer remains the later archive contract.
+Interruption may leave verified unreferenced artifacts; retry is idempotent, but whole-library
+transactionality, hardware durability, authenticity and de-identification are not claimed.
+Certificate replay remains limited to its explicit five-kind matrix and captured-input boundaries.
+
+**Validation.** Delete a saved artificial-study result, recover its exact manifest/output bytes,
+confirm its original certificate fingerprint and rerun the supported scientific worker. Compare
+with the original record and replay digests, independently inventory saved bytes, exercise future
+versions, changed files, conflict refusal, cancellation, source-free recovery and undo/redo, and
+review the same workflow in both themes. Existing scientific controls continue to validate the
+unchanged calculations separately from recovery integrity.
+
+### 5.46 Self-checking reports from saved evidence (wave 8, slice 5)
+
+**Boundary.** No new estimator or statistical visualization is introduced. The NASEM (2019)
+computational reproducibility distinction and SHA-256 reference in §§5.42–5.43 continue to apply.
+Checking bytes is not rerunning science, testing model assumptions or validating biology. A
+single offline file can make evidence inspectable without granting authenticity or data rights.
+
+**ClonoLoom's choice.** Follow the compatible Apache-2.0 CytoWeave traceable-table/provenance and
+MaveScape recorded-methods patterns. Go renders complete tables directly from raw JSON tokens,
+retaining missing values, exact integers, denominators, exclusions and correction families.
+Original scientific JSON and native replayable certificates remain byte-identical downloads.
+The full captured recipe stays in the certificate; large input matrices are not duplicated in
+the visible provenance table. Selection is explicit and bounded, never inferred from a current
+view or filtered to significant findings. Methods/references come from saved result lineage
+and notices, not newly inferred analyses.
+
+The offline browser checks the exact content, downloads, reused geometry and styles against a
+versioned inventory before display. It can compare an independently retained report fingerprint.
+It makes no network requests, follows no source paths and runs no scientific worker. The
+checker/surrounding UI are not an independently trusted verifier: coordinated replacement can
+forge an internally consistent file. Native certificate replay remains a separate tool and
+keeps the established five-kind captured-input limits. Neither mode implies de-identification.
+
+**Figures.** Reuse subject observation/effect plots, the NB2 count-model overview and all batch-QC
+metric panels, with their existing captions/units and geometry tests. Browser numbers place
+marks; exact table/download tokens remain untouched. Unsafe integer geometry, unsupported shapes
+and plotting bounds yield explicit unavailable figures. Feature and motif reports are tables-only.
+The batch example retains its missing sample values and small/constant groups. No density,
+confidence interval, significance color or biological interpretation is invented by the report.
+
+**Validation.** Export/reopen all five kinds offline, check native replay against original bytes,
+and independently inspect inventories/ZIP members and replay digests with a Python oracle.
+Retain all release count-model rows and unavailable fits. Test tampered content, scientific JSON,
+geometry/styles, wrong independent fingerprints, provider terms, cancellation and stale edits.
+Review both-theme application/report screenshots and accessibility; keep scientific calibration
+controls separate from integrity validation. Full motif screens may exceed report bounds; use
+their original certificate exports rather than silently dropping candidate groups.
+
+
+### 5.47 Automation permissions and typed row selection (wave 8, slice 6)
+
+**Sources and scope.** Reviewed the AIRR Data Commons
+[request components](https://docs.airr-community.org/en/stable/api/adc_api_requests.html)
+and [endpoints](https://docs.airr-community.org/en/stable/api/adc_api_endpoints.html)
+(2026-10-28): structured filters and bounded access are established API patterns.
+ClonoLoom's smaller local filter tree is not ADC protocol compatibility. Apache-2.0
+CytoWeave and MaveScape local action/proposal patterns inform named review, shared catalog
+and separation of caller labels from authority. No new scientific method is implemented.
+
+**Scientific boundary.** Query the post-definition/QC clonotype table. Filter row membership
+without renormalizing abundance; retain source units, full sample totals and excluded counts.
+Numeric thresholds use the native abundance representation and are bounded to 2^53−1;
+responses retain the original Go JSON text. V/J may be empty because the definition ignores
+those genes. Chain predicates are existential, not same-chain joins; negation includes rows
+that did not match, including empty fields. Case-sensitive literal matching is documented.
+Neither row selection nor capability acceptance proves biological validity or specificity.
+
+**Operational boundary.** Host capabilities are upper bounds on action effects; the window
+reviews state-changing proposals against the exact project state. Tokens cannot widen grants.
+Names are caller-supplied. Undo covers project edits, not file deletion or external rollback.
+Cancelled work can leave completed artifacts; later project attachments are refused. The last
+500 session audit records are operational evidence, not persistent scientific provenance.
+The five-kind native replay contract remains unchanged and requires exact result bytes.
+
+**Validation design.** Literal predicate truth tables include paired chains, absent V fields,
+case sensitivity, numeric bounds and Boolean nesting. Native endpoint tests compare filtered
+rows to unfiltered rows with unchanged frequencies/definitions/units. Browser checks exercise
+rejection, stale acceptance, cancellation, actor history, Undo/Redo and both-theme review/audit.
+Existing worker and certificate regression tests check scientific replay separately.
+
+### 5.48 MCP stdio and exact scientific transport (wave 8, slice 7)
+
+**Sources.** Official MCP specifications, checked 2026-10-28:
+[2026-07-28 versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning),
+[stdio](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio),
+[tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools),
+[schema](https://modelcontextprotocol.io/specification/2026-07-28/schema),
+[progress](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/progress),
+[cancellation](https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/cancellation)
+and [2025-11-25 lifecycle](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle).
+Reviewed Apache-2.0 CytoWeave (`19d47bb`) and MaveScape (`c997e39`) stdio hosting, lazy window,
+action catalog and lifecycle patterns. Their older handshake implementation is not a substitute
+for the modern per-request contract. No external scientific implementation is incorporated.
+
+**ClonoLoom choices.** Support modern metadata/discovery plus one explicit legacy protocol;
+never inherit identity/capabilities for modern requests. Advertise only tools, filtered by fixed
+launch grants. Reuse one HTTP/MCP authorization and validation boundary, and the existing visible
+proposal/Undo/audit path. Bound input/output, active calls and session IDs. Progress measures
+waiting time, not a scientific calculation's completeness. Cancel pending work on notification
+or EOF; do not claim rollback of finished file effects. Use a dedicated local library; live-host
+checks are best effort rather than a global process lock. Detailed bounds are in `docs/MCP.md`.
+
+**Scientific limits.** Retain native numeric tokens in text and structured result content;
+refuse oversized output rather than silently truncate evidence. A client must independently
+preserve JSON precision. Transport consistency does not establish authenticity or scientific
+validity. Existing Go methods, definitions, QC, denominators, seeds, subject units and five-kind
+exact certificate replay remain unchanged. Filtered query ranks change with membership;
+abundances and frequencies retain the full post-definition/QC table denominator.
+
+**Validation design.** Protocol fixtures test modern/legacy lifecycle, malformed metadata,
+identity isolation, permissions before window opening, catalog parity, exact unsafe-integer and
+decimal transport, output bounds, progress, cancellation and shutdown. Decoder fuzzing tests
+framing recovery. A real subprocess and browser compare HTTP/MCP native query strings on the
+same simulated repertoire, check filtered rows and full denominators, human review, history,
+Undo/Redo, both-theme accessibility and EOF cleanup. Scientific replay checks remain separate
+from transport tests; no new plot or biological inference is introduced.
+
+### 5.49 Exact Python client values and explicit host authority (wave 8, slice 8)
+
+**Sources.** Reviewed Apache-2.0 CytoWeave 0.8.1 (`19d47bb`) and MaveScape 0.8.0 (`c997e39`)
+client transports, generated wrappers/help and real-host harnesses. Reviewed official Python
+[JSON hooks](https://docs.python.org/3/library/json.html),
+[Decimal](https://docs.python.org/3/library/decimal.html),
+[urllib](https://docs.python.org/3/library/urllib.request.html), pandas
+[DataFrame dtype controls](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html)
+and [uv CI integration](https://docs.astral.sh/uv/guides/integration/github/) on 2026-10-28.
+These are transport/representation references, not new scientific methods.
+
+**ClonoLoom choices.** Generate methods from the same Go-checked catalog as HTTP/MCP; keep
+package version separate from action API/catalog/policy. Check compatible versions before every
+action. Explicit URL overrides cannot inherit an unrelated discovered token. Refuse proxies,
+redirects and non-loopback endpoints. The host grants and human review remain authoritative;
+the client cannot accept proposals or expand capabilities. Never retry an edit automatically.
+
+Decode integers as int and decimal/exponent tokens as Decimal, retaining original response bytes
+and native resultJSON. Encode finite Decimal arguments as number tokens, independent of ordinary
+float conversion. Preserve arrays, empty objects and null; UNSET denotes omitted top-level
+arguments. Bound input/output and reject ambiguous/malformed evidence. Decimal exponent limits
+are explicit failures even when the caller disables arithmetic traps. Later client arithmetic
+and conversions remain outside the exact transport guarantee.
+
+Optional pandas frames use object columns. Absent record keys become None in that convenience
+view; original records/raw text retain the distinction. No implicit numeric dtype inference,
+renormalization, denominator change, estimator or plotting method is introduced. Native query
+ranks reflect selected membership; science and five-kind certificate replay stay in Go.
+
+**Validation design.** Exercise every generated method, discovery precedence and incompatible
+versions, malformed/oversized responses, redirects, token isolation, timeout/no-retry, int/Decimal
+literal controls and object frames on Python 3.10 and 3.13. A real isolated host/window uses seeded
+simulated vaccine data and compares original HTTP/Python query strings and filtered row values.
+Check token/grant/null/unsafe-number refusals, human rejection, timeout cancellation, named
+History and Undo/Redo. Installed distributions, CI drift checks and existing native scientific
+replay regression tests are separate controls; none establish biological validity.
+
+### 5.50 Exact R client tokens and reviewed actions (wave 8, slice 9)
+
+**Sources.** Reviewed the Apache-2.0 CytoWeave/MaveScape R connection/result classes, generated
+functions/Rd help, package metadata and client CI/harnesses. Reviewed the official R
+[double representation](https://stat.ethz.ch/R-manual/R-devel/library/base/html/double.html),
+[jsonlite interface](https://cran.r-project.org/web/packages/jsonlite/refman/jsonlite.html),
+[curl streaming interface](https://cran.r-project.org/web/packages/curl/refman/curl.html),
+[libcurl millisecond timeout](https://curl.se/libcurl/c/CURLOPT_TIMEOUT_MS.html),
+[R package checks](https://cran.r-project.org/doc/manuals/r-release/R-exts.html), and
+[r-lib setup-r](https://github.com/r-lib/actions/tree/v2/setup-r) on 2026-10-28.
+These concern representation and transport, not a new scientific method.
+
+**ClonoLoom choices.** Share the Python catalog/API/policy, isolated discovery precedence and
+explicit host grants. Generate functions and help rather than maintaining a second action list.
+Recheck compatible versions before each POST; keep human review, caller-labelled History and
+Undo/Redo in the host. No automatic retry, host launch or acceptance function is added.
+
+Base R doubles cannot represent arbitrary JSON decimals or large integers. Preserve all number
+tokens in a character-backed scalar class, retaining their spelling and original raw response
+bytes/native JSON. A bounded tokenizer/parser handles syntax, depth, duplicate keys and UTF-8;
+jsonlite handles string escaping/decoding only. Validate surrogate pairs before string decoding
+and refuse NUL strings that R cannot represent. Refuse arithmetic/comparison on number tokens;
+explicit conversion warns about precision/range. Plain doubles retain their existing precision
+only, and unsafe double integers are refused. Arrays, objects, omission and null stay distinct.
+List-column frames preserve tokens; missing keys become NULL only in that convenience view.
+
+The curl transfer is bounded while streaming. Use millisecond timeouts to avoid truncating
+subsecond requests to zero (unlimited). Disable proxies and redirects; never borrow another
+library's token for an explicit URL. Outcomes after a submitted timeout are uncertain, with
+cooperative host cancellation and possible completed file effects. R's per-transfer timeout is
+not Python's per-socket-operation timeout; local parsing is outside either transport deadline.
+
+**Scientific boundary.** No new statistics, plotting, denominator change or replay tolerance.
+Exact token transport does not establish scientific validity or replace original certificate
+bytes. Native query filters keep definition, QC, source units and full-table frequencies while
+rank reflects membership. Arithmetic after explicit conversion is the caller's responsibility.
+
+**Validation design.** Test all generated functions and help, seeded exact-token round trips,
+Unicode/duplicate/depth/size failures, scalar/vector/null semantics, list frames, discovery,
+compatibility, no retry, permission refusals and ambiguous timeouts. Build/install/check the
+R package and compare R/Python native evidence bytes in one isolated simulated vaccination
+project. Test filtered row values, grants, rejection, cancellation, named History and Undo/Redo;
+execute both examples. Native Go scientific regression tests remain separate controls. No new
+plot is introduced; the site guide is audited in both themes and at phone/desktop widths.
+
+### 5.51 Portable project evidence and safe archive boundaries
+
+**Sources and scope (2026-10-28).** Consulted Go's official
+[archive/zip contract](https://pkg.go.dev/archive/zip) and
+[traversal-resistant file access](https://go.dev/blog/osroot). Reviewed the Apache-2.0 SituCraft
+project-archive pattern for separate originals and working path bindings; ClonoLoom's checkpoint,
+artifact inventory and exact JSON contracts require stricter member verification. This is storage
+and transport work, not a new statistical method or a new claim of compatibility with an external
+scientific pipeline. No external scientific implementation is incorporated.
+
+**Choices.** Keep original documents and scientific numeric tokens as bytes/RawMessage. A
+canonical sorted inventory binds file paths, sizes, hashes, source status/credits and dependencies.
+Read every ZIP member within per-file and total bounds; CRC is supplementary to SHA-256. Never
+trust ZIP path cleaning alone. Reject absolute/traversing paths, links/devices, file/directory
+collisions, case aliases and platform-reserved names. Use bounded ASCII member names to avoid
+cross-platform Unicode normalization aliases; original Unicode document content remains intact.
+Confine extraction with os.Root and exclusive file creation. Preflight conflicts and stage before
+publishing the complete project last; assume a user-owned library without concurrent hostile
+writers. Interrupted imports can leave unreferenced evidence or partial/staging files and are not
+whole-library transactions.
+
+Separate original evidence from local working paths. Resolve only documented receptor/expression
+source fields and verify their recorded SHA-256/size. Never read old machine paths on import.
+Unavailable sources get empty bindings with explicit statuses. Preserve checkpoint bytes and use
+verified imported bindings for recovery/re-export. Source files need opt-in inclusion and recorded
+open licenses or explicit authority for user-owned inputs. Restricted sources stay excluded;
+captured restricted evidence retains private-use acknowledgment and notices. Integrity hashes do
+not grant permission, authenticate authors, remove identifiers or validate biological conclusions.
+
+**Validation boundary.** Round-trip large integer/decimal/negative-zero JSON tokens and immutable
+project/history/result/checkpoint bytes. Verify source policy, changed/missing inputs, corruption,
+unsafe archives, identity conflicts, cancellation and v0.2–v0.7 project reopening. Use two isolated
+libraries and a seeded artificial vaccination example; move original source paths away before
+import, compare native clonotype query bytes and recover a checkpoint. This validates recorded
+units/definitions/denominators without adding an estimator or inference. Existing five-kind exact
+certificate replay remains separate, with unchanged limits. Inspect both-theme screenshots and
+run accessibility checks; no scientific plot geometry changes. Shared actions retain explicit
+host grants and human review; generated Python/R wrappers follow catalog 2 with exact JSON handling.
+
+### 5.52 Explicit identifier transformation without changing scientific evidence
+
+**Sources and scope (2026-10-28).** Consulted [NIST SP 800-188 (2023)](https://doi.org/10.6028/NIST.SP.800-188),
+the [AIRR metadata schema](https://docs.airr-community.org/en/latest/datarep/metadata.html), and
+Vander Heiden et al. (2018), *Frontiers in Immunology*, [doi:10.3389/fimmu.2018.02206](https://doi.org/10.3389/fimmu.2018.02206).
+Identifier substitution alone cannot establish anonymity; the release context and retained
+information matter. AIRR distinguishes subjects, samples/repertoires and rearrangement evidence.
+Reviewed CytoWeave's Apache-2.0 documentation for its separate, restricted-format export pattern;
+no external scientific source code was copied. No new statistical method or biological claim
+is introduced.
+
+**ClonoLoom's choices.** Offer an allowlisted native dataset-table copy rather than attempting
+recursive sanitization of arbitrary project evidence. Use a fresh random secret for HMAC aliases
+with structured identity kind, sample scope and original value. Keep within-export equality,
+sample membership and missing identities; do not infer subjects or biological replication.
+Use 96-bit suffixes with collision refusal. Keep the complete original correspondence, effective
+annotations and source fingerprints in a separate private map, never inside the public ZIP.
+Explicit removal choices cover the six experimental annotation strings and HLA independently.
+Retained strings with known subject/sample identifiers refuse instead of being rewritten.
+Unsupported nested IMGT/germline-database provenance refuses AIRR export, with an explicit
+clonotype-only alternative. Attribution and provider restrictions remain authoritative.
+
+All nonidentity native AIRR fields and all clonotype scientific values remain exactly as the
+ordinary export writes them. This preserves normalized evidence, not raw input bytes or precision
+already outside the native count model. Record effective QC, definition ID/rules, unit and
+population; replace sample names in QC exclusions. Keep saved results, recipes, certificates,
+checkpoints, source files and project history unchanged. Their existing exact replay contracts
+remain separate. Removing study annotations can prevent reconstructing design without the
+private evidence. Stable clonotype IDs, receptor sequences, gene calls, counts, sample structure
+and optional annotations still permit linkage; there is no anonymity claim, privacy-risk score,
+legal certification or transformed replay certificate.
+
+**Validation boundary.** Compare every retained scientific field with ordinary exports; check
+zero versus missing, scope repeated cell/sequence IDs by sample, retain repeated-subject linkage,
+and leave missing subjects empty. Check sentinel identifiers across every ZIP member, exact
+source immutability, removal/retention choices, unsupported provenance, provider restrictions,
+private-map separation, fingerprint pinning, replacement, bounded output and cancellation.
+Exercise six longitudinal samples from two seeded artificial vaccination subjects, exact native
+query/project parity, explicit proposal rejection, separate downloads and stale browser state.
+Inspect both themes and accessibility. No scientific plot geometry or estimator changes.
+
+### 5.53 Typed Parquet without a second scientific computation
+
+**Sources and scope (2026-10-28).** Consulted the primary Apache specifications:
+[Parquet file format](https://parquet.apache.org/docs/file-format/),
+[data-page encodings](https://parquet.apache.org/docs/file-format/data-pages/encodings/),
+[parquet.thrift](https://github.com/apache/parquet-format/blob/master/src/main/thrift/parquet.thrift)
+and [Thrift Compact Protocol](https://github.com/apache/thrift/blob/master/doc/specs/thrift-compact-protocol.md).
+Scientific fields retain the native AIRR export semantics from Vander Heiden et al. (2018),
+[doi:10.3389/fimmu.2018.02206](https://doi.org/10.3389/fimmu.2018.02206), and the existing
+clonotype/invariant-rule methods. Inspected SituCraft v0.9.0's Apache-2.0 license and adapted
+its flat writer, metadata types and compact emission only; attribution is in NOTICE. No
+external reader or scientific algorithm implementation is incorporated. There is no new
+estimator, biological inference or scientific plot.
+
+**ClonoLoom's choices.** Use ordinary native CSV/AIRR exporters as the only scientific source,
+then map documented layouts into flat optional columns. Add nullable definition levels (RLE),
+PLAIN GZIP DATA_PAGE v1 pages, footer file version 1, sorted metadata, cancellation, sticky
+write failures and explicit bounds to the sister application's writer. Preserve native row
+order and sample membership; assign positional sample-column keys with an explicit name map
+so sample names cannot collide with scientific fields. Missing native fields become null;
+explicit zero remains zero. Native text cannot distinguish missing from an empty string.
+
+Write count values as signed INT64 only when the native value is finite, nonnegative, integral
+and at most 2^53−1. This deliberately conservative bound reflects the native float64 model,
+not the larger physical INT64 range. Reject ambiguous counts rather than round; prior input
+or aggregation precision cannot be recovered. Native NaN denotes missing and is not a zero.
+The three native productive/frame/stop flags become BOOLEAN; other AIRR evidence stays text, including raw coordinates,
+invalid annotations and nested annotation JSON. This is not an AIRR schema replacement.
+Keep invariant-rule flags, full-sample denominators, evaluable abundance and native DOUBLE
+shares together; populations may overlap and do not establish phenotype or specificity.
+
+Record exact field mapping, effective definition/QC, units, provider notice and native source
+fingerprints in footer metadata and a companion schema. Original paths and identifiers remain
+in ordinary exports, clearly labeled. Fingerprints reflect loading, not newly checked source
+files. The inventory establishes recorded-byte integrity, not authenticity, biological validity
+or replay. Fixed values and metadata yield deterministic bytes; fresh notice timestamps and
+pseudonyms change complete bundle fingerprints.
+
+For optional pseudonymized Parquet, run §5.52's explicit identifier/removal policy first.
+Repeat only sanitized public provenance and notices in every footer/schema; keep original
+identities and source fingerprints in the separate private map. Preserve all existing exclusions
+for unmapped nested evidence and the limitations of removing experimental annotations. Neither
+the storage format nor the transformation establishes anonymity or replay of transformed data.
+
+**Validation boundary.** Independent PyArrow 26.0.0 and DuckDB 2.0.0 readers decode every field
+against ordinary native exports, including invariant shares/denominators. Writer controls test
+full signed INT64 extrema and 2^53+1 (encoding only, not native count eligibility), signed zero,
+null versus explicit zero/empty text, booleans, Unicode, empty/multiple groups and deterministic
+bytes. Adapter controls test 2^53−1 acceptance, larger/fractional/non-finite refusal, collisions,
+schema/size bounds, cancellation and malformed input. Independently assert native AIRR
+`duplicate_count`, `umi_count` and `templates` physical integer types, rather than trusting
+the writer's own schema to define the expected type. Independent readers check every decoded
+cell/footer for private disclosure canaries, then use the separately saved map to compare native
+scientific evidence and subject/sample linkage. The seeded vaccination browser workflow checks
+unchanged query/project bytes, review rejection, cancellation, stale state and both themes.
+
+### 5.54 Known-truth tasks are not general scientific validation
+
+Wave 8 slice 13 adds a repository-only agent contract benchmark, following the Apache-2.0
+CytoWeave task/code-grader/reference/empty-control pattern. The benchmark exercises the existing
+ClonoLoom host, window, MCP and generated clients. No incompatible source or external model is
+needed. The independent truth is a literal table of five retained TRB groups and four sample
+abundances, not a result queried from the engine. A separate TSV aggregation control checks
+that the generated records correspond to that truth.
+
+The artificial study has two subjects at two observations each. At variant 1, default
+productive amino-acid/V/J grouping sums to 248 UMIs (sample totals 75, 85, 43, 45), with five
+groups. The leading group has 138 UMIs. TRBV5-1 selection matches two groups but retains the
+138/248 full-population frequency, not 138/148. Amino-acid-only grouping merges the two equal
+junctions to 188 UMIs and four groups, preserving total abundance. These are grouping and
+counting identities, not evidence of biological expansion, antigen specificity or a treatment
+effect. Four missing-count rows and four nonproductive rows are excluded by the existing
+engine; one explicit zero-count group is retained. Four source observations are not four
+independent subjects. All comparisons use small representable fixture numbers without a
+tolerance fallback. Raw native JSON remains intact separately from parsed grading values.
+
+Required AIRR columns are present, with unknown sequence/alignment fields null. The artificial
+annotations do not claim a full V(D)J alignment or a receptor-generation model. Format and null
+semantics follow the [AIRR Rearrangement schema](https://docs.airr-community.org/en/stable/datarep/rearrangements.html)
+and Vander Heiden et al., 2018, [doi:10.3389/fimmu.2018.02206](https://doi.org/10.3389/fimmu.2018.02206).
+The table's literal truth and benchmark version must change together when its meaning changes.
+Count scaling and repeats are correlated software controls, not new biological replicates.
+
+The eight tasks separately score structured answers, actual native evidence or typed refusals,
+and permission/state behavior. Correct text with no evidence cannot pass overall. Unexpected
+review, altered inputs, changed grants, failed state restoration, timeout and malformed output
+are explicit failures; they are never removed from selected-task denominators. Equivalent
+extra read queries are allowed. Mutation review is intentionally limited to the two exact
+fixture proposals, announced to the candidate. Rejection and denied/invalid calls must not be
+retried. A precision probe uses exactly representable 2^53, outside the host's permitted
+consecutive-integer range; it does not first round 2^53+1 through JavaScript.
+
+The local runner records source revision/dirty state, binary and benchmark/client hashes,
+fixture version/hash, runtime, task selection, repeated attempts, permissions and raw evidence.
+HTTP/MCP/Python/R byte parity is a transport claim, separate from independent arithmetic grading.
+Setup uses exact generated inputs and reviewed actions in a new host/library/window. Accepted
+candidate edits require exact Undo/Redo restoration; file/cache effects are not claimed erased.
+The host is offline with no network grant. A user must explicitly enable fixture grants and
+scripted review. No production approval endpoint is added. A trusted external program is
+opt-in, bounded at the protocol/process level and retains OS privileges: this is not a sandbox
+or an adversarial-agent security evaluation.
+
+The reference and empty scripts are controls, not models. Public answers can be memorized;
+passing does not measure held-out generalization, clinical validity or general research
+competence. Reports show counts and separate grades instead of an unsupported model ranking
+or confidence interval. The evaluation-context and limitation principle is consistent with
+[NIST AI RMF 1.0, 2023](https://doi.org/10.6028/NIST.AI.100-1), without claiming certification.
+Exact replay remains the five-kind certificate/headless contract; successful tool execution,
+review acceptance, state restoration and checksum identity do not enlarge its scientific scope.
+
+### 5.55 Container identity is separate from scientific replay
+
+Wave 8 slice 14 packages the same Go `run`/`verify` workers. The sibling applications' named
+input and explicit-task patterns remain relevant, but their headless browser dependency is
+unnecessary here. No scientific method, floating-point tolerance or supported kind is added.
+Source batch QC/motifs and the five captured-evidence replay kinds retain §§5.44 and 5.35/5.38's
+scope and method citations. A container checksum identifies image content, not study validity,
+source authenticity or complete upstream reproducibility.
+
+The Dockerfile pins the official Go 1.26.6 Alpine multi-platform builder index by SHA-256 and
+uses CGO-free offline compilation into a `scratch` runtime. Its allowlisted context is tested
+against injected excluded files; the exported runtime inventory contains the program, notices
+and mount points, without a separate source tree, shell or browser. The executable retains its
+usual embedded assets and fixtures. Go license/patent
+notices are included with the program notices. The supplied revision and dirty-state label
+are operator assertions. Keep image ID/digest, source revision and native run record together;
+whole-image timestamps and verifier-platform provenance are outside scientific-byte equality.
+
+Runtime commands explicitly choose non-root UID/GID, read-only rootfs and inputs, disjoint
+writable outputs, bounded scratch, no network, dropped capabilities and no-new-privileges.
+The command helper prints an argument-safe command and never executes it. It does not rewrite
+scientific parameters or infer provider consent. Permissions derive from the runtime/host,
+not from an image label. These choices follow the official [Dockerfile reference](https://docs.docker.com/reference/dockerfile/),
+[Docker run controls](https://docs.docker.com/engine/containers/run/) and
+[Podman run controls](https://docs.podman.io/en/latest/markdown/podman-run.1.html).
+Podman's additional automatic tmpfs mounts require an explicit read-only-tmpfs choice.
+
+Replay bundle generation copies bounded regular certificate files exactly, pins each input and
+assigns separate task IDs; it performs no scientific transformation or pooling. Input hashes
+are not independent signature evidence. The [Slurm array contract](https://slurm.schedmd.com/job_array.html)
+uses an explicit checked index, and [sbatch's B:TERM warning](https://slurm.schedmd.com/sbatch.html)
+reaches the batch process replaced by `exec`. The example refuses existing destinations and
+propagates native exit status. Selection and native/container replay are locally exercised;
+actual scheduler allocation, policy, log creation and hard-kill grace remain site concerns.
+[Apptainer's default binds](https://apptainer.org/docs/user/latest/bind_paths_and_mounts.html)
+and OCI conversion require separate integration validation; no Apptainer support is claimed.
+
+Validation compares every inventoried scientific output byte between native and container
+source runs on the representative artificial batch-QC and motif studies, then checks archive
+members/hashes with the independent Python inventory reader. All five replay kinds must match
+exactly; a one-bit changed estimate with valid archive checksums must differ, and a future method
+must remain unavailable. Mount and input-pin refusals, explicit terms, existing outputs and
+SIGTERM cancellation are separate operational controls. A handled signal yields cancelled/exit
+2 and removes scratch; OOM, SIGKILL and power failure may not leave a final run record. These
+checks do not turn descriptive batch flags into diagnoses or motif groups into validated
+antigen specificity. The image is an execution environment, not new scientific evidence.
+
+### 5.56 Record-and-reach release study
+
+The 0.8.0 worked study joins existing interfaces without introducing an estimator. All 26
+observations and 2,427 artificial rows from the batch-QC simulator are retained; assignments
+name four included batches (8, 8, 3 and 5 subjects) and two explicitly excluded observations.
+The native screen keeps the effective definition-independent sample metrics, missing counts,
+raw fraction denominators, log scales, unavailable small groups and zero-MAD controls described
+in §5.38. Modified-z labels follow Iglewicz and Hoaglin (1993) and the
+[NIST handbook](https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm); minimum group size
+and unavailable-value rules are ClonoLoom choices, not calibrated hypothesis tests. A shifted
+batch may have no within-batch flags. The example makes no treatment, correction or specificity
+claim. Missing AIRR values remain distinct from zero, as specified by the
+[AIRR rearrangement schema](https://docs.airr-community.org/en/stable/datarep/rearrangements.html).
+
+The integration checks original native query text through HTTP, MCP, Python and R. It compares
+and recovers an explicitly reviewed clonotype-definition change; the saved batch-QC result is
+unchanged because its metrics do not depend on that grouping. A complete HTML report checks
+bytes offline. Native certificate and headless replay recompute captured evidence exactly.
+Portable archive transfer and checkpoint recovery are checked after original source paths
+become unavailable. Transfer may rebuild dataset tables; it does not rerun saved statistics.
+All these checks preserve the boundaries in §§5.42–5.55. Interface parity is not an independent
+scientific oracle, a checksum is not authentication, and recovery is not recomputation.
+
+The new compatibility fixture retains original project/evidence bytes, source and truth hashes,
+checkpoint files, certificate, report, archive and query evidence. A separately serialized
+project uses portable reopening paths; original scientific provenance is never rewritten.
+Future-release checks replay the native worker, verify the separately recorded fingerprint,
+restore missing result files and retain every earlier release fixture. Cross-platform exactness,
+existing scientific references and performance budgets are validated separately from this
+workflow. No additional inference or biological performance claim follows from a passing study.

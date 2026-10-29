@@ -10,17 +10,17 @@
 //
 // Needs Go (to build ClonoLoom) and Chrome, Chromium, Edge or Brave (CHROME=path).
 
+import { acceptAutomation, waitForAutomationIdle } from '../../validation/automation.mjs';
 import { spawn } from 'node:child_process';
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { createServer } from 'node:net';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { launch, sleep } from '../../validation/cdp.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const IMAGES = join(ROOT, 'docs/images');
-// A port of ClonoLoom's range the development server (8878) does not use.
-const PORT = 8877;
 const DATA = process.env.CLONOLOOM_DATA || join(ROOT, 'validation/cache');
 // What the pictures show as the places of the library and the examples (not this run's temporary
 // ones): macOS's defaults.
@@ -54,7 +54,12 @@ let places = {};
 async function startClonoLoom({ examples = DATA } = {}) {
   const library = mkdtempSync(join(temp, 'library-'));
   places = { library, examples };
-  const server = spawn(binary, ['--remote-control', '--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples, '--cache-dir', join(temp, 'cache')], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
+  // An isolated capture must not forward into a concurrently running window.
+  const listener = createServer();
+  await new Promise((done) => listener.listen(0, '127.0.0.1', done));
+  const port = listener.address().port;
+  await new Promise((done) => listener.close(done));
+  const server = spawn(binary, ['--remote-control', '--allow', 'edits,compute,files,network', '--window', 'none', '--port', String(port), '--data-dir', library, '--examples-dir', examples, '--cache-dir', join(temp, 'cache')], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
   let output = '';
   server.stdout.on('data', (chunk) => { output += chunk; });
   const stop = async () => {
@@ -77,7 +82,8 @@ async function startClonoLoom({ examples = DATA } = {}) {
 
 // An action through remote control, as any script sends it.
 async function act(action, actionArgs = {}) {
-  const response = await fetch(`${URL}api/remote/action`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-ClonoLoom-Token': token }, body: JSON.stringify({ action, args: actionArgs, client: 'docs/capture' }) });
+  await waitForAutomationIdle(b);
+  const response = await acceptAutomation(fetch(`${URL}api/remote/action`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-ClonoLoom-Token': token }, body: JSON.stringify({ action, args: actionArgs, client: 'docs/capture' }) }), b);
   const result = await response.json();
   if (!result.ok) throw new Error(`${action}: ${result.message ?? result.error}`);
   return result;
@@ -385,7 +391,143 @@ async function guidedCohortScene(confounded) {
   await clearToasts();await checkAccessibility();
 }
 
+async function capturedCertificateScene(kind) {
+  if (kind === 'batch-qc') await batchQCScene(); else await motifScene();
+  const artifact = await js(`window.clonoloom.store.project.artifacts.find((a)=>a.kind===${JSON.stringify(kind)}).id`);
+  const record = (await act('inspect_certificate', {artifact})).data.certificate;
+  const scope = kind === 'batch-qc' ? 'captured-batch-qc-evidence' : 'captured-motif-evidence';
+  await js(`(async()=>{
+    const v=window.clonoloom.certificatesView,response=await fetch('api/certificates/${artifact}/download'),blob=await response.blob();
+    const integrity=await v.verify(blob,'${record.fingerprint}');if(integrity.verdict!=='integrity-match'||integrity.recomputed)throw new Error('Integrity contract changed');
+    const r=await v.verify(blob,'${record.fingerprint}','replay');
+    if(r.verdict!=='replay-match'||r.scope!=='${scope}'||!r.recomputed||r.steps.length!==1||!r.steps[0].metadataMatched||r.steps[0].expectedSHA256!==r.steps[0].actualSHA256)throw new Error('Captured replay is not exact');
+    if(!r.limits.includes(${JSON.stringify(kind === 'batch-qc' ? 'descriptive' : 'GLIPH2 equivalence')}))throw new Error('Method limit absent');
+    if(!document.querySelector('.certificate-verdict').textContent.includes('Exact replay match — captured evidence'))throw new Error('Wrong visible verdict');
+    const card=document.querySelector('.certificate-check');card.closest('.workbench-scroll').scrollTop=card.offsetTop-65;return true;
+  })()`);
+  await clearToasts(); await checkAccessibility();
+}
+
 const scenes = {
+  async automation() {
+    await act('new_project',{name:'Artificial repertoire review'});
+    await act('open_example',{example:'simulated-vaccine',download:true});
+    const queryGeneration=await js('window.clonoloom.store.state.generation');
+    const full=JSON.parse((await act('query_clonotypes',{limit:1000})).data.resultJSON);
+    if(full.count<10 || full.rows.length<10)throw new Error('Unrepresentative query fixture');
+    const wanted=full.rows[3];
+    const filtered=JSON.parse((await act('query_clonotypes',{where:{all:[{field:'total',op:'gte',value:wanted.total},{field:'id',op:'eq',value:wanted.id}]},limit:1})).data.resultJSON);
+    if(filtered.matched!==1 || filtered.count!==full.count || filtered.rows[0].frequency!==wanted.frequency || filtered.definitionId!==full.definitionId)throw new Error('Query changed scientific denominator or definition');
+    if(await js('window.clonoloom.store.state.generation')!==queryGeneration)throw new Error('Read-only query reset existing views');
+    await act('show',{view:'Clonotypes'});
+    const beforeTheme=await js('window.clonoloom.store.state.generation');
+    await act('set_theme',{theme:'system'});
+    if(await js('window.clonoloom.store.state.generation')!==beforeTheme)throw new Error('UI-only action reset scientific views');
+    const headers={'Content-Type':'application/json','X-ClonoLoom-Token':token};
+    const raw=(action,args,signal)=>fetch(`${URL}api/remote/action`,{method:'POST',headers,body:JSON.stringify({action,args,client:'Research notebook'}),signal}).then(r=>r.json());
+    const proposal=()=>waitFor(`Boolean(document.querySelector('[data-automation-proposal]'))`);
+    const reject=()=>js(`(()=>{[...document.querySelectorAll('[data-automation-proposal] button')].find(b=>b.textContent==='Reject').click();return true})()`);
+    const accept=()=>js(`(()=>{document.querySelector('[data-automation-proposal] button.primary').click();return true})()`);
+    await js(`(()=>{const jobs=window.clonoloom.jobs;window.originalRunning=jobs.running;jobs.running=()=>[{id:'already-running',title:'Existing study',state:'running'}];return true})()`);
+    if((await raw('set_theme',{theme:'dark'})).code!=='busy')throw new Error('Automation interrupted an existing job');
+    await js(`(()=>{window.clonoloom.jobs.running=window.originalRunning;return true})()`);
+    let pending=raw('annotate_samples',{samples:{}}); await proposal(); await reject();
+    if((await pending).code!=='rejected')throw new Error('Rejection was not returned');
+    pending=raw('annotate_samples',{samples:{}});await proposal();
+    await js(`(()=>{const s=window.clonoloom.store;s.commit({...s.project,name:'Changed while proposal was open'},'Manual change');return true})()`);await accept();
+    if((await pending).code!=='stale-project')throw new Error('Stale proposal executed');
+    await js(`(()=>{window.clonoloom.store.undo();return true})()`);
+    const abort=new AbortController();pending=raw('annotate_samples',{samples:{}},abort.signal).catch(()=>null);await proposal();abort.abort();await pending;
+    await waitFor(`!document.querySelector('[data-automation-proposal]')`);
+    await act('set_definition',{preset:'Nucleotide junction'});
+    await js(`(()=>{const s=window.clonoloom.store;if(!s.undoLabel().includes('by docs/capture'))throw new Error('Missing actor');const next=s.project;s.undo();if(s.project===next)throw new Error('Undo failed');s.redo();if(s.project!==next)throw new Error('Redo failed');return true})()`);
+    // Cancel an already accepted asynchronous action and try a late attachment.
+    await js(`(()=>{const app=window.clonoloom;window.originalAction=app.actions.set_definition;app.actions.set_definition=async()=>{await new Promise(resolve=>{window.settleAutomation=resolve});app.store.commit({...app.store.project,name:'late cancelled write'},'Late write');return {message:'unexpected'};};return true})()`);
+    pending=raw('set_definition',{preset:'Nucleotide junction'});await proposal();await accept();
+    await waitFor(`Boolean(window.settleAutomation)`);
+    await js(`(()=>{[...document.querySelectorAll('.dialog button')].find(b=>b.textContent==='Cancel action').click();window.settleAutomation();return true})()`);
+    if((await pending).code!=='cancelled')throw new Error('Running cancellation did not report cancelled');
+    await js(`(()=>{const app=window.clonoloom;app.actions.set_definition=window.originalAction;if(app.store.project.name==='late cancelled write')throw new Error('Cancelled result attached');return true})()`);
+    const audit=await(await fetch(`${URL}api/remote/audit`,{headers})).json();
+    for(const status of ['requested','accepted','rejected','stale-project','cancelled','completed'])if(!audit.events.some(e=>e.state===status))throw new Error('Missing audit '+status);
+    await js(`(()=>{window.clonoloom.store.setUI({drawer:{open:true,tab:'automation'}},['drawer']);return true})()`);
+    await clearToasts();
+    pending=raw('set_definition',{preset:'Amino-acid junction, V and J genes'});await proposal();await checkAccessibility();
+    await b.capture(join(IMAGES,`automation-${await js(`window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'`)}.webp`),{format:'webp',quality:86});
+    await reject();await pending;
+    await js(`(()=>{window.clonoloom.store.setUI({drawer:{open:true,tab:'automation'}},['drawer']);return true})()`);
+  },
+  async ['html-reports']() {
+    await batchQCScene();
+    const artifact=await js('window.batchQCCheck.id');
+    const exported=(await act('export_html_report',{artifacts:[artifact],title:'Artificial batch QC study · recorded evidence'})).data;
+    if(!/^[a-f0-9]{64}$/.test(exported.fingerprint)||exported.recomputed)throw new Error('HTML export contract');
+    await js(`(()=>{const root=document.querySelector('.html-reports-view');if(!root.querySelector('input[type=checkbox]').checked)root.querySelector('input[type=checkbox]').click();root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    // Refuse a completed response after a newer project edit, then exercise cancellation.
+    await js(`(async()=>{const app=window.clonoloom,v=app.htmlReportsView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).includes('reports/html')){entered();await gate}return response};try{const pending=v.exportReport(['${artifact}']);await started;app.store.commit({...app.store.project,reportSentinel:'keep'},'Concurrent report edit');release();let refused=false;try{await pending}catch(e){refused=e.message.includes('analysis changed')}if(!refused||app.store.project.reportSentinel!=='keep')throw new Error('Stale report export');}finally{release();window.fetch=original}app.store.undo();await new Promise(r=>setTimeout(r,0));const pending=app.htmlReportsView.exportReport(['${artifact}']);[...document.querySelectorAll('.html-reports-view button')].find(b=>b.textContent==='Cancel report export').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||app.htmlReportsView.state().busy)throw new Error('Report cancellation');return true})()`);
+    await act('export_html_report',{artifacts:[artifact],title:'Artificial batch QC study · recorded evidence'});
+    await js(`(()=>{const root=document.querySelector('.html-reports-view');if(!root.querySelector('input[type=checkbox]').checked)root.querySelector('input[type=checkbox]').click();root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    await clearToasts();await checkAccessibility();
+  },
+  async ['offline-report']() {
+    await batchQCScene();const artifact=await js('window.batchQCCheck.id');
+    const expectedPoints=await js(`(()=>{const r=JSON.parse(window.batchQCCheck.snapshot).analysis;return r.groups.filter(g=>g.metric===r.metrics[0].id).flatMap(g=>g.observations).filter(p=>p.transformed!=null).map(p=>({sample:r.evidence.samples[p.sample].assignment.name,value:String(p.value),transformed:String(p.transformed)}))})()`);
+    const prepared=await js(`(async()=>{const r=await fetch('api/reports/html',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({artifacts:['${artifact}'],title:'Artificial batch QC study · recorded evidence'})});if(!r.ok)throw new Error(await r.text());return {html:await r.text(),fingerprint:r.headers.get('X-ClonoLoom-Report')}})()`);
+    const path=join(temp,'offline-report.html');writeFileSync(path,prepared.html);
+    await b.goto(pathToFileURL(path).href,100);
+    await waitFor(`document.getElementById('status')?.dataset.verdict==='integrity-match'`);
+    await js(`(()=>{if(document.querySelectorAll('#report svg').length!==6)throw new Error('Incomplete batch figures');if(document.getElementById('fingerprint').textContent!=='${prepared.fingerprint}')throw new Error('Report identity changed');const first=document.querySelector('#report figure'),expected=${JSON.stringify(expectedPoints)},points=[...first.querySelectorAll('circle')];if(points.length!==expected.length||points.some(p=>!expected.some(e=>e.sample===p.dataset.sample&&e.value===p.dataset.value&&e.transformed===p.dataset.transformed)))throw new Error('Plot differs from recorded observations');window.scrollTo(0,first.offsetTop-8);return true})()`);
+    await checkAccessibility();
+  },
+  async checkpoints() {
+    await batchQCScene();
+    const artifact = await js('window.batchQCCheck.id');
+    await act('set_definition', {definition:{chains:[],junction:'aa',v:'gene',j:'gene'}});
+    const before = (await act('create_checkpoint', {name:'Declared batch QC study'})).data;
+    const certificate = (await act('inspect_certificate', {artifact})).data.certificate;
+    await js(`(()=>{const app=window.clonoloom,p=app.store.project;window.checkpointOriginal=JSON.stringify({datasets:p.datasets,artifacts:p.artifacts,samples:p.samples});app.store.commit({...p,datasets:p.datasets.map((d)=>({...d,definition:{...(d.definition??{}),junction:'nt'},filter:'f-review'})),filters:[...(p.filters??[]),{id:'f-review',name:'Proposed productive-only review',dataset:p.datasets[0].id,version:1,rules:{productiveOnly:true,minCount:3},reason:'Sensitivity review; no results recomputed'}],samples:(p.samples?.length?p.samples:[{dataset:p.datasets[0].id,sample:p.datasets[0].samples[0]}]).map((s,i)=>i===0?{...s,condition:'Review group'}:s)},'Prepare sensitivity review');return true})()`);
+    const after = (await act('create_checkpoint', {name:'Proposed sensitivity settings'})).data;
+    const diff = (await act('compare_checkpoint', {checkpoint:before.id, against:after.id})).data;
+    if (!diff.changes.some((c)=>c.category==='QC filters') || !diff.changes.some((c)=>c.category==='Clonotype definitions') || !diff.changes.some((c)=>c.category==='Sample populations and annotations')) throw new Error('Checkpoint categories missing');
+    // Delete only this disposable capture library's result, then recover its exact bytes.
+    rmSync(join(places.library,'artifacts',artifact),{recursive:true});
+    await act('recover_checkpoint', {checkpoint:before.id});
+    await js(`(()=>{const app=window.clonoloom,p=app.store.project;if(JSON.stringify({datasets:p.datasets,artifacts:p.artifacts,samples:p.samples})!==window.checkpointOriginal)throw new Error('Recovery altered analysis');app.store.undo();if(!app.store.project.filters.some((f)=>f.id==='f-review'))throw new Error('Recovery undo failed');app.store.redo();return true})()`);
+    await js(`(async()=>{const app=window.clonoloom;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('reports');return true})()`);
+    const restored = (await act('inspect_certificate', {artifact})).data.certificate;
+    if (restored.fingerprint !== certificate.fingerprint) throw new Error('Recovery changed saved evidence');
+    await js(`(async()=>{const response=await fetch('api/certificates/${artifact}/download'),r=await window.clonoloom.certificatesView.verify(await response.blob(),'${certificate.fingerprint}','replay');if(r.verdict!=='replay-match')throw new Error('Recovered evidence does not replay');return true})()`);
+    await js(`(async()=>{
+      const app=window.clonoloom,v=app.checkpointsView,originalFetch=window.fetch;let release,entered;
+      const gate=new Promise((r)=>{release=r}),started=new Promise((r)=>{entered=r});
+      window.fetch=async(...args)=>{const response=await originalFetch(...args);if(String(args[0]).includes('/recover')){entered();await gate;}return response};
+      try{const pending=v.recover('${before.id}');await started;app.store.commit({...app.store.project,recoverySentinel:'keep newer edit'},'Concurrent edit');release();let refused=false;try{await pending}catch(e){refused=e.message.includes('analysis changed')}if(!refused||app.store.project.recoverySentinel!=='keep newer edit')throw new Error('Stale recovery replaced a newer edit');}
+      finally{release();window.fetch=originalFetch;}
+      app.store.undo();await new Promise((r)=>setTimeout(r,0));
+      const pending=app.checkpointsView.compare('${before.id}');[...document.querySelectorAll('.checkpoints-view button')].find((b)=>b.textContent==='Cancel checkpoint operation').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||app.checkpointsView.state().busy||app.checkpointsView.state().difference)throw new Error('Checkpoint cancellation left a result');return true;
+    })()`);
+    await act('compare_checkpoint', {checkpoint:before.id, against:after.id});
+    await js(`(()=>{const root=document.querySelector('.checkpoints-view');root.querySelector('details')?.setAttribute('open','');root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    await clearToasts(); await checkAccessibility();
+  },
+  async ['certificates-batch-qc']() { await capturedCertificateScene('batch-qc'); },
+  async ['certificates-motifs']() { await capturedCertificateScene('motifs'); },
+  async certificates() {
+    await act('new_project', {name:'Artificial cohort evidence'});
+    const opened=(await act('open_example',{example:'simulated-counts-independent',download:true})).data;
+    for(const step of ['design','features','compare']) await act('cohort_example_step',{dataset:opened.dataset,preset:'counts-independent',step});
+    const state=(await act('get_state')).data;
+    const artifact=state.artifacts.find((r)=>r.kind==='cohort-compare').id;
+    const record=(await act('inspect_certificate',{artifact})).data.certificate;
+    await waitFor(`Boolean(document.querySelector('.certificate-record'))`);
+    await js(`[...document.querySelectorAll('button')].find((b)=>b.textContent==='Export integrity certificate').click()`);
+    await waitFor(`!window.clonoloom.certificatesView.state().busy`);
+    const exported=(await act('export_certificate',{artifact})).data;
+    if(exported.fingerprint!==record.fingerprint)throw new Error('Visible and remote certificates differ');
+    await js(`(async()=>{const a=window.clonoloom,v=a.certificatesView,r=await fetch('api/certificates/${artifact}/download'),blob=await r.blob();const pass=await v.verify(blob,'${record.fingerprint}');if(pass.verdict!=='integrity-match'||pass.recomputed||!document.querySelector('.certificate-verdict').textContent.includes('not recomputed'))throw new Error('Integrity mislabeled');const wrong=await v.verify(blob,'${'0'.repeat(64)}');if(wrong.verdict!=='differs')throw new Error('External fingerprint ignored');const broken=await v.verify(blob.slice(0,blob.size-15));if(broken.verdict!=='differs')throw new Error('Truncated ZIP accepted');await v.verify(blob);await a.saveNow();await a.openProject(a.store.project.id);await a.setMode('reports');const reopened=await a.certificatesView.inspect('${artifact}');if(reopened.certificate.fingerprint!=='${record.fingerprint}')throw new Error('Certificate changed on project reopening');await a.certificatesView.verify(blob,'${record.fingerprint}');return true})()`);
+    await js(`(async()=>{const v=window.clonoloom.certificatesView,r=await fetch('api/certificates/${artifact}/download'),blob=await r.blob();const replay=await v.verify(blob,'${record.fingerprint}','replay');if(replay.verdict!=='replay-match'||!replay.recomputed||replay.steps.length!==2||replay.steps.some((s)=>s.expectedSHA256!==s.actualSHA256||!s.metadataMatched))throw new Error('Replay is not exact');if(!document.querySelector('.certificate-verdict').textContent.includes('Exact replay match — captured evidence'))throw new Error('Replay scope hidden');const pending=v.verify(blob,'','replay');[...document.querySelectorAll('button')].find((b)=>b.textContent==='Cancel verification').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||v.state().busy||v.state().report)throw new Error('Replay cancellation left a verdict');const method=document.querySelector('[aria-label="Certificate check"]');method.value='integrity';method.dispatchEvent(new Event('change',{bubbles:true}));if(!document.querySelector('.certificate-check').textContent.includes('--integrity'))throw new Error('Mode command stale');method.value='replay';method.dispatchEvent(new Event('change',{bubbles:true}));const transfer=new DataTransfer();transfer.items.add(new File([blob],'cohort.certificate.clz',{type:'application/zip'}));const upload=document.querySelector('[aria-label="Certificate file"]');upload.files=transfer.files;upload.dispatchEvent(new Event('change',{bubbles:true}));for(let i=0;i<200&&v.state().busy;i++)await new Promise((resolve)=>setTimeout(resolve,50));if(v.state().report?.verdict!=='replay-match')throw new Error('Visible upload did not replay');const rawReport=v.state().reportText,check=await fetch('api/certificates/verify?mode=replay&expect=${record.fingerprint}',{method:'POST',body:blob});if(await check.text()!==rawReport)throw new Error('Verification JSON bytes changed in browser');const originalFetch=window.fetch,originalURL=URL.createObjectURL,precise=rawReport.replace('"original":{','"original":{"numericTokenControl":9007199254740993,');let savedBlob;try{window.fetch=async()=>new Response(precise,{status:200});await v.verify(blob,'','replay');URL.createObjectURL=(b)=>{savedBlob=b;return originalURL(b)};[...document.querySelectorAll('button')].find((b)=>b.textContent==='Export verification JSON').click();if(!savedBlob||await savedBlob.text()!==precise)throw new Error('Report download rounded numeric tokens');}finally{window.fetch=originalFetch;URL.createObjectURL=originalURL;}const corrupt=await v.verify(blob.slice(0,blob.size-15),'','replay');if(corrupt.verdict!=='differs'||corrupt.recomputed)throw new Error('Corrupt evidence replayed');await v.verify(blob,'${record.fingerprint}','replay');const card=document.querySelector('.certificate-check');card.closest('.workbench-scroll').scrollTop=card.offsetTop-65;return true})()`);
+    await clearToasts(); await checkAccessibility();
+  },
   async 'cohort-study'(){await guidedCohortScene(false);},
   async 'cohort-confounded'(){await guidedCohortScene(true);},
  async ['pseudobulk-de'](){
@@ -457,7 +599,7 @@ const scenes = {
   async 'cohort-features'() {
     await act('new_project', { name: 'Artificial subject feature study' });
     await act('open_example', { example: 'simulated-standard', download: true });
-    await act('measure_diversity', { replicates: 20 });
+    await act('measure_diversity');
     const spec = { unit: 'subject', layout: 'independent', groupField: 'condition', levels: ['control', 'expanded'], exclude: {} };
     for (let i = 1; i <= 6; i++) spec.exclude[`S${String(i).padStart(2, '0')}-2`] = 'Teaching selection: first simulated observation per subject';
     await act('check_cohort_design', { spec, name: 'First simulated observations', save: true });
@@ -632,7 +774,7 @@ const scenes = {
     if(state.status!=='ready'||state.answer.result.analysis.eligible!==358||state.answer.result.analysis.nodes.length!==10||state.answer.result.analysis.tested!==20)throw new Error(`Comparison failed: ${JSON.stringify({status:state.status,error:state.error,result:state.answer?.result.analysis})}`);
     const remote=await act('compare_receptor_expression',{options:{neighbors:[2,4],cdr3Only:true}});
     if(remote.data.artifact!==state.artifact)throw new Error('Visible and remote comparison differ');
-    await js(`(()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Comparison undo failed');app.store.redo();const r=app.cellCongaView.state().answer.result.analysis,t=r.tests.find((t)=>t.logP!=null);app.cellCongaView.selectClone(r.nodes[t.node].id);const plot=document.querySelector('.conga-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==t.overlap||Number(plot.querySelector('[data-expected]').dataset.expected)!==t.expected)throw new Error('Plot differs from Go result');const f=document.querySelector('[aria-label="Filter comparison clones"]');f.value=r.nodes[0].id;f.dispatchEvent(new Event('change'));if(app.cellCongaView.state().answer.result.analysis.tested!==20)throw new Error('Filtering changed family');return true;})()`);
+    await js(`(async()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Comparison undo failed');app.store.redo();await Promise.resolve();await app.cellCongaView.show(id);const r=app.cellCongaView.state().answer.result.analysis,t=r.tests.find((t)=>t.logP!=null);app.cellCongaView.selectClone(r.nodes[t.node].id);const plot=document.querySelector('.conga-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==t.overlap||Number(plot.querySelector('[data-expected]').dataset.expected)!==t.expected)throw new Error('Plot differs from Go result');const f=document.querySelector('[aria-label="Filter comparison clones"]');f.value=r.nodes[0].id;f.dispatchEvent(new Event('change'));if(app.cellCongaView.state().answer.result.analysis.tested!==20)throw new Error('Filtering changed family');return true;})()`);
     await js(`(()=>{[...document.querySelectorAll('button')].find((b)=>b.textContent==='Open comparison phenotype overlay').click();return true;})()`);
     await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length>1');
     await js(`(async()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellCongaView.show(id);if(app.cellsView.state().record)throw new Error('Saved comparison required expression source');return true;})()`);
@@ -650,7 +792,7 @@ const scenes = {
     if(state.status!=='ready'||state.answer.result.analysis.eligible!==358||state.answer.result.analysis.tested!==10) throw new Error(`Modularity failed: ${JSON.stringify({status:state.status,error:state.error,eligible:state.answer?.result.analysis.eligible,tested:state.answer?.result.analysis.tested})}`);
     const remote=await act('compute_clonotype_modularity');
     if(remote.data.artifact!==state.artifact) throw new Error('Visible and remote modularity differ');
-    await js(`(() => {const app=window.clonoloom,id=app.cellModularityView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Modularity undo failed');app.store.redo();const r=app.cellModularityView.state().answer.result.analysis;const c=r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0];app.cellModularityView.selectClone(c.id);const plot=document.querySelector('.modularity-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==c.observed)throw new Error('Observed marker differs from result');const f=document.querySelector('[aria-label="Filter modularity clones"]');f.value=c.id;f.dispatchEvent(new Event('change'));if(app.cellModularityView.state().answer.result.analysis.tested!==10)throw new Error('Filtering changed test family');return true;})()`);
+    await js(`(async () => {const app=window.clonoloom,id=app.cellModularityView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Modularity undo failed');app.store.redo();await Promise.resolve();await app.cellModularityView.show(id);const r=app.cellModularityView.state().answer.result.analysis;const c=r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0];app.cellModularityView.selectClone(c.id);const plot=document.querySelector('.modularity-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==c.observed)throw new Error('Observed marker differs from result');const f=document.querySelector('[aria-label="Filter modularity clones"]');f.value=c.id;f.dispatchEvent(new Event('change'));if(app.cellModularityView.state().answer.result.analysis.tested!==10)throw new Error('Filtering changed test family');return true;})()`);
     await js(`(() => { [...document.querySelectorAll('button')].find((b)=>b.textContent==='Open parent phenotype overlay').click();return true;})()`);
     await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length > 1');
     await js(`(async()=>{const app=window.clonoloom,id=app.cellModularityView.state().artifact;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellModularityView.show(id);if(app.cellsView.state().record)throw new Error('Saved modularity required open expression source');const r=app.cellModularityView.state().answer.result.analysis;app.cellModularityView.selectClone(r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0].id);return true;})()`);
@@ -667,9 +809,10 @@ const scenes = {
     if (state.status !== 'ready' || state.answer.result.analysis.coverage.mapped !== 358 || state.answer.result.analysis.coverage.matched !== 359 || state.answer.result.analysis.cells.length !== 360 || state.answer.result.analysis.options.annotation !== 'state') throw new Error(`Phenotype result: ${state.error || JSON.stringify(state.answer?.result.analysis.coverage)}`);
     const remote = await act('compute_cell_phenotypes', { annotation: 'state' });
     if (remote.data.artifact !== state.artifact) throw new Error('Visible and remote phenotype controls differ');
-    await js(`(() => {
+    await js(`(async () => {
       const app = window.clonoloom, id = app.cellPhenotypesView.state().artifact;
       app.store.undo(); if (app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Phenotype undo failed'); app.store.redo();
+      await Promise.resolve(); await app.cellPhenotypesView.show(id);
       const filter = document.querySelector('[aria-label="Filter phenotype table"]'); filter.value = 'CELL00001-1'; filter.dispatchEvent(new Event('change'));
       [...document.querySelectorAll('button')].find((b) => b.textContent === 'Select matching cells').click(); return true;
     })()`);
@@ -722,7 +865,7 @@ const scenes = {
       app.store.redo(); return true;
     })()`);
     await js(`(async () => {
-      const app = window.clonoloom, id = app.cellAnalysisView.state().artifact;
+      const app = window.clonoloom, id = ${JSON.stringify(computed.artifact)};
       await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells');
       await app.cellAnalysisView.show(id);
       if (app.cellsView.state().record !== null) throw new Error('Saved map required opening its input');
@@ -1389,7 +1532,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name === 'html-reports' || name === 'offline-report' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {
@@ -1404,8 +1547,8 @@ try {
         await scenes[name]();
         await clearToasts();
         await sleep(800);
-        await showPlaces();
-        await b.capture(join(IMAGES, `${name}-${theme}.webp`), { format: 'webp', quality: 86 });
+        if(name!=='offline-report') await showPlaces();
+        await b.capture(join(IMAGES, `${name==='automation'?'automation-audit':name}-${theme}.webp`), { format: 'webp', quality: 86 });
         console.log(`${name} (${theme})`);
       } catch (error) {
         console.error(`${name} (${theme}) failed: ${error.message}`);

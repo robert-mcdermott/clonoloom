@@ -1,0 +1,34 @@
+---
+title: R client
+description: Generated R functions with explicit host permissions, exact JSON number tokens and list-column data frames.
+lede: Drive the normal research window from R. Preserve original evidence and review proposed project changes before they run.
+---
+<p>ClonoLoom 0.8.0. Use R 4.1 or later and a matching host with API 2, catalog 4 and permission policy 1. Package/application version is 0.8.0.</p>
+<h2 id="install">Install from the checkout</h2>
+<div class="code"><pre><code>Rscript -e 'install.packages(c("curl", "jsonlite"), repos="https://cloud.r-project.org")'
+R CMD INSTALL clients/r
+clonoloom --remote-control --allow edits,compute,files</code></pre></div>
+<p>Start the host separately and keep its window open. Remote access is read-only without explicit grants. The client never starts a host, expands permissions or accepts proposals. Project edits require a person to accept them in the window and use named History and Undo/Redo. Read <a href="automation.html">Automation permissions</a>.</p>
+<h2 id="query">Query the current repertoire</h2>
+<div class="code"><pre><code>library(clonoloom)
+cl &lt;- cl_connect(client = "Research notebook")
+cl_permissions(cl)
+# Open a repertoire in the window first.
+result &lt;- cl_query_clonotypes(
+  where = list(field = "total", op = "gte", value = cl_number("2")),
+  limit = 10L, cl = cl)
+evidence &lt;- cl_native(result)
+rows &lt;- cl_records(result)
+frame &lt;- as.data.frame(result)  # list columns preserve tokens</code></pre></div>
+<p>All 61 functions and their help come from the same action catalog as <a href="python.html">Python</a> and <a href="mcp.html">MCP</a>. Generated arguments use snake_case names. Filtering retains current definition, QC, source units and the full-table frequency denominator; displayed ranks reflect selected membership.</p>
+<h2 id="numbers">Preserve numbers and missingness</h2>
+<p>Every JSON number retains its original text in a <code>clonoloom_number</code> token. This includes large integers, decimal digits, exponents and negative zero. Use <code>cl_number("9007199254740993")</code> to send an exact number token; host argument bounds still apply. Original response bytes remain in <code>result$raw_json</code>, and <code>cl_native(result)</code> decodes the original native query string.</p>
+<p><code>as.character(token)</code> gives exact text. Arithmetic and comparisons on tokens fail. Explicit <code>as.numeric(token)</code> warns that precision or range may be lost. Already rounded R values cannot recover original digits. List-column frames retain tokens and nulls; missing keys become NULL only in this convenience view. Keep records and raw evidence when that distinction matters.</p>
+<p><code>cl_omit()</code> omits a top-level optional argument; <code>NULL</code> sends explicit JSON null. Generated array parameters preserve empty and singleton vectors. Use <code>cl_array()</code> for nested arrays and <code>cl_object()</code> for an empty object. NA, non-finite values and unsupported R classes are refused rather than silently interpreted as missing evidence.</p>
+<h2 id="connection">Connect with explicit permissions</h2>
+<p>An explicit URL never borrows another library's token. An explicit <code>data_dir</code> selects that library before environment settings. Environment URL/token, environment library and platform-library discovery follow documented precedence. Only loopback HTTP is accepted; proxies and redirects are disabled. Every action checks compatible API/catalog/policy versions before submission.</p>
+<p>Typed errors preserve the host code and uncertain completion. No automatic retries occur. The default timeout is 660 seconds per complete HTTP transfer, including review; local decoding is separate. Inspect the project and History after a timeout because worker or file effects may have completed.</p>
+<h2 id="limits">Scientific and transport limits</h2>
+<p>Requests are bounded to 1 MiB, responses to 16 MiB and JSON nesting to 64. Malformed or oversized responses fail instead of returning partial evidence. R cannot represent embedded NUL strings; these are explicitly refused. Exact tokens are an evidence representation, not a new arithmetic or statistical engine.</p>
+<p>Existing scientific workers and <a href="certificates.html">exact certificate replay</a> remain unchanged. Neither a client object nor a successful automation call establishes biological validity. The shared validation compares original R/Python/HTTP query evidence on a seeded artificial vaccination study and checks review, permissions, cancellation and history.</p>
+<p>Read the <a href="{{github}}/blob/main/docs/R.md">complete R guide</a> for discovery, errors, bounds and numeric limits, or run the <a href="{{github}}/blob/main/clients/examples/query_clonotypes.R">R query example</a>.</p>

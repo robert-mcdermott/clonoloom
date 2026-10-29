@@ -1,0 +1,187 @@
+{
+  "files": [
+    {
+      "path": "D01-1.tsv",
+      "sha256": "e124808a26b7f1f22bc084ee1765bbfe2270ed428f57aa69999b46e7c00c5838"
+    },
+    {
+      "path": "D01-2.tsv",
+      "sha256": "b9462a86df331c874528d7f752baf5b714e5d41a77c8321fd1c65b89331aa8bd"
+    },
+    {
+      "path": "D02-1.tsv",
+      "sha256": "df3b7698a8a9bddf6aab8cdd79bf895a05e907899b1489848dcc4812fc6e04d9"
+    },
+    {
+      "path": "D03-1.tsv",
+      "sha256": "2ed74f09e4dc738e1d2cb90f48da7fc9099442fcdd56c1c5887e034ee31ac47b"
+    },
+    {
+      "path": "D04-1.tsv",
+      "sha256": "c4d633392b01ba5e8bc858a780b2cb653d49260d8e505be404a9523e0847e017"
+    },
+    {
+      "path": "D05-1.tsv",
+      "sha256": "6d15e83c028419dd4c8cd7f2a03e591624eb3b5b4e136bff022f0a38d2e0115e"
+    },
+    {
+      "path": "D06-1.tsv",
+      "sha256": "9859846e93ec22674c5cdb02ae68ff7d4e0a1fb5d865f1129eb31d9f347daeb4"
+    },
+    {
+      "path": "D07-1.tsv",
+      "sha256": "320ab5bdac7d91478ddbf4dffc86d2773ff590e28ed446dca8f135a39931dfc6"
+    },
+    {
+      "path": "D08-1.tsv",
+      "sha256": "967f70b048b5c593b3c4cc09d5a86b789095feca8346a763580e581185c874ff"
+    },
+    {
+      "path": "D09-1.tsv",
+      "sha256": "86ea16da4a96b52869e30649717e674b2db22ff908075061cae1ed7fc5a95108"
+    },
+    {
+      "path": "D10-1.tsv",
+      "sha256": "06a40b657e19aec86cee20d4842794e6ab3c28e5a40426a7f7e7320a9524c281"
+    },
+    {
+      "path": "D11-1.tsv",
+      "sha256": "473f0ad225d427d6555af385d0d6702b5fd4fa40a3887d6354ccafa1c4e02801"
+    },
+    {
+      "path": "D12-1.tsv",
+      "sha256": "6714321dea4a036e028bac32edf0ad75cfbf3c908886d8a9860ff6a2c1be4c54"
+    },
+    {
+      "path": "D13-1.tsv",
+      "sha256": "ac4a41c1e23cb528acebb6d04ea559ec2e4896b4a98a0c4fbcda8c4517e7c1a6"
+    },
+    {
+      "path": "D14-1.tsv",
+      "sha256": "ced213705c690ac31577f957c310709d4ca95689fd6afa10cded7e41f4079bfb"
+    },
+    {
+      "path": "D15-1.tsv",
+      "sha256": "62bffdb729fb3fbd69df9158d2afde67dbe1fb2d694eaef6c7dffa2e817bb661"
+    },
+    {
+      "path": "D16-1.tsv",
+      "sha256": "5dc9af8d8f4471531dc0b775af61dfd6160dbf7a7e04327e33c6539c0e9a7d98"
+    },
+    {
+      "path": "D17-1.tsv",
+      "sha256": "4956fefe1278ef9b2ee5db5998c2c0867b2da4d52c81022b4159f250e0cf4584"
+    },
+    {
+      "path": "D18-1.tsv",
+      "sha256": "072c05e9052c110b3e13198f26c33f1c2210e5849a4d13032e8ce18617286daa"
+    },
+    {
+      "path": "D19-1.tsv",
+      "sha256": "a85a51831a2968033f98ad42bdc9740327a834a415cbf33d0e27e9fec41daef1"
+    },
+    {
+      "path": "D20-1.tsv",
+      "sha256": "a4c65921664fbccf3f8014d69cfa37c08ecb5e615228733c5c9bf8d14c6d2661"
+    },
+    {
+      "path": "D21-1.tsv",
+      "sha256": "2d611abcda19c9ab1fd4b1bb10caa30ef2e9d073febcbbc424711a8f0fa15efe"
+    },
+    {
+      "path": "D22-1.tsv",
+      "sha256": "5649e88f1a4965acc590f5b8ccdd23b3310a3989018d81180f7081bf8ebc553a"
+    },
+    {
+      "path": "D23-1.tsv",
+      "sha256": "7ad13177c6f78ad816095f7e64d32d484f7387d6cadc74eb3d76a76ee954f797"
+    },
+    {
+      "path": "D24-1.tsv",
+      "sha256": "ad8172c0a567919db8c82ece2ef4382f6b35aa9f444e2333c4a00ef954667dff"
+    },
+    {
+      "path": "D25-1.tsv",
+      "sha256": "24bf888f22c5e218f641c7e129766f3b769500e407efb992bd60bab6df0e570f"
+    },
+    {
+      "path": "README.md",
+      "sha256": "8d652a36da2dda7d0496a6f14b7939cec3fc9835e43c09822d34206a9d2e0bcb"
+    },
+    {
+      "path": "repertoires.airr.json",
+      "sha256": "5388748daad10885d26225cee2e3edc02945a700a0ea1f9c6e5b8d2fe8172ab0"
+    },
+    {
+      "path": "truth/observations.tsv",
+      "sha256": "ddb6bc53f987e0a86f30d645fd7bfe89ad50490684338e0368a69eba22c80e8d"
+    },
+    {
+      "path": "truth/samples.json",
+      "sha256": "d82f69d830e1d92f2cb329c69d04d6748b3ce7fb4e801fe4c88b43109de7e5ce"
+    }
+  ],
+  "model": "clonoloom-batch-qc-study-v1",
+  "simulator": "ClonoLoom 0.8.0",
+  "study": {
+    "name": "batch-qc-study",
+    "title": "An artificial batch-QC study",
+    "seed": 20261101,
+    "groups": null,
+    "samplesPerSubject": 0,
+    "templates": null,
+    "readsPerTemplate": 0,
+    "readsSize": 0,
+    "recombination": {
+      "vDeletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "d5Deletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "d3Deletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "jDeletions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "palindromic": null
+      },
+      "vdInsertions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "composition": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "djInsertions": {
+        "mean": 0,
+        "size": 0,
+        "max": 0,
+        "composition": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "d2WithJ2": 0,
+      "selectLengths": false
+    },
+    "batchQC": {}
+  }
+}

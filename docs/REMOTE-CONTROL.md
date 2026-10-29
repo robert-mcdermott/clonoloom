@@ -5,17 +5,26 @@ drive the open ClonoLoom window: open data, choose a clonotype definition, show 
 dataset's methods paragraph. Each action is performed in the window, where you see it, and what it
 changes goes into the project's history like any edit of yours, so it can be undone.
 
+See [Automation permissions](AUTOMATION.md) for the API 2 capability and proposal contract.
+
+For scripts, use the [Python client](PYTHON.md) or [R client](R.md) with exact JSON handling
+and the same explicit host permissions.
+
+For a local MCP client, use [`clonoloom mcp`](MCP.md); both transports share this policy.
+
 ## Turn it on
 
 ```sh
-clonoloom --remote-control
+clonoloom --remote-control  # read-only
+# Grant the capabilities required by your workflow:
+clonoloom --remote-control --allow edits,compute,files,network
 ```
 
 ClonoLoom then writes `remote.json` to its data folder (`~/Library/Application Support/ClonoLoom`
 on macOS, `~/.config/ClonoLoom` on Linux, `%AppData%\ClonoLoom` on Windows, or `--data-dir`):
 
 ```json
-{ "url": "http://127.0.0.1:8860", "token": "…", "version": "0.2.0", "pid": 12345 }
+{ "url": "http://127.0.0.1:8860", "token": "…", "version": "0.8.0", "api": 2, "pid": 12345 }
 ```
 
 The file is readable by you only, and removed when ClonoLoom stops. Keep a ClonoLoom window open:
@@ -90,14 +99,14 @@ act("open_data", paths=[table], mappings={table: {
 
 - Only programs on this computer: requests from other computers, and web pages that reach the
   loopback port under another name, are refused.
-- Reading files by path (`open_data`) needs the `X-ClonoLoom-Token` header with the token in
+- Every non-read action needs explicit startup grants and the `X-ClonoLoom-Token` header with the token in
   `remote.json`, so another user of a shared computer cannot make your ClonoLoom read your files.
 - Data under a provider's terms of use (the immuneACCESS example) are never downloaded by a
   program: only you can accept their terms, in the window.
 - One action runs at a time, in the order they come; a page opened from an earlier run of
   ClonoLoom does not take actions (reload it).
 
-Agents (an MCP server whose changes you accept or reject) come in a later release.
+Named proposals, typed queries, MCP transport and generated Python/R clients are available in 0.8.0. See [the policy contract](AUTOMATION.md) for cancellation, Undo and session audit limits.
 
 ### B-cell input evidence (wave 5)
 
@@ -541,3 +550,46 @@ share definition/QC/size breakpoints and feature identities. The response includ
 eligible group count, subject count and method description. This sums raw counts; it does not
 fit a differential-expression model. Original sources are needed for capture, not saved replay
 or export. Download complete evidence from `GET /api/pseudobulk/{id}/download`.
+
+### Certificate actions (0.8.0)
+
+`show` accepts `reports`. `inspect_certificate` and `export_certificate` take a supported
+saved cohort, batch-QC or motif `artifact` ID and optional explicit provider-term `accept`. Both use the visible
+Reports view and return its record/fingerprint; export downloads a `.certificate.clz` through
+the browser. These actions do not recompute statistics or read new source paths. File checking
+is available by Reports upload or `clonoloom verify --integrity`; see
+[CERTIFICATES.md](CERTIFICATES.md). MCP and generated clients follow later in Wave 8.
+
+Certificate upload verification additionally accepts `mode=replay` on
+`POST /api/certificates/verify`; omitted mode remains integrity-only. Replay uses the same
+native worker path as `clonoloom verify --replay`, with a five-minute deadline and request
+cancellation. HTTP 200 carries a report; inspect `verdict` for `replay-match`, `differs` or
+`unavailable`. It does not read arbitrary source paths or populate the current project.
+Reports provides an explicit mode selector, cancellation and the complete downloadable report.
+See [the captured-evidence boundary](CERTIFICATES.md#exact-replay-boundary).
+
+`GET /api/certificates/support` returns the per-kind certificate, replay and source-run matrix
+for every registered worker, including explicit unavailable entries. Native
+[`clonoloom run`](HEADLESS.md) supplies named source snapshots without exposing new filesystem
+paths through remote control. It uses the existing capture functions and Go workers.
+
+
+### Checkpoint actions (0.8.0)
+
+`create_checkpoint {name}`, `compare_checkpoint {checkpoint, against?}` and
+`recover_checkpoint {checkpoint}` run through Reports and the normal undo store. Comparison
+uses current analysis when `against` is omitted. Recovery reinstalls missing saved result files
+and restores analysis values, refusing conflicting bytes and stale edits. It does not read new
+source paths, resume jobs or perform scientific replay. Checkpoint IDs and evidence are local to
+the library. See [CHECKPOINTS.md](CHECKPOINTS.md) for the exact API and recovery limits.
+
+### HTML report action (0.8.0)
+
+`export_html_report {artifacts, title?, accept?}` selects 1–8 distinct supported result IDs in
+the open project, shows that selection/title in Reports and downloads one self-checking HTML
+file. The response includes the report fingerprint, selected IDs and `recomputed: false`.
+`accept: true` explicitly acknowledges all selected results' provider terms for private study.
+Changed projects/analyses and cancellation prevent stale downloads. No output path, source
+reading or scientific computation is introduced. The local endpoint is `POST /api/reports/html`
+with `{title, artifacts, accept?}`; it returns the `X-ClonoLoom-Report` fingerprint and HTML
+attachment. See [HTML-REPORTS.md](HTML-REPORTS.md) for evidence, size and replay limits.

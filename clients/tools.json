@@ -1,0 +1,2184 @@
+{
+  "api": 2,
+  "catalogVersion": 4,
+  "policyVersion": 1,
+  "tools": [
+    {
+      "effects": [
+        "read",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "export_parquet",
+      "title": "Export native Parquet tables",
+      "description": "Download typed native clonotypes or rearrangements with units, definition, QC, source provenance and provider notice. Original identifiers remain. Missing values are null; exact native integer counts are never rounded. Saved result tables are outside this schema.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Explicit acknowledgment of provider restrictions for private use; never redistribution permission.",
+            "type": "boolean"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "what": {
+            "description": "Native dataset table; default clonotypes.",
+            "enum": [
+              "clonotypes",
+              "rearrangements"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "prepare_deidentified_export",
+      "title": "Prepare de-identification export",
+      "description": "Prepare bounded native dataset tables with fresh subject/sample/cell/sequence pseudonyms and explicit annotation/HLA removal. Review the private subject correspondence before downloading. Original scientific evidence remains unchanged; this is not anonymity or a transformed replay certificate.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Explicit private-use acknowledgment for restricted provider data; never permits redistribution.",
+            "type": "boolean"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "dropHLA": {
+            "description": "Remove HLA annotation; default true.",
+            "type": "boolean"
+          },
+          "dropText": {
+            "description": "Remove free-text sample annotations; default true.",
+            "type": "boolean"
+          },
+          "storageFormat": {
+            "description": "Representation after the identifier policy: text (CSV/AIRR TSV, default) or typed Parquet.",
+            "enum": [
+              "text",
+              "parquet"
+            ],
+            "type": "string"
+          },
+          "what": {
+            "description": "AIRR and clonotype tables, or clonotypes only; default tables.",
+            "enum": [
+              "tables",
+              "clonotypes"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": true,
+      "name": "download_deidentified_export",
+      "title": "Download reviewed de-identification export",
+      "description": "Download the prepared pseudonymized table ZIP, or explicitly download only its separate PRIVATE identity map. Requires the reviewed token/fingerprint and unchanged project. Never bundles the identity map. Preparation expires after 15 minutes or replacement.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "expected": {
+            "description": "Reviewed export fingerprint.",
+            "type": "string"
+          },
+          "identityMap": {
+            "description": "Download only the private identity map separately; default false downloads the pseudonymized ZIP.",
+            "type": "boolean"
+          },
+          "token": {
+            "description": "Token returned by prepare_deidentified_export.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "expected"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": true,
+      "name": "export_project_archive",
+      "title": "Export portable project archive",
+      "description": "Download the current project, history, immutable results and checkpoints with an exact inventory. Source bytes are opt-in; restricted provider sources are always omitted. No scientific recomputation.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Acknowledge private-use restrictions on captured provider evidence; never permits restricted source inclusion.",
+            "type": "boolean"
+          },
+          "includeSources": {
+            "description": "Include fingerprint-checked permitted source bytes; default false.",
+            "type": "boolean"
+          },
+          "ownSources": {
+            "description": "Explicit authority to include sources with no recorded provider license; default false.",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": false,
+      "name": "inspect_project_archive",
+      "title": "Inspect portable project archive",
+      "description": "Verify a local archive's complete bounded inventory without extracting files or executing recipes. Return original project JSON as text and all source statuses.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "expected": {
+            "description": "Optional independently retained SHA-256 archive fingerprint.",
+            "type": "string"
+          },
+          "path": {
+            "description": "Absolute local .clz archive path.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "import_project_archive",
+      "title": "Import portable project archive",
+      "description": "Verify and import an inspected archive into the library without overwriting a project or conflicting evidence. Open the imported project with verified local source bindings. Opening may rebuild dataset tables; saved analyses are not recomputed. Partial cancellation may leave verified unreferenced files.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Acknowledge private-use restrictions on captured provider evidence.",
+            "type": "boolean"
+          },
+          "expected": {
+            "description": "Required fingerprint from inspection or an independently trusted record.",
+            "type": "string"
+          },
+          "path": {
+            "description": "Absolute local .clz archive path.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "expected"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "compute",
+        "files"
+      ],
+      "review": false,
+      "name": "query_clonotypes",
+      "title": "Query clonotypes",
+      "description": "Bounded typed filter over the current definition and QC. Native JSON text preserves numeric tokens; frequencies retain the full table denominator. No inference or SQL.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "limit": {
+            "description": "1–1000 rows; default 200.",
+            "type": "number"
+          },
+          "offset": {
+            "description": "Nonnegative row offset.",
+            "type": "number"
+          },
+          "where": {
+            "description": "Typed filter: all/any/not, or field/op/value. Fields total, samples, id, junction, v, j, locus. Numeric eq/gte/lte; string eq/contains. Depth \u003c=8, nodes \u003c=64.",
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": false,
+      "name": "export_html_report",
+      "title": "Export self-checking HTML report",
+      "description": "Download explicitly selected saved results, exact tables and replayable certificates. Browser checks embedded bytes only; no scientific recomputation or de-identification.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Explicitly acknowledge all selected results' provider terms for private study.",
+            "type": "boolean"
+          },
+          "artifacts": {
+            "items": {
+              "description": "Supported artifact ID in the current project.",
+              "type": "string"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "title": {
+            "description": "Report title (1–200 bytes).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifacts"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "create_checkpoint",
+      "title": "Create analysis checkpoint",
+      "description": "Keep immutable local analysis settings and attached completed result bytes; no source backup or scientific recomputation.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "description": "Checkpoint name (1–200 bytes).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": false,
+      "name": "compare_checkpoint",
+      "title": "Compare analysis checkpoint",
+      "description": "Compare exact recorded analysis and result evidence. No source verification or inferred biological effects.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "against": {
+            "description": "Optional second checkpoint ID; current analysis when absent.",
+            "type": "string"
+          },
+          "checkpoint": {
+            "description": "Checkpoint ID in this project.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "checkpoint"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "recover_checkpoint",
+      "title": "Recover analysis checkpoint",
+      "description": "Restore saved analysis settings and missing completed result files, with Undo available. Refuse conflicting bytes; no recomputation or running-job resume.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "checkpoint": {
+            "description": "Checkpoint ID in this project.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "checkpoint"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": false,
+      "name": "inspect_certificate",
+      "title": "Inspect an integrity certificate",
+      "description": "Inventory exact saved result bytes and recorded evidence. No scientific recomputation, source verification or authenticity claim.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Explicitly acknowledge provider terms for private study; false by default.",
+            "type": "boolean"
+          },
+          "artifact": {
+            "description": "Saved cohort-features, cohort-compare, cohort-counts, batch-qc or motifs artifact in this project.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "files"
+      ],
+      "review": false,
+      "name": "export_certificate",
+      "title": "Export an integrity certificate",
+      "description": "Download a saved result's certificate through the visible Reports view. Returns its fingerprint. Captured evidence can contain raw data; provider restrictions apply. No recomputation.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "description": "Explicitly acknowledge provider terms for private study; false by default.",
+            "type": "boolean"
+          },
+          "artifact": {
+            "description": "Supported saved artifact in this project.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "cohort_example_step",
+      "title": "Follow a cohort example",
+      "description": "Run one prescribed step on its matching artificial dataset; keep exact design versions and saved parents. Refuse inference for the fully confounded study.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "preset": {
+            "description": "counts-independent, counts-paired, counts-null, counts-unbalanced or counts-confounded",
+            "type": "string"
+          },
+          "step": {
+            "description": "design, features, compare or counts",
+            "type": "string"
+          }
+        },
+        "required": [
+          "preset",
+          "step"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "screen_batch_qc",
+      "title": "Screen batch QC",
+      "description": "Descriptive within-batch sample QC with modified z-scores; no correction or automatic removal.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "options": {
+            "description": "{threshold:3.5,minSamples:5}; absolute modified z strictly above threshold. Small groups and zero MAD remain unscored.",
+            "type": "object"
+          },
+          "samples": {
+            "description": "Every source sample as {name,subject,batch,exclude}; exclude is an explicit reason or empty. At most one included sample per subject per batch.",
+            "type": "array"
+          }
+        },
+        "required": [
+          "samples"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "screen_contamination",
+      "title": "Screen contamination evidence",
+      "description": "Descriptive exact cross-subject nucleotide sharing in human bulk TRB; no automatic removal or contamination verdict.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "options": {
+            "description": "{minCount:2,highFraction:0.01,ratio:20,highPgen:1e-8}; heuristic review thresholds.",
+            "type": "object"
+          },
+          "pgen": {
+            "description": "Optional compatible saved nucleotide Pgen artifact ID; missing is unknown.",
+            "type": "string"
+          },
+          "samples": {
+            "description": "2–64 {name,subject,batch} assignments; reuse subject IDs for repeated samples.",
+            "type": "array"
+          },
+          "species": {
+            "description": "human",
+            "type": "string"
+          },
+          "unrelated": {
+            "description": "Explicitly declare distinct IDs represent unrelated subjects.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "species",
+          "unrelated",
+          "samples"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "analyze_convergence",
+      "title": "Analyze subject recurrence and HLA",
+      "description": "Measure selected motif-group recurrence across unique subjects and conditional HLA enrichment within complete locus-specific typed universes. Full declared BY family; no restriction or antigen-specificity inference.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "motifs": {
+            "description": "Saved motif artifact ID.",
+            "type": "string"
+          },
+          "selection": {
+            "description": "{species: human, samples: [selected names], subjects: [{id, samples, typing: {A: [two explicit allele copies], B: [...]}}], groups: [1–128 saved group IDs], alleles: [0–64 declared two-field HLA targets]}. Every sample belongs to one subject. Empty allele panel gives descriptive recurrence only. Missing/ambiguous typing is unknown.",
+            "type": "object"
+          }
+        },
+        "required": [
+          "motifs",
+          "selection"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "screen_motifs",
+      "title": "Screen sequence motifs",
+      "description": "Screen explicit query/background samples for overlapping GLIPH2-style signatures, matched by TRBV gene and junction length. Pooled signature family, conditional Fisher scores and BY; hypotheses, not proven specificity.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "description": "Distinct explicit background sample names.",
+            "type": "array"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "options": {
+            "description": "{minK:2,maxK:5,minMembers:3,q:0.05,minFold:2}. Reporting filters do not shrink the pooled correction family.",
+            "type": "object"
+          },
+          "query": {
+            "description": "Explicit query sample names.",
+            "type": "array"
+          }
+        },
+        "required": [
+          "query",
+          "background"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "audit_definitions",
+      "title": "Audit clonotype definitions",
+      "description": "Recompute a pinned subject-feature comparison under one to five declared alternative junction/V/J definitions, keeping subjects, QC and tests fixed. Descriptive effect/interval summaries and across-audit BY; no p-threshold robustness verdict.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "comparison": {
+            "description": "Saved cohort-compare artifact ID.",
+            "type": "string"
+          },
+          "definitions": {
+            "description": "One to five full sequence definitions; only junction and V/J resolution may differ from the parent. Preserve chain/cell/productivity rules.",
+            "type": "array"
+          }
+        },
+        "required": [
+          "comparison",
+          "definitions"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "fit_cohort_counts",
+      "title": "Fit replicated clonotype counts",
+      "description": "Fit subject-level negative-binomial counts from a saved feature design and its original receptor snapshot, with explicit offsets, optional batch adjustment, per-clone dispersion and BH. Retain failed fits; no pooling or Poisson fallback.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "features": {
+            "description": "Saved cohort-features artifact ID.",
+            "type": "string"
+          },
+          "options": {
+            "description": "{minCount:10, minSamples:12, adjustBatch:false, confidence:0.95}. Requires at least twenty-four residual degrees of freedom.",
+            "type": "object"
+          }
+        },
+        "required": [
+          "features"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "compare_cohort",
+      "title": "Compare cohort groups",
+      "description": "Compare explicitly selected subject features using the saved independent/paired design, both mean and rank tests, effects and marginal intervals, and one BH family. No subject deletion or pooling.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "features": {
+            "description": "Saved cohort-features artifact ID.",
+            "type": "string"
+          },
+          "options": {
+            "description": "{features: [feature IDs], confidence: 0.95, permutations: 9999, seed: 20261025}. Select 1–13 features explicitly; confidence 0.8–0.99; permutations 999–99999.",
+            "type": "object"
+          }
+        },
+        "required": [
+          "features",
+          "options"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "build_cohort_features",
+      "title": "Build subject feature table",
+      "description": "Join an explicit saved design version to a saved diversity result from its dataset; retain raw subject/group observations, units, missingness and provenance without pooling or testing.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "design": {
+            "description": "Saved project cohort design record ID, including its version suffix.",
+            "type": "string"
+          },
+          "diversity": {
+            "description": "Saved diversity artifact ID from the same dataset.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "design",
+          "diversity"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "check_cohort_design",
+      "title": "Check a cohort design",
+      "description": "Shows Cohort and checks explicit groups, subjects, pairing and exclusions. Optionally saves a versioned design snapshot; computes no inferential test.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The saved design's name.",
+            "type": "string"
+          },
+          "save": {
+            "description": "Save a completed design check (including failed checks, unavailable for inference) in the project (default false).",
+            "type": "boolean"
+          },
+          "spec": {
+            "description": "{unit: subject, layout: independent|paired, groupField: condition|timepoint|tissue|cellSubset, levels: [reference, comparison], exclude: {sample: reason}}. Exact group labels; no automatic pooling.",
+            "type": "object"
+          }
+        },
+        "required": [
+          "spec"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read"
+      ],
+      "review": false,
+      "name": "get_state",
+      "title": "Describe the project",
+      "description": "The open project: its datasets (format, unit, rows, samples, findings, filter, clonotype definition, license and citation of public data), the view shown, the item in focus, and the example datasets with whether each is downloaded.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "files"
+      ],
+      "review": true,
+      "name": "new_project",
+      "title": "Start a new project",
+      "description": "Starts a new, empty project (the open one is saved).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "description": "The new project's name.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "open_data",
+      "title": "Open data",
+      "description": "Opens files or folders on this computer as one dataset of the project: AIRR rearrangement tables with their Repertoire metadata (.json), Cell Ranger V(D)J output folders or contig annotations, immunoSEQ exports; another tool's CSV or TSV through a mapping of its columns. Needs the token.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "mappings": {
+            "description": "For tables ClonoLoom does not recognize, by path: {columns: {junction_aa, junction, v_call, d_call, j_call, c_call, count, sample, locus, productive, cell_id, clone_id, sequence_id: the column's name}, unit: reads | umis | templates | cells (when a count is mapped), sample: the sample's name when no column holds it}.",
+            "type": "object"
+          },
+          "name": {
+            "description": "The dataset's name (its files' otherwise).",
+            "type": "string"
+          },
+          "paths": {
+            "description": "Absolute paths, read together as one dataset.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "paths"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files",
+        "network"
+      ],
+      "review": true,
+      "name": "open_example",
+      "title": "Open an example dataset",
+      "description": "Opens one of the example datasets as a dataset of the project. One not yet downloaded is downloaded first when download is true and its data are openly licensed; data under a provider's terms of use are downloaded only by the person, who accepts the terms in the window.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "download": {
+            "description": "Download it first if it is not downloaded (openly licensed data only).",
+            "type": "boolean"
+          },
+          "example": {
+            "description": "The example's name, such as 10x-pbmc-1k (get_state lists them).",
+            "type": "string"
+          },
+          "opening": {
+            "description": "What of it to open, such as \"T cells\" (its first if not given).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "example"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "show",
+      "title": "Show a view",
+      "description": "Shows a view (start, data, qc, clonotypes, repertoire, tracking, specificity, cohort, reports, jobs), with a dataset in focus.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "view": {
+            "description": "start, data, qc, clonotypes, repertoire, tracking, specificity, cohort, reports or jobs.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "view"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "set_definition",
+      "title": "Define clonotypes",
+      "description": "Chooses a dataset's clonotype definition: a preset by name, or one stated in full.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "definition": {
+            "description": "A definition in full: {name, chains: [] | [locus] | [locus, locus|\"light\"], junction: aa|nt, v: allele|gene|family|none, j: …, cells: primary|all, requireAll, productiveOnly, vendor}.",
+            "type": "object"
+          },
+          "preset": {
+            "description": "A preset's name (or part of it), such as \"Paired αβ\" or \"Nucleotide junction\".",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "annotate_samples",
+      "title": "Annotate samples",
+      "description": "Sets samples' annotation, as the Data view's samples table holds it: each one's subject, time point (day 28, week 4, baseline), reference role (infusion product, donor), tissue, cell subset, condition, batch and HLA. An empty value removes a field; fields not named are left as they are.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "samples": {
+            "description": "By sample name: {subject, timepoint, reference, tissue, cellSubset, condition, batch, hla: a value, or \"\" to remove it}.",
+            "type": "object"
+          }
+        },
+        "required": [
+          "samples"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "describe_subjects",
+      "title": "Describe the subjects",
+      "description": "Shows the Tracking view and answers the dataset's subjects as the program reads their annotation: each one's samples in time order with their time points read as days from the subject's reference event, its reference samples and the samples taken at one time (replicates), and the checks' findings (samples without a subject or a time point, time points not understood, subjects without a reference sample).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "track_clonotypes",
+      "title": "Follow clonotypes over time",
+      "description": "Shows the Tracking view's Clonotypes part and follows clonotypes through each subject's samples in time order, under the dataset's clonotype definition and filter (a job; the result kept with the project): each subject's reference sample's largest clonotypes (the default; each sample's largest for a subject without one), each sample's largest, a list, or those a test called. Answers each subject's time points and, for each clonotype followed, why it was chosen and its count, frequency and 95% interval (Wilson's) at each time point, the samples taken at one time pooled.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "by": {
+            "description": "reference (each reference sample's n largest; the default), largest (each sample's n largest), list, test (the n clonotypes the dataset's comparison called, the most significant first: see test_expansion), or class (the n clonotypes of a class against the dataset's base time point: see class_clonotypes).",
+            "type": "string"
+          },
+          "class": {
+            "description": "With by class: emerging (the default), transient, contracting or persistent.",
+            "type": "string"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "list": {
+            "description": "With by list: the clonotypes, by ID (c-…) or junction (CASSLAGGPEAFF; a paired clonotype's chains joined by \"; \").",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "n": {
+            "description": "How many: 10 of a reference sample, 5 of each sample and 20 of a test's calls by default, at most 100.",
+            "type": "number"
+          },
+          "subject": {
+            "description": "The subject to show (the first by default).",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "test_expansion",
+      "title": "Test clonotypes between two time points",
+      "description": "Shows the Tracking view's Tests part and tests each clonotype between two time points of each subject (the samples at one time pooled), under the dataset's clonotype definition and filter (a job; the result kept with the project): the beta-binomial test conditional on the clonotype's total, its variance fitted on the study's replicate samples or two time points named as stable (the default where it can be fitted; else the binomial test), the binomial test, or Fisher's exact test, two-sided or one-sided, the false discovery rate controlled within each subject by Benjamini–Hochberg (the default) or Storey's q-values; clonotypes with fewer than 5 cells or molecules in the two together are not tested. Answers the test used and the variance model fitted, each subject's clonotypes tested, left out, increased and decreased, and the most significant calls. The tests refuse reads.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "alpha": {
+            "description": "The false discovery rate at which a clonotype is called: 0.01 by default.",
+            "type": "number"
+          },
+          "alternative": {
+            "description": "two-sided (the default), increase (more at the second time point) or decrease.",
+            "type": "string"
+          },
+          "calls": {
+            "description": "How many of each subject's calls to answer (10 by default).",
+            "type": "number"
+          },
+          "correction": {
+            "description": "bh (Benjamini–Hochberg; the default) or storey (Storey's q-values).",
+            "type": "string"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "from": {
+            "description": "The first time point, by its key as the subjects' samples give it (describe_subjects): day 0, day -7, baseline, reference (the reference sample), visit 2.",
+            "type": "string"
+          },
+          "stable": {
+            "description": "Two time points between which the clonotypes are taken not to change, to fit the beta-binomial test's variance on instead of the replicate samples: [\"day -7\", \"day 0\"]; [] for the replicate samples.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subject": {
+            "description": "The subject to show (the first by default).",
+            "type": "string"
+          },
+          "test": {
+            "description": "auto (the beta-binomial test where its variance can be fitted, else the binomial test; the default), betabinomial, binomial or fisher.",
+            "type": "string"
+          },
+          "to": {
+            "description": "The second time point.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "class_clonotypes",
+      "title": "Class clonotypes across time points",
+      "description": "Shows the Tracking view's Classes part and, in each subject, tests each clonotype between a base time point and every later one by the dataset's test (as test_expansion chose it; the beta-binomial test where its variance can be fitted), and classes it by its calls: emerging (called increased at the last time point), transient (called changed at a time point between, not at the last), contracting (called decreased at the last) or persistent (never called, found at every time point). A job; the result kept with the project. Answers each subject's clonotypes by class and the most significant of a class.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "base": {
+            "description": "The base time point, by its key (day -7, baseline): the first other than the reference sample's by default.",
+            "type": "string"
+          },
+          "class": {
+            "description": "The class to show and answer: emerging (the default), transient, contracting or persistent.",
+            "type": "string"
+          },
+          "count": {
+            "description": "How many of the class to answer in each subject (10 by default).",
+            "type": "number"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "subject": {
+            "description": "The subject to show (the first by default).",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "attribute_samples",
+      "title": "Attribute samples to the reference",
+      "description": "Shows the Tracking view's Attribution part and measures each sample of each subject with a reference sample (an infusion product, a donor) under the dataset's clonotype definition and filter (a job; the result kept with the project): its share in the clonotypes the reference sample holds, and, where the subject has samples before the reference event and the reference shares few clonotypes with them (a donor), the share derived from the reference, each with its 95% interval (Wilson's). Answers each subject's time points, the share before the event and the reference's overlap with it.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "find_neighbors",
+      "title": "Find similar receptors by TCRdist",
+      "description": "Shows the Specificity view's Neighbors part and compares each T-cell clonotype of the dataset with every other of the same chains by TCRdist, as tcrdist3 computes it, under the dataset's clonotype definition and filter (a job; the result kept with the project): with the V genes' CDR1, CDR2 and CDR2.5 (the reference data tcrdist3-loops, which must be downloaded) or the CDR3s alone. The options given are kept with the dataset. Answers how many clonotypes were compared and have a neighbor within the radius, and the clonotypes with the most neighbors; with select, the chosen clonotype's nearest, loop by loop.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "cdr3Only": {
+            "description": "Compare the CDR3s alone, without the V genes' loops.",
+            "type": "boolean"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "organism": {
+            "description": "Whose loops: human, mouse or rhesus (default: guessed from the V genes).",
+            "type": "string"
+          },
+          "radius": {
+            "description": "The radius within which two clonotypes are neighbors, in TCRdist units (default: 24 a chain).",
+            "type": "number"
+          },
+          "select": {
+            "description": "A clonotype to show the nearest of, by its rank among those with the most neighbors (from 1).",
+            "type": "number"
+          },
+          "top": {
+            "description": "How many of the clonotypes with the most neighbors to answer (default 10).",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files",
+        "network"
+      ],
+      "review": true,
+      "name": "match_specificity",
+      "title": "Match specificity evidence",
+      "description": "Matches retained chains against a downloaded VDJdb release or the generated vaccine database, and shows per-epitope sample shares. Never downloads a database implicitly. Optionally follows one epitope's matched clonotypes in Tracking.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "cdr3Only": {
+            "description": "Compare CDR3s alone for TCRdist",
+            "type": "boolean"
+          },
+          "database": {
+            "description": "vdjdb or simulated-vaccine",
+            "type": "string"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "follow": {
+            "description": "Epitope/antigen group to follow, from 1",
+            "type": "number"
+          },
+          "genes": {
+            "description": "Require matching V and J calls",
+            "type": "boolean"
+          },
+          "metric": {
+            "description": "exact or tcrdist",
+            "type": "string"
+          },
+          "minScore": {
+            "description": "Minimum evidence score, 0–3",
+            "type": "number"
+          },
+          "radius": {
+            "description": "TCRdist radius, 0–1000",
+            "type": "number"
+          },
+          "species": {
+            "description": "HomoSapiens, MusMusculus or MacacaMulatta",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "measure_bcell_shm",
+      "title": "Measure somatic hypermutation",
+      "description": "Compare saved D-masked germlines with source rows. Reports evaluable bases/codons, regional substitutions, single-hit R/S and unclassified changes.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "germlines": {
+            "description": "Saved germlines artifact ID; latest result if omitted",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "summarize_bcell_isotypes",
+      "title": "Summarize B-cell isotypes",
+      "description": "Count observed heavy constant calls by sample and family, retaining ambiguity and missing abundance. Unordered family co-occurrence is not switching-event inference.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "families": {
+            "description": "Saved thresholded families artifact ID; latest result if omitted",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "build_bcell_lineages",
+      "title": "Build B-cell lineage trees",
+      "description": "Build family/locus parsimony trees from saved germlines, with conditional ancestral states and observed metadata. Exact through 8 states; bounded heuristic through 64.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "germlines": {
+            "description": "Saved germlines artifact ID; latest result if omitted",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files",
+        "network"
+      ],
+      "review": true,
+      "name": "reconstruct_bcell_germlines",
+      "title": "Reconstruct D-masked B-cell germlines",
+      "description": "Uses saved thresholded families and checked ungapped references. Preserves indels, masks D/N/P, and records exclusions and provenance.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "families": {
+            "description": "Saved families artifact ID; latest thresholded result if omitted",
+            "type": "string"
+          },
+          "reference": {
+            "description": "ogrdb-human-2026-05-27 (default) or simulated-bcell-immunization",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "find_bcell_families",
+      "title": "Find B-cell clonal families",
+      "description": "Measures nearest distinct-receptor distances, and assigns single-linkage families only with an explicit threshold. Respects subject or sample boundaries; paired mode uses both chains. Keeps a cited immutable result.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "mode": {
+            "description": "auto, heavy or paired",
+            "type": "string"
+          },
+          "scope": {
+            "description": "subject (default) or sample",
+            "type": "string"
+          },
+          "threshold": {
+            "description": "Inclusive normalized distance 0–1. Omit for distances only; zero means exact identity.",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "compare_receptor_expression",
+      "title": "Compare receptor and expression neighborhoods",
+      "description": "CoNGA-style paired alpha-beta clonotype graph comparison with tied neighbors, conditional overlap tests and all-scale Bonferroni correction.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "options": {
+            "properties": {
+              "cdr3Only": {
+                "description": "Explicitly omit V-germline loops; false requires organism and reference",
+                "type": "boolean"
+              },
+              "neighbors": {
+                "description": "1–8 distinct k values, 1–200; default [5,15]",
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              "organism": {
+                "description": "human or mouse; required for full TCRdist",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "phenotypes": {
+            "description": "Saved computed-map phenotype artifact; displayed result if omitted",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "compute_clonotype_modularity",
+      "title": "Compute clonotype modularity",
+      "description": "Test within-clone connectivity on a saved expression graph, using size-matched subsets and BY-adjusted p-values.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "options": {
+            "properties": {
+              "permutations": {
+                "description": "Monte Carlo draws: 99–99999; default 9999",
+                "type": "number"
+              },
+              "seed": {
+                "description": "Positive integer seed; default 20261024",
+                "type": "number"
+              }
+            },
+            "type": "object"
+          },
+          "phenotypes": {
+            "description": "Saved computed-map phenotype artifact; the displayed phenotype result if omitted",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "compare_pseudobulk",
+      "title": "Compare paired pseudobulk expression",
+      "description": "Within-subject gene expression for one type/timepoint and two declared size categories. Requires 25 complete pairs; median-ratio offsets, unmoderated NB2, conditional intervals and explicit BH family.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "options": {
+            "properties": {
+              "comparison": {
+                "description": "Comparison size category",
+                "type": "string"
+              },
+              "confidence": {
+                "description": "Conditional confidence 0.8–0.99; default 0.95",
+                "type": "number"
+              },
+              "exclude": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Sample names mapped to explicit exclusion reasons",
+                "type": "object"
+              },
+              "minCount": {
+                "description": "Minimum raw count; default 10",
+                "type": "number"
+              },
+              "minSamples": {
+                "description": "Minimum paired observations; default 25",
+                "type": "number"
+              },
+              "reference": {
+                "description": "Reference size category",
+                "type": "string"
+              },
+              "timepoint": {
+                "description": "Exact literal timepoint",
+                "type": "string"
+              },
+              "type": {
+                "description": "Exact supplied cell type",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "pseudobulk": {
+            "description": "Saved pseudobulk count artifact ID",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "aggregate_pseudobulk",
+      "title": "Aggregate pseudobulk counts",
+      "description": "Exact raw expression sums by subject, sample, supplied type and receptor size category; no differential expression test.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "options": {
+            "properties": {
+              "annotation": {
+                "description": "Supplied cell-type column",
+                "type": "string"
+              },
+              "minCells": {
+                "description": "Minimum contributing cells; default 10",
+                "type": "number"
+              }
+            },
+            "type": "object"
+          },
+          "phenotypes": {
+            "description": "Explicit saved phenotype IDs, one per sample",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "export_anndata",
+      "title": "Prepare AnnData export",
+      "description": "Save raw sparse counts with exact receptor links, annotations, saved embeddings and provenance; download from Cells.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "phenotypes": {
+            "description": "Saved phenotype artifact; displayed result if omitted",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "compute_cell_phenotypes",
+      "title": "Compute clonotype phenotypes",
+      "description": "Save sample-scoped clonotype sizes, map overlays and supplied phenotype counts for the open expression input and its receptor binding.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "annotation": {
+            "description": "Supplied phenotype column; empty summarizes the sample",
+            "type": "string"
+          },
+          "breakpoints": {
+            "description": "Inclusive size category bounds; default [1,2,5]",
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "map": {
+            "description": "Computed expression-map artifact ID, latest for the open input, or empty for imported coordinates",
+            "type": "string"
+          },
+          "population": {
+            "description": "receptor (default) or mapped",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "compute_expression_map",
+      "title": "Compute expression map",
+      "description": "Normalize the open expression input, compute PCA, exact neighbors and UMAP, and save an immutable result. Open expression evidence first.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "options": {
+            "properties": {
+              "components": {
+                "description": "Principal components, 2–100; default 30",
+                "type": "number"
+              },
+              "epochs": {
+                "description": "UMAP epochs, 10–1000; default 500",
+                "type": "number"
+              },
+              "features": {
+                "description": "Variance-ranked features, 2–1000; default 500",
+                "type": "number"
+              },
+              "minCells": {
+                "description": "Minimum cells per gene; default 1",
+                "type": "number"
+              },
+              "minDist": {
+                "description": "UMAP minimum distance, 0–1; default 0.5",
+                "type": "number"
+              },
+              "minGenes": {
+                "description": "Minimum detected genes per cell; default 1",
+                "type": "number"
+              },
+              "neighbors": {
+                "description": "Other neighbors, 2–100; default 15",
+                "type": "number"
+              },
+              "seed": {
+                "description": "Seed; default 20261024",
+                "type": "number"
+              },
+              "target": {
+                "description": "Normalized count total; default 10000",
+                "type": "number"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "inspect_expression",
+      "title": "Inspect expression evidence",
+      "description": "Open a MEX, 10x HDF5, AnnData or MuData input and check exact barcode coverage in an explicit receptor sample. Saves source fingerprints; no normalization or clonotype inference.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "anndata": {
+            "description": "Explicit AnnData/MuData selections; layer is X or layers/\u003cname\u003e",
+            "properties": {
+              "airrKey": {
+                "description": "Optional obsm AIRR key",
+                "type": "string"
+              },
+              "airrModality": {
+                "description": "Required AIRR modality for MuData when AIRR key is given",
+                "type": "string"
+              },
+              "embedding": {
+                "description": "Optional obsm embedding name",
+                "type": "string"
+              },
+              "featureName": {
+                "description": "Optional var name column",
+                "type": "string"
+              },
+              "featureType": {
+                "description": "Optional var type column",
+                "type": "string"
+              },
+              "layer": {
+                "description": "Count matrix: X or layers/\u003cname\u003e",
+                "type": "string"
+              },
+              "modality": {
+                "description": "Required expression modality for MuData",
+                "type": "string"
+              }
+            },
+            "required": [
+              "layer"
+            ],
+            "type": "object"
+          },
+          "anndataExample": {
+            "description": "Use the generated artificial AnnData example",
+            "type": "boolean"
+          },
+          "cellsPath": {
+            "description": "Optional cell annotation TSV for MEX/10x HDF5 on this computer",
+            "type": "string"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "example": {
+            "description": "Use the already generated artificial expression example",
+            "type": "boolean"
+          },
+          "hdf5Example": {
+            "description": "Use the already generated artificial HDF5 expression example",
+            "type": "boolean"
+          },
+          "path": {
+            "description": "MEX directory or 10x HDF5 file on this computer",
+            "type": "string"
+          },
+          "sample": {
+            "description": "Explicit zero-based receptor sample index; dataset empty for expression only",
+            "type": "number"
+          },
+          "studyExample": {
+            "description": "Use the generated cell-states study, first expression sample and its annotations",
+            "type": "boolean"
+          },
+          "studyPreset": {
+            "description": "cell-states (default) or cell-states-clouds; requires studyExample",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "inspect_bcell_inputs",
+      "title": "Inspect B-cell inputs",
+      "description": "Shows B cells, the filtered rearrangement evidence counts and a bounded first page. Optionally inspects one row. Does not reconstruct germlines or measure mutation.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "select": {
+            "description": "Rearrangement on the first page to inspect, from 1 (at most 50).",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "flag_invariant",
+      "title": "Flag invariant populations",
+      "description": "Evaluate published MAIT, iNKT and GEM sequence rules for an explicit species. Shows Clonotypes, optionally narrowed to a matched population, and answers sample totals, evaluable abundance and shares. Records the species with the dataset; flags do not establish phenotype or specificity.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "population": {
+            "description": "MAIT, iNKT, GEM, or empty for all clonotypes",
+            "type": "string"
+          },
+          "species": {
+            "description": "human or mouse (required)",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "find_networks",
+      "title": "Find clonotype networks",
+      "description": "Finds connected components of clonotypes joined within a sequence-distance cutoff, retaining all edges and memberships independently of the drawing. Shows Networks in Specificity and answers component counts. Options are kept with the dataset.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "arms": {
+            "description": "all retained chains or any shared chain",
+            "type": "string"
+          },
+          "cdr3Only": {
+            "description": "TCRdist on CDR3s alone",
+            "type": "boolean"
+          },
+          "cutoff": {
+            "description": "0 for identity, 0–2 for edit distance, 0–1000 for TCRdist",
+            "type": "number"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "metric": {
+            "description": "identity, hamming, levenshtein or tcrdist",
+            "type": "string"
+          },
+          "sameJ": {
+            "description": "Require the same J gene at the definition's resolution",
+            "type": "boolean"
+          },
+          "sameV": {
+            "description": "Require the same V gene at the definition's resolution",
+            "type": "boolean"
+          },
+          "select": {
+            "description": "Cluster number to select, from 1",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "find_neighborhoods",
+      "title": "Find neighborhoods against a background",
+      "description": "Shows the Specificity view's Neighborhoods part and finds, for each receptor of one locus, the largest radius at which a background holds few enough receptors and the dataset's receptors within it (a job; the result kept with the project), as Mayer-Blackwell et al. 2021 define a neighborhood. The background is drawn from a recombination model with the dataset's V and J usage, or made by moving the dataset's own CDR3s among its genes. The options given are kept with the dataset. Answers how many receptors have a neighborhood and the first by enrichment, each with its radius, its neighborhood's receptors, how much commoner it is than in the background, and its motif.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "background": {
+            "description": "model (drawn from a recombination model; the default) or shuffled (the dataset's own CDR3s moved among its genes).",
+            "type": "string"
+          },
+          "control": {
+            "description": "The share of the background a radius may hold: 1e-5, 1e-6 (the default) or 1e-7.",
+            "type": "number"
+          },
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "locus": {
+            "description": "The locus whose chains are compared (default: the dataset's commonest).",
+            "type": "string"
+          },
+          "minNeighbors": {
+            "description": "How many receptors a neighborhood needs to be reported, its centroid counted (default 2).",
+            "type": "number"
+          },
+          "order": {
+            "description": "Which neighborhoods first: enriched (the default), neighbors or abundant.",
+            "type": "string"
+          },
+          "select": {
+            "description": "A neighborhood to show the receptors of, by its rank in the order asked for (from 1).",
+            "type": "number"
+          },
+          "top": {
+            "description": "How many neighborhoods to answer (default 10).",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files",
+        "network"
+      ],
+      "review": true,
+      "name": "measure_generation",
+      "title": "Compute generation probabilities",
+      "description": "Shows the Specificity view's Generation part and computes each clonotype's generation probability, the probability that V(D)J recombination alone makes its CDR3s, as OLGA computes it, under the dataset's clonotype definition and filter (a job; the result kept with the project): under OLGA's default models (the reference data olga-models, which must be downloaded) or ClonoLoom's own model of human TRB; a pair's is the product of its chains'. The options given are kept with the dataset. Answers the models and how many clonotypes have a probability, each sample's quartiles (log10), and the first clonotypes in the order asked for.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "genes": {
+            "description": "The probability of each CDR3 with its V and J genes, not of the CDR3 alone.",
+            "type": "boolean"
+          },
+          "models": {
+            "description": "Whose models: olga, clonoloom, or \"\" for OLGA's where downloaded, else ClonoLoom's (the default).",
+            "type": "string"
+          },
+          "order": {
+            "description": "Which clonotypes first: abundant (the default), probable or improbable.",
+            "type": "string"
+          },
+          "organism": {
+            "description": "human or mouse, or \"\" to guess from the V genes (the default).",
+            "type": "string"
+          },
+          "top": {
+            "description": "How many clonotypes to answer (default 10).",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "select_clonotype",
+      "title": "Choose a clonotype",
+      "description": "Shows the Clonotypes view and chooses a clonotype, which the inspector describes: by its rank in the table (1 for the first) or its ID.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "id": {
+            "description": "Its ID (c-…).",
+            "type": "string"
+          },
+          "rank": {
+            "description": "Its rank in the table as sorted, from 1.",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "measure_diversity",
+      "title": "Measure diversity",
+      "description": "Shows the Repertoire view and measures each sample's diversity under the dataset's clonotype definition and filter (a job; the result kept with the project), answering each sample's main measures with their 95% intervals: clonotypes seen, Chao1, the Shannon and Simpson diversity seen and estimated, clonality, Simpson clonality, Gini and coverage.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "rarefy",
+      "title": "Rarefy and extrapolate",
+      "description": "Shows the Repertoire view's Rarefaction part and computes each sample's rarefaction and extrapolation curves under the dataset's clonotype definition and filter (a job; the result kept with the project), answering the levels the samples are best compared at and each sample's clonotypes, Shannon diversity and Simpson diversity at the level chosen, with their 95% intervals.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "level": {
+            "description": "Where the samples are compared: coverage (the lowest sample coverage among them; the default), size (the smallest sample's), extrapolatedCoverage or extrapolatedSize (iNEXT's defaults, reached by extrapolating to twice a sample's size).",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "gene_usage",
+      "title": "Count genes and junctions",
+      "description": "Shows the Repertoire view's Genes or Junctions part and counts each sample's V, D, J and C genes, junction lengths and amino acids under the dataset's clonotype definition and filter (a job; the result kept with the project, the samples grouped by condition), answering for each sample (or condition) the most used genes of a segment, the commonest junction lengths and the mean length, with their 95% intervals (for a condition, its samples' range).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "level": {
+            "description": "gene (the default) or family.",
+            "type": "string"
+          },
+          "part": {
+            "description": "genes (the default) or junctions.",
+            "type": "string"
+          },
+          "rows": {
+            "description": "samples (the default) or groups (the samples' conditions).",
+            "type": "string"
+          },
+          "segment": {
+            "description": "V (the default), D, J or C.",
+            "type": "string"
+          },
+          "weight": {
+            "description": "clonotypes (each counted once; the default) or abundance.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "measure_overlap",
+      "title": "Measure overlap",
+      "description": "Shows the Repertoire view's Overlap part and measures every pair of samples' overlap under the dataset's clonotype definition and filter (a job; the result kept with the project, the samples' subjects and conditions from their annotation or metadata), answering the pairs of one subject and of two summarized, the most overlapping pairs by a measure with their 95% intervals, and how many clonotypes are found in one subject, two, and more.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          },
+          "measure": {
+            "description": "morisita (the default), morisitaHorn, jaccard, jaccardRarefied, sorensen, sorensenRarefied, overlap, overlapRarefied, shared, sharedRarefied or abundance.",
+            "type": "string"
+          },
+          "pairs": {
+            "description": "How many of the most overlapping pairs to answer (10 by default).",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits"
+      ],
+      "review": true,
+      "name": "show_examples",
+      "title": "Show the example data",
+      "description": "Opens the Example data dialog.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits",
+        "compute",
+        "files"
+      ],
+      "review": true,
+      "name": "show_methods",
+      "title": "Write the methods paragraph",
+      "description": "Shows a dataset's methods paragraph and answers it with its references.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dataset": {
+            "description": "A dataset of the project by name or id; the one in focus, else the first, if not given.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits"
+      ],
+      "review": true,
+      "name": "set_theme",
+      "title": "Choose the theme",
+      "description": "Light, dark or the system's.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "theme": {
+            "description": "light, dark or system.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "theme"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "effects": [
+        "read",
+        "edits"
+      ],
+      "review": true,
+      "name": "close_dialogs",
+      "title": "Close dialogs",
+      "description": "Closes any dialog, menu or toast open in the window.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    }
+  ]
+}

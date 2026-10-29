@@ -1,0 +1,22 @@
+---
+title: Automation permissions
+description: Explicit host capabilities, visible proposals and typed clonotype queries with exact scientific boundaries.
+lede: Give a program only the capabilities its workflow needs, and review its proposed project changes in the window.
+---
+<p class="callout">ClonoLoom 0.8.0: API 2 changes remote control to read-only by default. <a href="mcp.html">MCP transport</a> is available; <a href="python.html">Python</a> is available; <a href="r.html">R</a> is available.</p>
+<h2 id="grants">Choose capabilities at startup</h2>
+<div class="code wrap"><pre><code>clonoloom --remote-control
+clonoloom --remote-control --allow compute,files
+clonoloom --remote-control --allow edits,compute,files,network</code></pre></div>
+<p>The action catalog declares conservative read, edit, computation, file and network effects. Calls need every declared capability; non-read calls also need the connection token. A token is not permission to edit. Offline mode still prevents downloads. These controls govern the automation interface, not the operating system or the window's ordinary local APIs.</p>
+<h2 id="review">Review a named proposal</h2>
+<p>The window shows who proposes the action, its arguments and its effects. Accept runs it once against the reviewed project state. Reject leaves it unexecuted. Changed projects and disconnected callers require a new proposal. There is no remote acceptance action.</p>
+<shot name="automation" alt="Named automation proposal to change a clonotype definition in an artificial repertoire study, with Reject and Accept controls">The example contains artificial repertoire data. Review the scientific definition as well as the requested capability.</shot>
+<p>Project edits use normal Undo and carry the caller's name in History. UI controls, downloaded files and completed worker outputs have different recovery limits. Cancel prevents later attachments; already completed side effects may remain, and the window stays busy until the call settles.</p>
+<h2 id="audit">Inspect what happened</h2>
+<shot name="automation-audit" alt="Automation drawer listing accepted, rejected, cancelled and completed calls in the current host session">The audit keeps the last 500 session events and argument digests. Caller names are self-reported labels, not authenticated identities.</shot>
+<p>This in-memory audit is not a scientific certificate or a persistent forensic log. Save it before stopping if you need it. Scientific methods and parameters remain in native result manifests.</p>
+<h2 id="queries">Query a declared population</h2>
+<p><code>query_clonotypes</code> accepts bounded conjunctions, disjunctions, negation and declared numeric or literal text predicates. No SQL, shell, regular expressions or evaluated code. It uses the current definition and QC, preserves the full table frequency denominator, and returns the original native JSON text for precise decoding.</p>
+<p>Multiple-chain predicates can match different chains. Empty definition fields are not evidence of missing sequencing data. Query selection does not establish clonal expansion, specificity, significance or independent subjects.</p>
+<p>See the <a href="{{github}}/blob/main/docs/AUTOMATION.md">complete permission, cancellation, audit and query contract</a> for bounds and examples. Existing <a href="certificates.html">certificate replay</a> remains a separate exact worker check with its five-kind support matrix; an accepted action is not a replay verdict.</p>

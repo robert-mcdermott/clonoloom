@@ -1,0 +1,20 @@
+---
+title: Portable project archives
+description: Transfer exact project evidence with verified inventories, explicit source permissions and safe local bindings.
+lede: Keep a study's recorded evidence together, inspect what is included, and reopen it in another library.
+---
+<p class="callout">ClonoLoom 0.8.0. Use the matching host and matching clients (API 2, catalog 4, policy 1). </p>
+<h2 id="export">Export a study</h2>
+<p>Open <strong>Reports → Portable project archives</strong>. Export the current project, history, saved results, available result parents and checkpoints as a <code>.clz</code> file. Original source inclusion is off by default. Include available sources only where permitted; explicitly confirm authority for sources without recorded provider licenses. Restricted provider sources are always omitted.</p>
+<p>Captured results may still contain identifiers, sequences and counts. Private-use restrictions require an acknowledgment and remain in the archive notice. This is not de-identification or permission to redistribute data.</p>
+<h2 id="import">Inspect, then import</h2>
+<p>Choose <strong>Inspect project archive</strong>, or open a <code>.clz</code> file. Supply a separately retained fingerprint when available. Inspect the full inventory and source statuses, then select <strong>Import inspected project</strong>. Import checks the fingerprint again, preserves the original project identity and refuses an existing project or conflicting evidence. Use a separate library for an existing identity.</p>
+<p>Included sources receive verified local bindings. Omitted, restricted, missing, changed and unsupported sources remain explicit and cannot silently reuse paths on the original computer. Their names and fingerprints remain available for locating matching originals. <strong>Download original project evidence</strong> retrieves the unchanged source document; the working project contains local paths.</p>
+<shot name="project-archives" alt="Portable archive inventory for an artificial vaccination study in a fresh library, with six source bindings and explicit permission controls">Three observations of one simulated subject, a saved diversity result and a checkpoint were transferred after the original source folder became unavailable. This is a portability check, not a biological finding.</shot>
+<h2 id="evidence">Keep exact evidence distinct from recomputation</h2>
+<p>Original project/history, result files and checkpoint bytes are preserved. No recipes or scientific workers run during archive inspection or import. Imported checkpoint recovery uses verified local source bindings. The browser refuses a project if its numeric tokens would change when opened.</p>
+<p>A matching inventory establishes recorded-byte integrity, not authenticity or biological validity. An independently trusted fingerprint detects substituted evidence. For supported results, <a href="certificates.html">exact certificate replay</a> remains a separate operation with its existing input and method limits.</p>
+<h2 id="limits">Transfer limits</h2>
+<p>Archives accept at most 520 MiB compressed input, 512 MiB inventoried bytes, 256 MiB per file, 2,048 payload files, 16 checkpoints and 128 result dependencies. Member paths must meet a bounded portable ASCII contract. Traversal, links, device names, aliases, unlisted files, unsupported versions and changed hashes are refused before installation.</p>
+<p>Installed references, caches, running jobs and external outputs are not bundled. Cancellation or interruption may leave unreferenced files; inspect the library before retrying. Undo changes the open project, not files already installed. These are portable studies, not transactional whole-library backups.</p>
+<p>The same workflow is available through reviewed <a href="automation.html">automation</a>, <a href="mcp.html">MCP</a>, <a href="python.html">Python</a> and <a href="r.html">R</a>. See the <a href="{{github}}/blob/main/docs/PROJECT-ARCHIVES.md">complete format, source policy, recovery and validation reference</a>.</p>
