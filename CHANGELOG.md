@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **AIRR Data Commons metadata browsing (wave 9, slice 7).** Pin the ADC v1 contract and
+  approved repository registry. Preview exact metadata filters, endpoints and bounded pages
+  before each explicit request. Preserve original response text, exact numeric tokens and
+  fingerprints; support offline refusal, cancellation and actionable provider errors. Keep
+  partial pages, subject scope, scientific validity and reuse permissions explicit. Add
+  independent request/evidence controls and simulated both-theme browser validation. No
+  dataset installation, automatic paging, local receptor upload or new automation action.
+
 - **Cell Ranger detailed JSON annotations (wave 9, slice 6).** Import the nested contig
   array layout with exact barcodes, reads/UMIs, supplied flags and source clone labels.
   Preserve unknown fields and original objects for paged inspection/cache reopening.

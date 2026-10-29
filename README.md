@@ -254,6 +254,7 @@ It takes `-h` for its settings.
 - [Agent contract benchmark](docs/AGENT-BENCHMARK.md): known-truth tasks, code grading and explicit fixture permissions (0.8.0).
 - [AI agents (MCP)](docs/MCP.md): local stdio, explicit grants and window review (0.8.0).
 - [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
+- [AIRR Data Commons](docs/ADC.md): explicit bounded metadata queries, exact evidence and scientific limits (wave 9 development).
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.
 - [Design](clonoloom-spec/design.md): how it is built and why.
 - [Roadmap](clonoloom-spec/roadmap.md): the order of the work, wave by wave (wave *N* is release

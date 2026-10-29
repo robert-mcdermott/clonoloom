@@ -5,6 +5,7 @@
 !LICENSE
 !NOTICE
 !actions.go
+!api_adc.go
 !api_airr_objects.go
 !api_analysis.go
 !api_anndata.go
@@ -70,6 +71,9 @@
 !clonotype_filter.go
 !deidentification.go
 !go.mod
+!internal/adc/adc.go
+!internal/adc/registry.go
+!internal/adc/registry.tsv
 !internal/airr/metadata.go
 !internal/airr/miairr.go
 !internal/airr/miairr_fields.go
@@ -290,6 +294,7 @@
 !web/lib/specificity.js
 !web/lib/tracking.js
 !web/styles.css
+!web/ui/adc.js
 !web/ui/airr-objects.js
 !web/ui/automation.js
 !web/ui/batch-qc.js

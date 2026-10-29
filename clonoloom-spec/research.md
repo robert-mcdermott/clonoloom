@@ -3731,3 +3731,59 @@ independent JSON/CSV/AIRR controls. Their coding constructs are not complete rec
 Source productivity/full-length labels are planted assertions, not functional validation. Units
 remain per-contig reads/UMIs and definition-dependent distinct-cell abundance. No barcode-derived
 biological pairing, antigen specificity or subject independence is asserted.
+### 5.63 AIRR Data Commons metadata discovery and queries
+
+Sources: Christley et al., [The ADC API: A Web API for the Programmatic Query of the AIRR
+Data Commons](https://doi.org/10.3389/fdata.2020.00022), *Frontiers in Big Data* 3:22 (2020);
+the [AIRR Standards 1.5.1 ADC documentation](https://docs.airr-community.org/en/v1.5.1/api/adc_api.html)
+and [ADC 1.2.0 specification at immutable revision 2ccc341](https://github.com/airr-community/airr-standards/blob/2ccc341fc420705b1f1447bd732f9084f160fc0e/specs/adc-api.yaml)
+(CC BY 4.0); the [approved registry at revision 4ae159f](https://github.com/airr-community/adc-registry/blob/4ae159f2799594a2c73669527f6fba97fc8995d7/ADC-registry.tsv).
+Reviewed 2026-10-29. Only protocol documentation and registry data were examined; no provider
+implementation/source was used. Full source fingerprints are recorded in [docs/ADC.md](../docs/ADC.md).
+
+The repertoire endpoint returns study/subject/sample metadata; it does not itself return an
+analysis-ready, independent-subject cohort. The paper's separation of repertoire metadata from
+rearrangement retrieval supports keeping discovery/query inspection separate from the following
+download/provenance and overlap slices. The client therefore queries metadata only, with exact
+string equality on species, locus, study ID and repertoire ID. Supplied restrictions are ANDed;
+blank controls impose no restriction. Native code generates the displayed request and supplies
+every response-derived value; the browser does not parse scientific numeric tokens.
+
+Requirement D9 explicitly targets ADC v1. The pinned 1.5.1 standards release has ADC API version
+1.2.0 and `/airr/v1`; the 2.0 standards specification changes the base path to `/airr/v2`. These
+are independent of local AIRR file-format support and the server implementation's own version.
+No silent protocol upgrade or capability inference is made from an info response. The registry
+pin contains 16 origins and differs from stale cached registry listings; pinning prevents an
+unreviewed destination from appearing during routine browsing.
+
+Each request is explicit, uses an approved HTTPS origin, and is bounded by time, decoded bytes,
+record count and offset. No redirect, application retry or automatic page follows it. Query
+construction has no access to local datasets, sequences or files. Local-window intent, origin
+and loopback checks remain separate from the unchanged automation catalog and replay contract.
+
+The exact entity body, original record slices, unknown fields, decimal/large-integer tokens,
+request fingerprint, response fingerprint and UTC retrieval completion time remain inspectable.
+No source response is rewritten as a complete cohort. SHA-256 is evidence of byte identity,
+not scientific validation or authentication by the study publisher. The structural response
+checks do not certify a provider's filter implementation, full AIRR schema or MiAIRR reporting.
+
+Provider caps and live updates make a short page or an empty response insufficient evidence of
+completeness or biological absence. Manual next-page preparation advances by the returned count,
+but neither stable order nor a fixed snapshot is guaranteed. Pages are not aggregated. Repertoire
+count is not subject, cell, molecule or clone count; repeated visits and processing can yield
+several records for one subject. Repository/study-scoped IDs do not establish cross-study identity.
+Metadata, registry membership and a successful request do not grant redistribution permission or
+infer specificity. Repeating a remote query is not exact scientific replay.
+
+Independent standard-library JSON/Decimal controls check a hand-specified request, response hash,
+original object slices and scalar types. The artificial three-record example has two declared
+subjects and two visits for one subject, unequal read support and missing annotation. Numeric
+extensions stress transport precision without being represented as cell counts. Both-theme
+browser fixtures are visibly simulated and contact no public service. Native tests inject a
+transport for refusals, bounds, HTTP errors, redirects and cancellation; live uptime is not a CI
+dependency or a compatibility claim. No new statistical method or inferred plot is introduced.
+
+The example's numeric collection-time value and separate ontology unit follow the
+[AIRR 1.4.1 metadata schema](https://github.com/airr-community/airr-standards/blob/v1.4.1/specs/airr-schema.yaml)
+referenced by the pinned ADC specification. This format-specific check does not turn the sparse
+artificial fixture into a complete MiAIRR submission.

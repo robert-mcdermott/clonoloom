@@ -34,3 +34,9 @@ Public datasets, other reference germline sets, recombination models and specifi
 not part of this product. When a user asks, ClonoLoom downloads them from their publishers under
 their own licenses and terms, which it shows before each download and records with every result
 that uses them.
+
+The ADC metadata client follows the AIRR Community's ADC 1.2.0 protocol specification in
+AIRR Standards 1.5.1 (CC BY 4.0), https://docs.airr-community.org/en/v1.5.1/api/adc_api.html.
+Its destination list is the AIRR Community's approved ADC registry at revision
+4ae159f2799594a2c73669527f6fba97fc8995d7 (https://github.com/airr-community/adc-registry).
+The client is an independent implementation; no repository server implementation is included.

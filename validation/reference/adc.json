@@ -1,0 +1,32 @@
+{
+  "requestJSON": "{\"filters\":{\"content\":[{\"content\":{\"field\":\"subject.species.id\",\"value\":\"NCBITAXON:9606\"},\"op\":\"=\"},{\"content\":{\"field\":\"sample.pcr_target.pcr_target_locus\",\"value\":\"TRB\"},\"op\":\"=\"},{\"content\":{\"field\":\"study.study_id\",\"value\":\"SIM-longitudinal-TRB\"},\"op\":\"=\"}],\"op\":\"and\"},\"format\":\"json\",\"from\":0,\"size\":20}",
+  "requestSHA256": "19eb73f2327755cf5c543b234bf9e83a44b38bf60f59d8a885fce229ecebc528",
+  "responseJSON": "{\n  \"Info\": {\"title\": \"Simulated ADC metadata service; no real participants\", \"version\": \"fixture-1\"},\n  \"Repertoire\": [\n    {\n      \"repertoire_id\": \"SIM-R01-baseline\",\n      \"study\": {\"study_id\": \"SIM-longitudinal-TRB\", \"study_title\": \"Simulated longitudinal peripheral-blood TRB study\"},\n      \"subject\": {\"subject_id\": \"SIM-P01\", \"species\": {\"id\": \"NCBITAXON:9606\", \"label\": \"Homo sapiens\"}},\n      \"sample\": [{\"sample_id\": \"SIM-P01-day0\", \"single_cell\": false, \"tissue\": {\"id\": \"UBERON:0000178\", \"label\": \"blood\"}, \"template_class\": \"DNA\", \"pcr_target\": [{\"pcr_target_locus\": \"TRB\"}], \"collection_time_point_relative\": 0, \"collection_time_point_relative_unit\": {\"id\": \"UO:0000033\", \"label\": \"day\"}, \"total_reads_passing_qc_filter\": 642304}],\n      \"data_processing\": [{\"data_processing_id\": \"SIM-process-01\", \"primary_annotation\": true}],\n      \"lab_extension\": {\"exact_decimal\": 0.123456789012345678901, \"numeric_identifier\": 9007199254740993, \"unknown\": null}\n    },\n    {\n      \"repertoire_id\": \"SIM-R01-day28\",\n      \"study\": {\"study_id\": \"SIM-longitudinal-TRB\", \"study_title\": \"Simulated longitudinal peripheral-blood TRB study\"},\n      \"subject\": {\"subject_id\": \"SIM-P01\", \"species\": {\"id\": \"NCBITAXON:9606\", \"label\": \"Homo sapiens\"}},\n      \"sample\": [{\"sample_id\": \"SIM-P01-day28\", \"single_cell\": false, \"template_class\": \"DNA\", \"pcr_target\": [{\"pcr_target_locus\": \"TRB\"}], \"collection_time_point_relative\": 28, \"collection_time_point_relative_unit\": {\"id\": \"UO:0000033\", \"label\": \"day\"}, \"total_reads_passing_qc_filter\": 458793}]\n    },\n    {\n      \"repertoire_id\": \"SIM-R02-baseline\",\n      \"study\": {\"study_id\": \"SIM-longitudinal-TRB\", \"study_title\": \"Simulated longitudinal peripheral-blood TRB study\"},\n      \"subject\": {\"subject_id\": \"SIM-P02\", \"species\": {\"id\": \"NCBITAXON:9606\", \"label\": \"Homo sapiens\"}},\n      \"sample\": [{\"sample_id\": \"SIM-P02-day0\", \"single_cell\": null, \"template_class\": \"DNA\", \"pcr_target\": [{\"pcr_target_locus\": \"TRB\"}], \"collection_time_point_relative\": 0, \"collection_time_point_relative_unit\": {\"id\": \"UO:0000033\", \"label\": \"day\"}, \"total_reads_passing_qc_filter\": null}]\n    }\n  ],\n  \"provider_extension\": {\"simulated\": true, \"license_review\": \"Not supplied; do not infer reuse permission\"}\n}\n",
+  "responseSHA256": "f9e05a92875fa2275cecadc1bb1c512f5ddcc49f9fc3b967869fb2798c31949a",
+  "responseBytes": 2241,
+  "records": [
+    {
+      "id": "SIM-R01-baseline",
+      "study": "SIM-longitudinal-TRB",
+      "title": "Simulated longitudinal peripheral-blood TRB study",
+      "subject": "SIM-P01",
+      "rawJSON": "{\n      \"repertoire_id\": \"SIM-R01-baseline\",\n      \"study\": {\"study_id\": \"SIM-longitudinal-TRB\", \"study_title\": \"Simulated longitudinal peripheral-blood TRB study\"},\n      \"subject\": {\"subject_id\": \"SIM-P01\", \"species\": {\"id\": \"NCBITAXON:9606\", \"label\": \"Homo sapiens\"}},\n      \"sample\": [{\"sample_id\": \"SIM-P01-day0\", \"single_cell\": false, \"tissue\": {\"id\": \"UBERON:0000178\", \"label\": \"blood\"}, \"template_class\": \"DNA\", \"pcr_target\": [{\"pcr_target_locus\": \"TRB\"}], \"collection_time_point_relative\": 0, \"collection_time_point_relative_unit\": {\"id\": \"UO:0000033\", \"label\": \"day\"}, \"total_reads_passing_qc_filter\": 642304}],\n      \"data_processing\": [{\"data_processing_id\": \"SIM-process-01\", \"primary_annotation\": true}],\n      \"lab_extension\": {\"exact_decimal\": 0.123456789012345678901, \"numeric_identifier\": 9007199254740993, \"unknown\": null}\n    }"
+    },
+    {
+      "id": "SIM-R01-day28",
+      "study": "SIM-longitudinal-TRB",
+      "title": "Simulated longitudinal peripheral-blood TRB study",
+      "subject": "SIM-P01",
+      "rawJSON": "{\n      \"repertoire_id\": \"SIM-R01-day28\",\n      \"study\": {\"study_id\": \"SIM-longitudinal-TRB\", \"study_title\": \"Simulated longitudinal peripheral-blood TRB study\"},\n      \"subject\": {\"subject_id\": \"SIM-P01\", \"species\": {\"id\": \"NCBITAXON:9606\", \"label\": \"Homo sapiens\"}},\n      \"sample\": [{\"sample_id\": \"SIM-P01-day28\", \"single_cell\": false, \"template_class\": \"DNA\", \"pcr_target\": [{\"pcr_target_locus\": \"TRB\"}], \"collection_time_point_relative\": 28, \"collection_time_point_relative_unit\": {\"id\": \"UO:0000033\", \"label\": \"day\"}, \"total_reads_passing_qc_filter\": 458793}]\n    }"
+    },
+    {
+      "id": "SIM-R02-baseline",
+      "study": "SIM-longitudinal-TRB",
+      "title": "Simulated longitudinal peripheral-blood TRB study",
+      "subject": "SIM-P02",
+      "rawJSON": "{\n      \"repertoire_id\": \"SIM-R02-baseline\",\n      \"study\": {\"study_id\": \"SIM-longitudinal-TRB\", \"study_title\": \"Simulated longitudinal peripheral-blood TRB study\"},\n      \"subject\": {\"subject_id\": \"SIM-P02\", \"species\": {\"id\": \"NCBITAXON:9606\", \"label\": \"Homo sapiens\"}},\n      \"sample\": [{\"sample_id\": \"SIM-P02-day0\", \"single_cell\": null, \"template_class\": \"DNA\", \"pcr_target\": [{\"pcr_target_locus\": \"TRB\"}], \"collection_time_point_relative\": 0, \"collection_time_point_relative_unit\": {\"id\": \"UO:0000033\", \"label\": \"day\"}, \"total_reads_passing_qc_filter\": null}]\n    }"
+    }
+  ],
+  "nextOffset": 3,
+  "completeness": "not-established"
+}

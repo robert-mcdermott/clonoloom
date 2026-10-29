@@ -1,0 +1,26 @@
+{
+  "Info": {"title": "Simulated ADC metadata service; no real participants", "version": "fixture-1"},
+  "Repertoire": [
+    {
+      "repertoire_id": "SIM-R01-baseline",
+      "study": {"study_id": "SIM-longitudinal-TRB", "study_title": "Simulated longitudinal peripheral-blood TRB study"},
+      "subject": {"subject_id": "SIM-P01", "species": {"id": "NCBITAXON:9606", "label": "Homo sapiens"}},
+      "sample": [{"sample_id": "SIM-P01-day0", "single_cell": false, "tissue": {"id": "UBERON:0000178", "label": "blood"}, "template_class": "DNA", "pcr_target": [{"pcr_target_locus": "TRB"}], "collection_time_point_relative": 0, "collection_time_point_relative_unit": {"id": "UO:0000033", "label": "day"}, "total_reads_passing_qc_filter": 642304}],
+      "data_processing": [{"data_processing_id": "SIM-process-01", "primary_annotation": true}],
+      "lab_extension": {"exact_decimal": 0.123456789012345678901, "numeric_identifier": 9007199254740993, "unknown": null}
+    },
+    {
+      "repertoire_id": "SIM-R01-day28",
+      "study": {"study_id": "SIM-longitudinal-TRB", "study_title": "Simulated longitudinal peripheral-blood TRB study"},
+      "subject": {"subject_id": "SIM-P01", "species": {"id": "NCBITAXON:9606", "label": "Homo sapiens"}},
+      "sample": [{"sample_id": "SIM-P01-day28", "single_cell": false, "template_class": "DNA", "pcr_target": [{"pcr_target_locus": "TRB"}], "collection_time_point_relative": 28, "collection_time_point_relative_unit": {"id": "UO:0000033", "label": "day"}, "total_reads_passing_qc_filter": 458793}]
+    },
+    {
+      "repertoire_id": "SIM-R02-baseline",
+      "study": {"study_id": "SIM-longitudinal-TRB", "study_title": "Simulated longitudinal peripheral-blood TRB study"},
+      "subject": {"subject_id": "SIM-P02", "species": {"id": "NCBITAXON:9606", "label": "Homo sapiens"}},
+      "sample": [{"sample_id": "SIM-P02-day0", "single_cell": null, "template_class": "DNA", "pcr_target": [{"pcr_target_locus": "TRB"}], "collection_time_point_relative": 0, "collection_time_point_relative_unit": {"id": "UO:0000033", "label": "day"}, "total_reads_passing_qc_filter": null}]
+    }
+  ],
+  "provider_extension": {"simulated": true, "license_review": "Not supplied; do not infer reuse permission"}
+}

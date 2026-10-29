@@ -13,6 +13,9 @@ filenames identify table roles and headers are then checked.
 Wave 9 development also reads [Cell Ranger detailed contig JSON](CELLRANGER-JSON.md),
 with exact source-object inspection, explicit layout recognition and missing/mixed-chain limits.
 
+[ADC metadata browsing](ADC.md) is separate from local format import: it previews explicit
+bounded public queries and inspects exact responses without installing a dataset.
+
 For repertoire formats, ClonoLoom reads rearrangements into one table with these fields (named as
 the AIRR Rearrangement schema names them):
 

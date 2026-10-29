@@ -4,6 +4,7 @@
 // suggested from file names and metadata.
 
 import { showNativeReport } from './native-reports.js';
+import { showADC } from './adc.js';
 import { showAIRRObjects } from './airr-objects.js';
 import { showRepertoireMetadata } from './repertoire-metadata.js';
 import { h, icon, clear, formatBytes } from './dom.js';
@@ -33,7 +34,8 @@ export function mountData(app, container) {
   const root = h('div.view');
   const openButton = h('button.btn.primary.small', { type: 'button', onclick: () => app.openPathDialog() }, icon('folder'), 'Open data');
   const examplesButton = h('button.btn.small', { type: 'button', onclick: () => app.showExamples() }, icon('flask'), 'Example data');
-  const head = h('div.workbench-head', h('h1', icon('database'), 'Data'), h('span.spacer'), examplesButton, openButton);
+  const adcButton = h('button.btn.small', { type: 'button', onclick: () => showADC() }, 'Public repositories');
+  const head = h('div.workbench-head', h('h1', icon('database'), 'Data'), h('span.spacer'), adcButton, examplesButton, openButton);
   const body = h('div.view-body.data-view');
   root.append(head, body);
   container.append(root);

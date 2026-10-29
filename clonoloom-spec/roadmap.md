@@ -4213,6 +4213,65 @@ Validation completed:
   application/client version, permission or replay kind changed.
   No commit, push, tag, release or publication was made. Slice 7 has not started.
 
+### Slice 7: AIRR Data Commons discovery and bounded queries
+
+**Slice 6 committed and pushed as `1e20403`. Plan recorded before implementation.** Pin the
+ADC v1 protocol (AIRR Standards 1.5.1, ADC specification 1.2.0) and an immutable approved
+repository registry. Discovery lists bundled destinations without contacting them. Each service
+info request and repertoire-metadata page requires a deliberate local-window action, with its
+HTTPS endpoint, exact equality filters, offset and positive page limit visible before submission.
+
+Support a documented metadata-query subset; do not send local sequences, project data or files.
+Bound time, response bytes, records and pagination; reject redirects, malformed/ambiguous JSON
+and out-of-contract results. Preserve original response text, unknown fields and numeric tokens.
+Cancellation, offline mode and provider errors must be visible and must not leave stale results.
+Do not interpret a short page as a complete cohort, independently sampled subjects, validated
+metadata or a stable/replayable remote snapshot. No automatic paging, retries or installations.
+
+Validate with independent request/evidence controls and an injected HTTP transport, including
+offline/no-request, exact values, paging, bounds, malformed data, cancellation and failures.
+Use clearly simulated, scientifically plausible metadata for both-theme browser checks and
+screenshots. No live repository is a CI dependency. Downloads/provenance installation remain
+slice 8; shared automation actions and local scientific replay are unchanged in this slice.
+
+**Implemented and validated; awaiting maintainer commit.** The Data view now opens a bounded
+public-repository browser with 16 pinned approved HTTPS origins. Native code prepares the exact
+ADC v1 request from four metadata equality filters. Registry listing and preparation are local;
+each outbound info/page request requires an explicit action. No local dataset, receptor or file
+is consulted. Requests have a 45-second deadline, 8 MiB decoded-response limit, 1–100 records
+and offset 0–10,000; redirects, automatic retries and automatic paging are refused.
+
+Exact response text, original repertoire objects, unknown fields, numeric tokens, hashes and UTC
+retrieval time remain inspectable. Missing labels remain visibly missing, long table labels are
+shortened explicitly, and raw evidence is preserved. Duplicate keys/IDs, malformed values and
+over-size pages fail without stale results. Offline, cancellation, close/input-change races,
+provider errors and empty pages have explicit states. A returned page never certifies cohort
+completeness, stable ordering, shared subjects, reuse permission or scientific validity.
+
+Validation completed:
+
+- Full application race coverage passes in **1,077.544 s**, including saved release projects,
+  portable archives, self-checking reports and exact headless replay. The full internal/scientific
+  suite passes; reference validation completes in **921.012 s** with existing optional-data and
+  performance skips. Final focused ADC/API race and amd64 controls also pass.
+- Independent JSON/Decimal controls verify exact request/body hashes, record slices and scalar
+  types. Native controls cover all registered origins, intent/offline refusals, strict response
+  bounds, HTTP failures, redirects and cancellation. Local HTTPS tests exercise transparent gzip
+  limits and cancellation while reading a body. Bounded fuzzing passes **786,369 executions**.
+- Both-theme browser controls pass for evidence precision, manual paging without pooling,
+  cancellation, closed/stale responses, empty pages, service info, provider errors and offline
+  state. Both screenshots are visually reviewed; the declared simulation shows three repertoire
+  records for two subject IDs. No live repository is a CI dependency or claimed operational.
+- All **233 JavaScript tests**, Go vet, six CGO-free platform builds and the **365-input** explicit
+  container context check pass. The site builds **61 pages / 80 screenshot pairs** and passes
+  all **240** accessibility/layout checks. `git diff --check` is clean.
+
+The ADC contract, approved registry, citations, supported subset and scientific limits are
+documented in `docs/ADC.md` and research §5.63. Application/client version 0.8.0, reader cache 5,
+scientific identity 1, historical fixtures, numerical tolerances, automation permissions and
+replay kinds remain unchanged. No commit, push, tag, release or publication was made. Slice 8
+has not started.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |

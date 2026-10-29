@@ -1326,6 +1326,91 @@ const scenes = {
     await act('show_examples');
     await waitFor(`document.querySelectorAll('.example-card').length >= 6`);
   },
+  // A deterministic metadata response, never a live public-repository dependency.
+  async adc() {
+    const fixture = JSON.parse(readFileSync(join(ROOT, 'validation/reference/adc.json'), 'utf8'));
+    await act('show', { view: 'data' });
+    await js(`(() => {
+      const original = window.fetch;
+      const fixture = ${JSON.stringify(fixture)};
+      window.adcCapture = { calls: 0, mode: 'normal', offline: false, release: null, aborted: false };
+      window.fetch = async (address, options = {}) => {
+        const state = window.adcCapture;
+        if (String(address).endsWith('api/adc/repositories')) {
+          const response = await original(address, options); const data = await response.json();
+          return new Response(JSON.stringify({ ...data, offline: state.offline }));
+        }
+        if (String(address).endsWith('api/adc/query') || String(address).endsWith('api/adc/info')) {
+          state.calls += 1;
+          if (state.mode === 'error') return new Response(JSON.stringify({ error: 'ADC returned HTTP 429; try again later.' }), { status: 502 });
+          const body = JSON.parse(options.body);
+          if (!body.confirm) throw new Error('Outbound request lacks explicit confirmation');
+          const p = await (await original('api/adc/prepare', options)).json();
+          if (body.query.from === 0 && p.requestJSON !== fixture.requestJSON) throw new Error('Preview differs from independent request control');
+          const isInfo = String(address).endsWith('/info');
+          const raw = isInfo ? '{"title":"Simulated ADC service","version":"fixture-1","api":{"version":"1.2.0"},"schema":{"version":"1.4.1"},"attributes":{"max_size":100}}' : state.mode === 'empty' ? '{"Repertoire":[]}' : fixture.responseJSON;
+          const bytes = new TextEncoder().encode(raw);
+          const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (v) => v.toString(16).padStart(2, '0')).join('');
+          const evidence = { endpoint: isInfo ? p.repository.url + '/airr/v1/info' : p.endpoint, retrievedAt: '2026-10-29T12:00:00Z', responseJSON: raw, responseBytes: bytes.length, responseSHA256: hash };
+          const data = isInfo ? evidence : { ...p, evidence, records: state.mode === 'empty' ? [] : fixture.records, nextOffset: state.mode === 'empty' ? null : p.from + 3, completeness: 'not-established' };
+          if (state.mode === 'delay') await new Promise((resolve) => { state.release = resolve; options.signal.addEventListener('abort', () => { state.aborted = true; }); });
+          return new Response(JSON.stringify(data));
+        }
+        return original(address, options);
+      };
+    })()`);
+    const open = async () => {
+      await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Public repositories').click()`);
+      await waitFor(`Boolean(document.querySelector('.adc-request'))`);
+      await js(`(() => { const repo = document.querySelector('.adc-repository'); repo.value = 'ipa1.ireceptor.org'; repo.dispatchEvent(new Event('input')); const study = document.querySelector('[aria-label="Study ID"]'); study.value = 'SIM-longitudinal-TRB'; study.dispatchEvent(new Event('input')); })()`);
+      await waitFor(`document.querySelector('.adc-request')?.textContent.includes('SIM-longitudinal-TRB')`);
+    };
+    const click = (label) => js(`[...document.querySelectorAll('.adc-browser button')].find((b) => b.textContent === ${JSON.stringify(label)}).click()`);
+    await open();
+    if (await js('window.adcCapture.calls') !== 0) throw new Error('Opening/preparing contacted a repository');
+    await click('Send metadata query');
+    await waitFor(`document.querySelectorAll('.adc-table tbody tr').length === 3`);
+    await js(`document.querySelector('[aria-label="Inspect SIM-R01-baseline"]').click()`);
+    await js(`(() => { const text = document.querySelector('.adc-detail').textContent; for (const token of ['9007199254740993','0.123456789012345678901','"single_cell": false','"unknown": null','"collection_time_point_relative": 0']) if (!text.includes(token)) throw new Error('ADC evidence changed: ' + token); })()`);
+    await click('Prepare next page');
+    await waitFor(`document.querySelector('.adc-request')?.textContent.includes('"from":3')`);
+    if (await js('window.adcCapture.calls') !== 1) throw new Error('Next-page preparation sent a query');
+    await click('Send metadata query');
+    await waitFor(`document.querySelector('.adc-page')?.textContent.includes('Offset 3')`);
+    if (await js(`document.querySelectorAll('.adc-table tbody tr').length`) !== 3) throw new Error('Pages were silently combined');
+    await js(`window.adcCapture.mode = 'error'`); await click('Send metadata query');
+    await waitFor(`document.querySelector('.adc-result')?.textContent.includes('429')`);
+    if (await js(`Boolean(document.querySelector('.adc-table'))`)) throw new Error('Failed request retained stale results');
+    await js(`window.adcCapture.mode = 'delay'`); await click('Send metadata query');
+    await waitFor(`Boolean(window.adcCapture.release)`); await click('Cancel request');
+    await js(`window.adcCapture.release()`);
+    await waitFor(`document.querySelector('.adc-browser [role="status"]')?.textContent.startsWith('Cancelled')`);
+    if (!(await js('window.adcCapture.aborted')) || await js(`Boolean(document.querySelector('.adc-table'))`)) throw new Error('Cancellation left results');
+    // A late response must not replace a freshly prepared query after input changes.
+    await js(`window.adcCapture.release = null`); await click('Send metadata query');
+    await waitFor(`Boolean(window.adcCapture.release)`);
+    await js(`(() => { const from = document.querySelector('[aria-label="Offset"]'); from.value = '0'; from.dispatchEvent(new Event('input')); window.adcCapture.release(); })()`);
+    await waitFor(`document.querySelector('.adc-request')?.textContent.includes('"from":0')`);
+    if (await js(`Boolean(document.querySelector('.adc-table'))`)) throw new Error('Stale response applied after changing input');
+    await js(`window.adcCapture.mode = 'normal'`); await click('Request service info');
+    await waitFor(`document.querySelector('.adc-result h3')?.textContent === 'Repository service information'`);
+    await js(`window.adcCapture.mode = 'empty'`); await click('Send metadata query');
+    await waitFor(`document.querySelector('.adc-result')?.textContent.includes('No records returned')`);
+    if (!(await js(`[...document.querySelectorAll('.adc-browser button')].find((b) => b.textContent === 'Prepare next page').disabled`))) throw new Error('Empty page offered automatic continuation');
+    await js(`window.adcCapture.mode = 'delay'; window.adcCapture.release = null`); await click('Send metadata query');
+    await waitFor(`Boolean(window.adcCapture.release)`); await act('close_dialogs');
+    await js(`window.adcCapture.release(); window.adcCapture.mode = 'normal'`);
+    await open();
+    if (await js(`Boolean(document.querySelector('.adc-table'))`)) throw new Error('Closed dialog response leaked into reopened dialog');
+    const calls = await js('window.adcCapture.calls');
+    await act('close_dialogs'); await js(`window.adcCapture.offline = true`); await open();
+    if (!(await js(`[...document.querySelectorAll('.adc-browser button')].find((b) => b.textContent === 'Send metadata query').disabled`)) || await js('window.adcCapture.calls') !== calls) throw new Error('Offline browsing contacted a repository');
+    await act('close_dialogs'); await js(`window.adcCapture.offline = false`); await open();
+    await click('Send metadata query');
+    await waitFor(`document.querySelectorAll('.adc-table tbody tr').length === 3`);
+    await js(`(() => { const note = document.createElement('p'); note.className = 'callout'; note.textContent = 'Simulated ADC response for documentation. Three repertoire records, two declared subject IDs; no real participants or live repository request.'; document.querySelector('.adc-browser').prepend(note); })()`);
+    await checkAccessibility();
+  },
   // The Data view of the PBMC 1k T cells: the dataset, its validation and samples; its files and
   // license in the inspector.
   async 'native-reports'() {
