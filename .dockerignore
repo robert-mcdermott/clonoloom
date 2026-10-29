@@ -53,6 +53,7 @@
 !api_pgen.go
 !api_phenotypes.go
 !api_project_archives.go
+!api_proteoscope.go
 !api_pseudobulk.go
 !api_pseudobulk_de.go
 !api_qc.go
@@ -365,6 +366,7 @@
 !web/ui/parquet.js
 !web/ui/prism.js
 !web/ui/project-archives.js
+!web/ui/proteoscope.js
 !web/ui/remote.js
 !web/ui/repertoire-metadata.js
 !web/ui/repertoire-overlap.js

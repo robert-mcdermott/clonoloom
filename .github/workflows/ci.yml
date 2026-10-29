@@ -181,6 +181,13 @@ jobs:
       - name: Real host and reviewed Python actions on simulated data
         if: matrix.python == '3.13'
         run: node clients/test-clients.mjs
+      - name: Exact Proteoscope handoff evidence and permission boundaries
+        if: matrix.python == '3.13'
+        env:
+          CLONOLOOM_HANDOFF_OUT: ${{ runner.temp }}/proteoscope-handoff
+        run: |
+          go test -run TestProteoscope .
+          uv run --no-project validation/reference/proteoscope.py "$CLONOLOOM_HANDOFF_OUT"
 
   r-client:
     name: R client (${{ matrix.r }})

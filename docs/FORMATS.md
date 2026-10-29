@@ -1180,3 +1180,15 @@ rows. Null measurements and structurally empty positions remain distinct in the 
 both are blank in PZFX; zero stays numeric. No analysis or graph template is generated. See
 [PRISM.md](PRISM.md) for supported kinds, exact tokens, import precision, exclusions, bounds,
 method differences and the explicit limits of native/schema validation.
+
+## Reviewed Proteoscope handoff (wave 9, slice 12)
+
+The version 1 `clonoloom-proteoscope-handoff` JSON records one exact AIRR source observation,
+original header/row text, all decoded fields as strings, source/sequence hashes, explicit locus,
+identifier, sample, query command, recipient contract, provider notice and scientific limits.
+No JSON source annotation becomes a browser number. Its companion version 1
+`clonoloom-proteoscope-receipt` records the review fingerprint, explicit local/public permission
+flags and the receiver acknowledgment (including original response text and SHA-256).
+The fingerprint hashes the native compact JSON record
+before its final newline. These are local interchange evidence, not de-identification, a scientific
+certificate or a remotely reproducible result. See [PROTEOSCOPE.md](PROTEOSCOPE.md).

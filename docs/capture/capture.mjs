@@ -13,6 +13,7 @@
 import { acceptAutomation, waitForAutomationIdle } from '../../validation/automation.mjs';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
+import { createServer as createHTTPServer } from 'node:http';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { isDeepStrictEqual } from 'node:util';
@@ -410,6 +411,39 @@ async function capturedCertificateScene(kind) {
 }
 
 const scenes = {
+  async proteoscope() {
+    const sent=[];
+    const receiver=createHTTPServer(async(req,res)=>{
+      res.setHeader('Content-Type','application/json');
+      if(req.url==='/'){res.setHeader('Content-Type','text/html');res.end('<title>Proteoscope</title>');return;}
+      if(req.url==='/api/startup'){res.end(JSON.stringify({version:'0.10.0',offline:false,remoteControl:true,files:[]}));return;}
+      if(req.url==='/api/remote/command'){let raw='';for await(const chunk of req)raw+=chunk;sent.push(JSON.parse(raw));res.end('{"ok":true,"message":"Artificial local receiver; no public search","data":{"token":9007199254740993}}');return;}
+      res.writeHead(404).end();
+    });
+    await new Promise(r=>receiver.listen(0,'127.0.0.1',r));const port=receiver.address().port;
+    try{
+      await act('new_project',{name:'Artificial receptor handoff'});
+      await act('open_data',{paths:[join(ROOT,'testdata/proteoscope/simulated-airr.tsv')],name:'Artificial receptor sequence controls'});
+      await act('show',{view:'Data'});
+      const open=()=>js(`(async()=>{const app=window.clonoloom,{showProteoscope}=await import('/ui/proteoscope.js');showProteoscope(app,app.store.project.datasets[0]);return true})()`);
+      await open();await waitFor('window.clonoloom.proteoscopeView&&!window.clonoloom.proteoscopeView.state().busy');
+      if(await js(`document.querySelector('.proteoscope-row').value!==''`))throw Error('Observation implicitly selected');
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView;v.select(0,${port});await v.inspect();if(!v.state().review.evidence.destination.ready)throw Error('Receiver unavailable');if(document.querySelector('.proteoscope-local').checked||document.querySelector('.proteoscope-public').checked)throw Error('Permission preselected');let refused=false;try{await v.send()}catch{refused=true}if(!refused)throw Error('Unapproved transfer');return true})()`);
+      if(sent.length)throw Error('Review sent a sequence');
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView;v.approve({local:true,publicSearch:true});const original=URL.createObjectURL;window.handoffDownloads=[];URL.createObjectURL=b=>{window.handoffDownloads.push(b);return original(b)};try{await v.send()}finally{URL.createObjectURL=original}if(!v.state().receipt||v.state().review)throw Error('Receipt or one-use state');return true})()`);
+      const sequence=readFileSync(join(ROOT,'testdata/proteoscope/simulated-airr.tsv'),'utf8').split('\n')[1].split('\t')[2];
+      if(sent.length!==1||sent[0].command!=='search '+sequence)throw Error('Query differs');
+      if(process.env.CLONOLOOM_HANDOFF_OUT){const dir=join(process.env.CLONOLOOM_HANDOFF_OUT,`browser-${await js("matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'")}`);mkdirSync(dir,{recursive:true});for(const [i,name]of ['handoff.json','receipt.json'].entries())writeFileSync(join(dir,name),await js(`window.handoffDownloads[${i}].text()`));writeFileSync(join(dir,'command.json'),JSON.stringify(sent[0]));}
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView;v.select(2,${port});await v.inspect();if(v.state().review.evidence.eligible)throw Error('Missing sequence repaired');v.select(1,${port});await v.inspect();if(v.state().review.evidence.fields.complete_vdj!=='F')throw Error('Partial annotation changed');return true})()`);
+      // Cancellation and duplicate-submit checks with the actual local endpoint delayed in-page.
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).endsWith('/review')){entered();await gate}return response};try{const pending=v.inspect();await started;let refused=false;try{await v.inspect()}catch{refused=true}if(!refused)throw Error('Concurrent review');release();await pending;}finally{release();window.fetch=original}const pending=v.inspect();[...document.querySelectorAll('.proteoscope-view button')].find(b=>b.textContent==='Cancel handoff operation').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||v.state().busy)throw Error('Cancellation failed');return true})()`);
+      // Project edits invalidate an in-flight review and cannot enable sending it.
+      await js(`(async()=>{const app=window.clonoloom,v=app.proteoscopeView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).endsWith('/review')){entered();await gate}return response};try{const pending=v.inspect();await started;app.store.commit({...app.store.project,handoffSentinel:'keep'},'Concurrent handoff edit');release();let refused=false;try{await pending}catch{refused=true}if(!refused||v.state().review)throw Error('Stale review');}finally{release();window.fetch=original}v.close();app.store.undo();return true})()`);
+      await open();await waitFor('!window.clonoloom.proteoscopeView.state().busy');
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView;v.select(0,${port});await v.inspect();const p=document.querySelector('.proteoscope-view');p.querySelector('input[type=number]').value=8765;const walk=document.createTreeWalker(p,NodeFilter.SHOW_TEXT);for(let node=walk.nextNode();node;node=walk.nextNode())node.nodeValue=node.nodeValue.replaceAll(':${port}/',':8765/');return true})()`);
+      await clearToasts();await checkAccessibility();
+    }finally{await new Promise(r=>receiver.close(r));}
+  },
   async automation() {
     await act('new_project',{name:'Artificial repertoire review'});
     await act('open_example',{example:'simulated-vaccine',download:true});

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Reviewed Proteoscope handoff (wave 9, slice 12).** Transfer one unchanged AIRR amino-acid
+  observation to an explicitly reviewed local Proteoscope 0.10.0 for public RCSB sequence search.
+  Require separate local/public permissions and applicable provider-term acknowledgment. Preserve
+  exact source annotations, identifiers and query evidence locally; refuse unsupported sequences,
+  changed sources/destinations and repeated reviews. Validate against the actual receiver with
+  public requests intercepted, plus independent evidence checks and both-theme browser controls.
+
 - **Subject-level Prism interchange (wave 9, slice 11).** Export one saved cohort feature or
   comparison result as data-only PZFX Column tables with explicit subject identities, declared
   group order and paired alignment. Preserve missing measurements, structural blanks, zero and

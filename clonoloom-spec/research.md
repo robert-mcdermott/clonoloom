@@ -3927,3 +3927,46 @@ The unmodified published Prism 7/8 Mac XSDs fail strict lxml schema compilation 
 Native Prism is not installed, so a GUI import remains unverified. Independent reader success
 is not native application certification, exact replay or statistical equivalence. See
 [the Prism contract](../docs/PRISM.md) for an explicit native import exercise and remaining limits.
+
+### 5.68 Exact observation transfer to Proteoscope
+
+**Decision (wave 9, slice 12).** Preserve one supplied AIRR `sequence_aa` and its source context,
+not a representative assembled from a clonotype or an inferred paired receptor. The
+[AIRR 2.0 Rearrangement schema](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+defines supplied amino-acid sequence and `complete_vdj` separately: the latter concerns annotated
+V(D)J coverage, not a full expressed protein, constant region, absence of internal deletions or
+functional specificity. Retain the complete selected source row, including missing and partial
+annotations. Do not translate nucleotides, substitute a junction, reconstruct an absent chain,
+or treat productivity as proof of biological validity. Raw observations are not filtered or
+grouped by the project's clonotype definition in this interchange.
+
+The installed Apache-2.0 Proteoscope 0.10.0 has structure/session deep links but no sequence-prefill
+link. Its opt-in local remote `search` command classifies an uninterrupted uppercase canonical
+sequence of at least 25 residues as a protein query. Bound at 5000, its API maximum, and refuse
+other alphabets/case/lengths rather than allowing receiver normalization or text-search fallback.
+Only the sequence is sent; IDs, sample labels, annotations and provider notices stay in the local
+review record. Sequence hashes and unchanged source hashes bind the transfer to the selected row.
+
+Proteoscope's command invokes [RCSB sequence similarity search](https://www.rcsb.org/docs/search-and-browse/advanced-search/sequence-similarity-search)
+through the [Search API](https://search.rcsb.org/), with its own defaults, cache and entry grouping.
+This is a public disclosure boundary, despite the first recipient being on loopback. Require
+separate local-transfer/public-search approvals and applicable provider acknowledgment. No
+automatic remote enablement, token discovery, port scan, hit selection or structure prediction.
+The native sender rechecks source bytes and the named recipient contract and consumes a five-minute
+review once before dispatch. Cancellation cannot undo a query already received; uncertain outcomes
+require inspection and a fresh review, never an automatic retry.
+
+Similarity is exploratory evidence, not proof of binding, affinity, antigen specificity or a
+matching full-receptor structure. A receiver command acknowledgment can coexist with a displayed
+search failure. No remote result is converted to a native scientific artifact, certificate or exact
+replay. The local record retains all annotations as text, exact query bytes, permissions and the
+raw acknowledgment. Receiver identification is a tested endpoint/version contract, not attestation
+of a particular process or browser window. See [the handoff contract](../docs/PROTEOSCOPE.md).
+
+Validation uses declared artificial source controls, an independent CSV/JSON/SHA-256 audit and
+both-theme browser checks. The actual Proteoscope 0.10.0 parser/receiver/classifier is exercised
+for two exact sequences with every search intercepted before it reaches the server; no artificial
+or private sequence is submitted to a public service. This tests exact interchange and permission
+behavior, not biological accuracy, public-service availability or reproducibility of future hits.
+MaveScape's Apache-2.0 loopback startup-probe pattern informed the explicit-port recipient check;
+no incompatible implementation code or third-party runtime dependency is introduced.

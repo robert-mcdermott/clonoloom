@@ -20,6 +20,9 @@ under the same Apache-2.0 license, extended for nullable fields and bounded scie
 The data-only Prism writer follows CytoWeave's Apache-2.0 PZFX Column-table and Info pattern,
 with native subject mapping, exact numeric tokens and evidence companions.
 
+The reviewed Proteoscope handoff follows MaveScape's Apache-2.0 loopback startup-probe pattern
+and Proteoscope 0.10.0's Apache-2.0 command contract, with explicit sequence-disclosure permissions.
+
 The Excel workbook presentation follows CytoWeave's Apache-2.0 header, width and frozen-row
 pattern. ClonoLoom implements its own native Go writer and exact JSON evidence mapping.
 

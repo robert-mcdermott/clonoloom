@@ -4533,6 +4533,80 @@ automation permissions and scientific replay contracts remain unchanged. No comm
 release or publication was made. Slice 12 has not started.
 
 
+### Slice 12: reviewed Proteoscope sequence handoff
+
+**Slice 11 committed as `450e78d`. Plan before implementation.** Follow the Apache-2.0 sibling's
+loopback startup-probe pattern, but require an explicit destination port and a reviewed single
+source observation. Proteoscope 0.10 has no sequence-prefill URL: its optional remote `search`
+command invokes RCSB sequence search. Name both recipients and require separate local-transfer,
+public-search and applicable provider-term acceptance before sending. No background discovery,
+remote-control enablement, arbitrary commands, source identifiers in the query or automatic retry.
+
+Start with an unchanged, fingerprint-verified AIRR `sequence_aa` value. Retain exact header/row,
+identifiers, locus, source hash, annotations (including completeness), notices and query bytes in
+a downloadable review record. Do not translate nucleotides, strip residues, infer missing chains,
+substitute junctions, or call partial V(D)J evidence a complete receptor. Bound source/record sizes,
+destinations and time; refuse unsupported sequences, changed sources/destinations and reused reviews.
+Use the actual Proteoscope command parser/classifier and receiver in interoperability validation,
+with public search intercepted so no private or artificial sequence is submitted to a public service.
+Exercise both-theme UI, exact query/provenance checks, permissions, cancellation and stale review.
+Keep scientific replay, versions and automation catalog unchanged; report downstream uncertainty.
+
+**Implemented.**
+
+- Data → Proteoscope handoff selects one original AIRR source observation and an explicit
+  loopback port. Initial selection and permission checkboxes are empty. Native source hashing
+  checks the unchanged regular file before review/export/send; exact original header/row text,
+  all decoded fields, identifiers, sample, locus and completeness annotations stay in local JSON.
+- Accept only unchanged `sequence_aa` of 25–5000 uppercase canonical amino acids and an explicit
+  receptor locus. Missing/ambiguous/stopped/gapped/lowercase sequences and other formats are
+  refused without translation, trimming, junction substitution or chain inference. Eligible
+  fragments retain partial/unknown annotations; no full protein or paired complex is asserted.
+- Review Proteoscope 0.10.0's explicit local endpoint/version/capabilities. The supported remote
+  search command can invoke public RCSB sequence search, so require separate local-transfer and
+  public-disclosure approvals plus applicable provider-term acknowledgment. No background scan,
+  remote enablement, token discovery, arbitrary command, hit selection or fallback public query.
+- Bind a bounded five-minute, one-use review to source evidence, query, destination and notices.
+  Recheck before sending; refuse changed/reused reviews and concurrent dispatch. Offline mode
+  permits local evidence export without probing or sending. Closing/cancelling cannot retract a
+  query already received; uncertain outcomes require inspection, never automatic retry.
+- Save exact reviewed evidence before dispatch, then a permission/receiver receipt on acknowledgment.
+  Keep original receiver JSON text, SHA-256 and numeric tokens; provide a manual receipt download.
+  Acknowledgment is not proof of a successful search, valid structure or biological function.
+  No scientific worker, project artifact, replay kind or MCP/client permission is added.
+- Document explicit size/time/alphabet/format limits, primary sources, sibling attribution and
+  realistic interpretation of the declared artificial format controls. X1 remains partial for
+  other formats, paired-complex transfer and structure prediction. Slice 13 has not started.
+
+**Validation completed.**
+
+- Full application race suite passes in 1,283.991 s, including historical project reopening,
+  portable archives, certificates, report/workbook exports and exact scientific replay.
+- Full internal/scientific race suite passes, including the reference validation package in
+  1,043.367 s and existing opt-in external-data/performance skips. Historical evidence and
+  numerical tolerances remain unchanged.
+- Final native handoff race controls pass in 2.289 s; amd64 controls pass in 3.687 s. Include exact
+  source/receipt bytes, UTF-8 BOM and gzip, precision-sensitive annotations, malformed text/widths,
+  source bounds, permission refusals, changed source/destination, offline export, redirect refusal,
+  cancellation, review binding/capacity and one-use concurrent submission.
+- Actual Proteoscope 0.10.0 command parser, browser receiver and sequence classifier accept two
+  exact source sequences with no identifier disclosure or text-search fallback. Every search is
+  intercepted before its server can contact a public service. No live RCSB query is performed.
+- Independent CSV/JSON/SHA-256 audit checks five handoffs: the native permission fixture, two real
+  receiver exercises and both actual browser downloads. Original source rows/annotations, query
+  bytes, destination/permission records, review fingerprints and receiver response hashes agree.
+- Both-theme browser controls pass for initial empty selection, unselected approvals, exact
+  downloads, partial/missing evidence, cancellation, concurrent submissions and stale project
+  reviews. Screenshots reviewed. All 233 JavaScript tests pass; site build has 61 pages / 85
+  screenshot pairs, with 240 accessibility/layout checks and no problems. Container source
+  allowlist: 380 inputs.
+- Go vet and all six CGO-free darwin/linux/windows × amd64/arm64 builds pass. Formatting and
+  `git diff --check` are clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances,
+automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 13 has not started.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |

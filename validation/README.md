@@ -1,5 +1,34 @@
 # Validation
 
+Wave 9 slice 12: check reviewed Proteoscope handoffs and exact local evidence without a public query:
+
+```sh
+CLONOLOOM_HANDOFF_OUT=/tmp/clonoloom-handoff go test -race -run TestProteoscope .
+uv run --no-project validation/reference/proteoscope.py /tmp/clonoloom-handoff
+CLONOLOOM_HANDOFF_OUT=/tmp/clonoloom-handoff node docs/capture/capture.mjs proteoscope --theme both
+uv run --no-project validation/reference/proteoscope.py /tmp/clonoloom-handoff
+```
+
+The native stand-in exercises local/public/provider permissions, exact source/query bytes,
+unsupported sequences, changed evidence/receivers, redirects, offline behavior, cancellation and
+one-use concurrent dispatch. CI runs the independent CSV/JSON/hash comparison. Both-theme UI
+controls check empty selection, unselected permissions, partial/missing evidence, downloads,
+concurrent submission and stale/cancelled review.
+
+Optional actual Proteoscope 0.10.0 receiver exercise, using installed binaries or builds in `/tmp`:
+
+```sh
+go build -o /tmp/clonoloom .
+go build -C ../proteoscope -o /tmp/proteoscope .
+node validation/proteoscope-handoff.mjs /tmp/clonoloom /tmp/proteoscope /tmp/clonoloom-handoff
+uv run --no-project validation/reference/proteoscope.py /tmp/clonoloom-handoff
+```
+
+This starts isolated local processes and Chrome, exercises the real command parser/receiver and
+checks the exact sequences at its browser's sequence-search boundary. CDP intercepts all search
+requests before they reach Proteoscope's server, and blocks nonlocal browser requests. No public
+sequence search or biological performance claim is made. See [PROTEOSCOPE.md](../docs/PROTEOSCOPE.md).
+
 Wave 9 slice 11: audit exact Prism XML tokens, row identities, group order, missing measurements,
 structural blanks, exclusions and hashes independently, then import with R's pzfx reader:
 

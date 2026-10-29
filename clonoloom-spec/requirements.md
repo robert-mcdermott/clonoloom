@@ -181,7 +181,7 @@ Status: **planned (wave N)** until built. Then **done**, **partial** (the gap no
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| X1 | Send a TCR or antibody to Proteoscope | planned (wave 9) |
+| X1 | Send a TCR or antibody to Proteoscope | partial (wave 9, slice 12: exact single-observation AIRR sequence_aa handoff to tested Proteoscope 0.10.0 search, with reviewed loopback destination, explicit public-search/provider permissions and local evidence/receipt; no chain reconstruction, paired-complex transfer, other formats or structure prediction; see docs/PROTEOSCOPE.md) |
 | X2 | Index-sort and FCS phenotypes from CytoWeave linked to single-cell V(D)J | planned (wave 9) |
 | X3 | MaveScape effect maps aligned to a clone's sequence and mutations | parked |
 | X4 | Clone labels mapped to cells in tissue (SituCraft) | parked |

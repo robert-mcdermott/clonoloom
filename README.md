@@ -305,6 +305,11 @@ comparisons to data-only Column tables. Subject pairing, experimental units, mis
 exclusions travel with the original evidence. New analyses remain explicit in Prism; import
 rounding, complete-case behavior and native-import validation limits are documented.
 
+[Reviewed Proteoscope handoff](docs/PROTEOSCOPE.md) (unreleased wave 9) sends one exact supplied
+AIRR amino-acid sequence to local Proteoscope 0.10.0, with separate approval for its public RCSB
+sequence search. Source annotations and identifiers remain in local evidence; partial/unknown
+completeness stays explicit. No paired receptor, structure or binding specificity is inferred.
+
 [Typed Parquet exports](docs/PARQUET.md) preserve native clonotype and rearrangement evidence
 with nullable counts, explicit provenance and an optional pseudonymized representation.
 The [worked record-and-reach study](docs/RECORD-STUDY.md) connects these interfaces with exact
