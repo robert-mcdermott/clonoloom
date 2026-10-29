@@ -824,3 +824,26 @@ readers, container boundaries, both-theme scene captures and the complete site a
 Preserve all numerical tolerances. A timed-out test is rerun to completion; a partial pass is
 not a completed check. Actual cluster scheduling, Apptainer and native Windows UI execution
 remain separate platform/site validation, not inferred from cross-compilation.
+
+## Exact AIRR metadata inspection (wave 9, slice 1)
+
+```sh
+go test -race ./internal/airr ./internal/reads
+go test -race . -run 'TestMetadata|TestOpenADataset|TestEveryReleasesProjectStillOpens'
+go test ./internal/airr -run '^$' -fuzz '^FuzzRepertoires$' -fuzztime 20s
+CLONOLOOM_METADATA_EVIDENCE=/tmp/clonoloom-metadata-evidence.json go test . -run '^TestMetadataInspectionExactAndPaged$' -count=1
+uv run --offline --no-project validation/reference/metadata.py /tmp/clonoloom-metadata-evidence.json
+node docs/capture/capture.mjs repertoire-metadata --theme both
+```
+
+The independent Python standard-library `int`/`Decimal` check consumes native API output and
+imports no application code. It checks exact integers, decimals, large exponents and lexical
+negative zero alongside null and false. Go tests cover duplicate/escaped keys, Unicode, ID
+ambiguity within/across files, case-sensitive and legacy matching, bounds, cancellation,
+compressed-source hashes, pagination and inspection after source removal. Fuzzing asserts that
+accepted objects are still byte-for-byte substrings of the supplied JSON with unique IDs.
+
+`testdata/metadata/README.md` declares the screenshot example and its missing-link controls.
+The capture checks displayed native coverage, original values and accessibility in both themes.
+This validates import/inspection behavior, not full AIRR schema compliance, MiAIRR completeness,
+experimental validity, or subject independence. Old release fixtures remain unchanged.

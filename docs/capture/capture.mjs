@@ -1328,6 +1328,39 @@ const scenes = {
   },
   // The Data view of the PBMC 1k T cells: the dataset, its validation and samples; its files and
   // license in the inspector.
+  async 'repertoire-metadata'() {
+    // Exercise real pagination on a temporary extension of the declared example.
+    const paged = JSON.parse(readFileSync(join(ROOT, 'testdata/metadata/study.airr.json'), 'utf8'));
+    for (let i = 0; i < 17; i += 1) paged.Repertoire.push({ repertoire_id: `pagination-control-${i}`, note: 'Artificial navigation control only' });
+    const pagePath = join(temp, 'metadata-pagination.json');
+    writeFileSync(pagePath, JSON.stringify(paged));
+    await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), pagePath], name: 'Metadata pagination control' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR metadata').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 20`);
+    await js(`[...document.querySelectorAll('.repertoire-metadata button')].find((b) => b.textContent === 'Next records').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 1 && document.querySelector('.repertoire-metadata').textContent.includes('21–21 of 21')`);
+    await js(`[...document.querySelectorAll('.repertoire-metadata button')].find((b) => b.textContent === 'Previous records').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 20`);
+    await js(`document.querySelector('.dialog-head [aria-label="Close"]').click()`);
+    await act('new_project', { name: 'Simulated metadata inspection' });
+    await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), join(ROOT, 'testdata/metadata/study.airr.json')], name: 'Simulated longitudinal blood study' });
+    await act('show', { view: 'data' });
+    await waitFor(`[...document.querySelectorAll('button')].some((b) => b.textContent === 'Inspect AIRR metadata')`);
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR metadata').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 4`);
+    await js(`(() => { if (!document.querySelector('.dialog').contains(document.activeElement)) throw new Error('Metadata focus escaped the dialog'); })()`);
+    await js(`(() => { const v = document.querySelector('.repertoire-metadata'); if (!v.textContent.includes('3 matched / 4') || !v.textContent.includes('3 dataset samples have metadata; 1 do not')) throw new Error('Metadata coverage differs'); v.querySelector('button[aria-label="Inspect R001"]').click(); })()`);
+    await waitFor(`Boolean(document.querySelector('.metadata-json'))`);
+    await js(`(() => { const text = document.querySelector('.metadata-json').textContent; for (const value of ['"value": 0', '"single_cell": false', '"reason": null', '"lab_extension"']) if (!text.includes(value)) throw new Error('Original metadata changed: ' + value); })()`);
+    // A late response for one record must not replace a newer selection.
+    await js(`(() => { window.metadataFetch = window.fetch; let release; const wait = new Promise((resolve) => { release = resolve; }); window.metadataRelease = release; window.fetch = async (...args) => { const response = await window.metadataFetch(...args); if (String(args[0]).endsWith('record=0')) await wait; return response; }; document.querySelector('[aria-label="Inspect R001"]').click(); document.querySelector('[aria-label="Inspect R002"]').click(); })()`);
+    await waitFor(`document.querySelector('.metadata-detail h3')?.textContent === 'R002'`);
+    await js(`window.metadataRelease(); window.fetch = window.metadataFetch; true`);
+    await sleep(100);
+    await js(`(() => { if (document.querySelector('.metadata-detail h3').textContent !== 'R002') throw new Error('Stale metadata response replaced selection'); document.querySelector('[aria-label="Inspect R001"]').click(); })()`);
+    await waitFor(`document.querySelector('.metadata-detail h3')?.textContent === 'R001'`);
+    await checkAccessibility();
+  },
   async data() {
     await act('open_example', { example: '10x-pbmc-1k', opening: 'T cells' });
     await waitFor(`Boolean(document.querySelector('.dataset-card.focused'))`);

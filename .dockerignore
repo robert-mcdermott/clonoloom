@@ -38,6 +38,7 @@
 !api_isotypes.go
 !api_jobs.go
 !api_lineages.go
+!api_metadata.go
 !api_modularity.go
 !api_motifs.go
 !api_neighborhoods.go
@@ -67,6 +68,7 @@
 !clonotype_filter.go
 !deidentification.go
 !go.mod
+!internal/airr/metadata.go
 !internal/airr/repertoire.go
 !internal/airr/schema.go
 !internal/anndata/export.go
@@ -167,6 +169,7 @@
 !internal/reads/imgt.go
 !internal/reads/immunoseq.go
 !internal/reads/mapped.go
+!internal/reads/metadata.go
 !internal/reads/mixcr.go
 !internal/reads/oas.go
 !internal/reads/open.go
@@ -336,6 +339,7 @@
 !web/ui/parquet.js
 !web/ui/project-archives.js
 !web/ui/remote.js
+!web/ui/repertoire-metadata.js
 !web/ui/repertoire-overlap.js
 !web/ui/repertoire-usage.js
 !web/ui/robustness.js

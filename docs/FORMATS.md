@@ -61,10 +61,34 @@ export, TRUST4, Cell Ranger (`airr_rearrangement.tsv`) and AIRR Data Commons dow
   are `consensus_count` (or `duplicate_count`). Rows that name a cell (`cell_id`) make the
   dataset single-cell.
 
-**Repertoire metadata** (`.json`, the AIRR Data File or a list of Repertoire objects, as the ADC
-API answers) named with the tables annotates their samples by `repertoire_id`: study, subject,
-species, sex, age, diagnosis, tissue, cell subset, time point, template and HLA. Schema 1.3's
-text fields and 2.0's objects are both read. YAML metadata arrives in a later release.
+**Repertoire metadata** (`.json` or `.json.gz`) opens with the rearrangement tables:
+an AIRR Data File containing `Repertoire: [...]`, a list of repertoire objects, or one object.
+Annotation extraction supports the field shapes used in schemas 1.3–2.0; it is not full schema
+validation. `Info.version`, when present, is shown as the supplied declaration.
+
+**Data → Inspect AIRR metadata** lists record IDs, matched sample counts and match basis, with
+original JSON and the source-file SHA-256 available for each record. Exact case-sensitive
+`repertoire_id` matches take precedence. The legacy sample-name match applies only when a table
+sample has no explicit ID. Matching uses the table reader's parsed IDs; AIRR TSV fields already
+have surrounding whitespace trimmed. Metadata IDs that need trimming are refused. Unmatched
+records remain available. Neither coverage nor a match
+establishes MiAIRR completeness, ontology validity, biological independence or a particular
+sample/data-processing record.
+
+Original object bytes retain unknown fields, numeric tokens, null, false and zero. Summary
+annotations (study, subject, species, sex, age, diagnosis, tissue, cell subset, time point,
+template and HLA) are display conveniences; multiple processing values may be combined.
+Conflicting explicit single-cell flags do not become one boolean. The source hash covers the
+whole captured file, including its wrapper; for gzip, it covers the compressed bytes. Inspection
+uses the opened snapshot. It does not reread a subsequently edited source.
+
+Ambiguous duplicate JSON keys or repertoire IDs within/across files, invalid UTF-8/unpaired
+Unicode escapes and non-string, empty, padded or control-character repertoire IDs are refused.
+These are ClonoLoom import rules. Limits: 64 MiB per source/decompressed file and combined decoded
+metadata, 100,000 repertoires per file/dataset, nesting depth 64, 1,000,000 JSON values per file
+and 4,096 bytes per ID. Original-record previews over 4 MiB are refused explicitly, without
+truncating imported evidence. Lists are paged. YAML, the MiAIRR checklist and Clone/Cell/Receptor
+objects are planned in later wave 9 slices. See the [AIRR Repertoire standard](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html).
 
 ### Sequence evidence (0.5.0)
 

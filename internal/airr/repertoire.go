@@ -1,9 +1,8 @@
 package airr
 
 import (
+	"context"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -14,24 +13,25 @@ import (
 // the study. Fields hold labels as given; ontology terms ({"id": …, "label": …}) are read as
 // their labels. The whole object is kept as JSON in Raw.
 type Repertoire struct {
-	RepertoireID string          `json:"repertoireId"`
-	StudyID      string          `json:"studyId,omitempty"`
-	StudyTitle   string          `json:"studyTitle,omitempty"`
-	SubjectID    string          `json:"subjectId,omitempty"`
-	Species      string          `json:"species,omitempty"`
-	Sex          string          `json:"sex,omitempty"`
-	Age          string          `json:"age,omitempty"`
-	Diagnosis    string          `json:"diagnosis,omitempty"`
-	StudyGroup   string          `json:"studyGroup,omitempty"`
-	SampleID     string          `json:"sampleId,omitempty"`
-	Tissue       string          `json:"tissue,omitempty"`
-	CellSubset   string          `json:"cellSubset,omitempty"`
-	TimePoint    string          `json:"timePoint,omitempty"`
-	Template     string          `json:"template,omitempty"`
-	Loci         []string        `json:"loci,omitempty"`
-	SingleCell   *bool           `json:"singleCell,omitempty"`
-	HLA          []string        `json:"hla,omitempty"`
-	Raw          json.RawMessage `json:"-"`
+	RepertoireID    string          `json:"repertoireId"`
+	StudyID         string          `json:"studyId,omitempty"`
+	StudyTitle      string          `json:"studyTitle,omitempty"`
+	SubjectID       string          `json:"subjectId,omitempty"`
+	Species         string          `json:"species,omitempty"`
+	Sex             string          `json:"sex,omitempty"`
+	Age             string          `json:"age,omitempty"`
+	Diagnosis       string          `json:"diagnosis,omitempty"`
+	StudyGroup      string          `json:"studyGroup,omitempty"`
+	SampleID        string          `json:"sampleId,omitempty"`
+	Tissue          string          `json:"tissue,omitempty"`
+	CellSubset      string          `json:"cellSubset,omitempty"`
+	TimePoint       string          `json:"timePoint,omitempty"`
+	Template        string          `json:"template,omitempty"`
+	Loci            []string        `json:"loci,omitempty"`
+	SingleCellMixed bool            `json:"singleCellMixed,omitempty"`
+	SingleCell      *bool           `json:"singleCell,omitempty"`
+	HLA             []string        `json:"hla,omitempty"`
+	Raw             json.RawMessage `json:"-"`
 }
 
 // maxMetadataBytes: an AIRR metadata file of a large study is a few megabytes.
@@ -41,80 +41,61 @@ const maxMetadataBytes = 64 << 20
 // File ({"Repertoire": [...]}, as the ADC API answers), a list of Repertoire objects, or one. It
 // reads schema 1.3 to 2.0, where several fields changed from text to objects or lists.
 func ReadRepertoires(data []byte) ([]Repertoire, error) {
-	if len(data) > maxMetadataBytes {
-		return nil, errors.New("the metadata file is larger than 64 MB")
+	doc, err := ReadRepertoireDocument(context.Background(), data)
+	return doc.Repertoires, err
+}
+
+func repertoireFromObject(m map[string]any, raw json.RawMessage) Repertoire {
+	r := Repertoire{Raw: raw, RepertoireID: m["repertoire_id"].(string)}
+
+	if study, ok := m["study"].(map[string]any); ok {
+		r.StudyID, r.StudyTitle = text(study["study_id"]), text(study["study_title"])
 	}
-	var doc any
-	if err := json.Unmarshal(data, &doc); err != nil {
-		return nil, fmt.Errorf("not JSON: %w", err)
-	}
-	var objects []any
-	switch v := doc.(type) {
-	case map[string]any:
-		if list, ok := v["Repertoire"].([]any); ok {
-			objects = list
-		} else if _, ok := v["repertoire_id"]; ok {
-			objects = []any{v}
+	if subject, ok := m["subject"].(map[string]any); ok {
+		r.SubjectID = text(subject["subject_id"])
+		r.Species = label(subject["species"])
+		r.Sex = label(subject["sex"])
+		r.Age = age(subject)
+		var diagnoses, groups []string
+		for _, d := range list(subject["diagnosis"]) {
+			if dm, ok := d.(map[string]any); ok {
+				diagnoses = appendNew(diagnoses, label(dm["disease_diagnosis"]))
+				groups = appendNew(groups, text(dm["study_group_description"]))
+			}
 		}
-	case []any:
-		objects = v
+		r.Diagnosis, r.StudyGroup = strings.Join(diagnoses, "; "), strings.Join(groups, "; ")
+		for _, h := range list(subject["mhc"]) {
+			r.HLA = appendNew(r.HLA, text(h))
+		}
 	}
-	if objects == nil {
-		return nil, errors.New("no AIRR Repertoire objects in the file")
-	}
-	out := make([]Repertoire, 0, len(objects))
-	for i, o := range objects {
-		m, ok := o.(map[string]any)
+	var samples []string
+	for _, s := range list(m["sample"]) {
+		sm, ok := s.(map[string]any)
 		if !ok {
-			return nil, fmt.Errorf("repertoire %d is not an object", i+1)
+			continue
 		}
-		raw, _ := json.Marshal(m)
-		r := Repertoire{Raw: raw, RepertoireID: text(m["repertoire_id"])}
-		if study, ok := m["study"].(map[string]any); ok {
-			r.StudyID, r.StudyTitle = text(study["study_id"]), text(study["study_title"])
-		}
-		if subject, ok := m["subject"].(map[string]any); ok {
-			r.SubjectID = text(subject["subject_id"])
-			r.Species = label(subject["species"])
-			r.Sex = label(subject["sex"])
-			r.Age = age(subject)
-			var diagnoses, groups []string
-			for _, d := range list(subject["diagnosis"]) {
-				if dm, ok := d.(map[string]any); ok {
-					diagnoses = appendNew(diagnoses, label(dm["disease_diagnosis"]))
-					groups = appendNew(groups, text(dm["study_group_description"]))
-				}
-			}
-			r.Diagnosis, r.StudyGroup = strings.Join(diagnoses, "; "), strings.Join(groups, "; ")
-			for _, h := range list(subject["mhc"]) {
-				r.HLA = appendNew(r.HLA, text(h))
-			}
-		}
-		var samples []string
-		for _, s := range list(m["sample"]) {
-			sm, ok := s.(map[string]any)
-			if !ok {
-				continue
-			}
-			samples = appendNew(samples, text(sm["sample_id"]))
-			r.Tissue = joinNew(r.Tissue, label(sm["tissue"]))
-			r.CellSubset = joinNew(r.CellSubset, label(sm["cell_subset"]))
-			r.Template = joinNew(r.Template, label(sm["template_class"]))
-			r.TimePoint = joinNew(r.TimePoint, timePoint(sm))
-			if b, ok := sm["single_cell"].(bool); ok {
+		samples = appendNew(samples, text(sm["sample_id"]))
+		r.Tissue = joinNew(r.Tissue, label(sm["tissue"]))
+		r.CellSubset = joinNew(r.CellSubset, label(sm["cell_subset"]))
+		r.Template = joinNew(r.Template, label(sm["template_class"]))
+		r.TimePoint = joinNew(r.TimePoint, timePoint(sm))
+		if b, ok := sm["single_cell"].(bool); ok && !r.SingleCellMixed {
+			if r.SingleCell != nil && *r.SingleCell != b {
+				r.SingleCell = nil
+				r.SingleCellMixed = true
+			} else {
 				r.SingleCell = &b
 			}
-			for _, t := range list(sm["pcr_target"]) {
-				if tm, ok := t.(map[string]any); ok {
-					r.Loci = appendNew(r.Loci, text(tm["pcr_target_locus"]))
-				}
+		}
+		for _, t := range list(sm["pcr_target"]) {
+			if tm, ok := t.(map[string]any); ok {
+				r.Loci = appendNew(r.Loci, text(tm["pcr_target_locus"]))
 			}
 		}
-		r.SampleID = strings.Join(samples, "; ")
-		sort.Strings(r.Loci)
-		out = append(out, r)
 	}
-	return out, nil
+	r.SampleID = strings.Join(samples, "; ")
+	sort.Strings(r.Loci)
+	return r
 }
 
 // text is a scalar as text ("" for null, objects and lists).
@@ -122,8 +103,8 @@ func text(v any) string {
 	switch x := v.(type) {
 	case string:
 		return strings.TrimSpace(x)
-	case float64:
-		return strconv.FormatFloat(x, 'f', -1, 64)
+	case json.Number:
+		return x.String()
 	case bool:
 		return strconv.FormatBool(x)
 	}

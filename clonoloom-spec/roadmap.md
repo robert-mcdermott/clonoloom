@@ -9,16 +9,14 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–7 are released. Wave 8 completes verifiable records, reproducible execution and supported automation; slice 15 prepares 0.8.0 for maintainer review.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–8 are released.
 
 **Progress** is marked here as each slice is committed: done, next or to come. Each
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
-**Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–7 are merged and
-released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
-with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
-`wave8` branch. Slices 1–15 are committed and pushed, most recently `4573c93`.
-Slice 15 completes the worked study and release preparation below; CI portability corrections
-are recorded in its follow-up. No 0.8.0 release is made.
+**Where things stand:** v0.8.0 and its product site are published. Wave 8 merged in PR #8
+(`719a73c`); the follow-up AI-agent documentation is committed as `6f71662`. Wave 9 is planned
+below; slice 1 is implemented and validated on `wave9`, awaiting maintainer review and commit.
+No 0.9.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -3821,9 +3819,111 @@ creates the wave-8 PR and follows the usual merge/release/site sequence. No comm
 merge, tag, release, image publication, scheduler submission or product-site publication was
 performed for this follow-up. Wave 9 planning follows that release; no wave-9 work was started.
 
+## 0.9.0: suite and public data (wave 9)
+
+**Plan recorded before implementation.** Build on the 0.8.0 evidence and permission contracts.
+Start with exact, unambiguous metadata and complete the remaining readers before querying public
+repositories or linking other applications. A local repertoire identifier is not evidence of a
+shared subject, identical experimental processing, or permission to redistribute a dataset.
+
+### Wave 9 sequence
+
+| Slice | Scope and requirements | Acceptance before the next slice |
+| --- | --- | --- |
+| 1 | Exact AIRR JSON metadata and inspection (D2 foundation, D8, D11, N2/N4/N5) | Preserve numeric tokens, unknown fields and original repertoire-object bytes; reject duplicate JSON keys, ambiguous/missing IDs and malformed text; inspect matched/unmatched records and source fingerprints; no claim of MiAIRR completeness or ontology validation |
+| 2 | AIRR Repertoire YAML (D2) | Dependency-free bounded reader with a published supported-syntax contract; exact scalar meaning, null/false/zero distinctions, ambiguity refusals and original source hashes; compare supported cases with an independent YAML/AIRR reader; no silent coercion or alias expansion |
+| 3 | MiAIRR completeness checklist (O8, D2/D10) | Pin the checklist/schema version, distinguish required/conditional/recommended fields, missing versus explicitly unknown/not applicable, expose evidence paths and remedies; presence is not biological validity or ontology conformance |
+| 4 | AIRR Clone, Cell and Receptor objects (D2) | Preserve native objects and explicit repertoire/cell/receptor/processing links; validate identifiers and cardinality; no guessed pairing or replacement of the user's clonotype definition; independent-reader fixtures |
+| 5 | Remaining table readers (D5) | TRUST4 reports and VDJtools tables with native count units, missingness, junction conversion and source provenance; compare every mapped value with independent parsing; retain unsupported fields and fuzz refusals |
+| 6 | Cell Ranger JSON annotations (D3) | Explicit version/layout recognition, exact barcodes/chains/flags/units, match supported CSV/AIRR representations; refuse conflicting records and unsupported layouts without inventing pairing |
+| 7 | AIRR Data Commons discovery and queries (D9, D13, P8) | Pin ADC API contract and approved repository registry; user-initiated bounded queries with visible endpoint/filter/pagination and offline/cancellation/error behavior; never send local receptor data implicitly |
+| 8 | ADC downloads and provenance (D9/D11/D13, O2, X5) | Review license/size/source before download; record exact request, repository, retrieval date, response/source hashes and completeness/truncation state; safe paginated/streamed installs, no overwrite, no silent pooled processing or subject identity |
+| 9 | Overlap with public cohorts (R4) | Explicit matching definition, loci, source units and cohort universe; show evaluable and missing subjects and sampling/assay limitations; independently computed overlaps and partial-query controls; descriptive sharing is not antigen specificity |
+| 10 | Excel workbooks (O4) | Typed values, missingness, full denominators, provenance/methods/notices, limits of spreadsheet number precision; independent workbook reader validation and no formula injection |
+| 11 | GraphPad Prism export (O4) | Document a supported interchange format and table/replicate mapping; preserve subject pairing and experimental units, missing values and provenance; independent format checks and import exercise where available; no silent analysis conversion |
+| 12 | Proteoscope handoff (X1) | Review exact selected receptor sequence/chain/identifier and destination before transfer; preserve annotation/provenance and explicit permissions; inspect sibling contracts and license-compatible patterns; unsupported or incomplete sequences remain explicit |
+| 13 | CytoWeave phenotype links (X2) | Sample-scoped barcode/index-sort identity, explicit mapping and collision/ambiguity refusals, acquisition/compensation provenance and missingness; no fabricated pairing or pooled independent subjects; validate real sibling interchange and simulated known links |
+| 14 | Maximum-likelihood lineage methods and viewer (B4) | Select and cite a defensible sequence model before implementation; independently validate likelihoods/search/branch lengths, identify boundaries and convergence failures, retain ancestral uncertainty and rooting assumptions; do not infer switching/selection/dates from observed labels; split this slice if model/search/view work needs separate review |
+| 15 | B-cell candidate review (B6) | Explicit user-selected ranking criteria and complete denominators, ties/missing values and provenance; no binding/efficacy claim; export only declared available sequences with chain/pairing limits, reviewed FASTA and Proteoscope handoff |
+| 16 | Complete suite/public-data study and release preparation | Worked provenance-preserving study, realistic declared simulations, unavailable/partial/ambiguous controls, both-theme presentation, reference/platform/performance/accessibility checks and 0.9.0 compatibility fixture; version changes and maintainer release sequence only here |
+
+This order is a plan, not a claim of completed support. Each slice must record its implementation,
+validation and limits before the next. Research can require a documented split or deferral rather
+than an unvalidated method. In particular, lineage likelihoods and candidate ranking need their own
+scientific acceptance criteria; no external algorithm/source is selected by this outline.
+
+### Cross-cutting decisions
+
+- Preserve the native-worker, zero third-party runtime dependency and exact-evidence conventions.
+  Consult the Apache-2.0 siblings for interchange/export/UI patterns when the relevant slice starts.
+- Extend automation only through the shared action catalog with explicit effects and human review;
+  regenerate Python/R wrappers when that catalog changes. Local scientific replay stays at its five
+  supported captured-evidence kinds unless a separately validated slice explicitly extends it.
+- New scientific fields do not round-trip through JavaScript numbers for evidence preservation.
+  Keep prior release fixtures and existing valid dataset/artifact identities stable; explicitly
+  document new refusals for inputs whose identity or metadata were ambiguous.
+- Downloads, queries and cross-application transfers require explicit user intent and preserve
+  provider restrictions. A downloaded partial result cannot become a complete cohort silently.
+- Visuals show actual imported/computed values, experimental units, uncertainty and missingness;
+  no significance or quality color is assigned merely because metadata are present.
+- Keep application/client version 0.8.0 during development. Do not commit, push, merge, tag,
+  release, publish images or update the deployed site automatically.
+
+### Slice 1: exact AIRR metadata and inspection
+
+**Implemented and validated; awaiting maintainer review and commit.** AIRR's metadata standard
+defines case-sensitive repertoire identifiers for links to rearrangements. At the start of this
+slice the reader decoded through float64, re-encoded each object, and the summary silently chose
+the last duplicate ID. This slice resolves those issues before YAML, MiAIRR and ADC build on them.
+
+- Keep each original JSON repertoire object and numeric token without a float conversion;
+  preserve unknown nested fields and explicit null, false and zero. Retain source-file hashes.
+- Bound metadata size, nesting and structural work; refuse duplicate keys, invalid UTF-8/Unicode,
+  non-string/empty/whitespace-padded repertoire IDs and repeated IDs within or across files.
+  These are import checks, not full AIRR schema or MiAIRR validation.
+- Match explicit repertoire IDs exactly. Preserve the historical sample-name fallback only when
+  a sample has no repertoire ID, and label it as such; never use it to conceal an unmatched
+  explicit ID. Summarize unmatched records/samples without treating them as study exclusions.
+- Add read-only, paged Data-view inspection of record identities, match basis and original JSON
+  text, with declared schema version when supplied and source fingerprint. The browser displays
+  strings; it neither computes completeness nor parses/re-serializes scientific numeric evidence.
+- Test large integers/precise decimals, null/false/zero, escaped keys, duplicates, cross-file
+  ambiguity, mixed versions, bounds, cancellation and matching controls. Compare against an
+  independent exact JSON reader, preserve existing release fixtures and review both-theme UI.
+- Document original bytes versus display summaries, annotation joins versus subject replication,
+  and deferred YAML/MiAIRR/Clone/Cell/Receptor support. No new inference, plot or replay kind.
+
+
+**Implemented:** a bounded source snapshot and exact JSON reader; cross-file ID checks; shared
+explicit-ID/legacy-name matching; native paged inspection with original JSON supplied as text;
+Data-view controls, cancellation/stale-response guards and keyboard focus; a separate focus
+button in dataset cards to remove nested interactive elements. Conflicting single-cell flags
+remain unresolved. Declared schema versions and per-file associations are retained. Table-reader
+whitespace normalization is unchanged and documented. No project/reader identity version,
+scientific method, replay kind, automation policy or application/client version changes.
+
+**Validation completed:** parser/reader race tests, source/gzip/cancellation controls,
+API coverage/pagination/refusal controls, original evidence after source removal, mixed schema
+versions, independent Python int/Decimal checks, amd64 reader checks, 51,288 fuzz executions with
+original-byte/unique-ID invariants, all 231 JavaScript tests, Go vet, six platform builds, current
+349-file container allowlist, unchanged 0.2.0–0.8.0 fixtures reopening, both-theme metadata
+pagination/stale-response/keyboard/accessibility checks and reviewed screenshots, 61-page site
+build/link checks and all 240 site accessibility/layout checks. The declared simulated example
+uses bulk RNA UMIs and missing metadata links; it makes no biological or inferential claim.
+
+The full Go regression run initially encountered sandbox loopback restrictions and the default
+ten-minute scientific-reference timeout. Local-server tests were rerun with loopback access.
+All internal-package race checks pass. Scientific references completed in two bounded race
+batches (the resumed 23 tests took 399.7 seconds), retaining their standard optional-data and
+non-race performance skips; no numerical comparison failed. The full root race suite passed
+with the thirty-minute limit (1,090.360 seconds). Final focused API checks and browser checks
+also pass after the inspection/reopening and keyboard-focus guards. No assertions, numerical
+tolerances, fixtures or performance budgets were relaxed. Slice 2 is the bounded AIRR Repertoire YAML reader, after
+maintainer review and commit; it is not started here.
+
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 9 | 0.9.0 | Suite and public data | ADC queries, overlap with public cohorts, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |
 | 10 | 1.0.0 | Hardening | Budgets met, accessibility audit, documentation complete, external beta feedback addressed |

@@ -3,6 +3,7 @@
 // validator's findings with their examples and remedies), and its samples' annotation, typed or
 // suggested from file names and metadata.
 
+import { showRepertoireMetadata } from './repertoire-metadata.js';
 import { h, icon, clear, formatBytes } from './dom.js';
 import { showDialog, showMenu, promptDialog, confirmDialog, toast } from './overlays.js';
 import { methodsButton, showMethods } from './methods.js';
@@ -59,7 +60,11 @@ export function mountData(app, container) {
     }
     body.append(h('div.section-title', `Datasets · ${datasets.length}`), h('div.dataset-cards', ...datasets.map(datasetCard)));
     const shown = shownDataset();
-    if (shown) body.append(report(shown));
+    if (shown) {
+      body.append(report(shown));
+      if (shown.metadata?.length) body.append(h('div.btn-row', { style: { margin: '12px 0' } },
+        h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showRepertoireMetadata(app, shown) }, icon('info'), 'Inspect AIRR metadata')));
+    }
     body.append(samplesSection());
   }
 
@@ -93,13 +98,12 @@ export function mountData(app, container) {
         ...['reads', 'umis'].map((u) => h('option', { value: u, selected: d.unitConfirmed === u }, UNITS[u]))))
       : h('span.kv-inline', h('span.muted', 'Unit'), h('b', UNITS[unit] ?? unit));
     return h(`div.card.dataset-card${focused ? '.focused' : ''}`, {
-      role: 'button', tabIndex: 0, 'aria-pressed': focused ? 'true' : 'false',
+      role: 'group', 'aria-label': d.name,
       onclick: () => app.focusItem({ kind: 'dataset', id: d.id }),
-      onkeydown: (e) => { if (e.key === 'Enter') app.focusItem({ kind: 'dataset', id: d.id }); },
     },
     h('div.dataset-card-head',
       icon(d.singleCell ? 'chip' : 'table'),
-      h('h4', d.name),
+      h('h4', h('button.btn.ghost.small', { type: 'button', 'aria-pressed': focused ? 'true' : 'false', onclick: (e) => { e.stopPropagation(); app.focusItem({ kind: 'dataset', id: d.id }); } }, d.name)),
       status,
       h('span.spacer'),
       h('button.icon-button.small', { type: 'button', title: 'More', 'aria-label': `More for ${d.name}`, onclick: (e) => { e.stopPropagation(); datasetMenu(e.currentTarget, d, state); } }, icon('more'))),

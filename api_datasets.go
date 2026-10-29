@@ -243,11 +243,7 @@ func (ds *dataset) summary() datasetSummary {
 	cells := make([]map[uint32]bool, len(t.Samples))
 	for i, sample := range t.Samples {
 		s.Samples[i] = sampleSummary{Name: sample.Name, RepertoireID: sample.RepertoireID, Source: sample.Source, Loci: map[string]int{}, Metadata: sample.Metadata}
-		if r, ok := repertoires[sample.RepertoireID]; ok {
-			s.Samples[i].Repertoire = r
-		} else if r, ok := repertoires[sample.Name]; ok {
-			s.Samples[i].Repertoire = r
-		}
+		s.Samples[i].Repertoire, _ = repertoireMatch(sample, repertoires)
 		if t.Cell != nil {
 			cells[i] = map[uint32]bool{}
 		}
@@ -282,6 +278,7 @@ func (a *app) registerDatasets(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/datasets/open", a.handleOpenDataset)
 	mux.HandleFunc("GET /api/datasets", a.handleListDatasets)
 	mux.HandleFunc("GET /api/datasets/{id}", a.handleGetDataset)
+	mux.HandleFunc("GET /api/datasets/{id}/metadata", a.handleMetadata)
 	mux.HandleFunc("DELETE /api/datasets/{id}", a.handleCloseDataset)
 	mux.HandleFunc("POST /api/datasets/locate", a.handleLocate)
 	mux.HandleFunc("POST /api/datasets/inspect", a.handleInspect)

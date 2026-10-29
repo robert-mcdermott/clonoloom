@@ -279,3 +279,25 @@ from the pinned spec. Completed results are self-contained for inspection; repro
 test also uses the exported expression-map parent. JS lays out supplied null frequencies and
 observed/expected markers, filters tables and links the parent overlay; Go computes statistics.
 See `docs/MODULARITY.md` for the inferential assumptions and populations.
+
+### Exact repertoire metadata inspection (wave 9, slice 1)
+
+`internal/reads/metadata.go` captures bounded source bytes once and hashes that same snapshot;
+compressed metadata is decoded under a second bound. `internal/airr/metadata.go` checks JSON
+ambiguity, Unicode, structural budgets and record IDs before extracting annotation summaries.
+Each repertoire retains its original object bytes. IDs are unique across a dataset's metadata
+files; file order and per-file record counts retain the source association.
+
+`api_metadata.go` shares the annotation-matching rule with dataset summaries. The read-only
+`GET /api/datasets/{id}/metadata` lists 20 records by default (1–50 allowed via `limit`, zero-based
+`offset`). Go returns match coverage and basis. `?record=N` returns one original object as
+`rawJSON`, a JSON **string**, so browser decoding cannot round numbers inside the evidence.
+Detail previews over 4 MiB fail explicitly; imports retain the object. The view uses text nodes
+and project-generation/cancellation guards. Inspection reads the opened snapshot, not paths
+supplied by callers. Existing loopback/same-origin protections apply; no new automation grant,
+MCP tool, scientific artifact kind, project schema or replay contract is added.
+
+Import limits: 64 MiB per source and decompressed file, 64 MiB combined decoded metadata,
+100,000 records per file/dataset, JSON nesting depth 64, 1,000,000 values per file, and 4,096 bytes
+per repertoire ID. A declared schema version is information, not schema validation. Summary
+labels can combine processing annotations; raw evidence preserves their individual identity.

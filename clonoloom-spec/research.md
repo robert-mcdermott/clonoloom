@@ -3529,3 +3529,38 @@ Future-release checks replay the native worker, verify the separately recorded f
 restore missing result files and retain every earlier release fixture. Cross-platform exactness,
 existing scientific references and performance budgets are validated separately from this
 workflow. No additional inference or biological performance claim follows from a passing study.
+
+### 5.57 Exact AIRR metadata before richer interchange
+
+Wave 9 slice 1 is an evidence-preservation and linking change, not a new scientific estimator.
+The primary source is the [AIRR Community 2.0 Repertoire schema](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html)
+(linking and file format; reviewed 2026-10-28). It defines case-sensitive repertoire identifiers
+and separate sample/data-processing identifiers. A repertoire-to-table match therefore does
+not select an individual processing object or establish a biological replicate.
+
+**ClonoLoom adaptation.** Keep the source repertoire object's JSON bytes and numeric tokens,
+with unknown fields and explicit null/false/zero intact. Extract annotation labels separately
+using decimal token strings, never float64. Summaries are conveniences, not replacement source
+objects: multiple sample annotations may be joined with semicolons; conflicting explicit
+single-cell flags yield an unresolved summary. Missing fields remain missing. Record the
+declared `Info.version` without claiming to validate that schema. File SHA-256 covers the
+captured source bytes (compressed bytes for gzip), not a reconstructed object. Ordinary
+metadata remains outside the rearrangement table cache, so no cache/identity version changes.
+
+Reject ambiguous duplicate keys and repertoire IDs, invalid Unicode, and identifiers that
+would need trimming. These are local import rules, not an AIRR conformance certification.
+A legacy table without an explicit repertoire ID may match its sample name; an unmatched
+explicit ID cannot use that fallback. Matching uses existing parsed table IDs (the AIRR TSV
+reader trims surrounding field whitespace); this slice does not change table parsing. Keep unmatched metadata and report both record and
+sample coverage. Coverage is not completeness, quality, exclusion, or independent-subject
+count. Do not guess ontology terms, diagnoses, paired status or experimental independence.
+
+**Checks and presentation.** Independent Python `int`/`Decimal` parsing checks native API
+output, including values beyond binary64 precision/range and negative-zero lexical evidence.
+Go checks duplicated escaped keys, unique case-sensitive IDs, malformed Unicode, bounds,
+cancellation, compressed-source fingerprints and inspection after source removal. A small
+explicitly simulated longitudinal bulk RNA study demonstrates metadata coverage in a table;
+it is neither an inferential experiment nor realistic clone-frequency ground truth. Both-theme
+screenshots show source evidence and limits. No plot, hypothesis test, new replay kind or
+permission expansion is introduced. YAML, MiAIRR completeness and Clone/Cell/Receptor object
+support have separate acceptance criteria in later wave 9 slices.

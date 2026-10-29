@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Exact AIRR metadata and inspection (wave 9, slice 1).** Plan wave 9 in sixteen slices.
+  Preserve original repertoire JSON, exact numeric tokens and captured source fingerprints;
+  reject ambiguous keys/IDs, invalid Unicode and excessive metadata. Keep explicit ID matches
+  separate from legacy name matching and report unmatched records/samples. Add paged Data-view
+  inspection with declared schema versions and original evidence, explicit scientific limits,
+  an independent exact-number check and simulated both-theme examples. Conflicting single-cell
+  flags remain unresolved. Replace nested interactive dataset cards with a separate focus
+  button for keyboard/accessibility use. YAML and MiAIRR assessment follow in later slices.
+
 - Clarify AI-agent setup with Claude Code, Claude Desktop, Codex, Cursor and VS Code examples.
   Distinguish project storage from dataset paths, add first-task prompts and troubleshooting,
   and explain review, exact evidence and model-provider data flow. Refresh the MCP site guide

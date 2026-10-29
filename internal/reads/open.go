@@ -2,18 +2,13 @@ package reads
 
 import (
 	"bytes"
-	"compress/gzip"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
-	"time"
 
 	"clonoloom/internal/airr"
 )
@@ -144,25 +139,37 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 		return nil, err
 	}
 	res.Companions = companions
+	seenRepertoires := map[string]string{}
+	metadataBytes := 0
 	for _, in := range metadata {
 		name := in.Name
 		if name == "" {
 			name = in.Path
 		}
-		data, err := readMaybeGzip(in.Path)
+		data, file, err := readMetadata(ctx, in.Path)
 		if err != nil {
 			return nil, err
 		}
-		reps, err := airr.ReadRepertoires(data)
+		metadataBytes += len(data)
+		if metadataBytes > maxMetadataBytes {
+			return nil, errors.New("combined metadata exceeds 64 MB")
+		}
+		doc, err := airr.ReadRepertoireDocument(ctx, data)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", filepath.Base(name), err)
 		}
-		file, err := fingerprint(in.Path)
-		if err != nil {
-			return nil, err
+		for _, repertoire := range doc.Repertoires {
+			if previous, ok := seenRepertoires[repertoire.RepertoireID]; ok {
+				return nil, fmt.Errorf("duplicate repertoire_id %q in %s and %s; metadata records must have unique IDs", repertoire.RepertoireID, previous, filepath.Base(name))
+			}
+			seenRepertoires[repertoire.RepertoireID] = filepath.Base(name)
 		}
-		file.Name, file.Repertoires = filepath.Base(name), len(reps)
-		res.Repertoires = append(res.Repertoires, reps...)
+		if len(seenRepertoires) > 100_000 {
+			return nil, errors.New("combined metadata exceeds 100000 repertoire records")
+		}
+		file.Name, file.Repertoires = filepath.Base(name), len(doc.Repertoires)
+		file.SchemaVersion = doc.SchemaVersion
+		res.Repertoires = append(res.Repertoires, doc.Repertoires...)
 		res.Metadata = append(res.Metadata, file)
 	}
 	return res, nil
@@ -171,31 +178,13 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 // MetadataFile is a file of AIRR Repertoire metadata read with a dataset: part of the dataset, as
 // its tables are, by its fingerprint.
 type MetadataFile struct {
-	Path        string `json:"path"`
-	Name        string `json:"name"`
-	Size        int64  `json:"size"`
-	SHA256      string `json:"sha256"`
-	Modified    string `json:"modified,omitempty"`
-	Repertoires int    `json:"repertoires"`
-}
-
-// fingerprint answers a file's size, SHA-256 and time of change.
-func fingerprint(path string) (MetadataFile, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return MetadataFile{}, err
-	}
-	defer f.Close()
-	info, err := f.Stat()
-	if err != nil {
-		return MetadataFile{}, err
-	}
-	h := sha256.New()
-	n, err := io.Copy(h, f)
-	if err != nil {
-		return MetadataFile{}, err
-	}
-	return MetadataFile{Path: path, Size: n, SHA256: hex.EncodeToString(h.Sum(nil)), Modified: info.ModTime().UTC().Format(time.RFC3339)}, nil
+	SchemaVersion string `json:"schemaVersion,omitempty"`
+	Path          string `json:"path"`
+	Name          string `json:"name"`
+	Size          int64  `json:"size"`
+	SHA256        string `json:"sha256"`
+	Modified      string `json:"modified,omitempty"`
+	Repertoires   int    `json:"repertoires"`
 }
 
 // besideContigs finds the companions of a Cell Ranger contig file named on its own: in its folder,
@@ -244,34 +233,6 @@ func sniffCompanion(path string) (string, error) {
 		header, _ = splitCSV(ls.line, nil)
 	}
 	return companionKind(header), nil
-}
-
-func readMaybeGzip(path string) ([]byte, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	var r io.Reader = f
-	head := make([]byte, 2)
-	if n, _ := io.ReadFull(f, head); n == 2 && head[0] == 0x1f && head[1] == 0x8b {
-		f.Seek(0, io.SeekStart)
-		gz, err := gzip.NewReader(f)
-		if err != nil {
-			return nil, err
-		}
-		r = gz
-	} else {
-		f.Seek(0, io.SeekStart)
-	}
-	data, err := io.ReadAll(io.LimitReader(r, maxMetadataBytes+1))
-	if err != nil {
-		return nil, err
-	}
-	if len(data) > maxMetadataBytes {
-		return nil, errors.New("the metadata file is larger than 64 MB")
-	}
-	return data, nil
 }
 
 const maxMetadataBytes = 64 << 20
