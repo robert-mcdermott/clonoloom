@@ -245,6 +245,7 @@ It takes `-h` for its settings.
 - [Remote control](docs/REMOTE-CONTROL.md): driving ClonoLoom from scripts.
 - [R client](docs/R.md): generated functions/help, explicit permissions, exact number tokens and list-column frames (wave 8 development).
 - [Python client](docs/PYTHON.md): generated methods, explicit permissions and exact JSON numbers (wave 8 development).
+- [Agent contract benchmark](docs/AGENT-BENCHMARK.md): known-truth tasks, code grading and explicit fixture permissions (wave 8 development).
 - [MCP clients](docs/MCP.md): local stdio, explicit grants and window review (wave 8 development).
 - [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.

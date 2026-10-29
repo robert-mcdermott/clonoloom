@@ -136,3 +136,11 @@ Use the existing [certificate replay](CERTIFICATES.md) or [headless replay](HEAD
 contracts. Five captured-evidence kinds remain supported: cohort features, comparisons,
 count models, batch QC and motifs. Exact output bytes and declared provenance boundaries
 are required; unavailable kinds/inputs never fall back to approximate success.
+
+## Local task benchmark
+
+The [agent contract benchmark](AGENT-BENCHMARK.md) exercises counts, definitions, missingness,
+refusals and explicit review through HTTP/MCP/Python/R. Its fixture-only scripted reviewer
+requires a separate opt-in and uses the visible dialog. It adds no approval API or ordinary
+research bypass. Reference controls validate the harness; successful tasks are not a claim
+of general model competence or scientific validity.

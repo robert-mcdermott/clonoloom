@@ -3397,3 +3397,57 @@ the writer's own schema to define the expected type. Independent readers check e
 cell/footer for private disclosure canaries, then use the separately saved map to compare native
 scientific evidence and subject/sample linkage. The seeded vaccination browser workflow checks
 unchanged query/project bytes, review rejection, cancellation, stale state and both themes.
+
+### 5.54 Known-truth tasks are not general scientific validation
+
+Wave 8 slice 13 adds a repository-only agent contract benchmark, following the Apache-2.0
+CytoWeave task/code-grader/reference/empty-control pattern. The benchmark exercises the existing
+ClonoLoom host, window, MCP and generated clients. No incompatible source or external model is
+needed. The independent truth is a literal table of five retained TRB groups and four sample
+abundances, not a result queried from the engine. A separate TSV aggregation control checks
+that the generated records correspond to that truth.
+
+The artificial study has two subjects at two observations each. At variant 1, default
+productive amino-acid/V/J grouping sums to 248 UMIs (sample totals 75, 85, 43, 45), with five
+groups. The leading group has 138 UMIs. TRBV5-1 selection matches two groups but retains the
+138/248 full-population frequency, not 138/148. Amino-acid-only grouping merges the two equal
+junctions to 188 UMIs and four groups, preserving total abundance. These are grouping and
+counting identities, not evidence of biological expansion, antigen specificity or a treatment
+effect. Four missing-count rows and four nonproductive rows are excluded by the existing
+engine; one explicit zero-count group is retained. Four source observations are not four
+independent subjects. All comparisons use small representable fixture numbers without a
+tolerance fallback. Raw native JSON remains intact separately from parsed grading values.
+
+Required AIRR columns are present, with unknown sequence/alignment fields null. The artificial
+annotations do not claim a full V(D)J alignment or a receptor-generation model. Format and null
+semantics follow the [AIRR Rearrangement schema](https://docs.airr-community.org/en/stable/datarep/rearrangements.html)
+and Vander Heiden et al., 2018, [doi:10.3389/fimmu.2018.02206](https://doi.org/10.3389/fimmu.2018.02206).
+The table's literal truth and benchmark version must change together when its meaning changes.
+Count scaling and repeats are correlated software controls, not new biological replicates.
+
+The eight tasks separately score structured answers, actual native evidence or typed refusals,
+and permission/state behavior. Correct text with no evidence cannot pass overall. Unexpected
+review, altered inputs, changed grants, failed state restoration, timeout and malformed output
+are explicit failures; they are never removed from selected-task denominators. Equivalent
+extra read queries are allowed. Mutation review is intentionally limited to the two exact
+fixture proposals, announced to the candidate. Rejection and denied/invalid calls must not be
+retried. A precision probe uses exactly representable 2^53, outside the host's permitted
+consecutive-integer range; it does not first round 2^53+1 through JavaScript.
+
+The local runner records source revision/dirty state, binary and benchmark/client hashes,
+fixture version/hash, runtime, task selection, repeated attempts, permissions and raw evidence.
+HTTP/MCP/Python/R byte parity is a transport claim, separate from independent arithmetic grading.
+Setup uses exact generated inputs and reviewed actions in a new host/library/window. Accepted
+candidate edits require exact Undo/Redo restoration; file/cache effects are not claimed erased.
+The host is offline with no network grant. A user must explicitly enable fixture grants and
+scripted review. No production approval endpoint is added. A trusted external program is
+opt-in, bounded at the protocol/process level and retains OS privileges: this is not a sandbox
+or an adversarial-agent security evaluation.
+
+The reference and empty scripts are controls, not models. Public answers can be memorized;
+passing does not measure held-out generalization, clinical validity or general research
+competence. Reports show counts and separate grades instead of an unsupported model ranking
+or confidence interval. The evaluation-context and limitation principle is consistent with
+[NIST AI RMF 1.0, 2023](https://doi.org/10.6028/NIST.AI.100-1), without claiming certification.
+Exact replay remains the five-kind certificate/headless contract; successful tool execution,
+review acceptance, state restoration and checksum identity do not enlarge its scientific scope.

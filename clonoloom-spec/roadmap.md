@@ -3459,6 +3459,8 @@ publication was performed. Slice 12 (Parquet exports) follows maintainer review 
 
 ### Slice 12: typed Parquet dataset exports
 
+**Committed and pushed as `9ed6767`.**
+
 **Plan recorded before implementation.** Follow the wave sequence: this slice implements the
 Parquet portion of O3, not release preparation. Correct the stale slice-11 closing note; keep
 application/client versions at 0.7.0. Adapt only the Apache-2.0 SituCraft v0.9.0 writer and compact
@@ -3534,6 +3536,82 @@ numeric tolerances, performance budgets or release fixtures were changed.
 Ready for maintainer review and commit. No commit, push, tag, release or publication was performed.
 Slice 13 (agent benchmark) follows; container/cluster work is slice 14 and release preparation
 remains slice 15.
+
+### Slice 13: known-truth agent benchmark
+
+**Plan recorded before implementation.** Implement A5 as a versioned local task suite, following
+CytoWeave's Apache-2.0 task/grader/reference/empty-control pattern and ClonoLoom's existing real
+host/window and Python/R validation drivers. Keep the benchmark outside the shipped runtime.
+Use a small deterministic artificial AIRR study with independently enumerated receptor groups,
+UMI counts, missingness and repeated-subject observations. Grade known arithmetic and state
+changes from code, not an LLM or the application result being treated as its own truth.
+
+Cover full-table counts, filtered frequencies with unchanged denominators, missing versus zero,
+definition-dependent grouping, explicit proposal rejection and denied/invalid calls. Distinguish
+answer correctness, observed task completion and permission behavior from scientific validity.
+Do not infer antigen specificity, biological expansion, independent replication from repeated
+samples or exact replay from successful tool execution. Keep scientific numeric evidence as
+original native JSON text, with strict structured answers and no approximate-success fallback.
+
+Run reference and empty baselines through the real local contracts; exercise HTTP, stdio MCP
+and generated Python/R clients. Provide a bounded external-program adapter with argument arrays,
+explicit opt-in, a documented JSON-lines tool/answer contract and no shell invocation. No paid
+model or external agent is run as part of implementation. Record command identity, software and
+benchmark/fixture fingerprints, task selection, repetitions, tool evidence, failures and review
+policy. Reference controls validate the harness, not agent capability; open fixtures are not a
+held-out generalization test. Never publish a model leaderboard without actual model runs.
+
+Require explicit benchmark grants and scripted-review opt-in. Use isolated temporary libraries
+and generated inputs, no network grant, bounded calls/output/deadlines and no automatic retries.
+The test reviewer may click only the exact declared fixture proposal, with explicit rejection
+tasks; it is not an agent approval API or an operating-system sandbox. Separate setup from scored
+actions. Test graders with wrong, incomplete and fabricated answers, missing evidence, changed
+state, malformed protocol and failure controls. Show task denominators and limits in a local
+accessible report, review both themes, update documentation/CI/research/requirements/changelog,
+and keep application/client version 0.7.0 and action catalog 4 unchanged. No commit or release.
+
+
+**Completed implementation.** Benchmark and fixture format 1 contain eight code-graded tasks
+on 32 artificial AIRR rows (two subjects/four observations). Literal per-group/per-sample truth
+is independently aggregated from the generated TSVs. The normal native results must retain
+five groups/248 UMIs, explicit exclusions and zero counts, and full-population denominators;
+the reviewed amino-acid-only grouping has four groups and the same abundance. The fixture is
+not a receptor-generation model, specificity validation or biological treatment simulation.
+
+The isolated runner supports HTTP, stdio MCP, Python and R with exact native text and raw
+transport evidence. HTTP pre-dispatch refusals retain their original 400/403 envelopes; client
+exceptions identify their own origin. Structured answer, evidence and permission grades remain
+separate. All selected attempts, including failures, remain in denominators. The optional
+trusted JSONL candidate adapter uses explicit argv, sequential bounded calls, strict numeric
+tokens, output/deadline limits and no shell or automatic retries. It is not an OS sandbox.
+Both host grants and exact fixture-only scripted review require explicit opt-in. Existing
+application/client versions, catalog 4, scientific methods and replay scopes remain unchanged.
+
+Validation completed locally:
+
+- All **32/32 reference tasks** passed through the four live transports. Exact native query
+  bytes match between transports; independent arithmetic grading is a separate check.
+- **0/8 no-action controls** passed, as intended. **3/3 scripted JSONL controls** and **6/6
+  scaled/repeated controls** passed. Repeated native evidence is identical. These are scripts,
+  not evaluated models; neither repetitions nor count scaling establish independent samples.
+- A live negative control refused an out-of-policy action and rejected an unexpected proposal,
+  preserving project/input state. Correct answers and native evidence did not override its
+  permission failure. Unit controls cover malformed/duplicate/concurrent/oversize protocol,
+  timeouts, call limits, numeric rounding, incorrect science, omitted evidence and state drift.
+- **209 JavaScript tests** passed (169 existing plus 40 benchmark checks). Focused Go race tests
+  for MCP/remote/client contracts, Go vet and the 64-action generated-client drift check passed.
+  No Go runtime or scientific worker changed; the earlier full scientific suite was not rerun.
+- The report's **four desktop/phone, light/dark layouts** passed axe-core and overflow checks.
+  The mobile scrolling table was made keyboard-focusable. Both-theme screenshots were inspected.
+  A saved-report validation command rechecks grades/hashes and presentation without rerunning
+  scientific actions. The site build checks 59 pages and 72 screenshot assets; all **232**
+  site accessibility/layout checks passed. Final focused R definition/precision checks passed
+  after tightening exact grant validation and runtime-version provenance.
+
+The runner guide, scientific interpretation, site page, automation guide, conventions,
+requirements, research §5.54, NOTICE, changelog and CI are updated. CI runs only local controls,
+never a paid model. No commit, tag, release or publication was made. Slice 14 (container/cluster)
+is next; release preparation remains slice 15.
 
 ## Later waves (outlined)
 

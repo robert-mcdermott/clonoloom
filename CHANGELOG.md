@@ -4,6 +4,16 @@
 
 ### Added
 
+- **Agent contract benchmark (wave 8, slice 13).** Add eight versioned tasks on independently
+  enumerated artificial AIRR inputs, with separate answer, native-evidence and permission
+  grades. Exercise counts, fixed denominators, missing versus zero, reviewed grouping changes
+  and refusals through HTTP, MCP, Python and R. Require explicit fixture grants and scripted
+  review; retain exact scientific JSON, provenance, failures and task denominators. Add a
+  bounded opt-in JSONL candidate adapter, scripted/empty controls, accessible both-theme
+  reports and CI. Public controls validate the harness, not general model or scientific
+  competence. No model service is run by default; the local candidate is not OS-sandboxed.
+  Keep version 0.7.0, catalog 4, scientific workers and exact replay contracts unchanged.
+
 - **Typed Parquet dataset exports (wave 8, slice 12).** Export native clonotypes and retained
   AIRR rearrangements with nullable integer counts, boolean flags, explicit sample-column maps,
   definition/QC/units, provider notices and hashed inventories. Preserve invariant-rule

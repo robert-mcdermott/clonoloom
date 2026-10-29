@@ -108,9 +108,9 @@ jobs:
       - name: Syntax check
         run: |
           shopt -s nullglob
-          for file in web/app.js web/ui/*.js web/lib/*.js web/workers/*.js validation/*.mjs docs/capture/*.mjs docs/examples/*.mjs docs/site/*.mjs docs/site/assets/*.js; do node --check "$file"; done
+          for file in web/app.js web/ui/*.js web/lib/*.js web/workers/*.js benchmark/*.mjs validation/*.mjs docs/capture/*.mjs docs/examples/*.mjs docs/site/*.mjs docs/site/assets/*.js; do node --check "$file"; done
       - name: node --test
-        run: node --test "web/lib/**/*.test.mjs"
+        run: node --test "web/lib/**/*.test.mjs" benchmark/*.test.mjs
       - name: The website built, every link, anchor and screenshot checked (docs/site/build.mjs)
         run: node docs/site/build.mjs "$RUNNER_TEMP/site"
       - name: Validation
@@ -189,6 +189,12 @@ jobs:
       - name: R and Python exact evidence and reviewed actions on the same host
         if: matrix.r == 'release'
         run: node clients/test-clients.mjs --r
+      - name: Agent benchmark controls through HTTP, MCP, Python and R
+        if: matrix.r == 'release'
+        run: |
+          go build -o "$RUNNER_TEMP/clonoloom-benchmark" .
+          node validation/fetch.mjs axe-core
+          node validation/agent-benchmark.mjs "$RUNNER_TEMP/clonoloom-benchmark" "$RUNNER_TEMP/agent-benchmark"
 
   data:
     name: Readers on real data
