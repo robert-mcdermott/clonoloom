@@ -20,8 +20,10 @@ try{
   exec(engine,['create','--name',name,image]);created=true;
   const archive=join(out,'runtime.tar');exec(engine,['export','--output',archive,name]);
   const members=exec('tar',['-tf',archive]).trim().split('\n').map(p=>p.replace(/^\.\//,''));
-  const permitted=new Set(['clonoloom','licenses/LICENSE','licenses/NOTICE','licenses/GO-LICENSE','licenses/GO-PATENTS','etc/hosts','etc/hostname','etc/resolv.conf','run/.containerenv','.dockerenv']);
-  assert(members.filter(p=>!p.endsWith('/')&&p!=='').every(p=>permitted.has(p)),'Unexpected runtime payload');
+  // Docker also creates a console mount placeholder and the conventional /proc/mounts link.
+  const permitted=new Set(['clonoloom','licenses/LICENSE','licenses/NOTICE','licenses/GO-LICENSE','licenses/GO-PATENTS','etc/hosts','etc/hostname','etc/resolv.conf','etc/mtab','dev/console','run/.containerenv','.dockerenv']);
+  const unexpectedMembers=members.filter(p=>!p.endsWith('/')&&p!==''&&!permitted.has(p));
+  assert.equal(unexpectedMembers.length,0,'Unexpected runtime payload: '+JSON.stringify(unexpectedMembers));
   for(const p of ['clonoloom','licenses/LICENSE','licenses/NOTICE','licenses/GO-LICENSE','licenses/GO-PATENTS'])assert(members.includes(p),p);
   writeFileSync(join(out,'inventory.json'),JSON.stringify({contextFiles:files.length,runtimeMembers:members},null,2)+'\n');
   console.log(`Build context: ${files.length} allowlisted source/assets; injected excluded files absent. Runtime contains only the native program, licenses, mount points and engine-created files.`);

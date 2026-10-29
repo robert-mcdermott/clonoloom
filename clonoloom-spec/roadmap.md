@@ -16,8 +16,9 @@ requirement's status is in `requirements.md`; release changes are in `CHANGELOG.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–7 are merged and
 released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
 with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
-`wave8` branch. Slices 1–14 are committed and pushed, most recently `7e96917`.
-Slice 15 completes the worked study and release preparation below. No 0.8.0 release is made.
+`wave8` branch. Slices 1–15 are committed and pushed, most recently `4573c93`.
+Slice 15 completes the worked study and release preparation below; CI portability corrections
+are recorded in its follow-up. No 0.8.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -3800,11 +3801,25 @@ Validation completed locally:
   probabilities in **41.955 s**; 100,000 paired-TCR neighbors in **36.597 s**, using **1.3 GB**.
   Original limits remain unchanged; these are local timings, not universal runtime promises.
 
-**Slice 15 is implemented and validated, awaiting maintainer commit.** Wave 8 implementation
-and release preparation are complete. No commit, push, PR, merge, tag, release, image publication,
-scheduler submission or product-site publication was performed. After review, commit/push and
-passing CI, the maintainer can create the wave-8 PR and follow the usual merge/release/site
-sequence. Wave 9 planning follows that release; no wave-9 implementation was started.
+**Slice 15 committed and pushed as `4573c93`.** Wave 8 implementation and release preparation
+are complete. CI run `40807882153` found two early portability failures: Docker adds
+`dev/console` and `etc/mtab` to exported containers, unlike the locally tested Podman inventory;
+the old-R job passed package checks but failed when setup-uv tried to save an unused cache.
+The R matrix then cancelled the release-R job.
+
+**CI follow-up, awaiting maintainer commit.** Allow those two exact engine-created paths and
+report unexpected runtime member names. Disable the unused container/old-R uv caches and
+let both R matrix jobs complete independently. Real Docker validation additionally exposed
+the Podman-only bare `rw` bind-mount option; use explicit `readonly=false` in both the command
+helper and validation, preserving writable-output/scratch and read-only-input boundaries.
+Actual Docker and Podman Linux arm64 checks pass for both source kinds, all five exact replay
+kinds, array tasks, refusals and SIGTERM cleanup. Docker's filtered build context contains
+345 allowed inputs; exclusion canaries stay absent and an injected unexpected runtime file
+is rejected by name. All 231 JavaScript tests pass. No scientific worker, tolerance, fixture
+or permission scope changed. Hosted CI must pass on the follow-up before the maintainer
+creates the wave-8 PR and follows the usual merge/release/site sequence. No commit, push, PR,
+merge, tag, release, image publication, scheduler submission or product-site publication was
+performed for this follow-up. Wave 9 planning follows that release; no wave-9 work was started.
 
 ## Later waves (outlined)
 

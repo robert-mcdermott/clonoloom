@@ -158,6 +158,14 @@
   replay, MCP and generated clients follow in the recorded Wave 8 sequence.
 
 
+### Fixed
+
+- **Docker and CI portability.** Recognize Docker's engine-created console placeholder and
+  mount-table link in the minimal runtime inventory, while naming and rejecting unexpected
+  payload files. Use explicit `readonly=false` bind mounts accepted by both Docker and Podman
+  in the command helper and validation. Disable unused uv caches and let both R matrix jobs
+  finish independently; the old-R package checks had passed before cache cleanup failed.
+
 ### Validation
 
 - Complete root/internal Go race coverage in bounded batches, with timed-out cohort replay
@@ -173,6 +181,9 @@
 - All 126 browser scene checks pass across both themes; all 73 screenshot pairs are reviewed.
   The 61-page site passes 240 accessibility/layout checks; all 14 application contrast checks
   pass. Scientific calculations, replay tolerances and older release fixtures are unchanged.
+- The CI follow-up passes actual Docker and Podman container contracts on Linux arm64,
+  Docker build-context exclusion and unexpected-runtime-file controls, and all 231 JavaScript
+  tests. Exact scientific replay and permission boundaries remain unchanged.
 
 ## 0.7.0 — 2026-10-27
 

@@ -56,7 +56,7 @@ function commandFixture(dir){const inputs=join(dir,'inputs'),outputs=join(dir,'o
 test('container command pins an image and explicitly scopes all writable mounts and grants',()=>temporary(dir=>{
   const args=commandFixture(dir),command=containerCommand(...args,{uid:501,gid:20});
   for(const flag of ['--pull=never','--network=none','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges'])assert(command.includes(flag));
-  assert(command.includes('type=bind,src='+realpathSync(args[2])+',dst=/inputs,ro'));assert(command.includes('type=bind,src='+realpathSync(args[5])+',dst=/output,rw'));
+  assert(command.includes('type=bind,src='+realpathSync(args[2])+',dst=/inputs,ro'));assert(command.includes('type=bind,src='+realpathSync(args[5])+',dst=/output,readonly=false'));
   assert(command.includes('evidence=/inputs/evidence.clz'));assert(!command.includes('--accept-terms'));assert(!command.includes('--privileged'));
   assert(!existsSync(join(args[5],'new-run')),'printing created an output');
   args[0]='podman';assert(containerCommand(...args,{uid:501,gid:20}).includes('--read-only-tmpfs=false'));

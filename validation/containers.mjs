@@ -33,7 +33,7 @@ const user=`${process.getuid()}:${process.getgid()}`;
 // Refuse root rather than weakening private fixture ownership to make a test pass.
 assert(process.getuid()!==0,'Run this validation as a non-root host user so mount ownership is meaningful');
 const restrictions=['--network=none','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges','--user',user,'--pids-limit=128','--memory=1g','--cpus=2',...(engine==='podman'?['--read-only-tmpfs=false']:[])];
-const mounts=['--mount',`type=bind,src=${inputs},dst=/inputs,ro`,'--mount',`type=bind,src=${outputs},dst=/output,rw`];
+const mounts=['--mount',`type=bind,src=${inputs},dst=/inputs,ro`,'--mount',`type=bind,src=${outputs},dst=/output,readonly=false`];
 const scratch=['--tmpfs','/scratch:rw,noexec,nosuid,nodev,size=1g,mode=1777'];
 const run=(args,options={})=>exec(engine,['run','--rm',...restrictions,...mounts,...(options.noScratch?[]:scratch),imageID,...args],options);
 const before=new Map();
@@ -107,7 +107,7 @@ writeFileSync(join(inputs,'cancel.json'),JSON.stringify({format:'clonoloom-run-r
 const scratchDir=join(dir,'scratch');mkdirSync(scratchDir);snapshot(inputs);
 const name='clonoloom-cancel-'+process.pid;
 try{
-  await exec(engine,['run','-d','--name',name,...restrictions,...mounts,'--mount',`type=bind,src=${scratchDir},dst=/scratch,rw`,imageID,'run','--recipe','/inputs/cancel.json','--input','source=/inputs/large.tsv','--out','/output/cancel']);
+  await exec(engine,['run','-d','--name',name,...restrictions,...mounts,'--mount',`type=bind,src=${scratchDir},dst=/scratch,readonly=false`,imageID,'run','--recipe','/inputs/cancel.json','--input','source=/inputs/large.tsv','--out','/output/cancel']);
   const deadline=Date.now()+15000;
   while(!readdirSync(scratchDir).length&&Date.now()<deadline)await new Promise(r=>setTimeout(r,20));
   assert(readdirSync(scratchDir).length,'native scratch/cancellation handler did not become ready');

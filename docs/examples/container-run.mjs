@@ -31,7 +31,7 @@ export function containerCommand(engine,image,input,recipeName,taskID,output,nam
   }
   return [engine,'run','--rm','--pull=never','--network=none','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges',
     '--user',`${uid}:${gid}`,'--pids-limit=128','--memory=1g','--cpus=2',...(engine==='podman'?['--read-only-tmpfs=false']:[]),
-    '--mount',`type=bind,src=${inputs},dst=/inputs,ro`,'--mount',`type=bind,src=${outputs},dst=/output,rw`,
+    '--mount',`type=bind,src=${inputs},dst=/inputs,ro`,'--mount',`type=bind,src=${outputs},dst=/output,readonly=false`,
     '--tmpfs','/scratch:rw,noexec,nosuid,nodev,size=1g,mode=1777',image,'run','--recipe',`/inputs/${recipeName}`,'--task',taskID,
     ...task.inputs.flatMap(i=>['--input',`${i.name}=/inputs/${i.file}`]),'--out',`/output/${name}`];
 }

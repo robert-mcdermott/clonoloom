@@ -134,6 +134,7 @@ jobs:
         with:
           version: '0.13.1'
           python-version: '3.13'
+          enable-cache: false # The container oracle uses only the Python standard library.
       - name: Explicit build context allowlist is current
         run: node validation/container-context-files.mjs
       - name: Local image only; offline compilation and explicit source revision
@@ -187,6 +188,7 @@ jobs:
     if: needs.changed.outputs.test == 'true'
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         r: ['release', 'oldrel-1']
     steps:
@@ -205,6 +207,7 @@ jobs:
         with:
           version: '0.13.1'
           python-version: '3.13'
+          enable-cache: ${{ matrix.r == 'release' }} # Only the live cross-client checks install Python dependencies.
       - name: R packages for client and validation
         run: Rscript -e 'install.packages(c("curl", "jsonlite", "testthat", "withr", "pkgload"))'
       - name: Catalog and generated clients are current
