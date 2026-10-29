@@ -1411,6 +1411,49 @@ const scenes = {
     await js(`(() => { const note = document.createElement('p'); note.className = 'callout'; note.textContent = 'Simulated ADC response for documentation. Three repertoire records, two declared subject IDs; no real participants or live repository request.'; document.querySelector('.adc-browser').prepend(note); })()`);
     await checkAccessibility();
   },
+  async 'adc-download'() {
+    await scenes.adc();
+    await js(`document.querySelector('[aria-label="Inspect SIM-R01-baseline"]').click()`);
+    await js(`[...document.querySelectorAll('.adc-browser button')].find((b) => b.textContent === 'Download this repertoire…').click()`);
+    await js(`(() => {
+      const set = (label, value) => { const el = document.querySelector('[aria-label="' + label + '"]'); el.value = value; el.dispatchEvent(new Event('input')); };
+      window.adcDownloadCapture = { mode: 'ok', calls: 0 };
+      set('Processing ID', 'SIM-process-01'); set('Permission evidence', 'Simulated provider terms; artificial fixture only. No real repository is contacted.'); set('Source citation', 'ClonoLoom simulated longitudinal TRB metadata, documentation fixture.');
+      const original = window.fetch;
+      window.fetch = async (address, options) => {
+        if (String(address).endsWith('api/adc/download')) {
+          window.adcDownloadCapture.calls++;
+          if (window.adcDownloadCapture.mode === 'error') return new Response(JSON.stringify({error: 'Simulated provider failure; no capture installed.'}), {status: 502});
+          if (window.adcDownloadCapture.mode === 'delay') await new Promise((resolve, reject) => options.signal.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError'))));
+          const request = JSON.parse(options.body);
+          if (!request.accept || request.processing !== 'SIM-process-01') throw new Error('Download review not preserved');
+          return new Response(JSON.stringify({ path: 'Simulated capture — no files written', manifest: { records: 100, stop: 'page-budget', notice: 'Simulated bounded capture. Completeness not established.' } }));
+        }
+        return original(address, options);
+      };
+    })()`);
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Review download').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Prepared locally')`);
+    if (!(await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').disabled`))) throw new Error('Download enabled before acceptance');
+    await js(`document.querySelector('[aria-label="Accept download terms"]').click()`);
+    await js(`window.adcDownloadCapture.mode = 'delay'; [...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').click()`);
+    await waitFor(`window.adcDownloadCapture.calls === 1`);
+    await js(`document.querySelector('[aria-label="Accept download terms"]').click(); document.querySelector('[aria-label="Accept download terms"]').click(); [...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').click()`);
+    if (await js('window.adcDownloadCapture.calls') !== 1) throw new Error('Concurrent download allowed');
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Cancel download').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Cancelled locally')`);
+    await js(`window.adcDownloadCapture.mode = 'error'; [...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Review download').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Prepared locally')`);
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Simulated provider failure')`);
+    await js(`window.adcDownloadCapture.mode = 'ok'; document.querySelector('[aria-label="Source citation"]').dispatchEvent(new Event('input'))`);
+    if (!(await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').disabled`))) throw new Error('Changed request remained approved');
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Review download').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Prepared locally')`);
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('page-budget')`);
+    await checkAccessibility();
+  },
   // The Data view of the PBMC 1k T cells: the dataset, its validation and samples; its files and
   // license in the inspector.
   async 'native-reports'() {

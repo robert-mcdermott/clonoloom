@@ -3787,3 +3787,25 @@ The example's numeric collection-time value and separate ontology unit follow th
 [AIRR 1.4.1 metadata schema](https://github.com/airr-community/airr-standards/blob/v1.4.1/specs/airr-schema.yaml)
 referenced by the pinned ADC specification. This format-specific check does not turn the sparse
 artificial fixture into a complete MiAIRR submission.
+
+### 5.64 Bounded ADC retrieval and provenance
+
+The [pinned ADC v1 documentation](https://docs.airr-community.org/en/v1.5.1/api/adc_api.html)
+distinguishes repertoire metadata from rearrangement retrieval. Its rearrangement identifiers
+include repertoire and processing scope. Reviewed 2026-10-29; no provider implementation was
+examined. Downloads require one explicit repertoire/processing pair, verified against fresh
+metadata and every returned row. They retain exact JSON rather than guessing a count unit,
+flattening nested extensions or treating several processing runs as independent subjects.
+
+A bounded collection of live offset pages is not an atomic snapshot. Even a terminal empty
+page cannot prove complete cohort ascertainment. Captures therefore retain page-budget versus
+empty-page stop evidence while keeping completeness unestablished. Duplicate IDs abort rather
+than being deduplicated silently; omission caused by concurrent updates cannot be excluded.
+Permission evidence is a human-reviewed statement, not an inferred provider license. Byte
+hashes preserve observations, not scientific correctness or publisher authenticity.
+
+Original pages, requests, response hashes and retrieval times are saved separately with a
+completion manifest. No remote name controls a path, existing captures are never replaced,
+and failed/cancelled work is removed. These source captures do not enlarge exact local replay
+or constitute an analysis dataset. Tests use declared artificial metadata and exact numeric
+stress values, not invented research findings; the UI makes those fixture limits visible.

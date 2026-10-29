@@ -4272,6 +4272,58 @@ scientific identity 1, historical fixtures, numerical tolerances, automation per
 replay kinds remain unchanged. No commit, push, tag, release or publication was made. Slice 8
 has not started.
 
+### Slice 8: bounded ADC downloads and durable provenance
+
+**Slice 7 committed as `93d4041`. Plan before implementation.** Download one explicitly
+selected repository/repertoire/processing scope per bundle. Review provider permission evidence,
+citation, unknown total size and fixed request/byte/page budgets before starting. Capture exact
+metadata and rearrangement JSON pages, requests, timestamps and hashes. Install into a new
+private directory only after validation; failures/cancellation leave no successful bundle.
+Keep partial/live-pagination limits explicit even when a terminal empty page is observed.
+No automatic subject pooling, analysis, redistribution grant or change to replay/automation.
+
+
+**Implemented and validated; awaiting maintainer commit.** The repertoire inspector opens a
+separate download review. One explicit action authorizes fresh metadata plus a bounded sequence
+of rearrangement requests for one repository/repertoire/processing pair. Provider permission
+and citation are recorded by the person, not inferred from a server software license. Total
+size is unknown; review shows exact requests and limits of 10 pages, 1,000 rows/page, 8 MiB per
+response and five minutes overall. Existing offline, origin, loopback and HTTPS restrictions apply.
+
+Captures preserve original JSON pages and exact numeric tokens. A versioned manifest records
+scope, provider permission evidence, citation, contract/registry revision, requests and hashes,
+retrieval times, response hashes/bytes, row counts and stop reason. Fresh metadata must match
+exactly one processing entry. Mixed scopes, repeated sequence IDs, malformed pages and request
+failures abort; unfinished work is removed. New private directories prevent overwriting prior
+captures; provider identifiers never become paths. A completion manifest is written last.
+
+Page-budget and empty-page stops both retain unestablished completeness. Concurrent repository
+updates can omit rows even when no duplicate is seen. No scientific validity, independent
+subjects, redistribution permission or exact remote replay is certified. Original source JSON
+is installed as an evidence bundle; it is not automatically converted or opened as an analysis
+dataset. Public-cohort use remains slice 9. No new automation actions or replay kinds are added.
+
+Validation completed:
+
+- Full application race suite passes in **1,165.284 s**, including historical projects, archives,
+  reports and exact headless replay. Full internal/scientific coverage passes, with reference
+  validation in **999.281 s** and the existing optional-data/performance skips.
+- Native/API controls pass for review, offline refusal, bounded paging, exact source bytes,
+  ambiguous processing metadata, repeated IDs, mismatched scope, cancellation, failed-install
+  cleanup and distinct destinations. Final focused race and amd64 controls pass.
+- The independent standard-library JSON/Decimal/SHA-256 checker verifies actual native captures,
+  including exact request predicates, hashes, offsets, row scopes and stop states. No external
+  repository or provider implementation is needed for validation.
+- Both-theme browser checks pass for acceptance, invalidated review, cancellation, provider
+  failures and concurrent-submit prevention. Final screenshots are visually reviewed and clearly
+  simulated. All **233 JavaScript tests**, Go vet and six CGO-free platform builds pass.
+- The site builds **61 pages / 81 screenshot pairs** and passes **240** accessibility/layout
+  checks. The container context includes **368** explicit inputs; `git diff --check` is clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical fixtures, numerical tolerances,
+automation permissions and exact replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 9 has not started.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |

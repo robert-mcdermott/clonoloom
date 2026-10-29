@@ -7,8 +7,8 @@ query**. Opening the dialog and editing filters contact only the local ClonoLoom
 
 No dataset, sequence, receptor, project or file is read to construct these requests. Only the
 values entered in the form are sent. Do not enter private identifiers into a public query.
-Results stay in the dialog's memory; this slice does not install data or write a provenance
-archive. Download review and installation belong to slice 8, public-cohort comparison to slice 9.
+Query results stay in the dialog's memory until a separate reviewed download captures fresh
+source evidence (below). Public-cohort comparison belongs to slice 9.
 
 ## Pinned contract and destinations
 
@@ -116,3 +116,53 @@ responses, byte/record bounds, precision, pagination, redirects, errors and canc
 controls exercise both themes, raw evidence, manual paging, stale/cancelled responses, errors and
 offline state. Captures inject a labeled simulated response; no live repository is required by
 CI and these checks do not claim that every listed service is currently operational.
+
+## Reviewed downloads (wave 9, slice 8)
+
+Inspect a returned repertoire, then choose **Download this repertoire…**. Enter one exact
+`data_processing_id` from its metadata, provider permission evidence (including a source URL),
+and a study citation. **Review download** is local: it shows both endpoints, the exact metadata
+and initial rearrangement requests, and the page/byte budget. Total source size is unknown;
+the displayed budget is not an estimate. Check the permission acknowledgment before starting.
+Provider terms must be reviewed by the person; neither metadata nor registry membership grants
+reuse or redistribution rights. The saved statement records the person's review, not a license
+inferred or verified by ClonoLoom. Unsupported processing filters fail visibly.
+
+One action authorizes the displayed bounded sequence of requests: one fresh metadata query,
+then up to 10 rearrangement pages of 1–1000 records each. The maximum decoded response budget
+is 88 MiB, including metadata, with a five-minute total deadline and the existing 45-second,
+8-MiB per-response limits. The metadata must contain exactly the selected repertoire and one
+matching processing entry. Every rearrangement must name that exact repertoire/processing pair
+and a unique string sequence ID. Repeated IDs, mismatched scope, malformed pages or failed
+requests abort the capture and remove the unfinished directory. Short nonempty pages advance
+by their actual record count; an empty page stops retrieval. No retry or redirect occurs.
+
+The capture is saved in a newly created private `adc-download-*` folder in the configured
+library. Remote identifiers never become paths. Existing captures are never overwritten.
+`metadata.json` and `page-NNN.json` contain the original decoded response bytes, including all
+unknown fields and exact JSON numbers. `manifest.json`, written last, records the contract,
+registry revision, reviewed scope/permission/citation/budgets, every exact request and its hash,
+endpoint, retrieval time, source file name/hash/byte count, record counts and stop reason.
+Keep the manifest and original pages together. SHA-256 verifies bytes, not publisher identity.
+A process crash can leave a folder without a completion manifest; it is not a finished capture.
+
+Stop reasons distinguish **page-budget** from **empty-page**. Both retain
+`completeness: not-established`: live offsets have no stable-snapshot guarantee. An empty page
+does not prove a complete cohort. No subjects or processing runs are silently pooled, and no
+counts, units, pairing, specificity or scientific validity are inferred. Captured JSON is a
+source-evidence bundle, not an automatically opened analysis dataset, AIRR TSV conversion or
+replay certificate. Public-cohort analysis follows separately. No archive extraction is needed.
+
+Cancel, edit an input, or close the dialog to cancel locally. A request already received by a
+provider cannot be retracted; if installation finished before cancellation arrived, its complete
+capture may remain. `--offline` refuses download before creating a directory or contacting a
+repository. No new MCP/Python/R action or automation grant is introduced.
+
+For an independent byte/scope check of a saved capture, run:
+
+```bash
+UV_CACHE_DIR=/tmp/clonoloom-uv uv run --offline --no-project \
+  validation/reference/adc_download.py /absolute/path/to/adc-download-folder
+```
+
+This check does not certify provider authenticity, license permission or scientific validity.

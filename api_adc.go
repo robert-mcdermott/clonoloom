@@ -10,6 +10,8 @@ import (
 )
 
 func (a *app) registerADC(mux *http.ServeMux) {
+	mux.HandleFunc("POST /api/adc/download", a.adcDownload)
+	mux.HandleFunc("POST /api/adc/download/preview", a.adcDownload)
 	mux.HandleFunc("GET /api/adc/repositories", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, map[string]any{"repositories": adc.Repositories(), "contract": adc.Contract, "registryRevision": adc.RegistryRevision, "registrySHA256": adc.RegistrySHA256, "offline": a.adc.Offline, "maxPage": adc.MaxPage, "maxOffset": adc.MaxOffset})
 	})

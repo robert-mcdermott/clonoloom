@@ -1,4 +1,5 @@
 // Public metadata browsing sends only the fields entered here. No dataset/project access.
+import { showADCDownload } from './adc-download.js';
 import { h, clear } from './dom.js';
 import { showDialog } from './overlays.js';
 
@@ -67,7 +68,7 @@ export function showADC() {
     const detail = h('div.adc-detail');
     const label = (text, missing = 'Not supplied') => text ? (text.length > 240 ? `${text.slice(0, 240)}…` : text) : missing;
     function inspect(row) {
-      clear(detail); detail.append(h('details', { open: true }, h('summary', `Original repertoire · ${row.id}`), h('pre.adc-json', { tabIndex: 0 }, row.rawJSON)));
+      clear(detail); detail.append(h('details', { open: true }, h('summary', `Original repertoire · ${row.id}`), h('pre.adc-json', { tabIndex: 0 }, row.rawJSON)), h('button.btn', { disabled: offline, onclick: () => showADCDownload(page.repository.id, row.id) }, 'Download this repertoire…'));
     }
     if (page.records.length) result.append(h('div.adc-table', { tabIndex: 0 }, h('table.data',
       h('thead', h('tr', ...['Repertoire', 'Study / title', 'Subject ID', 'Evidence'].map((x) => h('th', { scope: 'col' }, x)))),

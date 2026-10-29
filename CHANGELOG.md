@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Reviewed ADC downloads (wave 9, slice 8).** Capture one explicitly selected repertoire
+  and processing run after permission/citation and size-budget review. Preserve exact metadata
+  and rearrangement pages, requests, timestamps, hashes and stop reasons in new private folders.
+  Refuse mixed scopes, repeated identities and malformed pages; clean up failed/cancelled work.
+  Keep completeness unproven and source captures separate from analysis datasets and replay.
+  Add native/API controls and simulated both-theme review validation.
+
 - **AIRR Data Commons metadata browsing (wave 9, slice 7).** Pin the ADC v1 contract and
   approved repository registry. Preview exact metadata filters, endpoints and bounded pages
   before each explicit request. Preserve original response text, exact numeric tokens and
