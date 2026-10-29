@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Sample-scoped CytoWeave phenotype links (wave 9, slice 13).** Review one index-sort
+  acquisition against one explicitly selected receptor sample using a separate well-to-cell
+  mapping. Preserve exact CSV/provenance text, numeric strings, missingness and unmatched
+  identities; refuse ambiguous wells, event IDs and cell targets. Retain declared acquisition,
+  compensation and gating context without inferring biological pairing or phenotype validity.
+  Add native permission/refusal controls, actual sibling FCS/exporter interoperability,
+  independent CSV/hash checks and artificial both-theme review validation.
+
 - **Reviewed Proteoscope handoff (wave 9, slice 12).** Transfer one unchanged AIRR amino-acid
   observation to an explicitly reviewed local Proteoscope 0.10.0 for public RCSB sequence search.
   Require separate local/public permissions and applicable provider-term acknowledgment. Preserve

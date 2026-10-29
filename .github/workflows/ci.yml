@@ -189,6 +189,14 @@ jobs:
           go test -run TestProteoscope .
           uv run --no-project validation/reference/proteoscope.py "$CLONOLOOM_HANDOFF_OUT"
 
+      - name: Exact sample-scoped CytoWeave phenotype links
+        if: matrix.python == '3.13'
+        env:
+          CLONOLOOM_CYTOWEAVE_OUT: ${{ runner.temp }}/cytoweave-links
+        run: |
+          go test -run TestCytoWeave .
+          uv run --no-project validation/reference/cytoweave.py "$CLONOLOOM_CYTOWEAVE_OUT"
+
   r-client:
     name: R client (${{ matrix.r }})
     needs: changed

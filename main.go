@@ -517,6 +517,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerWorkbooks(mux)
 	a.registerPrism(mux)
 	a.registerProteoscope(mux)
+	a.registerCytoWeave(mux)
 	a.registerAnalyses(mux)
 	a.registerTCRdist(mux)
 	a.registerPgen(mux)

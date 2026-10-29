@@ -411,6 +411,33 @@ async function capturedCertificateScene(kind) {
 }
 
 const scenes = {
+  async cytoweave() {
+    await act('new_project',{name:'Artificial index-sort links'});
+    await act('open_data',{paths:[join(ROOT,'testdata/cytoweave/receptors.tsv')],name:'Artificial single-cell receptor controls'});
+    await act('show',{view:'Data'});
+    const inputs={sample:0,wells:readFileSync(join(ROOT,'testdata/cytoweave/wells.csv'),'utf8'),mapping:readFileSync(join(ROOT,'testdata/cytoweave/mapping.csv'),'utf8'),provenance:readFileSync(join(ROOT,'testdata/cytoweave/provenance.json'),'utf8')};
+    const open=()=>js(`(async()=>{const app=window.clonoloom,{showCytoWeave}=await import('/ui/cytoweave.js');showCytoWeave(app,app.store.project.datasets[0]);return true})()`);
+    await open();
+    if(await js("document.querySelector('.cyto-sample').value!==''"))throw Error('Sample implicitly selected');
+    // Exercise actual browser File decoding, including a UTF-8 BOM, before review.
+    inputs.wells='\ufeff'+inputs.wells;
+    await js(`(()=>{const s=document.querySelector('.cyto-sample');s.value='0';s.dispatchEvent(new Event('change'));return true})()`);
+    for(const [i,key]of ['wells','mapping','provenance'].entries()){
+      await js(`(()=>{const input=document.querySelectorAll('.cytoweave-view input[type=file]')[${i}],dt=new DataTransfer();dt.items.add(new File([${JSON.stringify(inputs[key])}],${JSON.stringify(key+(key==='provenance'?'.json':'.csv'))}));input.files=dt.files;input.dispatchEvent(new Event('change'));return true})()`);
+      await waitFor('!window.clonoloom.cytoweaveView.state().busy');
+    }
+    await js(`(async()=>{const v=window.clonoloom.cytoweaveView;await v.inspect();const r=v.state().review.evidence.result;if(r.matched!==80||r.absentTargets!==10||r.unmapped!==6||r.receptorOnly.length!==4)throw Error('Scope or missingness changed');return true})()`);
+    await js(`(async()=>{const v=window.clonoloom.cytoweaveView,original=URL.createObjectURL;window.cytoDownloads=[];URL.createObjectURL=b=>{window.cytoDownloads.push(b);return original(b)};try{await v.save()}finally{URL.createObjectURL=original}return true})()`);
+    const saved=await js('window.cytoDownloads[0].text()');if(JSON.parse(saved).wells.text!==inputs.wells)throw Error('Download changed source');
+    if(process.env.CLONOLOOM_CYTOWEAVE_OUT){const dir=join(process.env.CLONOLOOM_CYTOWEAVE_OUT,`browser-${await js("matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'")}`);mkdirSync(dir,{recursive:true});writeFileSync(join(dir,'links.json'),saved);}
+    // Reused barcodes link only in the selected sample; duplicate wells refuse the whole join.
+    await js(`(async()=>{const v=window.clonoloom.cytoweaveView,x=${JSON.stringify(inputs)};v.configure({...x,sample:1});await v.inspect();if(v.state().review.evidence.result.matched!==3)throw Error('Cross-sample fallback');v.configure({...x,wells:x.wells+x.wells.split('\\n')[1]+'\\n'});let refused=false;try{await v.inspect()}catch{refused=true}if(!refused)throw Error('Ambiguous well accepted');v.configure(x);return true})()`);
+    // Delay the actual native response: concurrent work, cancellation and stale project edits.
+    await js(`(async()=>{const v=window.clonoloom.cytoweaveView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);entered();await gate;return response};try{const pending=v.inspect();await started;let refused=false;try{await v.inspect()}catch{refused=true}if(!refused)throw Error('Concurrent review');[...document.querySelectorAll('.cytoweave-view button')].find(b=>b.textContent==='Cancel phenotype operation').click();release();let cancelled=false;try{await pending}catch{cancelled=true}if(!cancelled||v.state().review)throw Error('Cancelled review retained');}finally{release();window.fetch=original}return true})()`);
+    await js(`(async()=>{const app=window.clonoloom,v=app.cytoweaveView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);entered();await gate;return response};try{const pending=v.inspect();await started;app.store.commit({...app.store.project,cytoSentinel:'keep'},'Concurrent phenotype edit');release();let refused=false;try{await pending}catch{refused=true}if(!refused||v.state().review)throw Error('Stale review retained');}finally{release();window.fetch=original}v.close();app.store.undo();return true})()`);
+    await open();await js(`(async()=>{const v=window.clonoloom.cytoweaveView;v.configure(${JSON.stringify(inputs)});await v.inspect();return true})()`);
+    await clearToasts();await checkAccessibility();
+  },
   async proteoscope() {
     const sent=[];
     const receiver=createHTTPServer(async(req,res)=>{

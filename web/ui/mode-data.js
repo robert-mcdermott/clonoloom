@@ -5,6 +5,7 @@
 
 import { showNativeReport } from './native-reports.js';
 import { showProteoscope } from './proteoscope.js';
+import { showCytoWeave } from './cytoweave.js';
 import { showADCOverlap } from './adc-overlap.js';
 import { showADC } from './adc.js';
 import { showAIRRObjects } from './airr-objects.js';
@@ -74,6 +75,7 @@ export function mountData(app, container) {
     if (shown && app.datasetStates.get(shown.id)?.summary?.metadata?.some((file) => file.objects)) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showAIRRObjects(app, shown) }, 'Inspect AIRR objects'));
     if (shown && app.datasetStates.get(shown.id)?.summary?.sources?.some((file) => file.nativeEvidence)) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showNativeReport(app, shown) }, 'Inspect native report'));
     if (shown) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showProteoscope(app, shown) }, 'Proteoscope handoff'));
+    if (shown) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showCytoWeave(app, shown) }, 'CytoWeave phenotype links'));
     body.append(samplesSection());
   }
 

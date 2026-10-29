@@ -26,6 +26,8 @@
 !api_conga.go
 !api_contamination.go
 !api_convergence.go
+!api_cytoweave.go
+!api_cytoweave_source.go
 !api_datasets.go
 !api_deidentification.go
 !api_diversity.go
@@ -116,6 +118,7 @@
 !internal/countmodel/design.go
 !internal/countmodel/export.go
 !internal/countmodel/glm.go
+!internal/cytolink/link.go
 !internal/diversity/bootstrap.go
 !internal/diversity/diversity.go
 !internal/diversity/rarefaction.go
@@ -328,6 +331,7 @@
 !web/ui/cohort-features.js
 !web/ui/contamination.js
 !web/ui/convergence.js
+!web/ui/cytoweave.js
 !web/ui/database.js
 !web/ui/deidentification.js
 !web/ui/dom.js

@@ -3970,3 +3970,47 @@ or private sequence is submitted to a public service. This tests exact interchan
 behavior, not biological accuracy, public-service availability or reproducibility of future hits.
 MaveScape's Apache-2.0 loopback startup-probe pattern informed the explicit-port recipient check;
 no incompatible implementation code or third-party runtime dependency is introduced.
+
+### 5.69 Sample-scoped index-sort phenotype evidence
+
+**Decision (wave 9, slice 13).** Join one CytoWeave wells export to one receptor sample using
+an explicit experimental well-to-cell map. A well is acquisition-local; a source barcode is
+sample-local. Neither row order, gate membership, similar names nor a same-named barcode in a
+different sample establishes identity. Preserve all channel tokens and unmatched observations.
+Refuse repeated wells/events or mapping targets rather than fabricate singlet/chain pairing.
+
+**Sources.** [AIRR Rearrangement 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+defines cell-of-origin and repertoire/processing links; [AIRR Cell](https://docs.airr-community.org/en/latest/datarep/cell.html)
+requires case-sensitive identifiers. The local source-barcode key is not a globally unique AIRR
+Cell identifier. [Spidlen et al. 2010, FCS 3.1](https://doi.org/10.1002/cyto.a.20825) and
+[MIFlowCyt](https://isac-net.org/resource/resmgr/docs/miflowcyt1-0.pdf) support preserving acquisition,
+spillover/compensation and analysis context. This join implements no new statistical method.
+
+Reviewed Apache-2.0 CytoWeave 0.8.1 (`19d47bb`), specifically `plate-view.js`, `indexsort.js`,
+`engine.js` and its artificial FCS generator. Its wells CSV uses one-based event numbers and
+linear `SampleView.column` values under active compensation for covered channels, without display
+transforms. It includes only one deepest population path, not all memberships. The CSV omits
+sample identity and matrix history. A required, exact-text provenance declaration preserves supplied
+context or explicit unknowns; it does not verify that context. Duplicate display headers are refused.
+
+**Limits.** A successful join does not validate singlets, receptor pairing, gates, compensation,
+phenotypes, clinical meaning or independent experimental units. No cross-sample pooling, marker
+thresholds, p-values or plot are introduced. Empty and NaN remain distinct supplied values;
+negative compensated values are not censored. The viewer displays exact observations and coverage,
+not inferred biological categories. The downloadable record remains separate from project
+annotations, scientific workers, replay/certificates and automation permissions. Broader arbitrary
+FCS/event imports remain outside this supported interchange; X2 is partial.
+
+The general AIRR reader trims field whitespace. This exact-link path therefore rechecks selected
+original source hashes and compares raw `cell_id`/`repertoire_id` tokens with loaded identifiers;
+normalization or changed bytes refuse the join. The initial receptor contract is native AIRR TSV
+(optionally gzip), bounded at 64 MiB combined decoded selected sources. Other readers require a
+separate original-identity check; no historical reader or cache convention changes.
+
+**Validation design.** Native tests cover precision-sensitive and quoted CSV text, malformed
+Unicode/identities, collisions, missingness, explicit scope and export permission. A separate
+Python CSV/hash oracle reconstructs every link. Real sibling validation exercises its artificial
+FCS reader/compensation/plate exporter and checks known well/event truth before native import.
+Both-theme browser controls use an explicitly artificial 96-event study with realistic-looking
+linear intensities and known missing/unmatched identities. Format fidelity is not biological
+validity. See [the interchange contract](../docs/CYTOWEAVE.md) for supported syntax and bounds.

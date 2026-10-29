@@ -310,6 +310,11 @@ AIRR amino-acid sequence to local Proteoscope 0.10.0, with separate approval for
 sequence search. Source annotations and identifiers remain in local evidence; partial/unknown
 completeness stays explicit. No paired receptor, structure or binding specificity is inferred.
 
+[CytoWeave phenotype links](docs/CYTOWEAVE.md) (unreleased wave 9) join one index-sort
+acquisition to one receptor sample through explicit well-to-cell mappings. Exact channel strings,
+missingness, acquisition/compensation declarations and unmatched identities remain in downloadable
+evidence. Ambiguous wells and mappings are refused; biological pairing and phenotypes are not inferred.
+
 [Typed Parquet exports](docs/PARQUET.md) preserve native clonotype and rearrangement evidence
 with nullable counts, explicit provenance and an optional pseudonymized representation.
 The [worked record-and-reach study](docs/RECORD-STUDY.md) connects these interfaces with exact

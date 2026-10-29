@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–8 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** v0.8.0 and its product site are published. Wave 8 merged in PR #8
 (`719a73c`); the follow-up AI-agent documentation is committed as `6f71662`. Wave 9 is planned
-below; slice 1 is committed and pushed as `e3f8b49`; slice 2 is implemented and validated on `wave9`, awaiting maintainer review and commit.
+below; slices 1–12 are committed and pushed (slice 12: `2f6c5c8`). Slice 13 is implemented and validated on `wave9`, awaiting maintainer review and commit.
 No 0.9.0 release is made.
 
 The order follows the siblings' principle:
@@ -4606,6 +4606,79 @@ Keep scientific replay, versions and automation catalog unchanged; report downst
 Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances,
 automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
 release or publication was made. Slice 13 has not started.
+
+### Slice 13: sample-scoped CytoWeave phenotype links
+
+**Slice 12 committed as `2f6c5c8`. Plan before implementation.** Inspect the Apache-2.0
+CytoWeave index-sort wells exporter and validate its actual output. Bind one acquisition's
+wells CSV to one explicitly selected receptor dataset/sample through a separate, explicit
+well-to-cell barcode mapping. Preserve original UTF-8 inputs, hashes, decoded channel strings,
+event numbers and missingness; never infer identity from row order, names or similar barcodes.
+Refuse repeated wells/events, duplicate cell mappings, ambiguous headers and malformed identities.
+Keep unmatched events, absent receptor targets and receptor-only cells visible.
+
+Require an explicit provenance declaration: upstream sample/acquisition, original FCS hash or
+unknown, exporter version, compensation, value scale and gating history. A declaration is not
+verification of the upstream experiment. The wells CSV lacks this context and contains linear
+channel values under the active compensation; it is not an FCS archive or a complete gate matrix.
+Provide a local review and exact downloadable evidence, without changing QC, paired-chain calls,
+expression annotations or scientific replay. Review both themes with artificial known links and
+validate against the real sibling exporter plus an independent CSV/hash/identity oracle. Broader
+FCS ingestion, phenotype inference, multi-acquisition pooling and automated gating remain outside
+this bounded X2 interchange. Do not start slice 14 or change release/version identities.
+
+**Implemented.**
+
+- Data → CytoWeave phenotype links starts with no receptor sample selected. Upload one wells
+  CSV, an explicit `well,cell_id` map and a provenance declaration. Keep identities exact within
+  one acquisition and one dataset/sample; do not normalize barcodes or fall back to other samples.
+- Preserve exact input text and SHA-256, quoted CSV values, original numeric strings, missing
+  tokens and channel display labels. Review linked, unmapped, absent-target and receptor-only
+  observations separately; repeated chain rows count once as a cell ID. Repeated wells/events,
+  duplicate targets/headers, contradictory coordinates and malformed Unicode/CSV refuse the join.
+- Require acquisition/sample, exporter, compensation, value-scale, gating and source-hash context,
+  with explicit unknowns. Record supplied evidence without certifying it. Population remains one
+  exported deepest gate path, not exhaustive or mutually exclusive phenotype membership.
+- Source review found that general AIRR loading trims field whitespace. The exact-link boundary
+  now verifies original source hashes and raw cell/repertoire IDs, refusing normalized or changed
+  identities. Support native AIRR TSV/gzip within explicit limits; other reader formats require
+  separate original-identity validation. General readers and historical caches are unchanged.
+- Save an exact native JSON record after fingerprint review and applicable provider acknowledgment.
+  Changing scope, files or project invalidates review; concurrent work, cancellation and stale
+  downloads are guarded. No upstream service is contacted and no automation permission is added.
+  The record is separate from project annotations, paired-chain calls, workers and scientific replay.
+- Add a cited interchange guide, source/size/format limits, a clearly artificial 96-event control,
+  actual Apache-2.0 sibling exporter validation and both-theme screenshots. X2 remains partial
+  for arbitrary FCS/vendor/pooled exports, phenotype inference and persistent project overlays.
+  Slice 14 has not started; version 0.8.0, reader cache 5 and scientific identity 1 are unchanged.
+
+**Validation completed.**
+
+- Full application race suite passes in 1,150.673 s, including historical project reopening,
+  portable archives, self-checking reports, certificates and exact scientific replay.
+- Full internal/scientific race suite passes; the reference validation package completes in
+  939.773 s. Existing opt-in external-data/performance skips and historical tolerances are unchanged.
+- Final native phenotype controls pass under race detection in 3.775 s and on amd64 in 2.314 s.
+  Cover original source hashing, changed/trimmed identity refusal, gzip, quoted CR/LF and BOM,
+  precision-sensitive strings, malformed Unicode/CSV, duplicate identities, cross-sample reuse,
+  missingness, reviewed fingerprints, cancellation and explicit provider permissions.
+- Actual CytoWeave 0.8.1 artificial FCS generation, reader, compensation and browser plate exporter
+  produce 95 exact event/well/channel links through the final native API. Check original event
+  truth and FCS SHA-256; refuse a duplicate well. No public service or experimental data is used.
+- Independent Python CSV/hash/identity audit agrees on all four exported records: native fixture,
+  real sibling interchange and both browser downloads. Every source value, scoped receptor row,
+  unmatched identity and hash agrees with independently reconstructed expectations.
+- Both-theme browser controls pass for actual UTF-8 file upload (including BOM), empty initial
+  selection, exact download, sample change, duplicate-well refusal, concurrent work, cancellation
+  and stale project review. Final screenshots reviewed; source values and missing tokens are legible.
+- All 233 JavaScript tests pass. The documentation site builds 61 pages / 86 screenshot pairs;
+  all 240 accessibility/layout checks pass. Container allowlist checks all 384 explicit inputs.
+- Go vet, six CGO-free darwin/linux/windows × amd64/arm64 builds, JavaScript syntax checks,
+  formatting and `git diff --check` pass.
+
+Version 0.8.0, reader cache 5, scientific identity 1, numerical tolerances, historical evidence,
+automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 14 has not started.
 
 ## Later waves (outlined)
 
