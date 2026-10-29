@@ -866,3 +866,18 @@ blocks and Unicode. Unsupported syntax has explicit refusal controls. Reader/API
 mixed JSON/YAML ambiguity, uploaded filenames, gzip fingerprints, source removal and preview
 bounds. Browser checks compare original YAML text exactly and retain the JSON regression scene.
 Supported syntax and scientific limits are in `docs/AIRR-YAML.md`; no conformance claim is made.
+
+## MiAIRR reporting review (wave 9, slice 3)
+
+The checklist pins AIRR Standards 2.0 metadata sets 1–5 (82 fields), with essential / important /
+defined reporting levels. `reference/miairr_fields.json` records the official table URL and SHA-256;
+`reference/miairr.py` compares native names/levels/types and hand-specified evidence states.
+It can additionally check the downloaded table with `--source`. See `docs/MIAIRR.md` for commands.
+
+Native controls exercise missing/null/empty/reasons, false/zero/exact large numbers, repeated
+sample/PCR/diagnosis/processing scopes, JSON/YAML equivalence, supported/unsupported declarations,
+malformed input, cancellation and all-or-nothing row limits. API tests inspect captured evidence
+after source removal. `FuzzMiAIRR` checks bounded counts and absence of partial assessments.
+The `miairr-checklist` capture scene checks filtering, independent processing rows, limitations
+and accessibility in both themes, alongside the JSON/YAML inspection regression scenes. No
+full-study MiAIRR compliance, ontology or scientific-validity oracle is claimed.

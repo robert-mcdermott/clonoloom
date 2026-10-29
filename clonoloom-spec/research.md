@@ -3596,3 +3596,37 @@ cross-format ID, uploaded-name/gzip and original-source API controls supplement 
 The existing simulated longitudinal study is represented in both formats; it retains the same
 coverage and scientific limitations. This is format/evidence validation, not full YAML/AIRR
 conformance, a MiAIRR checklist, biological replication or an additional scientific estimator.
+
+### 5.59 MiAIRR reporting completeness is not scientific validity
+
+Wave 9 slice 3 follows the AIRR Community's versioned
+[MiAIRR data elements](https://docs.airr-community.org/en/v2.0.0/miairr/data_elements.html),
+[reporting-level definitions](https://docs.airr-community.org/en/v2.0.0/datarep/airr_schema_requirement_levels.html),
+[Repertoire schema](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html) and
+[annotation guidelines](https://docs.airr-community.org/en/v2.0.0/miairr/metadata_guidelines.html),
+reviewed 2026-10-29. Checklist `clonoloom-miairr-2.0-v1` covers the 82 metadata fields in
+MiAIRR sets 1–5. The independent validation inventory records the official TSV URL and SHA-256.
+
+**ClonoLoom's choices.** Retain the standard's essential / important / defined levels, rather
+than inventing required / recommended categories or confusing them with schema required-key
+flags. Essential fields need substantive information; important fields allow explicit null-like
+reporting; defined fields prescribe the location of optionally reported information. Explicit
+null, empty values and each AIRR missingness reason remain different from absent keys. No
+not-applicable value or condition is inferred, even for synthetic libraries or paired-read fields.
+Each record/sample/diagnosis/PCR/processing scope retains its original evidence path. Scalar
+values are checked for broad type only, without converting JSON numbers to float64; structured
+values explicitly require member review. Original evidence is never rewritten.
+
+**Limits.** No MiAIRR-compliant conclusion, score or scientific-validity badge. This is a
+bounded metadata reporting review, not full schema/vocabulary/ontology validation, set-6
+processed-sequence reporting, raw-file verification, or experimental-design/biological review.
+Missing or unsupported schema declarations are not assessed; the user must review actual schema
+migration rather than just relabel a file. Evidence-row counts are not independent subjects,
+required-field denominators or inferential observations. See `docs/MIAIRR.md` for the complete
+contract, refusal limits, explicit conditional review and supported unknown-marker handling.
+
+Validation compares names, levels and broad types with the pinned official inventory, plus
+hand-specified state/path controls, separate repeated scopes, JSON/YAML equivalence, exact
+integers/decimals/false/zero, unsupported versions, cancellation/bounds/fuzz and captured-source
+API checks. The intentionally incomplete example declares its simulation and makes no biological
+claim. Both-theme UI checks cover evidence paths, filtering, counts, limitations and accessibility.

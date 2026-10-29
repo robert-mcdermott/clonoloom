@@ -3944,7 +3944,7 @@ source snapshot and API limits, and both-theme presentation. Document syntax/lim
 `docs/AIRR-YAML.md`; MiAIRR remains slice 3. No version, permission or replay changes.
 
 
-**Implemented and validated; awaiting maintainer review and commit.** The YAML reader dispatches by supplied
+**Committed and pushed as `173ef55`.** The YAML reader dispatches by supplied
 filename, retains exact decimal tokens and typed scalar meaning, checks original source hashes
 and rejects unsupported constructs explicitly. Original YAML is stored once per opened file,
 excluded from summary serialization, and shown separately from a decoded JSON projection.
@@ -3961,7 +3961,60 @@ checks in both themes; reviewed YAML source/projection screenshots; 61-page site
 references passed in 1,003.612 seconds with their existing optional-data/performance skips.
 Final targeted YAML/API/release-compatibility race checks passed after the Unicode-space fix
 (120.423 seconds for the root subset). All existing release fixtures remain unchanged. No versions, fixtures, numerical
-tolerances, permissions or replay kinds changed. Slice 3 (MiAIRR completeness) is not started.
+tolerances, permissions or replay kinds changed. Slice 3 (MiAIRR completeness) follows below.
+
+
+### Slice 3: versioned MiAIRR reporting completeness
+
+**Acceptance recorded before implementation.** Use AIRR Standards 2.0's MiAIRR data-element
+inventory and requirement-level definitions. Preserve the standard's essential / important /
+defined terms: essential requires substantive information, important permits explicit null-like
+reporting, and defined is optional but prescribes the field when that information is reported.
+Do not rename these levels required / recommended or conflate them with schema required keys.
+Conditional context (diagnosis, locus-specific PCR and raw-read files) remains an explicit review
+item, never inferred as not applicable from absence, library labels or sequence counts.
+
+Assess each captured Repertoire separately against checklist `clonoloom-miairr-2.0-v1`;
+accept declared schema 2.0/2.0.0 only, with other or absent versions explicitly not assessed.
+Retain every sample, PCR target, diagnosis and processing index in JSON-pointer evidence paths.
+Distinguish absent keys, null, empty, explicit AIRR missingness reasons, nonstandard unknown
+markers, typed values and structured values needing review. False and zero remain values.
+Expose native counts, levels, conditions and remedies in a read-only checklist; no percentage,
+quality grade, compliance certificate or automatic metadata edits. Structural content, ontology,
+scientific truth, raw-file access and processed-sequence MiAIRR set 6 remain unassessed, visibly.
+
+Validate inventory/levels independently against the official versioned table, exercise exact
+numbers, nested/repeated scopes, null-like controls, unsupported versions, bounds, cancellation,
+JSON/YAML equivalence and captured-source inspection. Review both-theme screenshots and
+accessibility; run native race, scientific/release regressions, JS, vet, platform and site checks.
+No identity/version, permissions, scientific replay or numerical-method changes.
+
+
+**Implemented and validated; awaiting maintainer review and commit.** The native 82-field checklist uses the
+pinned AIRR 2.0 inventory and exact captured record, with independent official-table comparison.
+Metadata inspection adds a collapsed, read-only review, group filtering, evidence paths and
+native state counts. Missing parents leave their children unassessed. Unsupported declarations
+and exceeded row budgets return no partial rows/counts. Source JSON/YAML remains unchanged.
+The example explicitly declares its simulation and includes incomplete essential reporting,
+null-like reasons, an unmatched repertoire and separate processing descriptions. No compliance
+or scientific-validity badge, automatic applicability, new permission, replay kind or version bump.
+The methods/coverage guide is `docs/MIAIRR.md`; citations and adaptations are in research §5.59.
+
+
+**Validation completed:** native catalogue checks against the checksum-pinned official 82-field
+inventory, 22 independent hand-specified evidence controls, JSON/YAML equivalence, false/zero and
+exact-number controls, nested/repeated scopes, unsupported declarations, malformed input,
+all-or-nothing budgets/cancellation and source-removal API checks. MiAIRR fuzzing passed 291,038
+executions. Focused race and amd64 checks pass. Full root race coverage passed in 1,034.967
+seconds; all internal race suites passed and scientific references passed in 880.864 seconds,
+retaining standard optional-data/performance/container skips. No assertion or tolerance changed.
+
+Go vet, six CGO-free platform builds, all 231 JavaScript tests, the 353-file container allowlist,
+three metadata/checklist browser scenes in both themes, reviewed screenshots, the 61-page site
+build and all 240 site accessibility/layout checks pass. Existing 0.2.0–0.8.0 release fixtures
+remain unchanged and reopen successfully. Original evidence, scientific algorithms, replay,
+permissions and application/client version 0.8.0 are preserved. No commit, push, tag, release or
+publication was performed. Slice 4 (AIRR Clone/Cell/Receptor objects) has not started.
 
 
 ## Later waves (outlined)

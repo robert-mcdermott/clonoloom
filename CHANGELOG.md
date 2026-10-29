@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Versioned MiAIRR reporting checklist (wave 9, slice 3).** Inspect AIRR 2.0 metadata
+  reporting with pinned essential/important/defined levels, explicit missingness states,
+  separate repeated scopes, evidence paths, conditional review and remedies. Keep exact
+  source values intact. Show unsupported versions and bounded refusals explicitly; do not
+  certify MiAIRR compliance, ontology conformance or scientific validity. Add the independent
+  82-field standards inventory, hand-specified evidence controls and both-theme presentation.
+  Document unassessed processed-sequence reporting, raw-file verification and scientific limits.
+
 - **Bounded AIRR YAML metadata (wave 9, slice 2).** Read a documented YAML 1.2 subset,
   including gzip and uploaded filenames, without runtime dependencies or floating-point
   conversion. Preserve scalar types, exact decimal tokens, null/false/zero and original source

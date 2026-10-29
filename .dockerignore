@@ -69,6 +69,8 @@
 !deidentification.go
 !go.mod
 !internal/airr/metadata.go
+!internal/airr/miairr.go
+!internal/airr/miairr_fields.go
 !internal/airr/repertoire.go
 !internal/airr/schema.go
 !internal/airr/yaml.go
@@ -318,6 +320,7 @@
 !web/ui/jobs.js
 !web/ui/mapping.js
 !web/ui/methods.js
+!web/ui/miairr-checklist.js
 !web/ui/mode-bcells.js
 !web/ui/mode-cells.js
 !web/ui/mode-clonotypes.js

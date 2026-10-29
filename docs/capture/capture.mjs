@@ -1328,6 +1328,26 @@ const scenes = {
   },
   // The Data view of the PBMC 1k T cells: the dataset, its validation and samples; its files and
   // license in the inspector.
+  async 'miairr-checklist'() {
+    await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), join(ROOT, 'testdata/metadata/miairr.airr.json')], name: 'Simulated MiAIRR reporting review' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR metadata').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 2`);
+    await js(`document.querySelector('[aria-label="Inspect R001"]').click()`);
+    await waitFor(`Boolean(document.querySelector('.miairr-checklist'))`);
+    await js(`(() => {
+      const checklist = document.querySelector('.miairr-checklist'); checklist.open = true;
+      const text = checklist.textContent;
+      for (const term of ['clonoloom-miairr-2.0-v1', 'not MiAIRR compliance or scientific validity', 'set 6', 'Explicit null', 'Explicit not_collected', '/data_processing/1/software_versions', 'Nonstandard unknown marker', 'Defined · optional reporting']) if (!text.includes(term)) throw new Error('Missing checklist evidence: ' + term);
+      const select = checklist.querySelector('select'); select.value = 'Data processing'; select.dispatchEvent(new Event('change'));
+      if (checklist.querySelectorAll('tbody tr').length !== 14) throw new Error('Processing entries were pooled');
+      if (!checklist.querySelector('tbody').textContent.includes('/data_processing/1/software_versions')) throw new Error('Second processing scope lost');
+      select.value = 'Study'; select.dispatchEvent(new Event('change'));
+      if (checklist.querySelectorAll('tbody tr').length !== 8) throw new Error('Study inventory differs');
+      checklist.scrollIntoView({ block: 'start' }); select.focus();
+    })()`);
+    await checkAccessibility();
+  },
   async 'repertoire-yaml'() {
     const source = join(ROOT, 'testdata/metadata/yaml/study.yaml');
     await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), source], name: 'Simulated longitudinal study · YAML' });

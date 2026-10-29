@@ -118,3 +118,39 @@ func TestYAMLMetadataInspectionDistinguishesSourceAndProjection(t *testing.T) {
 		t.Fatal("oversized source preview must not truncate or hide its record projection")
 	}
 }
+
+func TestMiAIRRInspectionUsesCapturedEvidence(t *testing.T) {
+	dir := t.TempDir()
+	table, meta := filepath.Join(dir, "study.tsv"), filepath.Join(dir, "study.json")
+	os.WriteFile(table, []byte(datasetTSV), 0600)
+	raw := `{"repertoire_id":"R1","subject":{"synthetic":false},"sample":[{"cell_number":9007199254740993}]}`
+	os.WriteFile(meta, []byte(`{"Info":{"version":"2.0"},"Repertoire":[`+raw+`]}`), 0600)
+	_, handler := testApp(t)
+	opened := postJSON(t, handler, "/api/datasets/open", `{"paths":[`+jsonString(table)+`,`+jsonString(meta)+`]}`)
+	if opened.Code != 200 {
+		t.Fatal(opened.Body)
+	}
+	var summary datasetSummary
+	json.Unmarshal(opened.Body.Bytes(), &summary)
+	os.Remove(meta)
+	response := request(t, handler, "GET", "/api/datasets/"+summary.ID+"/metadata?record=0", nil, nil)
+	var detail struct {
+		RawJSON   string               `json:"rawJSON"`
+		Checklist airr.MiAIRRChecklist `json:"checklist"`
+	}
+	if err := json.Unmarshal(response.Body.Bytes(), &detail); err != nil {
+		t.Fatal(err)
+	}
+	if response.Code != 200 || detail.RawJSON != raw || detail.Checklist.Status != "review" || detail.Checklist.DeclaredVersion != "2.0" {
+		t.Fatal(response.Body)
+	}
+	found := false
+	for _, row := range detail.Checklist.Items {
+		if row.Path == "/sample/0/cell_number" && row.State == "value-present" {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatal("exact integer not treated as supplied")
+	}
+}

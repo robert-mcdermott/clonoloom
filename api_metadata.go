@@ -71,6 +71,7 @@ func (a *app) handleMetadata(w http.ResponseWriter, r *http.Request) {
 				remaining -= file.Repertoires
 				continue
 			}
+			detail["checklist"] = airr.AssessMiAIRR(r.Context(), record.Raw, file.SchemaVersion)
 			if file.Format == "yaml" {
 				detail["format"] = "yaml"
 				var pretty bytes.Buffer

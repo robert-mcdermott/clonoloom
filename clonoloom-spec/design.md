@@ -317,3 +317,18 @@ string (or an explicit oversized-source notice). Original JSON inputs keep their
 object-byte contract. The YAML projection may be lexically indented in Go for display without
 numeric decoding. Each preview remains bounded at 4 MiB. The UI labels the projection and shows
 the original YAML document separately; it never round-trips evidence through JavaScript numbers.
+
+### Versioned MiAIRR reporting review (wave 9, slice 3)
+
+`internal/airr/miairr.go` assesses a captured repertoire with the pinned 82-field AIRR 2.0
+inventory in `miairr_fields.go`. Native results contain checklist/schema/declaration versions,
+explicit evidence-row states, reporting levels, conditions, JSON-pointer paths and remedies.
+Unsupported/absent declarations and exceeded bounds return no partial rows or counts. Original
+source/projection text is unchanged; no scientific number enters a browser checklist calculation.
+
+Metadata detail responses add `checklist`; the UI renders a collapsed read-only review with a
+group filter and native counts. Parent-scope failures show unassessed children, not fabricated
+missing leaves. Each repeated sample/diagnosis/PCR/processing record is separate. The checklist
+adds no persistent artifact, action, permission or replay kind and does not alter dataset identity.
+Presence, reporting requirements, conditional applicability, schema conformance and scientific
+validity remain distinct. See `docs/MIAIRR.md` and research §5.59 for coverage and limits.

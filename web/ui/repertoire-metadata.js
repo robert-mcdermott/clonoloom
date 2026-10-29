@@ -1,6 +1,7 @@
 // Supplied evidence stays text: never parse the original JSON into JS numbers.
 import { h, clear } from './dom.js';
 import { showDialog } from './overlays.js';
+import { miairrChecklist } from './miairr-checklist.js';
 
 export function showRepertoireMetadata(app, dataset) {
   const sameProject = app.store.sameProject();
@@ -25,7 +26,7 @@ export function showRepertoireMetadata(app, dataset) {
       if (!active() || revision !== generation) return;
       clear(content);
       content.append(h('p', h('b', dataset.name)),
-        h('p.muted.small', 'Supplied annotations, not a MiAIRR completeness or scientific validity assessment. Matching does not select a processing record or establish independent subjects.'),
+        h('p.muted.small', 'Inspect supplied evidence and review the versioned MiAIRR reporting checklist. Metadata presence does not establish scientific validity. Matching does not select a processing record or establish independent subjects.'),
         h('div.callout', `${answer.matchedRecords} matched / ${answer.total} repertoire records · ${answer.unmatchedRecords} unmatched records. ${answer.samplesWithMetadata} dataset samples have metadata; ${answer.samplesWithoutMetadata} do not.`),
         h('p.muted.small', 'Case-sensitive repertoire_id matching; legacy sample-name matching only for samples without a repertoire_id. Unmatched records are retained.'));
       const details = h('div.metadata-detail', { 'aria-live': 'polite' });
@@ -41,6 +42,7 @@ export function showRepertoireMetadata(app, dataset) {
           details.append(h('h3', record.repertoireId),
             h('p.small', `${source.name} · declared AIRR schema: ${source.schemaVersion || 'not supplied'}`),
             h('p.mono.small', { style: { overflowWrap: 'anywhere' } }, `Source SHA-256: ${source.sha256}`),
+            miairrChecklist(detail.checklist, `${dataset.name} · ${record.repertoireId}`),
             h('p.muted.small', detail.format === 'yaml' ? 'Decoded record JSON from the supported YAML subset, with exact numbers and scalar types. This is a projection, not original YAML text. The source fingerprint covers the original file (compressed bytes for gzip).' : 'Original record JSON, including unknown fields and exact numeric tokens. Absent fields, null, false and zero remain distinct. The source fingerprint covers the whole file, including its wrapper.'),
             recordText(detail));
           if (detail.sourceYAML != null) details.append(h('details.metadata-yaml', { open: true },
