@@ -5,6 +5,16 @@ import { cellResultsForDataset, methodsParagraph, joinList } from './methods.js'
 
 const program = { version: '0.1.0', commit: '96a92f4c0ffee' };
 
+test('Cell Ranger JSON methods distinguish supplied evidence, unresolved flags and cell abundance', () => {
+  const dataset = { ...pbmc, sources: [{ ...pbmc.sources[0], format: 'cellranger-json' }] };
+  const { text, references } = methodsParagraph({ dataset, program });
+  assert.match(text, /without inferring a producer version/);
+  assert.match(text, /Mixed-chain annotations did not establish a single resolved locus/);
+  assert.match(text, /counted in cells/);
+  assert.match(text, /omitted full-length, frame and stop flags remained unknown/);
+  assert.ok(references.some((r) => r.includes('10xgenomics.com/support/software/cell-ranger/7.2')));
+});
+
 const pbmc = {
   id: 'd-1', name: 'PBMC 1k T cells', formats: ['Cell Ranger V(D)J contig annotations'], unit: 'cells', unitConfirmed: null, singleCell: true, rows: 968,
   samples: ['sc5p_v1p1_hs_PBMC_1k_t'], readerVersion: 1, opened: '2026-10-21T21:30:00.000Z',

@@ -1,5 +1,24 @@
 # Validation
 
+Wave 9 slice 6: `uv run --no-project validation/reference/cellranger_json.py` independently
+checks exact JSON/Decimal values, source hashes and shared CSV/AIRR values in the declared
+artificial contig fixtures. Run `go test ./internal/reads ./validation -run TestCellRangerJSON`
+for native mapping, identity, layout, numeric, bounds and cross-format controls. The existing
+native-report API/cache/browser checks cover exact source snapshots and both themes.
+
+An explicitly downloaded public Cell Ranger JSON and matching all-contig CSV can be checked
+without storing participant data in the repository:
+
+```sh
+uv run --no-project validation/reference/cellranger_json.py --public /tmp/contigs.json /tmp/contigs.csv /tmp/contigs-reference.json
+CLONOLOOM_CONTIG_JSON=/tmp/contigs.json CLONOLOOM_CONTIG_REFERENCE=/tmp/contigs-reference.json \
+  go test ./validation -run TestCellRangerJSONPublicReference
+```
+
+The documented 4.0.0 check covers 1,835 contigs and 16,515 shared values plus gene/chain/clone
+calls. Omitted full-length calls and 14 mixed-chain records remain explicit limits, not invented
+CSV-equivalent annotations. See [the format guide](../docs/CELLRANGER-JSON.md).
+
 `node validation/run.mjs [suite …] [--verbose] [--require-data]` runs the validation suites and
 exits with status 1 when a check fails. Each check states what is compared, the value found and
 the tolerance required.

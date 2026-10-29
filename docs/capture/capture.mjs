@@ -1352,6 +1352,27 @@ const scenes = {
     await waitFor(`document.querySelector('.native-fields')?.textContent.includes('0.624512345678901234')`);
     await checkAccessibility();
   },
+  async 'cellranger-json'() {
+    await act('open_data', { paths: [join(ROOT, 'testdata/cellranger-json/simulated_all_contig_annotations.json'), join(ROOT, 'testdata/cellranger-json/legacy_all_contig_annotations.json')], name: 'Simulated Cell Ranger contig evidence' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect native report').click()`);
+    await waitFor(`Boolean(document.querySelector('.native-fields'))`);
+    await js(`(() => {
+      const raw = document.querySelector('.native-raw').textContent;
+      if (!raw.includes('9007199254740993') || !raw.includes('0.1234567890123456789012345')) throw new Error('Exact JSON changed');
+      const select = document.querySelector('.native-row'); select.value = '6'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-detail h3')?.textContent === 'Source record 7'`);
+    await js(`(() => {
+      const text = document.querySelector('.native-fields').textContent;
+      if (!text.includes('null') || !text.includes('false') || !text.includes('0')) throw new Error('Missing/false/zero collapsed');
+      const select = document.querySelector('.native-source'); select.value = '1'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('(absent)')`);
+    await js(`(() => { const select = document.querySelector('.native-source'); select.value = '0'; select.dispatchEvent(new Event('change')); })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('2418')`);
+    await checkAccessibility();
+  },
   async 'airr-objects'() {
     await act('open_data', { paths: [join(ROOT, 'testdata/airr-objects/study.tsv'), join(ROOT, 'testdata/airr-objects/study.json')], name: 'Simulated AIRR object evidence' });
     await act('show', { view: 'data' });

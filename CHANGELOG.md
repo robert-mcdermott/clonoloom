@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Cell Ranger detailed JSON annotations (wave 9, slice 6).** Import the nested contig
+  array layout with exact barcodes, reads/UMIs, supplied flags and source clone labels.
+  Preserve unknown fields and original objects for paged inspection/cache reopening.
+  Keep background contigs, missing flags and unresolved mixed chains explicit; refuse
+  duplicate/conflicting identities, ambiguous layouts and invalid counts. Add CSV-first
+  folder fallback, independent JSON/CSV/AIRR controls, public-output comparison and
+  both-theme simulated evidence with documented scientific limits.
+
 - **Native TRUST4 and VDJtools reports (wave 9, slice 5).** Recognize documented
   report headers, distinguish stop/frameshift/partial notation, preserve missing values and
   explicit count units, and retain complete source rows for inspection. Keep ambiguous units

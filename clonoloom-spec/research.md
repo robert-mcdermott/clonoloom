@@ -3696,3 +3696,38 @@ Independent standard-library CSV/Decimal references cover every mapped field in 
 reports, exact row text, missingness, fingerprints and source coordinates. Native refusal controls,
 cache/source-removal checks, fuzzing and both-theme inspection exercise scientific presentation.
 The examples are import controls, not observed participants, functional receptors or treatment results.
+
+### 5.62 Cell Ranger detailed JSON contig import
+
+Sources: [10x Genomics' Cell Ranger 7.2 detailed JSON output documentation](https://www.10xgenomics.com/support/software/cell-ranger/7.2/analysis/cr-5p-outputs-annotations-vdj),
+the [documented annotation/productivity criteria](https://www.10xgenomics.com/support/cn/software/cell-ranger/8.0/resources/cr-5p-vdj-algorithm-annotations)
+and the CC BY 4.0 [public 1k PBMC Cell Ranger 4.0.0 data](https://www.10xgenomics.com/datasets/human-pbmc-from-a-healthy-donor-1-k-cells-v-1-1-2-standard-4-0-0).
+Reviewed 2026-10-29. This implementation uses format documentation and data outputs, not
+vendor reconstruction/annotation code. No runtime dependency is added.
+
+The nested array uses contig_name, barcode, read_count, umi_count, cdr3_seq/cdr3 and annotation
+features for genes/chains. The support page also lists CSV fields under another JSON heading;
+the implemented contract follows the detailed nested fields verified in actual output. This is
+explicit layout recognition, not an inferred producer version. Unknown annotations and precise
+numbers remain exact object text, separate from mapped values and scientific exports.
+
+ClonoLoom's choice: preserve supplied boolean calls; do not reconstruct absent full_length,
+frame or stop flags. A whole-contig stop position is not a V–J stop assertion. A naive terminal
+coordinate rule disagreed with 78 full-length calls in the public CSV, so no such reconstruction
+is used. All 1,835 JSON contigs lack a full_length field; 14 have mixed-chain annotations.
+Those chain assignments remain unresolved rather than selecting a J/V gene's locus. Existing
+CSV readers and release identities remain unchanged. This intentionally limits cross-format
+equivalence to supplied comparable fields; it does not manufacture the CSV-only flags.
+
+Independent standard-library JSON/Decimal and CSV checks agree on all 16,515 shared values,
+plus source genes/chains/clonotype labels, across the 1,835 public contigs. Exact original JSON
+objects and fingerprints also agree with the native reader. The public data and per-contig
+reference stay outside version control. A proposed Cell Ranger 9 JSON download was unavailable
+(HTTP 403); no validation or all-version compatibility claim is made for that output.
+
+Declared artificial fixtures cover sample scope, multiple chains, background barcodes, omitted
+and null flags, zero/missing support, mixed-chain evidence and exact numeric extensions, with
+independent JSON/CSV/AIRR controls. Their coding constructs are not complete receptor transcripts.
+Source productivity/full-length labels are planted assertions, not functional validation. Units
+remain per-contig reads/UMIs and definition-dependent distinct-cell abundance. No barcode-derived
+biological pairing, antigen specificity or subject independence is asserted.

@@ -12,7 +12,7 @@ import (
 )
 
 func TestNativeReportEvidenceSurvivesCache(t *testing.T) {
-	res, err := reads.ReadFiles(context.Background(), []string{"../../testdata/native-reports/simulated-trust4.tsv", "../../testdata/native-reports/simulated-vdjtools.tsv"})
+	res, err := reads.ReadFiles(context.Background(), []string{"../../testdata/native-reports/simulated-trust4.tsv", "../../testdata/native-reports/simulated-vdjtools.tsv", "../../testdata/cellranger-json/simulated_all_contig_annotations.json"})
 	if err != nil {
 		t.Fatal(err)
 	}

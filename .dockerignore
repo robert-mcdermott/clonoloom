@@ -172,6 +172,7 @@
 !internal/random/random.go
 !internal/reads/airr.go
 !internal/reads/cellranger.go
+!internal/reads/cellranger_json.go
 !internal/reads/imgt.go
 !internal/reads/immunoseq.go
 !internal/reads/mapped.go

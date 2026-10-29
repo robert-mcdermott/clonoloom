@@ -1,6 +1,7 @@
 package reads
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"crypto/sha256"
@@ -22,36 +23,38 @@ import (
 type Format string
 
 const (
-	FormatIMGT        Format = "imgt-highvquest"
-	FormatAIRR        Format = "airr"
-	FormatCellRanger  Format = "cellranger-contigs"
-	FormatImmunoSEQv3 Format = "immunoseq-v3"
-	FormatImmunoSEQv2 Format = "immunoseq-v2"
-	FormatMiXCR       Format = "mixcr-clones"
-	FormatUnit        Format = "oas-unit"
-	FormatTCRdist     Format = "tcrdist3-clones"
-	FormatTRUST4      Format = "trust4-report"
-	FormatVDJtools    Format = "vdjtools"
+	FormatIMGT           Format = "imgt-highvquest"
+	FormatAIRR           Format = "airr"
+	FormatCellRanger     Format = "cellranger-contigs"
+	FormatImmunoSEQv3    Format = "immunoseq-v3"
+	FormatImmunoSEQv2    Format = "immunoseq-v2"
+	FormatMiXCR          Format = "mixcr-clones"
+	FormatUnit           Format = "oas-unit"
+	FormatTCRdist        Format = "tcrdist3-clones"
+	FormatTRUST4         Format = "trust4-report"
+	FormatVDJtools       Format = "vdjtools"
+	FormatCellRangerJSON Format = "cellranger-json"
 )
 
 // FormatNames are formats' names as the interface and methods text say them.
 var FormatNames = map[Format]string{
-	FormatIMGT:        "IMGT/HighV-QUEST tables",
-	FormatAIRR:        "AIRR Rearrangement TSV",
-	FormatCellRanger:  "Cell Ranger V(D)J contig annotations",
-	FormatImmunoSEQv3: "immunoSEQ export (v3)",
-	FormatImmunoSEQv2: "immunoSEQ export (v2)",
-	FormatMiXCR:       "MiXCR clone table",
-	FormatUnit:        "OAS or OTS data unit",
-	FormatTCRdist:     "tcrdist3 clone table",
-	FormatTRUST4:      "TRUST4 repertoire report",
-	FormatVDJtools:    "VDJtools clonotype table",
-	FormatTable:       "Table with mapped columns",
+	FormatIMGT:           "IMGT/HighV-QUEST tables",
+	FormatAIRR:           "AIRR Rearrangement TSV",
+	FormatCellRanger:     "Cell Ranger V(D)J contig annotations",
+	FormatImmunoSEQv3:    "immunoSEQ export (v3)",
+	FormatImmunoSEQv2:    "immunoSEQ export (v2)",
+	FormatMiXCR:          "MiXCR clone table",
+	FormatUnit:           "OAS or OTS data unit",
+	FormatTCRdist:        "tcrdist3 clone table",
+	FormatTRUST4:         "TRUST4 repertoire report",
+	FormatVDJtools:       "VDJtools clonotype table",
+	FormatCellRangerJSON: "Cell Ranger JSON contig annotations",
+	FormatTable:          "Table with mapped columns",
 }
 
 // ReaderVersion changes when a reader reads any file differently; cached tables and records name
 // it.
-const ReaderVersion = 4
+const ReaderVersion = 5
 
 // IdentityVersion changes only when existing rearrangement values change meaning.
 // ReaderVersion also covers additive evidence and invalidates the disposable cache;
@@ -200,6 +203,9 @@ func ReadInputs(ctx context.Context, inputs []Input) (*Result, error) {
 	res.Unit = agreedUnit(units, b, res.Sources, res.Problems)
 	res.Table = b.Table()
 	res.Table.Unit = res.Unit
+	if err := checkJSONContigIdentities(ctx, res); err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 
@@ -278,6 +284,9 @@ func ReadReader(ctx context.Context, r io.Reader, name string) (*Result, error) 
 	res.Unit = unit
 	res.Table = b.Table()
 	res.Table.Unit = unit
+	if err := checkJSONContigIdentities(ctx, res); err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 
@@ -288,6 +297,11 @@ func readOne(ctx context.Context, r io.Reader, path string, index int, b **rep.B
 		return src, "", err
 	}
 	src.Gzipped = gzipped
+	br := bufio.NewReader(plain)
+	plain = br
+	if jsonStart(br) || metadataFormat(path) == "json" {
+		return readCellRangerJSON(ctx, plain, src, index, b)
+	}
 	ls := newLines(plain)
 	ls.ctx = ctx
 	if !ls.next() {

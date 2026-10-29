@@ -1,0 +1,455 @@
+[
+  {
+    "barcode": "AAACCTGAGACAGGCT-1",
+    "contig_name": "AAACCTGAGACAGGCT-1_contig_1",
+    "sample": "Simulated-S01",
+    "sequence": "ATGGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTTGTGCTGTTCGTGATTCTAATTATCAACTGATTTGGTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTAA",
+    "read_count": 2418,
+    "umi_count": 19,
+    "is_cell": true,
+    "high_confidence": true,
+    "productive": true,
+    "full_length": true,
+    "cdr3": "CAVRDSNYQLIW",
+    "cdr3_seq": "TGTGCTGTTCGTGATTCTAATTATCAACTGATTTGG",
+    "annotations": [
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAV12-2",
+          "region_type": "L-REGION+V-REGION",
+          "feature_id": 100
+        },
+        "score": 210
+      },
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAJ33",
+          "region_type": "J-REGION",
+          "feature_id": 102
+        },
+        "score": 160
+      },
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAC",
+          "region_type": "C-REGION",
+          "feature_id": 103
+        },
+        "score": 135
+      }
+    ],
+    "clonotype": null,
+    "info": {
+      "raw_clonotype_id": "clonotype1"
+    },
+    "simulated_annotation": {
+      "external_id": 9007199254740993,
+      "score": 0.1234567890123456789012345
+    }
+  },
+  {
+    "barcode": "AAACCTGAGACAGGCT-1",
+    "contig_name": "AAACCTGAGACAGGCT-1_contig_2",
+    "sample": "Simulated-S01",
+    "sequence": "ATGGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTTGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTAA",
+    "read_count": 6194,
+    "umi_count": 43,
+    "is_cell": true,
+    "high_confidence": true,
+    "productive": true,
+    "full_length": true,
+    "cdr3": "CASSLGQETQYF",
+    "cdr3_seq": "TGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT",
+    "annotations": [
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBV7-9",
+          "region_type": "L-REGION+V-REGION",
+          "feature_id": 100
+        },
+        "score": 210
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBD1",
+          "region_type": "D-REGION",
+          "feature_id": 101
+        },
+        "score": 185
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBJ2-5",
+          "region_type": "J-REGION",
+          "feature_id": 102
+        },
+        "score": 160
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBC2",
+          "region_type": "C-REGION",
+          "feature_id": 103
+        },
+        "score": 135
+      }
+    ],
+    "clonotype": null,
+    "info": {
+      "raw_clonotype_id": "clonotype1"
+    },
+    "simulated_annotation": {
+      "external_id": 9007199254740993,
+      "score": 0.1234567890123456789012345
+    }
+  },
+  {
+    "barcode": "AACCATGGTGACACAG-1",
+    "contig_name": "AACCATGGTGACACAG-1_contig_3",
+    "sample": "Simulated-S01",
+    "sequence": "ATGGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTTGTGCTGTTTCTGATGGTCAAAAACTGCTGTTTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTAA",
+    "read_count": 831,
+    "umi_count": 7,
+    "is_cell": true,
+    "high_confidence": true,
+    "productive": true,
+    "full_length": true,
+    "cdr3": "CAVSDGQKLLF",
+    "cdr3_seq": "TGTGCTGTTTCTGATGGTCAAAAACTGCTGTTT",
+    "annotations": [
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAV12-2",
+          "region_type": "L-REGION+V-REGION",
+          "feature_id": 100
+        },
+        "score": 210
+      },
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAJ33",
+          "region_type": "J-REGION",
+          "feature_id": 102
+        },
+        "score": 160
+      },
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAC",
+          "region_type": "C-REGION",
+          "feature_id": 103
+        },
+        "score": 135
+      }
+    ],
+    "clonotype": null,
+    "info": {
+      "raw_clonotype_id": "clonotype2"
+    },
+    "simulated_annotation": {
+      "external_id": 9007199254740993,
+      "score": 0.1234567890123456789012345
+    }
+  },
+  {
+    "barcode": "AACCATGGTGACACAG-1",
+    "contig_name": "AACCATGGTGACACAG-1_contig_4",
+    "sample": "Simulated-S01",
+    "sequence": "ATGGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTTGTGCTTCTTCTCAAGATCGTGGTAATGAACAATTTTTTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTAA",
+    "read_count": 3549,
+    "umi_count": 28,
+    "is_cell": true,
+    "high_confidence": true,
+    "productive": true,
+    "full_length": true,
+    "cdr3": "CASSQDRGNEQFF",
+    "cdr3_seq": "TGTGCTTCTTCTCAAGATCGTGGTAATGAACAATTTTTT",
+    "annotations": [
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBV7-9",
+          "region_type": "L-REGION+V-REGION",
+          "feature_id": 100
+        },
+        "score": 210
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBD1",
+          "region_type": "D-REGION",
+          "feature_id": 101
+        },
+        "score": 185
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBJ2-5",
+          "region_type": "J-REGION",
+          "feature_id": 102
+        },
+        "score": 160
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBC2",
+          "region_type": "C-REGION",
+          "feature_id": 103
+        },
+        "score": 135
+      }
+    ],
+    "clonotype": null,
+    "info": {
+      "raw_clonotype_id": "clonotype2"
+    },
+    "simulated_annotation": {
+      "external_id": 9007199254740993,
+      "score": 0.1234567890123456789012345
+    }
+  },
+  {
+    "barcode": "AACCATGGTGACACAG-1",
+    "contig_name": "AACCATGGTGACACAG-1_contig_5",
+    "sample": "Simulated-S01",
+    "sequence": "ATGGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTTGTGCTGTTAAAGATTCTAATTATCAACTGATTTGGTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTAA",
+    "read_count": 421,
+    "umi_count": 3,
+    "is_cell": true,
+    "high_confidence": true,
+    "productive": true,
+    "full_length": true,
+    "cdr3": "CAVKDSNYQLIW",
+    "cdr3_seq": "TGTGCTGTTAAAGATTCTAATTATCAACTGATTTGG",
+    "annotations": [
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAV12-2",
+          "region_type": "L-REGION+V-REGION",
+          "feature_id": 100
+        },
+        "score": 210
+      },
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAJ33",
+          "region_type": "J-REGION",
+          "feature_id": 102
+        },
+        "score": 160
+      },
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAC",
+          "region_type": "C-REGION",
+          "feature_id": 103
+        },
+        "score": 135
+      }
+    ],
+    "clonotype": null,
+    "info": {
+      "raw_clonotype_id": "clonotype2"
+    },
+    "simulated_annotation": {
+      "external_id": 9007199254740993,
+      "score": 0.1234567890123456789012345
+    }
+  },
+  {
+    "barcode": "ACCGTAATCCGTTGTC-1",
+    "contig_name": "ACCGTAATCCGTTGTC-1_contig_6",
+    "sample": "Simulated-S01",
+    "sequence": "ATGGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTTGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTAA",
+    "read_count": 84,
+    "umi_count": 1,
+    "is_cell": false,
+    "high_confidence": false,
+    "productive": true,
+    "full_length": null,
+    "cdr3": "CASSLGQETQYF",
+    "cdr3_seq": "TGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT",
+    "annotations": [
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBV7-9",
+          "region_type": "L-REGION+V-REGION",
+          "feature_id": 100
+        },
+        "score": 210
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBD1",
+          "region_type": "D-REGION",
+          "feature_id": 101
+        },
+        "score": 185
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBJ2-5",
+          "region_type": "J-REGION",
+          "feature_id": 102
+        },
+        "score": 160
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBC2",
+          "region_type": "C-REGION",
+          "feature_id": 103
+        },
+        "score": 135
+      }
+    ],
+    "clonotype": null,
+    "info": {
+      "raw_clonotype_id": null
+    },
+    "simulated_annotation": {
+      "external_id": 9007199254740993,
+      "score": 0.1234567890123456789012345
+    }
+  },
+  {
+    "barcode": "ACTGAACTCGTCTGGA-1",
+    "contig_name": "ACTGAACTCGTCTGGA-1_contig_7",
+    "sample": "Simulated-S01",
+    "sequence": "ATGGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTTGTAATTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTAA",
+    "read_count": 0,
+    "umi_count": 0,
+    "is_cell": null,
+    "high_confidence": null,
+    "productive": null,
+    "full_length": false,
+    "cdr3": null,
+    "cdr3_seq": null,
+    "annotations": [
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBV7-9",
+          "region_type": "L-REGION+V-REGION",
+          "feature_id": 100
+        },
+        "score": 210
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBD1",
+          "region_type": "D-REGION",
+          "feature_id": 101
+        },
+        "score": 185
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBJ2-5",
+          "region_type": "J-REGION",
+          "feature_id": 102
+        },
+        "score": 160
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBC2",
+          "region_type": "C-REGION",
+          "feature_id": 103
+        },
+        "score": 135
+      }
+    ],
+    "clonotype": null,
+    "info": {
+      "raw_clonotype_id": null
+    },
+    "simulated_annotation": {
+      "external_id": 9007199254740993,
+      "score": 0.1234567890123456789012345
+    }
+  },
+  {
+    "barcode": "AGGTCATAGTCAAGGC-1",
+    "contig_name": "AGGTCATAGTCAAGGC-1_contig_8",
+    "sample": "Simulated-S01",
+    "sequence": "ATGGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTGCTTCTGGTTGTGCTTCTTCTCAAGATCGTGGTAATGAACAATTTTTTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTTTGGTACTTAA",
+    "read_count": null,
+    "umi_count": null,
+    "is_cell": false,
+    "high_confidence": false,
+    "productive": false,
+    "full_length": null,
+    "cdr3": "CASSQDRGNEQFF",
+    "cdr3_seq": "TGTGCTTCTTCTCAAGATCGTGGTAATGAACAATTTTTT",
+    "annotations": [
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBV7-9",
+          "region_type": "L-REGION+V-REGION",
+          "feature_id": 100
+        },
+        "score": 210
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBD1",
+          "region_type": "D-REGION",
+          "feature_id": 101
+        },
+        "score": 185
+      },
+      {
+        "feature": {
+          "chain": "TRB",
+          "gene_name": "TRBJ2-5",
+          "region_type": "J-REGION",
+          "feature_id": 102
+        },
+        "score": 160
+      },
+      {
+        "feature": {
+          "chain": "TRA",
+          "gene_name": "TRAC",
+          "region_type": "C-REGION",
+          "feature_id": 103
+        },
+        "score": 135
+      }
+    ],
+    "clonotype": null,
+    "info": {
+      "raw_clonotype_id": null
+    },
+    "simulated_annotation": {
+      "external_id": 9007199254740993,
+      "score": 0.1234567890123456789012345
+    }
+  }
+]

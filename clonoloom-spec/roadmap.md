@@ -4106,7 +4106,7 @@ scientific suites. Preserve prior release fixtures, identities, explicit permiss
 contracts and application/client version 0.8.0. Bump only the disposable reader-cache version
 if needed; do not implement slice 6 or make a commit/release.
 
-**Implemented and validated; awaiting maintainer commit.** Native report dispatch recognizes the documented
+**Committed and pushed as `0f473dc`.** Native report dispatch recognizes the documented
 TRUST4 modern/legacy and VDJtools aliases while explicit mappings retain precedence. The readers
 refuse ambiguous headers, malformed widths, unsupported alphabets, count precision loss and
 out-of-range frequencies. Unknown units remain explicit; source frequencies never supply counts.
@@ -4146,6 +4146,72 @@ Validation:
   Prior release fixtures, scientific identity version 1, application/client version 0.8.0,
   automation permissions and replay contracts remain unchanged. No commit, push, tag, release
   or publication was made. Slice 6 has not started.
+
+### Slice 6: Cell Ranger JSON contig annotations
+
+**Acceptance recorded before implementation.** Read the detailed top-level array layout of
+Cell Ranger `all_contig_annotations.json`, including gzip and renamed uploads. Recognize nested
+annotation features explicitly; do not mistake a JSON rendering of CSV columns or an AIRR
+metadata object for this layout. State the structural contract and verified producer outputs;
+absence of a software-version declaration is not evidence of a specific Cell Ranger version.
+
+Preserve exact barcodes, sample scope, contig IDs, supplied booleans, missing counts and source
+clonotype labels. Keep reads and UMIs separate; single-cell abundance remains distinct cells
+under the existing QC/definition rules. Do not filter background/nonproductive contigs on import,
+infer pairing or overwrite an active clonotype definition. Keep missing full-length/frame/stop
+flags unknown, rather than reconstructing vendor algorithms from junctions or coordinates.
+Retain mixed-chain annotation evidence without assigning a single resolved chain.
+
+Capture bounded original JSON objects and unknown annotations for read-only inspection, cache
+reopening and exact numeric display. Reject duplicate keys/contig identities, conflicting cell
+flags or clone assignments, competing segment calls, malformed types and unsupported layouts.
+Folder opening retains existing CSV precedence, with JSON as an explicit fallback so duplicate
+representations cannot silently double counts. Compare shared fields against independent JSON,
+CSV and AIRR parsing, documenting fields absent or differently scoped in each representation.
+
+Use declared artificial examples with realistic unequal support and cell/background/multichain
+states. Review both themes, exercise gzip/uploads/source removal/cache, bounds/cancellation/fuzz,
+and run scientific/release regressions and platform checks. Keep earlier fixtures, scientific
+identity 1, version 0.8.0, permissions and replay contracts unchanged. No slice 7, commit or release.
+
+**Implemented and validated; awaiting maintainer commit.** The bounded nested-array reader
+recognizes source structure without guessing a producer version. It retains original JSON
+objects, unknown annotations and exact numeric tokens in the existing native evidence cache
+and inspector. Reader version 5 invalidates disposable older caches; scientific identity 1 is
+unchanged. Folder opening retains filtered/all CSV precedence and uses JSON as a fallback.
+
+Supplied identifiers, genes, junctions, sequence, reads/UMIs and flags remain separate from
+derived interpretations. Background contigs remain present. Missing full-length/frame/stop
+flags stay unknown; mixed-chain annotations do not receive a single inferred locus. Exact
+sample/contig IDs and barcode calls have cross-file conflict checks. Annotation objects use
+case-sensitive map lookup, so an unknown `Feature` key cannot override `feature` through Go's
+struct-field matching. Explicit AIRR repertoire identities retain precedence in the JSON probe,
+including metadata larger than the contig probe budget. No vendor algorithm/source was used.
+
+Independent JSON/Decimal, CSV and AIRR controls cover all mapped values in declared simulated
+fixtures. The public Cell Ranger 4.0.0 comparison covers 1,835 contigs, 16,515 shared values and
+gene/chain/source-clone calls, plus native source objects and hashes. All public JSON contigs
+omit full_length, and 14 have mixed chains; those limits remain explicit. No public data or
+per-contig references are committed. The unavailable proposed 9.0 JSON download (HTTP 403)
+does not become a version-compatibility claim. The distinct-cell control retains eight source
+contigs and gives two cells of abundance from the five declared-cell contigs under the explicitly
+selected paired primary-chain definition; UMI/read support is not summed into cell abundance.
+
+Validation completed:
+
+- Full internal/scientific race coverage passes; the reference package completes in 898.484 s
+  with existing optional-data/performance skips. Final exact-key/probe, native reader/cache/API,
+  public-output and independent-value controls pass after the final parser checks.
+- All 233 JavaScript tests pass. Both-theme browser controls check exact large numeric tokens,
+  source switching, null/false/zero and absent flags; both screenshots are visually reviewed.
+  The site builds 61 pages with 79 screenshot pairs and passes all 240 accessibility/layout checks.
+- Bounded reader fuzzing passes 1,206,454 executions. amd64 controls, Go vet and all six CGO-free
+  Darwin/Linux/Windows amd64/arm64 builds pass. The container context checks 360 explicit assets.
+- Full application race coverage passes in 1,052.100 s, including complete release-project
+  reopening, portable archives, self-checking reports and exact headless replay. Final JSON and
+  metadata API race regressions also pass. No historical fixture, scientific tolerance,
+  application/client version, permission or replay kind changed.
+  No commit, push, tag, release or publication was made. Slice 7 has not started.
 
 ## Later waves (outlined)
 

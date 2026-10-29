@@ -193,7 +193,10 @@ func load(path string) (*reads.Result, error) {
 		h.Sources[i].Native = native
 	}
 	for _, source := range h.Sources {
-		if (source.Format == reads.FormatTRUST4 || source.Format == reads.FormatVDJtools) && source.Native == nil {
+		if (source.Format == reads.FormatTRUST4 || source.Format == reads.FormatVDJtools || source.Format == reads.FormatCellRangerJSON) && source.Native == nil {
+			return nil, errCorrupt
+		}
+		if source.Format == reads.FormatCellRangerJSON && (source.Native.Layout != reads.CellRangerJSONLayout || len(source.Native.Rows) > 100000) {
 			return nil, errCorrupt
 		}
 	}

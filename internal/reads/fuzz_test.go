@@ -10,6 +10,7 @@ import (
 // columns disagree in length. The seeds are each format's header with a row or two, and the
 // hostile cases found by fuzzing (testdata/fuzz/FuzzRead).
 func FuzzRead(f *testing.F) {
+	f.Add([]byte(jsonContigSeed))
 	f.Add([]byte(nativeHeader + nativeRow))
 	f.Add([]byte("#count\tfrequency\tCDR3nt\tCDR3aa\tV\tD\tJ\tC\tcid\n1.5\t0.1\tTGTTCTTAA\tCS_\tTRBV7-9\t.\tTRBJ2-5\tTRBC2\tsim-1\n"))
 	f.Add([]byte("sequence_id\tv_call\tj_call\tjunction_aa\tproductive\tduplicate_count\na\tTRBV5-1*01\tTRBJ2-7\tCASSF\tT\t3\n"))

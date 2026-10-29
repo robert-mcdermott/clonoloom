@@ -109,7 +109,14 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 			companions = append(companions, more...)
 			continue
 		}
-		if metadataFormat(name) != "" {
+		contigJSON := cellRangerJSONName(name)
+		if !contigJSON && metadataFormat(name) == "json" {
+			contigJSON, err = sniffCellRangerJSON(ctx, in.Path)
+			if err != nil {
+				return nil, fmt.Errorf("%s: %w", filepath.Base(name), err)
+			}
+		}
+		if !contigJSON && metadataFormat(name) != "" {
 			metadata = append(metadata, in)
 			continue
 		}
@@ -211,6 +218,8 @@ func besideContigs(path string) []Companion {
 		prefix = strings.TrimSuffix(base, "filtered_contig_annotations.csv")
 	case strings.HasSuffix(base, "all_contig_annotations.csv"):
 		prefix = strings.TrimSuffix(base, "all_contig_annotations.csv")
+	case strings.HasSuffix(base, "all_contig_annotations.json"):
+		prefix = strings.TrimSuffix(base, "all_contig_annotations.json")
 	default:
 		return nil
 	}
@@ -256,7 +265,7 @@ const maxMetadataBytes = 64 << 20
 func CellRangerFiles(dir string) (contigs []string, companions []Companion, err error) {
 	var folders []string
 	for _, base := range []string{dir, filepath.Join(dir, "outs")} {
-		if isFile(filepath.Join(base, "filtered_contig_annotations.csv")) || isFile(filepath.Join(base, "all_contig_annotations.csv")) {
+		if isFile(filepath.Join(base, "filtered_contig_annotations.csv")) || isFile(filepath.Join(base, "all_contig_annotations.csv")) || isFile(filepath.Join(base, "all_contig_annotations.json")) {
 			folders = append(folders, base)
 		}
 		for _, pattern := range []string{"per_sample_outs/*/vdj_t", "per_sample_outs/*/vdj_b", "per_sample_outs/*/vdj_t_gd"} {
@@ -269,6 +278,9 @@ func CellRangerFiles(dir string) (contigs []string, companions []Companion, err 
 		contig := filepath.Join(folder, "filtered_contig_annotations.csv")
 		if !isFile(contig) {
 			contig = filepath.Join(folder, "all_contig_annotations.csv")
+		}
+		if !isFile(contig) {
+			contig = filepath.Join(folder, "all_contig_annotations.json")
 		}
 		if !isFile(contig) {
 			continue

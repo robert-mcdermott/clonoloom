@@ -359,3 +359,20 @@ from generic source JSON; cache header versioned by reader version 4 serializes 
 `GET /api/datasets/{id}/native-report` serves pages and bounded text previews from the opened
 snapshot. The browser only renders text and uses ordinary row/source indices. This adds no action,
 permission or replay kind and preserves scientific identity version 1. See `docs/NATIVE-REPORTS.md`.
+
+### Cell Ranger detailed contig JSON (wave 9, slice 6)
+
+`reads.cellranger_json` streams the explicit nested array layout through bounded exact JSON
+checks shared with AIRR. A filename/content probe distinguishes contigs from metadata;
+folder expansion keeps CSV precedence and adds JSON fallback. Original object text and contig
+IDs use `Source.Native` with layout `cellranger-nested-v1`; its row number is an array ordinal.
+Reader version 5 invalidates only disposable caches. The existing native-report endpoint and
+dialog serve exact source fields and original JSON, with strings throughout scientific evidence.
+
+Mapped values include supplied identities, genes, junctions, reads/UMIs, flags, sequence and
+source clonotype labels. No absent flag or coordinate conversion is inferred. Mixed chain
+annotations use an unresolved locus, preventing fallback to one gene's chain. Cross-file
+sample/contig duplicates and contradictory sample/barcode calls fail atomically. Missing flags
+remain unknown, imports retain background contigs and the active single-cell definition remains
+authoritative. Generic source metadata/exports do not acquire raw native objects. See
+`docs/CELLRANGER-JSON.md` and research §5.62; no permission, action or replay contract changes.

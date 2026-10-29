@@ -10,6 +10,9 @@ filenames identify table roles and headers are then checked.
 
 ## What every rearrangement reader produces
 
+Wave 9 development also reads [Cell Ranger detailed contig JSON](CELLRANGER-JSON.md),
+with exact source-object inspection, explicit layout recognition and missing/mixed-chain limits.
+
 For repertoire formats, ClonoLoom reads rearrangements into one table with these fields (named as
 the AIRR Rearrangement schema names them):
 
@@ -175,7 +178,8 @@ This reader does not run IMGT, reconstruct references or establish mutation read
 - **Folders.** A `vdj` run's folder or its `outs/`, and a `multi` run's folder (its
   `outs/per_sample_outs/<sample>/vdj_t`, `vdj_b` and `vdj_t_gd`), are each opened as one
   dataset. `filtered_contig_annotations.csv` is read; `all_contig_annotations.csv` when there is
-  no filtered file. `clonotypes.csv`, `consensus_annotations.csv` and `metrics_summary.csv` are
+  no filtered file. Wave 9 slice 6 adds detailed JSON as the fallback when neither CSV exists.
+  `clonotypes.csv`, `consensus_annotations.csv` and `metrics_summary.csv` are
   kept beside it for QC to compare with.
 - **Contig annotations** (Cell Ranger 3 to 9): `barcode`, `contig_id`, `chain`, `v_gene` …
   `c_gene`, `productive`, `cdr3` and `cdr3_nt` (the junction), `reads`, `umis`,
@@ -187,6 +191,10 @@ This reader does not run IMGT, reconstruct references or establish mutation read
 - A contig's count is its UMIs; its reads are kept beside them. The dataset's unit is cells.
 - A clonotype summary or metrics file opened on its own is refused with a message saying to open
   its run's folder or its contig annotations.
+- **Detailed JSON (wave 9 development).** The [nested contig contract](CELLRANGER-JSON.md)
+  retains original objects for inspection. Missing flags remain unknown and mixed-chain
+  annotations remain unresolved; producer version is not inferred. Do not combine alternate
+  representations of the same contigs as additional observations.
 
 ## immunoSEQ (Adaptive Biotechnologies)
 

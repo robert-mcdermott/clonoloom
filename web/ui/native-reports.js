@@ -24,10 +24,11 @@ export function showNativeReport(app, dataset) {
     try {
       const answer = await get(`source=${source}&offset=${offset}&limit=20`);
       if (!active() || revision !== generation) return;
+      const contigs = answer.format === 'cellranger-json';
       clear(content);
       content.append(h('p', h('b', dataset.name)),
-        h('p.callout', 'Original report values. Counts do not establish cell numbers or pairing. Confirm an unknown abundance unit from the upstream experiment, not from the size of a count.'),
-        h('p.small', answer.format === 'trust4-report'
+        h('p.callout', contigs ? 'Supplied contig annotations. Reads and UMIs are support per contig; clonotype abundance uses distinct cells under the active QC and definition. A shared barcode does not certify biological pairing.' : 'Original report values. Counts do not establish cell numbers or pairing. Confirm an unknown abundance unit from the upstream experiment, not from the size of a count.'),
+        h('p.small', contigs ? 'Nested Cell Ranger JSON layout. Producer version is not inferred. Background contigs remain present; omitted flags stay unknown and mixed-chain annotations stay unresolved.' : answer.format === 'trust4-report'
           ? 'TRUST4: _ marks a stop; ? is ambiguous; partial junctions stay out of complete-junction clonotyping. Source frequencies can use separate IG/TR denominators and are not recomputed here.'
           : 'VDJtools: _ or ~ marks an incomplete codon, not a stop. Counts may be reads or molecules; source frequencies can describe a larger, pre-subset sample.'),
         h('label', 'Source ', h('select.input.native-source', { onchange: (e) => page(Number(e.target.value)) }, ...sources.flatMap((s, i) => s.nativeEvidence ? [h('option', { value: String(i), selected: i === source }, s.name)] : []))),
@@ -41,6 +42,14 @@ export function showNativeReport(app, dataset) {
           const d = await get(`source=${source}&record=${index}`);
           if (!active() || revision !== generation || selected !== selection) return;
           clear(detail);
+          if (contigs) {
+            detail.append(h('h3', `Source record ${d.record}`),
+              h('p.small', 'Exact supplied JSON values. Absent, null, false and zero remain distinct. Full annotation objects, including unknown fields, are retained below.'),
+              h('table.data.native-fields', h('thead', h('tr', h('th', { scope: 'col' }, 'Source field'), h('th', { scope: 'col' }, 'Supplied JSON'))),
+                h('tbody', ...d.fields.map((f) => h('tr', h('th', { scope: 'row' }, f.name), h('td', h('code', { style: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' } }, f.value)))))),
+              h('details', h('summary', 'Exact contig JSON'), h('pre.native-raw', { tabIndex: 0, style: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', maxHeight: '260px', overflow: 'auto' } }, d.rawJSON)));
+            return;
+          }
           detail.append(h('h3', `Source line ${d.line}`),
             h('p.small', 'Text is retained exactly, including unsupported annotations. Empty, zero and missing-value markers are distinct. Complete source CDR3s use junction anchors; no residues or cell identities are invented.'),
             h('table.data.native-fields', h('thead', h('tr', h('th', { scope: 'col' }, 'Source column'), h('th', { scope: 'col' }, 'Supplied value'))),
@@ -50,8 +59,8 @@ export function showNativeReport(app, dataset) {
       }
       content.append(h('div.btn-row',
         h('button.btn.small', { disabled: offset === 0, onclick: () => page(source, Math.max(0, offset - 20)) }, 'Previous rows'),
-        h('label', 'Row ', h('select.input.native-row', { onchange: (e) => inspect(Number(e.target.value)) }, ...answer.rows.map((r) => h('option', { value: String(r.index) }, `Source line ${r.line}`)))),
-        h('span.small', `${answer.total} source rows`),
+        h('label', contigs ? 'Contig ' : 'Row ', h('select.input.native-row', { onchange: (e) => inspect(Number(e.target.value)) }, ...answer.rows.map((r) => h('option', { value: String(r.index) }, contigs ? r.id : `Source line ${r.line}`)))),
+        h('span.small', `${answer.total} source ${contigs ? 'contigs' : 'rows'}`),
         h('button.btn.small', { disabled: offset + answer.rows.length >= answer.total, onclick: () => page(source, offset + 20) }, 'Next rows')), detail);
       if (answer.rows.length) inspect(answer.rows[0].index);
       else detail.append(h('p', 'No data rows in this report.'));

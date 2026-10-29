@@ -18,12 +18,16 @@ const maxNativeBytes = 64 << 20
 const maxNativeRows = 1000000
 
 // NativeTable retains source fields the analysis table cannot represent. Text is
-// the original physical line, excluding its LF/CRLF. Numeric evidence stays text.
+// the original physical TSV line excluding LF/CRLF, or a complete JSON object
+// when Layout names the nested contig contract. Numeric evidence stays text.
 type NativeTable struct {
+	Layout string      `json:"layout,omitempty"`
 	Header string      `json:"header"`
 	Rows   []NativeRow `json:"rows"`
 }
 type NativeRow struct {
+	ID string `json:"id,omitempty"`
+	// Line is a physical TSV line or, for JSON, the one-based array ordinal.
 	Line uint32 `json:"line"`
 	Text string `json:"text"`
 }

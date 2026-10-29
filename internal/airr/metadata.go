@@ -21,6 +21,13 @@ const maxMetadataDepth = 64
 const maxMetadataValues = 1_000_000
 const maxRepertoires = 100_000
 
+// CheckExactJSON checks syntax, Unicode, duplicate keys and bounded structural
+// work without converting numbers. Shared by native JSON importers; it does not
+// validate any biological schema. Callers bound their input bytes separately.
+func CheckExactJSON(ctx context.Context, raw []byte) error {
+	return checkMetadataJSON(ctx, raw)
+}
+
 // RepertoireDocument keeps declared schema information separately from annotations.
 // Raw repertoire objects retain their exact JSON bytes, including numeric tokens.
 type RepertoireDocument struct {

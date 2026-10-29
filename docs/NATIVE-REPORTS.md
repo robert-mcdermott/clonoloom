@@ -102,7 +102,7 @@ import. Inspector pages default to 20 rows (API maximum 50); a header/row previe
 explicitly refused without truncating stored evidence. Empty reports can be opened but contain
 no evaluable rows. Counts of files/rows do not represent independent biological replicates.
 
-Reader-cache version 4 invalidates disposable old cache entries. Scientific identity version 1,
+Reader-cache version 5 (shared with the Cell Ranger JSON reader) invalidates disposable old cache entries. Scientific identity version 1,
 prior valid reader values, saved explicit mappings, release fixtures, automation permissions
 and the five supported replay kinds remain unchanged.
 
