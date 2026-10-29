@@ -36,10 +36,11 @@ def encode(node):
     assert tag == 'str', tag
     return json.dumps(node.value, ensure_ascii=True)
 
-root = Path(__file__).resolve().parents[2] / 'testdata/metadata/yaml'
-for source in sorted(root.glob('*.yaml')):
-    expected = encode(yaml.compose(source.read_text())) + '\n'
-    path = source.with_suffix('.json')
-    if '--write' in sys.argv: path.write_text(expected)
-    else: assert path.read_text() == expected, source
-    print(f'{source.name}: exact YAML tags, strings and numeric tokens checked')
+if __name__ == '__main__':
+    root = Path(__file__).resolve().parents[2] / 'testdata/metadata/yaml'
+    for source in sorted(root.glob('*.yaml')):
+        expected = encode(yaml.compose(source.read_text())) + '\n'
+        path = source.with_suffix('.json')
+        if '--write' in sys.argv: path.write_text(expected)
+        else: assert path.read_text() == expected, source
+        print(f'{source.name}: exact YAML tags, strings and numeric tokens checked')

@@ -279,6 +279,7 @@ func (a *app) registerDatasets(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/datasets", a.handleListDatasets)
 	mux.HandleFunc("GET /api/datasets/{id}", a.handleGetDataset)
 	mux.HandleFunc("GET /api/datasets/{id}/metadata", a.handleMetadata)
+	mux.HandleFunc("GET /api/datasets/{id}/airr-objects", a.handleAIRRObjects)
 	mux.HandleFunc("DELETE /api/datasets/{id}", a.handleCloseDataset)
 	mux.HandleFunc("POST /api/datasets/locate", a.handleLocate)
 	mux.HandleFunc("POST /api/datasets/inspect", a.handleInspect)

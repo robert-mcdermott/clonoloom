@@ -3630,3 +3630,35 @@ hand-specified state/path controls, separate repeated scopes, JSON/YAML equivale
 integers/decimals/false/zero, unsupported versions, cancellation/bounds/fuzz and captured-source
 API checks. The intentionally incomplete example declares its simulation and makes no biological
 claim. Both-theme UI checks cover evidence paths, filtering, counts, limitations and accessibility.
+
+### 5.60 Imported AIRR objects are evidence, not computed biological identity
+
+Wave 9 slice 4 implements the AIRR Community's versioned 2.0
+[Clone/Node](https://docs.airr-community.org/en/v2.0.0/datarep/clone.html),
+[Cell](https://docs.airr-community.org/en/v2.0.0/datarep/cell.html),
+[Receptor](https://docs.airr-community.org/en/v2.0.0/datarep/receptor.html) and
+[Repertoire linking](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html)
+contracts, reviewed 2026-10-29. Receptor hashes use the specified ordered uppercase domain
+concatenation and lowercase-hex SHA-256. Hash consistency does not verify full mature-variable
+domain boundaries, correct pairing, function or specificity.
+
+**ClonoLoom's import choices:** require declared 2.0/2.0.0 for the new collections, retain
+exact raw objects, unknown fields and full source text, and reject ambiguous identities/cardinality.
+Study-local IDs must be unique per kind within the opening; colliding studies require separate
+openings or explicit source disambiguation. Accept nested and standalone Node definitions but
+reject duplicate definitions. Keep original references in source text and extract the documented
+relationship fields, resolving only loaded object IDs and repertoire-scoped processing IDs.
+Missing targets remain unresolved; rearrangements and
+group membership remain unassessed. Never infer pairing, processing selection or sample identity.
+
+Imported Clone counts/memberships do not replace a clonotype definition or alter rearrangement
+analysis. No grouping, ancestry inference, receptor activity or MiAIRR compliance is computed.
+The complete supported syntax, alphabet/shape restrictions, bounds and limits are in
+`docs/AIRR-OBJECTS.md`. Existing reader/table identities, methods and release fixtures remain
+unchanged. The YAML decoder is factored to share its exact projection with the legacy reader.
+
+Validation uses independent Python integer/Decimal JSON and ruamel.yaml 0.18.6 node parsing,
+committed expected values, independently calculated receptor hashes, cross-file links,
+contradictory/duplicate/refusal cases, source removal, cancellation/bounds/fuzz, and both-theme
+inspection. The small single-cell example and domain-like sequences are explicitly simulated;
+extreme extension numbers test serialization, not biological count realism.

@@ -332,3 +332,17 @@ missing leaves. Each repeated sample/diagnosis/PCR/processing record is separate
 adds no persistent artifact, action, permission or replay kind and does not alter dataset identity.
 Presence, reporting requirements, conditional applicability, schema conformance and scientific
 validity remain distinct. See `docs/MIAIRR.md` and research §5.59 for coverage and limits.
+
+### Imported AIRR object evidence (wave 9, slice 4)
+
+`airr.ReadDataFile` shares the bounded JSON/YAML decoders with Repertoire import and adds
+Clone/Cell/Receptor/Node records with raw evidence and explicit links. `ResolveObjectLinks`
+checks the combined opening after all metadata files load. Native immutable records stay on
+`reads.Result`, outside table caches, with file indices and source fingerprints. This preserves
+existing table and dataset identity contracts. `MetadataFile.objects` is omitted when zero.
+
+`GET /api/datasets/{id}/airr-objects` serves bounded pages and record details from the opened
+snapshot. Scientific JSON is returned as text; the browser renders native link states. The
+Data-view inspector has cancellation, project/selection guards and explicit unassessed limits.
+No action/permission/replay kind is added. Imported membership never modifies the active
+clonotype definition, chain pairing or analysis counts. See `docs/AIRR-OBJECTS.md` and §5.60.

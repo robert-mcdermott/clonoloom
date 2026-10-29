@@ -85,6 +85,7 @@ type Result struct {
 	// Companions: files read beside the rearrangements (Cell Ranger's clonotypes and metrics).
 	Companions []Companion
 	// Repertoires: AIRR Repertoire metadata named with the tables, and the files they came from.
+	Objects     []airr.Object
 	Repertoires []airr.Repertoire
 	Metadata    []MetadataFile
 }

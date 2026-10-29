@@ -881,3 +881,15 @@ after source removal. `FuzzMiAIRR` checks bounded counts and absence of partial 
 The `miairr-checklist` capture scene checks filtering, independent processing rows, limitations
 and accessibility in both themes, alongside the JSON/YAML inspection regression scenes. No
 full-study MiAIRR compliance, ontology or scientific-validity oracle is claimed.
+
+## AIRR objects (wave 9, slice 4)
+
+`reference/airr_objects.py` checks all seven source objects by path with independent exact
+JSON/Decimal and ruamel.yaml 0.18.6 node parsing, plus AIRR receptor hashes. Its YAML expected
+projection is committed for offline Go tests. See `docs/AIRR-OBJECTS.md` for commands.
+`TestAIRRObjects*` covers separate files, IDs/cardinality, contradictory repertoires, unsupported
+versions/hashes/pairings, null/false/exact numbers, source removal and paged API refusals.
+`TestAIRRReceptorAlphabetIsASCII` refuses Unicode lookalikes even with a matching uppercase hash.
+`FuzzAIRRObjects` preserves original accepted JSON bytes under the structural bounds.
+The `airr-objects` capture scene checks exact text and loaded/unresolved links in both themes.
+This validates format/evidence handling, not full domains, biological pairing or activity.

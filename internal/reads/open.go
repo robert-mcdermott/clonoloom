@@ -150,12 +150,12 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 		if metadataBytes > maxMetadataBytes {
 			return nil, errors.New("combined metadata exceeds 64 MB")
 		}
-		var doc airr.RepertoireDocument
+		doc, err := airr.ReadDataFile(ctx, data, metadataFormat(name) == "yaml")
 		if metadataFormat(name) == "yaml" {
-			doc, err = airr.ReadRepertoireYAML(ctx, data)
 			file.Format, file.SourceText = "yaml", string(data)
-		} else {
-			doc, err = airr.ReadRepertoireDocument(ctx, data)
+		}
+		if len(doc.Objects) > 0 {
+			file.SourceText = string(data)
 		}
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", filepath.Base(name), err)
@@ -171,8 +171,16 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 		}
 		file.Name, file.Repertoires = filepath.Base(name), len(doc.Repertoires)
 		file.SchemaVersion = doc.SchemaVersion
+		file.Objects = len(doc.Objects)
+		for i := range doc.Objects {
+			doc.Objects[i].FileIndex = len(res.Metadata)
+		}
+		res.Objects = append(res.Objects, doc.Objects...)
 		res.Repertoires = append(res.Repertoires, doc.Repertoires...)
 		res.Metadata = append(res.Metadata, file)
+	}
+	if err := airr.ResolveObjectLinks(ctx, res.Objects, res.Repertoires); err != nil {
+		return nil, err
 	}
 	return res, nil
 }
@@ -180,6 +188,7 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 // MetadataFile is a file of AIRR Repertoire metadata read with a dataset: part of the dataset, as
 // its tables are, by its fingerprint.
 type MetadataFile struct {
+	Objects       int    `json:"objects,omitempty"`
 	Format        string `json:"format,omitempty"`
 	SourceText    string `json:"-"`
 	SchemaVersion string `json:"schemaVersion,omitempty"`

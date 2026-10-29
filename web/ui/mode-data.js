@@ -3,6 +3,7 @@
 // validator's findings with their examples and remedies), and its samples' annotation, typed or
 // suggested from file names and metadata.
 
+import { showAIRRObjects } from './airr-objects.js';
 import { showRepertoireMetadata } from './repertoire-metadata.js';
 import { h, icon, clear, formatBytes } from './dom.js';
 import { showDialog, showMenu, promptDialog, confirmDialog, toast } from './overlays.js';
@@ -65,6 +66,7 @@ export function mountData(app, container) {
       if (shown.metadata?.length) body.append(h('div.btn-row', { style: { margin: '12px 0' } },
         h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showRepertoireMetadata(app, shown) }, icon('info'), 'Inspect AIRR metadata')));
     }
+    if (shown && app.datasetStates.get(shown.id)?.summary?.metadata?.some((file) => file.objects)) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showAIRRObjects(app, shown) }, 'Inspect AIRR objects'));
     body.append(samplesSection());
   }
 

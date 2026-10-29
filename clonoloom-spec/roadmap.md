@@ -3990,7 +3990,7 @@ accessibility; run native race, scientific/release regressions, JS, vet, platfor
 No identity/version, permissions, scientific replay or numerical-method changes.
 
 
-**Implemented and validated; awaiting maintainer review and commit.** The native 82-field checklist uses the
+**Committed and pushed as `cd040ae`.** The native 82-field checklist uses the
 pinned AIRR 2.0 inventory and exact captured record, with independent official-table comparison.
 Metadata inspection adds a collapsed, read-only review, group filtering, evidence paths and
 native state counts. Missing parents leave their children unassessed. Unsupported declarations
@@ -4014,8 +4014,69 @@ three metadata/checklist browser scenes in both themes, reviewed screenshots, th
 build and all 240 site accessibility/layout checks pass. Existing 0.2.0–0.8.0 release fixtures
 remain unchanged and reopen successfully. Original evidence, scientific algorithms, replay,
 permissions and application/client version 0.8.0 are preserved. No commit, push, tag, release or
-publication was performed. Slice 4 (AIRR Clone/Cell/Receptor objects) has not started.
+publication was performed. Slice 4 (AIRR Clone/Cell/Receptor objects) follows below.
 
+
+### Slice 4: native AIRR Clone, Cell and Receptor evidence
+
+**Acceptance recorded before implementation.** Read AIRR 2.0 Data File JSON and the existing
+bounded YAML subset, with Clone, Cell, Receptor and supporting Node collections beside the
+rearrangement tables. Preserve object bytes/decoded values, unknown fields and full source
+text, fingerprints and collection paths. Support nested Clone nodes and standalone Nodes.
+Require explicit supported schema declarations for these new objects; retain legacy Repertoire
+behavior. Bound combined records/links and reject duplicate IDs, malformed link cardinality,
+ambiguous processing IDs and contradictory locally resolved repertoire links.
+
+Resolve only explicit links to loaded objects and repertoire-scoped processing metadata.
+Missing/external references stay unresolved, never guessed from names, barcodes, sequences or
+one remaining processing record. Validate receptor type/locus pairing and supplied sequence hash
+against the AIRR formula, without claiming complete variable domains, biological pairing,
+reactivity or ontology validity. Imported Clone membership/counts do not replace a clonotype
+definition or alter analysis counts. No raw rearrangement/sequence link or group membership is
+inferred; those references remain explicitly unassessed in this slice.
+
+Expose paged read-only object inspection, original evidence and link status in Data. Keep
+existing dataset identities, release fixtures, permissions, replay contracts and version 0.8.0.
+Validate exact JSON/YAML values with independent readers, linked/unresolved/cross-file and
+malformed controls, cancellation/bounds/fuzz, source removal, both-theme UI and full regression.
+
+**Implemented and validated; awaiting the maintainer's commit.** A shared exact JSON/YAML Data File
+reader retains native objects and full captured documents beside rearrangements, with explicit
+link resolution across files. New object import requires declared AIRR 2.0/2.0.0; previous
+Repertoire forms retain their semantics, except ambiguous bare object IDs require an explicit
+collection wrapper to prevent Cell/Clone references being read as Repertoire identities. IDs,
+collection cardinality, repertoire contradictions, processing ambiguity and receptor hash/type/locus
+constraints have explicit refusals. Unknown
+fields remain source evidence. Imported memberships never change the active clonotype definition.
+
+The paged object inspector uses live dataset summaries (object counts are not added to saved
+project metadata), with read-only source text and loaded/unresolved/unscoped/unassessed links.
+Both-theme screenshots are reviewed. Independent JSON/Decimal and YAML-node controls cover all
+seven artificial objects and the ordered receptor hash; full source text survives source removal.
+The initial oracle assertion compared JSON formatting as well as values; it was corrected to
+compare exact typed values while separately requiring original JSON byte preservation. The
+final reader race and amd64 suites pass. No scientific tolerance or expected value was changed.
+
+Validation completed:
+
+- The full application race suite passes (1,767.678 s), including unchanged release-project
+  results, portable archives and exact report replay. Scientific references pass (1,365.041 s)
+  with the existing optional-data/performance skips. The initial combined reference command
+  reported the formatting-only assertion above; the corrected reader and complete internal race
+  suites subsequently pass. A sandboxed internal rerun could not bind its local download-test
+  listener; rerunning with loopback access passes without changing the test or implementation.
+- Final bare-object and ASCII-alphabet guards have focused reader/API coverage; the API/metadata
+  and release-opening regression run passes (185.092 s), with a further API pass after the ASCII
+  refusal. Unicode lookalikes are refused even when their uppercase hash matches. Independent
+  exact-object and existing YAML oracles pass; the final bounded fuzz run passes 55,803 executions.
+- Go vet, amd64 readers and all six CGO-free Darwin/Linux/Windows amd64/arm64 builds pass.
+  All 231 JavaScript tests pass. Both-theme object inspection, exact source text, null/false,
+  loaded/unresolved links and accessibility checks pass; both screenshots were reviewed.
+  The site builds 61 pages with 77 screenshot pairs and passes all 240 accessibility/layout checks.
+- The explicit container context checks 356 source/assets; whitespace checks pass. Existing
+  release fixtures, version 0.8.0, scientific methods, numerical tolerances, automation permissions
+  and replay contracts remain unchanged. No commit, push, tag, release or publication was performed.
+  Slice 5 (remaining table readers) has not started.
 
 ## Later waves (outlined)
 

@@ -33,7 +33,15 @@ type yamlReader struct {
 // ReadRepertoireYAML decodes the documented subset and reuses the JSON import
 // checks. Raw on its records is exact decoded JSON, NOT original YAML source.
 func ReadRepertoireYAML(ctx context.Context, data []byte) (RepertoireDocument, error) {
-	var empty RepertoireDocument
+	encoded, err := decodeMetadataYAML(ctx, data)
+	if err != nil {
+		return RepertoireDocument{}, err
+	}
+	return ReadRepertoireDocument(ctx, encoded)
+}
+
+func decodeMetadataYAML(ctx context.Context, data []byte) ([]byte, error) {
+	var empty []byte
 	if err := ctx.Err(); err != nil {
 		return empty, err
 	}
@@ -48,7 +56,7 @@ func ReadRepertoireYAML(ctx context.Context, data []byte) (RepertoireDocument, e
 		if err := yamlSurrogates(string(data)); err != nil {
 			return empty, err
 		}
-		return ReadRepertoireDocument(ctx, data)
+		return data, nil
 	}
 	text := strings.ReplaceAll(string(data), "\r\n", "\n")
 	if strings.ContainsAny(text, "\r\t") {
@@ -104,7 +112,7 @@ func ReadRepertoireYAML(ctx context.Context, data []byte) (RepertoireDocument, e
 	if len(encoded) > maxMetadataBytes {
 		return empty, fmt.Errorf("decoded YAML JSON exceeds 64 MiB")
 	}
-	return ReadRepertoireDocument(ctx, encoded)
+	return encoded, nil
 }
 func (p *yamlReader) err(l yamlLine, message string) error {
 	return fmt.Errorf("YAML line %d, column %d: %s (near %.120q); see docs/AIRR-YAML.md or export JSON", l.number, l.indent+1, message, l.text[l.indent:])

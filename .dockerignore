@@ -5,6 +5,7 @@
 !LICENSE
 !NOTICE
 !actions.go
+!api_airr_objects.go
 !api_analysis.go
 !api_anndata.go
 !api_batchqc.go
@@ -71,6 +72,7 @@
 !internal/airr/metadata.go
 !internal/airr/miairr.go
 !internal/airr/miairr_fields.go
+!internal/airr/objects.go
 !internal/airr/repertoire.go
 !internal/airr/schema.go
 !internal/airr/yaml.go
@@ -285,6 +287,7 @@
 !web/lib/specificity.js
 !web/lib/tracking.js
 !web/styles.css
+!web/ui/airr-objects.js
 !web/ui/automation.js
 !web/ui/batch-qc.js
 !web/ui/bcell-families.js

@@ -1328,6 +1328,29 @@ const scenes = {
   },
   // The Data view of the PBMC 1k T cells: the dataset, its validation and samples; its files and
   // license in the inspector.
+  async 'airr-objects'() {
+    await act('open_data', { paths: [join(ROOT, 'testdata/airr-objects/study.tsv'), join(ROOT, 'testdata/airr-objects/study.json')], name: 'Simulated AIRR object evidence' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR objects').click()`);
+    await waitFor(`document.querySelectorAll('.object-list tbody tr').length === 7`);
+    await js(`document.querySelector('[aria-label="Inspect Clone source-family-1"]').click()`);
+    await waitFor(`Boolean(document.querySelector('.object-json'))`);
+    await js(`(() => {
+      const source = document.querySelector('.object-json').textContent;
+      for (const token of ['9007199254740993', '1.234567890123456789', '"flag": false', '"missing": null']) if (!source.includes(token)) throw new Error('Object evidence changed: ' + token);
+      if (!document.querySelector('.object-source').textContent.includes('lab_extension')) throw new Error('Full source wrapper lost');
+      document.querySelector('[aria-label="Inspect Cell C002"]').click();
+    })()`);
+    await waitFor(`document.querySelector('.airr-object-detail h3')?.textContent === 'Cell · C002'`);
+    await js(`(() => {
+      const links = document.querySelector('.object-links').textContent;
+      for (const value of ['not-loaded', 'outside-opening', 'unresolved']) if (!links.includes(value)) throw new Error('Unresolved evidence hidden');
+      if (!document.querySelector('.object-json').textContent.includes('"virtual_pairing": null')) throw new Error('Unknown pairing changed');
+      document.querySelector('[aria-label="Inspect Cell C001"]').click();
+    })()`);
+    await waitFor(`document.querySelector('.airr-object-detail h3')?.textContent === 'Cell · C001'`);
+    await checkAccessibility();
+  },
   async 'miairr-checklist'() {
     await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), join(ROOT, 'testdata/metadata/miairr.airr.json')], name: 'Simulated MiAIRR reporting review' });
     await act('show', { view: 'data' });

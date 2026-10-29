@@ -90,13 +90,22 @@ These are ClonoLoom import rules. Limits: 64 MiB per source/decompressed file an
 metadata, 100,000 repertoires per file/dataset, nesting depth 64, 1,000,000 JSON values per file
 and 4,096 bytes per ID. Original-record previews over 4 MiB are refused explicitly, without
 truncating imported evidence. Lists are paged. Additional YAML syntax/work limits are documented in the linked guide. The
-Clone/Cell/Receptor objects remain planned in later wave 9 slices. See the [AIRR Repertoire standard](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html).
+Clone/Cell/Receptor support is described below. See the [AIRR Repertoire standard](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html).
 
 Wave 9 slice 3 adds a [MiAIRR reporting checklist](MIAIRR.md) for declared AIRR 2.0 metadata.
 It distinguishes essential/important/defined levels, absent keys and explicit missingness,
 with conditional review, evidence paths and remedies. Reporting completeness, schema/ontology
 conformance and scientific validity are distinct. See the guide for supported versions,
 sets 1–5 coverage, unassessed set 6 and bounds; no compliance certificate is issued.
+
+### AIRR Clone, Cell and Receptor objects (wave 9 development)
+
+Open AIRR 2.0 Data Files alongside rearrangements, including supporting Node objects and
+mixed Repertoire collections. **Inspect AIRR objects** shows exact source objects and explicit
+link states. Imported memberships, counts and pairing flags remain source assertions; they do
+not change the active clonotype definition. Read the [supported contract and scientific
+limits](AIRR-OBJECTS.md), including version requirements, identity/cardinality checks, receptor
+hash validation, unresolved references and the bounded YAML subset.
 
 ### Sequence evidence (0.5.0)
 

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Native AIRR object inspection (wave 9, slice 4).** Read AIRR 2.0 Clone, Cell,
+  Receptor and supporting Node objects in JSON/bounded YAML alongside rearrangement tables.
+  Preserve exact values, unknown fields, source snapshots and explicit links. Reject duplicate
+  IDs, ambiguous cardinality, conflicting repertoire links and incorrect receptor hashes.
+  Inspect loaded/unresolved/unscoped/unassessed links without changing clonotype definitions,
+  counts or pairing. Add independent exact-reader fixtures, refusal/fuzz/API controls,
+  simulated both-theme screenshots and documented scientific limits.
+
 - **Versioned MiAIRR reporting checklist (wave 9, slice 3).** Inspect AIRR 2.0 metadata
   reporting with pinned essential/important/defined levels, explicit missingness states,
   separate repeated scopes, evidence paths, conditional review and remedies. Keep exact
