@@ -300,6 +300,11 @@ Precision-sensitive numbers stay text; native JSON, notices and certificates acc
 Worksheet rows are JSON nodes, not independent subjects; spreadsheet precision and re-saving
 limits remain explicit.
 
+[Prism subject-table exports](docs/PRISM.md) (unreleased wave 9) map saved cohort features and
+comparisons to data-only Column tables. Subject pairing, experimental units, missingness and
+exclusions travel with the original evidence. New analyses remain explicit in Prism; import
+rounding, complete-case behavior and native-import validation limits are documented.
+
 [Typed Parquet exports](docs/PARQUET.md) preserve native clonotype and rearrangement evidence
 with nullable counts, explicit provenance and an optional pseudonymized representation.
 The [worked record-and-reach study](docs/RECORD-STUDY.md) connects these interfaces with exact

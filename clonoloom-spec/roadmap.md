@@ -4461,6 +4461,78 @@ automation permissions and scientific replay contracts remain unchanged. No comm
 release or publication was made. Slice 11 has not started.
 
 
+### Slice 11: subject-preserving Prism interchange
+
+**Slice 10 committed as `4d57ae4`. Plan before implementation.** Export one explicitly selected
+saved cohort feature/comparison result as data-only PZFX Column tables, following CytoWeave's
+Apache-2.0 format pattern and GraphPad's published schema. One table per recorded feature,
+two columns in declared reference/comparison order, one subcolumn, and one identified subject
+per row. Pair by explicit subject identity, never input order. Independent subjects occupy only
+their own group column; the opposite cell is structurally empty, not a missing measurement.
+Keep missing measurements blank without removing subjects or replacing them with zero. Carry
+cell-to-source mappings, reasons, exclusions, complete native JSON/manifests/notices/certificates,
+methods and a hash inventory. No count-model coefficients, cells, clones, bootstrap draws or
+technical replicates become independent subjects. No analysis/graph template, pooling, imputation
+or silent complete-case conversion. Validate design/measurement agreement and explicit bounds;
+retain original numeric tokens and document Prism import precision and method differences.
+Validate independently with XML/Decimal, the published schema and R's pzfx reader, and exercise
+both-theme UI with artificial paired data. A native Prism import is conditional on availability;
+report that limitation explicitly. Keep versions, scientific identities and automation unchanged.
+
+**Implemented.**
+
+- Reports exports one explicitly selected saved cohort feature/comparison result as data-only
+  Prism 7+ PZFX Column tables. One table per recorded feature, declared group order, one subcolumn
+  and one identified subject per row. Paired observations align by exact subject identity;
+  independent subjects occupy separate rows with explicit structural opposite-group blanks.
+- Preserve numeric zero, missing measurements and reasons, all subject rows (including wholly
+  missing features), excluded-sample dispositions and exact original numeric tokens. Check the
+  captured design, feature catalog, measurements, comparison points and denominators without
+  rerunning scientific workers. Refuse ambiguous identity, changed evidence and unsupported values.
+- Package a cell-to-source mapping, unchanged native result/manifest, certificate, provider notice,
+  methods/citations, import guidance and SHA-256 inventory. Keep provider acknowledgment explicit;
+  support cancellation, visible errors, concurrent-submit refusal and stale-response suppression.
+- Bound evidence, data positions, XML text, numeric tokens/exponents and construction time. Refuse
+  negative zero, out-of-range values and integers beyond binary64's exact integer range. Other
+  decimal fractions may round in Prism; native companions remain the authoritative exact evidence.
+- Document the scientific boundary: data export does not configure a paired test, establish
+  biological independence or translate statistical methods. Prism's omission of incomplete pairs
+  can differ from ClonoLoom leaving a feature untested. No pooling, imputation, complete-case
+  conversion, technical-replicate expansion, new estimator, analysis template or graph is added.
+- Add independent XML/Decimal and R-reader checks to CI, both-theme artificial paired-study
+  screenshots, primary format/scientific sources, sibling attribution and container source inputs.
+  O4 remains partial for other layouts. Native Prism GUI import remains unverified because Prism
+  is unavailable; the guide supplies a manual import exercise. The published Prism 7/8 Mac XSDs
+  fail strict lxml compilation on their nondeterministic `d` content model, so no successful strict
+  XSD validation is claimed. No vendor schema or stylesheet is redistributed.
+
+**Validation completed.**
+
+- Full application race suite passes in 1,314.842 s, including historical project reopening,
+  portable archives, certificates, reports, existing workbooks and exact headless replay.
+- Full internal/scientific race suite passes, including the validation package in 1,102.029 s
+  and existing opt-in external-data/performance skips. Final focused Prism race controls pass
+  (5.895 s application, 1.283 s writer); amd64 controls pass (2.917 s application, 0.726 s writer).
+  Controls cover exact tokens, reordered paired points, experimental units, wholly missing
+  features, exclusions, inconsistent denominators, provider acknowledgment, changed evidence,
+  deterministic output, cancellation, XML text, numerical bounds and oversized exports.
+- Independent XML/ZIP/Decimal and R pzfx 0.3.1 audits pass for seven exports, including the
+  actual browser download: 59 tables, 743 declared subject/group measurements, 72 missing
+  measurements and 515 structural blanks. Subject identities, group order, source pointers,
+  literal numeric tokens, missingness reasons, exclusions and inventory hashes agree.
+- Both-theme browser controls pass for empty initial selection, successful export, errors,
+  cancellation, stale responses and concurrent-submit prevention. Screenshots visually reviewed;
+  the example is explicitly artificial, with 28 paired subjects and 56 samples. No new plot or
+  native Prism GUI rendering is claimed.
+- All 233 JavaScript tests, Go vet and six CGO-free darwin/linux/windows × amd64/arm64 builds pass.
+  Site build: 61 pages / 84 screenshot pairs; 240 accessibility/layout checks pass. Container
+  source allowlist: 378 inputs. Formatting and `git diff --check` are clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances,
+automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 12 has not started.
+
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |

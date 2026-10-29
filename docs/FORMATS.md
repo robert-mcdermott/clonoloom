@@ -1169,3 +1169,14 @@ scalar retains its original token as text. Numeric admission is conservative and
 string types, dates or formulas. Null, empty and absent values remain distinct from zero.
 See [EXCEL.md](EXCEL.md) for exact precision policy, bounds, provider acknowledgment, spreadsheet
 editing limits and the distinction between node rows and biological experimental units.
+
+## Prism subject-table interchange (wave 9, slice 11)
+
+`clonoloom-prism.zip` contains data-only `data.pzfx`, a version 1 `clonoloom-prism-mapping`
+record, unchanged result/manifest JSON, provider notice, native certificate and a version 1
+`clonoloom-prism` inventory. Each recorded feature becomes a two-column, one-subcolumn Column
+table. Paired subject identities align across groups; independent subjects occupy their own
+rows. Null measurements and structurally empty positions remain distinct in the mapping, while
+both are blank in PZFX; zero stays numeric. No analysis or graph template is generated. See
+[PRISM.md](PRISM.md) for supported kinds, exact tokens, import precision, exclusions, bounds,
+method differences and the explicit limits of native/schema validation.

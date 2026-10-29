@@ -1,5 +1,24 @@
 # Validation
 
+Wave 9 slice 11: audit exact Prism XML tokens, row identities, group order, missing measurements,
+structural blanks, exclusions and hashes independently, then import with R's pzfx reader:
+
+```sh
+CLONOLOOM_PRISM_OUT=/tmp/clonoloom-prism go test -run TestPrism . ./internal/prism
+Rscript -e 'install.packages(c("pzfx", "jsonlite"))'
+uv run --no-project validation/reference/prism.py /tmp/clonoloom-prism --r
+CLONOLOOM_PRISM_OUT=/tmp/clonoloom-prism node docs/capture/capture.mjs prism --theme both
+uv run --no-project validation/reference/prism.py /tmp/clonoloom-prism --r
+```
+
+The native controls include reordered paired points, missing/zero values, wholly missing features,
+numeric/XML-sensitive identifiers, declared exclusions, provider terms, unsupported numbers, changed evidence and
+cancellation. The browser download is the artificial 28-subject paired cohort. This is no claim
+of native Prism GUI import or equivalent statistics. The published Prism 7/8 Mac XSDs cannot
+compile under strict lxml because of their own nondeterministic content model; that check fails
+explicitly rather than being reported as passed. See [PRISM.md](../docs/PRISM.md).
+
+
 Wave 9 slice 10: independently audit every exported XLSX node, type, exact scalar token,
 missingness state and companion hash with openpyxl 3.1.5, XML/ZIP parsing and Decimal:
 

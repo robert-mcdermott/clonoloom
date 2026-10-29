@@ -3884,3 +3884,46 @@ is an interoperability exercise, not validation that editing/re-saving preserves
 it can convert booleans to formulas, remove empty cells and normalize line endings. The original
 ZIP and native companion bytes remain the evidence. See [Excel](../docs/EXCEL.md) for the complete
 scope, bounds and sources, and the existing certificate contract for separate exact replay.
+
+### 5.67 Subject identity and missingness in Prism interchange
+
+**Decision (wave 9, slice 11).** Use the published PZFX data/Info layout for native subject-feature
+and cohort-comparison results. GraphPad's [Column table guide](https://www.graphpad.com/guides/prism/latest/user-guide/column_tables.htm)
+describes group columns and matched observations sharing a row. ClonoLoom maps one recorded
+feature per table, retains reference/comparison order, aligns paired samples by explicit subject
+ID, and puts independent subjects in separate rows with structural opposite-group blanks.
+The experimental unit remains subject; abundance units, cell counts, clonotypes and bootstrap
+replicates do not change that unit. This retains the native design's existing Lazic/Squair
+pseudoreplication rationale, without adding an inferential method or implying biological independence.
+
+GraphPad's [missing-value guide](https://www.graphpad.com/guides/prism/latest/user-guide/missing_values.htm)
+explains that paired tests can omit incomplete rows. That differs from ClonoLoom's saved cohort
+comparison policy: any selected missing measurement leaves the feature untested. Preserve blank
+measurements and reasons without deletion/imputation, distinguish structural blanks in the mapping,
+and retain excluded samples outside the Prism observations. A data-only file does not preconfigure
+a paired test. No hypothesis test, effect, interval, rank/permutation calculation or BH correction
+is translated; the original results and method details remain in the native companions.
+
+The [integration guide](https://www.graphpad.com/support/faq/prism-integrated-saves-prism-files-instruments/)
+and [published schema documentation](https://www.graphpad.com/support/faq/prism-xml-style-sheet-and-schema-that-define-the-pzfx-format/)
+provide the format basis. Follow CytoWeave's Apache-2.0 Column-table/Info pattern in a native Go
+writer. Emit no script, analysis/graph template or proprietary opaque payload. XML markup is
+escaped; unsupported characters and explicit size bounds cause refusal. No vendor schema,
+stylesheet or application implementation source is redistributed.
+
+GraphPad's [current rounding guide](https://www.graphpad.com/guides/prism/latest/user-guide/rounding.htm)
+and [versioned numeric-range explanation](https://www.graphpad.com/support/faq/how-many-digits-of-precision-does-prism-store-how-accurate-are-the-results-what-are-the-largest-and-smallest-numbers-prism-can-store/)
+separate display and storage precision. Target Prism 7+ and retain every original numeric token
+in XML/mapping without browser floats. Conservatively refuse nonzero magnitudes outside
+1e-300–1e300, integers beyond binary64's exact integer range, negative zero and oversized/excessive
+exponents. These are exporter policies, not claims about every Prism version's complete numeric
+range. Other decimals can still round on import or saving; native JSON remains authoritative.
+
+Validation compares original subject measurements against XML/Decimal and R pzfx 0.3.1 imports,
+including numeric-looking and XML-sensitive identifiers, missingness, declared exclusions and
+independent/paired layouts. Both-theme UI uses the existing artificial 28-subject paired study.
+The unmodified published Prism 7/8 Mac XSDs fail strict lxml schema compilation (nondeterministic
+`d` content model); this is documented without claiming successful strict schema validation.
+Native Prism is not installed, so a GUI import remains unverified. Independent reader success
+is not native application certification, exact replay or statistical equivalence. See
+[the Prism contract](../docs/PRISM.md) for an explicit native import exercise and remaining limits.

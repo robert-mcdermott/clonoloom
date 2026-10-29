@@ -17,6 +17,9 @@ They implement Bob Jenkins' public-domain lookup3/hashlittle checksum.
 The flat Parquet writer and compact-protocol emission are adapted from SituCraft v0.9.0
 under the same Apache-2.0 license, extended for nullable fields and bounded scientific exports.
 
+The data-only Prism writer follows CytoWeave's Apache-2.0 PZFX Column-table and Info pattern,
+with native subject mapping, exact numeric tokens and evidence companions.
+
 The Excel workbook presentation follows CytoWeave's Apache-2.0 header, width and frozen-row
 pattern. ClonoLoom implements its own native Go writer and exact JSON evidence mapping.
 

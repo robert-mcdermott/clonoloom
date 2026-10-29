@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Subject-level Prism interchange (wave 9, slice 11).** Export one saved cohort feature or
+  comparison result as data-only PZFX Column tables with explicit subject identities, declared
+  group order and paired alignment. Preserve missing measurements, structural blanks, zero and
+  excluded-sample reasons alongside exact native evidence. Refuse ambiguous or oversized mappings;
+  keep provider acknowledgment and import precision/method limits explicit. Add independent
+  XML/Decimal and R-reader import checks, native refusal controls and artificial both-theme UI
+  validation. Native Prism GUI import remains unverified where Prism is unavailable.
+
 - **Exact Excel evidence workbooks (wave 9, slice 10).** Export explicitly selected saved
   cohort, batch QC and motif results with typed JSON-node value/provenance sheets, original
   scalar tokens, methods, notices and native JSON/certificate companions. Keep precision-sensitive

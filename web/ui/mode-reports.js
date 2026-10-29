@@ -6,6 +6,7 @@ import { mountCheckpoints } from './checkpoints.js';
 import { mountParquetExports } from './parquet.js';
 import { mountDeidentification } from './deidentification.js';
 import { mountProjectArchives } from './project-archives.js';
+import { mountPrism } from './prism.js';
 import { mountWorkbooks } from './workbooks.js';
 import { mountHTMLReports } from './html-reports.js';
 
@@ -20,6 +21,7 @@ export function mountReports(app, container) {
   const checkpoints = mountCheckpoints(app, body);
   const htmlReports = mountHTMLReports(app, body);
   const workbooks = mountWorkbooks(app, body);
+  const prism = mountPrism(app, body);
   let chosen = '', record = null, report = null, busy = false, error = '', generation = store.state.generation, alive = true;
   let verificationMode = 'integrity', controller = null;
   let reportText = '';
@@ -77,7 +79,7 @@ export function mountReports(app, container) {
     const records = current();
     if (!records.some((r) => r.id === chosen)) chosen = records.at(-1)?.id ?? '';
     // Keep the checkpoint component mounted while certificate state rerenders.
-    for (const child of [...body.children]) if (!child.classList.contains('checkpoints-view') && !child.classList.contains('html-reports-view') && !child.classList.contains('workbooks-view') && !child.classList.contains('project-archives-view') && !child.classList.contains('deidentification-view') && !child.classList.contains('parquet-view')) child.remove();
+    for (const child of [...body.children]) if (!child.classList.contains('checkpoints-view') && !child.classList.contains('html-reports-view') && !child.classList.contains('workbooks-view') && !child.classList.contains('prism-view') && !child.classList.contains('project-archives-view') && !child.classList.contains('deidentification-view') && !child.classList.contains('parquet-view')) child.remove();
     const select = h('select.input', { 'aria-label': 'Certificate result', disabled: busy, onchange: (e) => { chosen = e.target.value; record = null; error = ''; render(); } },
       ...records.map((r) => h('option', { value: r.id, selected: r.id === chosen }, `${r.name} · ${r.id}`)));
     body.append(h('section.card', h('h2', 'Saved-result evidence certificates'),
@@ -119,7 +121,8 @@ export function mountReports(app, container) {
     checkpoints.update(topics);
     htmlReports.update(topics);
     workbooks.update(topics);
+    prism.update(topics);
     if (generation !== store.state.generation) { controller?.abort(); controller = null; generation = store.state.generation; chosen = ''; record = null; report = null; busy = false; error = ''; }
     if (topics.has('project') || topics.has('mode')) render();
-  }, destroy() { alive = false; controller?.abort(); archives.destroy(); deidentification.destroy(); parquet.destroy(); checkpoints.destroy(); htmlReports.destroy(); workbooks.destroy(); if (app.certificatesView === view) app.certificatesView = null; root.remove(); } };
+  }, destroy() { alive = false; controller?.abort(); archives.destroy(); deidentification.destroy(); parquet.destroy(); checkpoints.destroy(); htmlReports.destroy(); workbooks.destroy(); prism.destroy(); if (app.certificatesView === view) app.certificatesView = null; root.remove(); } };
 }

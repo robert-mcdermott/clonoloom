@@ -458,6 +458,24 @@ const scenes = {
     await reject();await pending;
     await js(`(()=>{window.clonoloom.store.setUI({drawer:{open:true,tab:'automation'}},['drawer']);return true})()`);
   },
+  async ['prism']() {
+    await act('new_project',{name:'Artificial paired cohort · Prism interchange'});
+    const opened=(await act('open_example',{example:'simulated-counts-paired',download:true})).data;
+    for(const step of ['design','features','compare'])await act('cohort_example_step',{dataset:opened.dataset,preset:'counts-paired',step});
+    const artifact=(await act('get_state')).data.artifacts.find(r=>r.kind==='cohort-compare').id;
+    await js(`window.clonoloom.setMode('reports')`);
+    if(await js(`Boolean(document.querySelector('.prism-view select').value)`))throw new Error('Prism selected implicitly');
+    const exported=await js(`window.clonoloom.prismView.exportPrism('${artifact}',{title:'Artificial paired subject study · recorded evidence'})`);
+    if(!/^[a-f0-9]{64}$/.test(exported.fingerprint)||exported.recomputed)throw new Error('Prism export contract');
+    await js(`(()=>{const root=document.querySelector('.prism-view');root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    // Refuse a completed response after a newer project edit, then exercise cancellation.
+    await js(`(async()=>{const app=window.clonoloom,v=app.prismView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).includes('reports/prism')){entered();await gate}return response};try{const pending=v.exportPrism('${artifact}');await started;app.store.commit({...app.store.project,reportSentinel:'keep'},'Concurrent prism edit');release();let refused=false;try{await pending}catch(e){refused=e.message.includes('analysis changed')}if(!refused||app.store.project.reportSentinel!=='keep')throw new Error('Stale prism export');}finally{release();window.fetch=original}app.store.undo();await new Promise(r=>setTimeout(r,0));const pending=app.prismView.exportPrism('${artifact}');[...document.querySelectorAll('.prism-view button')].find(b=>b.textContent==='Cancel Prism export').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||app.prismView.state().busy)throw new Error('Prism cancellation');return true})()`);
+    await js(`(async()=>{const v=window.clonoloom.prismView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async()=>{entered();await gate;return new Response(JSON.stringify({error:'Artificial prism refusal control'}),{status:409,headers:{'Content-Type':'application/json'}})};try{const pending=v.exportPrism('${artifact}');await started;let refused=false;try{await v.exportPrism('${artifact}')}catch(e){refused=e.message.includes('Wait')}if(!refused||!document.querySelector('.prism-view input').disabled)throw new Error('Concurrent prism submission');release();try{await pending}catch{}if(v.state().busy||!document.querySelector('.prism-view [role=alert]')?.textContent.includes('Artificial prism refusal control'))throw new Error('Prism error hidden');return true}finally{release();window.fetch=original}})()`);
+    await js(`(async()=>{const original=URL.createObjectURL;try{URL.createObjectURL=(blob)=>{window.prismDownload=blob;return original(blob)};await window.clonoloom.prismView.exportPrism('${artifact}',{title:'Artificial paired subject study · recorded evidence'});return true}finally{URL.createObjectURL=original}})()`);
+    if(process.env.CLONOLOOM_PRISM_OUT){mkdirSync(process.env.CLONOLOOM_PRISM_OUT,{recursive:true});writeFileSync(join(process.env.CLONOLOOM_PRISM_OUT,'browser-paired.zip'),Buffer.from(await js(`window.prismDownload.arrayBuffer().then(b=>Array.from(new Uint8Array(b)))`)));}
+    await js(`(()=>{const root=document.querySelector('.prism-view');root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    await clearToasts();await checkAccessibility();
+  },
   async ['workbooks']() {
     await batchQCScene();
     const artifact=await js('window.batchQCCheck.id');
@@ -1873,7 +1891,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name === 'workbooks' || name === 'html-reports' || name === 'offline-report' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name === 'prism' || name === 'workbooks' || name === 'html-reports' || name === 'offline-report' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {
