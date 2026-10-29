@@ -126,3 +126,17 @@ test('the cohort release retains every study, usable and failed checks, and anal
   const failed=p.cohortDesigns.find((d)=>!d.result.ok);
   assert.ok(failed.result.findings.some((f)=>f.code==='cohort-batch-confounded'));
 });
+
+test('the record release retains its checkpoint and exact saved QC evidence', () => {
+  const root = new URL('../../validation/projects/0.8.0/', import.meta.url);
+  const p = parseProject(readFileSync(new URL('project.json', root), 'utf8'));
+  const study = JSON.parse(readFileSync(new URL('study.json', root), 'utf8'));
+  assert.equal(p.datasets.length, 1);
+  assert.equal(p.datasets[0].samples.length, 26);
+  assert.deepEqual(p.artifacts.map(a => a.kind), ['batch-qc']);
+  assert.equal(p.artifacts[0].id, study.artifact);
+  assert(p.checkpoints.some(c => c.id === study.checkpoint));
+  const original = parseProject(readFileSync(new URL('original-project.json', root), 'utf8'));
+  assert.deepEqual(original.artifacts, p.artifacts);
+  assert.deepEqual(original.checkpoints, p.checkpoints);
+});

@@ -1,7 +1,8 @@
 # Automation policy and review
 
-Wave 8 development, slice 6. Published 0.7.0 binaries predate this policy. The development
-host advertises API **2**, action catalog **4** and automation policy **1**. [MCP transport](MCP.md) is available in development slice 7; [Python](PYTHON.md) and [R](R.md) are available in development slices 8–9. Application version remains 0.7.0.
+ClonoLoom 0.8.0 advertises action API **2**, catalog **4** (64 actions) and automation
+policy **1**. Remote control is read-only by default. [MCP](MCP.md), [Python](PYTHON.md)
+and [R](R.md) use the same explicit grants and visible proposal review.
 
 ## Explicit capabilities
 

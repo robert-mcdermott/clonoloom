@@ -1,10 +1,8 @@
 # Containers and cluster execution
 
-Wave 8 development, slice 14. Published v0.7.0 binaries predate the headless recipe contract.
-The image runs the **same native Go workers** as the application. It adds packaging and explicit
-job boundaries, not a second scientific implementation, a browser dependency or a larger replay
-support matrix. Use the [headless guide](HEADLESS.md) for recipe fields, scientific limits and
-exit statuses. Application/client version remains 0.7.0 until release preparation.
+ClonoLoom 0.8.0 runs the **same native Go workers** in the container and application.
+Packaging adds explicit job boundaries, not a second scientific implementation or a larger
+replay support matrix. See the [headless guide](HEADLESS.md) for recipes, limits and statuses.
 
 ## Build a local image
 

@@ -26,7 +26,7 @@ import { createParquetExports } from './ui/parquet.js';
 import { createDeidentification } from './ui/deidentification.js';
 import { createProjectArchives } from './ui/project-archives.js';
 
-const VERSION = '0.7.0';
+const VERSION = '0.8.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 

@@ -1,9 +1,8 @@
 # Python client
 
-Wave 8 development, slice 8. The client requires action **API 2**, catalog **4**, permission
-policy **1** and Python **3.10 or later**. Package and application version remain **0.7.0** until
-the wave release. Published 0.7.0 hosts predate this contract: use the development executable
-and install this checkout. Nothing is published to a package index by these commands.
+The 0.8.0 Python client requires action **API 2**, catalog **4**, permission policy **1**
+and Python **3.10 or later**. Use a matching host and install the client from this checkout.
+The commands below do not publish anything to a package index.
 
 ## Install and connect
 

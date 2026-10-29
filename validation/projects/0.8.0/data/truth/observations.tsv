@@ -1,0 +1,2428 @@
+sample	subject	batch	class	productive	v_call	j_call	count
+D01-1	D01	run-A	reference construction	T	TRBV5-1	TRBJ1-4	3716
+D01-1	D01	run-A	reference construction	T	TRBV12-4	TRBJ1-1	644
+D01-1	D01	run-A	reference construction	T	TRBV5-1	TRBJ1-5	714
+D01-1	D01	run-A	reference construction	T	TRBV9	TRBJ1-4	464
+D01-1	D01	run-A	reference construction	T	TRBV27	TRBJ2-5	167
+D01-1	D01	run-A	reference construction	T	TRBV6-5	TRBJ2-7	365
+D01-1	D01	run-A	reference construction	T	TRBV3-1	TRBJ1-6	179
+D01-1	D01	run-A	reference construction	F	TRBV28	TRBJ2-3	464
+D01-1	D01	run-A	reference construction	T	TRBV6-5	TRBJ2-7	77
+D01-1	D01	run-A	reference construction	T	TRBV3-1	TRBJ1-1	128
+D01-1	D01	run-A	reference construction	T	TRBV11-3	TRBJ2-3	173
+D01-1	D01	run-A	reference construction	T	TRBV5-4	TRBJ2-3	110
+D01-1	D01	run-A	reference construction	T	TRBV11-1	TRBJ1-1	241
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ2-7	114
+D01-1	D01	run-A	reference construction	T	TRBV5-1	TRBJ1-2	143
+D01-1	D01	run-A	reference construction	T	TRBV28	TRBJ1-1	86
+D01-1	D01	run-A	reference construction	T	TRBV2	TRBJ1-2	42
+D01-1	D01	run-A	reference construction	T	TRBV12-4	TRBJ2-1	60
+D01-1	D01	run-A	reference construction	T	TRBV10-2	TRBJ2-1	53
+D01-1	D01	run-A	reference construction	T	TRBV6-6	TRBJ1-1	74
+D01-1	D01	run-A	reference construction	T	TRBV12-4	TRBJ1-5	162
+D01-1	D01	run-A	reference construction	T	TRBV16	TRBJ2-6	74
+D01-1	D01	run-A	reference construction	T	TRBV10-2	TRBJ1-6	99
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ2-3	83
+D01-1	D01	run-A	reference construction	F	TRBV6-1	TRBJ1-2	35
+D01-1	D01	run-A	reference construction	T	TRBV4-1	TRBJ2-5	64
+D01-1	D01	run-A	reference construction	T	TRBV15	TRBJ1-1	71
+D01-1	D01	run-A	reference construction	T	TRBV6-5	TRBJ1-1	56
+D01-1	D01	run-A	reference construction	T	TRBV5-1	TRBJ2-3	30
+D01-1	D01	run-A	reference construction	T	TRBV7-9	TRBJ1-6	68
+D01-1	D01	run-A	reference construction	T	TRBV9	TRBJ1-4	46
+D01-1	D01	run-A	reference construction	T		TRBJ2-6	38
+D01-1	D01	run-A	reference construction	T	TRBV6-5	TRBJ1-1	22
+D01-1	D01	run-A	reference construction	T	TRBV4-1	TRBJ2-6	7
+D01-1	D01	run-A	reference construction	T	TRBV10-2	TRBJ1-1	47
+D01-1	D01	run-A	reference construction	T	TRBV5-1	TRBJ2-3	33
+D01-1	D01	run-A	reference construction	T	TRBV6-1	TRBJ1-2	122
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ2-4	39
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ1-5	39
+D01-1	D01	run-A	reference construction	T	TRBV7-2	TRBJ1-6	22
+D01-1	D01	run-A	reference construction	T	TRBV19	TRBJ1-1	26
+D01-1	D01	run-A	reference construction	T	TRBV19	TRBJ1-5	50
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ2-7	70
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ2-1	14
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ1-2	51
+D01-1	D01	run-A	reference construction	T	TRBV4-2	TRBJ1-5	8
+D01-1	D01	run-A	reference construction	T	TRBV2	TRBJ2-5	38
+D01-1	D01	run-A	reference construction	T	TRBV19	TRBJ1-3	34
+D01-1	D01	run-A	reference construction	T	TRBV27	TRBJ2-1	27
+D01-1	D01	run-A	reference construction	F	TRBV18	TRBJ1-1	51
+D01-1	D01	run-A	reference construction	F	TRBV29-1	TRBJ2-5	47
+D01-1	D01	run-A	reference construction	T	TRBV27	TRBJ1-1	43
+D01-1	D01	run-A	reference construction	T	TRBV6-2	TRBJ2-2	15
+D01-1	D01	run-A	reference construction	T	TRBV2	TRBJ2-6	16
+D01-1	D01	run-A	reference construction	T	TRBV19	TRBJ2-7	22
+D01-1	D01	run-A	reference construction	T	TRBV6-1	TRBJ2-7	31
+D01-1	D01	run-A	reference construction	T	TRBV7-2	TRBJ2-1	15
+D01-1	D01	run-A	reference construction	T	TRBV7-6	TRBJ2-5	27
+D01-1	D01	run-A	reference construction	T	TRBV30	TRBJ1-6	8
+D01-1	D01	run-A	reference construction	F	TRBV7-9	TRBJ1-5	18
+D01-1	D01	run-A	reference construction	T	TRBV14	TRBJ1-5	14
+D01-1	D01	run-A	reference construction	T	TRBV25-1	TRBJ2-2	24
+D01-1	D01	run-A	reference construction	T	TRBV12-3	TRBJ1-1	44
+D01-1	D01	run-A	reference construction	T	TRBV5-1	TRBJ1-5	14
+D01-1	D01	run-A	reference construction	F	TRBV6-5	TRBJ1-1	4
+D01-1	D01	run-A	reference construction	T	TRBV2	TRBJ1-3	14
+D01-1	D01	run-A	reference construction	T	TRBV5-6	TRBJ1-5	25
+D01-1	D01	run-A	reference construction	T	TRBV3-1	TRBJ1-2	17
+D01-1	D01	run-A	reference construction	T	TRBV19	TRBJ2-5	33
+D01-1	D01	run-A	reference construction	T	TRBV12-4	TRBJ1-5	13
+D01-1	D01	run-A	reference construction	T	TRBV19	TRBJ2-3	7
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ2-2	13
+D01-1	D01	run-A	reference construction	T		TRBJ1-2	20
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ2-2	27
+D01-1	D01	run-A	reference construction	T	TRBV5-6	TRBJ1-1	40
+D01-1	D01	run-A	reference construction	T	TRBV7-9	TRBJ2-7	13
+D01-1	D01	run-A	reference construction	T	TRBV5-1	TRBJ1-1	9
+D01-1	D01	run-A	reference construction	T	TRBV15	TRBJ2-1	15
+D01-1	D01	run-A	reference construction	T	TRBV5-4	TRBJ1-5	23
+D01-1	D01	run-A	reference construction	T	TRBV4-2	TRBJ1-1	7
+D01-1	D01	run-A	reference construction	T	TRBV3-1	TRBJ1-3	20
+D01-1	D01	run-A	reference construction	T	TRBV6-6	TRBJ2-1	28
+D01-1	D01	run-A	reference construction	T	TRBV7-7	TRBJ2-7	25
+D01-1	D01	run-A	reference construction	T		TRBJ2-7	14
+D01-1	D01	run-A	reference construction	T	TRBV5-4	TRBJ1-2	7
+D01-1	D01	run-A	reference construction	T	TRBV2	TRBJ1-1	5
+D01-1	D01	run-A	reference construction	T	TRBV4-1	TRBJ1-1	9
+D01-1	D01	run-A	reference construction	T	TRBV12-3	TRBJ2-3	22
+D01-1	D01	run-A	reference construction	T	TRBV7-9	TRBJ2-2	17
+D01-1	D01	run-A	reference construction	T	TRBV5-6	TRBJ2-1	5
+D01-1	D01	run-A	reference construction	T	TRBV7-2	TRBJ2-3	18
+D01-1	D01	run-A	reference construction	T	TRBV13	TRBJ1-5	23
+D01-1	D01	run-A	reference construction	T	TRBV27	TRBJ1-1	11
+D01-1	D01	run-A	reference construction	T	TRBV6-1	TRBJ2-3	40
+D01-1	D01	run-A	reference construction	T	TRBV4-1	TRBJ1-2	22
+D01-1	D01	run-A	reference construction	T	TRBV7-2	TRBJ2-5	15
+D01-1	D01	run-A	reference construction	T	TRBV5-4	TRBJ2-7	14
+D01-1	D01	run-A	reference construction	T	TRBV5-1	TRBJ1-2	28
+D01-1	D01	run-A	reference construction	T	TRBV4-1	TRBJ2-7	5
+D01-1	D01	run-A	reference construction	T	TRBV11-1	TRBJ1-1	37
+D01-1	D01	run-A	reference construction	T	TRBV20-1	TRBJ2-7	23
+D01-1	D01	run-A	reference construction	T	TRBV12-4	TRBJ2-5	20
+D01-1	D01	run-A	reference construction	T	TRBV5-1	TRBJ2-1	19
+D01-1	D01	run-A	reference construction	T	TRBV28	TRBJ1-2	11
+D01-1	D01	run-A	reference construction	T	TRBV15	TRBJ2-1	24
+D01-1	D01	run-A	reference construction	T	TRBV9	TRBJ1-2	20
+D01-1	D01	run-A	reference construction	T	TRBV3-1	TRBJ1-2	15
+D01-1	D01	run-A	reference construction	T		TRBJ2-7	4
+D01-1	D01	run-A	reference construction	T	TRBV27	TRBJ2-7	4
+D01-1	D01	run-A	reference construction	T	TRBV27	TRBJ1-3	4
+D01-1	D01	run-A	reference construction	T	TRBV28	TRBJ2-5	14
+D01-1	D01	run-A	reference construction	T	TRBV9	TRBJ1-1	18
+D01-1	D01	run-A	reference construction	F	TRBV10-3	TRBJ1-1	31
+D01-1	D01	run-A	reference construction	T	TRBV12-5	TRBJ1-2	3
+D01-1	D01	run-A	reference construction	T		TRBJ2-7	2
+D01-1	D01	run-A	reference construction	T	TRBV12-4	TRBJ2-3	4
+D01-1	D01	run-A	reference construction	T	TRBV6-6	TRBJ1-4	14
+D01-1	D01	run-A	reference construction	T	TRBV3-1	TRBJ1-1	26
+D01-1	D01	run-A	reference construction	T	TRBV28	TRBJ1-3	11
+D02-1	D02	run-A	reference construction	T	TRBV10-2	TRBJ1-2	1174
+D02-1	D02	run-A	reference construction	T	TRBV5-4	TRBJ1-5	643
+D02-1	D02	run-A	reference construction	T	TRBV14	TRBJ2-7	757
+D02-1	D02	run-A	reference construction		TRBV20-1	TRBJ1-1	334
+D02-1	D02	run-A	reference construction	T	TRBV20-1	TRBJ2-3	137
+D02-1	D02	run-A	reference construction	T	TRBV2	TRBJ1-5	86
+D02-1	D02	run-A	reference construction	T	TRBV7-7	TRBJ2-4	176
+D02-1	D02	run-A	reference construction	T	TRBV11-3	TRBJ1-1	286
+D02-1	D02	run-A	reference construction	T		TRBJ2-6	61
+D02-1	D02	run-A	reference construction	T	TRBV2	TRBJ1-1	110
+D02-1	D02	run-A	reference construction	T	TRBV6-2	TRBJ1-2	86
+D02-1	D02	run-A	reference construction	T	TRBV10-3	TRBJ2-3	68
+D02-1	D02	run-A	reference construction	T	TRBV6-4	TRBJ2-3	44
+D02-1	D02	run-A	reference construction	T	TRBV7-2	TRBJ1-3	130
+D02-1	D02	run-A	reference construction	T	TRBV7-6	TRBJ1-2	75
+D02-1	D02	run-A	reference construction	T	TRBV6-4	TRBJ1-5	129
+D02-1	D02	run-A	reference construction	T	TRBV13	TRBJ2-6	62
+D02-1	D02	run-A	reference construction	T	TRBV9	TRBJ1-2	25
+D02-1	D02	run-A	reference construction	T	TRBV12-4	TRBJ1-6	54
+D02-1	D02	run-A	reference construction	T	TRBV5-1	TRBJ1-2	77
+D02-1	D02	run-A	reference construction	T	TRBV24-1	TRBJ2-3	20
+D02-1	D02	run-A	reference construction	T	TRBV20-1	TRBJ2-7	89
+D02-1	D02	run-A	reference construction	T	TRBV20-1	TRBJ2-7	40
+D02-1	D02	run-A	reference construction	T	TRBV2	TRBJ1-1	12
+D02-1	D02	run-A	reference construction	T	TRBV18	TRBJ1-4	45
+D02-1	D02	run-A	reference construction	F	TRBV19	TRBJ2-5	63
+D02-1	D02	run-A	reference construction	T	TRBV5-1	TRBJ2-7	29
+D02-1	D02	run-A	reference construction	T	TRBV5-4	TRBJ1-2	46
+D02-1	D02	run-A	reference construction	T	TRBV4-2	TRBJ1-5	18
+D02-1	D02	run-A	reference construction	T	TRBV4-1	TRBJ2-3	28
+D02-1	D02	run-A	reference construction	T	TRBV18	TRBJ2-2	3
+D02-1	D02	run-A	reference construction	T	TRBV11-3	TRBJ2-1	55
+D02-1	D02	run-A	reference construction	T	TRBV3-1	TRBJ1-1	36
+D02-1	D02	run-A	reference construction	T	TRBV10-2	TRBJ1-5	19
+D02-1	D02	run-A	reference construction	T	TRBV19	TRBJ2-3	13
+D02-1	D02	run-A	reference construction	T	TRBV7-6	TRBJ2-3	25
+D02-1	D02	run-A	reference construction	T		TRBJ1-6	46
+D02-1	D02	run-A	reference construction	T	TRBV18	TRBJ1-1	8
+D02-1	D02	run-A	reference construction	T	TRBV6-5	TRBJ1-5	21
+D02-1	D02	run-A	reference construction	T	TRBV19	TRBJ1-1	30
+D02-1	D02	run-A	reference construction	T	TRBV9	TRBJ2-5	15
+D02-1	D02	run-A	reference construction	T	TRBV5-1	TRBJ2-7	22
+D02-1	D02	run-A	reference construction	T		TRBJ1-1	19
+D02-1	D02	run-A	reference construction	T	TRBV7-2	TRBJ1-2	1
+D02-1	D02	run-A	reference construction	T	TRBV13	TRBJ1-2	7
+D02-1	D02	run-A	reference construction	T	TRBV5-5	TRBJ2-1	24
+D02-1	D02	run-A	reference construction	T	TRBV2	TRBJ1-1	15
+D02-1	D02	run-A	reference construction	T	TRBV6-1	TRBJ2-3	8
+D02-1	D02	run-A	reference construction	T	TRBV27	TRBJ2-1	9
+D02-1	D02	run-A	reference construction	T	TRBV19	TRBJ2-5	14
+D02-1	D02	run-A	reference construction	T	TRBV10-2	TRBJ2-7	8
+D02-1	D02	run-A	reference construction	T	TRBV20-1	TRBJ2-2	10
+D02-1	D02	run-A	reference construction	T	TRBV10-2	TRBJ1-4	24
+D02-1	D02	run-A	reference construction	T	TRBV25-1	TRBJ1-2	18
+D02-1	D02	run-A	reference construction	T	TRBV3-1	TRBJ2-3	15
+D02-1	D02	run-A	reference construction	T	TRBV25-1	TRBJ1-1	10
+D02-1	D02	run-A	reference construction	T	TRBV19	TRBJ2-1	8
+D02-1	D02	run-A	reference construction	T	TRBV4-1	TRBJ1-2	13
+D02-1	D02	run-A	reference construction	T	TRBV19	TRBJ1-3	16
+D02-1	D02	run-A	reference construction	T	TRBV6-4	TRBJ1-6	24
+D02-1	D02	run-A	reference construction	T	TRBV20-1	TRBJ1-5	6
+D02-1	D02	run-A	reference construction	F	TRBV5-1	TRBJ1-1	13
+D02-1	D02	run-A	reference construction	T	TRBV6-5	TRBJ2-1	14
+D02-1	D02	run-A	reference construction	T	TRBV30	TRBJ1-2	13
+D02-1	D02	run-A	reference construction	T		TRBJ1-5	24
+D02-1	D02	run-A	reference construction	T	TRBV15	TRBJ2-7	7
+D02-1	D02	run-A	reference construction	T	TRBV7-9	TRBJ1-2	14
+D02-1	D02	run-A	reference construction	T	TRBV5-5	TRBJ1-2	3
+D02-1	D02	run-A	reference construction	T	TRBV3-1		7
+D02-1	D02	run-A	reference construction	T	TRBV3-1	TRBJ2-1	4
+D02-1	D02	run-A	reference construction	T	TRBV20-1	TRBJ2-5	12
+D02-1	D02	run-A	reference construction	T	TRBV3-1	TRBJ2-1	13
+D02-1	D02	run-A	reference construction	T	TRBV18		5
+D02-1	D02	run-A	reference construction	T	TRBV5-1	TRBJ2-2	8
+D02-1	D02	run-A	reference construction	T	TRBV3-1	TRBJ2-7	7
+D02-1	D02	run-A	reference construction	T	TRBV3-1	TRBJ2-7	26
+D02-1	D02	run-A	reference construction	T	TRBV28	TRBJ1-1	18
+D02-1	D02	run-A	reference construction	F	TRBV11-1	TRBJ2-7	3
+D02-1	D02	run-A	reference construction	T	TRBV20-1	TRBJ1-2	8
+D02-1	D02	run-A	reference construction	T	TRBV2	TRBJ2-1	23
+D02-1	D02	run-A	reference construction	T	TRBV19	TRBJ2-4	16
+D02-1	D02	run-A	reference construction	T	TRBV7-2	TRBJ1-2	5
+D02-1	D02	run-A	reference construction	T	TRBV18	TRBJ2-5	6
+D03-1	D03	run-A	reference construction	T	TRBV19	TRBJ2-3	2674
+D03-1	D03	run-A	reference construction	F	TRBV7-6	TRBJ1-6	2305
+D03-1	D03	run-A	reference construction	T	TRBV12-4	TRBJ2-3	1177
+D03-1	D03	run-A	reference construction	T	TRBV19	TRBJ2-7	486
+D03-1	D03	run-A	reference construction	T	TRBV6-5	TRBJ2-2	516
+D03-1	D03	run-A	reference construction	T	TRBV12-3	TRBJ2-5	450
+D03-1	D03	run-A	reference construction	T	TRBV3-1	TRBJ2-7	762
+D03-1	D03	run-A	reference construction	T	TRBV7-9	TRBJ1-5	221
+D03-1	D03	run-A	reference construction	T	TRBV4-1	TRBJ2-2	482
+D03-1	D03	run-A	reference construction	T	TRBV5-6	TRBJ2-1	210
+D03-1	D03	run-A	reference construction	T	TRBV7-9	TRBJ2-2	148
+D03-1	D03	run-A	reference construction	T	TRBV24-1	TRBJ2-7	513
+D03-1	D03	run-A	reference construction	T	TRBV9	TRBJ2-1	261
+D03-1	D03	run-A	reference construction	F	TRBV6-1	TRBJ2-1	165
+D03-1	D03	run-A	reference construction	T	TRBV3-1	TRBJ2-5	168
+D03-1	D03	run-A	reference construction	T	TRBV2	TRBJ1-5	260
+D03-1	D03	run-A	reference construction	T	TRBV14	TRBJ2-3	125
+D03-1	D03	run-A	reference construction	T	TRBV9	TRBJ2-7	39
+D03-1	D03	run-A	reference construction	T	TRBV12-3	TRBJ2-2	155
+D03-1	D03	run-A	reference construction	T	TRBV7-9	TRBJ1-2	307
+D03-1	D03	run-A	reference construction	T	TRBV5-1	TRBJ2-3	55
+D03-1	D03	run-A	reference construction	T	TRBV30	TRBJ2-4	75
+D03-1	D03	run-A	reference construction	T	TRBV6-5	TRBJ1-1	94
+D03-1	D03	run-A	reference construction	T	TRBV20-1	TRBJ1-5	60
+D03-1	D03	run-A	reference construction	T	TRBV2	TRBJ1-4	34
+D03-1	D03	run-A	reference construction	T	TRBV6-5	TRBJ1-2	147
+D03-1	D03	run-A	reference construction	T	TRBV5-4	TRBJ1-5	41
+D03-1	D03	run-A	reference construction		TRBV19	TRBJ2-7	114
+D03-1	D03	run-A	reference construction	T	TRBV5-1	TRBJ2-7	26
+D03-1	D03	run-A	reference construction	T	TRBV7-2	TRBJ1-4	142
+D03-1	D03	run-A	reference construction	F	TRBV7-6	TRBJ1-5	161
+D03-1	D03	run-A	reference construction	T	TRBV5-5	TRBJ2-5	65
+D03-1	D03	run-A	reference construction	T	TRBV5-1	TRBJ1-1	70
+D03-1	D03	run-A	reference construction	T	TRBV4-1	TRBJ1-3	67
+D03-1	D03	run-A	reference construction	T	TRBV4-1	TRBJ2-5	133
+D03-1	D03	run-A	reference construction	T	TRBV11-3	TRBJ2-3	113
+D03-1	D03	run-A	reference construction	T	TRBV10-3	TRBJ2-7	106
+D03-1	D03	run-A	reference construction	T	TRBV9	TRBJ1-1	31
+D03-1	D03	run-A	reference construction	T	TRBV19	TRBJ1-5	20
+D03-1	D03	run-A	reference construction	T	TRBV12-3	TRBJ1-2	129
+D03-1	D03	run-A	reference construction	T	TRBV12-3	TRBJ2-7	82
+D03-1	D03	run-A	reference construction	T	TRBV12-4	TRBJ2-1	50
+D03-1	D03	run-A	reference construction	F	TRBV2	TRBJ1-2	75
+D03-1	D03	run-A	reference construction	T	TRBV5-1	TRBJ1-5	92
+D03-1	D03	run-A	reference construction	T	TRBV10-3	TRBJ2-2	41
+D03-1	D03	run-A	reference construction	T	TRBV9	TRBJ2-5	27
+D03-1	D03	run-A	reference construction	T	TRBV12-3	TRBJ1-4	68
+D03-1	D03	run-A	reference construction	T	TRBV6-5	TRBJ2-7	34
+D03-1	D03	run-A	reference construction	T	TRBV3-1	TRBJ2-6	55
+D03-1	D03	run-A	reference construction	T	TRBV7-9	TRBJ2-3	55
+D03-1	D03	run-A	reference construction	T	TRBV19	TRBJ1-1	36
+D03-1	D03	run-A	reference construction	T	TRBV30	TRBJ1-3	70
+D03-1	D03	run-A	reference construction	T	TRBV6-5	TRBJ1-1	3
+D03-1	D03	run-A	reference construction	T	TRBV7-6	TRBJ1-1	14
+D03-1	D03	run-A	reference construction	T	TRBV6-2	TRBJ2-7	60
+D03-1	D03	run-A	reference construction	T	TRBV20-1	TRBJ2-7	73
+D03-1	D03	run-A	reference construction	T	TRBV6-6	TRBJ2-3	23
+D03-1	D03	run-A	reference construction	T	TRBV3-1	TRBJ1-1	18
+D03-1	D03	run-A	reference construction	T	TRBV9	TRBJ2-3	14
+D03-1	D03	run-A	reference construction	T	TRBV30	TRBJ1-2	80
+D03-1	D03	run-A	reference construction	T	TRBV24-1	TRBJ1-4	25
+D03-1	D03	run-A	reference construction	T	TRBV20-1	TRBJ1-2	50
+D03-1	D03	run-A	reference construction	T	TRBV29-1	TRBJ2-3	27
+D03-1	D03	run-A	reference construction	T	TRBV6-5	TRBJ2-7	49
+D03-1	D03	run-A	reference construction	T	TRBV10-3	TRBJ2-1	63
+D03-1	D03	run-A	reference construction	T	TRBV5-1	TRBJ2-1	24
+D03-1	D03	run-A	reference construction	T	TRBV5-1	TRBJ1-2	58
+D03-1	D03	run-A	reference construction	T	TRBV11-1	TRBJ2-7	41
+D03-1	D03	run-A	reference construction	T	TRBV18		20
+D03-1	D03	run-A	reference construction	T	TRBV2	TRBJ1-1	37
+D03-1	D03	run-A	reference construction	T		TRBJ2-2	107
+D03-1	D03	run-A	reference construction	T	TRBV19	TRBJ2-7	31
+D03-1	D03	run-A	reference construction	T	TRBV7-9	TRBJ1-2	15
+D03-1	D03	run-A	reference construction	T	TRBV6-1	TRBJ2-1	7
+D03-1	D03	run-A	reference construction	T	TRBV4-2	TRBJ2-3	99
+D03-1	D03	run-A	reference construction	T	TRBV11-3	TRBJ1-2	21
+D03-1	D03	run-A	reference construction	T	TRBV5-1	TRBJ2-5	9
+D03-1	D03	run-A	reference construction	T	TRBV7-9	TRBJ2-2	15
+D03-1	D03	run-A	reference construction	F	TRBV18	TRBJ1-6	24
+D03-1	D03	run-A	reference construction	T		TRBJ1-2	15
+D03-1	D03	run-A	reference construction	T	TRBV27	TRBJ1-5	16
+D03-1	D03	run-A	reference construction	T	TRBV12-3	TRBJ1-1	14
+D03-1	D03	run-A	reference construction	F	TRBV5-4	TRBJ1-5	35
+D03-1	D03	run-A	reference construction	T	TRBV15	TRBJ1-6	19
+D03-1	D03	run-A	reference construction	T	TRBV2	TRBJ1-1	21
+D03-1	D03	run-A	reference construction	F	TRBV19	TRBJ1-3	37
+D03-1	D03	run-A	reference construction	T	TRBV9	TRBJ1-1	14
+D03-1	D03	run-A	reference construction	T	TRBV4-1	TRBJ1-1	63
+D03-1	D03	run-A	reference construction	T		TRBJ1-5	20
+D03-1	D03	run-A	reference construction	T	TRBV12-4	TRBJ1-1	29
+D03-1	D03	run-A	reference construction	T	TRBV19	TRBJ2-1	19
+D03-1	D03	run-A	reference construction	F	TRBV12-4	TRBJ1-4	12
+D03-1	D03	run-A	reference construction	T	TRBV18	TRBJ2-1	14
+D03-1	D03	run-A	reference construction	T	TRBV12-3	TRBJ2-3	36
+D03-1	D03	run-A	reference construction	T	TRBV6-4	TRBJ1-1	17
+D03-1	D03	run-A	reference construction	T	TRBV6-5	TRBJ1-1	41
+D03-1	D03	run-A	reference construction	T	TRBV12-4	TRBJ2-3	10
+D03-1	D03	run-A	reference construction	T	TRBV6-5	TRBJ1-1	20
+D03-1	D03	run-A	reference construction	T	TRBV4-1		36
+D03-1	D03	run-A	reference construction	T	TRBV2	TRBJ1-2	22
+D03-1	D03	run-A	reference construction	T	TRBV5-6	TRBJ1-4	18
+D03-1	D03	run-A	reference construction	T	TRBV7-9	TRBJ1-1	21
+D03-1	D03	run-A	reference construction	T	TRBV3-1	TRBJ1-5	19
+D03-1	D03	run-A	reference construction	T	TRBV7-6	TRBJ1-2	11
+D03-1	D03	run-A	reference construction	T	TRBV5-1	TRBJ2-3	15
+D03-1	D03	run-A	reference construction	T	TRBV6-1	TRBJ1-1	15
+D03-1	D03	run-A	reference construction	T	TRBV20-1	TRBJ2-2	15
+D03-1	D03	run-A	reference construction	T	TRBV20-1	TRBJ1-5	37
+D03-1	D03	run-A	reference construction	T	TRBV25-1	TRBJ1-6	10
+D03-1	D03	run-A	reference construction	T	TRBV5-6	TRBJ2-3	13
+D03-1	D03	run-A	reference construction		TRBV7-2	TRBJ2-7	14
+D04-1	D04	run-A	reference construction	T	TRBV5-6	TRBJ2-2	2848
+D04-1	D04	run-A	reference construction	T	TRBV19	TRBJ2-6	789
+D04-1	D04	run-A	reference construction	T	TRBV6-1	TRBJ1-5	550
+D04-1	D04	run-A	reference construction	T	TRBV18	TRBJ2-7	648
+D04-1	D04	run-A	reference construction	T	TRBV6-1	TRBJ1-2	532
+D04-1	D04	run-A	reference construction		TRBV28	TRBJ2-5	114
+D04-1	D04	run-A	reference construction	T	TRBV11-3	TRBJ2-2	303
+D04-1	D04	run-A	reference construction	T	TRBV5-1	TRBJ1-1	167
+D04-1	D04	run-A	reference construction	T	TRBV4-1	TRBJ1-3	62
+D04-1	D04	run-A	reference construction	T	TRBV6-2	TRBJ1-6	223
+D04-1	D04	run-A	reference construction	T		TRBJ2-2	228
+D04-1	D04	run-A	reference construction	T	TRBV3-1	TRBJ1-3	155
+D04-1	D04	run-A	reference construction	T	TRBV30	TRBJ1-1	122
+D04-1	D04	run-A	reference construction	T	TRBV7-2		100
+D04-1	D04	run-A	reference construction	T	TRBV5-1	TRBJ1-5	164
+D04-1	D04	run-A	reference construction	T	TRBV19	TRBJ1-3	69
+D04-1	D04	run-A	reference construction	T	TRBV29-1	TRBJ2-1	30
+D04-1	D04	run-A	reference construction	T	TRBV6-1	TRBJ2-5	104
+D04-1	D04	run-A	reference construction	T		TRBJ1-2	37
+D04-1	D04	run-A	reference construction	T	TRBV2	TRBJ2-5	125
+D04-1	D04	run-A	reference construction	T	TRBV20-1	TRBJ1-2	74
+D04-1	D04	run-A	reference construction	T	TRBV5-1	TRBJ1-1	185
+D04-1	D04	run-A	reference construction	T	TRBV29-1	TRBJ2-2	107
+D04-1	D04	run-A	reference construction	T	TRBV11-1	TRBJ2-5	45
+D04-1	D04	run-A	reference construction	T	TRBV7-6	TRBJ1-1	27
+D04-1	D04	run-A	reference construction	T	TRBV18		39
+D04-1	D04	run-A	reference construction	T	TRBV6-5	TRBJ1-5	99
+D04-1	D04	run-A	reference construction	F		TRBJ2-1	30
+D04-1	D04	run-A	reference construction	T	TRBV9	TRBJ1-2	37
+D04-1	D04	run-A	reference construction	T	TRBV5-1	TRBJ2-7	142
+D04-1	D04	run-A	reference construction	T	TRBV5-7	TRBJ1-3	71
+D04-1	D04	run-A	reference construction	T	TRBV18	TRBJ1-1	80
+D04-1	D04	run-A	reference construction	T	TRBV28	TRBJ2-3	46
+D04-1	D04	run-A	reference construction	T	TRBV25-1	TRBJ1-5	36
+D04-1	D04	run-A	reference construction	T	TRBV5-1	TRBJ2-7	6
+D04-1	D04	run-A	reference construction	T	TRBV6-4	TRBJ1-1	22
+D04-1	D04	run-A	reference construction	T	TRBV5-5	TRBJ1-3	47
+D04-1	D04	run-A	reference construction	T	TRBV6-1	TRBJ2-7	30
+D04-1	D04	run-A	reference construction	T	TRBV4-1	TRBJ1-2	46
+D04-1	D04	run-A	reference construction	T	TRBV18	TRBJ1-4	11
+D04-1	D04	run-A	reference construction	T	TRBV10-3	TRBJ2-3	22
+D04-1	D04	run-A	reference construction	T	TRBV19	TRBJ1-1	23
+D04-1	D04	run-A	reference construction	T	TRBV7-9	TRBJ2-7	11
+D04-1	D04	run-A	reference construction	T	TRBV28	TRBJ1-2	46
+D04-1	D04	run-A	reference construction	T	TRBV12-4	TRBJ1-2	78
+D04-1	D04	run-A	reference construction	T	TRBV5-4	TRBJ1-5	35
+D04-1	D04	run-A	reference construction		TRBV20-1	TRBJ1-2	37
+D04-1	D04	run-A	reference construction	T	TRBV14	TRBJ1-1	60
+D04-1	D04	run-A	reference construction	T	TRBV7-2	TRBJ2-7	18
+D04-1	D04	run-A	reference construction	T	TRBV6-1	TRBJ2-3	86
+D04-1	D04	run-A	reference construction	T	TRBV2	TRBJ2-4	32
+D04-1	D04	run-A	reference construction	T	TRBV4-1	TRBJ1-1	33
+D04-1	D04	run-A	reference construction	T	TRBV27		10
+D04-1	D04	run-A	reference construction	T	TRBV6-1	TRBJ1-6	33
+D04-1	D04	run-A	reference construction	T	TRBV28	TRBJ1-1	24
+D04-1	D04	run-A	reference construction	T	TRBV7-9	TRBJ2-3	15
+D04-1	D04	run-A	reference construction	T	TRBV2	TRBJ2-5	17
+D04-1	D04	run-A	reference construction	T	TRBV20-1	TRBJ2-1	31
+D04-1	D04	run-A	reference construction	T	TRBV6-2	TRBJ1-2	75
+D04-1	D04	run-A	reference construction	T	TRBV6-6	TRBJ2-7	42
+D04-1	D04	run-A	reference construction	T	TRBV9	TRBJ2-5	10
+D04-1	D04	run-A	reference construction	T	TRBV3-1	TRBJ1-1	20
+D04-1	D04	run-A	reference construction	T	TRBV7-2	TRBJ2-7	49
+D04-1	D04	run-A	reference construction	T		TRBJ1-2	67
+D04-1	D04	run-A	reference construction	T	TRBV5-4	TRBJ1-5	21
+D04-1	D04	run-A	reference construction	T	TRBV5-4	TRBJ1-1	26
+D04-1	D04	run-A	reference construction	F	TRBV7-9	TRBJ1-1	19
+D04-1	D04	run-A	reference construction	T	TRBV15	TRBJ1-2	5
+D04-1	D04	run-A	reference construction	T	TRBV20-1	TRBJ1-4	14
+D04-1	D04	run-A	reference construction	T	TRBV20-1	TRBJ1-1	20
+D04-1	D04	run-A	reference construction	T	TRBV20-1	TRBJ1-2	22
+D04-1	D04	run-A	reference construction	T	TRBV9	TRBJ1-1	14
+D04-1	D04	run-A	reference construction	T	TRBV20-1	TRBJ1-2	17
+D04-1	D04	run-A	reference construction	T	TRBV6-1	TRBJ1-5	37
+D04-1	D04	run-A	reference construction	T	TRBV10-2	TRBJ1-2	9
+D04-1	D04	run-A	reference construction	T	TRBV6-1	TRBJ2-4	8
+D04-1	D04	run-A	reference construction	T	TRBV6-2	TRBJ2-7	8
+D04-1	D04	run-A	reference construction	T	TRBV6-5	TRBJ2-7	25
+D04-1	D04	run-A	reference construction	T	TRBV19	TRBJ1-3	11
+D04-1	D04	run-A	reference construction	T	TRBV20-1	TRBJ1-1	20
+D04-1	D04	run-A	reference construction	T	TRBV6-2	TRBJ1-3	15
+D04-1	D04	run-A	reference construction	T	TRBV5-1	TRBJ2-7	26
+D04-1	D04	run-A	reference construction	T	TRBV20-1	TRBJ1-6	24
+D04-1	D04	run-A	reference construction	T		TRBJ1-2	33
+D04-1	D04	run-A	reference construction	T	TRBV6-1	TRBJ1-2	40
+D04-1	D04	run-A	reference construction	T	TRBV12-5	TRBJ2-5	30
+D04-1	D04	run-A	reference construction	T	TRBV3-1	TRBJ1-3	22
+D04-1	D04	run-A	reference construction	T	TRBV6-5	TRBJ2-1	41
+D04-1	D04	run-A	reference construction	T	TRBV20-1	TRBJ1-5	29
+D04-1	D04	run-A	reference construction	T	TRBV6-6	TRBJ1-2	8
+D04-1	D04	run-A	reference construction	T	TRBV11-3	TRBJ2-5	9
+D04-1	D04	run-A	reference construction	T	TRBV6-5	TRBJ1-4	13
+D04-1	D04	run-A	reference construction	T	TRBV2	TRBJ2-6	11
+D04-1	D04	run-A	reference construction	T	TRBV3-1	TRBJ1-6	17
+D04-1	D04	run-A	reference construction	T	TRBV4-1	TRBJ2-7	22
+D05-1	D05	run-A	reference construction	F	TRBV5-1	TRBJ2-7	2824
+D05-1	D05	run-A	reference construction	T	TRBV15	TRBJ1-1	1392
+D05-1	D05	run-A	reference construction	T	TRBV7-9	TRBJ1-2	1496
+D05-1	D05	run-A	reference construction	T	TRBV27	TRBJ1-4	546
+D05-1	D05	run-A	reference construction	T	TRBV9	TRBJ2-5	233
+D05-1	D05	run-A	reference construction	T	TRBV9	TRBJ1-4	477
+D05-1	D05	run-A	reference construction	T	TRBV3-1	TRBJ1-5	147
+D05-1	D05	run-A	reference construction	T	TRBV19		253
+D05-1	D05	run-A	reference construction	T	TRBV3-1	TRBJ1-2	277
+D05-1	D05	run-A	reference construction	T	TRBV10-1	TRBJ1-2	182
+D05-1	D05	run-A	reference construction	T	TRBV6-5	TRBJ1-3	296
+D05-1	D05	run-A	reference construction	T	TRBV27	TRBJ2-7	130
+D05-1	D05	run-A	reference construction	T	TRBV27	TRBJ1-4	44
+D05-1	D05	run-A	reference construction	T		TRBJ2-7	199
+D05-1	D05	run-A	reference construction	T	TRBV19	TRBJ2-7	326
+D05-1	D05	run-A	reference construction	T	TRBV14	TRBJ1-2	223
+D05-1	D05	run-A	reference construction	T	TRBV3-1	TRBJ2-2	156
+D05-1	D05	run-A	reference construction	T	TRBV12-3	TRBJ1-2	163
+D05-1	D05	run-A	reference construction	T	TRBV7-9	TRBJ1-1	101
+D05-1	D05	run-A	reference construction	T	TRBV19	TRBJ2-7	115
+D05-1	D05	run-A	reference construction	T	TRBV2	TRBJ1-4	103
+D05-1	D05	run-A	reference construction	T	TRBV27	TRBJ1-4	90
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ2-7	194
+D05-1	D05	run-A	reference construction	F	TRBV15	TRBJ1-2	29
+D05-1	D05	run-A	reference construction	T	TRBV7-2	TRBJ2-2	142
+D05-1	D05	run-A	reference construction	F	TRBV27	TRBJ2-2	40
+D05-1	D05	run-A	reference construction	T	TRBV24-1	TRBJ2-3	86
+D05-1	D05	run-A	reference construction	T	TRBV3-1	TRBJ1-1	66
+D05-1	D05	run-A	reference construction	T	TRBV19	TRBJ1-2	170
+D05-1	D05	run-A	reference construction	T	TRBV6-6	TRBJ2-7	80
+D05-1	D05	run-A	reference construction	F	TRBV11-3	TRBJ1-6	77
+D05-1	D05	run-A	reference construction	T	TRBV12-4	TRBJ1-1	33
+D05-1	D05	run-A	reference construction	T	TRBV2	TRBJ1-1	127
+D05-1	D05	run-A	reference construction	F	TRBV7-9	TRBJ2-3	94
+D05-1	D05	run-A	reference construction	T	TRBV3-1	TRBJ2-5	91
+D05-1	D05	run-A	reference construction	T	TRBV27	TRBJ1-5	84
+D05-1	D05	run-A	reference construction	T	TRBV19	TRBJ2-2	88
+D05-1	D05	run-A	reference construction	T	TRBV6-6	TRBJ2-3	34
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ1-1	84
+D05-1	D05	run-A	reference construction	T	TRBV27	TRBJ1-3	24
+D05-1	D05	run-A	reference construction	F	TRBV12-4	TRBJ2-7	181
+D05-1	D05	run-A	reference construction	T	TRBV27	TRBJ2-4	31
+D05-1	D05	run-A	reference construction	T	TRBV15	TRBJ1-4	90
+D05-1	D05	run-A	reference construction	T	TRBV4-2	TRBJ1-4	95
+D05-1	D05	run-A	reference construction	T	TRBV20-1	TRBJ1-6	122
+D05-1	D05	run-A	reference construction		TRBV5-1	TRBJ1-1	132
+D05-1	D05	run-A	reference construction	F	TRBV4-1	TRBJ1-1	50
+D05-1	D05	run-A	reference construction	T	TRBV2	TRBJ2-7	74
+D05-1	D05	run-A	reference construction	T	TRBV7-2	TRBJ1-1	48
+D05-1	D05	run-A	reference construction	T	TRBV12-4	TRBJ1-2	32
+D05-1	D05	run-A	reference construction	T	TRBV19	TRBJ1-3	63
+D05-1	D05	run-A	reference construction	T	TRBV2	TRBJ2-7	51
+D05-1	D05	run-A	reference construction	F	TRBV4-1	TRBJ2-7	33
+D05-1	D05	run-A	reference construction	T	TRBV28	TRBJ1-4	17
+D05-1	D05	run-A	reference construction	T	TRBV18	TRBJ1-2	31
+D05-1	D05	run-A	reference construction	T	TRBV11-1	TRBJ2-6	45
+D05-1	D05	run-A	reference construction	F	TRBV11-1	TRBJ2-7	13
+D05-1	D05	run-A	reference construction	F	TRBV7-2	TRBJ2-2	13
+D05-1	D05	run-A	reference construction	T	TRBV14	TRBJ1-5	25
+D05-1	D05	run-A	reference construction	T	TRBV12-4	TRBJ2-3	61
+D05-1	D05	run-A	reference construction	T	TRBV7-9	TRBJ2-5	30
+D05-1	D05	run-A	reference construction	T	TRBV27	TRBJ1-5	44
+D05-1	D05	run-A	reference construction	F	TRBV19	TRBJ2-3	56
+D05-1	D05	run-A	reference construction	T	TRBV9	TRBJ1-5	18
+D05-1	D05	run-A	reference construction	T	TRBV20-1	TRBJ1-1	87
+D05-1	D05	run-A	reference construction		TRBV30	TRBJ2-1	34
+D05-1	D05	run-A	reference construction	T	TRBV3-1	TRBJ1-4	8
+D05-1	D05	run-A	reference construction	T	TRBV7-7	TRBJ2-7	20
+D05-1	D05	run-A	reference construction	T	TRBV9	TRBJ1-1	33
+D05-1	D05	run-A	reference construction	T	TRBV10-3	TRBJ2-5	66
+D05-1	D05	run-A	reference construction		TRBV14	TRBJ2-4	38
+D05-1	D05	run-A	reference construction	T	TRBV6-4	TRBJ1-4	23
+D05-1	D05	run-A	reference construction	T	TRBV18	TRBJ1-1	14
+D05-1	D05	run-A	reference construction	T	TRBV12-4	TRBJ1-5	38
+D05-1	D05	run-A	reference construction	T	TRBV2	TRBJ2-7	32
+D05-1	D05	run-A	reference construction	T	TRBV20-1	TRBJ2-7	29
+D05-1	D05	run-A	reference construction	T	TRBV4-1	TRBJ1-2	12
+D05-1	D05	run-A	reference construction	T	TRBV3-1	TRBJ1-2	39
+D05-1	D05	run-A	reference construction	T	TRBV7-9	TRBJ2-3	51
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ1-5	23
+D05-1	D05	run-A	reference construction	T	TRBV9	TRBJ1-1	53
+D05-1	D05	run-A	reference construction	T	TRBV2	TRBJ1-1	7
+D05-1	D05	run-A	reference construction	T	TRBV7-2	TRBJ1-2	29
+D05-1	D05	run-A	reference construction	T	TRBV4-2	TRBJ2-2	11
+D05-1	D05	run-A	reference construction	T	TRBV7-9	TRBJ2-1	21
+D05-1	D05	run-A	reference construction	T	TRBV12-3	TRBJ1-2	13
+D05-1	D05	run-A	reference construction	T	TRBV30	TRBJ2-5	21
+D05-1	D05	run-A	reference construction	T	TRBV3-1	TRBJ1-4	25
+D05-1	D05	run-A	reference construction	T	TRBV19	TRBJ2-7	24
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ1-1	46
+D05-1	D05	run-A	reference construction	T	TRBV11-3	TRBJ2-5	34
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ1-1	39
+D05-1	D05	run-A	reference construction	T	TRBV19	TRBJ2-7	23
+D05-1	D05	run-A	reference construction	F	TRBV12-5	TRBJ1-2	13
+D05-1	D05	run-A	reference construction	T	TRBV13	TRBJ2-1	16
+D05-1	D05	run-A	reference construction	T	TRBV25-1	TRBJ1-3	24
+D05-1	D05	run-A	reference construction	T	TRBV6-1	TRBJ1-2	12
+D05-1	D05	run-A	reference construction	T	TRBV11-1	TRBJ2-5	5
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ2-3	22
+D05-1	D05	run-A	reference construction	T	TRBV12-3	TRBJ2-2	49
+D05-1	D05	run-A	reference construction	F	TRBV9	TRBJ2-1	49
+D05-1	D05	run-A	reference construction	T	TRBV6-5	TRBJ1-2	14
+D05-1	D05	run-A	reference construction	T	TRBV19	TRBJ1-1	16
+D05-1	D05	run-A	reference construction	T	TRBV11-3	TRBJ2-7	7
+D05-1	D05	run-A	reference construction	F	TRBV7-9	TRBJ1-4	32
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ2-2	7
+D05-1	D05	run-A	reference construction	F	TRBV7-9	TRBJ1-1	42
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ2-3	11
+D05-1	D05	run-A	reference construction	T	TRBV6-1	TRBJ2-4	23
+D05-1	D05	run-A	reference construction	T	TRBV27	TRBJ2-7	3
+D05-1	D05	run-A	reference construction	T	TRBV20-1	TRBJ2-1	16
+D05-1	D05	run-A	reference construction	T	TRBV7-6	TRBJ2-5	14
+D05-1	D05	run-A	reference construction	T		TRBJ1-1	21
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ1-4	25
+D05-1	D05	run-A	reference construction	T	TRBV4-1	TRBJ1-4	18
+D05-1	D05	run-A	reference construction	T	TRBV2	TRBJ2-3	20
+D05-1	D05	run-A	reference construction	T	TRBV10-1	TRBJ1-1	18
+D05-1	D05	run-A	reference construction	T	TRBV7-7	TRBJ2-1	14
+D05-1	D05	run-A	reference construction	T	TRBV3-1	TRBJ2-3	45
+D05-1	D05	run-A	reference construction	T	TRBV5-1	TRBJ2-1	13
+D06-1	D06	run-A	reference construction	F	TRBV4-1	TRBJ1-4	1157
+D06-1	D06	run-A	reference construction	T	TRBV6-1	TRBJ1-1	517
+D06-1	D06	run-A	reference construction	T	TRBV27	TRBJ1-2	65
+D06-1	D06	run-A	reference construction	T	TRBV5-5	TRBJ1-2	495
+D06-1	D06	run-A	reference construction	T	TRBV3-1	TRBJ2-3	570
+D06-1	D06	run-A	reference construction	T	TRBV3-1	TRBJ1-2	192
+D06-1	D06	run-A	reference construction	T	TRBV7-9	TRBJ1-2	175
+D06-1	D06	run-A	reference construction	T	TRBV12-4	TRBJ2-3	61
+D06-1	D06	run-A	reference construction	T	TRBV5-1	TRBJ1-1	103
+D06-1	D06	run-A	reference construction	T	TRBV3-1	TRBJ2-3	32
+D06-1	D06	run-A	reference construction	T	TRBV2	TRBJ2-1	119
+D06-1	D06	run-A	reference construction	T	TRBV12-3	TRBJ2-3	215
+D06-1	D06	run-A	reference construction	T	TRBV28	TRBJ1-2	103
+D06-1	D06	run-A	reference construction	T	TRBV3-1	TRBJ1-1	83
+D06-1	D06	run-A	reference construction	T	TRBV3-1	TRBJ2-1	83
+D06-1	D06	run-A	reference construction	T		TRBJ1-1	78
+D06-1	D06	run-A	reference construction	T	TRBV9	TRBJ1-1	88
+D06-1	D06	run-A	reference construction	T	TRBV7-2	TRBJ2-5	12
+D06-1	D06	run-A	reference construction	T	TRBV7-9	TRBJ1-1	73
+D06-1	D06	run-A	reference construction	T	TRBV5-4	TRBJ1-1	71
+D06-1	D06	run-A	reference construction	T	TRBV5-1	TRBJ1-6	13
+D06-1	D06	run-A	reference construction	T	TRBV28	TRBJ1-1	17
+D06-1	D06	run-A	reference construction	T	TRBV5-1	TRBJ1-3	43
+D06-1	D06	run-A	reference construction	T	TRBV9	TRBJ2-1	60
+D06-1	D06	run-A	reference construction	T	TRBV2	TRBJ1-3	49
+D06-1	D06	run-A	reference construction	T	TRBV12-3	TRBJ1-2	37
+D06-1	D06	run-A	reference construction	T	TRBV30	TRBJ1-4	46
+D06-1	D06	run-A	reference construction	T	TRBV5-1	TRBJ2-5	40
+D06-1	D06	run-A	reference construction	T		TRBJ1-1	44
+D06-1	D06	run-A	reference construction	T	TRBV6-5	TRBJ1-1	34
+D06-1	D06	run-A	reference construction	T	TRBV19	TRBJ2-2	20
+D06-1	D06	run-A	reference construction	T	TRBV12-3	TRBJ2-5	48
+D06-1	D06	run-A	reference construction	T	TRBV12-4	TRBJ1-2	33
+D06-1	D06	run-A	reference construction	T	TRBV6-2	TRBJ2-7	6
+D06-1	D06	run-A	reference construction	T	TRBV7-9	TRBJ1-6	25
+D06-1	D06	run-A	reference construction	T	TRBV4-1	TRBJ2-5	40
+D06-1	D06	run-A	reference construction	T		TRBJ2-2	24
+D06-1	D06	run-A	reference construction	T	TRBV20-1	TRBJ1-2	31
+D06-1	D06	run-A	reference construction	T	TRBV12-4		8
+D06-1	D06	run-A	reference construction	T	TRBV20-1	TRBJ2-1	14
+D06-1	D06	run-A	reference construction	T	TRBV11-1	TRBJ2-5	23
+D06-1	D06	run-A	reference construction	T	TRBV5-4	TRBJ2-1	53
+D06-1	D06	run-A	reference construction	T	TRBV5-1	TRBJ2-5	36
+D06-1	D06	run-A	reference construction	T	TRBV5-6	TRBJ1-1	35
+D06-1	D06	run-A	reference construction	T	TRBV12-4	TRBJ1-2	28
+D06-1	D06	run-A	reference construction	T	TRBV14	TRBJ1-1	17
+D06-1	D06	run-A	reference construction	F	TRBV7-9	TRBJ1-3	12
+D06-1	D06	run-A	reference construction	T	TRBV25-1	TRBJ2-3	8
+D06-1	D06	run-A	reference construction	T	TRBV4-1	TRBJ1-1	10
+D06-1	D06	run-A	reference construction	T	TRBV28	TRBJ1-5	31
+D06-1	D06	run-A	reference construction	T	TRBV20-1	TRBJ2-7	6
+D06-1	D06	run-A	reference construction	T		TRBJ1-2	35
+D06-1	D06	run-A	reference construction	T	TRBV6-2	TRBJ1-6	24
+D06-1	D06	run-A	reference construction	T	TRBV6-4	TRBJ2-5	21
+D06-1	D06	run-A	reference construction	T	TRBV12-3	TRBJ1-2	42
+D06-1	D06	run-A	reference construction	T	TRBV19	TRBJ1-2	41
+D06-1	D06	run-A	reference construction	T	TRBV4-1	TRBJ1-6	12
+D06-1	D06	run-A	reference construction		TRBV19	TRBJ2-3	33
+D06-1	D06	run-A	reference construction	T	TRBV7-9	TRBJ1-2	22
+D06-1	D06	run-A	reference construction	T	TRBV5-1	TRBJ2-3	31
+D06-1	D06	run-A	reference construction	T	TRBV19	TRBJ1-2	19
+D06-1	D06	run-A	reference construction	T	TRBV6-5	TRBJ1-1	15
+D06-1	D06	run-A	reference construction	T	TRBV18	TRBJ1-1	11
+D06-1	D06	run-A	reference construction	T	TRBV14	TRBJ1-2	28
+D06-1	D06	run-A	reference construction	F	TRBV30	TRBJ1-2	11
+D07-1	D07	run-A	missing-count control	T	TRBV27	TRBJ1-3	
+D07-1	D07	run-A	missing-count control	T	TRBV6-5	TRBJ2-6	580
+D07-1	D07	run-A	missing-count control	T	TRBV6-1	TRBJ1-5	463
+D07-1	D07	run-A	missing-count control	T	TRBV3-1	TRBJ1-6	492
+D07-1	D07	run-A	missing-count control	T	TRBV27	TRBJ1-5	327
+D07-1	D07	run-A	missing-count control	T	TRBV3-1	TRBJ1-2	88
+D07-1	D07	run-A	missing-count control	T	TRBV2	TRBJ1-5	333
+D07-1	D07	run-A	missing-count control	T	TRBV6-1	TRBJ2-7	429
+D07-1	D07	run-A	missing-count control	T	TRBV10-3	TRBJ1-4	57
+D07-1	D07	run-A	missing-count control	T	TRBV7-2	TRBJ1-5	108
+D07-1	D07	run-A	missing-count control	T		TRBJ2-7	34
+D07-1	D07	run-A	missing-count control	T	TRBV11-3	TRBJ2-2	143
+D07-1	D07	run-A	missing-count control	T	TRBV20-1	TRBJ2-1	120
+D07-1	D07	run-A	missing-count control	T	TRBV7-2	TRBJ1-2	83
+D07-1	D07	run-A	missing-count control	T	TRBV29-1		114
+D07-1	D07	run-A	missing-count control	T	TRBV25-1	TRBJ1-4	219
+D07-1	D07	run-A	missing-count control	T	TRBV6-4	TRBJ2-1	46
+D07-1	D07	run-A	missing-count control	T	TRBV7-6		61
+D07-1	D07	run-A	missing-count control	T	TRBV9	TRBJ1-5	84
+D07-1	D07	run-A	missing-count control	T	TRBV10-2	TRBJ1-2	73
+D07-1	D07	run-A	missing-count control	T	TRBV12-4	TRBJ2-2	57
+D07-1	D07	run-A	missing-count control	T	TRBV19	TRBJ2-5	106
+D07-1	D07	run-A	missing-count control	T	TRBV12-4	TRBJ2-1	56
+D07-1	D07	run-A	missing-count control	T	TRBV3-1	TRBJ1-3	33
+D07-1	D07	run-A	missing-count control	T	TRBV20-1	TRBJ1-2	32
+D07-1	D07	run-A	missing-count control	T	TRBV10-3	TRBJ1-2	76
+D07-1	D07	run-A	missing-count control	T	TRBV18	TRBJ1-2	77
+D07-1	D07	run-A	missing-count control	T	TRBV7-9	TRBJ2-5	136
+D07-1	D07	run-A	missing-count control	T	TRBV27	TRBJ1-5	51
+D07-1	D07	run-A	missing-count control	T	TRBV6-2	TRBJ2-5	76
+D07-1	D07	run-A	missing-count control	T	TRBV5-4	TRBJ1-5	27
+D07-1	D07	run-A	missing-count control	T	TRBV27	TRBJ2-2	23
+D07-1	D07	run-A	missing-count control	T	TRBV6-1	TRBJ1-2	84
+D07-1	D07	run-A	missing-count control	F	TRBV4-1	TRBJ2-5	18
+D07-1	D07	run-A	missing-count control	T	TRBV12-4	TRBJ2-5	30
+D07-1	D07	run-A	missing-count control	F	TRBV5-1	TRBJ2-7	28
+D07-1	D07	run-A	missing-count control	T	TRBV27	TRBJ2-1	68
+D07-1	D07	run-A	missing-count control	T	TRBV9	TRBJ2-3	13
+D07-1	D07	run-A	missing-count control	T		TRBJ1-2	28
+D07-1	D07	run-A	missing-count control	T	TRBV4-1	TRBJ1-5	37
+D07-1	D07	run-A	missing-count control	T	TRBV6-5	TRBJ1-5	9
+D07-1	D07	run-A	missing-count control	T	TRBV28	TRBJ1-1	7
+D07-1	D07	run-A	missing-count control	T	TRBV9	TRBJ1-2	35
+D07-1	D07	run-A	missing-count control	T	TRBV30	TRBJ1-4	38
+D07-1	D07	run-A	missing-count control	T	TRBV3-1	TRBJ1-1	29
+D07-1	D07	run-A	missing-count control	T	TRBV5-1	TRBJ1-5	30
+D07-1	D07	run-A	missing-count control	T	TRBV27	TRBJ2-3	80
+D07-1	D07	run-A	missing-count control	T	TRBV9	TRBJ2-3	27
+D07-1	D07	run-A	missing-count control	T	TRBV18	TRBJ2-3	16
+D07-1	D07	run-A	missing-count control	T	TRBV20-1	TRBJ2-1	26
+D07-1	D07	run-A	missing-count control	T	TRBV10-2	TRBJ2-7	35
+D07-1	D07	run-A	missing-count control	T	TRBV20-1	TRBJ2-3	31
+D07-1	D07	run-A	missing-count control	T	TRBV6-6	TRBJ1-1	27
+D07-1	D07	run-A	missing-count control	T	TRBV9	TRBJ2-1	19
+D07-1	D07	run-A	missing-count control	T	TRBV6-5	TRBJ2-1	27
+D07-1	D07	run-A	missing-count control		TRBV5-4	TRBJ1-2	29
+D07-1	D07	run-A	missing-count control	T		TRBJ1-2	16
+D07-1	D07	run-A	missing-count control	T	TRBV5-1	TRBJ1-2	10
+D07-1	D07	run-A	missing-count control	T	TRBV5-1	TRBJ2-2	42
+D07-1	D07	run-A	missing-count control	T	TRBV4-1	TRBJ1-5	7
+D07-1	D07	run-A	missing-count control	T	TRBV6-1	TRBJ1-1	55
+D07-1	D07	run-A	missing-count control	T	TRBV18	TRBJ1-2	14
+D07-1	D07	run-A	missing-count control	T	TRBV5-1	TRBJ2-3	19
+D07-1	D07	run-A	missing-count control	T	TRBV2	TRBJ1-2	45
+D07-1	D07	run-A	missing-count control	F	TRBV11-3	TRBJ2-7	25
+D07-1	D07	run-A	missing-count control	T	TRBV12-4	TRBJ1-6	16
+D07-1	D07	run-A	missing-count control	T	TRBV4-1	TRBJ2-7	19
+D07-1	D07	run-A	missing-count control	T	TRBV19	TRBJ2-1	7
+D07-1	D07	run-A	missing-count control	T		TRBJ1-5	41
+D07-1	D07	run-A	missing-count control	T	TRBV5-1	TRBJ1-3	16
+D07-1	D07	run-A	missing-count control	T	TRBV9	TRBJ1-6	9
+D07-1	D07	run-A	missing-count control	T	TRBV27	TRBJ2-1	9
+D07-1	D07	run-A	missing-count control	T	TRBV3-1	TRBJ1-5	17
+D07-1	D07	run-A	missing-count control	T	TRBV4-2	TRBJ2-1	39
+D07-1	D07	run-A	missing-count control	T	TRBV5-1	TRBJ1-1	9
+D07-1	D07	run-A	missing-count control	T	TRBV5-6	TRBJ2-5	44
+D07-1	D07	run-A	missing-count control	T	TRBV12-3	TRBJ1-1	9
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV19	TRBJ1-1	1803
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV11-1	TRBJ1-1	1925
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-1	TRBJ2-3	561
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV28	TRBJ1-4	158
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV19	TRBJ2-3	141
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV28	TRBJ2-5	232
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV28	TRBJ2-5	137
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV27	TRBJ1-2	98
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV2	TRBJ1-6	69
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV24-1	TRBJ1-4	104
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV18	TRBJ2-3	300
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV18	TRBJ2-7	99
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV20-1	TRBJ1-2	92
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV12-3	TRBJ1-1	89
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV29-1	TRBJ2-7	53
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-2	TRBJ2-6	50
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV19	TRBJ1-5	154
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV5-4	TRBJ2-1	56
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV7-9	TRBJ2-3	76
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV6-2	TRBJ1-6	19
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV15	TRBJ2-3	72
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV12-4	TRBJ1-1	120
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV12-3	TRBJ2-1	42
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV20-1	TRBJ2-5	29
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV6-5	TRBJ1-5	134
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV2	TRBJ1-1	52
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV19	TRBJ1-3	130
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV9		131
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV13	TRBJ1-1	85
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV3-1	TRBJ2-5	114
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV4-2	TRBJ2-5	112
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV10-2	TRBJ2-7	22
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV2	TRBJ2-7	23
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-8	TRBJ1-6	69
+D08-1	D08	run-A	planted low-productivity observation		TRBV5-1	TRBJ1-5	25
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV20-1	TRBJ1-4	73
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV14	TRBJ1-5	12
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV30	TRBJ2-7	42
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV14	TRBJ2-1	44
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV3-1	TRBJ2-3	38
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV4-1	TRBJ1-4	57
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV3-1	TRBJ1-3	16
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV29-1	TRBJ1-6	23
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV20-1	TRBJ1-5	21
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV30	TRBJ2-7	43
+D08-1	D08	run-A	planted low-productivity observation	T		TRBJ1-4	41
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV12-4	TRBJ1-5	29
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV12-5	TRBJ2-6	70
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV2	TRBJ1-1	62
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV15	TRBJ2-7	18
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV5-4	TRBJ1-2	8
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV2	TRBJ1-2	25
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV2	TRBJ2-7	17
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV2		17
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV5-4	TRBJ1-5	40
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-5	TRBJ2-5	72
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV7-2	TRBJ1-3	34
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV4-2	TRBJ1-1	28
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-1	TRBJ2-5	26
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV7-9	TRBJ1-1	23
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV3-1	TRBJ1-5	10
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV11-3	TRBJ1-1	11
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-6	TRBJ1-1	26
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV9	TRBJ2-3	17
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV18	TRBJ2-1	14
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV7-2	TRBJ2-5	47
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV20-1	TRBJ1-2	33
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-5	TRBJ2-2	39
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV18	TRBJ2-5	11
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV12-4	TRBJ1-1	23
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV6-1	TRBJ2-7	33
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV12-4	TRBJ2-2	3
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-1	TRBJ1-2	37
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-1	TRBJ1-2	3
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV2	TRBJ2-3	42
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV28	TRBJ1-1	19
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV5-1	TRBJ1-2	21
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV7-6	TRBJ2-2	19
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV10-3	TRBJ1-1	13
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-1	TRBJ1-1	13
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV30	TRBJ1-2	2
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV5-5	TRBJ2-2	16
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV4-2	TRBJ1-4	16
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV4-1	TRBJ1-1	34
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV3-1	TRBJ2-3	11
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV2	TRBJ2-1	8
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV20-1		5
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV5-1	TRBJ1-5	14
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV5-1	TRBJ2-4	6
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV2	TRBJ2-5	20
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV2	TRBJ2-7	14
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV12-3	TRBJ2-1	29
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV14	TRBJ1-1	9
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV18	TRBJ2-1	17
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV9	TRBJ1-2	42
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-2	TRBJ1-6	21
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV3-1	TRBJ1-5	2
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-5	TRBJ2-7	5
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV24-1	TRBJ1-6	9
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV19	TRBJ1-1	14
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV29-1	TRBJ2-1	4
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV7-9		11
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV5-6	TRBJ1-6	4
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV25-1	TRBJ1-1	2
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV30	TRBJ2-7	8
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV5-4	TRBJ2-6	25
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV15	TRBJ2-2	10
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV5-1	TRBJ1-3	21
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV30	TRBJ2-4	17
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV10-1	TRBJ1-5	25
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV3-1	TRBJ2-1	13
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV6-2	TRBJ2-3	19
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV29-1	TRBJ1-4	3
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV20-1	TRBJ1-1	22
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV9	TRBJ2-3	18
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV7-9	TRBJ1-1	13
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV6-1	TRBJ2-4	26
+D08-1	D08	run-A	planted low-productivity observation	T	TRBV20-1	TRBJ1-2	14
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV2	TRBJ2-1	32
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV11-1	TRBJ1-2	2
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV3-1	TRBJ2-7	8
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV12-4	TRBJ1-2	5
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV3-1		24
+D08-1	D08	run-A	planted low-productivity observation	F	TRBV29-1		7
+D09-1	D09	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-2	3729
+D09-1	D09	run-B	shifted productivity construction	T	TRBV18	TRBJ1-6	262
+D09-1	D09	run-B	shifted productivity construction	T	TRBV19	TRBJ2-7	602
+D09-1	D09	run-B	shifted productivity construction	T	TRBV9	TRBJ1-1	580
+D09-1	D09	run-B	shifted productivity construction	T	TRBV2	TRBJ2-7	258
+D09-1	D09	run-B	shifted productivity construction	T	TRBV19	TRBJ2-4	229
+D09-1	D09	run-B	shifted productivity construction	F	TRBV6-1	TRBJ2-1	304
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-5	252
+D09-1	D09	run-B	shifted productivity construction	F	TRBV2	TRBJ2-7	219
+D09-1	D09	run-B	shifted productivity construction	F	TRBV7-2	TRBJ2-7	157
+D09-1	D09	run-B	shifted productivity construction	T	TRBV2	TRBJ1-1	106
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-3	267
+D09-1	D09	run-B	shifted productivity construction	T	TRBV18	TRBJ2-1	64
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-6	TRBJ1-2	101
+D09-1	D09	run-B	shifted productivity construction	T	TRBV19	TRBJ1-4	54
+D09-1	D09	run-B	shifted productivity construction	T	TRBV7-2	TRBJ2-2	92
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-1	33
+D09-1	D09	run-B	shifted productivity construction	T	TRBV7-6	TRBJ2-7	126
+D09-1	D09	run-B	shifted productivity construction	T	TRBV18	TRBJ2-7	160
+D09-1	D09	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-1	92
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-6	TRBJ1-1	34
+D09-1	D09	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-2	87
+D09-1	D09	run-B	shifted productivity construction	T	TRBV6-1	TRBJ2-1	44
+D09-1	D09	run-B	shifted productivity construction	F	TRBV29-1	TRBJ2-3	174
+D09-1	D09	run-B	shifted productivity construction	T	TRBV18	TRBJ2-1	93
+D09-1	D09	run-B	shifted productivity construction	T	TRBV6-4	TRBJ1-1	105
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-1	83
+D09-1	D09	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-3	29
+D09-1	D09	run-B	shifted productivity construction	T	TRBV30	TRBJ2-1	98
+D09-1	D09	run-B	shifted productivity construction	F	TRBV12-4	TRBJ2-1	102
+D09-1	D09	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-5	45
+D09-1	D09	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-2	91
+D09-1	D09	run-B	shifted productivity construction	T	TRBV7-9	TRBJ2-2	23
+D09-1	D09	run-B	shifted productivity construction	F		TRBJ2-7	29
+D09-1	D09	run-B	shifted productivity construction	T	TRBV7-2	TRBJ2-1	40
+D09-1	D09	run-B	shifted productivity construction	F	TRBV4-1	TRBJ1-2	29
+D09-1	D09	run-B	shifted productivity construction	F	TRBV19	TRBJ1-6	37
+D09-1	D09	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-3	73
+D09-1	D09	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-6	23
+D09-1	D09	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-2	46
+D09-1	D09	run-B	shifted productivity construction	T	TRBV30	TRBJ1-5	38
+D09-1	D09	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-3	58
+D09-1	D09	run-B	shifted productivity construction	T	TRBV4-1		21
+D09-1	D09	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-1	38
+D09-1	D09	run-B	shifted productivity construction	F	TRBV7-9	TRBJ1-2	23
+D09-1	D09	run-B	shifted productivity construction	T	TRBV12-4	TRBJ2-3	29
+D09-1	D09	run-B	shifted productivity construction	T	TRBV12-3	TRBJ2-3	8
+D09-1	D09	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-1	23
+D09-1	D09	run-B	shifted productivity construction	T	TRBV9	TRBJ2-7	49
+D09-1	D09	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-1	28
+D09-1	D09	run-B	shifted productivity construction	T	TRBV4-2	TRBJ2-3	39
+D09-1	D09	run-B	shifted productivity construction	T	TRBV30	TRBJ1-2	13
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-7	77
+D09-1	D09	run-B	shifted productivity construction	F	TRBV18	TRBJ2-1	37
+D09-1	D09	run-B	shifted productivity construction	F	TRBV20-1		44
+D09-1	D09	run-B	shifted productivity construction	F	TRBV5-4	TRBJ2-3	26
+D09-1	D09	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-6	25
+D09-1	D09	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-2	12
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-1	10
+D09-1	D09	run-B	shifted productivity construction	T	TRBV19	TRBJ1-5	31
+D09-1	D09	run-B	shifted productivity construction	F	TRBV7-7	TRBJ1-1	59
+D09-1	D09	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-2	25
+D09-1	D09	run-B	shifted productivity construction	T	TRBV6-4	TRBJ2-7	15
+D09-1	D09	run-B	shifted productivity construction	T	TRBV19	TRBJ2-1	66
+D09-1	D09	run-B	shifted productivity construction	F	TRBV5-4	TRBJ2-7	6
+D09-1	D09	run-B	shifted productivity construction	T	TRBV4-1	TRBJ1-1	16
+D09-1	D09	run-B	shifted productivity construction	F	TRBV12-4	TRBJ1-1	39
+D09-1	D09	run-B	shifted productivity construction	T	TRBV27	TRBJ1-1	9
+D09-1	D09	run-B	shifted productivity construction	F	TRBV7-2	TRBJ1-1	28
+D09-1	D09	run-B	shifted productivity construction	T	TRBV11-3	TRBJ2-1	13
+D09-1	D09	run-B	shifted productivity construction	T	TRBV11-3	TRBJ1-6	15
+D09-1	D09	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-1	20
+D09-1	D09	run-B	shifted productivity construction	F	TRBV4-1	TRBJ1-2	71
+D09-1	D09	run-B	shifted productivity construction	F	TRBV18	TRBJ2-3	27
+D09-1	D09	run-B	shifted productivity construction	T	TRBV6-2	TRBJ1-3	9
+D09-1	D09	run-B	shifted productivity construction	F	TRBV11-3	TRBJ1-1	37
+D09-1	D09	run-B	shifted productivity construction	T	TRBV19	TRBJ2-1	14
+D09-1	D09	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-2	15
+D09-1	D09	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-6	21
+D09-1	D09	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-2	14
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-6	12
+D09-1	D09	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-5	33
+D09-1	D09	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-5	8
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-4	TRBJ1-2	18
+D09-1	D09	run-B	shifted productivity construction	F	TRBV3-1	TRBJ2-7	32
+D09-1	D09	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-7	6
+D09-1	D09	run-B	shifted productivity construction	T	TRBV2		1
+D09-1	D09	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-2	17
+D09-1	D09	run-B	shifted productivity construction	T	TRBV6-1	TRBJ2-3	1
+D09-1	D09	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-2	26
+D09-1	D09	run-B	shifted productivity construction	F	TRBV9	TRBJ1-4	5
+D09-1	D09	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-7	22
+D09-1	D09	run-B	shifted productivity construction		TRBV5-1	TRBJ2-1	58
+D09-1	D09	run-B	shifted productivity construction	T	TRBV11-3	TRBJ2-1	7
+D09-1	D09	run-B	shifted productivity construction	T		TRBJ1-4	22
+D09-1	D09	run-B	shifted productivity construction	T	TRBV10-3		32
+D09-1	D09	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-5	14
+D10-1	D10	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-6	827
+D10-1	D10	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-3	990
+D10-1	D10	run-B	shifted productivity construction		TRBV7-9	TRBJ2-7	419
+D10-1	D10	run-B	shifted productivity construction	F	TRBV3-1	TRBJ2-7	160
+D10-1	D10	run-B	shifted productivity construction	F	TRBV27	TRBJ1-4	450
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-7	127
+D10-1	D10	run-B	shifted productivity construction	F	TRBV5-5	TRBJ2-1	386
+D10-1	D10	run-B	shifted productivity construction	T		TRBJ2-7	294
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-7	57
+D10-1	D10	run-B	shifted productivity construction	T	TRBV10-3	TRBJ1-1	91
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-7	103
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-2	82
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-2	86
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-3	TRBJ1-6	129
+D10-1	D10	run-B	shifted productivity construction	T	TRBV25-1	TRBJ1-2	48
+D10-1	D10	run-B	shifted productivity construction	T	TRBV28	TRBJ1-2	41
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-9	TRBJ2-5	81
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-4	44
+D10-1	D10	run-B	shifted productivity construction	T	TRBV6-4	TRBJ2-5	98
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-3	29
+D10-1	D10	run-B	shifted productivity construction	T	TRBV6-2	TRBJ1-1	72
+D10-1	D10	run-B	shifted productivity construction	F	TRBV27	TRBJ2-7	89
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-2	65
+D10-1	D10	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-5	33
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-2	15
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-2	39
+D10-1	D10	run-B	shifted productivity construction	T	TRBV29-1	TRBJ1-2	51
+D10-1	D10	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-5	78
+D10-1	D10	run-B	shifted productivity construction	T	TRBV6-4	TRBJ1-6	68
+D10-1	D10	run-B	shifted productivity construction	T	TRBV2	TRBJ2-7	23
+D10-1	D10	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-3	11
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-9	TRBJ2-7	9
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-1	80
+D10-1	D10	run-B	shifted productivity construction	F	TRBV27	TRBJ1-1	31
+D10-1	D10	run-B	shifted productivity construction	T	TRBV27	TRBJ1-5	15
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-1	27
+D10-1	D10	run-B	shifted productivity construction	T	TRBV28	TRBJ1-1	53
+D10-1	D10	run-B	shifted productivity construction	T	TRBV4-2	TRBJ1-2	17
+D10-1	D10	run-B	shifted productivity construction	F	TRBV13	TRBJ2-6	22
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-7	8
+D10-1	D10	run-B	shifted productivity construction		TRBV28	TRBJ2-5	8
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-3	30
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-2	TRBJ2-3	106
+D10-1	D10	run-B	shifted productivity construction	F	TRBV7-9	TRBJ1-2	18
+D10-1	D10	run-B	shifted productivity construction	T	TRBV6-6	TRBJ2-7	39
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-3	TRBJ2-1	24
+D10-1	D10	run-B	shifted productivity construction	T	TRBV4-1	TRBJ1-2	27
+D10-1	D10	run-B	shifted productivity construction	T	TRBV18	TRBJ2-5	35
+D10-1	D10	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-7	80
+D10-1	D10	run-B	shifted productivity construction	F	TRBV12-4	TRBJ1-2	85
+D10-1	D10	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-5	41
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-1	15
+D10-1	D10	run-B	shifted productivity construction	T		TRBJ2-1	6
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-6	TRBJ2-1	19
+D10-1	D10	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-5	9
+D10-1	D10	run-B	shifted productivity construction	T	TRBV19	TRBJ2-3	14
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-5	TRBJ1-3	12
+D10-1	D10	run-B	shifted productivity construction	T	TRBV9	TRBJ2-7	24
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-2	9
+D10-1	D10	run-B	shifted productivity construction	F	TRBV6-5	TRBJ1-2	15
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-5	27
+D10-1	D10	run-B	shifted productivity construction	T	TRBV2	TRBJ2-5	20
+D10-1	D10	run-B	shifted productivity construction	F	TRBV28	TRBJ1-2	8
+D10-1	D10	run-B	shifted productivity construction	F	TRBV25-1	TRBJ2-7	18
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-1	38
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-5	26
+D10-1	D10	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-7	41
+D10-1	D10	run-B	shifted productivity construction	T	TRBV11-1	TRBJ2-3	29
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-4	TRBJ2-4	22
+D10-1	D10	run-B	shifted productivity construction	T	TRBV9	TRBJ1-2	34
+D10-1	D10	run-B	shifted productivity construction	F	TRBV5-6	TRBJ1-2	19
+D10-1	D10	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-7	18
+D10-1	D10	run-B	shifted productivity construction	F	TRBV2	TRBJ1-1	14
+D10-1	D10	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	26
+D10-1	D10	run-B	shifted productivity construction	F	TRBV7-9	TRBJ1-4	20
+D10-1	D10	run-B	shifted productivity construction	T	TRBV29-1	TRBJ1-2	7
+D10-1	D10	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-5	17
+D10-1	D10	run-B	shifted productivity construction	T		TRBJ2-5	10
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-2	14
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-2	8
+D10-1	D10	run-B	shifted productivity construction	F	TRBV6-5	TRBJ1-1	10
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-4	8
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-1	44
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-4	TRBJ2-3	10
+D10-1	D10	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-1	16
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-3	8
+D10-1	D10	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-4	6
+D10-1	D10	run-B	shifted productivity construction	F	TRBV18	TRBJ2-3	5
+D10-1	D10	run-B	shifted productivity construction	F	TRBV6-1	TRBJ2-1	41
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-2	TRBJ2-2	21
+D10-1	D10	run-B	shifted productivity construction	T	TRBV18	TRBJ2-5	17
+D10-1	D10	run-B	shifted productivity construction	T	TRBV25-1	TRBJ1-1	10
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-1	8
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-3	7
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-6	27
+D10-1	D10	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-5	6
+D10-1	D10	run-B	shifted productivity construction	F	TRBV20-1	TRBJ1-1	3
+D10-1	D10	run-B	shifted productivity construction	T	TRBV4-2	TRBJ1-6	5
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-3	TRBJ2-1	5
+D10-1	D10	run-B	shifted productivity construction	F	TRBV14		9
+D10-1	D10	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-6	2
+D10-1	D10	run-B	shifted productivity construction	F	TRBV5-4	TRBJ2-5	5
+D10-1	D10	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-5	6
+D10-1	D10	run-B	shifted productivity construction	T	TRBV19	TRBJ1-5	11
+D10-1	D10	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-5	7
+D10-1	D10	run-B	shifted productivity construction	T	TRBV5-6	TRBJ1-6	9
+D10-1	D10	run-B	shifted productivity construction	T	TRBV4-2	TRBJ1-4	6
+D10-1	D10	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-2	10
+D10-1	D10	run-B	shifted productivity construction	T	TRBV4-1	TRBJ1-3	4
+D10-1	D10	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-7	18
+D10-1	D10	run-B	shifted productivity construction	T	TRBV12-3	TRBJ2-1	14
+D10-1	D10	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-3	9
+D11-1	D11	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-5	1053
+D11-1	D11	run-B	shifted productivity construction		TRBV19	TRBJ1-3	521
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-4	TRBJ1-4	474
+D11-1	D11	run-B	shifted productivity construction	F	TRBV6-6	TRBJ2-3	83
+D11-1	D11	run-B	shifted productivity construction	T	TRBV4-2	TRBJ1-1	153
+D11-1	D11	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-2	130
+D11-1	D11	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-3	148
+D11-1	D11	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-1	171
+D11-1	D11	run-B	shifted productivity construction	T	TRBV15	TRBJ1-4	302
+D11-1	D11	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-7	66
+D11-1	D11	run-B	shifted productivity construction	T	TRBV15	TRBJ1-2	141
+D11-1	D11	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-5	211
+D11-1	D11	run-B	shifted productivity construction	T	TRBV10-3	TRBJ1-4	151
+D11-1	D11	run-B	shifted productivity construction	F	TRBV6-2	TRBJ1-1	87
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-3	61
+D11-1	D11	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-2	96
+D11-1	D11	run-B	shifted productivity construction	T	TRBV9	TRBJ1-1	88
+D11-1	D11	run-B	shifted productivity construction	T	TRBV16	TRBJ2-2	59
+D11-1	D11	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-5	22
+D11-1	D11	run-B	shifted productivity construction	F	TRBV27	TRBJ1-2	131
+D11-1	D11	run-B	shifted productivity construction	F	TRBV30	TRBJ1-1	58
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-2	75
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-7	40
+D11-1	D11	run-B	shifted productivity construction	F	TRBV28	TRBJ2-1	39
+D11-1	D11	run-B	shifted productivity construction	T	TRBV6-6	TRBJ2-1	31
+D11-1	D11	run-B	shifted productivity construction	F	TRBV20-1	TRBJ1-2	46
+D11-1	D11	run-B	shifted productivity construction	F	TRBV9	TRBJ1-4	69
+D11-1	D11	run-B	shifted productivity construction	T	TRBV11-3	TRBJ1-1	26
+D11-1	D11	run-B	shifted productivity construction	T	TRBV4-2	TRBJ2-7	58
+D11-1	D11	run-B	shifted productivity construction	T		TRBJ1-1	33
+D11-1	D11	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	13
+D11-1	D11	run-B	shifted productivity construction	T	TRBV11-1	TRBJ2-3	32
+D11-1	D11	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-7	19
+D11-1	D11	run-B	shifted productivity construction	T		TRBJ2-6	72
+D11-1	D11	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-6	53
+D11-1	D11	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-5	27
+D11-1	D11	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-5	79
+D11-1	D11	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-1	42
+D11-1	D11	run-B	shifted productivity construction	T	TRBV2	TRBJ2-3	40
+D11-1	D11	run-B	shifted productivity construction	T	TRBV19	TRBJ2-7	66
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-3	7
+D11-1	D11	run-B	shifted productivity construction	F	TRBV7-9	TRBJ2-2	29
+D11-1	D11	run-B	shifted productivity construction	F	TRBV20-1	TRBJ1-3	26
+D11-1	D11	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-5	16
+D11-1	D11	run-B	shifted productivity construction	T	TRBV19	TRBJ2-5	12
+D11-1	D11	run-B	shifted productivity construction	T		TRBJ2-5	73
+D11-1	D11	run-B	shifted productivity construction	T	TRBV19	TRBJ2-7	30
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-1	39
+D11-1	D11	run-B	shifted productivity construction		TRBV20-1	TRBJ1-2	21
+D11-1	D11	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	24
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-1	17
+D11-1	D11	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-6	12
+D11-1	D11	run-B	shifted productivity construction	F	TRBV4-1	TRBJ2-7	14
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-1	22
+D11-1	D11	run-B	shifted productivity construction	T	TRBV6-2	TRBJ2-1	34
+D11-1	D11	run-B	shifted productivity construction	T	TRBV2	TRBJ1-4	16
+D11-1	D11	run-B	shifted productivity construction		TRBV12-5	TRBJ2-7	15
+D11-1	D11	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-5	13
+D11-1	D11	run-B	shifted productivity construction	T	TRBV19	TRBJ2-3	5
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-7	24
+D11-1	D11	run-B	shifted productivity construction	F	TRBV6-5	TRBJ2-1	18
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-7	29
+D11-1	D11	run-B	shifted productivity construction	F	TRBV3-1	TRBJ2-3	14
+D11-1	D11	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-1	7
+D11-1	D11	run-B	shifted productivity construction	F	TRBV7-2	TRBJ2-7	33
+D11-1	D11	run-B	shifted productivity construction	T	TRBV19	TRBJ2-1	32
+D11-1	D11	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-5	15
+D11-1	D11	run-B	shifted productivity construction	T	TRBV19	TRBJ2-5	15
+D11-1	D11	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-6	6
+D11-1	D11	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-1	2
+D11-1	D11	run-B	shifted productivity construction	T	TRBV12-4	TRBJ2-2	21
+D11-1	D11	run-B	shifted productivity construction	T	TRBV4-1	TRBJ1-4	5
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-5	TRBJ2-5	8
+D11-1	D11	run-B	shifted productivity construction	T	TRBV25-1	TRBJ2-2	6
+D11-1	D11	run-B	shifted productivity construction	T		TRBJ2-5	2
+D11-1	D11	run-B	shifted productivity construction	T	TRBV2	TRBJ1-1	39
+D11-1	D11	run-B	shifted productivity construction	F	TRBV2	TRBJ2-3	20
+D11-1	D11	run-B	shifted productivity construction	T	TRBV9	TRBJ1-1	23
+D11-1	D11	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-1	6
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-2	66
+D11-1	D11	run-B	shifted productivity construction	T	TRBV9	TRBJ1-6	3
+D11-1	D11	run-B	shifted productivity construction	T	TRBV10-2	TRBJ2-3	16
+D11-1	D11	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	6
+D11-1	D11	run-B	shifted productivity construction	T	TRBV2	TRBJ2-1	25
+D11-1	D11	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-2	20
+D11-1	D11	run-B	shifted productivity construction	T	TRBV4-1	TRBJ1-1	17
+D11-1	D11	run-B	shifted productivity construction	T	TRBV2	TRBJ2-2	46
+D11-1	D11	run-B	shifted productivity construction	F	TRBV7-9	TRBJ2-1	5
+D11-1	D11	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-1	13
+D11-1	D11	run-B	shifted productivity construction	T		TRBJ2-1	13
+D11-1	D11	run-B	shifted productivity construction	F	TRBV9	TRBJ2-3	2
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-1	13
+D11-1	D11	run-B	shifted productivity construction	T	TRBV5-5	TRBJ2-5	8
+D11-1	D11	run-B	shifted productivity construction	T	TRBV6-2	TRBJ1-5	19
+D11-1	D11	run-B	shifted productivity construction	F	TRBV6-6	TRBJ1-2	4
+D12-1	D12	run-B	shifted productivity construction	T	TRBV19	TRBJ2-7	1217
+D12-1	D12	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-5	308
+D12-1	D12	run-B	shifted productivity construction	F	TRBV6-6	TRBJ2-7	307
+D12-1	D12	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-1	102
+D12-1	D12	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-1	347
+D12-1	D12	run-B	shifted productivity construction		TRBV19	TRBJ1-4	210
+D12-1	D12	run-B	shifted productivity construction	F	TRBV5-4	TRBJ1-1	87
+D12-1	D12	run-B	shifted productivity construction	F	TRBV13	TRBJ1-2	155
+D12-1	D12	run-B	shifted productivity construction	T	TRBV7-6	TRBJ1-6	134
+D12-1	D12	run-B	shifted productivity construction	F	TRBV2	TRBJ2-5	41
+D12-1	D12	run-B	shifted productivity construction	T	TRBV6-2	TRBJ1-2	103
+D12-1	D12	run-B	shifted productivity construction	F	TRBV30	TRBJ2-2	27
+D12-1	D12	run-B	shifted productivity construction	F	TRBV19	TRBJ1-4	279
+D12-1	D12	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-1	71
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-4	TRBJ1-5	57
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-7	36
+D12-1	D12	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-5	92
+D12-1	D12	run-B	shifted productivity construction	T	TRBV30	TRBJ2-7	56
+D12-1	D12	run-B	shifted productivity construction	F	TRBV18	TRBJ2-3	48
+D12-1	D12	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-7	98
+D12-1	D12	run-B	shifted productivity construction	F	TRBV5-6	TRBJ2-3	89
+D12-1	D12	run-B	shifted productivity construction	T	TRBV6-1		57
+D12-1	D12	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	37
+D12-1	D12	run-B	shifted productivity construction	F	TRBV6-1	TRBJ1-1	31
+D12-1	D12	run-B	shifted productivity construction	F	TRBV7-9	TRBJ2-5	59
+D12-1	D12	run-B	shifted productivity construction	F		TRBJ2-5	33
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-5	TRBJ1-2	25
+D12-1	D12	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-6	20
+D12-1	D12	run-B	shifted productivity construction	T	TRBV11-1	TRBJ2-7	40
+D12-1	D12	run-B	shifted productivity construction	T	TRBV9	TRBJ1-5	39
+D12-1	D12	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-6	27
+D12-1	D12	run-B	shifted productivity construction	F	TRBV6-5	TRBJ1-2	16
+D12-1	D12	run-B	shifted productivity construction	T	TRBV7-9	TRBJ2-5	39
+D12-1	D12	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-1	67
+D12-1	D12	run-B	shifted productivity construction	T	TRBV2	TRBJ1-5	25
+D12-1	D12	run-B	shifted productivity construction	F	TRBV2	TRBJ2-1	23
+D12-1	D12	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-7	46
+D12-1	D12	run-B	shifted productivity construction	F	TRBV7-2	TRBJ2-5	30
+D12-1	D12	run-B	shifted productivity construction	T	TRBV3-1		20
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-2	3
+D12-1	D12	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-2	24
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-6	TRBJ2-1	18
+D12-1	D12	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-2	10
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-4	TRBJ1-5	39
+D12-1	D12	run-B	shifted productivity construction	T	TRBV14	TRBJ2-7	36
+D12-1	D12	run-B	shifted productivity construction		TRBV12-4	TRBJ2-2	12
+D12-1	D12	run-B	shifted productivity construction	T		TRBJ2-7	22
+D12-1	D12	run-B	shifted productivity construction	T	TRBV19	TRBJ1-2	61
+D12-1	D12	run-B	shifted productivity construction	T	TRBV14	TRBJ1-6	20
+D12-1	D12	run-B	shifted productivity construction	F	TRBV20-1	TRBJ1-1	14
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-6	TRBJ2-1	27
+D12-1	D12	run-B	shifted productivity construction	F	TRBV19		22
+D12-1	D12	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-1	25
+D12-1	D12	run-B	shifted productivity construction	T	TRBV4-1	TRBJ1-5	22
+D12-1	D12	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-6	42
+D12-1	D12	run-B	shifted productivity construction	F	TRBV5-1	TRBJ2-3	27
+D12-1	D12	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-1	3
+D12-1	D12	run-B	shifted productivity construction	F	TRBV12-4	TRBJ2-3	7
+D12-1	D12	run-B	shifted productivity construction	T	TRBV16	TRBJ1-2	37
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-3	10
+D12-1	D12	run-B	shifted productivity construction	T	TRBV2	TRBJ1-1	22
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-1	27
+D12-1	D12	run-B	shifted productivity construction	T	TRBV6-6	TRBJ1-1	35
+D12-1	D12	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-4	25
+D12-1	D12	run-B	shifted productivity construction	F	TRBV24-1	TRBJ2-5	28
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-6	TRBJ1-1	13
+D12-1	D12	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-2	6
+D12-1	D12	run-B	shifted productivity construction	F	TRBV19	TRBJ2-2	5
+D12-1	D12	run-B	shifted productivity construction	T	TRBV9	TRBJ1-1	15
+D12-1	D12	run-B	shifted productivity construction	T		TRBJ1-1	21
+D12-1	D12	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-1	16
+D12-1	D12	run-B	shifted productivity construction	T	TRBV19	TRBJ1-2	16
+D12-1	D12	run-B	shifted productivity construction	T	TRBV2	TRBJ1-2	31
+D12-1	D12	run-B	shifted productivity construction	F	TRBV19	TRBJ2-7	6
+D12-1	D12	run-B	shifted productivity construction	F	TRBV3-1	TRBJ2-1	19
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-5	24
+D12-1	D12	run-B	shifted productivity construction	T	TRBV4-1	TRBJ1-1	8
+D12-1	D12	run-B	shifted productivity construction	T	TRBV11-3	TRBJ1-3	3
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-7	11
+D12-1	D12	run-B	shifted productivity construction	T	TRBV25-1	TRBJ2-7	7
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-7	22
+D12-1	D12	run-B	shifted productivity construction	T	TRBV29-1	TRBJ1-4	15
+D12-1	D12	run-B	shifted productivity construction	T	TRBV6-4	TRBJ1-2	26
+D12-1	D12	run-B	shifted productivity construction	T	TRBV19	TRBJ1-6	20
+D12-1	D12	run-B	shifted productivity construction	F	TRBV10-2	TRBJ2-4	2
+D12-1	D12	run-B	shifted productivity construction	T	TRBV11-3	TRBJ2-3	10
+D12-1	D12	run-B	shifted productivity construction	F		TRBJ1-2	10
+D12-1	D12	run-B	shifted productivity construction	T	TRBV12-3	TRBJ1-2	11
+D12-1	D12	run-B	shifted productivity construction	F	TRBV29-1	TRBJ1-1	11
+D12-1	D12	run-B	shifted productivity construction	T	TRBV19		16
+D12-1	D12	run-B	shifted productivity construction	T		TRBJ2-7	21
+D12-1	D12	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-1	14
+D12-1	D12	run-B	shifted productivity construction	T	TRBV2	TRBJ2-3	12
+D12-1	D12	run-B	shifted productivity construction	T	TRBV12-3	TRBJ1-6	7
+D12-1	D12	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-6	25
+D12-1	D12	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-3	7
+D12-1	D12	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-7	24
+D12-1	D12	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-5	16
+D12-1	D12	run-B	shifted productivity construction	T	TRBV18	TRBJ2-1	17
+D12-1	D12	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-2	10
+D12-1	D12	run-B	shifted productivity construction	T	TRBV24-1		4
+D12-1	D12	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-4	6
+D12-1	D12	run-B	shifted productivity construction	F	TRBV2	TRBJ2-3	8
+D12-1	D12	run-B	shifted productivity construction	F	TRBV6-5	TRBJ1-3	7
+D12-1	D12	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-7	38
+D12-1	D12	run-B	shifted productivity construction	T	TRBV9	TRBJ2-4	10
+D12-1	D12	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	4
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-6	TRBJ2-5	9
+D12-1	D12	run-B	shifted productivity construction	T	TRBV14	TRBJ2-1	13
+D12-1	D12	run-B	shifted productivity construction	T	TRBV14	TRBJ1-2	11
+D12-1	D12	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-6	6
+D12-1	D12	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-5	15
+D13-1	D13	run-B	shifted productivity construction	F	TRBV20-1	TRBJ1-1	1455
+D13-1	D13	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-1	201
+D13-1	D13	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-1	104
+D13-1	D13	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-6	194
+D13-1	D13	run-B	shifted productivity construction	T	TRBV27	TRBJ1-1	224
+D13-1	D13	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-5	73
+D13-1	D13	run-B	shifted productivity construction	T	TRBV2	TRBJ1-4	184
+D13-1	D13	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-2	218
+D13-1	D13	run-B	shifted productivity construction	T	TRBV2	TRBJ1-1	41
+D13-1	D13	run-B	shifted productivity construction	T	TRBV9	TRBJ2-2	251
+D13-1	D13	run-B	shifted productivity construction	T	TRBV9	TRBJ2-7	201
+D13-1	D13	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-1	301
+D13-1	D13	run-B	shifted productivity construction		TRBV2		18
+D13-1	D13	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-3	61
+D13-1	D13	run-B	shifted productivity construction	F	TRBV9	TRBJ2-6	68
+D13-1	D13	run-B	shifted productivity construction	F	TRBV5-5	TRBJ1-1	76
+D13-1	D13	run-B	shifted productivity construction	F	TRBV7-9	TRBJ2-3	94
+D13-1	D13	run-B	shifted productivity construction	F	TRBV7-9	TRBJ2-7	50
+D13-1	D13	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-1	40
+D13-1	D13	run-B	shifted productivity construction	T	TRBV29-1	TRBJ2-7	20
+D13-1	D13	run-B	shifted productivity construction	F	TRBV5-5	TRBJ2-7	62
+D13-1	D13	run-B	shifted productivity construction	T	TRBV5-5	TRBJ2-1	25
+D13-1	D13	run-B	shifted productivity construction	T	TRBV6-4	TRBJ1-1	24
+D13-1	D13	run-B	shifted productivity construction	F	TRBV2	TRBJ2-1	17
+D13-1	D13	run-B	shifted productivity construction	F	TRBV5-6	TRBJ1-1	48
+D13-1	D13	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-1	93
+D13-1	D13	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-2	37
+D13-1	D13	run-B	shifted productivity construction	T	TRBV2	TRBJ1-1	28
+D13-1	D13	run-B	shifted productivity construction	T	TRBV11-1	TRBJ2-5	27
+D13-1	D13	run-B	shifted productivity construction		TRBV5-4	TRBJ1-1	36
+D13-1	D13	run-B	shifted productivity construction	T	TRBV14	TRBJ1-1	26
+D13-1	D13	run-B	shifted productivity construction	T	TRBV6-6	TRBJ1-4	11
+D13-1	D13	run-B	shifted productivity construction	F	TRBV6-1	TRBJ1-1	22
+D13-1	D13	run-B	shifted productivity construction	T	TRBV6-2	TRBJ1-5	25
+D13-1	D13	run-B	shifted productivity construction	T	TRBV18	TRBJ1-2	111
+D13-1	D13	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-3	22
+D13-1	D13	run-B	shifted productivity construction	T	TRBV10-2	TRBJ2-7	40
+D13-1	D13	run-B	shifted productivity construction	F	TRBV3-1	TRBJ2-2	14
+D13-1	D13	run-B	shifted productivity construction	T	TRBV7-6	TRBJ1-3	30
+D13-1	D13	run-B	shifted productivity construction		TRBV5-1	TRBJ2-7	29
+D13-1	D13	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-2	23
+D13-1	D13	run-B	shifted productivity construction	F	TRBV3-1	TRBJ1-6	40
+D13-1	D13	run-B	shifted productivity construction	F	TRBV2	TRBJ1-3	29
+D13-1	D13	run-B	shifted productivity construction	F	TRBV12-3	TRBJ2-5	23
+D13-1	D13	run-B	shifted productivity construction	T	TRBV19	TRBJ1-2	25
+D13-1	D13	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-3	22
+D13-1	D13	run-B	shifted productivity construction	T	TRBV5-4	TRBJ1-5	23
+D13-1	D13	run-B	shifted productivity construction	T	TRBV5-6	TRBJ1-5	35
+D13-1	D13	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-1	15
+D13-1	D13	run-B	shifted productivity construction	T	TRBV11-1	TRBJ1-5	11
+D13-1	D13	run-B	shifted productivity construction	T	TRBV18	TRBJ1-6	25
+D13-1	D13	run-B	shifted productivity construction	T	TRBV2	TRBJ2-3	33
+D13-1	D13	run-B	shifted productivity construction	T	TRBV30	TRBJ2-7	22
+D13-1	D13	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-3	25
+D13-1	D13	run-B	shifted productivity construction	T	TRBV19	TRBJ2-2	13
+D13-1	D13	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-3	10
+D13-1	D13	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-5	40
+D13-1	D13	run-B	shifted productivity construction	F	TRBV20-1	TRBJ1-4	22
+D13-1	D13	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-6	11
+D13-1	D13	run-B	shifted productivity construction	F	TRBV18	TRBJ1-5	31
+D13-1	D13	run-B	shifted productivity construction	F	TRBV19	TRBJ2-5	41
+D13-1	D13	run-B	shifted productivity construction	F	TRBV2	TRBJ2-7	39
+D13-1	D13	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-5	20
+D13-1	D13	run-B	shifted productivity construction	F		TRBJ2-1	52
+D13-1	D13	run-B	shifted productivity construction	T	TRBV10-2	TRBJ2-3	24
+D13-1	D13	run-B	shifted productivity construction	T	TRBV9	TRBJ1-1	30
+D13-1	D13	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-5	23
+D13-1	D13	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-2	7
+D13-1	D13	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-1	10
+D13-1	D13	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-1	13
+D13-1	D13	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-2	14
+D13-1	D13	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-1	16
+D14-1	D14	run-B	shifted productivity construction	F	TRBV30	TRBJ2-2	1661
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-1		440
+D14-1	D14	run-B	shifted productivity construction	T	TRBV12-5	TRBJ1-5	80
+D14-1	D14	run-B	shifted productivity construction	T	TRBV28	TRBJ2-5	366
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-3	278
+D14-1	D14	run-B	shifted productivity construction	T	TRBV25-1	TRBJ1-1	101
+D14-1	D14	run-B	shifted productivity construction	T	TRBV9	TRBJ2-2	80
+D14-1	D14	run-B	shifted productivity construction	F		TRBJ1-2	50
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-2	322
+D14-1	D14	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-5	128
+D14-1	D14	run-B	shifted productivity construction	F	TRBV3-1	TRBJ2-3	49
+D14-1	D14	run-B	shifted productivity construction	F	TRBV6-6	TRBJ1-6	74
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-5	3
+D14-1	D14	run-B	shifted productivity construction	T	TRBV24-1	TRBJ1-4	106
+D14-1	D14	run-B	shifted productivity construction	F	TRBV7-9	TRBJ1-2	54
+D14-1	D14	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-2	56
+D14-1	D14	run-B	shifted productivity construction	T	TRBV10-2	TRBJ2-7	106
+D14-1	D14	run-B	shifted productivity construction	T	TRBV9	TRBJ1-5	27
+D14-1	D14	run-B	shifted productivity construction	F	TRBV28	TRBJ2-3	83
+D14-1	D14	run-B	shifted productivity construction	F	TRBV12-3	TRBJ1-5	18
+D14-1	D14	run-B	shifted productivity construction	F	TRBV6-4	TRBJ2-7	31
+D14-1	D14	run-B	shifted productivity construction	T	TRBV29-1	TRBJ1-1	106
+D14-1	D14	run-B	shifted productivity construction	T	TRBV12-4	TRBJ2-1	14
+D14-1	D14	run-B	shifted productivity construction	F	TRBV24-1	TRBJ1-5	37
+D14-1	D14	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-1	23
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-6	TRBJ2-3	5
+D14-1	D14	run-B	shifted productivity construction	F	TRBV12-3	TRBJ1-5	31
+D14-1	D14	run-B	shifted productivity construction	F	TRBV7-9	TRBJ1-4	17
+D14-1	D14	run-B	shifted productivity construction	T	TRBV19		16
+D14-1	D14	run-B	shifted productivity construction	T	TRBV7-9	TRBJ2-2	7
+D14-1	D14	run-B	shifted productivity construction		TRBV25-1	TRBJ2-7	46
+D14-1	D14	run-B	shifted productivity construction	T	TRBV28	TRBJ2-3	16
+D14-1	D14	run-B	shifted productivity construction	T	TRBV19	TRBJ2-7	19
+D14-1	D14	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-7	28
+D14-1	D14	run-B	shifted productivity construction	F	TRBV5-5	TRBJ1-2	31
+D14-1	D14	run-B	shifted productivity construction	F	TRBV28	TRBJ1-4	16
+D14-1	D14	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-1	22
+D14-1	D14	run-B	shifted productivity construction	T	TRBV11-3	TRBJ1-2	26
+D14-1	D14	run-B	shifted productivity construction		TRBV18	TRBJ2-5	77
+D14-1	D14	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-1	10
+D14-1	D14	run-B	shifted productivity construction	T	TRBV9	TRBJ1-4	2
+D14-1	D14	run-B	shifted productivity construction	F	TRBV5-5	TRBJ2-3	13
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-1	10
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-1	TRBJ2-3	16
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-6	9
+D14-1	D14	run-B	shifted productivity construction	F	TRBV5-6		33
+D14-1	D14	run-B	shifted productivity construction	F	TRBV2	TRBJ2-6	15
+D14-1	D14	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-2	12
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-4	TRBJ1-4	30
+D14-1	D14	run-B	shifted productivity construction	F	TRBV20-1	TRBJ1-3	19
+D14-1	D14	run-B	shifted productivity construction	T	TRBV2	TRBJ2-2	27
+D14-1	D14	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-3	29
+D14-1	D14	run-B	shifted productivity construction	F	TRBV6-1	TRBJ1-2	16
+D14-1	D14	run-B	shifted productivity construction	T	TRBV29-1	TRBJ2-3	15
+D14-1	D14	run-B	shifted productivity construction	F	TRBV10-1	TRBJ1-6	6
+D14-1	D14	run-B	shifted productivity construction	T	TRBV12-4		12
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-3	17
+D14-1	D14	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-2	24
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-5	18
+D14-1	D14	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-2	47
+D14-1	D14	run-B	shifted productivity construction	F	TRBV29-1	TRBJ1-1	17
+D14-1	D14	run-B	shifted productivity construction	T	TRBV18	TRBJ1-1	8
+D14-1	D14	run-B	shifted productivity construction	T	TRBV19	TRBJ2-1	12
+D14-1	D14	run-B	shifted productivity construction	T	TRBV18	TRBJ1-2	15
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-1	TRBJ2-1	23
+D14-1	D14	run-B	shifted productivity construction	F	TRBV24-1	TRBJ1-1	9
+D14-1	D14	run-B	shifted productivity construction	T	TRBV4-1	TRBJ1-2	5
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-2	5
+D14-1	D14	run-B	shifted productivity construction	T	TRBV14	TRBJ2-4	3
+D14-1	D14	run-B	shifted productivity construction	F	TRBV6-5	TRBJ2-3	9
+D14-1	D14	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-3	3
+D14-1	D14	run-B	shifted productivity construction	F	TRBV7-6	TRBJ2-1	22
+D14-1	D14	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	12
+D14-1	D14	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-5	6
+D14-1	D14	run-B	shifted productivity construction		TRBV7-9	TRBJ1-1	2
+D14-1	D14	run-B	shifted productivity construction	T	TRBV24-1	TRBJ2-1	5
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-2	16
+D14-1	D14	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-7	20
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-6	TRBJ2-1	11
+D14-1	D14	run-B	shifted productivity construction	F		TRBJ1-5	13
+D14-1	D14	run-B	shifted productivity construction	T	TRBV9	TRBJ1-5	14
+D14-1	D14	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-2	17
+D14-1	D14	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-6	4
+D14-1	D14	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-1	5
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-4	20
+D14-1	D14	run-B	shifted productivity construction	F	TRBV5-1	TRBJ2-7	12
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-1		6
+D14-1	D14	run-B	shifted productivity construction	T	TRBV9	TRBJ1-2	3
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-4	TRBJ1-1	12
+D14-1	D14	run-B	shifted productivity construction	F	TRBV6-5	TRBJ1-2	8
+D14-1	D14	run-B	shifted productivity construction	T	TRBV9	TRBJ2-6	5
+D14-1	D14	run-B	shifted productivity construction	T	TRBV7-2	TRBJ1-1	8
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-2	15
+D14-1	D14	run-B	shifted productivity construction	T	TRBV2	TRBJ1-2	7
+D14-1	D14	run-B	shifted productivity construction	F	TRBV14	TRBJ2-7	5
+D14-1	D14	run-B	shifted productivity construction	F	TRBV19	TRBJ1-1	12
+D14-1	D14	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-7	6
+D14-1	D14	run-B	shifted productivity construction			TRBJ1-4	10
+D14-1	D14	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-1	19
+D14-1	D14	run-B	shifted productivity construction	T		TRBJ1-5	22
+D14-1	D14	run-B	shifted productivity construction	F	TRBV6-5	TRBJ1-2	16
+D14-1	D14	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-4	14
+D14-1	D14	run-B	shifted productivity construction	T	TRBV14	TRBJ2-1	4
+D14-1	D14	run-B	shifted productivity construction	F	TRBV5-1	TRBJ2-3	17
+D14-1	D14	run-B	shifted productivity construction	F	TRBV14	TRBJ1-2	3
+D14-1	D14	run-B	shifted productivity construction	T	TRBV19	TRBJ1-6	13
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-2	TRBJ2-1	5
+D14-1	D14	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-1	19
+D14-1	D14	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-1	15
+D14-1	D14	run-B	shifted productivity construction	T	TRBV2	TRBJ2-1	12
+D14-1	D14	run-B	shifted productivity construction	T	TRBV14	TRBJ2-1	7
+D14-1	D14	run-B	shifted productivity construction	T	TRBV10-2	TRBJ2-3	5
+D14-1	D14	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	8
+D14-1	D14	run-B	shifted productivity construction	T	TRBV4-1	TRBJ1-2	13
+D14-1	D14	run-B	shifted productivity construction	T		TRBJ1-2	18
+D14-1	D14	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-2	4
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-5	7
+D14-1	D14	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-1	11
+D14-1	D14	run-B	shifted productivity construction	F	TRBV2	TRBJ2-3	5
+D14-1	D14	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-1	1
+D14-1	D14	run-B	shifted productivity construction	T	TRBV7-9	TRBJ2-7	6
+D15-1	D15	run-B	shifted productivity construction	T	TRBV12-3	TRBJ1-6	1229
+D15-1	D15	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-1	203
+D15-1	D15	run-B	shifted productivity construction	F	TRBV12-3	TRBJ1-3	133
+D15-1	D15	run-B	shifted productivity construction	T	TRBV2	TRBJ1-1	281
+D15-1	D15	run-B	shifted productivity construction	T	TRBV10-3	TRBJ2-5	205
+D15-1	D15	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-1	146
+D15-1	D15	run-B	shifted productivity construction	F	TRBV15	TRBJ1-1	223
+D15-1	D15	run-B	shifted productivity construction	F	TRBV4-2	TRBJ1-5	200
+D15-1	D15	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-6	101
+D15-1	D15	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-3	136
+D15-1	D15	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-1	78
+D15-1	D15	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-1	26
+D15-1	D15	run-B	shifted productivity construction	T	TRBV2	TRBJ2-7	81
+D15-1	D15	run-B	shifted productivity construction	T	TRBV12-4	TRBJ2-1	97
+D15-1	D15	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-1	128
+D15-1	D15	run-B	shifted productivity construction	T	TRBV12-5	TRBJ2-7	25
+D15-1	D15	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-2	74
+D15-1	D15	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-4	25
+D15-1	D15	run-B	shifted productivity construction	T	TRBV6-2	TRBJ1-5	25
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	17
+D15-1	D15	run-B	shifted productivity construction	T	TRBV5-6	TRBJ1-1	76
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ1-2	27
+D15-1	D15	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-3	38
+D15-1	D15	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-3	25
+D15-1	D15	run-B	shifted productivity construction	T	TRBV11-3	TRBJ2-1	39
+D15-1	D15	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-3	20
+D15-1	D15	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-6	22
+D15-1	D15	run-B	shifted productivity construction	T	TRBV18	TRBJ1-4	49
+D15-1	D15	run-B	shifted productivity construction	T	TRBV2	TRBJ2-1	59
+D15-1	D15	run-B	shifted productivity construction	T	TRBV5-1	TRBJ2-3	33
+D15-1	D15	run-B	shifted productivity construction	T	TRBV5-6	TRBJ1-1	9
+D15-1	D15	run-B	shifted productivity construction	T	TRBV15	TRBJ1-5	14
+D15-1	D15	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-3	17
+D15-1	D15	run-B	shifted productivity construction	T	TRBV12-3	TRBJ1-1	10
+D15-1	D15	run-B	shifted productivity construction	F	TRBV7-9	TRBJ2-7	13
+D15-1	D15	run-B	shifted productivity construction	T	TRBV27	TRBJ1-1	11
+D15-1	D15	run-B	shifted productivity construction	F	TRBV20-1	TRBJ2-1	21
+D15-1	D15	run-B	shifted productivity construction	T	TRBV6-1	TRBJ1-4	14
+D15-1	D15	run-B	shifted productivity construction		TRBV12-4	TRBJ1-5	29
+D15-1	D15	run-B	shifted productivity construction	F	TRBV14	TRBJ2-2	32
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ1-1	9
+D15-1	D15	run-B	shifted productivity construction	T	TRBV7-6	TRBJ2-1	17
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ1-2	28
+D15-1	D15	run-B	shifted productivity construction	T	TRBV6-6	TRBJ1-6	6
+D15-1	D15	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-5	9
+D15-1	D15	run-B	shifted productivity construction	F	TRBV7-2	TRBJ1-1	22
+D15-1	D15	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-2	22
+D15-1	D15	run-B	shifted productivity construction	T	TRBV29-1	TRBJ1-2	10
+D15-1	D15	run-B	shifted productivity construction	T	TRBV12-3	TRBJ1-1	11
+D15-1	D15	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-5	11
+D15-1	D15	run-B	shifted productivity construction	T	TRBV2	TRBJ1-5	18
+D15-1	D15	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-5	4
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ2-7	5
+D15-1	D15	run-B	shifted productivity construction	T	TRBV30	TRBJ2-3	32
+D15-1	D15	run-B	shifted productivity construction	F	TRBV15	TRBJ2-7	34
+D15-1	D15	run-B	shifted productivity construction	T	TRBV27	TRBJ1-3	14
+D15-1	D15	run-B	shifted productivity construction	T	TRBV9	TRBJ1-5	23
+D15-1	D15	run-B	shifted productivity construction	T	TRBV10-2	TRBJ2-2	7
+D15-1	D15	run-B	shifted productivity construction	T	TRBV18	TRBJ2-3	4
+D15-1	D15	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-1	25
+D15-1	D15	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-1	4
+D15-1	D15	run-B	shifted productivity construction	T	TRBV7-2	TRBJ2-1	22
+D15-1	D15	run-B	shifted productivity construction	F	TRBV7-9	TRBJ2-3	23
+D15-1	D15	run-B	shifted productivity construction	T		TRBJ1-3	23
+D15-1	D15	run-B	shifted productivity construction	F	TRBV2	TRBJ1-2	9
+D15-1	D15	run-B	shifted productivity construction	T	TRBV7-9	TRBJ2-3	2
+D15-1	D15	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-2	4
+D15-1	D15	run-B	shifted productivity construction	T	TRBV7-6	TRBJ2-6	12
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ1-5	26
+D15-1	D15	run-B	shifted productivity construction	T	TRBV29-1	TRBJ2-3	19
+D15-1	D15	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-3	21
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ2-3	16
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ2-2	7
+D15-1	D15	run-B	shifted productivity construction		TRBV13	TRBJ2-1	3
+D15-1	D15	run-B	shifted productivity construction	F	TRBV24-1	TRBJ2-3	10
+D15-1	D15	run-B	shifted productivity construction	F	TRBV7-9	TRBJ1-4	3
+D15-1	D15	run-B	shifted productivity construction	T	TRBV9	TRBJ2-3	13
+D15-1	D15	run-B	shifted productivity construction	T	TRBV9	TRBJ2-3	10
+D15-1	D15	run-B	shifted productivity construction	T	TRBV18		19
+D15-1	D15	run-B	shifted productivity construction	T	TRBV6-2	TRBJ2-1	13
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ2-1	9
+D15-1	D15	run-B	shifted productivity construction	F	TRBV29-1	TRBJ2-1	20
+D15-1	D15	run-B	shifted productivity construction	F	TRBV4-1	TRBJ1-5	2
+D15-1	D15	run-B	shifted productivity construction	F	TRBV19	TRBJ2-5	10
+D15-1	D15	run-B	shifted productivity construction	T	TRBV2	TRBJ2-5	9
+D15-1	D15	run-B	shifted productivity construction	T	TRBV11-3	TRBJ1-4	17
+D15-1	D15	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-1	19
+D15-1	D15	run-B	shifted productivity construction	F	TRBV5-1	TRBJ2-1	15
+D15-1	D15	run-B	shifted productivity construction	T	TRBV28	TRBJ1-2	15
+D15-1	D15	run-B	shifted productivity construction	F	TRBV6-1	TRBJ1-2	10
+D15-1	D15	run-B	shifted productivity construction	F	TRBV12-4	TRBJ2-1	5
+D15-1	D15	run-B	shifted productivity construction	F	TRBV30	TRBJ2-2	4
+D15-1	D15	run-B	shifted productivity construction	T	TRBV12-3	TRBJ2-7	6
+D15-1	D15	run-B	shifted productivity construction	T	TRBV19	TRBJ2-1	9
+D15-1	D15	run-B	shifted productivity construction	T	TRBV25-1	TRBJ1-2	2
+D15-1	D15	run-B	shifted productivity construction	F	TRBV19	TRBJ1-4	22
+D16-1	D16	run-B	shifted productivity construction	T	TRBV19	TRBJ1-4	1002
+D16-1	D16	run-B	shifted productivity construction	F	TRBV6-1	TRBJ2-7	114
+D16-1	D16	run-B	shifted productivity construction	T	TRBV12-3	TRBJ2-7	524
+D16-1	D16	run-B	shifted productivity construction	F	TRBV10-3	TRBJ2-3	175
+D16-1	D16	run-B	shifted productivity construction	T	TRBV12-3	TRBJ2-5	92
+D16-1	D16	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-1	67
+D16-1	D16	run-B	shifted productivity construction	F	TRBV7-9	TRBJ1-6	89
+D16-1	D16	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-1	94
+D16-1	D16	run-B	shifted productivity construction	T	TRBV7-9	TRBJ1-2	35
+D16-1	D16	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-4	32
+D16-1	D16	run-B	shifted productivity construction	T	TRBV2	TRBJ2-7	44
+D16-1	D16	run-B	shifted productivity construction	F	TRBV6-5	TRBJ2-1	58
+D16-1	D16	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-2	67
+D16-1	D16	run-B	shifted productivity construction	T	TRBV30	TRBJ2-2	119
+D16-1	D16	run-B	shifted productivity construction	T	TRBV27	TRBJ1-2	34
+D16-1	D16	run-B	shifted productivity construction	T	TRBV24-1	TRBJ2-7	30
+D16-1	D16	run-B	shifted productivity construction	T	TRBV6-5	TRBJ2-1	13
+D16-1	D16	run-B	shifted productivity construction	T	TRBV29-1	TRBJ1-1	86
+D16-1	D16	run-B	shifted productivity construction	T	TRBV11-3	TRBJ1-3	28
+D16-1	D16	run-B	shifted productivity construction	F		TRBJ1-1	56
+D16-1	D16	run-B	shifted productivity construction	T		TRBJ1-2	47
+D16-1	D16	run-B	shifted productivity construction	T	TRBV2	TRBJ1-4	32
+D16-1	D16	run-B	shifted productivity construction	T	TRBV6-2	TRBJ2-5	13
+D16-1	D16	run-B	shifted productivity construction	T	TRBV29-1	TRBJ2-3	34
+D16-1	D16	run-B	shifted productivity construction	T	TRBV27	TRBJ2-3	17
+D16-1	D16	run-B	shifted productivity construction	T	TRBV11-3	TRBJ2-1	16
+D16-1	D16	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-2	50
+D16-1	D16	run-B	shifted productivity construction	T	TRBV6-5	TRBJ1-1	43
+D16-1	D16	run-B	shifted productivity construction	T	TRBV9	TRBJ2-3	78
+D16-1	D16	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-2	20
+D16-1	D16	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-1	30
+D16-1	D16	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-7	14
+D16-1	D16	run-B	shifted productivity construction	T	TRBV12-4	TRBJ1-1	31
+D16-1	D16	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-1	2
+D16-1	D16	run-B	shifted productivity construction	F	TRBV25-1	TRBJ1-1	34
+D16-1	D16	run-B	shifted productivity construction	F	TRBV25-1	TRBJ1-5	14
+D16-1	D16	run-B	shifted productivity construction	F	TRBV5-6	TRBJ1-1	18
+D16-1	D16	run-B	shifted productivity construction	T	TRBV6-1	TRBJ2-1	37
+D16-1	D16	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-5	18
+D16-1	D16	run-B	shifted productivity construction	T	TRBV2	TRBJ2-7	22
+D16-1	D16	run-B	shifted productivity construction	T	TRBV5-6	TRBJ2-1	8
+D16-1	D16	run-B	shifted productivity construction	T	TRBV5-4	TRBJ2-3	6
+D16-1	D16	run-B	shifted productivity construction	T	TRBV5-6	TRBJ2-3	60
+D16-1	D16	run-B	shifted productivity construction	T	TRBV10-2	TRBJ1-2	6
+D16-1	D16	run-B	shifted productivity construction	T	TRBV4-1	TRBJ2-1	12
+D16-1	D16	run-B	shifted productivity construction	T	TRBV28	TRBJ1-4	4
+D16-1	D16	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-2	12
+D16-1	D16	run-B	shifted productivity construction	T	TRBV20-1	TRBJ2-3	5
+D16-1	D16	run-B	shifted productivity construction	T	TRBV30	TRBJ1-1	14
+D16-1	D16	run-B	shifted productivity construction		TRBV6-1	TRBJ1-1	19
+D16-1	D16	run-B	shifted productivity construction	T	TRBV6-6	TRBJ2-1	7
+D16-1	D16	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-1	3
+D16-1	D16	run-B	shifted productivity construction	T	TRBV2	TRBJ1-1	10
+D16-1	D16	run-B	shifted productivity construction	T	TRBV3-1	TRBJ1-3	18
+D16-1	D16	run-B	shifted productivity construction	T	TRBV12-5	TRBJ2-5	7
+D16-1	D16	run-B	shifted productivity construction	F	TRBV19	TRBJ2-5	19
+D16-1	D16	run-B	shifted productivity construction	F	TRBV5-1	TRBJ2-7	17
+D16-1	D16	run-B	shifted productivity construction	T	TRBV12-3	TRBJ1-5	4
+D16-1	D16	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-3	14
+D16-1	D16	run-B	shifted productivity construction	F	TRBV18	TRBJ2-1	3
+D16-1	D16	run-B	shifted productivity construction	T	TRBV5-1	TRBJ1-5	20
+D16-1	D16	run-B	shifted productivity construction	T	TRBV20-1	TRBJ1-2	10
+D16-1	D16	run-B	shifted productivity construction		TRBV7-9	TRBJ1-3	9
+D16-1	D16	run-B	shifted productivity construction	T	TRBV7-9	TRBJ2-7	13
+D16-1	D16	run-B	shifted productivity construction	T	TRBV19	TRBJ2-3	5
+D16-1	D16	run-B	shifted productivity construction	F	TRBV5-1	TRBJ1-1	8
+D16-1	D16	run-B	shifted productivity construction	F	TRBV19	TRBJ1-2	20
+D16-1	D16	run-B	shifted productivity construction	T	TRBV19	TRBJ2-7	6
+D16-1	D16	run-B	shifted productivity construction	T	TRBV9	TRBJ2-7	5
+D16-1	D16	run-B	shifted productivity construction	T	TRBV3-1	TRBJ2-7	11
+D16-1	D16	run-B	shifted productivity construction	F	TRBV6-5	TRBJ2-2	7
+D17-1	D17	run-C	small batch control	T	TRBV24-1	TRBJ1-1	563
+D17-1	D17	run-C	small batch control	T	TRBV6-5	TRBJ1-6	306
+D17-1	D17	run-C	small batch control	T	TRBV29-1	TRBJ1-2	834
+D17-1	D17	run-C	small batch control	T	TRBV2	TRBJ1-5	642
+D17-1	D17	run-C	small batch control	T	TRBV30	TRBJ2-6	62
+D17-1	D17	run-C	small batch control	T	TRBV6-2	TRBJ2-7	223
+D17-1	D17	run-C	small batch control	T	TRBV6-6	TRBJ1-1	76
+D17-1	D17	run-C	small batch control	T	TRBV13	TRBJ1-1	227
+D17-1	D17	run-C	small batch control		TRBV12-4	TRBJ1-5	41
+D17-1	D17	run-C	small batch control		TRBV6-5	TRBJ1-1	221
+D17-1	D17	run-C	small batch control	F	TRBV7-9	TRBJ2-2	20
+D17-1	D17	run-C	small batch control	T	TRBV5-1	TRBJ1-1	102
+D17-1	D17	run-C	small batch control	T	TRBV12-4	TRBJ1-1	23
+D17-1	D17	run-C	small batch control	T	TRBV18	TRBJ1-1	142
+D17-1	D17	run-C	small batch control	T	TRBV6-5	TRBJ1-3	38
+D17-1	D17	run-C	small batch control	T	TRBV5-1	TRBJ2-2	77
+D17-1	D17	run-C	small batch control	T	TRBV2	TRBJ1-1	68
+D17-1	D17	run-C	small batch control	T	TRBV5-4	TRBJ2-1	164
+D17-1	D17	run-C	small batch control	T	TRBV5-5	TRBJ1-1	53
+D17-1	D17	run-C	small batch control	T	TRBV2	TRBJ2-7	112
+D17-1	D17	run-C	small batch control	T	TRBV11-3	TRBJ1-6	53
+D17-1	D17	run-C	small batch control	T	TRBV14	TRBJ2-1	37
+D17-1	D17	run-C	small batch control	T	TRBV5-4	TRBJ1-2	112
+D17-1	D17	run-C	small batch control	T	TRBV7-9	TRBJ1-1	53
+D17-1	D17	run-C	small batch control	T	TRBV5-1	TRBJ2-3	36
+D17-1	D17	run-C	small batch control	T	TRBV20-1		33
+D17-1	D17	run-C	small batch control	T	TRBV7-6	TRBJ2-7	61
+D17-1	D17	run-C	small batch control	F	TRBV9	TRBJ2-1	42
+D17-1	D17	run-C	small batch control	T	TRBV4-1	TRBJ2-1	72
+D17-1	D17	run-C	small batch control	T	TRBV5-1	TRBJ1-3	30
+D17-1	D17	run-C	small batch control	T	TRBV5-1	TRBJ2-5	95
+D17-1	D17	run-C	small batch control	T	TRBV3-1	TRBJ1-2	77
+D17-1	D17	run-C	small batch control	T	TRBV6-1	TRBJ1-5	20
+D17-1	D17	run-C	small batch control	T	TRBV5-1	TRBJ1-4	40
+D17-1	D17	run-C	small batch control	T	TRBV6-1	TRBJ2-2	39
+D17-1	D17	run-C	small batch control	T	TRBV7-2	TRBJ2-5	33
+D17-1	D17	run-C	small batch control	T	TRBV7-6	TRBJ1-2	16
+D17-1	D17	run-C	small batch control	T	TRBV20-1	TRBJ1-4	53
+D17-1	D17	run-C	small batch control	F	TRBV29-1	TRBJ1-5	32
+D17-1	D17	run-C	small batch control	T	TRBV20-1	TRBJ2-7	23
+D17-1	D17	run-C	small batch control	T	TRBV2	TRBJ1-1	43
+D17-1	D17	run-C	small batch control	T	TRBV3-1	TRBJ1-3	16
+D17-1	D17	run-C	small batch control	T	TRBV12-3	TRBJ1-1	14
+D17-1	D17	run-C	small batch control	T	TRBV5-6	TRBJ2-3	42
+D17-1	D17	run-C	small batch control	T	TRBV5-6	TRBJ2-2	23
+D17-1	D17	run-C	small batch control		TRBV24-1	TRBJ1-4	46
+D17-1	D17	run-C	small batch control	T	TRBV25-1	TRBJ2-2	11
+D17-1	D17	run-C	small batch control	F	TRBV10-2	TRBJ1-2	41
+D17-1	D17	run-C	small batch control	T		TRBJ2-1	15
+D17-1	D17	run-C	small batch control	T	TRBV6-6	TRBJ1-4	51
+D17-1	D17	run-C	small batch control	T	TRBV5-5		30
+D17-1	D17	run-C	small batch control	T	TRBV20-1	TRBJ1-2	11
+D17-1	D17	run-C	small batch control	F	TRBV25-1	TRBJ1-2	37
+D17-1	D17	run-C	small batch control	F	TRBV12-3	TRBJ2-5	15
+D17-1	D17	run-C	small batch control	T	TRBV5-1	TRBJ1-1	42
+D17-1	D17	run-C	small batch control	T	TRBV19	TRBJ2-7	34
+D17-1	D17	run-C	small batch control	T	TRBV19	TRBJ1-1	18
+D17-1	D17	run-C	small batch control	T	TRBV5-4	TRBJ1-1	10
+D17-1	D17	run-C	small batch control	T	TRBV12-5	TRBJ1-2	20
+D17-1	D17	run-C	small batch control	T	TRBV4-1	TRBJ2-7	53
+D17-1	D17	run-C	small batch control	T	TRBV7-6	TRBJ2-7	28
+D17-1	D17	run-C	small batch control	T	TRBV25-1	TRBJ1-4	16
+D17-1	D17	run-C	small batch control	T	TRBV7-6	TRBJ1-3	14
+D17-1	D17	run-C	small batch control	T	TRBV9	TRBJ2-2	8
+D17-1	D17	run-C	small batch control	T	TRBV6-1	TRBJ1-1	19
+D17-1	D17	run-C	small batch control	T	TRBV11-3	TRBJ1-3	12
+D17-1	D17	run-C	small batch control	T	TRBV18	TRBJ2-6	22
+D17-1	D17	run-C	small batch control	F	TRBV4-1	TRBJ2-3	17
+D17-1	D17	run-C	small batch control	T	TRBV6-5	TRBJ2-1	15
+D17-1	D17	run-C	small batch control	T	TRBV14	TRBJ1-2	9
+D17-1	D17	run-C	small batch control	T	TRBV2	TRBJ1-5	21
+D17-1	D17	run-C	small batch control	T	TRBV19	TRBJ2-2	12
+D17-1	D17	run-C	small batch control	T	TRBV10-1	TRBJ2-1	12
+D17-1	D17	run-C	small batch control	T	TRBV20-1	TRBJ2-5	7
+D17-1	D17	run-C	small batch control	F	TRBV7-9	TRBJ2-1	15
+D17-1	D17	run-C	small batch control	T	TRBV19	TRBJ2-7	10
+D17-1	D17	run-C	small batch control	T	TRBV24-1	TRBJ1-2	6
+D17-1	D17	run-C	small batch control	T	TRBV19	TRBJ2-7	5
+D17-1	D17	run-C	small batch control	T	TRBV20-1	TRBJ1-6	15
+D17-1	D17	run-C	small batch control	T	TRBV15	TRBJ1-4	26
+D17-1	D17	run-C	small batch control	T	TRBV5-4	TRBJ1-2	13
+D17-1	D17	run-C	small batch control	T	TRBV20-1	TRBJ2-1	26
+D17-1	D17	run-C	small batch control	T	TRBV3-1	TRBJ2-5	4
+D17-1	D17	run-C	small batch control	T	TRBV6-1	TRBJ2-1	21
+D17-1	D17	run-C	small batch control	T	TRBV20-1	TRBJ1-2	8
+D17-1	D17	run-C	small batch control	T	TRBV7-9	TRBJ1-5	12
+D17-1	D17	run-C	small batch control	T	TRBV6-2	TRBJ2-2	4
+D17-1	D17	run-C	small batch control	T	TRBV29-1	TRBJ1-1	25
+D17-1	D17	run-C	small batch control	T	TRBV2	TRBJ2-3	19
+D17-1	D17	run-C	small batch control	T	TRBV2	TRBJ1-1	39
+D17-1	D17	run-C	small batch control	F	TRBV5-6	TRBJ1-6	6
+D17-1	D17	run-C	small batch control	T	TRBV9	TRBJ1-2	5
+D17-1	D17	run-C	small batch control	T	TRBV6-5	TRBJ1-5	25
+D17-1	D17	run-C	small batch control	T	TRBV2	TRBJ1-1	25
+D17-1	D17	run-C	small batch control	F	TRBV24-1	TRBJ1-2	30
+D17-1	D17	run-C	small batch control	T		TRBJ1-1	4
+D18-1	D18	run-C	small batch control	F	TRBV6-1	TRBJ1-4	979
+D18-1	D18	run-C	small batch control	T	TRBV9	TRBJ2-3	704
+D18-1	D18	run-C	small batch control	T	TRBV30	TRBJ2-2	388
+D18-1	D18	run-C	small batch control		TRBV7-9	TRBJ2-7	211
+D18-1	D18	run-C	small batch control	T	TRBV5-6	TRBJ2-7	439
+D18-1	D18	run-C	small batch control	T	TRBV6-2	TRBJ1-1	576
+D18-1	D18	run-C	small batch control	T	TRBV18	TRBJ2-2	147
+D18-1	D18	run-C	small batch control	T	TRBV10-3	TRBJ2-5	367
+D18-1	D18	run-C	small batch control	T	TRBV27	TRBJ2-7	195
+D18-1	D18	run-C	small batch control	T	TRBV25-1	TRBJ1-1	103
+D18-1	D18	run-C	small batch control	T	TRBV2	TRBJ1-3	79
+D18-1	D18	run-C	small batch control	T	TRBV14	TRBJ1-2	136
+D18-1	D18	run-C	small batch control	T	TRBV5-4	TRBJ2-1	243
+D18-1	D18	run-C	small batch control	T	TRBV12-4	TRBJ1-6	163
+D18-1	D18	run-C	small batch control	T		TRBJ2-1	86
+D18-1	D18	run-C	small batch control	T	TRBV12-4	TRBJ1-1	249
+D18-1	D18	run-C	small batch control	T	TRBV19	TRBJ1-2	110
+D18-1	D18	run-C	small batch control	T	TRBV3-1	TRBJ2-3	55
+D18-1	D18	run-C	small batch control	T	TRBV5-6	TRBJ2-1	58
+D18-1	D18	run-C	small batch control	T	TRBV28	TRBJ1-1	69
+D18-1	D18	run-C	small batch control	T	TRBV4-2	TRBJ1-1	96
+D18-1	D18	run-C	small batch control	T	TRBV12-4	TRBJ2-4	41
+D18-1	D18	run-C	small batch control	T	TRBV12-4	TRBJ1-5	84
+D18-1	D18	run-C	small batch control	T		TRBJ2-1	105
+D18-1	D18	run-C	small batch control	T	TRBV6-1	TRBJ2-2	39
+D18-1	D18	run-C	small batch control	F	TRBV4-1	TRBJ2-5	56
+D18-1	D18	run-C	small batch control	T	TRBV27	TRBJ2-1	83
+D18-1	D18	run-C	small batch control	T	TRBV12-4	TRBJ1-5	114
+D18-1	D18	run-C	small batch control	T	TRBV7-9	TRBJ2-7	66
+D18-1	D18	run-C	small batch control	T	TRBV4-1	TRBJ2-3	39
+D18-1	D18	run-C	small batch control	T	TRBV7-9	TRBJ1-6	63
+D18-1	D18	run-C	small batch control	T	TRBV5-1	TRBJ2-2	66
+D18-1	D18	run-C	small batch control	T	TRBV7-9	TRBJ2-5	37
+D18-1	D18	run-C	small batch control	T	TRBV20-1	TRBJ2-2	43
+D18-1	D18	run-C	small batch control	T	TRBV12-3		34
+D18-1	D18	run-C	small batch control	T	TRBV15	TRBJ2-5	59
+D18-1	D18	run-C	small batch control	T	TRBV20-1	TRBJ1-2	25
+D18-1	D18	run-C	small batch control	T	TRBV12-4	TRBJ2-3	35
+D18-1	D18	run-C	small batch control	T	TRBV7-2	TRBJ2-7	35
+D18-1	D18	run-C	small batch control	T	TRBV11-3	TRBJ2-3	25
+D18-1	D18	run-C	small batch control	T	TRBV6-5	TRBJ1-4	53
+D18-1	D18	run-C	small batch control	T	TRBV12-4	TRBJ2-1	12
+D18-1	D18	run-C	small batch control	T	TRBV12-5		60
+D18-1	D18	run-C	small batch control	T	TRBV6-2	TRBJ2-7	18
+D18-1	D18	run-C	small batch control	T	TRBV20-1	TRBJ1-1	37
+D18-1	D18	run-C	small batch control	T	TRBV19	TRBJ1-1	60
+D18-1	D18	run-C	small batch control	T	TRBV20-1		58
+D18-1	D18	run-C	small batch control	T	TRBV27	TRBJ2-7	23
+D18-1	D18	run-C	small batch control	T	TRBV20-1	TRBJ2-5	41
+D18-1	D18	run-C	small batch control	T	TRBV11-3	TRBJ1-1	29
+D18-1	D18	run-C	small batch control	T	TRBV20-1	TRBJ2-5	9
+D18-1	D18	run-C	small batch control	F	TRBV9	TRBJ1-2	16
+D18-1	D18	run-C	small batch control	T	TRBV2	TRBJ1-6	19
+D18-1	D18	run-C	small batch control	T	TRBV4-1	TRBJ1-6	15
+D18-1	D18	run-C	small batch control	T	TRBV11-3	TRBJ1-6	61
+D18-1	D18	run-C	small batch control	T	TRBV10-3	TRBJ1-1	4
+D18-1	D18	run-C	small batch control	T		TRBJ2-7	39
+D18-1	D18	run-C	small batch control	T	TRBV3-1	TRBJ1-2	54
+D18-1	D18	run-C	small batch control	T	TRBV19	TRBJ2-5	44
+D18-1	D18	run-C	small batch control	T	TRBV2	TRBJ1-2	23
+D18-1	D18	run-C	small batch control	T	TRBV7-6	TRBJ1-1	27
+D18-1	D18	run-C	small batch control	T	TRBV19	TRBJ2-1	28
+D18-1	D18	run-C	small batch control	T	TRBV29-1	TRBJ2-7	11
+D18-1	D18	run-C	small batch control	T	TRBV5-6	TRBJ1-3	15
+D18-1	D18	run-C	small batch control	T	TRBV14	TRBJ2-5	40
+D18-1	D18	run-C	small batch control	T	TRBV2	TRBJ2-1	23
+D18-1	D18	run-C	small batch control	T	TRBV6-1	TRBJ2-1	6
+D18-1	D18	run-C	small batch control	T	TRBV6-5	TRBJ1-5	27
+D18-1	D18	run-C	small batch control	T	TRBV10-3	TRBJ1-2	12
+D18-1	D18	run-C	small batch control	F	TRBV20-1	TRBJ1-5	7
+D18-1	D18	run-C	small batch control	T	TRBV6-4	TRBJ1-3	38
+D18-1	D18	run-C	small batch control	T	TRBV9	TRBJ1-1	13
+D18-1	D18	run-C	small batch control	T	TRBV28	TRBJ2-7	14
+D18-1	D18	run-C	small batch control	T	TRBV3-1	TRBJ2-7	9
+D18-1	D18	run-C	small batch control	T	TRBV11-3	TRBJ2-3	13
+D18-1	D18	run-C	small batch control	T	TRBV6-1	TRBJ1-5	46
+D18-1	D18	run-C	small batch control	T	TRBV6-1	TRBJ1-3	27
+D18-1	D18	run-C	small batch control	T	TRBV4-1	TRBJ2-2	15
+D18-1	D18	run-C	small batch control		TRBV12-4	TRBJ1-1	17
+D18-1	D18	run-C	small batch control		TRBV12-4	TRBJ1-1	30
+D18-1	D18	run-C	small batch control	T	TRBV5-5	TRBJ2-4	7
+D18-1	D18	run-C	small batch control	T	TRBV10-1	TRBJ2-1	9
+D18-1	D18	run-C	small batch control	T	TRBV11-3	TRBJ1-1	39
+D18-1	D18	run-C	small batch control	T	TRBV2	TRBJ1-1	38
+D18-1	D18	run-C	small batch control	T	TRBV3-1	TRBJ1-3	22
+D18-1	D18	run-C	small batch control	T	TRBV27	TRBJ1-5	18
+D18-1	D18	run-C	small batch control	T	TRBV6-4	TRBJ2-7	40
+D18-1	D18	run-C	small batch control	T	TRBV5-4	TRBJ2-3	37
+D18-1	D18	run-C	small batch control	T	TRBV27	TRBJ1-5	27
+D18-1	D18	run-C	small batch control	T	TRBV30	TRBJ1-6	16
+D18-1	D18	run-C	small batch control	T	TRBV7-2	TRBJ2-1	12
+D18-1	D18	run-C	small batch control	T	TRBV25-1	TRBJ1-2	29
+D18-1	D18	run-C	small batch control	F	TRBV29-1	TRBJ2-1	14
+D18-1	D18	run-C	small batch control	T	TRBV12-3	TRBJ2-5	7
+D18-1	D18	run-C	small batch control	T	TRBV20-1	TRBJ1-1	14
+D18-1	D18	run-C	small batch control	T	TRBV11-1	TRBJ2-3	3
+D18-1	D18	run-C	small batch control	T	TRBV20-1	TRBJ2-1	9
+D18-1	D18	run-C	small batch control	T	TRBV6-6	TRBJ1-2	10
+D18-1	D18	run-C	small batch control	T	TRBV9	TRBJ2-7	13
+D18-1	D18	run-C	small batch control	T	TRBV6-5	TRBJ1-5	5
+D18-1	D18	run-C	small batch control	T	TRBV20-1	TRBJ1-1	7
+D18-1	D18	run-C	small batch control	T	TRBV6-6	TRBJ1-5	14
+D18-1	D18	run-C	small batch control	T	TRBV5-4	TRBJ2-3	8
+D18-1	D18	run-C	small batch control		TRBV4-1	TRBJ2-7	16
+D18-1	D18	run-C	small batch control	T	TRBV14	TRBJ2-5	17
+D18-1	D18	run-C	small batch control	T	TRBV5-6	TRBJ1-6	8
+D18-1	D18	run-C	small batch control	T	TRBV19		7
+D18-1	D18	run-C	small batch control	T			8
+D18-1	D18	run-C	small batch control	T	TRBV7-6	TRBJ2-7	9
+D18-1	D18	run-C	small batch control	T	TRBV2	TRBJ1-3	13
+D18-1	D18	run-C	small batch control	T	TRBV7-6	TRBJ1-5	8
+D18-1	D18	run-C	small batch control	T	TRBV2	TRBJ2-3	11
+D18-1	D18	run-C	small batch control	T	TRBV5-1	TRBJ1-5	23
+D18-1	D18	run-C	small batch control	T	TRBV10-1	TRBJ2-7	22
+D18-1	D18	run-C	small batch control	T	TRBV6-1	TRBJ2-3	5
+D18-1	D18	run-C	small batch control	F	TRBV4-1	TRBJ1-5	8
+D18-1	D18	run-C	small batch control	T	TRBV7-2	TRBJ2-2	11
+D18-1	D18	run-C	small batch control	T	TRBV20-1	TRBJ2-3	8
+D18-1	D18	run-C	small batch control	T	TRBV5-5		12
+D18-1	D18	run-C	small batch control	T	TRBV5-6	TRBJ2-1	3
+D18-1	D18	run-C	small batch control	T	TRBV3-1	TRBJ1-2	11
+D18-1	D18	run-C	small batch control	F	TRBV30	TRBJ2-5	2
+D18-1	D18	run-C	small batch control	F	TRBV4-1	TRBJ2-7	15
+D18-1	D18	run-C	small batch control	T	TRBV6-4	TRBJ2-7	8
+D18-1	D18	run-C	small batch control	T	TRBV27	TRBJ1-1	8
+D18-1	D18	run-C	small batch control	T	TRBV7-9	TRBJ1-2	11
+D19-1	D19	run-C	small batch control	T	TRBV4-1	TRBJ1-2	353
+D19-1	D19	run-C	small batch control	T	TRBV30	TRBJ1-2	687
+D19-1	D19	run-C	small batch control	T	TRBV14		490
+D19-1	D19	run-C	small batch control	T	TRBV6-2	TRBJ2-7	388
+D19-1	D19	run-C	small batch control	T	TRBV12-3	TRBJ1-2	161
+D19-1	D19	run-C	small batch control	T	TRBV5-1	TRBJ1-4	331
+D19-1	D19	run-C	small batch control	T	TRBV11-1	TRBJ1-1	82
+D19-1	D19	run-C	small batch control	T	TRBV6-5	TRBJ2-5	171
+D19-1	D19	run-C	small batch control	F	TRBV20-1	TRBJ1-1	85
+D19-1	D19	run-C	small batch control	T	TRBV7-9	TRBJ2-7	54
+D19-1	D19	run-C	small batch control	T	TRBV18	TRBJ1-3	96
+D19-1	D19	run-C	small batch control	T	TRBV13	TRBJ2-3	107
+D19-1	D19	run-C	small batch control	T	TRBV5-1	TRBJ1-1	42
+D19-1	D19	run-C	small batch control	T	TRBV5-1	TRBJ2-1	46
+D19-1	D19	run-C	small batch control	T	TRBV11-3	TRBJ1-4	25
+D19-1	D19	run-C	small batch control	T	TRBV5-1	TRBJ2-5	81
+D19-1	D19	run-C	small batch control	T	TRBV12-3	TRBJ1-5	19
+D19-1	D19	run-C	small batch control	T	TRBV12-3	TRBJ2-5	137
+D19-1	D19	run-C	small batch control	T	TRBV15	TRBJ1-1	55
+D19-1	D19	run-C	small batch control	T	TRBV2	TRBJ1-2	76
+D19-1	D19	run-C	small batch control	T	TRBV6-5	TRBJ1-5	27
+D19-1	D19	run-C	small batch control	T	TRBV5-1	TRBJ2-7	45
+D19-1	D19	run-C	small batch control	T	TRBV13	TRBJ1-1	33
+D19-1	D19	run-C	small batch control	T	TRBV5-4	TRBJ1-2	23
+D19-1	D19	run-C	small batch control	T	TRBV5-4	TRBJ2-3	38
+D19-1	D19	run-C	small batch control	F	TRBV7-6	TRBJ2-3	49
+D19-1	D19	run-C	small batch control	T	TRBV10-2	TRBJ1-2	53
+D19-1	D19	run-C	small batch control	T	TRBV27	TRBJ1-1	26
+D19-1	D19	run-C	small batch control	T	TRBV9	TRBJ1-2	12
+D19-1	D19	run-C	small batch control	T	TRBV5-6	TRBJ2-5	35
+D19-1	D19	run-C	small batch control	T	TRBV2	TRBJ1-4	29
+D19-1	D19	run-C	small batch control	T		TRBJ1-2	14
+D19-1	D19	run-C	small batch control	T	TRBV18	TRBJ2-7	18
+D19-1	D19	run-C	small batch control	T	TRBV30	TRBJ1-6	22
+D19-1	D19	run-C	small batch control	T	TRBV7-9	TRBJ2-7	43
+D19-1	D19	run-C	small batch control	T	TRBV4-2	TRBJ2-6	25
+D19-1	D19	run-C	small batch control	T		TRBJ2-2	20
+D19-1	D19	run-C	small batch control	T	TRBV2	TRBJ1-3	28
+D19-1	D19	run-C	small batch control	T	TRBV5-6	TRBJ1-4	21
+D19-1	D19	run-C	small batch control	T	TRBV29-1	TRBJ1-3	22
+D19-1	D19	run-C	small batch control	T	TRBV10-2	TRBJ1-1	20
+D19-1	D19	run-C	small batch control	T	TRBV3-1	TRBJ2-7	37
+D19-1	D19	run-C	small batch control	T	TRBV4-1	TRBJ1-4	1
+D19-1	D19	run-C	small batch control	T	TRBV6-6	TRBJ2-3	29
+D19-1	D19	run-C	small batch control	T	TRBV6-5	TRBJ2-2	6
+D19-1	D19	run-C	small batch control	T	TRBV6-6	TRBJ2-3	28
+D19-1	D19	run-C	small batch control	T	TRBV7-6	TRBJ2-3	42
+D19-1	D19	run-C	small batch control	T	TRBV2	TRBJ2-2	12
+D19-1	D19	run-C	small batch control		TRBV7-9	TRBJ1-1	18
+D19-1	D19	run-C	small batch control	T	TRBV4-1		50
+D19-1	D19	run-C	small batch control	T	TRBV5-1	TRBJ2-3	39
+D19-1	D19	run-C	small batch control	T	TRBV2	TRBJ1-2	11
+D19-1	D19	run-C	small batch control	T	TRBV30	TRBJ2-1	15
+D19-1	D19	run-C	small batch control	T	TRBV12-4	TRBJ1-2	18
+D19-1	D19	run-C	small batch control	T	TRBV25-1	TRBJ2-3	4
+D19-1	D19	run-C	small batch control	T	TRBV20-1	TRBJ2-2	12
+D19-1	D19	run-C	small batch control	T	TRBV6-6	TRBJ1-2	32
+D19-1	D19	run-C	small batch control	T	TRBV15		17
+D19-1	D19	run-C	small batch control	T	TRBV19	TRBJ1-2	14
+D19-1	D19	run-C	small batch control	T	TRBV6-2	TRBJ1-3	13
+D19-1	D19	run-C	small batch control	T	TRBV12-3	TRBJ1-2	28
+D19-1	D19	run-C	small batch control	T	TRBV20-1	TRBJ2-7	7
+D19-1	D19	run-C	small batch control	T	TRBV9	TRBJ2-5	4
+D19-1	D19	run-C	small batch control	T	TRBV2	TRBJ2-7	23
+D19-1	D19	run-C	small batch control	T	TRBV6-6	TRBJ1-1	24
+D19-1	D19	run-C	small batch control	T	TRBV15	TRBJ1-4	8
+D19-1	D19	run-C	small batch control	T	TRBV6-4	TRBJ2-1	3
+D19-1	D19	run-C	small batch control	T	TRBV29-1	TRBJ1-4	3
+D19-1	D19	run-C	small batch control	T	TRBV20-1	TRBJ2-5	10
+D19-1	D19	run-C	small batch control	T	TRBV19	TRBJ1-2	9
+D19-1	D19	run-C	small batch control	T	TRBV3-1	TRBJ1-2	28
+D19-1	D19	run-C	small batch control	T	TRBV18	TRBJ1-2	14
+D19-1	D19	run-C	small batch control	T	TRBV12-3	TRBJ2-5	7
+D19-1	D19	run-C	small batch control	T	TRBV2	TRBJ2-7	26
+D19-1	D19	run-C	small batch control	T	TRBV15	TRBJ1-6	12
+D20-1	D20	run-D	constant row-count control	T	TRBV12-4	TRBJ2-1	1778
+D20-1	D20	run-D	constant row-count control	T	TRBV6-5	TRBJ2-1	416
+D20-1	D20	run-D	constant row-count control	T	TRBV27	TRBJ2-7	535
+D20-1	D20	run-D	constant row-count control	T	TRBV27	TRBJ1-5	790
+D20-1	D20	run-D	constant row-count control	T	TRBV20-1	TRBJ1-2	416
+D20-1	D20	run-D	constant row-count control	F	TRBV10-2	TRBJ1-5	159
+D20-1	D20	run-D	constant row-count control	T	TRBV4-2	TRBJ1-2	423
+D20-1	D20	run-D	constant row-count control	T	TRBV18	TRBJ1-4	198
+D20-1	D20	run-D	constant row-count control	T	TRBV4-1	TRBJ2-1	65
+D20-1	D20	run-D	constant row-count control	T	TRBV5-1	TRBJ2-5	269
+D20-1	D20	run-D	constant row-count control	T		TRBJ2-1	402
+D20-1	D20	run-D	constant row-count control	T	TRBV4-1	TRBJ2-7	83
+D20-1	D20	run-D	constant row-count control	T	TRBV3-1	TRBJ2-1	181
+D20-1	D20	run-D	constant row-count control	T	TRBV2	TRBJ1-5	164
+D20-1	D20	run-D	constant row-count control	T	TRBV5-6	TRBJ1-5	158
+D20-1	D20	run-D	constant row-count control	T	TRBV14	TRBJ1-5	55
+D20-1	D20	run-D	constant row-count control	T	TRBV2	TRBJ2-7	47
+D20-1	D20	run-D	constant row-count control	T	TRBV6-1	TRBJ2-2	166
+D20-1	D20	run-D	constant row-count control	T	TRBV7-9	TRBJ2-7	89
+D20-1	D20	run-D	constant row-count control	T	TRBV11-3	TRBJ2-1	177
+D20-1	D20	run-D	constant row-count control	F	TRBV11-3	TRBJ1-1	33
+D20-1	D20	run-D	constant row-count control	T	TRBV6-1	TRBJ1-2	42
+D20-1	D20	run-D	constant row-count control	T	TRBV20-1	TRBJ2-3	81
+D20-1	D20	run-D	constant row-count control	T	TRBV30	TRBJ2-1	25
+D20-1	D20	run-D	constant row-count control	T	TRBV7-9	TRBJ1-5	31
+D20-1	D20	run-D	constant row-count control	T	TRBV5-1	TRBJ2-4	65
+D20-1	D20	run-D	constant row-count control	T	TRBV12-3	TRBJ1-1	81
+D20-1	D20	run-D	constant row-count control	T	TRBV7-9	TRBJ2-1	10
+D20-1	D20	run-D	constant row-count control	T	TRBV9	TRBJ1-1	31
+D20-1	D20	run-D	constant row-count control	T	TRBV2	TRBJ2-7	43
+D20-1	D20	run-D	constant row-count control	T	TRBV6-7	TRBJ2-5	67
+D20-1	D20	run-D	constant row-count control	T	TRBV12-4	TRBJ2-3	45
+D20-1	D20	run-D	constant row-count control	T	TRBV19	TRBJ1-5	30
+D20-1	D20	run-D	constant row-count control	T	TRBV5-6	TRBJ1-2	31
+D20-1	D20	run-D	constant row-count control	T	TRBV27	TRBJ1-1	73
+D20-1	D20	run-D	constant row-count control	T	TRBV6-1	TRBJ1-2	22
+D20-1	D20	run-D	constant row-count control	T	TRBV7-9	TRBJ2-5	46
+D20-1	D20	run-D	constant row-count control	T	TRBV6-5	TRBJ1-6	86
+D20-1	D20	run-D	constant row-count control	T	TRBV7-2	TRBJ1-1	59
+D20-1	D20	run-D	constant row-count control	T	TRBV12-3	TRBJ2-1	58
+D20-1	D20	run-D	constant row-count control	T	TRBV19	TRBJ1-5	56
+D20-1	D20	run-D	constant row-count control	T	TRBV5-1	TRBJ1-6	98
+D20-1	D20	run-D	constant row-count control	T	TRBV9	TRBJ2-7	14
+D20-1	D20	run-D	constant row-count control	T	TRBV7-2	TRBJ1-2	60
+D20-1	D20	run-D	constant row-count control	T	TRBV5-6	TRBJ1-1	76
+D20-1	D20	run-D	constant row-count control	T	TRBV5-6	TRBJ2-2	18
+D20-1	D20	run-D	constant row-count control	T		TRBJ1-5	12
+D20-1	D20	run-D	constant row-count control	T	TRBV7-9	TRBJ2-3	20
+D20-1	D20	run-D	constant row-count control	T	TRBV5-4	TRBJ2-7	28
+D20-1	D20	run-D	constant row-count control	T	TRBV4-1	TRBJ2-3	53
+D20-1	D20	run-D	constant row-count control	T	TRBV12-4	TRBJ1-4	60
+D20-1	D20	run-D	constant row-count control	T	TRBV14	TRBJ2-5	19
+D20-1	D20	run-D	constant row-count control	T	TRBV6-5	TRBJ1-1	18
+D20-1	D20	run-D	constant row-count control	T	TRBV2	TRBJ1-1	28
+D20-1	D20	run-D	constant row-count control	T		TRBJ2-3	19
+D20-1	D20	run-D	constant row-count control	T	TRBV18	TRBJ1-6	93
+D20-1	D20	run-D	constant row-count control	T	TRBV3-1	TRBJ1-1	28
+D20-1	D20	run-D	constant row-count control	T	TRBV5-4	TRBJ1-1	23
+D20-1	D20	run-D	constant row-count control	T	TRBV20-1	TRBJ2-4	59
+D20-1	D20	run-D	constant row-count control	T	TRBV6-1	TRBJ2-5	28
+D20-1	D20	run-D	constant row-count control	T	TRBV6-5	TRBJ2-1	42
+D20-1	D20	run-D	constant row-count control	T	TRBV11-3	TRBJ2-6	14
+D20-1	D20	run-D	constant row-count control	F	TRBV2	TRBJ1-2	13
+D20-1	D20	run-D	constant row-count control	T	TRBV10-3	TRBJ1-2	9
+D20-1	D20	run-D	constant row-count control	T	TRBV19	TRBJ2-7	26
+D20-1	D20	run-D	constant row-count control	T	TRBV2		39
+D20-1	D20	run-D	constant row-count control	T	TRBV19	TRBJ1-3	17
+D20-1	D20	run-D	constant row-count control	T	TRBV5-1	TRBJ1-1	33
+D20-1	D20	run-D	constant row-count control	T	TRBV3-1	TRBJ1-3	17
+D20-1	D20	run-D	constant row-count control	T	TRBV19	TRBJ2-7	13
+D20-1	D20	run-D	constant row-count control	T	TRBV12-4	TRBJ2-7	15
+D20-1	D20	run-D	constant row-count control	T	TRBV6-5	TRBJ2-1	15
+D20-1	D20	run-D	constant row-count control	T	TRBV4-1	TRBJ1-1	9
+D20-1	D20	run-D	constant row-count control	T	TRBV28	TRBJ1-5	29
+D20-1	D20	run-D	constant row-count control	T	TRBV4-2	TRBJ2-7	27
+D20-1	D20	run-D	constant row-count control	T	TRBV24-1	TRBJ2-7	7
+D20-1	D20	run-D	constant row-count control	T	TRBV5-1	TRBJ2-3	30
+D20-1	D20	run-D	constant row-count control	T	TRBV2	TRBJ2-2	15
+D20-1	D20	run-D	constant row-count control	T	TRBV7-9	TRBJ1-2	6
+D20-1	D20	run-D	constant row-count control	T	TRBV13	TRBJ1-1	15
+D21-1	D21	run-D	constant row-count control	T	TRBV2	TRBJ2-7	1037
+D21-1	D21	run-D	constant row-count control	T	TRBV7-9	TRBJ1-5	825
+D21-1	D21	run-D	constant row-count control	T	TRBV18	TRBJ1-4	104
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1	TRBJ1-1	174
+D21-1	D21	run-D	constant row-count control	T	TRBV4-1	TRBJ2-6	105
+D21-1	D21	run-D	constant row-count control	T	TRBV2	TRBJ1-2	131
+D21-1	D21	run-D	constant row-count control	T	TRBV2	TRBJ1-2	491
+D21-1	D21	run-D	constant row-count control	T	TRBV5-6	TRBJ2-7	388
+D21-1	D21	run-D	constant row-count control	T	TRBV18	TRBJ1-1	106
+D21-1	D21	run-D	constant row-count control	F	TRBV19	TRBJ2-7	67
+D21-1	D21	run-D	constant row-count control	T	TRBV28	TRBJ1-2	69
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1	TRBJ1-1	35
+D21-1	D21	run-D	constant row-count control	T	TRBV6-6	TRBJ1-3	114
+D21-1	D21	run-D	constant row-count control	T	TRBV4-2	TRBJ2-1	66
+D21-1	D21	run-D	constant row-count control	F	TRBV20-1	TRBJ2-2	117
+D21-1	D21	run-D	constant row-count control	T	TRBV18	TRBJ1-2	67
+D21-1	D21	run-D	constant row-count control	T	TRBV19	TRBJ1-3	16
+D21-1	D21	run-D	constant row-count control	T	TRBV7-9	TRBJ1-4	78
+D21-1	D21	run-D	constant row-count control	T	TRBV19	TRBJ1-4	7
+D21-1	D21	run-D	constant row-count control	F	TRBV24-1	TRBJ2-7	40
+D21-1	D21	run-D	constant row-count control	T	TRBV12-4	TRBJ2-3	18
+D21-1	D21	run-D	constant row-count control	T		TRBJ2-3	20
+D21-1	D21	run-D	constant row-count control	T	TRBV12-4	TRBJ1-6	22
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1	TRBJ2-2	13
+D21-1	D21	run-D	constant row-count control		TRBV4-2	TRBJ1-5	19
+D21-1	D21	run-D	constant row-count control	T	TRBV5-1	TRBJ1-5	43
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1	TRBJ1-1	5
+D21-1	D21	run-D	constant row-count control	T	TRBV6-2	TRBJ2-2	50
+D21-1	D21	run-D	constant row-count control	T		TRBJ1-4	12
+D21-1	D21	run-D	constant row-count control	T	TRBV5-4	TRBJ2-5	30
+D21-1	D21	run-D	constant row-count control	T	TRBV11-1	TRBJ1-2	21
+D21-1	D21	run-D	constant row-count control	T	TRBV3-1	TRBJ1-5	16
+D21-1	D21	run-D	constant row-count control	T	TRBV11-1	TRBJ1-1	32
+D21-1	D21	run-D	constant row-count control	T	TRBV7-9	TRBJ1-3	11
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1	TRBJ1-4	31
+D21-1	D21	run-D	constant row-count control	T	TRBV6-2	TRBJ1-3	43
+D21-1	D21	run-D	constant row-count control	T	TRBV6-4	TRBJ1-2	29
+D21-1	D21	run-D	constant row-count control	T	TRBV6-1	TRBJ1-1	56
+D21-1	D21	run-D	constant row-count control	T	TRBV6-4	TRBJ1-3	21
+D21-1	D21	run-D	constant row-count control	T	TRBV11-1	TRBJ2-3	18
+D21-1	D21	run-D	constant row-count control	T	TRBV5-1	TRBJ1-5	19
+D21-1	D21	run-D	constant row-count control	T	TRBV2	TRBJ1-2	6
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1	TRBJ2-3	36
+D21-1	D21	run-D	constant row-count control	T	TRBV5-1	TRBJ1-2	44
+D21-1	D21	run-D	constant row-count control	T	TRBV27	TRBJ1-1	33
+D21-1	D21	run-D	constant row-count control	T	TRBV5-4	TRBJ2-2	23
+D21-1	D21	run-D	constant row-count control	T	TRBV2	TRBJ2-3	18
+D21-1	D21	run-D	constant row-count control	T	TRBV5-1	TRBJ2-2	18
+D21-1	D21	run-D	constant row-count control	T	TRBV7-9	TRBJ1-2	39
+D21-1	D21	run-D	constant row-count control	T	TRBV12-4	TRBJ1-2	19
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1	TRBJ1-2	10
+D21-1	D21	run-D	constant row-count control	T	TRBV3-1	TRBJ2-7	8
+D21-1	D21	run-D	constant row-count control	T	TRBV6-1	TRBJ1-5	26
+D21-1	D21	run-D	constant row-count control	T	TRBV5-6	TRBJ1-6	9
+D21-1	D21	run-D	constant row-count control	T	TRBV19	TRBJ2-7	26
+D21-1	D21	run-D	constant row-count control	T	TRBV5-1	TRBJ2-3	14
+D21-1	D21	run-D	constant row-count control	T	TRBV18	TRBJ1-6	18
+D21-1	D21	run-D	constant row-count control	T	TRBV2	TRBJ2-7	9
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1	TRBJ2-1	36
+D21-1	D21	run-D	constant row-count control	T	TRBV2	TRBJ1-2	10
+D21-1	D21	run-D	constant row-count control	T	TRBV9	TRBJ1-1	16
+D21-1	D21	run-D	constant row-count control	T	TRBV19	TRBJ2-1	17
+D21-1	D21	run-D	constant row-count control	T	TRBV7-9	TRBJ2-5	41
+D21-1	D21	run-D	constant row-count control	T	TRBV28	TRBJ2-1	16
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1		8
+D21-1	D21	run-D	constant row-count control	T	TRBV9	TRBJ1-1	4
+D21-1	D21	run-D	constant row-count control	T	TRBV6-5	TRBJ1-3	12
+D21-1	D21	run-D	constant row-count control	T	TRBV5-1	TRBJ2-7	12
+D21-1	D21	run-D	constant row-count control	T	TRBV7-2	TRBJ2-1	6
+D21-1	D21	run-D	constant row-count control	T	TRBV9	TRBJ1-2	18
+D21-1	D21	run-D	constant row-count control	T	TRBV3-1	TRBJ1-1	3
+D21-1	D21	run-D	constant row-count control	T	TRBV9	TRBJ1-1	7
+D21-1	D21	run-D	constant row-count control	T	TRBV2	TRBJ2-3	10
+D21-1	D21	run-D	constant row-count control	T	TRBV7-9	TRBJ1-2	11
+D21-1	D21	run-D	constant row-count control	T	TRBV19	TRBJ1-2	9
+D21-1	D21	run-D	constant row-count control	T	TRBV7-9	TRBJ2-1	9
+D21-1	D21	run-D	constant row-count control		TRBV18	TRBJ1-1	10
+D21-1	D21	run-D	constant row-count control	T	TRBV20-1	TRBJ1-1	10
+D21-1	D21	run-D	constant row-count control	T	TRBV5-5	TRBJ2-1	8
+D21-1	D21	run-D	constant row-count control	T	TRBV2	TRBJ1-1	19
+D22-1	D22	run-D	constant row-count control	T	TRBV13	TRBJ1-1	4329
+D22-1	D22	run-D	constant row-count control	T	TRBV2	TRBJ2-1	1224
+D22-1	D22	run-D	constant row-count control	T	TRBV6-6	TRBJ1-1	1534
+D22-1	D22	run-D	constant row-count control	T		TRBJ2-2	1356
+D22-1	D22	run-D	constant row-count control	T	TRBV5-6	TRBJ2-1	298
+D22-1	D22	run-D	constant row-count control	T	TRBV12-4	TRBJ1-1	910
+D22-1	D22	run-D	constant row-count control	T	TRBV20-1	TRBJ2-2	325
+D22-1	D22	run-D	constant row-count control	T	TRBV20-1	TRBJ2-1	495
+D22-1	D22	run-D	constant row-count control	T	TRBV5-1	TRBJ1-2	248
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ1-2	482
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ1-1	399
+D22-1	D22	run-D	constant row-count control	T	TRBV9	TRBJ1-2	295
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ2-7	323
+D22-1	D22	run-D	constant row-count control	T	TRBV18	TRBJ2-1	394
+D22-1	D22	run-D	constant row-count control	T	TRBV5-4	TRBJ2-7	96
+D22-1	D22	run-D	constant row-count control	T	TRBV5-5	TRBJ1-1	138
+D22-1	D22	run-D	constant row-count control	T	TRBV27	TRBJ1-3	172
+D22-1	D22	run-D	constant row-count control	F	TRBV18	TRBJ2-1	283
+D22-1	D22	run-D	constant row-count control	F	TRBV7-2	TRBJ1-6	167
+D22-1	D22	run-D	constant row-count control	T	TRBV11-1	TRBJ2-7	208
+D22-1	D22	run-D	constant row-count control	T	TRBV12-4	TRBJ2-7	336
+D22-1	D22	run-D	constant row-count control	F	TRBV5-1	TRBJ2-2	114
+D22-1	D22	run-D	constant row-count control	T	TRBV2	TRBJ2-4	169
+D22-1	D22	run-D	constant row-count control	T	TRBV12-4	TRBJ1-2	134
+D22-1	D22	run-D	constant row-count control	T	TRBV6-5	TRBJ1-1	216
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ1-2	89
+D22-1	D22	run-D	constant row-count control	T	TRBV10-3	TRBJ2-7	67
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ2-7	161
+D22-1	D22	run-D	constant row-count control	F	TRBV12-4	TRBJ2-3	155
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ2-5	39
+D22-1	D22	run-D	constant row-count control	T	TRBV6-6	TRBJ2-1	45
+D22-1	D22	run-D	constant row-count control	T	TRBV6-6	TRBJ1-1	74
+D22-1	D22	run-D	constant row-count control	T	TRBV12-4	TRBJ2-1	110
+D22-1	D22	run-D	constant row-count control	T	TRBV30	TRBJ2-7	53
+D22-1	D22	run-D	constant row-count control	T	TRBV20-1	TRBJ2-3	18
+D22-1	D22	run-D	constant row-count control	T	TRBV2	TRBJ2-7	46
+D22-1	D22	run-D	constant row-count control	T	TRBV11-3	TRBJ1-4	110
+D22-1	D22	run-D	constant row-count control	T	TRBV2	TRBJ1-1	148
+D22-1	D22	run-D	constant row-count control	T	TRBV25-1	TRBJ1-6	72
+D22-1	D22	run-D	constant row-count control	T	TRBV2	TRBJ1-5	181
+D22-1	D22	run-D	constant row-count control	T	TRBV9	TRBJ2-7	86
+D22-1	D22	run-D	constant row-count control	T	TRBV5-1	TRBJ2-5	48
+D22-1	D22	run-D	constant row-count control	T	TRBV30	TRBJ1-5	18
+D22-1	D22	run-D	constant row-count control	T	TRBV20-1	TRBJ2-1	71
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ1-2	128
+D22-1	D22	run-D	constant row-count control	T	TRBV12-4	TRBJ2-5	61
+D22-1	D22	run-D	constant row-count control	T	TRBV18	TRBJ2-7	27
+D22-1	D22	run-D	constant row-count control	T	TRBV9	TRBJ1-2	26
+D22-1	D22	run-D	constant row-count control	T	TRBV5-1	TRBJ2-7	127
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ2-7	29
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ2-3	106
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ2-1	58
+D22-1	D22	run-D	constant row-count control	T	TRBV5-6	TRBJ1-2	26
+D22-1	D22	run-D	constant row-count control	T	TRBV19	TRBJ2-4	93
+D22-1	D22	run-D	constant row-count control	T	TRBV12-3	TRBJ1-6	71
+D22-1	D22	run-D	constant row-count control	T	TRBV12-3	TRBJ1-6	36
+D22-1	D22	run-D	constant row-count control	F	TRBV2	TRBJ1-6	22
+D22-1	D22	run-D	constant row-count control	T	TRBV11-3	TRBJ1-1	62
+D22-1	D22	run-D	constant row-count control	T	TRBV6-5	TRBJ1-4	79
+D22-1	D22	run-D	constant row-count control	T	TRBV5-1	TRBJ2-2	46
+D22-1	D22	run-D	constant row-count control	T	TRBV10-3	TRBJ1-6	7
+D22-1	D22	run-D	constant row-count control	T	TRBV7-6	TRBJ1-3	35
+D22-1	D22	run-D	constant row-count control	T	TRBV10-2	TRBJ1-4	74
+D22-1	D22	run-D	constant row-count control	T	TRBV18	TRBJ2-5	45
+D22-1	D22	run-D	constant row-count control	T	TRBV11-3	TRBJ2-1	32
+D22-1	D22	run-D	constant row-count control	T	TRBV2	TRBJ2-4	22
+D22-1	D22	run-D	constant row-count control	T	TRBV6-5	TRBJ2-2	58
+D22-1	D22	run-D	constant row-count control	T	TRBV4-1	TRBJ2-1	68
+D22-1	D22	run-D	constant row-count control	T	TRBV7-6	TRBJ1-1	28
+D22-1	D22	run-D	constant row-count control	T	TRBV5-1	TRBJ1-5	47
+D22-1	D22	run-D	constant row-count control	T	TRBV30	TRBJ2-7	31
+D22-1	D22	run-D	constant row-count control	T	TRBV5-1	TRBJ2-3	30
+D22-1	D22	run-D	constant row-count control	T	TRBV7-2	TRBJ1-5	3
+D22-1	D22	run-D	constant row-count control	T	TRBV7-6	TRBJ2-5	41
+D22-1	D22	run-D	constant row-count control	T	TRBV7-9	TRBJ1-5	17
+D22-1	D22	run-D	constant row-count control	T	TRBV6-4	TRBJ1-2	34
+D22-1	D22	run-D	constant row-count control	T	TRBV2	TRBJ2-5	27
+D22-1	D22	run-D	constant row-count control	T	TRBV28	TRBJ2-1	11
+D22-1	D22	run-D	constant row-count control	T	TRBV20-1	TRBJ1-6	54
+D22-1	D22	run-D	constant row-count control	T	TRBV3-1	TRBJ2-5	12
+D23-1	D23	run-D	constant row-count control	T	TRBV5-6	TRBJ2-5	3167
+D23-1	D23	run-D	constant row-count control	T	TRBV19	TRBJ1-1	1179
+D23-1	D23	run-D	constant row-count control	T	TRBV3-1	TRBJ2-2	502
+D23-1	D23	run-D	constant row-count control	T	TRBV27	TRBJ1-2	728
+D23-1	D23	run-D	constant row-count control	T	TRBV18	TRBJ1-2	83
+D23-1	D23	run-D	constant row-count control	T	TRBV12-4	TRBJ2-3	499
+D23-1	D23	run-D	constant row-count control		TRBV19	TRBJ2-7	110
+D23-1	D23	run-D	constant row-count control	T	TRBV7-2	TRBJ1-2	78
+D23-1	D23	run-D	constant row-count control	T	TRBV6-2	TRBJ1-2	119
+D23-1	D23	run-D	constant row-count control	T	TRBV9	TRBJ1-6	124
+D23-1	D23	run-D	constant row-count control	T	TRBV9	TRBJ1-2	474
+D23-1	D23	run-D	constant row-count control	T	TRBV9	TRBJ1-2	363
+D23-1	D23	run-D	constant row-count control	T	TRBV20-1	TRBJ2-3	221
+D23-1	D23	run-D	constant row-count control	T	TRBV3-1	TRBJ1-3	37
+D23-1	D23	run-D	constant row-count control	T	TRBV20-1	TRBJ1-1	69
+D23-1	D23	run-D	constant row-count control	T	TRBV6-5	TRBJ2-3	71
+D23-1	D23	run-D	constant row-count control	F	TRBV13	TRBJ1-5	55
+D23-1	D23	run-D	constant row-count control	T		TRBJ1-1	42
+D23-1	D23	run-D	constant row-count control	T	TRBV7-6	TRBJ2-7	42
+D23-1	D23	run-D	constant row-count control	T	TRBV3-1	TRBJ1-1	43
+D23-1	D23	run-D	constant row-count control	T	TRBV27	TRBJ2-3	168
+D23-1	D23	run-D	constant row-count control	T	TRBV27		71
+D23-1	D23	run-D	constant row-count control	T		TRBJ2-7	23
+D23-1	D23	run-D	constant row-count control	T	TRBV30	TRBJ2-1	93
+D23-1	D23	run-D	constant row-count control	T	TRBV5-5	TRBJ2-2	151
+D23-1	D23	run-D	constant row-count control	T	TRBV6-4	TRBJ2-3	56
+D23-1	D23	run-D	constant row-count control	T	TRBV5-1	TRBJ1-5	108
+D23-1	D23	run-D	constant row-count control	T	TRBV6-1	TRBJ2-4	55
+D23-1	D23	run-D	constant row-count control	T	TRBV5-1	TRBJ2-5	12
+D23-1	D23	run-D	constant row-count control	T	TRBV7-6		19
+D23-1	D23	run-D	constant row-count control	F	TRBV3-1	TRBJ1-6	86
+D23-1	D23	run-D	constant row-count control	T	TRBV6-4	TRBJ2-1	77
+D23-1	D23	run-D	constant row-count control	T	TRBV12-4	TRBJ2-3	88
+D23-1	D23	run-D	constant row-count control	T	TRBV19	TRBJ2-3	43
+D23-1	D23	run-D	constant row-count control	T	TRBV7-6	TRBJ2-1	35
+D23-1	D23	run-D	constant row-count control	T	TRBV5-1	TRBJ1-3	102
+D23-1	D23	run-D	constant row-count control	T	TRBV7-2	TRBJ2-7	123
+D23-1	D23	run-D	constant row-count control	T	TRBV6-4	TRBJ2-3	34
+D23-1	D23	run-D	constant row-count control	T	TRBV20-1	TRBJ2-3	44
+D23-1	D23	run-D	constant row-count control	T	TRBV19		22
+D23-1	D23	run-D	constant row-count control	F	TRBV2	TRBJ1-6	49
+D23-1	D23	run-D	constant row-count control	T	TRBV15	TRBJ1-2	12
+D23-1	D23	run-D	constant row-count control	T		TRBJ1-5	32
+D23-1	D23	run-D	constant row-count control	T	TRBV20-1	TRBJ1-6	47
+D23-1	D23	run-D	constant row-count control	T	TRBV6-5	TRBJ1-6	111
+D23-1	D23	run-D	constant row-count control	T	TRBV6-5	TRBJ1-1	17
+D23-1	D23	run-D	constant row-count control	F	TRBV4-1	TRBJ2-1	20
+D23-1	D23	run-D	constant row-count control	T	TRBV20-1	TRBJ2-1	16
+D23-1	D23	run-D	constant row-count control	T	TRBV19	TRBJ2-5	47
+D23-1	D23	run-D	constant row-count control	T		TRBJ1-2	12
+D23-1	D23	run-D	constant row-count control	T	TRBV11-3	TRBJ1-2	7
+D23-1	D23	run-D	constant row-count control	T	TRBV7-9	TRBJ2-1	59
+D23-1	D23	run-D	constant row-count control	T	TRBV7-9	TRBJ2-1	39
+D23-1	D23	run-D	constant row-count control	T	TRBV2	TRBJ1-2	15
+D23-1	D23	run-D	constant row-count control	T	TRBV5-1	TRBJ1-6	58
+D23-1	D23	run-D	constant row-count control	F	TRBV7-9	TRBJ1-1	26
+D23-1	D23	run-D	constant row-count control	T	TRBV4-1	TRBJ1-3	21
+D23-1	D23	run-D	constant row-count control	T	TRBV29-1	TRBJ1-6	38
+D23-1	D23	run-D	constant row-count control	T	TRBV24-1	TRBJ1-2	14
+D23-1	D23	run-D	constant row-count control	T	TRBV14	TRBJ1-1	14
+D23-1	D23	run-D	constant row-count control	T	TRBV4-1	TRBJ1-2	24
+D23-1	D23	run-D	constant row-count control	T	TRBV18	TRBJ2-7	63
+D23-1	D23	run-D	constant row-count control	T	TRBV24-1	TRBJ2-3	21
+D23-1	D23	run-D	constant row-count control	T	TRBV6-1	TRBJ1-1	17
+D23-1	D23	run-D	constant row-count control	T	TRBV9	TRBJ1-3	22
+D23-1	D23	run-D	constant row-count control	T	TRBV11-1	TRBJ2-1	68
+D23-1	D23	run-D	constant row-count control	T	TRBV6-1	TRBJ1-2	46
+D23-1	D23	run-D	constant row-count control		TRBV28	TRBJ2-5	20
+D23-1	D23	run-D	constant row-count control	T	TRBV3-1	TRBJ1-3	14
+D23-1	D23	run-D	constant row-count control	T	TRBV20-1	TRBJ2-7	19
+D23-1	D23	run-D	constant row-count control	T	TRBV5-1	TRBJ2-2	48
+D23-1	D23	run-D	constant row-count control	T	TRBV12-3	TRBJ2-7	32
+D23-1	D23	run-D	constant row-count control	F	TRBV28	TRBJ2-3	21
+D23-1	D23	run-D	constant row-count control	T	TRBV29-1	TRBJ1-2	22
+D23-1	D23	run-D	constant row-count control	T	TRBV9	TRBJ2-4	13
+D23-1	D23	run-D	constant row-count control	T	TRBV12-5	TRBJ2-2	12
+D23-1	D23	run-D	constant row-count control	T	TRBV6-6	TRBJ1-2	4
+D23-1	D23	run-D	constant row-count control	T	TRBV2	TRBJ1-6	18
+D23-1	D23	run-D	constant row-count control	T		TRBJ1-2	15
+D23-1	D23	run-D	constant row-count control	T		TRBJ1-1	7
+D24-1	D24	run-D	constant row-count control	T	TRBV5-6	TRBJ1-3	1731
+D24-1	D24	run-D	constant row-count control	T	TRBV9		907
+D24-1	D24	run-D	constant row-count control	T	TRBV30	TRBJ1-6	486
+D24-1	D24	run-D	constant row-count control	T		TRBJ2-7	167
+D24-1	D24	run-D	constant row-count control	T	TRBV5-1	TRBJ1-2	312
+D24-1	D24	run-D	constant row-count control	T	TRBV5-6	TRBJ1-6	261
+D24-1	D24	run-D	constant row-count control	T	TRBV3-1	TRBJ2-6	420
+D24-1	D24	run-D	constant row-count control	T	TRBV27	TRBJ2-3	451
+D24-1	D24	run-D	constant row-count control	T	TRBV6-6	TRBJ1-2	316
+D24-1	D24	run-D	constant row-count control	T	TRBV20-1	TRBJ2-2	102
+D24-1	D24	run-D	constant row-count control	T	TRBV7-6	TRBJ1-2	235
+D24-1	D24	run-D	constant row-count control	T	TRBV20-1	TRBJ1-4	196
+D24-1	D24	run-D	constant row-count control	T	TRBV7-9	TRBJ1-2	173
+D24-1	D24	run-D	constant row-count control	T	TRBV3-1	TRBJ1-2	194
+D24-1	D24	run-D	constant row-count control	T		TRBJ1-1	285
+D24-1	D24	run-D	constant row-count control	T	TRBV20-1	TRBJ2-3	134
+D24-1	D24	run-D	constant row-count control	T	TRBV12-3	TRBJ2-3	82
+D24-1	D24	run-D	constant row-count control	T	TRBV7-9	TRBJ1-5	69
+D24-1	D24	run-D	constant row-count control	T	TRBV7-2	TRBJ1-5	42
+D24-1	D24	run-D	constant row-count control	T	TRBV18	TRBJ2-7	168
+D24-1	D24	run-D	constant row-count control	T	TRBV4-1	TRBJ2-3	138
+D24-1	D24	run-D	constant row-count control	T	TRBV18	TRBJ2-3	125
+D24-1	D24	run-D	constant row-count control	T	TRBV12-3	TRBJ2-3	72
+D24-1	D24	run-D	constant row-count control	T	TRBV7-2	TRBJ1-5	67
+D24-1	D24	run-D	constant row-count control	T	TRBV4-2	TRBJ1-3	112
+D24-1	D24	run-D	constant row-count control	T	TRBV6-2	TRBJ2-3	130
+D24-1	D24	run-D	constant row-count control	T	TRBV6-1		51
+D24-1	D24	run-D	constant row-count control	T	TRBV5-4	TRBJ2-1	28
+D24-1	D24	run-D	constant row-count control	T	TRBV3-1	TRBJ2-7	71
+D24-1	D24	run-D	constant row-count control	T	TRBV28	TRBJ2-1	35
+D24-1	D24	run-D	constant row-count control	T	TRBV2	TRBJ2-5	33
+D24-1	D24	run-D	constant row-count control	T	TRBV5-5	TRBJ1-6	21
+D24-1	D24	run-D	constant row-count control	T	TRBV5-1	TRBJ1-1	109
+D24-1	D24	run-D	constant row-count control	T	TRBV7-2	TRBJ1-5	57
+D24-1	D24	run-D	constant row-count control	T	TRBV7-9	TRBJ1-4	27
+D24-1	D24	run-D	constant row-count control	T	TRBV3-1	TRBJ2-3	31
+D24-1	D24	run-D	constant row-count control	T	TRBV5-1	TRBJ2-5	178
+D24-1	D24	run-D	constant row-count control	T	TRBV5-1	TRBJ1-4	67
+D24-1	D24	run-D	constant row-count control	T	TRBV27	TRBJ1-4	25
+D24-1	D24	run-D	constant row-count control		TRBV2	TRBJ2-6	73
+D24-1	D24	run-D	constant row-count control	T	TRBV2	TRBJ2-1	49
+D24-1	D24	run-D	constant row-count control	T	TRBV27	TRBJ2-3	12
+D24-1	D24	run-D	constant row-count control	T	TRBV9	TRBJ1-2	68
+D24-1	D24	run-D	constant row-count control	T	TRBV7-9	TRBJ1-1	71
+D24-1	D24	run-D	constant row-count control	T	TRBV5-1	TRBJ2-3	11
+D24-1	D24	run-D	constant row-count control	T	TRBV20-1	TRBJ1-6	48
+D24-1	D24	run-D	constant row-count control	T	TRBV10-3	TRBJ1-1	49
+D24-1	D24	run-D	constant row-count control	T	TRBV6-5	TRBJ2-7	28
+D24-1	D24	run-D	constant row-count control	T	TRBV4-1	TRBJ2-7	36
+D24-1	D24	run-D	constant row-count control	T	TRBV2	TRBJ1-1	14
+D24-1	D24	run-D	constant row-count control	T	TRBV4-1	TRBJ1-2	40
+D24-1	D24	run-D	constant row-count control	T	TRBV6-4	TRBJ1-6	42
+D24-1	D24	run-D	constant row-count control	T	TRBV4-1	TRBJ1-6	50
+D24-1	D24	run-D	constant row-count control	T	TRBV15	TRBJ2-7	29
+D24-1	D24	run-D	constant row-count control	T	TRBV7-7	TRBJ1-2	60
+D24-1	D24	run-D	constant row-count control	T	TRBV12-4	TRBJ1-1	36
+D24-1	D24	run-D	constant row-count control	T	TRBV11-3	TRBJ1-6	28
+D24-1	D24	run-D	constant row-count control	T	TRBV6-2	TRBJ2-4	45
+D24-1	D24	run-D	constant row-count control	T	TRBV2	TRBJ1-2	26
+D24-1	D24	run-D	constant row-count control	T	TRBV19	TRBJ2-3	23
+D24-1	D24	run-D	constant row-count control	T	TRBV28	TRBJ2-5	44
+D24-1	D24	run-D	constant row-count control	T	TRBV11-3	TRBJ2-1	16
+D24-1	D24	run-D	constant row-count control	T	TRBV14	TRBJ1-2	60
+D24-1	D24	run-D	constant row-count control	F	TRBV5-1	TRBJ1-2	31
+D24-1	D24	run-D	constant row-count control	T	TRBV30	TRBJ2-5	55
+D24-1	D24	run-D	constant row-count control	T	TRBV7-9	TRBJ2-5	25
+D24-1	D24	run-D	constant row-count control		TRBV12-4	TRBJ1-5	48
+D24-1	D24	run-D	constant row-count control	T	TRBV15	TRBJ2-1	42
+D24-1	D24	run-D	constant row-count control	F	TRBV12-3	TRBJ2-1	10
+D24-1	D24	run-D	constant row-count control	T	TRBV27	TRBJ1-2	4
+D24-1	D24	run-D	constant row-count control	T	TRBV15	TRBJ2-2	44
+D24-1	D24	run-D	constant row-count control	T	TRBV4-2	TRBJ1-4	13
+D24-1	D24	run-D	constant row-count control	T	TRBV7-9	TRBJ2-4	13
+D24-1	D24	run-D	constant row-count control	T	TRBV6-1		30
+D24-1	D24	run-D	constant row-count control	F	TRBV6-6	TRBJ1-6	48
+D24-1	D24	run-D	constant row-count control	T	TRBV9	TRBJ2-7	19
+D24-1	D24	run-D	constant row-count control	T	TRBV6-1	TRBJ1-4	26
+D24-1	D24	run-D	constant row-count control	T	TRBV7-9	TRBJ2-7	31
+D24-1	D24	run-D	constant row-count control	T	TRBV6-1	TRBJ1-1	29
+D24-1	D24	run-D	constant row-count control	T	TRBV27	TRBJ2-2	23
+D01-2	D01	run-A	excluded repeat	T	TRBV10-3	TRBJ2-2	876
+D01-2	D01	run-A	excluded repeat	T	TRBV3-1	TRBJ1-5	489
+D01-2	D01	run-A	excluded repeat	T	TRBV20-1	TRBJ1-4	738
+D01-2	D01	run-A	excluded repeat	T	TRBV7-6	TRBJ2-1	387
+D01-2	D01	run-A	excluded repeat	T	TRBV2	TRBJ1-2	281
+D01-2	D01	run-A	excluded repeat	T	TRBV2	TRBJ1-4	195
+D01-2	D01	run-A	excluded repeat	T	TRBV7-2	TRBJ2-2	50
+D01-2	D01	run-A	excluded repeat	T	TRBV7-7	TRBJ2-7	55
+D01-2	D01	run-A	excluded repeat	T	TRBV12-4	TRBJ1-2	99
+D01-2	D01	run-A	excluded repeat		TRBV20-1	TRBJ2-2	62
+D01-2	D01	run-A	excluded repeat	T	TRBV20-1	TRBJ2-3	74
+D01-2	D01	run-A	excluded repeat	T	TRBV5-6	TRBJ1-2	137
+D01-2	D01	run-A	excluded repeat	T	TRBV15	TRBJ1-1	50
+D01-2	D01	run-A	excluded repeat	T	TRBV9	TRBJ1-4	31
+D01-2	D01	run-A	excluded repeat	T	TRBV5-5	TRBJ1-1	44
+D01-2	D01	run-A	excluded repeat	T	TRBV28	TRBJ1-2	67
+D01-2	D01	run-A	excluded repeat	T	TRBV12-4	TRBJ1-1	56
+D01-2	D01	run-A	excluded repeat	T	TRBV3-1	TRBJ2-7	99
+D01-2	D01	run-A	excluded repeat	F	TRBV13	TRBJ1-1	89
+D01-2	D01	run-A	excluded repeat	T	TRBV5-4	TRBJ1-1	15
+D01-2	D01	run-A	excluded repeat	T		TRBJ1-2	35
+D01-2	D01	run-A	excluded repeat	T	TRBV27	TRBJ2-3	40
+D01-2	D01	run-A	excluded repeat	T	TRBV20-1	TRBJ1-1	40
+D01-2	D01	run-A	excluded repeat	T	TRBV4-1	TRBJ2-2	20
+D01-2	D01	run-A	excluded repeat	T	TRBV4-1		56
+D01-2	D01	run-A	excluded repeat	T		TRBJ2-4	42
+D01-2	D01	run-A	excluded repeat	T	TRBV5-5	TRBJ2-7	26
+D01-2	D01	run-A	excluded repeat	T	TRBV6-2	TRBJ2-1	41
+D01-2	D01	run-A	excluded repeat	T	TRBV12-3	TRBJ1-1	20
+D01-2	D01	run-A	excluded repeat	T	TRBV7-9	TRBJ2-1	22
+D01-2	D01	run-A	excluded repeat	T	TRBV6-1	TRBJ2-7	25
+D01-2	D01	run-A	excluded repeat	T	TRBV5-1	TRBJ2-2	26
+D01-2	D01	run-A	excluded repeat	F	TRBV4-2	TRBJ1-1	87
+D01-2	D01	run-A	excluded repeat	T	TRBV7-6	TRBJ1-3	33
+D01-2	D01	run-A	excluded repeat	T	TRBV6-6	TRBJ1-1	18
+D01-2	D01	run-A	excluded repeat	T	TRBV2	TRBJ2-3	55
+D01-2	D01	run-A	excluded repeat	T	TRBV5-6	TRBJ1-1	21
+D01-2	D01	run-A	excluded repeat	T	TRBV4-1	TRBJ1-2	21
+D01-2	D01	run-A	excluded repeat	T	TRBV6-6	TRBJ1-2	21
+D01-2	D01	run-A	excluded repeat	T	TRBV11-3	TRBJ2-5	58
+D01-2	D01	run-A	excluded repeat	T	TRBV20-1	TRBJ1-2	21
+D01-2	D01	run-A	excluded repeat	F	TRBV9	TRBJ2-1	25
+D01-2	D01	run-A	excluded repeat	T	TRBV9	TRBJ2-1	35
+D01-2	D01	run-A	excluded repeat	T	TRBV5-1	TRBJ2-1	9
+D01-2	D01	run-A	excluded repeat	T	TRBV6-5	TRBJ1-4	7
+D01-2	D01	run-A	excluded repeat	T	TRBV5-1	TRBJ2-5	11
+D01-2	D01	run-A	excluded repeat	T	TRBV5-4	TRBJ2-5	11
+D01-2	D01	run-A	excluded repeat	T	TRBV20-1	TRBJ2-5	21
+D01-2	D01	run-A	excluded repeat	T	TRBV6-1	TRBJ2-4	39
+D01-2	D01	run-A	excluded repeat	T	TRBV12-4	TRBJ2-5	6
+D01-2	D01	run-A	excluded repeat	T	TRBV18	TRBJ1-2	6
+D01-2	D01	run-A	excluded repeat	T	TRBV10-3	TRBJ1-1	41
+D01-2	D01	run-A	excluded repeat	T	TRBV2	TRBJ2-2	28
+D01-2	D01	run-A	excluded repeat	T	TRBV6-1	TRBJ1-3	28
+D01-2	D01	run-A	excluded repeat	T	TRBV7-9	TRBJ2-5	19
+D01-2	D01	run-A	excluded repeat	T	TRBV20-1	TRBJ2-6	19
+D01-2	D01	run-A	excluded repeat	T	TRBV2	TRBJ1-2	41
+D01-2	D01	run-A	excluded repeat	T	TRBV2	TRBJ2-5	5
+D01-2	D01	run-A	excluded repeat	T	TRBV30	TRBJ1-1	7
+D01-2	D01	run-A	excluded repeat	T	TRBV11-3	TRBJ1-3	21
+D01-2	D01	run-A	excluded repeat	T	TRBV6-5		12
+D01-2	D01	run-A	excluded repeat	T	TRBV5-4	TRBJ2-3	10
+D01-2	D01	run-A	excluded repeat	T	TRBV9	TRBJ2-3	16
+D01-2	D01	run-A	excluded repeat	F	TRBV19	TRBJ1-1	12
+D01-2	D01	run-A	excluded repeat	T	TRBV7-9	TRBJ2-2	10
+D01-2	D01	run-A	excluded repeat	T	TRBV10-3	TRBJ1-2	17
+D01-2	D01	run-A	excluded repeat	T	TRBV10-3	TRBJ1-1	43
+D01-2	D01	run-A	excluded repeat	F	TRBV14	TRBJ2-2	16
+D01-2	D01	run-A	excluded repeat	T	TRBV13	TRBJ1-2	17
+D01-2	D01	run-A	excluded repeat	T	TRBV29-1	TRBJ2-3	16
+D01-2	D01	run-A	excluded repeat	T	TRBV2	TRBJ1-6	22
+D01-2	D01	run-A	excluded repeat	T	TRBV5-1	TRBJ2-1	19
+D01-2	D01	run-A	excluded repeat	T	TRBV19	TRBJ2-7	21
+D01-2	D01	run-A	excluded repeat	T	TRBV6-5	TRBJ1-4	20
+D01-2	D01	run-A	excluded repeat	T	TRBV20-1	TRBJ1-6	5
+D01-2	D01	run-A	excluded repeat	T	TRBV12-4	TRBJ2-1	10
+D01-2	D01	run-A	excluded repeat	T	TRBV20-1	TRBJ1-3	6
+D01-2	D01	run-A	excluded repeat	T	TRBV4-2	TRBJ1-1	5
+D01-2	D01	run-A	excluded repeat	T	TRBV12-4		13
+D01-2	D01	run-A	excluded repeat	T	TRBV20-1	TRBJ1-2	20
+D25-1	D25		excluded missing batch	T	TRBV5-6	TRBJ1-1	2037
+D25-1	D25		excluded missing batch	T	TRBV6-4	TRBJ2-2	1377
+D25-1	D25		excluded missing batch	T	TRBV2	TRBJ2-4	417
+D25-1	D25		excluded missing batch	T	TRBV7-9	TRBJ1-6	219
+D25-1	D25		excluded missing batch	T	TRBV15	TRBJ1-6	344
+D25-1	D25		excluded missing batch	T	TRBV9	TRBJ1-2	312
+D25-1	D25		excluded missing batch	T	TRBV11-1	TRBJ2-2	150
+D25-1	D25		excluded missing batch	T	TRBV5-1	TRBJ1-3	167
+D25-1	D25		excluded missing batch	T	TRBV12-5	TRBJ2-7	67
+D25-1	D25		excluded missing batch	T	TRBV4-2	TRBJ1-4	225
+D25-1	D25		excluded missing batch	T	TRBV19	TRBJ2-4	168
+D25-1	D25		excluded missing batch	T	TRBV7-9	TRBJ1-1	181
+D25-1	D25		excluded missing batch	T	TRBV6-1	TRBJ2-7	183
+D25-1	D25		excluded missing batch	T	TRBV15	TRBJ2-7	36
+D25-1	D25		excluded missing batch	T	TRBV12-3	TRBJ1-1	202
+D25-1	D25		excluded missing batch	F	TRBV2	TRBJ2-7	25
+D25-1	D25		excluded missing batch	T	TRBV20-1	TRBJ1-6	179
+D25-1	D25		excluded missing batch	T	TRBV6-5	TRBJ1-1	32
+D25-1	D25		excluded missing batch	T	TRBV7-9	TRBJ2-3	89
+D25-1	D25		excluded missing batch	T	TRBV4-1	TRBJ2-3	76
+D25-1	D25		excluded missing batch	T	TRBV20-1	TRBJ1-2	51
+D25-1	D25		excluded missing batch	T	TRBV6-1	TRBJ1-2	142
+D25-1	D25		excluded missing batch		TRBV6-5	TRBJ2-3	49
+D25-1	D25		excluded missing batch	F	TRBV5-4	TRBJ1-1	72
+D25-1	D25		excluded missing batch	T	TRBV6-1	TRBJ2-6	102
+D25-1	D25		excluded missing batch	T	TRBV7-9	TRBJ1-1	39
+D25-1	D25		excluded missing batch	T	TRBV20-1	TRBJ2-3	38
+D25-1	D25		excluded missing batch	T	TRBV4-1	TRBJ2-7	29
+D25-1	D25		excluded missing batch	T	TRBV3-1	TRBJ1-1	71
+D25-1	D25		excluded missing batch	T	TRBV12-3	TRBJ2-1	51
+D25-1	D25		excluded missing batch	T	TRBV3-1	TRBJ1-1	107
+D25-1	D25		excluded missing batch	T	TRBV5-4	TRBJ1-4	26
+D25-1	D25		excluded missing batch	T	TRBV2	TRBJ1-4	41
+D25-1	D25		excluded missing batch	F	TRBV6-1	TRBJ2-6	26
+D25-1	D25		excluded missing batch	F			34
+D25-1	D25		excluded missing batch	T	TRBV9	TRBJ2-7	42
+D25-1	D25		excluded missing batch	F	TRBV19	TRBJ2-3	38
+D25-1	D25		excluded missing batch	T	TRBV5-1	TRBJ1-1	50
+D25-1	D25		excluded missing batch	T		TRBJ1-1	73
+D25-1	D25		excluded missing batch	T	TRBV7-9	TRBJ1-4	84
+D25-1	D25		excluded missing batch	T	TRBV12-3	TRBJ1-1	38
+D25-1	D25		excluded missing batch	T	TRBV12-4	TRBJ2-3	30
+D25-1	D25		excluded missing batch	T	TRBV5-1	TRBJ2-3	32
+D25-1	D25		excluded missing batch	T	TRBV6-1	TRBJ2-7	12
+D25-1	D25		excluded missing batch	F	TRBV19	TRBJ1-5	41
+D25-1	D25		excluded missing batch	T	TRBV20-1	TRBJ1-1	6
+D25-1	D25		excluded missing batch	T	TRBV12-4	TRBJ1-2	43
+D25-1	D25		excluded missing batch	T	TRBV6-5	TRBJ2-5	54
+D25-1	D25		excluded missing batch	T	TRBV19	TRBJ2-1	29
+D25-1	D25		excluded missing batch	T	TRBV25-1	TRBJ2-3	6
+D25-1	D25		excluded missing batch	T	TRBV19	TRBJ1-2	24
+D25-1	D25		excluded missing batch	T	TRBV5-6	TRBJ2-1	22
+D25-1	D25		excluded missing batch	T	TRBV5-1	TRBJ1-5	13
+D25-1	D25		excluded missing batch	F		TRBJ1-2	52
+D25-1	D25		excluded missing batch	T	TRBV4-1	TRBJ1-5	26
+D25-1	D25		excluded missing batch	T	TRBV28	TRBJ2-3	28
+D25-1	D25		excluded missing batch	T	TRBV25-1	TRBJ2-2	65
+D25-1	D25		excluded missing batch	T	TRBV9	TRBJ1-2	33
+D25-1	D25		excluded missing batch	T	TRBV3-1	TRBJ1-5	5
+D25-1	D25		excluded missing batch	T	TRBV5-5	TRBJ1-6	14
+D25-1	D25		excluded missing batch	T	TRBV20-1	TRBJ1-2	26
+D25-1	D25		excluded missing batch	T	TRBV6-5	TRBJ2-1	30
+D25-1	D25		excluded missing batch	T	TRBV6-1	TRBJ1-5	26
+D25-1	D25		excluded missing batch	T	TRBV19	TRBJ2-3	33
+D25-1	D25		excluded missing batch	T	TRBV27	TRBJ2-5	27
+D25-1	D25		excluded missing batch	T	TRBV6-6	TRBJ2-7	14
+D25-1	D25		excluded missing batch	T	TRBV7-9	TRBJ1-2	14
+D25-1	D25		excluded missing batch	T	TRBV5-6	TRBJ2-3	34
+D25-1	D25		excluded missing batch	T	TRBV27	TRBJ1-4	21
+D25-1	D25		excluded missing batch	T	TRBV29-1	TRBJ1-6	11
+D25-1	D25		excluded missing batch	T	TRBV9	TRBJ1-4	23
+D25-1	D25		excluded missing batch	T	TRBV24-1	TRBJ1-1	22
+D25-1	D25		excluded missing batch	T	TRBV5-4	TRBJ2-5	8
+D25-1	D25		excluded missing batch	T	TRBV7-2	TRBJ2-1	14
+D25-1	D25		excluded missing batch	F	TRBV19	TRBJ1-1	4
+D25-1	D25		excluded missing batch	T	TRBV29-1	TRBJ1-1	20
+D25-1	D25		excluded missing batch	T	TRBV15	TRBJ1-1	2
+D25-1	D25		excluded missing batch	T	TRBV28	TRBJ1-3	22
+D25-1	D25		excluded missing batch	T	TRBV6-1	TRBJ1-5	16
+D25-1	D25		excluded missing batch	T	TRBV5-6	TRBJ2-2	6

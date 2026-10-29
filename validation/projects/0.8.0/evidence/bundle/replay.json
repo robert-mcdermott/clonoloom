@@ -1,0 +1,19 @@
+{
+  "format": "clonoloom-run-recipe",
+  "version": 1,
+  "tasks": [
+    {
+      "id": "task-000",
+      "operation": "replay",
+      "kind": "batch-qc",
+      "inputs": [
+        {
+          "name": "evidence",
+          "file": "task-000.certificate.clz",
+          "size": 19827,
+          "sha256": "287689f6dcd0a2f821a611ef702d989780796db32932f3ba0843d5908e42b2e8"
+        }
+      ]
+    }
+  ]
+}

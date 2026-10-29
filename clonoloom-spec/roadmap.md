@@ -9,16 +9,15 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–7 are complete. Wave 8 is planned below: verifiable records, reproducible execution and supported automation.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–7 are released. Wave 8 completes verifiable records, reproducible execution and supported automation; slice 15 prepares 0.8.0 for maintainer review.
 
 **Progress** is marked here as each slice is committed: done, next or to come. Each
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–7 are merged and
 released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
 with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
-`wave8` branch. Slices 1 and 2 were committed and pushed as `b459f61` and `62b088b`.
-Slice 3 was committed and pushed as `59b8868`; slice 4 as `1874fc7`. Slice 5 is implemented
-and validated, awaiting the user's commit. No 0.8.0 release is made.
+`wave8` branch. Slices 1–14 are committed and pushed, most recently `7e96917`.
+Slice 15 completes the worked study and release preparation below. No 0.8.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -3694,6 +3693,118 @@ changelog are updated. Source computation remains batch QC/motifs; exact capture
 remains the same five kinds. No scientific worker, numerical tolerance, action catalog or version
 changed. No commit, push, tag, release, image publication or scheduler submission was performed.
 Slice 15 (final study and release preparation) follows after maintainer review and commit.
+
+**Slice 14 committed and pushed as `7e96917`.**
+
+### Slice 15: complete record-and-reach study and release 0.8.0
+
+**Plan recorded before implementation.** Complete the wave with a worked artificial batch-QC
+study connecting the ordinary window, exact HTTP/MCP/Python/R query evidence, checkpoint
+comparison/recovery, a self-checking HTML report, certificate verification/replay and portable
+archive transfer. Use the existing simulator and native methods; retain source truth, units,
+subjects, batches, unavailable scores and all samples. Descriptive QC flags are not diagnoses,
+treatment effects, automatic exclusions or corrected data. Distinguish unchanged saved bytes,
+recomputed captured evidence and biological interpretation at every boundary.
+
+Create a new 0.8.0 compatibility fixture through real reviewed actions in an isolated library.
+Keep portable reopening paths separate from original scientific provenance, include the new
+checkpoint/certificate/archive contracts, and test exact future reopening/replay. Never edit
+older release fixtures. Add a worked guide and site page, refresh representative wave-8 screenshots
+in both themes and review all existing scientific scenes through the established browser driver.
+Review the full support/permission matrix without expanding unsupported scientific methods.
+
+Bump application, citation, web cache keys and generated client packages to 0.8.0 only in this
+slice. Consolidate the release changelog and remove stale development-only instructions while
+keeping historical release records intact. Add version/fixture drift checks where needed.
+Run complete Go race coverage, required-data scientific/reference checks, processor compatibility,
+six platform builds, performance budgets, JavaScript/Python/R/package/live-client checks, offline
+report and archive controls, container replay, benchmark baselines and site accessibility.
+Use bounded batches for slow suites if necessary; do not weaken scientific tolerances or budgets.
+Record every completed check and material local limitation. The maintainer alone commits, merges,
+tags, publishes the release and publishes the site; this slice performs none of those actions.
+
+
+**Implementation.** The complete worked guide and 0.8.0 fixture connect the ordinary window,
+HTTP, MCP, generated Python/R clients, checkpoint comparison/recovery, offline HTML reports,
+certificates, pinned native replay and portable archive transfer. The artificial batch-QC
+study retains 26 observations, 2,427 generating rows, declared batches/exclusions and complete
+truth. Its plots retain raw denominators, missing values and unscored groups. Flags remain
+descriptive; no treatment, automatic exclusion, batch-correction or specificity inference is added.
+
+The four transports retain identical original query JSON. A reviewed definition change leaves
+the saved QC result untouched; recovery restores the original query. Transfer into a fresh
+library with original source paths unavailable preserves query and result bytes and supports
+checkpoint recovery. The 51-file compatibility fixture keeps original project, checkpoint,
+certificate, report, archive and scientific bytes alongside a separately serialized portable
+project. All earlier release fixtures are unchanged. Native tests verify exact future replay,
+recovery and source/truth hashes; CI runs the complete worked integration and offline report.
+
+Release testing found that accepted automation reset loaded expression inputs and completed
+views. Action startup now invalidates earlier asynchronous attachments separately from project
+replacement. Cancellation, recovery and Undo/Redo still invalidate stale work; Undo/Redo notify
+selection listeners to reload still-selected saved results. Unit and real browser checks cover
+these boundaries. Capture scripts now await explicit saved-result reopening after history
+changes, use the current action schema and isolated ports, and frame the checkpoint panel itself.
+The source-run checksum test pins its original software provenance, preserving its existing
+scientific hashes across the release-version change. No scientific worker or tolerance changes.
+
+Application, citation, web cache keys and generated client packages are 0.8.0. API 2, catalog 4,
+permission policy 1 and the 64-action catalog stay unchanged. The guides and support matrix
+distinguish integrity, restoration, captured-evidence replay and source computation. Certificates
+and HTML reports cover five kinds; source recipes cover batch QC and motifs. Broader O5/A6
+contracts, actual Slurm scheduling and Apptainer integration remain explicitly outside this release.
+
+
+Validation completed locally:
+
+- **176 root test/fuzz-seed entries** passed with race instrumentation, in bounded batches;
+  all **49 internal packages** passed their race suites. The large paired cohort replay first
+  exceeded its two-minute job wait under competing validation load; its complete parent chain
+  passed on recheck. The original source-run hashes also passed with their captured version
+  pinned. No numerical tolerance or performance budget was relaxed. The container-fixture
+  generator is opt-in and ran separately in the real runtime check; the optional publisher
+  download test was not enabled. Seven wave-8 fuzz targets each passed 20 seconds of mutation.
+- **74 scientific/reference tests** passed with all eleven configured data sources required.
+  Four optional publisher/public-HDF5/VDJdb checks were not configured. Every release fixture
+  reopened/replayed on arm64 and amd64; the pre-0.3 value-comparison contract stays unchanged,
+  and later scientific outputs retain exact bytes. Go vet and all six CGO-free builds passed.
+- **231 JavaScript tests**, **17 Python tests**, **1,302 R assertions**, Python wheel/source
+  build and installed smoke checks, and R package build/install/check passed. Generated
+  clients match all 64 catalog actions. Live Python/R and both MCP protocol contracts passed
+  permission, precision, review/rejection/cancellation and Undo/Redo checks.
+- Independent PyArrow 26.0.0 and DuckDB 2.0.0 checks passed all **16 reader/bundle controls**.
+  AnnData 0.12.6 independently reread and rewrote all **360 × 24** saved counts and their
+  identifiers, annotations, receptor links and supplied/computed coordinates.
+- The complete worked integration passed, including clean bounded driver shutdown. All five
+  supported offline report kinds passed exact fingerprints, changed-byte refusal and zero
+  network requests; the worked report's four layouts retain all six native figures. Benchmark
+  controls passed **32/32** transport tasks, **3/3** scripted JSONL tasks and **6/6** repeated
+  controls, with **0/8** empty controls succeeding as intended. Permission failures remain
+  separate from correct answers. No model or biological performance was evaluated.
+- Linux arm64 Podman passed both source workflows, all five replay kinds and array tasks,
+  exact native/container scientific files, independent inventories, differences/unavailable
+  outcomes, explicit terms, mount/input/overwrite refusals and handled SIGTERM cleanup. The
+  actual build context contains **345** allowlisted inputs; injected exclusions remain absent.
+  Slice 14's Linux amd64 runtime checks remain recorded separately. This slice does not claim
+  native Windows UI execution, PowerShell execution, a Slurm scheduler or Apptainer validation.
+- All **126 browser scene checks** passed across both themes, including plot/native-value and
+  source-free reopening controls. All **73 screenshot pairs** were reviewed; the checkpoint
+  screenshot was corrected to show its own panel. The site builds **61 pages** and passes all
+  **240** accessibility/layout checks, alongside **14** application contrast/color-vision checks.
+
+
+- All **six performance budgets** passed in a separate non-race run on ten cores: a million
+  rearrangements read/validated in **1.509 s** at **58 bytes/row** plus junctions; 100 cached
+  samples reopened in **125 ms**; a searched 200-row page of 999,690 clonotypes in **38.004 ms**;
+  10,000 neighborhoods against 99,997 background receptors in **1.177 s**; a million generation
+  probabilities in **41.955 s**; 100,000 paired-TCR neighbors in **36.597 s**, using **1.3 GB**.
+  Original limits remain unchanged; these are local timings, not universal runtime promises.
+
+**Slice 15 is implemented and validated, awaiting maintainer commit.** Wave 8 implementation
+and release preparation are complete. No commit, push, PR, merge, tag, release, image publication,
+scheduler submission or product-site publication was performed. After review, commit/push and
+passing CI, the maintainer can create the wave-8 PR and follow the usual merge/release/site
+sequence. Wave 9 planning follows that release; no wave-9 implementation was started.
 
 ## Later waves (outlined)
 

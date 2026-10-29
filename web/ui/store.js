@@ -39,6 +39,9 @@ export function createStore(initialProject) {
     generation: 0,
   };
 
+  // A new reviewed action invalidates older asynchronous attachments, but is not
+  // a project replacement: keep loaded inputs and completed scientific views.
+  let workGeneration = 0;
   let automation = null;
   const writable = () => {
     if (automation?.readOnly) throw new Error('This automation call has no permission to edit the project.');
@@ -69,7 +72,7 @@ export function createStore(initialProject) {
     // on cancellation, so existing sameProject guards also refuse late attachments.
     beginAutomation(name, { readOnly = false, invalidate = !readOnly } = {}) {
       if (automation) throw new Error('Automation is already running.');
-      if (invalidate) state.generation += 1;
+      if (invalidate) workGeneration += 1;
       const lease = { cancelled: false, readOnly };
       automation = lease;
       state.actor = name;
@@ -134,8 +137,8 @@ export function createStore(initialProject) {
     },
     // A check that the project open now is still open later: () => true until another is loaded.
     sameProject() {
-      const generation = state.generation;
-      return () => state.generation === generation;
+      const generation = state.generation, work = workGeneration;
+      return () => state.generation === generation && workGeneration === work;
     },
     reset(next) {
       writable();
@@ -163,7 +166,7 @@ export function createStore(initialProject) {
       const label = state.labels.past.pop();
       state.labels.future.push(label);
       state.project = state.past.pop();
-      notify(['project', 'history']);
+      notify(['project', 'history', 'focus']);
       return label;
     },
     redo() {
@@ -173,7 +176,7 @@ export function createStore(initialProject) {
       const label = state.labels.future.pop();
       state.labels.past.push(label);
       state.project = state.future.pop();
-      notify(['project', 'history']);
+      notify(['project', 'history', 'focus']);
       return label;
     },
     setUI(patch, topics = ['ui']) {

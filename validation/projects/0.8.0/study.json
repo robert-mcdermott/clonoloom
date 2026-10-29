@@ -1,0 +1,20 @@
+{
+  "format": "clonoloom-record-study",
+  "version": 1,
+  "software": "0.8.0",
+  "preset": "batch-qc-study",
+  "artifact": "bqc-9d7fd220b04b05811fc9da80",
+  "checkpoint": "cp-a05c6ea24083ec46649baeb827f45b9ca7e156696a729ba9be64bf64d03b5217",
+  "certificate": "8f7ecd333b7bf5d89e1e570bd28080bfd28f0a1b4a0d386c3ad1f681c54607a0",
+  "archive": "53448d4c63115a3499190cdceed4f611fc7334e82d97c866e5ac04edfff1e2c7",
+  "transports": [
+    "window/HTTP",
+    "MCP",
+    "Python",
+    "R"
+  ],
+  "queryBytesEqual": true,
+  "replay": "replay-match",
+  "recoveryRecomputed": false,
+  "limits": "Artificial descriptive QC; no batch correction, treatment inference, automatic exclusion or specificity claim. Recovery/integrity are separate from exact captured-evidence replay."
+}

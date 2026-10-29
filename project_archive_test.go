@@ -327,6 +327,13 @@ func TestPortableArchivesReopenReleaseProjects(t *testing.T) {
 					os.WriteFile(filepath.Join(out, name), b, 0600)
 				}
 			}
+			if _, err := os.Stat(filepath.Join(dir, "checkpoints")); err == nil {
+				if err := os.CopyFS(filepath.Join(a.store.dir, "checkpoints"), os.DirFS(filepath.Join(dir, "checkpoints"))); err != nil {
+					t.Fatal(err)
+				}
+			} else if !os.IsNotExist(err) {
+				t.Fatal(err)
+			}
 			// Rebind fixture-relative source paths as a real saved project on this host;
 			// retain the original release project separately for exact comparison below.
 			sources, e := archiveSources("project.json", project)

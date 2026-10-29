@@ -1,7 +1,8 @@
 # Explicit de-identification exports
 
-Wave 8 development, slice 11. Use a development host and matching clients: action API **2**,
-catalog **4** (64 actions), permission policy **1**. Published v0.7.0 predates this workflow.
+ClonoLoom 0.8.0 provides explicit pseudonymized dataset exports. Use matching clients:
+action API **2**, catalog **4** (64 actions), permission policy **1**. Review the identifier
+policy and private correspondence before exporting.
 
 ## Prepare, review and download
 

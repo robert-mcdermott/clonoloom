@@ -1,0 +1,1824 @@
+{
+  "format": "clonoloom-replay",
+  "version": 1,
+  "scope": "captured-batch-qc-evidence",
+  "verdict": "replay-match",
+  "recomputed": true,
+  "integrity": {
+    "format": "clonoloom-verification",
+    "version": 1,
+    "scope": "recorded-artifact-bytes",
+    "verdict": "integrity-match",
+    "artifact": "bqc-9d7fd220b04b05811fc9da80",
+    "fingerprint": "8f7ecd333b7bf5d89e1e570bd28080bfd28f0a1b4a0d386c3ad1f681c54607a0",
+    "filesChecked": 4,
+    "bytesChecked": 117222,
+    "recomputed": false,
+    "limits": "Integrity only: scientific computations, source files, parent artifacts and project history were not independently verified. A checksum is not a signature or proof of biological validity. Captured evidence may contain counts, sequences, subject identifiers and paths; this is not de-identified.",
+    "findings": []
+  },
+  "original": {
+    "format": "clonoloom-artifact",
+    "version": 1,
+    "id": "bqc-9d7fd220b04b05811fc9da80",
+    "kind": "batch-qc",
+    "name": "Batch QC · Artificial batch-QC study · 26 observations",
+    "dataset": "d-b62413eece36e225",
+    "state": "complete",
+    "created": "2026-10-29T01:28:18.606666Z",
+    "lineage": {
+      "parents": null,
+      "job": {
+        "id": "jmvsv6r3g-1",
+        "kind": "batch-qc",
+        "spec": {
+          "dataset": "d-b62413eece36e225",
+          "samples": [
+            {
+              "name": "D01-1",
+              "subject": "D01",
+              "batch": "run-A",
+              "exclude": ""
+            },
+            {
+              "name": "D01-2",
+              "subject": "D01",
+              "batch": "run-A",
+              "exclude": "Repeated observation: retain D01-1"
+            },
+            {
+              "name": "D02-1",
+              "subject": "D02",
+              "batch": "run-A",
+              "exclude": ""
+            },
+            {
+              "name": "D03-1",
+              "subject": "D03",
+              "batch": "run-A",
+              "exclude": ""
+            },
+            {
+              "name": "D04-1",
+              "subject": "D04",
+              "batch": "run-A",
+              "exclude": ""
+            },
+            {
+              "name": "D05-1",
+              "subject": "D05",
+              "batch": "run-A",
+              "exclude": ""
+            },
+            {
+              "name": "D06-1",
+              "subject": "D06",
+              "batch": "run-A",
+              "exclude": ""
+            },
+            {
+              "name": "D07-1",
+              "subject": "D07",
+              "batch": "run-A",
+              "exclude": ""
+            },
+            {
+              "name": "D08-1",
+              "subject": "D08",
+              "batch": "run-A",
+              "exclude": ""
+            },
+            {
+              "name": "D09-1",
+              "subject": "D09",
+              "batch": "run-B",
+              "exclude": ""
+            },
+            {
+              "name": "D10-1",
+              "subject": "D10",
+              "batch": "run-B",
+              "exclude": ""
+            },
+            {
+              "name": "D11-1",
+              "subject": "D11",
+              "batch": "run-B",
+              "exclude": ""
+            },
+            {
+              "name": "D12-1",
+              "subject": "D12",
+              "batch": "run-B",
+              "exclude": ""
+            },
+            {
+              "name": "D13-1",
+              "subject": "D13",
+              "batch": "run-B",
+              "exclude": ""
+            },
+            {
+              "name": "D14-1",
+              "subject": "D14",
+              "batch": "run-B",
+              "exclude": ""
+            },
+            {
+              "name": "D15-1",
+              "subject": "D15",
+              "batch": "run-B",
+              "exclude": ""
+            },
+            {
+              "name": "D16-1",
+              "subject": "D16",
+              "batch": "run-B",
+              "exclude": ""
+            },
+            {
+              "name": "D17-1",
+              "subject": "D17",
+              "batch": "run-C",
+              "exclude": ""
+            },
+            {
+              "name": "D18-1",
+              "subject": "D18",
+              "batch": "run-C",
+              "exclude": ""
+            },
+            {
+              "name": "D19-1",
+              "subject": "D19",
+              "batch": "run-C",
+              "exclude": ""
+            },
+            {
+              "name": "D20-1",
+              "subject": "D20",
+              "batch": "run-D",
+              "exclude": ""
+            },
+            {
+              "name": "D21-1",
+              "subject": "D21",
+              "batch": "run-D",
+              "exclude": ""
+            },
+            {
+              "name": "D22-1",
+              "subject": "D22",
+              "batch": "run-D",
+              "exclude": ""
+            },
+            {
+              "name": "D23-1",
+              "subject": "D23",
+              "batch": "run-D",
+              "exclude": ""
+            },
+            {
+              "name": "D24-1",
+              "subject": "D24",
+              "batch": "run-D",
+              "exclude": ""
+            },
+            {
+              "name": "D25-1",
+              "subject": "D25",
+              "batch": "",
+              "exclude": "Batch not recorded"
+            }
+          ],
+          "filter": {},
+          "options": {
+            "threshold": 3.5,
+            "minSamples": 5
+          },
+          "input": {
+            "options": {
+              "threshold": 3.5,
+              "minSamples": 5
+            },
+            "unit": "umis",
+            "singleCell": false,
+            "samples": [
+              {
+                "assignment": {
+                  "name": "D01-1",
+                  "subject": "D01",
+                  "batch": "run-A",
+                  "exclude": ""
+                },
+                "rows": 119,
+                "kept": 119,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 10790,
+                    "numerator": 10790,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 119,
+                    "numerator": 119,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9397590361445783,
+                    "numerator": 10140,
+                    "denominator": 10790,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0,
+                    "numerator": 0,
+                    "denominator": 10790,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9923076923076923,
+                    "numerator": 10062,
+                    "denominator": 10140,
+                    "reason": ""
+                  },
+                  {
+                    "value": 1,
+                    "numerator": 10140,
+                    "denominator": 10140,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D01-2",
+                  "subject": "D01",
+                  "batch": "run-A",
+                  "exclude": "Repeated observation: retain D01-1"
+                },
+                "rows": 80,
+                "kept": 80,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 5311,
+                    "numerator": 5311,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 80,
+                    "numerator": 80,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9452080587459989,
+                    "numerator": 5020,
+                    "denominator": 5311,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.01167388439088684,
+                    "numerator": 62,
+                    "denominator": 5311,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9846613545816733,
+                    "numerator": 4943,
+                    "denominator": 5020,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9838645418326694,
+                    "numerator": 4939,
+                    "denominator": 5020,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D02-1",
+                  "subject": "D02",
+                  "batch": "run-A",
+                  "exclude": ""
+                },
+                "rows": 83,
+                "kept": 83,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 5695,
+                    "numerator": 5695,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 83,
+                    "numerator": 83,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9274802458296751,
+                    "numerator": 5282,
+                    "denominator": 5695,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.05864793678665496,
+                    "numerator": 334,
+                    "denominator": 5695,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9716016660355926,
+                    "numerator": 5132,
+                    "denominator": 5282,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9977281332828474,
+                    "numerator": 5270,
+                    "denominator": 5282,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D03-1",
+                  "subject": "D03",
+                  "batch": "run-A",
+                  "exclude": ""
+                },
+                "rows": 111,
+                "kept": 111,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 15497,
+                    "numerator": 15497,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 111,
+                    "numerator": 111,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.8101568045428147,
+                    "numerator": 12555,
+                    "denominator": 15497,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.008259663160611731,
+                    "numerator": 128,
+                    "denominator": 15497,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9886897650338511,
+                    "numerator": 12413,
+                    "denominator": 12555,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9955396256471525,
+                    "numerator": 12499,
+                    "denominator": 12555,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D04-1",
+                  "subject": "D04",
+                  "batch": "run-A",
+                  "exclude": ""
+                },
+                "rows": 95,
+                "kept": 95,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 10040,
+                    "numerator": 10040,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 95,
+                    "numerator": 95,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9800796812749004,
+                    "numerator": 9840,
+                    "denominator": 10040,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.015039840637450199,
+                    "numerator": 151,
+                    "denominator": 10040,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9629065040650406,
+                    "numerator": 9475,
+                    "denominator": 9840,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9848577235772358,
+                    "numerator": 9691,
+                    "denominator": 9840,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D05-1",
+                  "subject": "D05",
+                  "batch": "run-A",
+                  "exclude": ""
+                },
+                "rows": 120,
+                "kept": 120,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 14113,
+                    "numerator": 14113,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 120,
+                    "numerator": 120,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.7342875363140366,
+                    "numerator": 10363,
+                    "denominator": 14113,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.014454758024516403,
+                    "numerator": 204,
+                    "denominator": 14113,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9787706262665251,
+                    "numerator": 10143,
+                    "denominator": 10363,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9755862202065039,
+                    "numerator": 10110,
+                    "denominator": 10363,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D06-1",
+                  "subject": "D06",
+                  "batch": "run-A",
+                  "exclude": ""
+                },
+                "rows": 65,
+                "kept": 65,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 5528,
+                    "numerator": 5528,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 65,
+                    "numerator": 65,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.7805716353111433,
+                    "numerator": 4315,
+                    "denominator": 5528,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.005969609261939218,
+                    "numerator": 33,
+                    "denominator": 5528,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.958053302433372,
+                    "numerator": 4134,
+                    "denominator": 4315,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9981460023174971,
+                    "numerator": 4307,
+                    "denominator": 4315,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D07-1",
+                  "subject": "D07",
+                  "batch": "run-A",
+                  "exclude": ""
+                },
+                "rows": 77,
+                "kept": 77,
+                "removed": {},
+                "values": [
+                  {
+                    "value": null,
+                    "numerator": null,
+                    "denominator": null,
+                    "reason": "Missing, noninteger or invalid contributing counts"
+                  },
+                  {
+                    "value": 77,
+                    "numerator": 77,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": null,
+                    "numerator": null,
+                    "denominator": null,
+                    "reason": "Missing, noninteger or invalid contributing counts"
+                  },
+                  {
+                    "value": null,
+                    "numerator": null,
+                    "denominator": null,
+                    "reason": "Missing, noninteger or invalid contributing counts"
+                  },
+                  {
+                    "value": null,
+                    "numerator": null,
+                    "denominator": null,
+                    "reason": "Missing, noninteger or invalid contributing counts"
+                  },
+                  {
+                    "value": null,
+                    "numerator": null,
+                    "denominator": null,
+                    "reason": "Missing, noninteger or invalid contributing counts"
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D08-1",
+                  "subject": "D08",
+                  "batch": "run-A",
+                  "exclude": ""
+                },
+                "rows": 124,
+                "kept": 124,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 9316,
+                    "numerator": 9316,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 124,
+                    "numerator": 124,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.12065264061829112,
+                    "numerator": 1124,
+                    "denominator": 9316,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.0026835551738943753,
+                    "numerator": 25,
+                    "denominator": 9316,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9635231316725978,
+                    "numerator": 1083,
+                    "denominator": 1124,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9804270462633452,
+                    "numerator": 1102,
+                    "denominator": 1124,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D09-1",
+                  "subject": "D09",
+                  "batch": "run-B",
+                  "exclude": ""
+                },
+                "rows": 97,
+                "kept": 97,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 10434,
+                    "numerator": 10434,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 97,
+                    "numerator": 97,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.8448341958980257,
+                    "numerator": 8815,
+                    "denominator": 10434,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.0055587502396013035,
+                    "numerator": 58,
+                    "denominator": 10434,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9975042541123086,
+                    "numerator": 8793,
+                    "denominator": 8815,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9938740782756664,
+                    "numerator": 8761,
+                    "denominator": 8815,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D10-1",
+                  "subject": "D10",
+                  "batch": "run-B",
+                  "exclude": ""
+                },
+                "rows": 112,
+                "kept": 112,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 6747,
+                    "numerator": 6747,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 112,
+                    "numerator": 112,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.7189862160960427,
+                    "numerator": 4851,
+                    "denominator": 6747,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.06328738698680896,
+                    "numerator": 427,
+                    "denominator": 6747,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9360956503813647,
+                    "numerator": 4541,
+                    "denominator": 4851,
+                    "reason": ""
+                  },
+                  {
+                    "value": 1,
+                    "numerator": 4851,
+                    "denominator": 4851,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D11-1",
+                  "subject": "D11",
+                  "batch": "run-B",
+                  "exclude": ""
+                },
+                "rows": 95,
+                "kept": 95,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 6092,
+                    "numerator": 6092,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 95,
+                    "numerator": 95,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.7621470781352594,
+                    "numerator": 4643,
+                    "denominator": 6092,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.09143138542350623,
+                    "numerator": 557,
+                    "denominator": 6092,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9584320482446694,
+                    "numerator": 4450,
+                    "denominator": 4643,
+                    "reason": ""
+                  },
+                  {
+                    "value": 1,
+                    "numerator": 4643,
+                    "denominator": 4643,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D12-1",
+                  "subject": "D12",
+                  "batch": "run-B",
+                  "exclude": ""
+                },
+                "rows": 112,
+                "kept": 112,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 5744,
+                    "numerator": 5744,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 112,
+                    "numerator": 112,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.7071727019498607,
+                    "numerator": 4062,
+                    "denominator": 5744,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.03864902506963788,
+                    "numerator": 222,
+                    "denominator": 5744,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9842442146725751,
+                    "numerator": 3998,
+                    "denominator": 4062,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9761201378631216,
+                    "numerator": 3965,
+                    "denominator": 4062,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D13-1",
+                  "subject": "D13",
+                  "batch": "run-B",
+                  "exclude": ""
+                },
+                "rows": 72,
+                "kept": 72,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 5368,
+                    "numerator": 5368,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 72,
+                    "numerator": 72,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.5542101341281669,
+                    "numerator": 2975,
+                    "denominator": 5368,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.015461997019374068,
+                    "numerator": 83,
+                    "denominator": 5368,
+                    "reason": ""
+                  },
+                  {
+                    "value": 1,
+                    "numerator": 2975,
+                    "denominator": 2975,
+                    "reason": ""
+                  },
+                  {
+                    "value": 1,
+                    "numerator": 2975,
+                    "denominator": 2975,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D14-1",
+                  "subject": "D14",
+                  "batch": "run-B",
+                  "exclude": ""
+                },
+                "rows": 121,
+                "kept": 121,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 5659,
+                    "numerator": 5659,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 121,
+                    "numerator": 121,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.5414384166813925,
+                    "numerator": 3064,
+                    "denominator": 5659,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.023855804912528714,
+                    "numerator": 135,
+                    "denominator": 5659,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9869451697127938,
+                    "numerator": 3024,
+                    "denominator": 3064,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.8453002610966057,
+                    "numerator": 2590,
+                    "denominator": 3064,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D15-1",
+                  "subject": "D15",
+                  "batch": "run-B",
+                  "exclude": ""
+                },
+                "rows": 96,
+                "kept": 96,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 4735,
+                    "numerator": 4735,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 96,
+                    "numerator": 96,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.809714889123548,
+                    "numerator": 3834,
+                    "denominator": 4735,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.00675818373812038,
+                    "numerator": 32,
+                    "denominator": 4735,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9940010432968179,
+                    "numerator": 3811,
+                    "denominator": 3834,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9950443401147626,
+                    "numerator": 3815,
+                    "denominator": 3834,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D16-1",
+                  "subject": "D16",
+                  "batch": "run-B",
+                  "exclude": ""
+                },
+                "rows": 71,
+                "kept": 71,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 3691,
+                    "numerator": 3691,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 71,
+                    "numerator": 71,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.8173936602546735,
+                    "numerator": 3017,
+                    "denominator": 3691,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.007586020048767272,
+                    "numerator": 28,
+                    "denominator": 3691,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9844216108717269,
+                    "numerator": 2970,
+                    "denominator": 3017,
+                    "reason": ""
+                  },
+                  {
+                    "value": 1,
+                    "numerator": 3017,
+                    "denominator": 3017,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D17-1",
+                  "subject": "D17",
+                  "batch": "run-C",
+                  "exclude": ""
+                },
+                "rows": 96,
+                "kept": 96,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 6078,
+                    "numerator": 6078,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 96,
+                    "numerator": 96,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9073708456729187,
+                    "numerator": 5515,
+                    "denominator": 6078,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.05067456400131622,
+                    "numerator": 308,
+                    "denominator": 6078,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9965548504079782,
+                    "numerator": 5496,
+                    "denominator": 5515,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9885766092475068,
+                    "numerator": 5452,
+                    "denominator": 5515,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D18-1",
+                  "subject": "D18",
+                  "batch": "run-C",
+                  "exclude": ""
+                },
+                "rows": 126,
+                "kept": 126,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 8237,
+                    "numerator": 8237,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 126,
+                    "numerator": 126,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.833555906276557,
+                    "numerator": 6866,
+                    "denominator": 8237,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.03326453805997329,
+                    "numerator": 274,
+                    "denominator": 8237,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9653364404311098,
+                    "numerator": 6628,
+                    "denominator": 6866,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9739295077191961,
+                    "numerator": 6687,
+                    "denominator": 6866,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D19-1",
+                  "subject": "D19",
+                  "batch": "run-C",
+                  "exclude": ""
+                },
+                "rows": 75,
+                "kept": 75,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 4693,
+                    "numerator": 4693,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 75,
+                    "numerator": 75,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9676113360323887,
+                    "numerator": 4541,
+                    "denominator": 4693,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.0038354996803750267,
+                    "numerator": 18,
+                    "denominator": 4693,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.992512662409161,
+                    "numerator": 4507,
+                    "denominator": 4541,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.8773397929971372,
+                    "numerator": 3984,
+                    "denominator": 4541,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D20-1",
+                  "subject": "D20",
+                  "batch": "run-D",
+                  "exclude": ""
+                },
+                "rows": 80,
+                "kept": 80,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 8731,
+                    "numerator": 8731,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 80,
+                    "numerator": 80,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9765204443935402,
+                    "numerator": 8526,
+                    "denominator": 8731,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0,
+                    "numerator": 0,
+                    "denominator": 8731,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.949214168425991,
+                    "numerator": 8093,
+                    "denominator": 8526,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9954257565095004,
+                    "numerator": 8487,
+                    "denominator": 8526,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D21-1",
+                  "subject": "D21",
+                  "batch": "run-D",
+                  "exclude": ""
+                },
+                "rows": 80,
+                "kept": 80,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 5214,
+                    "numerator": 5214,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 80,
+                    "numerator": 80,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9514767932489452,
+                    "numerator": 4961,
+                    "denominator": 5214,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.0055619485999232835,
+                    "numerator": 29,
+                    "denominator": 5214,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9935496875629913,
+                    "numerator": 4929,
+                    "denominator": 4961,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9983874218907478,
+                    "numerator": 4953,
+                    "denominator": 4961,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D22-1",
+                  "subject": "D22",
+                  "batch": "run-D",
+                  "exclude": ""
+                },
+                "rows": 80,
+                "kept": 80,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 17909,
+                    "numerator": 17909,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 80,
+                    "numerator": 80,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9586241554525657,
+                    "numerator": 17168,
+                    "denominator": 17909,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0,
+                    "numerator": 0,
+                    "denominator": 17909,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9210158434296365,
+                    "numerator": 15812,
+                    "denominator": 17168,
+                    "reason": ""
+                  },
+                  {
+                    "value": 1,
+                    "numerator": 17168,
+                    "denominator": 17168,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D23-1",
+                  "subject": "D23",
+                  "batch": "run-D",
+                  "exclude": ""
+                },
+                "rows": 80,
+                "kept": 80,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 10576,
+                    "numerator": 10576,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 80,
+                    "numerator": 80,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9634077155824509,
+                    "numerator": 10189,
+                    "denominator": 10576,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.012291981845688351,
+                    "numerator": 130,
+                    "denominator": 10576,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9871429973500834,
+                    "numerator": 10058,
+                    "denominator": 10189,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9890077534596133,
+                    "numerator": 10077,
+                    "denominator": 10189,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D24-1",
+                  "subject": "D24",
+                  "batch": "run-D",
+                  "exclude": ""
+                },
+                "rows": 80,
+                "kept": 80,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 9557,
+                    "numerator": 9557,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 80,
+                    "numerator": 80,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9780265773778383,
+                    "numerator": 9347,
+                    "denominator": 9557,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.01266087684419797,
+                    "numerator": 121,
+                    "denominator": 9557,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9516422381512785,
+                    "numerator": 8895,
+                    "denominator": 9347,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.894297635605007,
+                    "numerator": 8359,
+                    "denominator": 9347,
+                    "reason": ""
+                  }
+                ]
+              },
+              {
+                "assignment": {
+                  "name": "D25-1",
+                  "subject": "D25",
+                  "batch": "",
+                  "exclude": "Batch not recorded"
+                },
+                "rows": 80,
+                "kept": 80,
+                "removed": {},
+                "values": [
+                  {
+                    "value": 8597,
+                    "numerator": 8597,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 80,
+                    "numerator": 80,
+                    "denominator": 1,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9603350005815983,
+                    "numerator": 8256,
+                    "denominator": 8597,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.005699662673025474,
+                    "numerator": 49,
+                    "denominator": 8597,
+                    "reason": ""
+                  },
+                  {
+                    "value": 0.9911579457364341,
+                    "numerator": 8183,
+                    "denominator": 8256,
+                    "reason": ""
+                  },
+                  {
+                    "value": 1,
+                    "numerator": 8256,
+                    "denominator": 8256,
+                    "reason": ""
+                  }
+                ]
+              }
+            ]
+          },
+          "notice": {
+            "What": "Descriptive sample-level QC within explicitly declared batches. Each included subject contributes at most one sample per batch; subjects may recur across batches, so batch summaries are not independent. Modified z = 0.6745 * (transformed value - median) / raw MAD, including the observation in its reference batch. Absolute scores strictly above the declared threshold are review flags, not p-values, calibrated error rates, bad-sample diagnoses or biological effects. Small groups and zero MAD remain unscored, with no epsilon or pooled-batch fallback. Positive abundance and retained-row metrics use log10 without pseudocounts; fractions use their original scale. Missing values are unavailable, not zero. Most observations in each batch must form a meaningful reference: systematic batch failure, heterogeneity, biological confounding and masking can evade or distort flags. Inspect the common-scale distributions and exclusions. No sample is removed and no batch correction or causal inference is performed.",
+            "Dataset": "Artificial batch-QC study · 26 observations",
+            "DatasetID": "d-b62413eece36e225",
+            "Files": [
+              {
+                "Name": "D01-1.tsv",
+                "SHA256": "e124808a26b7f1f22bc084ee1765bbfe2270ed428f57aa69999b46e7c00c5838"
+              },
+              {
+                "Name": "D01-2.tsv",
+                "SHA256": "b9462a86df331c874528d7f752baf5b714e5d41a77c8321fd1c65b89331aa8bd"
+              },
+              {
+                "Name": "D02-1.tsv",
+                "SHA256": "df3b7698a8a9bddf6aab8cdd79bf895a05e907899b1489848dcc4812fc6e04d9"
+              },
+              {
+                "Name": "D03-1.tsv",
+                "SHA256": "2ed74f09e4dc738e1d2cb90f48da7fc9099442fcdd56c1c5887e034ee31ac47b"
+              },
+              {
+                "Name": "D04-1.tsv",
+                "SHA256": "c4d633392b01ba5e8bc858a780b2cb653d49260d8e505be404a9523e0847e017"
+              },
+              {
+                "Name": "D05-1.tsv",
+                "SHA256": "6d15e83c028419dd4c8cd7f2a03e591624eb3b5b4e136bff022f0a38d2e0115e"
+              },
+              {
+                "Name": "D06-1.tsv",
+                "SHA256": "9859846e93ec22674c5cdb02ae68ff7d4e0a1fb5d865f1129eb31d9f347daeb4"
+              },
+              {
+                "Name": "D07-1.tsv",
+                "SHA256": "320ab5bdac7d91478ddbf4dffc86d2773ff590e28ed446dca8f135a39931dfc6"
+              },
+              {
+                "Name": "D08-1.tsv",
+                "SHA256": "967f70b048b5c593b3c4cc09d5a86b789095feca8346a763580e581185c874ff"
+              },
+              {
+                "Name": "D09-1.tsv",
+                "SHA256": "86ea16da4a96b52869e30649717e674b2db22ff908075061cae1ed7fc5a95108"
+              },
+              {
+                "Name": "D10-1.tsv",
+                "SHA256": "06a40b657e19aec86cee20d4842794e6ab3c28e5a40426a7f7e7320a9524c281"
+              },
+              {
+                "Name": "D11-1.tsv",
+                "SHA256": "473f0ad225d427d6555af385d0d6702b5fd4fa40a3887d6354ccafa1c4e02801"
+              },
+              {
+                "Name": "D12-1.tsv",
+                "SHA256": "6714321dea4a036e028bac32edf0ad75cfbf3c908886d8a9860ff6a2c1be4c54"
+              },
+              {
+                "Name": "D13-1.tsv",
+                "SHA256": "ac4a41c1e23cb528acebb6d04ea559ec2e4896b4a98a0c4fbcda8c4517e7c1a6"
+              },
+              {
+                "Name": "D14-1.tsv",
+                "SHA256": "ced213705c690ac31577f957c310709d4ca95689fd6afa10cded7e41f4079bfb"
+              },
+              {
+                "Name": "D15-1.tsv",
+                "SHA256": "62bffdb729fb3fbd69df9158d2afde67dbe1fb2d694eaef6c7dffa2e817bb661"
+              },
+              {
+                "Name": "D16-1.tsv",
+                "SHA256": "5dc9af8d8f4471531dc0b775af61dfd6160dbf7a7e04327e33c6539c0e9a7d98"
+              },
+              {
+                "Name": "D17-1.tsv",
+                "SHA256": "4956fefe1278ef9b2ee5db5998c2c0867b2da4d52c81022b4159f250e0cf4584"
+              },
+              {
+                "Name": "D18-1.tsv",
+                "SHA256": "072c05e9052c110b3e13198f26c33f1c2210e5849a4d13032e8ce18617286daa"
+              },
+              {
+                "Name": "D19-1.tsv",
+                "SHA256": "a85a51831a2968033f98ad42bdc9740327a834a415cbf33d0e27e9fec41daef1"
+              },
+              {
+                "Name": "D20-1.tsv",
+                "SHA256": "a4c65921664fbccf3f8014d69cfa37c08ecb5e615228733c5c9bf8d14c6d2661"
+              },
+              {
+                "Name": "D21-1.tsv",
+                "SHA256": "2d611abcda19c9ab1fd4b1bb10caa30ef2e9d073febcbbc424711a8f0fa15efe"
+              },
+              {
+                "Name": "D22-1.tsv",
+                "SHA256": "5649e88f1a4965acc590f5b8ccdd23b3310a3989018d81180f7081bf8ebc553a"
+              },
+              {
+                "Name": "D23-1.tsv",
+                "SHA256": "7ad13177c6f78ad816095f7e64d32d484f7387d6cadc74eb3d76a76ee954f797"
+              },
+              {
+                "Name": "D24-1.tsv",
+                "SHA256": "ad8172c0a567919db8c82ece2ef4382f6b35aa9f444e2333c4a00ef954667dff"
+              },
+              {
+                "Name": "D25-1.tsv",
+                "SHA256": "24bf888f22c5e218f641c7e129766f3b769500e407efb992bd60bab6df0e570f"
+              },
+              {
+                "Name": "repertoires.airr.json",
+                "SHA256": "5388748daad10885d26225cee2e3edc02945a700a0ea1f9c6e5b8d2fe8172ab0"
+              }
+            ],
+            "Samples": 26,
+            "Unit": "UMIs",
+            "Filter": "none",
+            "Definition": "Sample QC metrics; no clonotype grouping",
+            "DefinitionID": "batch-qc-v1",
+            "Method": " Iglewicz B, Hoaglin DC. How to Detect and Handle Outliers. ASQC Quality Press; 1993. NIST/SEMATECH e-Handbook §1.3.5.17, https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm. OSCA Advanced, Quality control, redux, https://bioconductor.org/books/release/OSCA.advanced/quality-control-redux.html.",
+            "Derived": true,
+            "Credits": null,
+            "Version": "0.8.0",
+            "Commit": "7e96917c36936a71f2ca82ef378bdeb21666f525-dirty",
+            "Made": "2026-10-28T18:28:18.604053-07:00"
+          },
+          "method": 1
+        }
+      },
+      "method": {
+        "name": "Descriptive batch QC",
+        "version": "1",
+        "citation": "Iglewicz B, Hoaglin DC. How to Detect and Handle Outliers. ASQC Quality Press; 1993. NIST/SEMATECH e-Handbook §1.3.5.17, https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm. OSCA Advanced, Quality control, redux, https://bioconductor.org/books/release/OSCA.advanced/quality-control-redux.html."
+      },
+      "parameters": {
+        "dataset": "d-b62413eece36e225",
+        "samples": [
+          {
+            "name": "D01-1",
+            "subject": "D01",
+            "batch": "run-A",
+            "exclude": ""
+          },
+          {
+            "name": "D01-2",
+            "subject": "D01",
+            "batch": "run-A",
+            "exclude": "Repeated observation: retain D01-1"
+          },
+          {
+            "name": "D02-1",
+            "subject": "D02",
+            "batch": "run-A",
+            "exclude": ""
+          },
+          {
+            "name": "D03-1",
+            "subject": "D03",
+            "batch": "run-A",
+            "exclude": ""
+          },
+          {
+            "name": "D04-1",
+            "subject": "D04",
+            "batch": "run-A",
+            "exclude": ""
+          },
+          {
+            "name": "D05-1",
+            "subject": "D05",
+            "batch": "run-A",
+            "exclude": ""
+          },
+          {
+            "name": "D06-1",
+            "subject": "D06",
+            "batch": "run-A",
+            "exclude": ""
+          },
+          {
+            "name": "D07-1",
+            "subject": "D07",
+            "batch": "run-A",
+            "exclude": ""
+          },
+          {
+            "name": "D08-1",
+            "subject": "D08",
+            "batch": "run-A",
+            "exclude": ""
+          },
+          {
+            "name": "D09-1",
+            "subject": "D09",
+            "batch": "run-B",
+            "exclude": ""
+          },
+          {
+            "name": "D10-1",
+            "subject": "D10",
+            "batch": "run-B",
+            "exclude": ""
+          },
+          {
+            "name": "D11-1",
+            "subject": "D11",
+            "batch": "run-B",
+            "exclude": ""
+          },
+          {
+            "name": "D12-1",
+            "subject": "D12",
+            "batch": "run-B",
+            "exclude": ""
+          },
+          {
+            "name": "D13-1",
+            "subject": "D13",
+            "batch": "run-B",
+            "exclude": ""
+          },
+          {
+            "name": "D14-1",
+            "subject": "D14",
+            "batch": "run-B",
+            "exclude": ""
+          },
+          {
+            "name": "D15-1",
+            "subject": "D15",
+            "batch": "run-B",
+            "exclude": ""
+          },
+          {
+            "name": "D16-1",
+            "subject": "D16",
+            "batch": "run-B",
+            "exclude": ""
+          },
+          {
+            "name": "D17-1",
+            "subject": "D17",
+            "batch": "run-C",
+            "exclude": ""
+          },
+          {
+            "name": "D18-1",
+            "subject": "D18",
+            "batch": "run-C",
+            "exclude": ""
+          },
+          {
+            "name": "D19-1",
+            "subject": "D19",
+            "batch": "run-C",
+            "exclude": ""
+          },
+          {
+            "name": "D20-1",
+            "subject": "D20",
+            "batch": "run-D",
+            "exclude": ""
+          },
+          {
+            "name": "D21-1",
+            "subject": "D21",
+            "batch": "run-D",
+            "exclude": ""
+          },
+          {
+            "name": "D22-1",
+            "subject": "D22",
+            "batch": "run-D",
+            "exclude": ""
+          },
+          {
+            "name": "D23-1",
+            "subject": "D23",
+            "batch": "run-D",
+            "exclude": ""
+          },
+          {
+            "name": "D24-1",
+            "subject": "D24",
+            "batch": "run-D",
+            "exclude": ""
+          },
+          {
+            "name": "D25-1",
+            "subject": "D25",
+            "batch": "",
+            "exclude": "Batch not recorded"
+          }
+        ],
+        "filter": {},
+        "options": {
+          "threshold": 3.5,
+          "minSamples": 5
+        }
+      },
+      "software": [
+        {
+          "name": "clonoloom",
+          "version": "0.8.0",
+          "commit": "7e96917c36936a71f2ca82ef378bdeb21666f525-dirty"
+        }
+      ]
+    },
+    "files": [
+      {
+        "path": "batch-qc.json",
+        "role": "batch-qc",
+        "size": 60196,
+        "sha256": "530f63c34eeec8abe430da52d2f2d91d93ebcea01b3c42fd7c1d20c4af1090a5"
+      }
+    ],
+    "findings": [],
+    "summary": {
+      "groups": 24,
+      "samples": 24,
+      "subjects": 24
+    }
+  },
+  "verifier": {
+    "name": "clonoloom",
+    "version": "0.8.0",
+    "commit": "7e96917c36936a71f2ca82ef378bdeb21666f525-dirty"
+  },
+  "platform": "darwin/arm64",
+  "steps": [
+    {
+      "artifact": "bqc-9d7fd220b04b05811fc9da80",
+      "kind": "batch-qc",
+      "expectedSHA256": "530f63c34eeec8abe430da52d2f2d91d93ebcea01b3c42fd7c1d20c4af1090a5",
+      "actualSHA256": "530f63c34eeec8abe430da52d2f2d91d93ebcea01b3c42fd7c1d20c4af1090a5",
+      "verdict": "replay-match",
+      "metadataMatched": true
+    }
+  ],
+  "limits": "Exact replay from captured sample QC measurements only. Source files and the extraction of sample metrics are not independently verified. Batch medians, MADs and descriptive flags are recomputed; flags do not establish contamination or justify automatic correction. Matching bytes do not establish authorship or scientific validity. Captured evidence is not de-identified.",
+  "findings": []
+}

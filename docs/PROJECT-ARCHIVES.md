@@ -1,8 +1,8 @@
-# Portable project archives (Wave 8 development)
+# Portable project archives
 
-Slice 10 adds version 1 `.clz` archives. Use the development host: published v0.7.0
-predates this feature. Application/package versions remain 0.7.0; automation uses API 2,
-**catalog 4**, policy 1 (64 actions). Regenerate/update both clients with this host.
+ClonoLoom 0.8.0 adds version 1 `.clz` portable project archives. Use matching host/client
+versions with action API **2**, catalog **4** and permission policy **1**. Inspection checks
+recorded bytes; import may reopen source tables but does not recompute saved analyses.
 
 ## Transfer a study
 
@@ -64,7 +64,7 @@ computation and makes no biological claim. The browser refuses to open a project
 tokens would change in JavaScript; original files remain inspectable, and the native importer
 can retain such evidence without browser loading.
 
-Supported project version 1 fixtures from releases v0.2.0–v0.7.0 reopen with the same source
+Supported project version 1 fixtures from releases v0.2.0–v0.8.0 reopen with the same source
 identities and result bytes. This establishes those contracts, not forward compatibility with
 unknown versions or every possible external input. Unknown project/archive versions are refused.
 

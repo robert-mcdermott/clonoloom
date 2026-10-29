@@ -12,6 +12,7 @@
 
 import { acceptAutomation, waitForAutomationIdle } from '../../validation/automation.mjs';
 import { spawn } from 'node:child_process';
+import { createServer } from 'node:net';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -20,8 +21,6 @@ import { launch, sleep } from '../../validation/cdp.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const IMAGES = join(ROOT, 'docs/images');
-// A port of ClonoLoom's range the development server (8878) does not use.
-const PORT = 8877;
 const DATA = process.env.CLONOLOOM_DATA || join(ROOT, 'validation/cache');
 // What the pictures show as the places of the library and the examples (not this run's temporary
 // ones): macOS's defaults.
@@ -55,7 +54,12 @@ let places = {};
 async function startClonoLoom({ examples = DATA } = {}) {
   const library = mkdtempSync(join(temp, 'library-'));
   places = { library, examples };
-  const server = spawn(binary, ['--remote-control', '--allow', 'edits,compute,files,network', '--window', 'none', '--port', String(PORT), '--data-dir', library, '--examples-dir', examples, '--cache-dir', join(temp, 'cache')], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
+  // An isolated capture must not forward into a concurrently running window.
+  const listener = createServer();
+  await new Promise((done) => listener.listen(0, '127.0.0.1', done));
+  const port = listener.address().port;
+  await new Promise((done) => listener.close(done));
+  const server = spawn(binary, ['--remote-control', '--allow', 'edits,compute,files,network', '--window', 'none', '--port', String(port), '--data-dir', library, '--examples-dir', examples, '--cache-dir', join(temp, 'cache')], { cwd: temp, stdio: ['ignore', 'pipe', 'inherit'] });
   let output = '';
   server.stdout.on('data', (chunk) => { output += chunk; });
   const stop = async () => {
@@ -503,7 +507,7 @@ const scenes = {
       const pending=app.checkpointsView.compare('${before.id}');[...document.querySelectorAll('.checkpoints-view button')].find((b)=>b.textContent==='Cancel checkpoint operation').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||app.checkpointsView.state().busy||app.checkpointsView.state().difference)throw new Error('Checkpoint cancellation left a result');return true;
     })()`);
     await act('compare_checkpoint', {checkpoint:before.id, against:after.id});
-    await js(`(()=>{const root=document.querySelector('.checkpoints-view');root.querySelector('details')?.setAttribute('open','');root.closest('.workbench-scroll').scrollTop=0;return true})()`);
+    await js(`(()=>{const root=document.querySelector('.checkpoints-view');root.querySelector('details')?.setAttribute('open','');root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
     await clearToasts(); await checkAccessibility();
   },
   async ['certificates-batch-qc']() { await capturedCertificateScene('batch-qc'); },
@@ -595,7 +599,7 @@ const scenes = {
   async 'cohort-features'() {
     await act('new_project', { name: 'Artificial subject feature study' });
     await act('open_example', { example: 'simulated-standard', download: true });
-    await act('measure_diversity', { replicates: 20 });
+    await act('measure_diversity');
     const spec = { unit: 'subject', layout: 'independent', groupField: 'condition', levels: ['control', 'expanded'], exclude: {} };
     for (let i = 1; i <= 6; i++) spec.exclude[`S${String(i).padStart(2, '0')}-2`] = 'Teaching selection: first simulated observation per subject';
     await act('check_cohort_design', { spec, name: 'First simulated observations', save: true });
@@ -770,7 +774,7 @@ const scenes = {
     if(state.status!=='ready'||state.answer.result.analysis.eligible!==358||state.answer.result.analysis.nodes.length!==10||state.answer.result.analysis.tested!==20)throw new Error(`Comparison failed: ${JSON.stringify({status:state.status,error:state.error,result:state.answer?.result.analysis})}`);
     const remote=await act('compare_receptor_expression',{options:{neighbors:[2,4],cdr3Only:true}});
     if(remote.data.artifact!==state.artifact)throw new Error('Visible and remote comparison differ');
-    await js(`(()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Comparison undo failed');app.store.redo();const r=app.cellCongaView.state().answer.result.analysis,t=r.tests.find((t)=>t.logP!=null);app.cellCongaView.selectClone(r.nodes[t.node].id);const plot=document.querySelector('.conga-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==t.overlap||Number(plot.querySelector('[data-expected]').dataset.expected)!==t.expected)throw new Error('Plot differs from Go result');const f=document.querySelector('[aria-label="Filter comparison clones"]');f.value=r.nodes[0].id;f.dispatchEvent(new Event('change'));if(app.cellCongaView.state().answer.result.analysis.tested!==20)throw new Error('Filtering changed family');return true;})()`);
+    await js(`(async()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Comparison undo failed');app.store.redo();await Promise.resolve();await app.cellCongaView.show(id);const r=app.cellCongaView.state().answer.result.analysis,t=r.tests.find((t)=>t.logP!=null);app.cellCongaView.selectClone(r.nodes[t.node].id);const plot=document.querySelector('.conga-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==t.overlap||Number(plot.querySelector('[data-expected]').dataset.expected)!==t.expected)throw new Error('Plot differs from Go result');const f=document.querySelector('[aria-label="Filter comparison clones"]');f.value=r.nodes[0].id;f.dispatchEvent(new Event('change'));if(app.cellCongaView.state().answer.result.analysis.tested!==20)throw new Error('Filtering changed family');return true;})()`);
     await js(`(()=>{[...document.querySelectorAll('button')].find((b)=>b.textContent==='Open comparison phenotype overlay').click();return true;})()`);
     await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length>1');
     await js(`(async()=>{const app=window.clonoloom,id=app.cellCongaView.state().artifact;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellCongaView.show(id);if(app.cellsView.state().record)throw new Error('Saved comparison required expression source');return true;})()`);
@@ -788,7 +792,7 @@ const scenes = {
     if(state.status!=='ready'||state.answer.result.analysis.eligible!==358||state.answer.result.analysis.tested!==10) throw new Error(`Modularity failed: ${JSON.stringify({status:state.status,error:state.error,eligible:state.answer?.result.analysis.eligible,tested:state.answer?.result.analysis.tested})}`);
     const remote=await act('compute_clonotype_modularity');
     if(remote.data.artifact!==state.artifact) throw new Error('Visible and remote modularity differ');
-    await js(`(() => {const app=window.clonoloom,id=app.cellModularityView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Modularity undo failed');app.store.redo();const r=app.cellModularityView.state().answer.result.analysis;const c=r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0];app.cellModularityView.selectClone(c.id);const plot=document.querySelector('.modularity-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==c.observed)throw new Error('Observed marker differs from result');const f=document.querySelector('[aria-label="Filter modularity clones"]');f.value=c.id;f.dispatchEvent(new Event('change'));if(app.cellModularityView.state().answer.result.analysis.tested!==10)throw new Error('Filtering changed test family');return true;})()`);
+    await js(`(async () => {const app=window.clonoloom,id=app.cellModularityView.state().artifact;app.store.undo();if(app.store.project.artifacts.some((r)=>r.id===id))throw new Error('Modularity undo failed');app.store.redo();await Promise.resolve();await app.cellModularityView.show(id);const r=app.cellModularityView.state().answer.result.analysis;const c=r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0];app.cellModularityView.selectClone(c.id);const plot=document.querySelector('.modularity-plot');if(!plot||Number(plot.querySelector('[data-observed]').dataset.observed)!==c.observed)throw new Error('Observed marker differs from result');const f=document.querySelector('[aria-label="Filter modularity clones"]');f.value=c.id;f.dispatchEvent(new Event('change'));if(app.cellModularityView.state().answer.result.analysis.tested!==10)throw new Error('Filtering changed test family');return true;})()`);
     await js(`(() => { [...document.querySelectorAll('button')].find((b)=>b.textContent==='Open parent phenotype overlay').click();return true;})()`);
     await waitFor('window.clonoloom.cellPhenotypesView.state().selected.length > 1');
     await js(`(async()=>{const app=window.clonoloom,id=app.cellModularityView.state().artifact;await app.saveNow();await app.openProject(app.store.project.id);await app.setMode('cells');await app.cellModularityView.show(id);if(app.cellsView.state().record)throw new Error('Saved modularity required open expression source');const r=app.cellModularityView.state().answer.result.analysis;app.cellModularityView.selectClone(r.clones.filter((c)=>c.p!=null).sort((a,b)=>b.score-a.score)[0].id);return true;})()`);
@@ -805,9 +809,10 @@ const scenes = {
     if (state.status !== 'ready' || state.answer.result.analysis.coverage.mapped !== 358 || state.answer.result.analysis.coverage.matched !== 359 || state.answer.result.analysis.cells.length !== 360 || state.answer.result.analysis.options.annotation !== 'state') throw new Error(`Phenotype result: ${state.error || JSON.stringify(state.answer?.result.analysis.coverage)}`);
     const remote = await act('compute_cell_phenotypes', { annotation: 'state' });
     if (remote.data.artifact !== state.artifact) throw new Error('Visible and remote phenotype controls differ');
-    await js(`(() => {
+    await js(`(async () => {
       const app = window.clonoloom, id = app.cellPhenotypesView.state().artifact;
       app.store.undo(); if (app.store.project.artifacts.some((r) => r.id === id)) throw new Error('Phenotype undo failed'); app.store.redo();
+      await Promise.resolve(); await app.cellPhenotypesView.show(id);
       const filter = document.querySelector('[aria-label="Filter phenotype table"]'); filter.value = 'CELL00001-1'; filter.dispatchEvent(new Event('change'));
       [...document.querySelectorAll('button')].find((b) => b.textContent === 'Select matching cells').click(); return true;
     })()`);
@@ -860,7 +865,7 @@ const scenes = {
       app.store.redo(); return true;
     })()`);
     await js(`(async () => {
-      const app = window.clonoloom, id = app.cellAnalysisView.state().artifact;
+      const app = window.clonoloom, id = ${JSON.stringify(computed.artifact)};
       await app.saveNow(); await app.openProject(app.store.project.id); await app.setMode('cells');
       await app.cellAnalysisView.show(id);
       if (app.cellsView.state().record !== null) throw new Error('Saved map required opening its input');

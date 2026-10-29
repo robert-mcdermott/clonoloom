@@ -3498,3 +3498,34 @@ SIGTERM cancellation are separate operational controls. A handled signal yields 
 2 and removes scratch; OOM, SIGKILL and power failure may not leave a final run record. These
 checks do not turn descriptive batch flags into diagnoses or motif groups into validated
 antigen specificity. The image is an execution environment, not new scientific evidence.
+
+### 5.56 Record-and-reach release study
+
+The 0.8.0 worked study joins existing interfaces without introducing an estimator. All 26
+observations and 2,427 artificial rows from the batch-QC simulator are retained; assignments
+name four included batches (8, 8, 3 and 5 subjects) and two explicitly excluded observations.
+The native screen keeps the effective definition-independent sample metrics, missing counts,
+raw fraction denominators, log scales, unavailable small groups and zero-MAD controls described
+in §5.38. Modified-z labels follow Iglewicz and Hoaglin (1993) and the
+[NIST handbook](https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm); minimum group size
+and unavailable-value rules are ClonoLoom choices, not calibrated hypothesis tests. A shifted
+batch may have no within-batch flags. The example makes no treatment, correction or specificity
+claim. Missing AIRR values remain distinct from zero, as specified by the
+[AIRR rearrangement schema](https://docs.airr-community.org/en/stable/datarep/rearrangements.html).
+
+The integration checks original native query text through HTTP, MCP, Python and R. It compares
+and recovers an explicitly reviewed clonotype-definition change; the saved batch-QC result is
+unchanged because its metrics do not depend on that grouping. A complete HTML report checks
+bytes offline. Native certificate and headless replay recompute captured evidence exactly.
+Portable archive transfer and checkpoint recovery are checked after original source paths
+become unavailable. Transfer may rebuild dataset tables; it does not rerun saved statistics.
+All these checks preserve the boundaries in §§5.42–5.55. Interface parity is not an independent
+scientific oracle, a checksum is not authentication, and recovery is not recomputation.
+
+The new compatibility fixture retains original project/evidence bytes, source and truth hashes,
+checkpoint files, certificate, report, archive and query evidence. A separately serialized
+project uses portable reopening paths; original scientific provenance is never rewritten.
+Future-release checks replay the native worker, verify the separately recorded fingerprint,
+restore missing result files and retain every earlier release fixture. Cross-platform exactness,
+existing scientific references and performance budgets are validated separately from this
+workflow. No additional inference or biological performance claim follows from a passing study.

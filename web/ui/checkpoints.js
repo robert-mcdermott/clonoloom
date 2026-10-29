@@ -65,7 +65,7 @@ export function mountCheckpoints(app, container) {
     if (controller) root.append(h('button.btn.small', {type:'button', onclick:() => controller.abort()}, 'Cancel checkpoint operation'));
     if (error) root.append(h('p.callout.danger', {role:'alert'}, error));
     if (difference) {
-      root.append(h('h3', 'Recorded analysis differences'), h('p', `${difference.changes.length} recorded differences. No effect sizes or significance inferred.`), h('p.muted', 'Paths identify exact fields; array indices start at zero and ordering is significant. “(absent)” differs from null. Source paths and hashes are compared as records, not reopened or independently verified.'));
+      root.append(h('h3', 'Recorded analysis differences'), h('p', `${difference.changes.length} recorded difference${difference.changes.length === 1 ? '' : 's'}. No effect sizes or significance inferred.`), h('p.muted', 'Paths identify exact fields; array indices start at zero and ordering is significant. “(absent)” differs from null. Source paths and hashes are compared as records, not reopened or independently verified.'));
       if (!difference.changes.length) root.append(h('p', 'No recorded analysis or result-evidence differences.'));
       for (const c of difference.changes) root.append(h('details.checkpoint-change', h('summary', c.summary), h('p', 'Before (exact JSON):'), h('pre', {style:{whiteSpace:'pre-wrap', overflowWrap:'anywhere'}}, c.beforeJSON), h('p', 'After (exact JSON):'), h('pre', {style:{whiteSpace:'pre-wrap', overflowWrap:'anywhere'}}, c.afterJSON)));
       root.append(button('Export checkpoint differences JSON', async () => downloadBlob(new Blob([differenceText], {type:'application/json'}), 'checkpoint-differences.json')), h('p.muted', difference.limits));

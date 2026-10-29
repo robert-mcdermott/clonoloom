@@ -10,7 +10,7 @@ In **Reports**, choose a supported result and **Inspect certificate**. Keep its 
 fingerprint separately if you need to recognize that exact record later. **Export integrity
 certificate** downloads `<artifact>.certificate.clz`. This is a single-result evidence archive,
 not a portable project: do not open it as a project. Unsupported result kinds are not silently
-omitted or described as certified. Broader result and source replay coverage follows in later slices.
+omitted or described as certified. Other result and source-replay contracts remain unavailable; see the support matrix.
 
 Original source files are not bundled, but captured recipes and result evidence may include raw
 counts, receptor sequences, subject identifiers, metadata and paths. This is not de-identified.

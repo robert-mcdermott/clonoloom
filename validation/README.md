@@ -787,3 +787,40 @@ explicit proposal rejection, both output representations, cancellation and stale
 It audits both themes and optionally writes the native and pseudonymized Parquet screenshots.
 No biological inference, new estimator or scientific figure is introduced. See
 [the format and limits](../docs/PARQUET.md) and research §5.53.
+
+
+## Complete record-and-reach study (wave 8, slice 15)
+
+The immutable `projects/0.8.0` fixture connects one artificial 26-observation batch-QC study
+across the window, HTTP, MCP, Python, R, checkpoints, certificates, HTML reports, native replay
+and portable archives. The full generating truth and original evidence are retained; a separate
+portable project changes only reopening paths. Earlier release fixtures are never rewritten.
+
+```sh
+node validation/create-project-0.8.mjs /absolute/new-fixture
+node validation/record-study.mjs
+go test -v -timeout 30m -run 'TestRecordRelease|TestReleaseVersions|TestEveryReleasesProject' .
+```
+
+The generator builds a real host in isolated temporary libraries with explicit
+`edits,compute,files` grants and no network grant. Only this validation driver reviews its
+declared proposals. It compares original native query JSON across all four transports, keeps
+saved QC bytes unchanged through a definition edit, restores the checkpoint, verifies and
+replays the certificate, runs a pinned headless task, and transfers the archive after making
+original source paths unavailable. Exact byte agreement is separate from independent scientific
+truth. `--screenshots` captures the worked comparison in both themes. R, uv, Go, Node, Chrome
+and the cached axe-core validator are required. CI exercises the integration on its current R job.
+
+The saved-report check runs without a host or sources. It requires integrity match, all six
+native figures, explicit unavailable evidence, failure on a wrong retained fingerprint, zero
+HTTP requests and accessible desktop/phone layouts in both themes. It never recomputes science.
+See [the worked guide](../docs/RECORD-STUDY.md) for the full support and interpretation limits.
+
+Release validation includes every root Go test (bounded race batches if needed), internal
+packages, required-data independent references, six CGO-free platform builds, amd64 project
+replay, the performance budgets without race instrumentation or competing heavy work, all
+JavaScript/client/package checks, live permissions and benchmark controls, independent export
+readers, container boundaries, both-theme scene captures and the complete site audit.
+Preserve all numerical tolerances. A timed-out test is rerun to completion; a partial pass is
+not a completed check. Actual cluster scheduling, Apptainer and native Windows UI execution
+remain separate platform/site validation, not inferred from cross-compilation.

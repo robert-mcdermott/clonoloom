@@ -1,8 +1,8 @@
-# Headless recipes (Wave 8 development)
+# Headless recipes
 
-`clonoloom run` uses the same native Go capture and scientific workers as the application.
-It starts no browser or server, executes no shell commands and uses no network. Version 0.7.0
-release binaries predate this development command; build the Wave 8 source to try it.
+ClonoLoom 0.8.0 supports `clonoloom run --recipe FILE --input NAME=PATH --out NEW_DIR`.
+It starts no browser or server, executes no shell commands and uses no network. Each invocation
+selects one explicit task and uses the existing native workers.
 
 ## Supported workflows
 

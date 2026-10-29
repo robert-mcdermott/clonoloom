@@ -30,3 +30,32 @@ test('UI-only automation does not invalidate the current scientific view',()=>{
  const finish=store.beginAutomation('caller',{invalidate:false});
  store.setUI({theme:'dark'});finish(true);assert.equal(current(),true);
 });
+
+test('reviewed computation invalidates old attachments without clearing loaded input views', async()=>{
+ const store=createStore({id:'study'}),old=store.sameProject(),generation=store.state.generation;
+ let loaded='expression-S01',viewGeneration=generation;
+ store.subscribe(()=>{if(viewGeneration!==store.state.generation){loaded=null;viewGeneration=store.state.generation;}});
+ const finish=store.beginAutomation('research notebook');await Promise.resolve();
+ assert.equal(old(),false);assert.equal(loaded,'expression-S01');assert.equal(store.state.generation,generation);
+ const current=store.sameProject();store.commit({...store.project,result:'captured evidence'});finish(true);await Promise.resolve();
+ assert.equal(current(),true);assert.equal(loaded,'expression-S01');
+ store.recover({...store.project,result:'checkpoint evidence'});await Promise.resolve();
+ assert.equal(current(),false);assert.equal(loaded,null);
+});
+
+test('Undo and Redo invalidate pending work and reload a still-selected saved result', async()=>{
+ const result={id:'saved',kind:'batch-qc'},initial={id:'study',artifacts:[result]},store=createStore(initial);
+ store.setUI({focus:{kind:'result',id:result.id}});await Promise.resolve();
+ let loaded=result.id,generation=store.state.generation;
+ store.subscribe(topics=>{
+  if(generation!==store.state.generation){generation=store.state.generation;loaded=null;}
+  if(topics.has('focus'))loaded=store.project.artifacts.find(r=>r.id===store.ui.focus?.id)?.id??null;
+ });
+ store.commit({...initial,name:'Changed'});await Promise.resolve();
+ const before=store.sameProject();store.undo();await Promise.resolve();
+ assert.equal(before(),false);assert.equal(loaded,result.id);
+ const undone=store.sameProject();store.redo();await Promise.resolve();
+ assert.equal(undone(),false);assert.equal(loaded,result.id);
+ store.commit({...store.project,artifacts:[]});store.undo();await Promise.resolve();
+ assert.equal(loaded,result.id);store.redo();await Promise.resolve();assert.equal(loaded,null);
+});

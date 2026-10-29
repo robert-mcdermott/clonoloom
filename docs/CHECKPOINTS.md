@@ -1,9 +1,9 @@
-# Analysis checkpoints (Wave 8 development)
+# Analysis checkpoints
 
 Reports can keep a named, immutable **local checkpoint** before you revise a study. It preserves
 recorded analysis settings and attached completed result files. Recovery restores that evidence;
 it does not recompute results, resume an interrupted worker or verify original source files.
-Published 0.7.0 binaries predate this development feature; version remains 0.7.0 until release preparation.
+This workflow is available in ClonoLoom 0.8.0.
 
 ## Create, compare and recover
 

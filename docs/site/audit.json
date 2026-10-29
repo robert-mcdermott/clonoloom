@@ -343,6 +343,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/record-study.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/record.html",
   "theme": "light",
   "width": "desktop",
@@ -756,6 +763,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/record-study.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/record.html",
   "theme": "dark",
   "width": "desktop",
@@ -1169,6 +1183,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/record-study.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/record.html",
   "theme": "light",
   "width": "phone",
@@ -1576,6 +1597,13 @@
  },
  {
   "page": "docs/rarefaction.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/record-study.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

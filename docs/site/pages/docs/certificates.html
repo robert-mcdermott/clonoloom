@@ -3,7 +3,7 @@ title: Evidence certificates
 description: Preserve and check exact saved result bytes without confusing integrity with scientific recomputation.
 lede: Keep a result's recorded evidence, then check that its bytes agree. Integrity and scientific reproducibility are separate questions.
 ---
-<p class="callout">Wave 8 development: integrity certificates currently support cohort feature tables, group comparisons, replicated count models, batch QC and motif screens. Choose integrity checking or exact replay from captured evidence. See the <a href="headless.html">headless workflow support matrix</a> for exact boundaries.</p>
+<p class="callout">ClonoLoom 0.8.0: integrity certificates currently support cohort feature tables, group comparisons, replicated count models, batch QC and motif screens. Choose integrity checking or exact replay from captured evidence. See the <a href="headless.html">headless workflow support matrix</a> for exact boundaries.</p>
 <h2 id="prepare">Preserve a saved result</h2>
 <p>Open <strong>Reports</strong>, choose a supported saved result and select <strong>Inspect certificate</strong>. The inventory names every saved file and its SHA-256. Keep the certificate fingerprint separately if you need to recognize that exact record later. Select <strong>Export integrity certificate</strong> to download its <code>.certificate.clz</code> archive.</p>
 <p>The archive retains the exact saved manifest, recipe and result bytes, provider notice and interpretation limits. Original source files and separate parent artifacts are not bundled. Captured evidence can nevertheless contain raw counts, sequences, subject identifiers and paths; this is not a de-identified export. Provider terms still apply after the original dataset is closed.</p>

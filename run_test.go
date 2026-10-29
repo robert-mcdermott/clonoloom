@@ -89,6 +89,11 @@ func invokeRun(t *testing.T, recipe runRecipe, bindings inputBindings, out strin
 	return code, stdout.String() + stderr.String()
 }
 func TestHeadlessSourceWorkersExactAndPortable(t *testing.T) {
+	// These captured source-run checksums include software provenance. Keep the
+	// original fixture version, just as the release-project replay tests do.
+	oldVersion, oldCommit := version, commit
+	version, commit = "0.7.0", ""
+	defer func() { version, commit = oldVersion, oldCommit }()
 	for _, kind := range []string{batchqcKind, motifsKind} {
 		t.Run(kind, func(t *testing.T) {
 			a, recipe, bindings, expectedSpec := sourceRunFixture(t, kind)

@@ -3,7 +3,7 @@ title: Headless recipes
 description: Run declared AIRR studies or replay captured evidence with checksum-pinned inputs and exact worker outputs.
 lede: Run one declared study in the terminal, keeping its inputs, effective parameters, methods and output checksums together.
 ---
-<p class="callout">Wave 8 development: build the development source to use <code>clonoloom run</code>. Published 0.7.0 binaries predate this command. No browser, running application or network is required.</p>
+<p class="callout">ClonoLoom 0.8.0: use <code>clonoloom run</code>. No browser, running application or network is required.</p>
 <h2 id="support">Choose a supported workflow</h2>
 <p>Source computation supports <strong>batch QC</strong> and <strong>motif screens</strong> from explicitly named AIRR TSV files (optionally gzip) and Repertoire metadata. Certificate replay supports these two kinds plus cohort features, comparisons and count models. Other workers are explicitly unavailable; durable resume alone is not a portable replay contract.</p>
 <p>The <a href="{{github}}/blob/main/docs/HEADLESS.md#supported-workflows">complete per-kind matrix</a> lists support and boundaries. The local <code>GET /api/certificates/support</code> endpoint lists every registered worker, including unsupported entries.</p>

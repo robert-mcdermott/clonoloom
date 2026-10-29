@@ -1,7 +1,8 @@
 # MCP: the local research window
 
-Wave 8 development, slice 7. Published 0.7.0 binaries predate this transport. The application
-version remains 0.7.0; action API 2, catalog 4 and automation policy 1 are independent versions.
+ClonoLoom 0.8.0 provides local stdio MCP transport. Action API **2**, catalog **4**
+and automation policy **1** are independent versions. Non-read capabilities require explicit
+host grants; changes still require review in the normal window.
 
 ## Connect a client
 

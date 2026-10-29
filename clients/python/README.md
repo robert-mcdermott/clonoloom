@@ -1,8 +1,7 @@
 # ClonoLoom Python client
 
-Wave 8 development: generated methods for the local action API 2, catalog 4, permission policy 1.
-The package/application version stays 0.7.0 until the wave release; published 0.7.0 hosts predate
-this contract. Install this checkout, not a published package with the same version number.
+ClonoLoom 0.8.0: generated methods for the local action API 2, catalog 4, permission policy 1.
+Install this checkout and use a matching host.
 
 ```sh
 uv add /absolute/path/to/clonoloom/clients/python
@@ -10,7 +9,7 @@ uv add /absolute/path/to/clonoloom/clients/python
 uv add '/absolute/path/to/clonoloom/clients/python[pandas]'
 ```
 
-Start the development host separately with `clonoloom --remote-control` (read-only) or explicitly
+Start the host separately with `clonoloom --remote-control` (read-only) or explicitly
 choose grants, for example `--allow edits,compute,files`. Keep its window open. The client neither
 launches the host nor widens grants or accepts proposals.
 

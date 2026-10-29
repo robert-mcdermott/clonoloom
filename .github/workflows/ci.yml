@@ -223,6 +223,12 @@ jobs:
           node validation/fetch.mjs axe-core
           node validation/agent-benchmark.mjs "$RUNNER_TEMP/clonoloom-benchmark" "$RUNNER_TEMP/agent-benchmark"
 
+      - name: Complete worked study and offline report
+        if: matrix.r == 'release'
+        run: |
+          node validation/create-project-0.8.mjs "$RUNNER_TEMP/record-study"
+          node validation/record-study.mjs
+
   data:
     name: Readers on real data
     needs: changed

@@ -3,8 +3,7 @@
 Wave 8 adds a single-file offline report for **explicitly selected saved results**. It contains
 complete recorded tables, existing figures, methods/references, provider notices, original result
 JSON and native evidence certificates. No source data are reopened and no statistic is recomputed
-while preparing or opening it. Version 0.7.0 remains the published release; this feature currently
-requires the development source.
+while preparing or opening it. This workflow is available in ClonoLoom 0.8.0.
 
 ## Export and open
 

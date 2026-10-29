@@ -2,7 +2,20 @@
 
 ## Unreleased
 
+## 0.8.0 — 2026-10-28
+
 ### Added
+
+- **Complete record-and-reach study and 0.8.0 compatibility fixture.** Connect the window,
+  HTTP/MCP/Python/R, checkpoints, self-checking reports, certificates, exact headless replay
+  and portable archive transfer on one declared artificial batch-QC study. Retain complete
+  source truth, original scientific bytes and explicit descriptive limits. Add future-release
+  reopening/replay/recovery checks without modifying older fixtures. Align application,
+  citation, web cache keys and generated client packages at 0.8.0; API 2, catalog 4 and policy 1
+  remain unchanged. Refresh worked guides and both-theme presentation for release review.
+  Fix reviewed automation clearing loaded scientific inputs/results: invalidate older
+  asynchronous attachments separately from project/view reset; retain cancellation guards.
+  Reload still-selected saved results after Undo/Redo instead of leaving their views empty.
 
 - **Containers and cluster execution (wave 8, slice 14).** Package the existing native Go
   workers in a digest-pinned multi-stage build and small non-root, shell-free OCI runtime.
@@ -12,7 +25,7 @@
   and an explicit native Slurm array example without automatic submission or acknowledgment.
   Validate native/container byte parity, all five replay kinds, scientific differences,
   unavailable methods, mount/overwrite/provider refusals and SIGTERM cancellation. Add CI and
-  operational/scientific limits; source support, replay tolerances and version 0.7.0 stay unchanged.
+  operational/scientific limits; source support and replay tolerances stay unchanged.
 
 - **Agent contract benchmark (wave 8, slice 13).** Add eight versioned tasks on independently
   enumerated artificial AIRR inputs, with separate answer, native-evidence and permission
@@ -22,7 +35,7 @@
   bounded opt-in JSONL candidate adapter, scripted/empty controls, accessible both-theme
   reports and CI. Public controls validate the harness, not general model or scientific
   competence. No model service is run by default; the local candidate is not OS-sandboxed.
-  Keep version 0.7.0, catalog 4, scientific workers and exact replay contracts unchanged.
+  Keep catalog 4, scientific workers and exact replay contracts unchanged.
 
 - **Typed Parquet dataset exports (wave 8, slice 12).** Export native clonotypes and retained
   AIRR rearrangements with nullable integer counts, boolean flags, explicit sample-column maps,
@@ -143,6 +156,23 @@
   Validate independent ZIP/JSON/SHA-256 checks, corruption and refusal cases, source-free
   CLI/API agreement, both-theme workflows and compatibility. Keep version 0.7.0; scientific
   replay, MCP and generated clients follow in the recorded Wave 8 sequence.
+
+
+### Validation
+
+- Complete root/internal Go race coverage in bounded batches, with timed-out cohort replay
+  rechecked using its complete parent chain. All 74 configured scientific/reference checks,
+  six unchanged performance budgets, amd64 release-project replay, Go vet and six platform
+  builds pass. Optional external-data checks remain explicitly separate.
+- All 231 JavaScript tests, 17 Python tests, 1,302 R assertions, client package checks,
+  generated-catalog drift checks and live HTTP/MCP/Python/R permission/precision controls pass.
+- Independent Parquet and AnnData readers retain native scientific values. All five report
+  kinds pass offline integrity and altered-content checks; the new worked study passes exact
+  transport, recovery, replay and source-unavailable archive transfer. Benchmark script controls
+  and Linux arm64 container/source/replay/mount/cancellation checks pass with explicit limits.
+- All 126 browser scene checks pass across both themes; all 73 screenshot pairs are reviewed.
+  The 61-page site passes 240 accessibility/layout checks; all 14 application contrast checks
+  pass. Scientific calculations, replay tolerances and older release fixtures are unchanged.
 
 ## 0.7.0 — 2026-10-27
 

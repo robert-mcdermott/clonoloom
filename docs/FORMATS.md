@@ -1018,7 +1018,7 @@ subject fixed-effect coding and comparison orientation are explicit. Cell member
 in the pinned count parent. This is unmoderated NB2 with median-ratio offsets, not the full
 edgeR/DESeq2 pipeline; research §5.40 records assumptions, bounds and independent references.
 
-## Evidence certificates (wave 8 development)
+## Evidence certificates (0.8.0)
 
 A single supported cohort, batch-QC or motif result can be exported as `.certificate.clz`: a ZIP containing
 `certificate.json` (format `clonoloom-certificate`, version 1), exact saved `manifest.json`,
@@ -1042,7 +1042,7 @@ outputs and preserves completed/failed/differing/unavailable/cancelled outcomes.
 project archive. See [HEADLESS.md](HEADLESS.md) for exact fields, bounds, support and exit codes.
 
 
-## Analysis checkpoints (Wave 8 development)
+## Analysis checkpoints (0.8.0)
 
 `clonoloom-checkpoint` v1 is local immutable evidence: original `project.json` plus the original
 manifests and inventoried files of attached completed artifacts. Its `cp-<SHA256>` identity pins
@@ -1052,7 +1052,7 @@ exact attached result bytes, retaining current project identity/history. Neither
 certificate, portable archive or running-job state. See [CHECKPOINTS.md](CHECKPOINTS.md) for
 bounds, version checks, conflict refusal, cancellation, numeric precision and replay limits.
 
-## Self-checking HTML reports (Wave 8 development)
+## Self-checking HTML reports (0.8.0)
 
 `clonoloom-html-report` v1 inventories exact embedded content, geometry source, stylesheet,
 original result JSON and native certificates for 1–8 explicitly selected supported results.
@@ -1063,7 +1063,7 @@ figure marks. Unsupported/oversized evidence is refused without row truncation. 
 [HTML-REPORTS.md](HTML-REPORTS.md) for fields, limits, provider gates and the trusted-checker boundary.
 
 
-## Portable project archives (Wave 8 development)
+## Portable project archives (0.8.0)
 
 Version 1 `.clz` ZIPs retain original project/history, inventoried results and available parents,
 checkpoint closure, notices and optionally permitted sources. A sorted SHA-256 inventory binds
@@ -1074,7 +1074,7 @@ evidence, altered members and destination conflicts refuse import. See
 [PROJECT-ARCHIVES.md](PROJECT-ARCHIVES.md) for the exact schema, bounds, source permissions,
 checkpoint bindings and interruption limits.
 
-## De-identification table exports (Wave 8 development)
+## De-identification table exports (0.8.0)
 
 Slice 11 adds `clonoloom-deidentified-tables` v1, an allowlisted ZIP of native scientific tables,
 pseudonymized identities, explicitly retained sample annotations and fresh inventory/notice.

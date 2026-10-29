@@ -1,8 +1,8 @@
 # Typed Parquet dataset exports
 
-Wave 8 development, slice 12. Use a matching development host/client: action API **2**,
-catalog **4** (64 actions), permission policy **1**. Application/client version remains 0.7.0;
-published v0.7.0 predates this workflow. This is an export representation, not a new analysis.
+ClonoLoom 0.8.0 provides native and explicitly pseudonymized Parquet dataset exports.
+Use matching clients: action API **2**, catalog **4** (64 actions), permission policy **1**.
+This is an export representation, not a new analysis.
 
 ## Export and inspect
 

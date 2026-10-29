@@ -7,7 +7,7 @@ functions/Rd help, curl transport, S3 results, exact number tokens and list-colu
 
 See [Python guide](../docs/PYTHON.md) for installation with uv, explicit grants, discovery,
 precision, errors and examples. The [R guide](../docs/R.md) describes installation with R CMD
-INSTALL, number tokens and explicit vector/list/null handling. Published 0.7.0 hosts predate API 2; use the development build.
+INSTALL, number tokens and explicit vector/list/null handling. Use the matching 0.8.0 host with API 2.
 The client never starts a host, broadens permissions or accepts a proposal.
 
 ## Regenerate after a catalog change
@@ -34,7 +34,7 @@ Rscript -e 'install.packages(c("curl", "jsonlite", "testthat", "withr", "pkgload
 node clients/test-r.mjs
 node clients/test-clients.mjs --r
 uv build clients/python --out-dir /tmp/clonoloom-client-dist
-uv run --no-project --with /tmp/clonoloom-client-dist/clonoloom-0.7.0-py3-none-any.whl clients/python/tests/package_smoke.py
+uv run --no-project --with /tmp/clonoloom-client-dist/clonoloom-0.8.0-py3-none-any.whl clients/python/tests/package_smoke.py
 ```
 
 The real-host driver needs Go, Node 22, uv and Chrome/Chromium; `--r` also needs R and its curl/jsonlite

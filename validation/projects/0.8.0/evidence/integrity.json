@@ -1,0 +1,13 @@
+{
+  "format": "clonoloom-verification",
+  "version": 1,
+  "scope": "recorded-artifact-bytes",
+  "verdict": "integrity-match",
+  "artifact": "bqc-9d7fd220b04b05811fc9da80",
+  "fingerprint": "8f7ecd333b7bf5d89e1e570bd28080bfd28f0a1b4a0d386c3ad1f681c54607a0",
+  "filesChecked": 4,
+  "bytesChecked": 117222,
+  "recomputed": false,
+  "limits": "Integrity only: scientific computations, source files, parent artifacts and project history were not independently verified. A checksum is not a signature or proof of biological validity. Captured evidence may contain counts, sequences, subject identifiers and paths; this is not de-identified.",
+  "findings": []
+}
