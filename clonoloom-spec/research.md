@@ -3809,3 +3809,42 @@ completion manifest. No remote name controls a path, existing captures are never
 and failed/cancelled work is removed. These source captures do not enlarge exact local replay
 or constitute an analysis dataset. Tests use declared artificial metadata and exact numeric
 stress values, not invented research findings; the UI makes those fixture limits visible.
+
+### 5.65 Observed public-cohort presence overlap
+
+The [AIRR Rearrangement schema](https://docs.airr-community.org/en/v1.5.1/datarep/rearrangements.html)
+separates locus, junction sequence, productivity and counts. The public-capture workflow uses a
+named, deliberately restricted single-chain presence key: exact locus and full anchored
+amino-acid junction, supplied productive flag true, canonical alphabet and bounded length.
+These are eligibility rules, not inferred functionality, V/J identity or full receptor pairing.
+They are separate from the active project clonotype definition/QC. Noncanonical or missing
+annotations are excluded visibly rather than normalized into matches. Reviewed 2026-10-29.
+
+[Immunarch's overlap documentation](https://immunarch.com/articles/web_only/v4_overlap.html)
+defines Jaccard as finite-set intersection divided by union. We retain those exact integer
+counts and compute the native ratio, with no abundance weights or rarefaction. As an explicit
+observational convention, an empty eligible set gives unavailable rather than zero, even if
+the union is nonempty. Two nonempty disjoint sets still give zero. This distinction prevents
+missing/unusable observations from masquerading as absence. Display rounding does not alter
+saved native values; the independent oracle uses exact rational arithmetic.
+
+The [AIRR Community Guide, repertoire analysis §§3.6–3.7](https://www.ncbi.nlm.nih.gov/books/NBK586971/)
+discusses shared sequences and convergent recombination. Matching junction amino acids can
+arise from different nucleotide rearrangements and does not establish antigen specificity.
+Depth, assay, species, QC, sampling and contamination can affect observed sharing. No
+population-frequency inference or independent-participant assertion follows from these counts.
+
+The declared universe is the selected capture list, not the repository or a whole study.
+Subject keys are repository/study/subject IDs; a missing component excludes that capture from
+the subject denominator but not pairwise evidence. Repeated scopes and repeated scoped
+subjects are refused so visits and processing alternatives cannot inflate support. IDs across
+studies/repositories can still describe the same person; mirrors and participant independence
+need external review. Capture support and subject support remain distinct per junction.
+
+Captured hashes, request scopes, counts and stop states are verified offline. Partial paging
+and even a terminal empty page leave completeness unestablished. Original exact JSON is retained,
+not converted into inferred abundance units. Results identify loaded query sources and selected
+capture manifests, but do not extend the exact scientific replay contract to live repositories.
+All fixtures and screenshots are artificial, explicitly labeled and independently checked; no
+provider implementation or incompatible-licensed source was examined. See
+[ADC-OVERLAP.md](../docs/ADC-OVERLAP.md) for the complete contract and budgets.

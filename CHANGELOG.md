@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Observed public-cohort overlap (wave 9, slice 9).** Compare one local sample with explicitly
+  selected, checksum-verified ADC captures under a named productive/locus/exact-junction
+  presence contract. Report eligible/excluded records, shared/union counts, Jaccard and
+  per-junction capture/scoped-subject support. Keep empty sets unavailable, missing subjects
+  outside the evaluable denominator and cohort completeness unestablished. Refuse duplicate
+  scopes and implicit visit/processing pooling. Save native evidence with source fingerprints;
+  add independent set/rational controls and simulated both-theme browser validation.
+
 - **Reviewed ADC downloads (wave 9, slice 8).** Capture one explicitly selected repertoire
   and processing run after permission/citation and size-budget review. Preserve exact metadata
   and rearrangement pages, requests, timestamps, hashes and stop reasons in new private folders.

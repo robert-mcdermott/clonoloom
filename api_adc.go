@@ -10,6 +10,8 @@ import (
 )
 
 func (a *app) registerADC(mux *http.ServeMux) {
+	mux.HandleFunc("GET /api/adc/overlap/catalog", a.adcOverlapCatalog)
+	mux.HandleFunc("POST /api/adc/overlap", a.adcOverlap)
 	mux.HandleFunc("POST /api/adc/download", a.adcDownload)
 	mux.HandleFunc("POST /api/adc/download/preview", a.adcDownload)
 	mux.HandleFunc("GET /api/adc/repositories", func(w http.ResponseWriter, r *http.Request) {

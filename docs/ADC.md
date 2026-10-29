@@ -151,7 +151,8 @@ Stop reasons distinguish **page-budget** from **empty-page**. Both retain
 does not prove a complete cohort. No subjects or processing runs are silently pooled, and no
 counts, units, pairing, specificity or scientific validity are inferred. Captured JSON is a
 source-evidence bundle, not an automatically opened analysis dataset, AIRR TSV conversion or
-replay certificate. Public-cohort analysis follows separately. No archive extraction is needed.
+replay certificate. Use [Public overlap](ADC-OVERLAP.md) to compare selected captures with one
+local sample under a separate presence-only contract. No archive extraction is needed.
 
 Cancel, edit an input, or close the dialog to cancel locally. A request already received by a
 provider cannot be retracted; if installation finished before cancellation arrived, its complete

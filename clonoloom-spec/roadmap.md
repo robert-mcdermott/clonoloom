@@ -4324,6 +4324,74 @@ Version 0.8.0, reader cache 5, scientific identity 1, historical fixtures, numer
 automation permissions and exact replay contracts remain unchanged. No commit, push, tag,
 release or publication was made. Slice 9 has not started.
 
+### Slice 9: observed overlap with captured public cohorts
+
+**Slice 8 committed as `3aeead4`. Plan before implementation.** Compare one local sample with
+1–20 explicitly selected, checksum-verified ADC captures offline. Use a separate named presence
+contract: productive, one selected locus, exact canonical anchored amino-acid junction; no V/J,
+pairing, abundance weighting, rarefaction or inherited project QC. Record that contract explicitly.
+Verify manifests, every request/page/hash, scope and stop evidence. Refuse duplicate scopes and
+implicit pooling of visits/processing for a scoped subject. Report eligible/excluded rows,
+unique keys, shared/union counts and descriptive Jaccard, with unavailable values for empty
+eligible sets. Separate assigned/evaluable/missing subjects and unassigned captures; all capture
+completeness remains unestablished. Save native result evidence, show source units and sampling
+limits, independently check set arithmetic and review both themes. No specificity/prevalence
+claim, new replay kind, automation action, version change, commit or release.
+
+
+**Implemented and validated; awaiting maintainer commit.** Data → Public overlap compares one
+loaded sample with 1–20 deliberately selected native ADC captures, offline. The separate
+`productive-single-chain-locus-exact-junction-aa-v1` contract uses one locus, true productivity
+and exact canonical anchored junction amino acids. It does not inherit project QC or V/J,
+paired-chain or nucleotide clonotype rules, and does not use source counts as weights.
+
+The native reader checks fixed regular members, exact manifest keys/types, the pinned contract,
+every request/hash/endpoint/time, response bytes/hashes, repertoire/processing scope, unique
+sequence IDs and stop/count evidence. It rejects symlinks, altered or inconsistent sources,
+duplicate scopes and multiple observations of the same repository/study/subject. The comparison
+budget is 64 MiB of capture evidence, one million loaded dataset rows and one minute. Existing
+captures remain intact; each success writes a new private observational JSON result.
+
+Report raw/eligible/excluded/unique records, exact shared/union counts, Jaccard and each shared
+query key's capture/scoped-subject support. Empty eligible sets are unavailable, including an
+empty query. Missing study/subject IDs stay outside the assigned/evaluable subject denominator
+while their pairwise and aggregate sequence evidence remains visible. Subject identity across
+studies/repositories and biological independence are not inferred. Both empty-page and
+page-budget captures retain unestablished completeness; no prevalence, antigen specificity,
+assay/depth equivalence, abundance comparison or exact remote replay is asserted.
+
+Results retain the loaded query's dataset/sample identity and full source hashes, reader
+identity, named match definition, selected capture manifest fingerprints, scoped identifiers,
+permission/citation statements, stop reasons and all observed shared keys. The UI shows the
+first 100 keys; native evidence keeps all of them. Jaccard display uses four significant digits,
+with exact integer numerator/denominator and full native values retained. Input edits invalidate
+review; cancellation, late responses, project changes and duplicate submissions are guarded.
+Standalone results are not new project artifacts, report/certificate entries or automation actions.
+
+Validation completed:
+
+- Full application race suite passes in **1,114.880 s**, including historical projects, archives,
+  reports and exact headless replay. Full internal/scientific coverage passes, with reference
+  validation in **951.439 s** and the existing optional-data/performance skips. Final focused
+  API/ADC race controls pass after the manifest/schema and evidence refinements.
+- Independent CSV/JSON/Decimal/set/Fraction reference controls agree on all counts, ratios,
+  subject denominators and per-key support. The fixture has 40 unique eligible query keys,
+  24 observed in selected captures, two evaluable of three assigned scoped subjects and one
+  unassigned capture. Varied junction lengths, repeats, unknown count units, nonproductive
+  evidence and both stop reasons are declared artificial, not a biological generative model.
+- Native/API race and amd64 controls pass, including disjoint/identical/empty sets, duplicate
+  observations, exact manifest fields, rehashed conflicting scope, checksum changes, explicit
+  acceptance, missing/null sample selection, local-only access, budgets and cancellation.
+- Both-theme browser controls agree with the independent reference and pass acceptance,
+  concurrent-submit, input-change, stale-response, cancellation and failure checks. Screenshots
+  are visually reviewed. All 233 JavaScript tests, Go vet and six CGO-free builds pass.
+- Site build: 61 pages / 82 screenshot pairs; 240 accessibility/layout checks pass. Container
+  source allowlist: 372 inputs. `git diff --check` and formatting checks are clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical fixtures, numerical tolerances,
+automation permissions and exact replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 10 has not started.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |

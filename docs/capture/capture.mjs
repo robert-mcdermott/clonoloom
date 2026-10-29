@@ -15,6 +15,7 @@ import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { isDeepStrictEqual } from 'node:util';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { launch, sleep } from '../../validation/cdp.mjs';
@@ -1409,6 +1410,68 @@ const scenes = {
     await click('Send metadata query');
     await waitFor(`document.querySelectorAll('.adc-table tbody tr').length === 3`);
     await js(`(() => { const note = document.createElement('p'); note.className = 'callout'; note.textContent = 'Simulated ADC response for documentation. Three repertoire records, two declared subject IDs; no real participants or live repository request.'; document.querySelector('.adc-browser').prepend(note); })()`);
+    await checkAccessibility();
+  },
+  async 'adc-overlap'() {
+    for (const suffix of ['a', 'b', 'c', 'd']) {
+      const name = `adc-download-sim-${suffix}`;
+      cpSync(join(ROOT, 'testdata/public-overlap', name), join(places.library, name), { recursive: true });
+    }
+    await act('open_data', { paths: [join(ROOT, 'testdata/public-overlap/query.tsv')], name: 'Simulated TRB query' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Public overlap').click()`);
+    await waitFor(`document.querySelectorAll('.adc-captures input').length === 4`);
+    await js(`(() => {
+      window.adcOverlapTest = { mode: 'native', calls: 0 };
+      const original = window.fetch;
+      window.fetch = async (address, options) => {
+        if (!String(address).endsWith('api/adc/overlap')) return original(address, options);
+        const state = window.adcOverlapTest; state.calls++;
+        if (state.mode === 'delay') return new Promise((resolve) => { state.release = () => resolve(new Response(state.baseline)); });
+        if (state.mode === 'error') return new Response(JSON.stringify({ error: 'Simulated invalid capture; no result saved.' }), { status: 400 });
+        const response = await original(address, options);
+        state.baseline = await response.clone().text(); return response;
+      };
+      document.querySelectorAll('.adc-captures input').forEach((x) => x.click());
+      if (!document.querySelector('.adc-overlap .primary').disabled) throw new Error('Acceptance not required');
+      document.querySelector('[aria-label="Accept presence contract"]').click();
+      document.querySelector('.adc-overlap .primary').click();
+    })()`);
+    await waitFor(`document.querySelector('.adc-overlap [role="status"]').textContent.includes('Comparison saved')`);
+    const expected = JSON.parse(readFileSync(join(ROOT, 'testdata/public-overlap/expected.json'), 'utf8'));
+    const native = await js(`JSON.parse(window.adcOverlapTest.baseline).document.result`);
+    for (const field of ['query', 'sharedKeys', 'queryKeysShared', 'assignedSubjects', 'evaluableSubjects', 'missingSubjects', 'unassignedCaptures']) {
+      if (!isDeepStrictEqual(native[field], expected[field])) throw new Error('Native overlap reference differs: ' + field);
+    }
+    for (let i = 0; i < expected.pairs.length; i++) {
+      for (const field of ['shared', 'union', 'jaccard']) if (native.pairs[i][field] !== expected.pairs[i][field]) throw new Error('Native pair differs: ' + field);
+    }
+    await js(`(() => {
+      const state = window.adcOverlapTest; state.mode = 'delay';
+      document.querySelector('.adc-overlap .primary').click();
+      document.querySelector('.adc-overlap .primary').click();
+      if (state.calls !== 2) throw new Error('Concurrent comparison allowed');
+      document.querySelector('[aria-label="Matching locus"]').dispatchEvent(new Event('change'));
+      state.release();
+    })()`);
+    await sleep(50);
+    if (await js(`!!document.querySelector('.adc-overlap-result h3')`)) throw new Error('Late result rendered after input change');
+    if (!(await js(`document.querySelector('.adc-overlap .primary').disabled`))) throw new Error('Input edit retained acceptance');
+    await js(`document.querySelector('[aria-label="Accept presence contract"]').click(); document.querySelector('.adc-overlap .primary').click()`);
+    await js(`[...document.querySelectorAll('.adc-overlap button')].find((b) => b.textContent === 'Cancel').click(); window.adcOverlapTest.release()`);
+    await sleep(50);
+    if (await js(`!!document.querySelector('.adc-overlap-result h3')`)) throw new Error('Cancelled result rendered');
+    await js(`window.adcOverlapTest.mode = 'error'; document.querySelector('[aria-label="Accept presence contract"]').click(); document.querySelector('.adc-overlap .primary').click()`);
+    await waitFor(`document.querySelector('.adc-overlap [role="status"]').textContent.includes('Simulated invalid capture')`);
+    await js(`window.adcOverlapTest.mode = 'native'; document.querySelector('.adc-overlap .primary').click()`);
+    await waitFor(`document.querySelector('.adc-overlap [role="status"]').textContent.includes('Comparison saved')`);
+    await js(`(() => {
+      const result = document.querySelector('.adc-overlap-result');
+      const note = document.createElement('p'); note.className = 'callout';
+      note.textContent = 'Simulated TRB evidence: artificial junctions and subject IDs. Native results from local captured JSON; no live repository contacted.';
+      result.prepend(note); result.scrollIntoView({ block: 'start' });
+      if (!result.textContent.includes('Unavailable') || !result.textContent.includes('18/58')) throw new Error('Missing ratio/empty-set presentation');
+    })()`);
     await checkAccessibility();
   },
   async 'adc-download'() {

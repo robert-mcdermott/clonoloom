@@ -255,6 +255,7 @@ It takes `-h` for its settings.
 - [AI agents (MCP)](docs/MCP.md): local stdio, explicit grants and window review (0.8.0).
 - [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
 - [AIRR Data Commons](docs/ADC.md): bounded metadata queries, reviewed source captures and scientific limits (wave 9 development).
+- [Public-cohort overlap](docs/ADC-OVERLAP.md): explicit presence matching against verified captures, observed subject support and incomplete-cohort limits.
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.
 - [Design](clonoloom-spec/design.md): how it is built and why.
 - [Roadmap](clonoloom-spec/roadmap.md): the order of the work, wave by wave (wave *N* is release
