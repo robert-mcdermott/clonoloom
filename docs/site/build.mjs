@@ -56,7 +56,7 @@ const DOCS = [
   { group: 'B cells', pages: [['bcell-inputs', 'Sequence evidence'], ['bcell-families', 'Clonal families'], ['bcell-germlines', 'Germlines'], ['bcell-shm', 'Somatic hypermutation'], ['bcell-lineages', 'Lineage trees'], ['bcell-isotypes', 'Isotypes']] },
   { group: 'Cohorts', pages: [['cohort-study', 'Complete cohort studies'], ['cohort-design', 'Study design'], ['cohort-features', 'Subject features'], ['cohort-comparisons', 'Group comparisons'], ['cohort-counts', 'Replicated counts'], ['definition-robustness', 'Definition robustness']] },
   { group: 'Results', pages: [['record-study', 'A complete record study'], ['figures', 'Figures and exports'], ['record', 'The record'], ['certificates', 'Evidence certificates'], ['headless', 'Headless recipes'], ['containers', 'Containers and clusters'], ['checkpoints', 'Analysis checkpoints'], ['project-archives', 'Portable archives'], ['deidentification', 'De-identification'], ['parquet', 'Typed Parquet exports'], ['html-reports', 'Self-checking reports']] },
-  { group: 'Reference', pages: [['simulation', 'Simulated studies'], ['remote-control', 'Remote control'], ['automation', 'Automation permissions'], ['mcp', 'MCP clients'], ['python', 'Python client'], ['r', 'R client'], ['agent-benchmark', 'Agent benchmark']] },
+  { group: 'Reference', pages: [['simulation', 'Simulated studies'], ['remote-control', 'Remote control'], ['automation', 'Automation permissions'], ['mcp', 'AI agents (MCP)'], ['python', 'Python client'], ['r', 'R client'], ['agent-benchmark', 'Agent benchmark']] },
 ];
 const ORDER = DOCS.flatMap((g) => g.pages);
 

@@ -252,7 +252,7 @@ It takes `-h` for its settings.
 - [Python client](docs/PYTHON.md): generated methods, explicit permissions and exact JSON numbers (0.8.0).
 - [Containers and clusters](docs/CONTAINERS.md): non-root native execution, explicit mounts and exact replay arrays (0.8.0).
 - [Agent contract benchmark](docs/AGENT-BENCHMARK.md): known-truth tasks, code grading and explicit fixture permissions (0.8.0).
-- [MCP clients](docs/MCP.md): local stdio, explicit grants and window review (0.8.0).
+- [AI agents (MCP)](docs/MCP.md): local stdio, explicit grants and window review (0.8.0).
 - [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.
 - [Design](clonoloom-spec/design.md): how it is built and why.

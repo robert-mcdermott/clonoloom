@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Clarify AI-agent setup with Claude Code, Claude Desktop, Codex, Cursor and VS Code examples.
+  Distinguish project storage from dataset paths, add first-task prompts and troubleshooting,
+  and explain review, exact evidence and model-provider data flow. Refresh the MCP site guide
+  and technical reference without changing runtime behavior or permissions.
+
 ## 0.8.0 — 2026-10-28
 
 ### Added

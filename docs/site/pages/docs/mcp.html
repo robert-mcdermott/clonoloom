@@ -1,24 +1,164 @@
 ---
-title: MCP clients
-description: Connect a local MCP client to ClonoLoom with explicit grants, visible review and exact native results.
-lede: A local MCP client drives the same research window and methods. Give it explicit capabilities and review proposed changes before they run.
+title: AI agents (MCP)
+description: Set up Claude Code, Claude Desktop, Codex, Cursor or VS Code to work with ClonoLoom's local research window, explicit permissions and reviewed analyses.
+lede: Ask an AI assistant to inspect repertoire data, propose analysis settings, run ClonoLoom's methods and retrieve recorded results. Review its proposed changes in the same research window you use.
 ---
-<p>ClonoLoom 0.8.0. 7.0.</p>
-<h2 id="connect">Connect a client</h2>
-<div class="code"><pre><code>clonoloom mcp --data-dir /absolute/path/to/mcp-library
-# Local data, computation and proposed edits:
-clonoloom mcp --data-dir /absolute/path/to/mcp-library --allow edits,compute,files</code></pre></div>
-<p>Configure your MCP client's executable and argument array with these values. Default access is read-only. Use one host per library and a dedicated directory. The normal local window opens on the first permitted tool call. With <code>--window none</code>, open the address printed to stderr. Discovery and tool lists need no window. Closing stdin cancels pending work and stops the owned host. stdout is exclusively JSON-RPC.</p>
+<p>ClonoLoom {{version}} includes a local <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (MCP) server in the normal executable. No separate MCP module, Python package or Node.js server is needed. MCP support starts with ClonoLoom 0.8.0.</p>
+<h2 id="capabilities">What an agent can do</h2>
+<ul>
+<li>Open local repertoire files and inspect samples, source units, QC findings and clonotype definitions.</li>
+<li>Query clonotypes with their full-table abundance denominators, and propose definitions or sample annotations.</li>
+<li>Measure diversity, rarefaction and overlap, and run the supported cell, B-cell and cohort workflows through the same scientific methods as the window.</li>
+<li>Retrieve methods and references, create or compare checkpoints, and export supported saved results as certificates or self-checking reports.</li>
+<li>Inspect and transfer portable project archives with explicit source-inclusion choices.</li>
+</ul>
+<p>Available tools depend on the capabilities you grant. The agent still needs an appropriate study design, units and method assumptions; tool availability does not establish scientific validity.</p>
+
+<h2 id="paths">Program, project storage and dataset</h2>
+<p><strong><code>--data-dir</code> selects ClonoLoom's persistent project storage.</strong> It is neither an MCP software library nor the dataset you want to analyze.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Path</th><th>Example</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>Executable</td><td><code>/Users/you/.local/bin/clonoloom</code></td><td>The installed program the AI client starts</td></tr>
+<tr><td>Project storage</td><td><code>/Users/you/clonoloom-projects</code></td><td>Saved projects, results, checkpoints and jobs; can hold multiple projects</td></tr>
+<tr><td>Dataset</td><td><code>/Users/you/data/study/airr_rearrangement.tsv</code></td><td>A separate input file opened later through the reviewed <code>open_data</code> tool</td></tr>
+</tbody></table></div>
+<p>ClonoLoom creates its storage directory if needed. Source repertoire files stay where they are; projects record their paths and fingerprints. A new empty storage directory will not show projects from another library. To use an existing library, stop the instance using it, select its directory here, then open the saved project in the window. You can also transfer a <a href="project-archives.html">portable project archive</a>.</p>
+<p>Use one host per storage directory. MCP starts its own host; it does not attach to an existing application. Give simultaneous agents separate directories. Omitting <code>--data-dir</code> uses the <a href="record.html#where">normal application library</a>; these examples choose an explicit directory.</p>
+
+<h2 id="connect">Set up your AI client</h2>
+<p>Jump to <a href="#claude-code">Claude Code</a>, <a href="#claude-desktop">Claude Desktop</a>, <a href="#codex">Codex</a>, <a href="#cursor">Cursor</a> or <a href="#vscode">VS Code</a>.</p>
+<p><a href="../install.html">Install ClonoLoom</a> first, then choose one setup below. The examples grant local file access, computation and reviewed edits with <code>--allow edits,compute,files</code>. Remove that option and its value for read-only state inspection. Your client's tool approval and ClonoLoom's in-window review are separate.</p>
+<p>Use an absolute executable path. The shell examples expand <code>$HOME</code>; replace <code>/Users/you/…</code> in JSON or TOML with your actual paths. Do not assume <code>~</code>, <code>$HOME</code> or <code>%…%</code> expands inside JSON. Windows JSON can use forward slashes: <code>C:/Users/you/AppData/Local/Programs/ClonoLoom/clonoloom.exe</code> and <code>C:/Users/you/clonoloom-projects</code>.</p>
+
+<h3 id="claude-code">Claude Code</h3>
+<p>Run in a macOS/Linux shell:</p>
+<div class="code"><span class="code-label">sh</span><pre><code>claude mcp add --transport stdio --scope user clonoloom -- \
+  &quot;$HOME/.local/bin/clonoloom&quot; mcp \
+  --data-dir &quot;$HOME/clonoloom-projects&quot; --allow edits,compute,files
+claude mcp get clonoloom</code></pre></div>
+<p>Open Claude Code and use <code>/mcp</code> to check the connection. User scope makes this configuration available across your coding projects; it does not select a dataset. See the <a href="https://code.claude.com/docs/en/mcp">Claude Code MCP guide</a> for scopes and connection management.</p>
+<h3 id="claude-desktop">Claude Desktop</h3>
+<p>Open <strong>Settings → Developer → Edit Config</strong>. Merge this entry into <code>mcpServers</code> in <code>claude_desktop_config.json</code>, preserving other servers, then restart the client.</p>
+<div class="code"><span class="code-label">json</span><pre><code>{
+  &quot;mcpServers&quot;: {
+    &quot;clonoloom&quot;: {
+      &quot;command&quot;: &quot;/Users/you/.local/bin/clonoloom&quot;,
+      &quot;args&quot;: [
+        &quot;mcp&quot;,
+        &quot;--data-dir&quot;,
+        &quot;/Users/you/clonoloom-projects&quot;,
+        &quot;--allow&quot;,
+        &quot;edits,compute,files&quot;
+      ]
+    }
+  }
+}</code></pre></div>
+<p>Use this local executable configuration, not a connector asking for a remote URL. See the <a href="https://modelcontextprotocol.io/docs/develop/connect-local-servers">official local-server setup guide</a>.</p>
+<h3 id="codex">Codex</h3>
+<p>Register the local server with the CLI:</p>
+<div class="code"><span class="code-label">sh</span><pre><code>codex mcp add clonoloom -- &quot;$HOME/.local/bin/clonoloom&quot; mcp \
+  --data-dir &quot;$HOME/clonoloom-projects&quot; --allow edits,compute,files
+codex mcp list</code></pre></div>
+<p>For review and longer computations, set <code>tool_timeout_sec = 660</code> in the existing <code>[mcp_servers.clonoloom]</code> section of <code>~/.codex/config.toml</code>. Alternatively, use this complete entry without duplicating the table:</p>
+<div class="code"><span class="code-label">toml</span><pre><code>[mcp_servers.clonoloom]
+command = &quot;/Users/you/.local/bin/clonoloom&quot;
+args = [
+  &quot;mcp&quot;,
+  &quot;--data-dir&quot;, &quot;/Users/you/clonoloom-projects&quot;,
+  &quot;--allow&quot;, &quot;edits,compute,files&quot;
+]
+tool_timeout_sec = 660</code></pre></div>
+<p>Restart the client connection after edits. This client timeout does not extend ClonoLoom's own ten-minute action limit. See the <a href="https://developers.openai.com/codex/mcp">Codex MCP guide</a> for configuration and <code>/mcp</code> in the CLI.</p>
+<h3 id="cursor">Cursor</h3>
+<p>Merge this into <code>~/.cursor/mcp.json</code> for user-wide access, or <code>.cursor/mcp.json</code> for one coding project, then enable it in Cursor's MCP settings.</p>
+<div class="code"><span class="code-label">json</span><pre><code>{
+  &quot;mcpServers&quot;: {
+    &quot;clonoloom&quot;: {
+      &quot;type&quot;: &quot;stdio&quot;,
+      &quot;command&quot;: &quot;/Users/you/.local/bin/clonoloom&quot;,
+      &quot;args&quot;: [
+        &quot;mcp&quot;,
+        &quot;--data-dir&quot;,
+        &quot;/Users/you/clonoloom-projects&quot;,
+        &quot;--allow&quot;,
+        &quot;edits,compute,files&quot;
+      ]
+    }
+  }
+}</code></pre></div>
+<p>See <a href="https://docs.cursor.com/context/model-context-protocol">Cursor's MCP configuration</a>.</p>
+<h3 id="vscode">VS Code</h3>
+<p>For VS Code's local agent harness, run <strong>MCP: Open User Configuration</strong>, or use <code>.vscode/mcp.json</code> in the coding workspace. Its configuration uses <code>servers</code>:</p>
+<div class="code"><span class="code-label">json</span><pre><code>{
+  &quot;servers&quot;: {
+    &quot;clonoloom&quot;: {
+      &quot;type&quot;: &quot;stdio&quot;,
+      &quot;command&quot;: &quot;/Users/you/.local/bin/clonoloom&quot;,
+      &quot;args&quot;: [
+        &quot;mcp&quot;,
+        &quot;--data-dir&quot;,
+        &quot;/Users/you/clonoloom-projects&quot;,
+        &quot;--allow&quot;,
+        &quot;edits,compute,files&quot;
+      ]
+    }
+  }
+}</code></pre></div>
+<p>Use <strong>MCP: List Servers</strong> to start it and inspect output, then enable its tools in agent chat. Other VS Code harnesses can use different configuration stores; follow the <a href="https://code.visualstudio.com/docs/agents/reference/mcp-configuration">VS Code MCP reference</a> for your selected harness. Keep ClonoLoom, its browser window and the files on the same computer for these examples; remote development environments have different paths.</p>
+
+<h2 id="first-task">Try a first task</h2>
+<p>Ask the assistant to check the connection:</p>
+<div class="code"><span class="code-label">prompt</span><pre><code>Use ClonoLoom's get_state tool. Tell me which project and datasets
+are open, their source units, and whether any jobs are running.
+Do not change anything.</code></pre></div>
+<p>The client starts ClonoLoom, and the window opens on the first permitted tool call. Tool discovery alone opens no window. An empty new library is expected. Then replace the dataset path in this prompt with one of your files:</p>
+<div class="code"><span class="code-label">prompt</span><pre><code>Use ClonoLoom to open /Users/you/data/study/airr_rearrangement.tsv.
+I will review the proposal in its window. Summarize the source units,
+QC findings and current clonotype definition. Query the ten most
+abundant clonotypes and report frequencies using the full table
+denominator. Keep the analysis descriptive; do not infer antigen
+specificity or a treatment effect from rank or abundance.</code></pre></div>
+<p>Open data through <code>open_data</code>, not as positional arguments to <code>clonoloom mcp</code>. Wait for each reviewed action to finish before requesting the next. To try artificial data, open an example manually in this MCP-owned window, then ask the agent to inspect it.</p>
+<p>The <code>open_example</code> tool requires the additional <code>network</code> grant even for a local example: its declared effects include downloads. Add that grant only when intended and restart the server; <code>--offline</code> still blocks ClonoLoom downloads. Provider acknowledgements remain separate.</p>
+<p>The <a href="record-study.html">complete record study</a> walks through a declared artificial analysis. The <a href="agent-benchmark.html">agent benchmark</a> separates answer, evidence and permission grades; scripted controls do not establish general model competence.</p>
+
 <h2 id="review">Review proposed changes</h2>
-<p>Tool discovery lists only actions allowed by the launch grants. Knowing another action's name cannot widen them. Both HTTP and MCP use the same argument validation, window review, History and bounded audit. Client capabilities and names do not grant application permissions. There is no tool to accept proposals. Read <a href="automation.html">Automation permissions</a> for cancellation, Undo and file-effect limits.</p>
-<shot name="mcp" alt="A named MCP notebook proposes a clonotype definition change in an artificial vaccination study">A person reviews the exact arguments before a definition change. These are simulated repertoires from one subject at three observations, not a treatment-effect analysis.</shot>
+<p>Project edits wait for you to accept or reject their exact arguments in the window. No MCP tool can accept a proposal. Inspection and some exports do not require a proposal; the action catalog specifies this per tool. Accepted project changes appear in History and use normal Undo/Redo. Undo does not delete completed exports or downloads.</p>
+<shot name="mcp" alt="A named MCP notebook proposes a clonotype definition change in an artificial vaccination study">Review the exact definition change before it executes. These simulated repertoires represent one subject at three observations, not a treatment-effect analysis.</shot>
 <shot name="mcp-audit" alt="The session audit lists MCP requests and a rejected definition proposal">The host retains its last 500 audit events. Caller names are supplied by clients, not authenticated identities.</shot>
-<h2 id="versions">Two explicit protocol modes</h2>
-<p>MCP 2026-07-28 uses <code>server/discover</code> and per-request protocol/capability metadata. MCP 2025-11-25 uses <code>initialize</code> followed by <code>notifications/initialized</code>. Modern requests never inherit a previous client's label or capabilities. Only tools are advertised; there is no network MCP endpoint, sampling or server-initiated request.</p>
-<h2 id="exact">Keep exact results</h2>
-<p>Text and structured content carry the native result envelope without a floating-point decoding round trip. Typed clonotype queries retain native JSON text, current definition and QC, source units and full-table denominators. Filtering changes membership and displayed rank, without renormalizing frequencies. Use a precision-preserving client decoder and original certificate bytes for exact replay.</p>
-<p>MCP adds no scientific method or replay tolerance. <a href="certificates.html">Certificate replay</a> keeps its existing five-kind captured-input boundary. Transport success and human acceptance do not prove biological validity or specificity.</p>
-<h2 id="limits">Bounds and cancellation</h2>
-<p>Input frames are at most 2 MiB, arguments 1 MiB and outgoing tool responses 16 MiB. Oversized results return an explicit error, never truncated success; the action may already have completed. At most 16 calls wait concurrently and one window action executes at a time. Request IDs are unique within a process, bounded to 65,536 requests. String IDs/tokens have a 512-byte encoded bound; numeric IDs/tokens must be safe integers.</p>
-<p>Optional five-second progress messages measure elapsed waiting time, not percent complete. Cancel by request ID; no later messages are emitted after cancellation is processed. Completed file effects can remain. Reinspect state before resubmitting. Window connection waits are bounded to 40 seconds and window actions to ten minutes. Known live hosts using the same library are refused, but this is not an interprocess lock.</p>
-<p>The <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/MCP.md">complete MCP guide</a> includes configuration, protocol examples and precise limits, with links to the official specification. The implementation follows the <a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio">stdio transport</a>, <a href="https://modelcontextprotocol.io/specification/2026-07-28/server/tools">tools contract</a> and <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle">legacy lifecycle</a>.</p>
+<p>Tool discovery lists only actions allowed by the startup grants. Knowing another tool's name cannot grant access. Read <a href="automation.html">Automation permissions</a> for busy/stale refusals, cancellation and completed file effects.</p>
+
+<h2 id="tools">Useful tools</h2>
+<div class="table-wrap"><table><thead><tr><th>Tools</th><th>Use</th></tr></thead><tbody>
+<tr><td><code>get_state</code></td><td>Inspect the current project, datasets, units and running jobs</td></tr>
+<tr><td><code>open_data</code>, <code>query_clonotypes</code></td><td>Open local inputs with review; query the current definition/QC with full-table frequency denominators</td></tr>
+<tr><td><code>set_definition</code>, <code>annotate_samples</code></td><td>Propose clonotype definitions and sample metadata</td></tr>
+<tr><td><code>measure_diversity</code>, <code>rarefy</code>, <code>measure_overlap</code></td><td>Run repertoire methods with their existing assumptions and units</td></tr>
+<tr><td><code>show_methods</code></td><td>Retrieve the methods paragraph and references for the recorded work</td></tr>
+<tr><td><code>create_checkpoint</code>, <code>compare_checkpoint</code>, <code>recover_checkpoint</code></td><td>Preserve, compare and recover recorded analysis state</td></tr>
+<tr><td><code>inspect_certificate</code>, <code>export_certificate</code>, <code>export_html_report</code></td><td>Inspect or export supported saved evidence; these tools do not perform scientific replay</td></tr>
+</tbody></table></div>
+<p>The catalog contains 64 actions at API 2, catalog 4 and policy 1. Read the <a href="{{github}}/blob/main/docs/REMOTE-CONTROL.md">action reference</a> for arguments and each method's scope. The live tool list reflects the host's grants.</p>
+
+<h2 id="privacy">Privacy and the agent's model</h2>
+<p>The MCP server and scientific computations run locally. The assistant can send tool results and your prompts to its configured model provider. Results can include receptor sequences, annotations, identifiers and summaries. Choose a client/model configuration suitable for the data you intend to expose. <code>--offline</code> controls ClonoLoom downloads, not the AI client's network use. Grants restrict ClonoLoom actions; they are not an OS filesystem sandbox.</p>
+
+<h2 id="troubleshooting">If something does not work</h2>
+<div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Check</th></tr></thead><tbody>
+<tr><td>Server cannot start</td><td>Verify the executable's absolute path and <code>clonoloom --version</code>; read the client's server log</td></tr>
+<tr><td>Only <code>get_state</code> appears</td><td>Add the required <code>--allow</code> capabilities, restart the server and refresh its tools</td></tr>
+<tr><td>Familiar datasets are missing</td><td>Check project storage; open a saved project there or provide a separate dataset path</td></tr>
+<tr><td>Another host uses the directory</td><td>Stop that host before reconnecting, or choose a different storage directory</td></tr>
+<tr><td>A call waits or times out</td><td>Keep the MCP-owned window open and check its proposal; client timeouts can be shorter than ClonoLoom's limits</td></tr>
+<tr><td>No window opens</td><td>Try <code>--window browser</code>; with <code>--window none</code>, open the local address from the client's stderr log</td></tr>
+<tr><td>Busy or stale proposal</td><td>Finish/cancel jobs or imports, inspect current state and submit a fresh proposal</td></tr>
+<tr><td>Protocol version rejected</td><td>Use a client supporting one of the modes below; other revisions are not claimed compatible</td></tr>
+</tbody></table></div>
+<h2 id="versions">Protocol compatibility</h2>
+<p>MCP 2026-07-28 uses <code>server/discover</code> and per-request metadata; MCP 2025-11-25 uses <code>initialize</code> and <code>notifications/initialized</code>. ClonoLoom provides local stdio tools, not a network MCP endpoint. Configuration examples follow the linked client documentation; they do not imply end-to-end testing of every client/version.</p>
+<h2 id="exact">Keep exact scientific evidence</h2>
+<p>Responses preserve native JSON numeric tokens. Typed queries retain source units, the current definition/QC and full-table denominators; filtering does not renormalize frequencies. Use a precision-preserving decoder or the <a href="python.html">Python</a>/<a href="r.html">R</a> client for exact numeric handling, and original certificate bytes for replay. An assistant's prose is not a replacement for those records.</p>
+<p>MCP adds no scientific method, plot or replay tolerance. <a href="certificates.html">Certificate replay</a> remains limited to its five supported kinds and captured inputs. Successful transport, review and replay do not establish biological validity or receptor specificity.</p>
+<h2 id="limits">Waiting, cancellation and limits</h2>
+<p>A window connection wait is bounded to 40 seconds and a window action to ten minutes. Optional progress messages indicate elapsed waiting time, not percent complete. Cancelled calls cannot attach later results, but completed files can remain; inspect state before resubmitting. Oversized responses fail explicitly and may follow a completed action.</p>
+<p>The most recently connected window receives actions. Closing client stdin stops the owned host and cancels pending calls; closing the window alone does not stop MCP. The live-host check is best effort, not an interprocess lock. See the <a href="{{github}}/blob/main/docs/MCP.md">complete MCP reference</a> for frame/response bounds, exact results, protocol examples and lifecycle details.</p>
