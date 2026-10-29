@@ -3564,3 +3564,35 @@ it is neither an inferential experiment nor realistic clone-frequency ground tru
 screenshots show source evidence and limits. No plot, hypothesis test, new replay kind or
 permission expansion is introduced. YAML, MiAIRR completeness and Clone/Cell/Receptor object
 support have separate acceptance criteria in later wave 9 slices.
+
+### 5.58 Exact YAML values and original source are different evidence
+
+Wave 9 slice 2 uses the primary [YAML 1.2.2 specification](https://yaml.org/spec/1.2.2/)
+(block collections, scalar styles and core resolution) and the
+[AIRR 2.0 Repertoire format](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html),
+reviewed 2026-10-28. The application implements a declared subset independently; no YAML library
+source or third-party runtime is included. The complete contract is `docs/AIRR-YAML.md`.
+
+**Adaptation.** JSON-form finite decimal tokens are preserved without binary floating-point
+conversion. Quoted scalars stay strings; YAML 1.2 null/boolean spellings resolve explicitly;
+yes/no/on/off remain strings. Numeric-looking forms outside the contract are refused rather
+than silently becoming strings or rounded numbers. Mapping keys are strings and unique.
+Unsupported tags, aliases, merge keys, directives, folding and multi-document streams fail.
+Literal-block line endings/chomping are tested, including missing final line breaks.
+
+Decoded values alone cannot preserve comments, quoting and source layout. The opened metadata
+file therefore retains one original YAML snapshot alongside its SHA-256, while the repertoire
+objects retain an exact JSON projection. The API returns both as strings with separate labels
+and preview bounds. JSON formatting for inspection uses native lexical indentation, never a
+browser parse/re-encode. Gzip hashes identify compressed source bytes; the source view displays
+the captured decompressed text. Ordinary summaries do not serialize the original source text.
+
+**Independent check.** Validation-only ruamel.yaml 0.18.6 composes YAML 1.2 nodes/tags; the oracle
+writes numeric node lexemes directly into JSON instead of constructing floats. Native tests
+compare all repertoire values against those committed references. The corpus includes extreme
+integers/exponents, decimal precision, negative zero, null/false/empty values, Unicode, quoted
+IDs/dates, comments, collections and literal blocks. Refusal, bounds, cancellation, fuzz,
+cross-format ID, uploaded-name/gzip and original-source API controls supplement the oracle.
+The existing simulated longitudinal study is represented in both formats; it retains the same
+coverage and scientific limitations. This is format/evidence validation, not full YAML/AIRR
+conformance, a MiAIRR checklist, biological replication or an additional scientific estimator.

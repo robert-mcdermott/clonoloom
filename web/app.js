@@ -69,7 +69,7 @@ export function fileKind(name) {
   const has = (...suffixes) => suffixes.some((s) => lower.endsWith(s));
   if (has('.clz')) return 'project';
   if (has('.tsv', '.tsv.gz', '.csv', '.csv.gz', '.txt', '.txt.gz', '.tab', '.tab.gz')) return 'table';
-  if (has('.json', '.json.gz', '.yaml', '.yml')) return 'metadata';
+  if (has('.json', '.json.gz', '.yaml', '.yml', '.yaml.gz', '.yml.gz')) return 'metadata';
   if (has('.h5ad', '.h5mu', '.h5')) return 'expression';
   if (has('.mtx', '.mtx.gz')) return 'matrix';
   if (has('.fasta', '.fa', '.fna', '.fasta.gz', '.fa.gz')) return 'fasta';

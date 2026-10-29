@@ -847,3 +847,22 @@ accepted objects are still byte-for-byte substrings of the supplied JSON with un
 The capture checks displayed native coverage, original values and accessibility in both themes.
 This validates import/inspection behavior, not full AIRR schema compliance, MiAIRR completeness,
 experimental validity, or subject independence. Old release fixtures remain unchanged.
+
+## Bounded AIRR YAML (wave 9, slice 2)
+
+```sh
+go test -race ./internal/airr ./internal/reads
+go test -race . -run 'TestYAML|TestMetadata|TestEveryReleasesProjectStillOpens'
+go test ./internal/airr -run '^$' -fuzz '^FuzzRepertoireYAML$' -fuzztime 30s
+uv run --no-project --with ruamel.yaml==0.18.6 validation/reference/yaml_metadata.py
+node docs/capture/capture.mjs repertoire-yaml repertoire-metadata --theme both
+```
+
+The pinned validation-only oracle reads YAML 1.2 nodes/tags without constructing floats and
+checks committed exact JSON. `--write` regenerates those references; native Go tests consume
+them in ordinary CI. It is not a runtime dependency. Scalar, collection and simulated-study
+fixtures exercise types, large integers/exponents, precise decimals, quoted IDs, nulls, literal
+blocks and Unicode. Unsupported syntax has explicit refusal controls. Reader/API checks cover
+mixed JSON/YAML ambiguity, uploaded filenames, gzip fingerprints, source removal and preview
+bounds. Browser checks compare original YAML text exactly and retain the JSON regression scene.
+Supported syntax and scientific limits are in `docs/AIRR-YAML.md`; no conformance claim is made.

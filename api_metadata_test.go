@@ -87,3 +87,34 @@ func TestMetadataInspectionExactAndPaged(t *testing.T) {
 		t.Fatal("missing dataset")
 	}
 }
+
+func TestYAMLMetadataInspectionDistinguishesSourceAndProjection(t *testing.T) {
+	dir := t.TempDir()
+	table, meta := filepath.Join(dir, "study.tsv"), filepath.Join(dir, "study.yaml")
+	source := "# source comment\r\nrepertoire_id: R1\r\nvalue: 9007199254740993\r\nflag: false\r\n"
+	os.WriteFile(table, []byte(datasetTSV), 0600)
+	os.WriteFile(meta, []byte(source), 0600)
+	app, handler := testApp(t)
+	opened := postJSON(t, handler, "/api/datasets/open", `{"paths":[`+jsonString(table)+`,`+jsonString(meta)+`]}`)
+	if opened.Code != 200 {
+		t.Fatal(opened.Body)
+	}
+	var summary datasetSummary
+	json.Unmarshal(opened.Body.Bytes(), &summary)
+	endpoint := "/api/datasets/" + summary.ID + "/metadata?record=0"
+	os.Remove(meta)
+	response := request(t, handler, "GET", endpoint, nil, nil)
+	var detail map[string]any
+	json.Unmarshal(response.Body.Bytes(), &detail)
+	if response.Code != 200 || detail["format"] != "yaml" || detail["sourceYAML"] != source || !strings.Contains(detail["rawJSON"].(string), "9007199254740993") {
+		t.Fatal(response.Body)
+	}
+	ds, _ := app.datasets.get(summary.ID)
+	ds.Result.Metadata[0].SourceText = strings.Repeat("#", 4<<20+1)
+	response = request(t, handler, "GET", endpoint, nil, nil)
+	detail = map[string]any{}
+	json.Unmarshal(response.Body.Bytes(), &detail)
+	if response.Code != 200 || detail["sourceYAML"] != nil || detail["sourceNotice"] == nil || detail["rawJSON"] == nil {
+		t.Fatal("oversized source preview must not truncate or hide its record projection")
+	}
+}

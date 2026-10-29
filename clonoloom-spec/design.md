@@ -301,3 +301,19 @@ Import limits: 64 MiB per source and decompressed file, 64 MiB combined decoded 
 100,000 records per file/dataset, JSON nesting depth 64, 1,000,000 values per file, and 4,096 bytes
 per repertoire ID. A declared schema version is information, not schema validation. Summary
 labels can combine processing annotations; raw evidence preserves their individual identity.
+
+### Bounded YAML projection and original source (wave 9, slice 2)
+
+`internal/airr/yaml.go` parses a documented YAML 1.2 subset to exact typed values and then JSON,
+reusing the repertoire validation/extraction rules. No floats are constructed. Depth, parser
+work, line and source/projection limits bound the parser; it reports unsupported syntax rather
+than guessing. The native reader dispatches using the supplied filename, including gzip and
+content-addressed uploads. JSON behavior and prior dataset identity rules stay unchanged.
+
+For YAML, `reads.MetadataFile` retains `Format` and one `SourceText` snapshot. `SourceText` has
+`json:"-"` so dataset summaries and listings cannot unintentionally serialize entire documents.
+The detail endpoint adds `format: "yaml"`, the decoded `rawJSON` string and the `sourceYAML`
+string (or an explicit oversized-source notice). Original JSON inputs keep their original
+object-byte contract. The YAML projection may be lexically indented in Go for display without
+numeric decoding. Each preview remains bounded at 4 MiB. The UI labels the projection and shows
+the original YAML document separately; it never round-trips evidence through JavaScript numbers.

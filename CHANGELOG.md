@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Bounded AIRR YAML metadata (wave 9, slice 2).** Read a documented YAML 1.2 subset,
+  including gzip and uploaded filenames, without runtime dependencies or floating-point
+  conversion. Preserve scalar types, exact decimal tokens, null/false/zero and original source
+  snapshots. Refuse ambiguous keys/IDs, unsupported syntax and excessive work. Distinguish
+  decoded record JSON from original YAML in the inspector. Add independent ruamel.yaml node
+  references, malformed/budget/fuzz controls, source/API checks and both-theme screenshots.
+  Document supported syntax, refusals and scientific limits; MiAIRR assessment remains separate.
+
 - **Exact AIRR metadata and inspection (wave 9, slice 1).** Plan wave 9 in sixteen slices.
   Preserve original repertoire JSON, exact numeric tokens and captured source fingerprints;
   reject ambiguous keys/IDs, invalid Unicode and excessive metadata. Keep explicit ID matches

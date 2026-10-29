@@ -41,8 +41,12 @@ export function showRepertoireMetadata(app, dataset) {
           details.append(h('h3', record.repertoireId),
             h('p.small', `${source.name} · declared AIRR schema: ${source.schemaVersion || 'not supplied'}`),
             h('p.mono.small', { style: { overflowWrap: 'anywhere' } }, `Source SHA-256: ${source.sha256}`),
-            h('p.muted.small', 'Original record JSON, including unknown fields and exact numeric tokens. Absent fields, null, false and zero remain distinct. The source fingerprint covers the whole file, including its wrapper.'),
-            h('pre.metadata-json', { tabIndex: 0, 'aria-label': 'Original repertoire JSON', style: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', maxHeight: '300px', overflow: 'auto' } }, detail.rawJSON));
+            h('p.muted.small', detail.format === 'yaml' ? 'Decoded record JSON from the supported YAML subset, with exact numbers and scalar types. This is a projection, not original YAML text. The source fingerprint covers the original file (compressed bytes for gzip).' : 'Original record JSON, including unknown fields and exact numeric tokens. Absent fields, null, false and zero remain distinct. The source fingerprint covers the whole file, including its wrapper.'),
+            recordText(detail));
+          if (detail.sourceYAML != null) details.append(h('details.metadata-yaml', { open: true },
+            h('summary', 'Original YAML document (all records)'),
+            h('pre', { tabIndex: 0, style: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', maxHeight: '300px', overflow: 'auto' } }, detail.sourceYAML)));
+          if (detail.sourceNotice) details.append(h('p.callout', detail.sourceNotice));
         } catch (error) {
           if (active() && revision === generation && selected === selection) { clear(details); details.append(h('p.callout.danger', error.message)); }
         }
@@ -65,4 +69,9 @@ export function showRepertoireMetadata(app, dataset) {
   }
   page();
   return dialog;
+}
+
+function recordText(detail) {
+  const text = h('pre.metadata-json', { tabIndex: 0, 'aria-label': detail.format === 'yaml' ? 'Decoded repertoire JSON' : 'Original repertoire JSON', style: { whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', maxHeight: '300px', overflow: 'auto' } }, detail.rawJSON);
+  return detail.format === 'yaml' ? h('details', h('summary', 'Decoded record JSON (exact values)'), text) : text;
 }

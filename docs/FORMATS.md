@@ -61,7 +61,7 @@ export, TRUST4, Cell Ranger (`airr_rearrangement.tsv`) and AIRR Data Commons dow
   are `consensus_count` (or `duplicate_count`). Rows that name a cell (`cell_id`) make the
   dataset single-cell.
 
-**Repertoire metadata** (`.json` or `.json.gz`) opens with the rearrangement tables:
+**Repertoire metadata** (`.json`, `.yaml`, `.yml`, optionally `.gz`) opens with the rearrangement tables:
 an AIRR Data File containing `Repertoire: [...]`, a list of repertoire objects, or one object.
 Annotation extraction supports the field shapes used in schemas 1.3–2.0; it is not full schema
 validation. `Info.version`, when present, is shown as the supplied declaration.
@@ -75,7 +75,9 @@ records remain available. Neither coverage nor a match
 establishes MiAIRR completeness, ontology validity, biological independence or a particular
 sample/data-processing record.
 
-Original object bytes retain unknown fields, numeric tokens, null, false and zero. Summary
+Original JSON object bytes retain unknown fields, numeric tokens, null, false and zero.
+YAML uses a documented [bounded YAML 1.2 subset](AIRR-YAML.md): decoded record JSON and the
+original YAML document are shown separately, both as text, without floating-point conversion. Summary
 annotations (study, subject, species, sex, age, diagnosis, tissue, cell subset, time point,
 template and HLA) are display conveniences; multiple processing values may be combined.
 Conflicting explicit single-cell flags do not become one boolean. The source hash covers the
@@ -87,8 +89,8 @@ Unicode escapes and non-string, empty, padded or control-character repertoire ID
 These are ClonoLoom import rules. Limits: 64 MiB per source/decompressed file and combined decoded
 metadata, 100,000 repertoires per file/dataset, nesting depth 64, 1,000,000 JSON values per file
 and 4,096 bytes per ID. Original-record previews over 4 MiB are refused explicitly, without
-truncating imported evidence. Lists are paged. YAML, the MiAIRR checklist and Clone/Cell/Receptor
-objects are planned in later wave 9 slices. See the [AIRR Repertoire standard](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html).
+truncating imported evidence. Lists are paged. Additional YAML syntax/work limits are documented in the linked guide. The
+MiAIRR checklist and Clone/Cell/Receptor objects remain planned in later wave 9 slices. See the [AIRR Repertoire standard](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html).
 
 ### Sequence evidence (0.5.0)
 

@@ -71,6 +71,7 @@
 !internal/airr/metadata.go
 !internal/airr/repertoire.go
 !internal/airr/schema.go
+!internal/airr/yaml.go
 !internal/anndata/export.go
 !internal/artifacts/artifacts.go
 !internal/batchqc/batchqc.go

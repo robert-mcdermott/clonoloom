@@ -1328,6 +1328,19 @@ const scenes = {
   },
   // The Data view of the PBMC 1k T cells: the dataset, its validation and samples; its files and
   // license in the inspector.
+  async 'repertoire-yaml'() {
+    const source = join(ROOT, 'testdata/metadata/yaml/study.yaml');
+    await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), source], name: 'Simulated longitudinal study · YAML' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR metadata').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 4`);
+    await js(`document.querySelector('[aria-label="Inspect R001"]').click()`);
+    await waitFor(`Boolean(document.querySelector('.metadata-yaml pre'))`);
+    const original = await js(`document.querySelector('.metadata-yaml pre').textContent`);
+    if (original !== readFileSync(source, 'utf8')) throw new Error('Original YAML changed in the browser');
+    await js(`(() => { const v = document.querySelector('.repertoire-metadata'); if (!v.textContent.includes('3 matched / 4') || !v.textContent.includes('projection, not original YAML')) throw new Error('YAML provenance/coverage missing'); const decoded = v.querySelector('.metadata-json').textContent; for (const token of ['"value": 0','"single_cell": false','"reason": null']) if (!decoded.includes(token)) throw new Error('YAML type changed'); v.querySelector('.metadata-yaml').open = true; })()`);
+    await checkAccessibility();
+  },
   async 'repertoire-metadata'() {
     // Exercise real pagination on a temporary extension of the declared example.
     const paged = JSON.parse(readFileSync(join(ROOT, 'testdata/metadata/study.airr.json'), 'utf8'));

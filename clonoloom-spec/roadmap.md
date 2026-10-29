@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–8 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** v0.8.0 and its product site are published. Wave 8 merged in PR #8
 (`719a73c`); the follow-up AI-agent documentation is committed as `6f71662`. Wave 9 is planned
-below; slice 1 is implemented and validated on `wave9`, awaiting maintainer review and commit.
+below; slice 1 is committed and pushed as `e3f8b49`; slice 2 is implemented and validated on `wave9`, awaiting maintainer review and commit.
 No 0.9.0 release is made.
 
 The order follows the siblings' principle:
@@ -3871,7 +3871,7 @@ scientific acceptance criteria; no external algorithm/source is selected by this
 
 ### Slice 1: exact AIRR metadata and inspection
 
-**Implemented and validated; awaiting maintainer review and commit.** AIRR's metadata standard
+**Committed and pushed as `e3f8b49`.** AIRR's metadata standard
 defines case-sensitive repertoire identifiers for links to rearrangements. At the start of this
 slice the reader decoded through float64, re-encoded each object, and the summary silently chose
 the last duplicate ID. This slice resolves those issues before YAML, MiAIRR and ADC build on them.
@@ -3920,6 +3920,48 @@ with the thirty-minute limit (1,090.360 seconds). Final focused API checks and b
 also pass after the inspection/reopening and keyboard-focus guards. No assertions, numerical
 tolerances, fixtures or performance budgets were relaxed. Slice 2 is the bounded AIRR Repertoire YAML reader, after
 maintainer review and commit; it is not started here.
+
+
+**Slice 1 committed and pushed as `e3f8b49`.**
+
+### Slice 2: bounded AIRR Repertoire YAML
+
+**Acceptance recorded before validation.** Follow the YAML 1.2.2 and AIRR 2.0 format
+specifications, with an explicit supported subset rather than a general-purpose YAML runtime.
+Support block mappings/sequences (including indentless sequences), quoted/plain scalars,
+literal blocks and JSON-form inline collections. Keep decimal numeric tokens exact; reject
+ambiguous numeric forms, duplicate keys, tags, anchors/aliases, merge keys, directives,
+multiple documents and unsupported folding. Never silently expand or coerce these constructs.
+
+Keep the captured original YAML document and its source hash separate from the decoded JSON
+projection. Expose both as text through metadata inspection, with bounded previews and clear
+labels. Preserve gzip and uploaded-filename handling, cross-format duplicate-ID checks, existing
+JSON behavior and dataset identities. No schema/completeness or biological-validity claim.
+
+Validate against pinned ruamel.yaml 0.18.6 YAML 1.2 nodes/tags without constructing binary floats;
+commit independent expected JSON, exercise malformed inputs/budgets/cancellation/fuzz invariants,
+source snapshot and API limits, and both-theme presentation. Document syntax/limits in
+`docs/AIRR-YAML.md`; MiAIRR remains slice 3. No version, permission or replay changes.
+
+
+**Implemented and validated; awaiting maintainer review and commit.** The YAML reader dispatches by supplied
+filename, retains exact decimal tokens and typed scalar meaning, checks original source hashes
+and rejects unsupported constructs explicitly. Original YAML is stored once per opened file,
+excluded from summary serialization, and shown separately from a decoded JSON projection.
+Native lexical indentation makes the projection readable without numeric conversion. Existing
+JSON evidence display is unchanged. The independent node oracle covers three fixtures, including
+literal-block endings and nonbreaking spaces (content, not indentation). Source previews,
+cancellation, budgets, mixed-format IDs, uploaded names, gzip and CRLF have native controls.
+
+Validation completed: independent ruamel.yaml 0.18.6 references; focused reader/API race
+checks; 706,263 final fuzz executions without failures; amd64 reader checks; Go vet and six
+CGO-free platform builds; 231 JavaScript tests; JSON/YAML browser interaction and accessibility
+checks in both themes; reviewed YAML source/projection screenshots; 61-page site build and all
+240 site accessibility/layout checks; current 350-file container allowlist. Full root race coverage passed in 1,156.277 seconds; internal race suites passed, and scientific
+references passed in 1,003.612 seconds with their existing optional-data/performance skips.
+Final targeted YAML/API/release-compatibility race checks passed after the Unicode-space fix
+(120.423 seconds for the root subset). All existing release fixtures remain unchanged. No versions, fixtures, numerical
+tolerances, permissions or replay kinds changed. Slice 3 (MiAIRR completeness) is not started.
 
 
 ## Later waves (outlined)

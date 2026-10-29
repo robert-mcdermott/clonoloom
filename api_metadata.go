@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -62,7 +64,28 @@ func (a *app) handleMetadata(w http.ResponseWriter, r *http.Request) {
 			writeError(w, http.StatusUnprocessableEntity, "This record exceeds the 4 MB inspection limit. Inspect the original metadata file; no evidence was truncated or changed.")
 			return
 		}
-		writeJSON(w, map[string]any{"index": index, "rawJSON": string(record.Raw)})
+		detail := map[string]any{"index": index, "rawJSON": string(record.Raw)}
+		remaining := index
+		for _, file := range ds.Result.Metadata {
+			if remaining >= file.Repertoires {
+				remaining -= file.Repertoires
+				continue
+			}
+			if file.Format == "yaml" {
+				detail["format"] = "yaml"
+				var pretty bytes.Buffer
+				if json.Indent(&pretty, record.Raw, "", "  ") == nil && pretty.Len() <= 4<<20 {
+					detail["rawJSON"] = pretty.String()
+				}
+				if len(file.SourceText) <= 4<<20 {
+					detail["sourceYAML"] = file.SourceText
+				} else {
+					detail["sourceNotice"] = "Original YAML document exceeds the 4 MiB preview limit. Inspect the source file; it has not been truncated."
+				}
+			}
+			break
+		}
+		writeJSON(w, detail)
 		return
 	}
 	offset, limit := 0, 20

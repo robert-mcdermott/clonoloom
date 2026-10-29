@@ -109,13 +109,9 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 			companions = append(companions, more...)
 			continue
 		}
-		lower := strings.ToLower(name)
-		if strings.HasSuffix(lower, ".json") || strings.HasSuffix(lower, ".json.gz") {
+		if metadataFormat(name) != "" {
 			metadata = append(metadata, in)
 			continue
-		}
-		if strings.HasSuffix(lower, ".yaml") || strings.HasSuffix(lower, ".yml") {
-			return nil, fmt.Errorf("%s: AIRR metadata in YAML are not read yet (wave 9): save them as JSON to open them with the tables", filepath.Base(name))
 		}
 		if kind, err := sniffCompanion(in.Path); err == nil && kind != "" {
 			companions = append(companions, Companion{Path: in.Path, Kind: kind, Sample: sampleName(name)})
@@ -154,7 +150,13 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 		if metadataBytes > maxMetadataBytes {
 			return nil, errors.New("combined metadata exceeds 64 MB")
 		}
-		doc, err := airr.ReadRepertoireDocument(ctx, data)
+		var doc airr.RepertoireDocument
+		if metadataFormat(name) == "yaml" {
+			doc, err = airr.ReadRepertoireYAML(ctx, data)
+			file.Format, file.SourceText = "yaml", string(data)
+		} else {
+			doc, err = airr.ReadRepertoireDocument(ctx, data)
+		}
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", filepath.Base(name), err)
 		}
@@ -178,6 +180,8 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 // MetadataFile is a file of AIRR Repertoire metadata read with a dataset: part of the dataset, as
 // its tables are, by its fingerprint.
 type MetadataFile struct {
+	Format        string `json:"format,omitempty"`
+	SourceText    string `json:"-"`
 	SchemaVersion string `json:"schemaVersion,omitempty"`
 	Path          string `json:"path"`
 	Name          string `json:"name"`
@@ -281,4 +285,16 @@ func CellRangerFiles(dir string) (contigs []string, companions []Companion, err 
 func isFile(path string) bool {
 	info, err := os.Stat(path)
 	return err == nil && !info.IsDir()
+}
+
+// Metadata is selected by the supplied filename, including library uploads and gzip.
+func metadataFormat(name string) string {
+	name = strings.TrimSuffix(strings.ToLower(name), ".gz")
+	switch filepath.Ext(name) {
+	case ".json":
+		return "json"
+	case ".yaml", ".yml":
+		return "yaml"
+	}
+	return ""
 }

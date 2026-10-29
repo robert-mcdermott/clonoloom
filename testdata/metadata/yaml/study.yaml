@@ -1,0 +1,149 @@
+# Entirely simulated study; original comments are source evidence.
+Info:
+  title: Simulated metadata inspection example
+  version: '2.0'
+Repertoire:
+- repertoire_id: R001
+  repertoire_name: Simulated S01, day 0
+  study:
+    study_title: Simulated longitudinal blood study
+  subject:
+    subject_id: S01
+    species:
+      id: NCBITAXON:9606
+      label: Homo sapiens
+  sample:
+  - sample_id: S01-d00
+    sample_processing_id: R001-bulk-RNA
+    tissue:
+      id: UBERON:0013756
+      label: venous blood
+    cell_subset:
+      id: CL:0000084
+      label: T cell
+    single_cell: false
+    template_class: RNA
+    collection_time_point_relative:
+      value: 0
+      unit:
+        id: UO:0000033
+        label: day
+    collection_time_point_reference: baseline draw
+    pcr_target:
+    - pcr_target_locus: TRB
+  data_processing:
+  - data_processing_id: R001-processing
+    primary_annotation: true
+  lab_extension:
+    simulated: true
+    note: Illustrative metadata, not a biological result
+    excluded: false
+    reason:
+- repertoire_id: R002
+  repertoire_name: Simulated S01, day 28
+  study:
+    study_title: Simulated longitudinal blood study
+  subject:
+    subject_id: S01
+    species:
+      id: NCBITAXON:9606
+      label: Homo sapiens
+  sample:
+  - sample_id: S01-d28
+    sample_processing_id: R002-bulk-RNA
+    tissue:
+      id: UBERON:0013756
+      label: venous blood
+    cell_subset:
+      id: CL:0000084
+      label: T cell
+    single_cell: false
+    template_class: RNA
+    collection_time_point_relative:
+      value: 28
+      unit:
+        id: UO:0000033
+        label: day
+    collection_time_point_reference: baseline draw
+    pcr_target:
+    - pcr_target_locus: TRB
+  data_processing:
+  - data_processing_id: R002-processing
+    primary_annotation: true
+  lab_extension:
+    simulated: true
+    note: Illustrative metadata, not a biological result
+    excluded: false
+    reason:
+- repertoire_id: R003
+  repertoire_name: Simulated S02, day 0
+  study:
+    study_title: Simulated longitudinal blood study
+  subject:
+    subject_id: S02
+    species:
+      id: NCBITAXON:9606
+      label: Homo sapiens
+  sample:
+  - sample_id: S02-d00
+    sample_processing_id: R003-bulk-RNA
+    tissue:
+      id: UBERON:0013756
+      label: venous blood
+    cell_subset:
+      id: CL:0000084
+      label: T cell
+    single_cell: false
+    template_class: RNA
+    collection_time_point_relative:
+      value: 0
+      unit:
+        id: UO:0000033
+        label: day
+    collection_time_point_reference: baseline draw
+    pcr_target:
+    - pcr_target_locus: TRB
+  data_processing:
+  - data_processing_id: R003-processing
+    primary_annotation: true
+  lab_extension:
+    simulated: true
+    note: Illustrative metadata, not a biological result
+    excluded: false
+    reason:
+- repertoire_id: R005
+  repertoire_name: Simulated S03, day 0
+  study:
+    study_title: Simulated longitudinal blood study
+  subject:
+    subject_id: S03
+    species:
+      id: NCBITAXON:9606
+      label: Homo sapiens
+  sample:
+  - sample_id: S03-d00
+    sample_processing_id: R005-bulk-RNA
+    tissue:
+      id: UBERON:0013756
+      label: venous blood
+    cell_subset:
+      id: CL:0000084
+      label: T cell
+    single_cell: false
+    template_class: RNA
+    collection_time_point_relative:
+      value: 0
+      unit:
+        id: UO:0000033
+        label: day
+    collection_time_point_reference: baseline draw
+    pcr_target:
+    - pcr_target_locus: TRB
+  data_processing:
+  - data_processing_id: R005-processing
+    primary_annotation: true
+  lab_extension:
+    simulated: true
+    note: Illustrative metadata, not a biological result
+    excluded: false
+    reason:
