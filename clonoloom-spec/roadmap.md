@@ -4040,7 +4040,7 @@ existing dataset identities, release fixtures, permissions, replay contracts and
 Validate exact JSON/YAML values with independent readers, linked/unresolved/cross-file and
 malformed controls, cancellation/bounds/fuzz, source removal, both-theme UI and full regression.
 
-**Implemented and validated; awaiting the maintainer's commit.** A shared exact JSON/YAML Data File
+**Committed and pushed as `7ac32bd`.** A shared exact JSON/YAML Data File
 reader retains native objects and full captured documents beside rearrangements, with explicit
 link resolution across files. New object import requires declared AIRR 2.0/2.0.0; previous
 Repertoire forms retain their semantics, except ambiguous bare object IDs require an explicit
@@ -4076,7 +4076,76 @@ Validation completed:
 - The explicit container context checks 356 source/assets; whitespace checks pass. Existing
   release fixtures, version 0.8.0, scientific methods, numerical tolerances, automation permissions
   and replay contracts remain unchanged. No commit, push, tag, release or publication was performed.
-  Slice 5 (remaining table readers) has not started.
+  Slice 5 (remaining table readers) follows below.
+
+### Slice 5: native TRUST4 reports and VDJtools tables
+
+**Acceptance recorded before implementation.** Recognize documented tabular report headers,
+including explicit legacy TRUST4 names and VDJtools case/frequency aliases. Keep explicit saved
+column mappings authoritative. Do not guess a report convention from filenames or conflate
+TRUST4's stop marker with VDJtools' frameshift marker. AIRR exports retain their existing reader.
+
+Preserve source headers and complete native row text, unsupported columns, exact numeric tokens,
+source line numbers and fingerprints, including cache reopen and uploaded/gzipped sources.
+Bound retained evidence and refuse ambiguous headers, malformed row widths and invalid counts.
+Map anchored source CDR3s to junctions without adding residues, translating missing peptides,
+constructing cell identities or merging chains. Partial TRUST4 junctions remain source evidence
+but cannot become complete-junction clonotypes. Preserve missing genes/counts and unknown flags.
+
+Count semantics must be explicit: VDJtools counts may be reads or molecules; modern TRUST4
+reports can count assigned read support or barcodes. Keep ambiguous units unknown, using the
+existing human unit confirmation rather than guessing. Retain frequencies with their source
+denominators; never normalize counts from them. Explain decimal support and float64 analysis
+limits separately from exact retained evidence. Structural import is not biological validation.
+
+Provide paged read-only native-row inspection and both-theme simulated examples. Independently
+parse every mapped field and all source values using a standard CSV reader and exact decimals;
+exercise missingness, alternate marker semantics, gzip/uploads, caching, source removal,
+malformed inputs, cancellation and fuzzing. Run reader/API/release regressions and the full
+scientific suites. Preserve prior release fixtures, identities, explicit permissions, replay
+contracts and application/client version 0.8.0. Bump only the disposable reader-cache version
+if needed; do not implement slice 6 or make a commit/release.
+
+**Implemented and validated; awaiting maintainer commit.** Native report dispatch recognizes the documented
+TRUST4 modern/legacy and VDJtools aliases while explicit mappings retain precedence. The readers
+refuse ambiguous headers, malformed widths, unsupported alphabets, count precision loss and
+out-of-range frequencies. Unknown units remain explicit; source frequencies never supply counts.
+Partial TRUST4 junctions do not enter complete-junction clonotyping. Stop, frameshift and ambiguous
+codon states remain distinct; X cannot certify a stop-free sequence or productive receptor.
+
+Bounded source header/row snapshots retain unsupported annotations and exact numeric text across
+cache reopening. Cache version 4 serializes them explicitly; generic source metadata, scientific
+exports and private identity maps do not silently acquire raw annotations. The read-only inspector
+pages captured rows without opening new paths. Methods paragraphs cite the format papers and
+explain normalization, count units, denominators and scientific limits. Three declared simulated
+fixtures have independent CSV/Decimal references for every mapped field and source row.
+
+The full application regression exposed a slice-4 legacy-array compatibility bug: initializing
+the temporary RawMessage slice with the input buffer let json.Unmarshal overwrite that buffer
+before the Repertoire reader used it. The guard now decodes array candidates into separate storage.
+A repeated-read test verifies original bytes, precise values and two repertoire identities, while
+ambiguous bare Cell/Clone refusal stays intact. No historical fixture or numerical tolerance changed.
+
+Validation:
+
+- The initial application race campaign completed in 1,223.888 s with only the two legacy-array
+  opening failures above; every other application test passed. Both failures subsequently pass
+  with native-report, mapping, metadata, uploaded-source and complete release-opening regressions
+  (132.527 s). Final reader/cache/validator race checks and independent native references pass.
+- The full internal/scientific race campaign passes; the scientific reference package completes
+  in 1,050.949 s with the existing optional-data/performance skips. Final ambiguity controls keep
+  stop status unknown when X could conceal a stop; new references agree without changing any
+  historical result or tolerance.
+- All 232 JavaScript tests pass, including methods citation/unit controls. Both-theme browser
+  checks cover exact decimal/identifier text, partial evidence, frameshift notation, source
+  switching and accessibility. Screenshots were reviewed. The site builds 61 pages with 78
+  screenshot pairs and passes all 240 accessibility/layout checks.
+- Bounded reader fuzzing passes 1,995,926 executions; AIRR object fuzzing passes 42,353 executions
+  after the legacy-array repair. Final API race regressions, amd64 controls, Go vet and all six
+  CGO-free platform builds pass. The container context checks 359 explicit sources/assets.
+  Prior release fixtures, scientific identity version 1, application/client version 0.8.0,
+  automation permissions and replay contracts remain unchanged. No commit, push, tag, release
+  or publication was made. Slice 6 has not started.
 
 ## Later waves (outlined)
 

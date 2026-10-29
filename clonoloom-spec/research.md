@@ -3662,3 +3662,37 @@ committed expected values, independently calculated receptor hashes, cross-file 
 contradictory/duplicate/refusal cases, source removal, cancellation/bounds/fuzz, and both-theme
 inspection. The small single-cell example and domain-like sequences are explicitly simulated;
 extreme extension numbers test serialization, not biological count realism.
+
+### 5.61 Native TRUST4 and VDJtools report semantics
+
+Wave 9 slice 5 follows the [TRUST4 output documentation](https://github.com/liulab-dfci/TRUST4/blob/master/README.md)
+and [VDJtools input specification](https://vdjtools-doc.readthedocs.io/en/master/input.html), reviewed
+2026-10-29. Methods context: Song et al., *Nature Methods* 2021,
+[doi:10.1038/s41592-021-01142-2](https://doi.org/10.1038/s41592-021-01142-2), and Shugay et al.,
+*PLoS Computational Biology* 2015,
+[doi:10.1371/journal.pcbi.1004503](https://doi.org/10.1371/journal.pcbi.1004503).
+The readers implement documented table contracts, not the vendors' reconstruction/analysis code.
+
+The formats' similarly named CDR3 columns already include junction anchors. Their underscore
+notations differ: a TRUST4 stop becomes `*`, whereas VDJtools' incomplete codon cannot become a
+continuous peptide. TRUST4 ambiguity becomes X; partial source sequences remain in native evidence
+without entering complete-junction clonotyping. Missing peptides are not translated. Junction-level
+frame/stop inference is distinct from full-transcript functionality and biological validity.
+
+TRUST4's [report helper options](https://github.com/liulab-dfci/TRUST4/blob/master/trust-simplerep.pl)
+include fractional assigned support and barcode counts, so modern `count` does not prove reads.
+VDJtools counts can likewise represent reads or molecules. Ambiguous units remain unknown until
+human confirmation based on the experiment; no barcode identities/pairing are reconstructed.
+Source frequency denominators are retained rather than assumed to sum to one: TRUST4 separates
+IG/TR and VDJtools can retain a pre-subset frequency. Native counts never come from frequency.
+
+Conservative import choices, supported aliases, old/new marker conventions, exact source retention,
+count/frequency precision and bounds are documented in `docs/NATIVE-REPORTS.md`. All alternative
+gene calls and unsupported annotations remain source evidence, rather than silently choosing a
+first gene. Ambiguous C/consensus layouts require a reviewed mapping or AIRR export. Existing saved
+mappings remain authoritative. No scientific algorithm, tolerance, identity or replay contract changes.
+
+Independent standard-library CSV/Decimal references cover every mapped field in three artificial
+reports, exact row text, missingness, fingerprints and source coordinates. Native refusal controls,
+cache/source-removal checks, fuzzing and both-theme inspection exercise scientific presentation.
+The examples are import controls, not observed participants, functional receptors or treatment results.

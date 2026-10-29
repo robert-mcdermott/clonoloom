@@ -1328,6 +1328,30 @@ const scenes = {
   },
   // The Data view of the PBMC 1k T cells: the dataset, its validation and samples; its files and
   // license in the inspector.
+  async 'native-reports'() {
+    await act('open_data', { paths: [join(ROOT, 'testdata/native-reports/simulated-trust4.tsv'), join(ROOT, 'testdata/native-reports/simulated-vdjtools.tsv')], name: 'Simulated native repertoire reports' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect native report').click()`);
+    await waitFor(`Boolean(document.querySelector('.native-fields'))`);
+    await js(`(() => {
+      if (!document.querySelector('.native-fields').textContent.includes('0.624512345678901234')) throw new Error('Frequency text changed');
+      const select = document.querySelector('.native-row'); select.value = '3'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-detail h3')?.textContent === 'Source line 5'`);
+    await js(`(() => {
+      if (!document.querySelector('.native-fields').textContent.includes('partial')) throw new Error('Partial source evidence lost');
+      const select = document.querySelector('.native-source'); select.value = '1'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('9007199254740993')`);
+    await js(`(() => {
+      if (!document.querySelector('.native-report').textContent.includes('incomplete codon, not a stop')) throw new Error('VDJtools conventions missing');
+      const select = document.querySelector('.native-row'); select.value = '1'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('CASSLA_TNEKFF')`);
+    await js(`(() => { const select = document.querySelector('.native-source'); select.value = '0'; select.dispatchEvent(new Event('change')); })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('0.624512345678901234')`);
+    await checkAccessibility();
+  },
   async 'airr-objects'() {
     await act('open_data', { paths: [join(ROOT, 'testdata/airr-objects/study.tsv'), join(ROOT, 'testdata/airr-objects/study.json')], name: 'Simulated AIRR object evidence' });
     await act('show', { view: 'data' });

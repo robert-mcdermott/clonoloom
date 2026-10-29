@@ -144,6 +144,20 @@ func TestAIRRObjectsNeverMisreadBareCellsAsRepertoires(t *testing.T) {
 	}
 }
 
+func TestAIRRLegacyArrayPreservesInput(t *testing.T) {
+	const original = `[{"repertoire_id":"r1","extension":{"n":9007199254740993}},{"repertoire_id":"r2"}]`
+	data := []byte(original)
+	for i := 0; i < 2; i++ {
+		d, err := ReadDataFile(context.Background(), data, false)
+		if err != nil || len(d.Repertoires) != 2 || string(data) != original {
+			t.Fatalf("legacy array mutated or refused: %s; %v", data, err)
+		}
+		if string(d.Repertoires[0].Raw) != `{"repertoire_id":"r1","extension":{"n":9007199254740993}}` {
+			t.Fatal("source object changed")
+		}
+	}
+}
+
 func TestAIRRReceptorAlphabetIsASCII(t *testing.T) {
 	for _, domain := range []string{"acsx", "ACſX"} {
 		hash := sha256.Sum256([]byte(strings.ToUpper(domain) + "ACDX"))

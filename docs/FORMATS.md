@@ -287,7 +287,11 @@ them), comma- or tab-separated.
 
 ## Tables with mapped columns
 
-A CSV or TSV that no reader recognizes (VDJtools' clone tables, a spreadsheet) is read
+Wave 9 slice 5 adds native [TRUST4 reports and VDJtools tables](NATIVE-REPORTS.md), with separate
+marker conventions, unknown units where required, exact source-row inspection and explicit
+count/frequency limits. AIRR exports keep the AIRR reader; saved mappings keep their interpretation.
+
+A CSV or TSV that no reader recognizes (a custom clone table or spreadsheet) is read
 through a **mapping** of its columns, made in the window
 ([the guide](https://robert-mcdermott.github.io/clonoloom/docs/opening-data.html#mapping)) or given to remote control's `open_data`
 ([REMOTE-CONTROL.md](REMOTE-CONTROL.md)).

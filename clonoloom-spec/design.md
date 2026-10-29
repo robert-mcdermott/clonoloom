@@ -346,3 +346,16 @@ snapshot. Scientific JSON is returned as text; the browser renders native link s
 Data-view inspector has cancellation, project/selection guards and explicit unassessed limits.
 No action/permission/replay kind is added. Imported membership never modifies the active
 clonotype definition, chain pairing or analysis counts. See `docs/AIRR-OBJECTS.md` and §5.60.
+
+### Native repertoire reports (wave 9, slice 5)
+
+`reads.native_reports` recognizes TRUST4 and VDJtools column contracts separately from generic
+mapped tables. Existing explicit mappings take precedence. Source counts retain ambiguous units;
+the existing Data unit confirmation supplies a human interpretation. Marker normalization is
+format-specific, with no invented chains, cells, sequences or frequency denominators.
+
+`Source.Native` retains bounded original header/row text and physical line numbers. It is omitted
+from generic source JSON; cache header versioned by reader version 4 serializes it explicitly.
+`GET /api/datasets/{id}/native-report` serves pages and bounded text previews from the opened
+snapshot. The browser only renders text and uses ordinary row/source indices. This adds no action,
+permission or replay kind and preserves scientific identity version 1. See `docs/NATIVE-REPORTS.md`.

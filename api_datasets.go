@@ -180,6 +180,7 @@ type sampleSummary struct {
 }
 
 type sourceSummary struct {
+	NativeEvidence       bool              `json:"nativeEvidence,omitempty"`
 	IMGTGroup            string            `json:"imgtGroup,omitempty"`
 	AnnotationParameters string            `json:"annotationParameters,omitempty"`
 	Path                 string            `json:"path"`
@@ -233,7 +234,8 @@ func (ds *dataset) summary() datasetSummary {
 			s.Formats = append(s.Formats, name)
 		}
 		s.Sources = append(s.Sources, sourceSummary{Path: src.Path, Name: src.Name, Format: src.Format, FormatName: name, Gzipped: src.Gzipped,
-			Rows: src.Rows, Size: src.Size, Modified: src.Modified, SHA256: src.SHA256, GeneNames: src.GeneNames, Mapping: src.Mapping, IMGTGroup: src.IMGTGroup, AnnotationParameters: src.AnnotationParameters})
+			NativeEvidence: src.Native != nil,
+			Rows:           src.Rows, Size: src.Size, Modified: src.Modified, SHA256: src.SHA256, GeneNames: src.GeneNames, Mapping: src.Mapping, IMGTGroup: src.IMGTGroup, AnnotationParameters: src.AnnotationParameters})
 	}
 	repertoires := map[string]*airr.Repertoire{}
 	for i := range res.Repertoires {
@@ -280,6 +282,7 @@ func (a *app) registerDatasets(mux *http.ServeMux) {
 	mux.HandleFunc("GET /api/datasets/{id}", a.handleGetDataset)
 	mux.HandleFunc("GET /api/datasets/{id}/metadata", a.handleMetadata)
 	mux.HandleFunc("GET /api/datasets/{id}/airr-objects", a.handleAIRRObjects)
+	mux.HandleFunc("GET /api/datasets/{id}/native-report", a.handleNativeReport)
 	mux.HandleFunc("DELETE /api/datasets/{id}", a.handleCloseDataset)
 	mux.HandleFunc("POST /api/datasets/locate", a.handleLocate)
 	mux.HandleFunc("POST /api/datasets/inspect", a.handleInspect)

@@ -14,7 +14,7 @@ lede: ClonoLoom reads the output of your annotation pipeline where it lies, fing
             <tr><td>MiXCR clone tables (MiXCR 2 to 4)</td><td>What <code>mixcr exportClones</code> writes, one file per chain or all chains together, bulk or single-cell; molecules counted where MiXCR counted them, else reads</td></tr>
             <tr><td>OAS and OTS data units</td><td>The Observed Antibody Space's and the Observed T cell receptor Space's <code>.csv.gz</code> units as their search pages give them: unpaired units as bulk repertoires, paired units as single cells, each unit's metadata kept as its sample's</td></tr>
             <tr><td>tcrdist3 clone tables</td><td>The tables tcrdist3 reads (such as Dash et al. 2017's <code>dash.csv</code>): paired chains as single cells, a clone of n cells as n cells; a sample for each subject and epitope</td></tr>
-            <tr><td>Another tool's CSV or TSV</td><td>VDJtools' clone tables, a spreadsheet: read through a <a href="#mapping">mapping of its columns</a></td></tr>
+            <tr><td>Another tool's CSV or TSV</td><td>Custom clone tables and spreadsheets: read through a <a href="#mapping">mapping of its columns</a></td></tr>
           </tbody>
         </table>
       </div>
@@ -48,6 +48,12 @@ lede: ClonoLoom reads the output of your annotation pipeline where it lies, fing
       <shot name="airr-objects" alt="Simulated AIRR object evidence with source-defined memberships, cell and receptor identifiers, explicit link resolution and exact JSON">All cells, sequences and membership assertions in this example are simulated. Imported objects do not change the active clonotype definition.</shot>
       <p>Loaded references indicate exact identifier matches. Missing targets stay unresolved; a processing reference without a repertoire is unscoped. Rearrangement references and repertoire-group membership are not assessed. No pairing, analysis counts or processing choice is inferred.</p>
       <p>The reader rejects ambiguous IDs, malformed link cardinality, contradictory local repertoire links and incorrect receptor hashes. Hash consistency does not prove full variable domains, biological pairing or antigen specificity. See the <a href="{{github}}/blob/main/docs/AIRR-OBJECTS.md">object import contract</a> for version requirements, limits and independent validation.</p>
+
+      <h2 id="native-reports">TRUST4 and VDJtools reports</h2>
+      <p><strong>Development: wave 9, slice 5.</strong> Open supported TRUST4 repertoire reports and VDJtools TSV tables directly, including gzip. Saved column mappings retain precedence. Choose <strong>Data → Inspect native report</strong> to review captured source rows and unsupported annotations with their original numeric text.</p>
+      <shot name="native-reports" alt="Simulated TRUST4 repertoire report showing original row values, precise frequency text, a source fingerprint and explicit count-unit limits">Declared artificial import evidence. Counts, frequency denominators and source sequence states remain distinct; no cells or paired receptors are inferred.</shot>
+      <p>A modern <code>count</code> column does not establish reads, molecules or barcode support. Confirm reads or UMIs only from the upstream experiment. Source frequencies are not renormalized: TRUST4 can separate IG/TR denominators and VDJtools can retain frequencies from before subsetting.</p>
+      <p>TRUST4's underscore denotes a stop; VDJtools' denotes an incomplete codon. Partial TRUST4 junctions remain available as source evidence but cannot define complete-junction clonotypes. These checks do not establish transcript functionality, biological pairing or scientific validity. See the <a href="{{github}}/blob/main/docs/NATIVE-REPORTS.md">supported headers, count precision, evidence limits and independent validation</a>.</p>
 
       <h2 id="mapping">Another tool's table</h2>
       <p>A CSV or TSV that no reader recognizes opens a dialog showing its first rows, with a column chosen for each field ClonoLoom uses: the junction (amino acids or nucleotides; one is needed), the V, D, J and C genes, the count, the sample, the locus, whether a rearrangement is productive, the cell, the clone and the sequence ID. ClonoLoom guesses them from the columns' names (VDJtools', MiXCR's, AIRR's and others'); change any that it guessed wrong.</p>

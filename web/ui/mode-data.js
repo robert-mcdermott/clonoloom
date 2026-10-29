@@ -3,6 +3,7 @@
 // validator's findings with their examples and remedies), and its samples' annotation, typed or
 // suggested from file names and metadata.
 
+import { showNativeReport } from './native-reports.js';
 import { showAIRRObjects } from './airr-objects.js';
 import { showRepertoireMetadata } from './repertoire-metadata.js';
 import { h, icon, clear, formatBytes } from './dom.js';
@@ -67,6 +68,7 @@ export function mountData(app, container) {
         h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showRepertoireMetadata(app, shown) }, icon('info'), 'Inspect AIRR metadata')));
     }
     if (shown && app.datasetStates.get(shown.id)?.summary?.metadata?.some((file) => file.objects)) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showAIRRObjects(app, shown) }, 'Inspect AIRR objects'));
+    if (shown && app.datasetStates.get(shown.id)?.summary?.sources?.some((file) => file.nativeEvidence)) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showNativeReport(app, shown) }, 'Inspect native report'));
     body.append(samplesSection());
   }
 

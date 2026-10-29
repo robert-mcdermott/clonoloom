@@ -65,9 +65,11 @@ func ReadDataFile(ctx context.Context, data []byte, yaml bool) (DataFile, error)
 		// A bare Cell or Clone also has repertoire_id. Do not silently treat
 		// that reference as the identity of a legacy Repertoire record.
 		if _, wrapped := top["Repertoire"]; !wrapped {
-			candidates := []json.RawMessage{data}
+			var candidates []json.RawMessage
 			if bytes.TrimSpace(data)[0] == '[' {
 				_ = json.Unmarshal(data, &candidates)
+			} else {
+				candidates = []json.RawMessage{data}
 			}
 			for _, candidate := range candidates {
 				if err := ctx.Err(); err != nil {

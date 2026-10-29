@@ -42,6 +42,7 @@
 !api_metadata.go
 !api_modularity.go
 !api_motifs.go
+!api_native_reports.go
 !api_neighborhoods.go
 !api_networks.go
 !api_overlap.go
@@ -176,6 +177,7 @@
 !internal/reads/mapped.go
 !internal/reads/metadata.go
 !internal/reads/mixcr.go
+!internal/reads/native_reports.go
 !internal/reads/oas.go
 !internal/reads/open.go
 !internal/reads/problems.go
@@ -338,6 +340,7 @@
 !web/ui/mode-tracking.js
 !web/ui/mode-welcome.js
 !web/ui/motifs.js
+!web/ui/native-reports.js
 !web/ui/networks.js
 !web/ui/offline-report.css
 !web/ui/offline-report.js

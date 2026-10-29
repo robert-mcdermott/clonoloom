@@ -28,6 +28,8 @@ export function cellResultsForDataset(project, dataset) {
 
 // The works a paragraph cites.
 export const REFERENCES = {
+  trust4: 'Song L, Cohen D, Ouyang Z, et al. TRUST4: immune repertoire reconstruction from bulk and single-cell RNA-seq data. Nat Methods. 2021;18:627–630. doi:10.1038/s41592-021-01142-2',
+  vdjtools: 'Shugay M, Bagaev DV, Turchaninova MA, et al. VDJtools: Unifying Post-analysis of T Cell Receptor Repertoires. PLoS Comput Biol. 2015;11:e1004503. doi:10.1371/journal.pcbi.1004503',
   conga: 'Schattgen SA, Guion K, Crawford JC, et al. Integrating T cell receptor sequences and transcriptional profiles by clonotype neighbor graph analysis (CoNGA). Nat Biotechnol. 2022;40:54–63. doi:10.1038/s41587-021-00989-2',
   gem: 'Van Rhijn I, et al. Discovery of invariant T cells by next-generation sequencing of the human TCR alpha-chain repertoire. J Immunol. 2014;193:5338–5344. doi:10.4049/jimmunol.1401380',
   airr: 'Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. Front Immunol. 2018;9:2206. doi:10.3389/fimmu.2018.02206',
@@ -76,6 +78,8 @@ const FORMATS = {
   'mixcr-clones': 'MiXCR clone tables',
   'oas-unit': 'Observed Antibody Space or Observed T cell receptor Space data units',
   'tcrdist3-clones': 'tcrdist3 clone tables',
+  'trust4-report': 'TRUST4 repertoire reports',
+  vdjtools: 'VDJtools clonotype tables',
   table: 'a table with mapped columns',
 };
 
@@ -177,6 +181,9 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   if (codes.includes('airr')) sentences.push(`AIRR files were read as the AIRR Community's Rearrangement schema defines them ${cite('airr')}.`);
   if (codes.includes('airr') && (summary?.readerVersion ?? dataset.readerVersion ?? 1) >= 2) sentences.push('Supplied sequence, alignment, orientation and coordinate evidence was retained without reconstruction. Structural checks followed AIRR Rearrangement schema 2.0; missing evidence was not inferred and invalid annotations were preserved for inspection.');
   if (codes.includes('mixcr-clones')) sentences.push('MiXCR clone tables were read with each segment\'s best-scoring hits as its call, MiXCR\'s allele *00 (no allele resolved) dropped, and MiXCR\'s CDR3 (from the conserved cysteine to the phenylalanine or tryptophan, both included) as the junction.');
+  if (codes.includes('trust4-report')) sentences.push(`TRUST4 reports ${cite('trust4')} were read with source junction anchors retained, underscore stops represented as *, ambiguous residues as X and partial junctions retained only as native evidence. Modern count columns did not establish reads versus barcode support; an explicit legacy read_count column stated reads. No cell identities or pairing were inferred.`);
+  if (codes.includes('vdjtools')) sentences.push(`VDJtools tables ${cite('vdjtools')} were read with source junction anchors retained; underscore or tilde incomplete-codon markers did not become continuous amino-acid junctions. Counts did not establish reads versus molecules. Alternative gene calls remained sets, and segment-boundary extensions remained native evidence.`);
+  if (codes.includes('trust4-report') || codes.includes('vdjtools')) sentences.push('Original native header and row text, including exact numeric tokens and unsupported annotations, was retained for inspection. Source frequencies were not renormalized or used to reconstruct counts; separate IG/TR or pre-subset denominators may apply. Missing peptides and counts were not imputed. Junction-level frame/stop flags do not certify full-transcript function or biological validity.');
   if (codes.includes('oas-unit')) {
     // The database the units come from, as their loci say: OAS holds antibodies, OTS T-cell receptors.
     const loci = (summary?.samples ?? []).flatMap((x) => Object.keys(x.loci ?? {}));
@@ -207,7 +214,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const unit = datasetUnit(dataset);
   const unitText = unit
     ? `counted in ${UNITS[unit] ?? unit}${dataset.unitConfirmed ? ' (the unit confirmed by the user, which the files did not state)' : ''}`
-    : 'whose counts the files do not say are of reads or of molecules';
+    : codes.includes('trust4-report') ? 'whose count units remain unspecified, including possible barcode support without cell identities' : 'whose counts the files do not say are of reads or of molecules';
   sentences.push(`The dataset holds ${plural(dataset.samples.length, 'sample')} and ${plural(dataset.rows, dataset.singleCell ? 'contig' : 'rearrangement')}${dataset.singleCell ? ' of single cells' : ''}, ${unitText}.`);
 
   // Gene names.

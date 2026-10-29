@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Native TRUST4 and VDJtools reports (wave 9, slice 5).** Recognize documented
+  report headers, distinguish stop/frameshift/partial notation, preserve missing values and
+  explicit count units, and retain complete source rows for inspection. Keep ambiguous units
+  unknown and source frequencies separate from analysis denominators. Add bounded evidence
+  capture/cache persistence, independent CSV/Decimal references, malformed-input controls,
+  both-theme simulated examples and documented scientific limits. Saved mappings retain precedence.
+  Repair legacy AIRR Repertoire-array inspection overwriting its input buffer, with original-byte
+  preservation and release-opening regressions.
+
 - **Native AIRR object inspection (wave 9, slice 4).** Read AIRR 2.0 Clone, Cell,
   Receptor and supporting Node objects in JSON/bounded YAML alongside rearrangement tables.
   Preserve exact values, unknown fields, source snapshots and explicit links. Reject duplicate

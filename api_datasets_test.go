@@ -270,8 +270,8 @@ func TestOpenATableThroughAMapping(t *testing.T) {
 	path := filepath.Join(dir, "patient7.tsv")
 	os.WriteFile(path, []byte("count\tfreq\tcdr3nt\tcdr3aa\tv\td\tj\n120\t0.6\tTGTGCCAGCAGCTTAGCGGGAGGGCCTGAAGCTTTCTTT\tCASSLAGGPEAFF\tTRBV5-1\tTRBD2\tTRBJ2-7\n60\t0.3\tTGTGCC\tCASSER\tTRBV6-2\t.\tTRBJ1-1\n"), 0o644)
 	_, handler := testApp(t)
-	// Not a format ClonoLoom recognizes.
-	if rec := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`); rec.Code != http.StatusUnprocessableEntity || !strings.Contains(rec.Body.String(), `"code":"format"`) {
+	// Native VDJtools is recognized; an explicit saved mapping still overrides it.
+	if rec := postJSON(t, handler, "/api/datasets/open", `{"paths": [`+jsonString(path)+`]}`); rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `"format":"vdjtools"`) {
 		t.Fatalf("%d %s", rec.Code, rec.Body)
 	}
 	rec := postJSON(t, handler, "/api/datasets/inspect", `{"path": `+jsonString(path)+`}`)

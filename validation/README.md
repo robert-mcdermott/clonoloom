@@ -893,3 +893,18 @@ versions/hashes/pairings, null/false/exact numbers, source removal and paged API
 `FuzzAIRRObjects` preserves original accepted JSON bytes under the structural bounds.
 The `airr-objects` capture scene checks exact text and loaded/unresolved links in both themes.
 This validates format/evidence handling, not full domains, biological pairing or activity.
+
+## Native repertoire reports (wave 9, slice 5)
+
+`reference/native_reports.py` independently parses three declared simulated TRUST4/VDJtools
+tables with standard-library CSV and exact Decimal values. The committed reference compares
+every mapped column, original header/rows, line numbers and source fingerprints in ordinary Go CI.
+Run `uv run --no-project validation/reference/native_reports.py` and
+`go test ./validation -run TestNativeReportsIndependentValues` to check it.
+
+`TestNativeReport*` covers marker conventions, unknown units, partial/missing/zero evidence,
+strict counts/frequencies, header ambiguity, row widths, cancellation, capture bounds,
+gzip/uploads, cache persistence, source removal and API preview limits. Explicit saved mappings
+retain their behavior. `FuzzRead` includes both new report contracts. The `native-reports` capture
+scene checks exact values, source switching and both-theme accessibility. Import validation is
+distinct from transcript functionality, cell pairing, independent subjects or scientific validity.
