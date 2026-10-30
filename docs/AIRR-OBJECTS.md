@@ -1,8 +1,8 @@
 # Imported AIRR Clone, Cell and Receptor objects
 
-Wave 9 slice 4 development reads **AIRR 2.0 Data Files** containing `Clone`, `Cell`,
+ClonoLoom 0.9.0 reads **AIRR 2.0 Data Files** containing `Clone`, `Cell`,
 `Receptor` and supporting `Node` arrays. Open them alongside rearrangement tables, then use
-**Data → Inspect AIRR objects**. This is not part of the published 0.8.0 binary.
+**Data → Inspect AIRR objects**.
 
 Objects are source assertions, not newly computed analysis. An imported Clone does not replace
 the active clonotype definition, set sequence membership, change abundance units or become a

@@ -1,7 +1,6 @@
 # Reviewed Proteoscope sequence handoff
 
-Wave 9 slice 12 adds **Data → Proteoscope handoff**. This is unreleased source functionality,
-not part of the 0.8.0 binary. It transfers one supplied AIRR amino-acid observation for sequence
+ClonoLoom 0.9.0 adds **Data → Proteoscope handoff**. It transfers one supplied AIRR amino-acid observation for sequence
 similarity search in **Proteoscope 0.10.0**. It does not reconstruct a TCR/antibody, infer a paired
 chain, predict a structure or establish binding specificity.
 

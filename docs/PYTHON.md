@@ -1,6 +1,6 @@
 # Python client
 
-The 0.8.0 Python client requires action **API 2**, catalog **4**, permission policy **1**
+The 0.9.0 Python client requires action **API 2**, catalog **4**, permission policy **1**
 and Python **3.10 or later**. Use a matching host and install the client from this checkout.
 The commands below do not publish anything to a package index.
 

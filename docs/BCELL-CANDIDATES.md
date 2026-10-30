@@ -1,6 +1,6 @@
 # Descriptive B-cell candidate review
 
-Unreleased wave 9, slice 15. Open a saved thresholded result in **B cells → Families** and choose
+Available in ClonoLoom 0.9.0. Open a saved thresholded result in **B cells → Families** and choose
 **Review B-cell candidates**. Keep its dataset open to inspect current provider terms. Choose a
 sample, any matching SHM/isotype evidence, and one to four ordered criteria with their directions.
 The sample and criteria start empty. No composite score or biological optimum is inferred.

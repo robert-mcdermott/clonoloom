@@ -3,7 +3,7 @@ title: De-identification exports
 description: Review pseudonyms, choose annotation removal and keep a separate private identity map without changing scientific values.
 lede: Prepare a separate copy of dataset tables with explicit identifier and annotation choices.
 ---
-<p class="callout">ClonoLoom 0.8.0. Use the matching host and matching clients (API 2, catalog 4, policy 1). </p>
+<p class="callout">ClonoLoom {{version}}. Use the matching host and matching clients (API 2, catalog 4, policy 1). </p>
 <h2 id="review">Prepare and review first</h2>
 <p>Check your dataset's subject annotations, definition and QC. In <strong>Reports → De-identification export</strong>, choose AIRR rearrangements and clonotypes, or clonotypes only. Choose text tables or <a href="parquet.html">typed Parquet</a>. Free-text and HLA removal start selected; choose both explicitly. Select <strong>Prepare and review pseudonyms</strong> and inspect the complete subject correspondence, counts, removal settings and inventory before downloading.</p>
 <p>The correspondence shown locally is private. <strong>Download reviewed export</strong> saves only the table ZIP. <strong>Download PRIVATE identity map separately</strong> saves the identifying correspondence and source fingerprints; keep it under your study's access controls and never distribute it with the ZIP. Preparing again creates fresh pseudonyms. A preparation expires after 15 minutes, replacement or host restart.</p>

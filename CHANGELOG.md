@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.9.0 — prepared release
+
+- **Suite and public-data study (wave 9, slice 16).** Connect exact metadata, explicit
+  public evidence, portable tables and reviewed sibling/B-cell workflows with clear scientific
+  boundaries. Add a 0.9.0 compatibility fixture from separate declared artificial controls,
+  preserving original source, project, parent and review evidence alongside portable paths.
+  Update application/client/citation versions and release documentation. Keep scientific
+  identities, historical fixtures and the existing automation and replay contracts unchanged.
+  Correct the container inventory validator to recognize the already-approved embedded ADC
+  registry; the production build context remains restricted to the same explicit files.
+
 - **Descriptive B-cell candidate review (wave 9, slice 15).** Rank a complete family scope
   for one explicit sample by ordered observation count, heavy-row divergence, preferred isotype
   share and same-subject observed share change. Preserve exact rational comparisons, denominators,

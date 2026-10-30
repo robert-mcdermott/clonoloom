@@ -1,9 +1,8 @@
 # MiAIRR reporting checklist
 
-Wave 9 development adds a read-only checklist to **Data → Inspect AIRR metadata → Inspect →
+ClonoLoom 0.9.0 adds a read-only checklist to **Data → Inspect AIRR metadata → Inspect →
 Review MiAIRR reporting completeness**. It describes the reporting evidence in one captured
-Repertoire record. It does **not** certify MiAIRR compliance or scientific validity. Released
-0.8.0 does not include this feature.
+Repertoire record. It does **not** certify MiAIRR compliance or scientific validity.
 
 The native checklist version is `clonoloom-miairr-2.0-v1`, pinned to **AIRR Standards 2.0**.
 Files declaring `Info.version` as `2.0` or `2.0.0` are assessed; absent or other declarations

@@ -191,3 +191,10 @@ checkpoint, certificate and result bytes remain intact. Never rewrite older rele
 Reviewed action startup invalidates older asynchronous work without resetting loaded scientific
 views; actual project replacement/recovery/cancellation still invalidates those views. Undo and
 Redo notify selection listeners so still-selected immutable results reload.
+
+The 0.9.0 suite study keeps unrelated artificial datasets and experimental units separate.
+Preserve original source/project/parent/review bytes and use a separately serialized portable
+project for opening paths. Native source-regression and standalone candidate/likelihood/ADC checks
+are not new certificate replay kinds. Inspect dataset selectors explicitly in multi-dataset
+workflows. Release fixtures include missing and unresolved evidence; never relabel reporting
+completeness or a source-byte match as scientific validity, pairing or provider permission.

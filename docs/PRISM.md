@@ -1,7 +1,6 @@
 # GraphPad Prism subject-table exports
 
-Wave 9 slice 11 adds **Reports → GraphPad Prism subject tables**. This unreleased feature is
-not in the 0.8.0 binary. Choose one saved **cohort feature** or **cohort comparison** result,
+ClonoLoom 0.9.0 adds **Reports → GraphPad Prism subject tables**. Choose one saved **cohort feature** or **cohort comparison** result,
 enter a title and choose **Export Prism tables**. Selection starts empty. Restricted evidence
 requires explicit acknowledgment of its provider terms; that does not grant redistribution rights.
 

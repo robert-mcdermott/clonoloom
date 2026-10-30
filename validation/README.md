@@ -1,5 +1,90 @@
 # Validation
 
+## 0.9.0 suite study and release checks
+
+The [worked guide](../docs/SUITE-STUDY.md) joins the wave's supported workflows while keeping
+studies, experimental units and permission boundaries separate. The 73-file `projects/0.9.0`
+inventory retains eight artificial datasets, five B-cell parents and standalone native review
+evidence. Earlier fixtures remain unchanged. Rebuild into a new directory; never overwrite a
+release fixture:
+
+```sh
+node validation/create-project-0.9.mjs /tmp/clonoloom-suite-study
+go test -race -timeout 10m -run 'TestSuiteRelease|TestEveryReleasesProjectStillOpens/0.9.0' .
+uv run --no-project --with biopython==1.86 validation/reference/candidates.py /tmp/clonoloom-suite-study/evidence
+uv run --no-project --with numpy==2.3.5 --with scipy==1.18.1 validation/reference/lineage_likelihood.py /tmp/clonoloom-suite-study/evidence
+```
+
+The driver uses an isolated offline host with explicit grants and visible test-window acceptance.
+Its network capability is required by the existing reference action; offline mode prevents
+downloads. The native tests check retained bytes, source reopening, source-derived results,
+exact metadata/native rows, candidate ranking and supplied FASTA, conditional JC69 results and
+captured public overlap separately. Source opening path and filesystem mtime are excluded only
+from the metadata/native inspection comparisons; original provenance remains in the saved evidence.
+No new certificate replay contract, external query or biological prediction is validated.
+
+The independent candidate audit checks exact fractions and source text. The likelihood oracle
+checks all 945 seven-tip topology keys, independently optimizes three selected/competitor/control
+topologies and checks every conditional ancestral probability; it does not prove a global
+continuous optimum. The fixture's artificial upstream annotations are independently checked
+with Biopython, not translated by the product. Both-theme views label their controls explicitly.
+
+**Release-preparation validation (2026-10-29).**
+
+- The complete application race suite passes (1819.842 s), including historical project/archive
+  reopening, exact reports, source execution, checkpoint recovery and supported replay.
+- Full internal/scientific race checks pass with all 11 required cached reference datasets
+  present (validation package: 846.552 s). The non-race scientific/calibration run, excluding
+  the separately measured performance budgets, passes in 436.676 s. It includes the independent
+  readers, null/positive/coverage controls and the assembly guard against fused multiply-adds.
+- The final suite-fixture/version race check passes (114.489 s). Source reopening, all release
+  projects, new standalone reviews and pinned processor results pass on amd64 as well as arm64.
+  Six CGO-free macOS/Linux/Windows × amd64/arm64 builds, Go vet and syntax/drift checks pass.
+- All six performance budgets pass in a separate run after the heavy suites finish (86.091 s).
+  One million rows read/validate in 1.488 s at 58.0 bytes/row plus junctions; 100 cached samples
+  reopen in 132 ms; a searched 200-row page takes 38.561 ms. Neighborhoods take 1.228 s,
+  one million generation probabilities 41.51 s, and 100,000 paired TCR neighbors 33.181 s
+  with 1.3 GB obtained from the system. Existing budget thresholds are unchanged.
+- Independent wave-9 audits pass: exact JSON/Decimal metadata; three YAML controls; seven imported
+  objects; 82 official MiAIRR fields and 22 hand-specified controls; three native reports; eight
+  detailed contigs with 80 shared values; four ADC captures and exact public-overlap sets. The
+  new study also passes candidate/source-chain/Biopython and conditional likelihood audits above.
+- Workbook audits verify all five supported result kinds plus precision/type/missingness controls.
+  Prism checks cover 56 tables, 575 declared subject/group measurements, 72 missing measurements
+  and 515 structural blanks, including independent R `pzfx` imports. Proteoscope and CytoWeave
+  evidence passes independent exact-source, sample-scope, permission and hash checks.
+- All 235 JavaScript tests and 14 contrast/color-vision checks pass. The complete capture campaign
+  passes 78 scenes in each theme; the new study adds its own two views. Wave-9 metadata, native
+  readers, public evidence, tables, sibling links, conditional trees and descriptive candidates
+  were visually reviewed in both themes. The site builds 62 pages/89 screenshot pairs and passes
+  all 244 desktop/phone × light/dark accessibility/layout checks.
+- Python passes 17 tests, wheel/sdist build/install checks and live-host contracts. R passes all
+  1,302 assertions, package installation and `R CMD check` with Status OK. Generated wrappers
+  retain the same 64 actions. MCP passes both protocols, exact HTTP parity and permission flows.
+- The scripted benchmark passes 32 transport controls, three JSONL controls, six repeated/scaled
+  controls and four accessible report layouts; all eight no-action controls fail as intended.
+  No model is evaluated. The previous worked-study driver passes four transport parity, checkpoint,
+  certificate, source-free archive and headless replay checks against 0.9.0; the original offline
+  report passes four layouts, six figures, changed-fingerprint refusal and zero external requests.
+- Five 20-second fuzz sessions pass for AIRR Repertoire JSON, YAML, objects, MiAIRR and general
+  source readers. The unchanged 390-file OCI allowlist passes actual build-context/runtime
+  inspection. Local Linux arm64 Podman workers match native scientific bytes for both source kinds,
+  all five replay kinds and five array tasks; explicit mounts, non-root permissions and SIGTERM
+  cancellation pass. The scratch image is 13,994,988 bytes and was not published.
+
+The container inventory validator initially omitted the already-approved embedded ADC registry;
+the corrected exact-file check passes without expanding production inputs. Podman checks use an
+ignored checkout directory shared with its VM because macOS `/tmp` is not mounted there. One
+benchmark attempt lost Chrome's debugging connection; the complete repeat passes with unchanged
+assertions and numerical tolerances. Earlier release fixtures remain untouched.
+
+Optional detailed public-contig, public HDF5/expression-map, live publisher-download and
+maintainer-supplied VDJdb checks remain unconfigured and skipped; the named required datasets
+were not skipped. No native Prism GUI, Windows execution, Docker engine, Slurm scheduler or
+Apptainer runtime is claimed. Platform compilation, R import and local Podman array execution
+are distinct checks. These controls establish their recorded computational contracts, not
+biological validity, public-repository completeness or permission for a real external transfer.
+
 Wave 9 slice 12: check reviewed Proteoscope handoffs and exact local evidence without a public query:
 
 ```sh

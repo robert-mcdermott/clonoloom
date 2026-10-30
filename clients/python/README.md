@@ -1,6 +1,6 @@
 # ClonoLoom Python client
 
-ClonoLoom 0.8.0: generated methods for the local action API 2, catalog 4, permission policy 1.
+ClonoLoom 0.9.0: generated methods for the local action API 2, catalog 4, permission policy 1.
 Install this checkout and use a matching host.
 
 ```sh

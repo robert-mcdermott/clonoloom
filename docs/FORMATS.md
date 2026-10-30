@@ -10,7 +10,7 @@ filenames identify table roles and headers are then checked.
 
 ## What every rearrangement reader produces
 
-Wave 9 development also reads [Cell Ranger detailed contig JSON](CELLRANGER-JSON.md),
+ClonoLoom 0.9.0 also reads [Cell Ranger detailed contig JSON](CELLRANGER-JSON.md),
 with exact source-object inspection, explicit layout recognition and missing/mixed-chain limits.
 
 [ADC metadata browsing](ADC.md) is separate from local format import: it previews explicit
@@ -104,7 +104,7 @@ with conditional review, evidence paths and remedies. Reporting completeness, sc
 conformance and scientific validity are distinct. See the guide for supported versions,
 sets 1–5 coverage, unassessed set 6 and bounds; no compliance certificate is issued.
 
-### AIRR Clone, Cell and Receptor objects (wave 9 development)
+### AIRR Clone, Cell and Receptor objects (0.9.0)
 
 Open AIRR 2.0 Data Files alongside rearrangements, including supporting Node objects and
 mixed Repertoire collections. **Inspect AIRR objects** shows exact source objects and explicit
@@ -194,7 +194,7 @@ This reader does not run IMGT, reconstruct references or establish mutation read
 - A contig's count is its UMIs; its reads are kept beside them. The dataset's unit is cells.
 - A clonotype summary or metrics file opened on its own is refused with a message saying to open
   its run's folder or its contig annotations.
-- **Detailed JSON (wave 9 development).** The [nested contig contract](CELLRANGER-JSON.md)
+- **Detailed JSON (0.9.0).** The [nested contig contract](CELLRANGER-JSON.md)
   retains original objects for inspection. Missing flags remain unknown and mixed-chain
   annotations remain unresolved; producer version is not inferred. Do not combine alternate
   representations of the same contigs as additional observations.

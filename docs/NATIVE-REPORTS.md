@@ -1,7 +1,7 @@
 # TRUST4 reports and VDJtools tables
 
-Wave 9 slice 5 development adds native readers for TRUST4 repertoire reports and VDJtools
-clonotype tables. This is not part of the published 0.8.0 binary. Open the TSV files (optionally
+ClonoLoom 0.9.0 adds native readers for TRUST4 repertoire reports and VDJtools
+clonotype tables. Open the TSV files (optionally
 gzip) in Data, then choose **Inspect native report**. Explicit saved column mappings still take
 precedence, so older projects keep their interpretation and identities.
 

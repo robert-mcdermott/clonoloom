@@ -140,3 +140,25 @@ test('the record release retains its checkpoint and exact saved QC evidence', ()
   assert.deepEqual(original.artifacts, p.artifacts);
   assert.deepEqual(original.checkpoints, p.checkpoints);
 });
+
+test('the suite release retains separate dataset scopes and only portable path changes', () => {
+  const root = new URL('../../validation/projects/0.9.0/', import.meta.url);
+  const project = parseProject(readFileSync(new URL('project.json', root), 'utf8'));
+  const original = parseProject(readFileSync(new URL('original-project.json', root), 'utf8'));
+  assert.equal(project.datasets.length, 8);
+  assert.deepEqual(project.artifacts.map(a => a.kind), ['families', 'germlines', 'shm', 'isotypes', 'lineages']);
+  assert(project.artifacts.every(a => a.dataset === project.datasets[0].id));
+  for (let i = 0; i < project.datasets.length; i++) {
+    for (const key of ['sources', 'metadata']) {
+      const portable = project.datasets[i][key] ?? [];
+      const saved = original.datasets[i][key] ?? [];
+      assert.equal(portable.length, saved.length);
+      for (let j = 0; j < portable.length; j++) {
+        assert(portable[j].path.startsWith('data/'));
+        assert(saved[j].path.endsWith('/' + portable[j].path));
+        saved[j].path = portable[j].path;
+      }
+    }
+  }
+  assert.deepEqual(project, original);
+});

@@ -1,6 +1,6 @@
 # AIRR Data Commons metadata queries
 
-Development: wave 9, slice 7. In **Data → Public repositories**, choose an approved repository,
+Available in ClonoLoom 0.9.0. In **Data → Public repositories**, choose an approved repository,
 enter metadata filters, review the exact destination and JSON request, and choose **Send metadata
 query**. Opening the dialog and editing filters contact only the local ClonoLoom server.
 **Request service info** sends a separate GET to the displayed `/airr/v1/info` endpoint.

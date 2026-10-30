@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "contract": "ADC 1.2.0 /airr/v1 (AIRR Standards 1.5.1)",
+  "registryRevision": "4ae159f2799594a2c73669527f6fba97fc8995d7",
+  "spec": {
+    "repository": "ipa1.ireceptor.org",
+    "repertoire": "SIM-repertoire-B",
+    "processing": "SIM-process",
+    "license": "CC0 artificial test evidence; no provider request or human records.",
+    "citation": "ClonoLoom simulated public-overlap fixture; not a public study.",
+    "pages": 2,
+    "size": 100,
+    "accept": true
+  },
+  "pages": [
+    {
+      "file": "metadata.json",
+      "requestJSON": "{\"filters\":{\"content\":{\"field\":\"repertoire_id\",\"value\":\"SIM-repertoire-B\"},\"op\":\"=\"},\"format\":\"json\",\"from\":0,\"size\":1}",
+      "requestSHA256": "91ced6db4f80d407b4607f8af62db98c044606214a11510e87ad87be42be768e",
+      "endpoint": "https://ipa1.ireceptor.org/airr/v1/repertoire",
+      "retrievedAt": "2026-10-01T00:00:00Z",
+      "sha256": "f75511f7ef6fdb966d991f0881fea72f1b762ced574dc3d860cedaca2cb03b97",
+      "bytes": 260,
+      "records": 1
+    },
+    {
+      "file": "page-001.json",
+      "requestJSON": "{\"filters\":{\"content\":[{\"content\":{\"field\":\"repertoire_id\",\"value\":\"SIM-repertoire-B\"},\"op\":\"=\"},{\"content\":{\"field\":\"data_processing_id\",\"value\":\"SIM-process\"},\"op\":\"=\"}],\"op\":\"and\"},\"format\":\"json\",\"from\":0,\"size\":100}",
+      "requestSHA256": "0d2dc670ec427d411a00bf7eb13cb57aa58cd06a7d158962162a7cfc67dc5365",
+      "endpoint": "https://ipa1.ireceptor.org/airr/v1/rearrangement",
+      "retrievedAt": "2026-10-01T00:00:00Z",
+      "sha256": "3f58e26aa63f83e78a8cb74ba13b9f5d807b593f8efd092c584da9ec8f638c02",
+      "bytes": 7634,
+      "records": 42
+    },
+    {
+      "file": "page-002.json",
+      "requestJSON": "{\"filters\":{\"content\":[{\"content\":{\"field\":\"repertoire_id\",\"value\":\"SIM-repertoire-B\"},\"op\":\"=\"},{\"content\":{\"field\":\"data_processing_id\",\"value\":\"SIM-process\"},\"op\":\"=\"}],\"op\":\"and\"},\"format\":\"json\",\"from\":42,\"size\":100}",
+      "requestSHA256": "c95bea6018dc3ad19cbaf5651c1ffacb884ef361efffad23cc20607a1705427b",
+      "endpoint": "https://ipa1.ireceptor.org/airr/v1/rearrangement",
+      "retrievedAt": "2026-10-01T00:00:00Z",
+      "sha256": "5f86f3743d755814500b34eab0c645305481e27f232d2fe4dacf7c3bf97dcf9a",
+      "bytes": 21,
+      "records": 0
+    }
+  ],
+  "records": 42,
+  "stop": "empty-page",
+  "completeness": "not-established",
+  "notice": "Simulated incomplete evidence. No live repository contacted."
+}

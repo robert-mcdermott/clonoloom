@@ -1,7 +1,7 @@
 # Cell Ranger detailed JSON annotations
 
-Wave 9 slice 6 development adds the detailed array layout of
-`all_contig_annotations.json`. It is not part of the published 0.8.0 binary.
+ClonoLoom 0.9.0 adds the detailed array layout of
+`all_contig_annotations.json`.
 Open the file in Data, then choose **Inspect native report**. Gzip and named uploads
 are supported; renamed `.json` files are recognized by their first contig object.
 

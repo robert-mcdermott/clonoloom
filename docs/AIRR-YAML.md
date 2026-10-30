@@ -1,6 +1,6 @@
 # AIRR Repertoire YAML
 
-Development support: wave 9 slice 2, after the published 0.8.0 release. Open `.yaml`, `.yml`,
+Available in ClonoLoom 0.9.0. Open `.yaml`, `.yml`,
 `.yaml.gz` or `.yml.gz` **with the rearrangement tables**, just as for Repertoire JSON. The
 filename supplied with an upload is used even when the library stores it under a content hash.
 

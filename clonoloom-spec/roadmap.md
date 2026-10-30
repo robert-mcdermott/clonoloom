@@ -15,8 +15,8 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–8 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** v0.8.0 and its product site are published. Wave 8 merged in PR #8
 (`719a73c`); the follow-up AI-agent documentation is committed as `6f71662`. Wave 9 is planned
-below; slices 1–14 are committed and pushed (slice 14: `ef11b92`). Slice 15 is implemented and
-validated on `wave9`, awaiting maintainer review and commit.
+below; slices 1–15 are committed and pushed (slice 15: `c63d632`). Slice 16 is implemented and
+validated on `wave9`, awaiting the maintainer's commit and CI. Version 0.9.0 is prepared.
 No 0.9.0 release is made.
 
 The order follows the siblings' principle:
@@ -4838,6 +4838,92 @@ describe the limits; both themes show native counts and units in an accessible t
 Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances
 and existing automation/replay contracts remain unchanged. No commit, push, tag, release or
 publication was made. Slice 16 has not started.
+
+### Slice 16: complete suite/public-data study and release preparation
+
+**Plan recorded before implementation.** Join the wave's supported workflows in a worked guide:
+exact metadata and reporting completeness, explicit public-query/download provenance and cohort
+universes, portable tables, reviewed sibling interchange, bounded lineage likelihood and descriptive
+candidate selection. Keep distinct studies and experimental units separate; no shared subject,
+pairing, biological validity or public-query completeness is inferred from identifiers or metadata.
+Use declared artificial controls and retain unavailable, partial and ambiguous outcomes.
+
+Generate a new 0.9.0 compatibility project through real window actions in an isolated offline
+library. Preserve original project/parent/review/source bytes alongside portable reopening paths,
+all exact metadata and original sequence evidence. Check future source recomputation and native
+review evidence separately from saved-byte integrity; do not imply new certificate replay support.
+Older release fixtures remain unchanged. Review both-theme wave-9 scenes and scientific units,
+denominators, uncertainty and explanatory limits; publish no site or external query.
+
+Bump application, citation, browser cache keys and generated clients to 0.9.0, preserving scientific
+identity, cache/schema versions and automation grants/catalog. Consolidate the changelog, refresh
+support documentation and remove stale development notices without rewriting historical records.
+Run complete race/reference/processor coverage, independent wave-9 readers and numerical checks,
+platform builds, performance budgets, client/package/live contracts, browser and accessibility
+checks. Record completed checks and genuine environment limits without weakening tolerances.
+The maintainer alone commits, pushes, merges, tags, releases and publishes.
+
+**Implementation.** The worked suite/public-data guide connects the supported workflows while
+keeping eight artificial datasets and their experimental units separate. It describes exact
+metadata and reporting scope, captured public universes, subject-level interchange, explicit
+sibling permissions, conditional JC69 likelihood and descriptive candidate review. Published
+method references and the limits of each evidence operation remain visible. Both-theme study
+views show native sample counts, ratios, missingness and source-chain completeness.
+
+The new 0.9.0 fixture was generated through real window actions and native endpoints in an
+isolated offline library. Its 73-file hash inventory preserves original source/project/parent
+and review evidence, five B-cell parents, six exact metadata/native inspections, conditional
+likelihood, supplied-chain FASTA and four captured public-overlap controls. A separate portable
+project changes only opening paths. Native checks reopen all datasets and scientific parents,
+compare the review evidence and recompute the conditional fit. Original source opening-path and
+mtime fields are excluded only from inspection comparisons; retained provenance is unchanged.
+No standalone review becomes an automatic project artifact or certificate replay kind.
+
+Application, citation, cache-busting browser URLs and generated clients now identify 0.9.0.
+Reader cache 5, scientific identity 1, API 2/catalog 4/policy 1 and all 64 actions remain unchanged.
+Release documentation removes stale development notices without rewriting historical evidence.
+The container inventory validator now recognizes the already-approved embedded ADC registry;
+the production allowlist still contains the same 390 exact source/assets. CI also creates a new
+suite study and audits its candidates and conditional likelihood independently.
+
+**Validation.** Full application race tests pass (1819.842 s); internal/scientific race tests
+pass with all 11 required cached reference datasets present (validation: 846.552 s). Non-race
+scientific calibration excluding separately measured budgets passes (436.676 s), retaining
+null/positive/coverage controls and the no-fused-multiply-add guard. The final suite/version race
+check passes (114.489 s). Historical projects and the new source/native-review evidence agree
+on arm64 and amd64 under the existing versioned checks; six platform builds and Go vet pass.
+All six performance budgets pass in a separate run after heavy validation ends (86.091 s):
+one million rows read/validate in 1.488 s, cache reopening in 132 ms, a searched page in
+38.561 ms, neighborhoods in 1.228 s, one million generation probabilities in 41.51 s and
+100,000 paired TCR neighbors in 33.181 s. Existing thresholds and tolerances are unchanged.
+
+Independent exact metadata/YAML/object/MiAIRR/native-report/contig/ADC audits pass. The new
+study's candidate fractions, source-chain text, all 119 supplied artificial translations and
+one deliberately missing annotation pass their independent controls. The JC69 oracle verifies
+945 topology keys, three independent optimizer comparisons and every conditional ancestral
+probability. Excel audits cover every supported result kind; Prism audits retain subject units,
+575 measurements, 72 missing values and 515 structural blanks across 56 tables, including R
+imports. Independent Proteoscope/CytoWeave evidence checks pass without a public sequence query.
+
+All 235 JavaScript tests, 14 contrast/color-vision checks, 156 main application captures and
+both new study views pass. Wave-9 screenshots were reviewed in both themes. The documentation
+site builds 62 pages with 89 screenshot pairs and passes 244 layout/accessibility checks.
+Python's 17 tests, package build/install and live contracts pass; R's 1,302 assertions and
+package check pass. Both MCP protocols, all 32 scripted transport benchmark controls, three
+JSONL controls, six repeated/scaled controls, expected negative controls and four report layouts
+pass. The previous worked study still passes exact transport, checkpoint, archive and replay
+checks with 0.9.0, and its original offline report passes integrity/accessibility controls.
+
+Five timed fuzz targets pass. Local Linux arm64 Podman validation checks the actual 390-file
+build context, minimal runtime, two source workers, five replay kinds, five array tasks and
+permission/cancellation behavior. Scientific bytes match native execution. VM mount and Chrome
+startup issues encountered during validation were resolved; repeat checks use unchanged scientific
+tolerances. No Windows execution, native Prism GUI, Docker engine, Slurm scheduler or Apptainer
+runtime is claimed. Optional unconfigured public-data/download checks remain explicitly skipped;
+the full validation record is in `validation/README.md`.
+
+Older release fixtures, scientific identities and automation/replay contracts remain unchanged.
+No commit, push, tag, release or site publication was made. Wave 10 has not started.
 
 ## Later waves (outlined)
 

@@ -1,0 +1,129 @@
+{
+  "format": "clonoloom-artifact",
+  "version": 1,
+  "id": "grm-04d717704fc39b93",
+  "kind": "germlines",
+  "name": "D-masked B-cell germlines · Simulated B-cell study · supplied chain evidence",
+  "dataset": "d-d72a3e62b9050380",
+  "state": "complete",
+  "created": "2026-10-30T02:00:49.210505Z",
+  "lineage": {
+    "parents": [
+      {
+        "kind": "dataset",
+        "id": "d-d72a3e62b9050380",
+        "name": "Simulated B-cell study · supplied chain evidence"
+      },
+      {
+        "kind": "families",
+        "id": "fam-483b996a56811b72",
+        "sha256": "673f9a7f450dd77b6499ffc88191fb9b566f61e651ccc4da8a59300acd5ed442"
+      },
+      {
+        "kind": "reference",
+        "id": "simulated-bcell-immunization",
+        "name": "reference/germlines.fasta",
+        "sha256": "65732bc3409e087619524da3810758364eb1250ed230d3e3ce596c176f63d56b"
+      }
+    ],
+    "job": {
+      "id": "jmvubseus-2",
+      "kind": "germlines",
+      "spec": {
+        "dataset": "d-d72a3e62b9050380",
+        "definition": {
+          "chains": null,
+          "junction": "aa",
+          "v": "gene",
+          "j": "gene",
+          "productiveOnly": true,
+          "cells": "primary"
+        },
+        "filter": {},
+        "options": {
+          "replicates": 200,
+          "seed": 20140101,
+          "stream": 0,
+          "confidence": 0.95
+        },
+        "germlines": {
+          "families": "fam-483b996a56811b72",
+          "familySha256": "673f9a7f450dd77b6499ffc88191fb9b566f61e651ccc4da8a59300acd5ed442",
+          "reference": "simulated-bcell-immunization",
+          "files": [
+            {
+              "reference": "simulated-bcell-immunization",
+              "file": "reference/germlines.fasta",
+              "sha256": "65732bc3409e087619524da3810758364eb1250ed230d3e3ce596c176f63d56b",
+              "source": "Made on this computer: clonoloom simulate --preset bcell-immunization (seed 20261027)",
+              "license": "Simulated data: no restrictions",
+              "citation": "McDermott R. ClonoLoom, version 0.9.0. https://github.com/robert-mcdermott/clonoloom"
+            }
+          ]
+        },
+        "method": 1
+      }
+    },
+    "method": {
+      "name": "Family allele intersection; ungapped-reference AIRR CIGAR projection; D/N/P masking",
+      "version": "1",
+      "citation": "Gupta et al. 2015, doi:10.1093/bioinformatics/btv359; AIRR Rearrangement schema 2.0, https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html; Vander Heiden et al. 2018, doi:10.3389/fimmu.2018.02206. Allele intersection is a conservative ClonoLoom policy. Reference citations are recorded with each file."
+    },
+    "parameters": {
+      "dataset": "d-d72a3e62b9050380",
+      "definition": {
+        "chains": null,
+        "junction": "aa",
+        "v": "gene",
+        "j": "gene",
+        "productiveOnly": true,
+        "cells": "primary"
+      },
+      "filter": {},
+      "options": {
+        "replicates": 200,
+        "seed": 20140101,
+        "stream": 0,
+        "confidence": 0.95
+      },
+      "germlines": {
+        "families": "fam-483b996a56811b72",
+        "familySha256": "673f9a7f450dd77b6499ffc88191fb9b566f61e651ccc4da8a59300acd5ed442",
+        "reference": "simulated-bcell-immunization",
+        "files": [
+          {
+            "reference": "simulated-bcell-immunization",
+            "file": "reference/germlines.fasta",
+            "sha256": "65732bc3409e087619524da3810758364eb1250ed230d3e3ce596c176f63d56b",
+            "source": "Made on this computer: clonoloom simulate --preset bcell-immunization (seed 20261027)",
+            "license": "Simulated data: no restrictions",
+            "citation": "McDermott R. ClonoLoom, version 0.9.0. https://github.com/robert-mcdermott/clonoloom"
+          }
+        ]
+      },
+      "method": 1
+    },
+    "software": [
+      {
+        "name": "clonoloom",
+        "version": "0.9.0",
+        "commit": "c63d63286b900d86b335b457ac8b2b492c25f8ea-dirty"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "germlines.json",
+      "role": "germlines",
+      "size": 491929,
+      "sha256": "1d633f352b0ce5ee89e443031091a899796fb840396bf1b48df5839d2714013a"
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "familyLoci": 6,
+    "reconstructed": 120,
+    "reference": "simulated-bcell-immunization",
+    "rows": 120
+  }
+}

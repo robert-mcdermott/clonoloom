@@ -270,6 +270,13 @@ jobs:
           node validation/create-project-0.8.mjs "$RUNNER_TEMP/record-study"
           node validation/record-study.mjs
 
+      - name: Suite study with separate scopes and exact review evidence
+        if: matrix.r == 'release'
+        run: |
+          node validation/create-project-0.9.mjs "$RUNNER_TEMP/suite-study"
+          uv run --no-project --with biopython==1.86 validation/reference/candidates.py "$RUNNER_TEMP/suite-study/evidence"
+          uv run --no-project --with numpy==2.3.5 --with scipy==1.18.1 validation/reference/lineage_likelihood.py "$RUNNER_TEMP/suite-study/evidence"
+
   data:
     name: Readers on real data
     needs: changed

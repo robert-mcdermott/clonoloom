@@ -1,6 +1,6 @@
 # R client
 
-The 0.8.0 R package follows CytoWeave/MaveScape: generated `cl_*` functions and help,
+The 0.9.0 R package follows CytoWeave/MaveScape: generated `cl_*` functions and help,
 S3 connections/results, a small curl transport, remote.json discovery and exact record frames.
 It shares the Python client’s action API **2**, catalog **4** and permission policy **1**.
 Use a matching host and install this checkout.

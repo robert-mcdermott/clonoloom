@@ -1,9 +1,9 @@
 # Excel evidence workbooks
 
-Wave 9 slice 10 adds **Reports → Excel evidence workbook**. Select one to eight saved results,
+ClonoLoom 0.9.0 adds **Reports → Excel evidence workbook**. Select one to eight saved results,
 enter a title and choose **Export Excel workbook**. Selection starts empty. The supported kinds
 are cohort features, cohort comparisons, replicated count models, batch QC and motif screens,
-within the bounds below. This is an unreleased wave 9 feature; it is not in the 0.8.0 binary.
+within the bounds below.
 
 The download is `clonoloom-workbook.zip`. Keep it intact:
 

@@ -1,0 +1,43 @@
+--- # one document
+Info: {"version":"2.0"}
+Repertoire:
+  - repertoire_id: 'R:one'
+    extension:
+      lists:
+        - [1, 2.34567890123456789012345, -0, 1e-400]
+        - []
+        - {}
+        -
+          key: value
+      flags:
+        - True
+        - FALSE
+        - Null
+        - ~
+        -
+      plain: study, baseline [illustrative] # comment
+      quoted: 'donor''s # field'
+      escaped: "quote: \" and newline\n and tab\t"
+      unicode: "αβ 😀"
+      nbsp:  text 
+      literal_nbsp: |-
+         
+      date: '2026-10-28'
+      yes: yes
+      on: on
+      uri: https://example.info/path#fragment
+      literal_clip: |
+        first line
+
+        second # line
+      literal_keep: |+
+        first line
+
+      literal_strip: |-
+        last line
+  - repertoire_id: R:two
+    empty:
+    text_null: 'null'
+    string_digit: '001'
+...
+# trailing comment

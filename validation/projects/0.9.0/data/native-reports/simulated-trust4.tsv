@@ -1,0 +1,8 @@
+#count	frequency	CDR3nt	CDR3aa	V	D	J	C	cid	cid_full_length	note
+1200	0.624512345678901234	TGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT	CASSLGQETQYF	TRBV7-9*01	TRBD1*01	TRBJ2-5*01	TRBC2	sim-contig-1	1	simulated dominant TRB
+320.25	0.1667	TGTGCTTCTTCTCTGGGTTAAGAAACTCAATATTTT	CASSLG_ETQYF	TRBV7-9*01	TRBD1*01	TRBJ2-5*01	TRBC2	sim-contig-2	1	assigned fractional support; _ is a stop
+53	0.0276	TGTGCTTCTTCTNNNGGTCAAGAAACTCAATATTTT	CASS?GQETQYF	TRBV7-9*01	*	TRBJ2-5*01	TRBC2	sim-contig-3	1	ambiguous codon
+12	0.0062	GCTTCTTCTCTGGGTCAA	partial	TRBV7-9*01	.	TRBJ2-5*01	*	sim-contig-4	0	incomplete source CDR3
+2	0.0010	TGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTTA	out_of_frame	TRBV7-9*01	TRBD1*01	TRBJ2-5*01	TRBC2	sim-contig-5	0	source-declared frameshift
+0	0	TGTGCTCGTGATCGTGGTTATTATTTTGATTATTGG	CARDRGYYFDYW	IGHV3-23*01	IGHD3-10*01	IGHJ4*02	IGHM	sim-contig-6	1	IG frequency has a separate denominator
+.	NA	.	.	.	.	.	.	sim-contig-7	0	count and sequence unavailable; no imputation

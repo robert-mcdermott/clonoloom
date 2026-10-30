@@ -64,7 +64,7 @@ curl --proto '=https' --tlsv1.2 -fsSL \
 A downloaded installer takes the same settings as options:
 
 ```sh
-sh install-clonoloom.sh --version v0.8.0 --install-dir "$HOME/bin"
+sh install-clonoloom.sh --version v0.9.0 --install-dir "$HOME/bin"
 ```
 
 `CLONOLOOM_REPOSITORY=owner/repository` installs from a fork. For a
@@ -110,7 +110,7 @@ Piping into `iex` cannot pass parameters. Set environment variables, which the
 piped form reads:
 
 ```powershell
-$env:CLONOLOOM_VERSION = 'v0.8.0'
+$env:CLONOLOOM_VERSION = 'v0.9.0'
 $env:CLONOLOOM_INSTALL_DIR = "$HOME\bin"
 irm https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.ps1 | iex
 ```
@@ -119,7 +119,7 @@ or build a script block, which accepts parameters:
 
 ```powershell
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/robert-mcdermott/clonoloom/main/install.ps1))) `
-  -Version v0.8.0 -InstallDir "$HOME\bin"
+  -Version v0.9.0 -InstallDir "$HOME\bin"
 ```
 
 | Parameter | Environment variable | Purpose |

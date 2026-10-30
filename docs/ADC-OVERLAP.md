@@ -1,6 +1,6 @@
 # Observed overlap with captured public evidence
 
-Development: wave 9, slice 9. Open a local dataset, then choose **Data → Public overlap**.
+Available in ClonoLoom 0.9.0. Open a local dataset, then choose **Data → Public overlap**.
 Select one query sample, one locus and 1–20 ADC captures already in this library. Use the
 capture folder recorded by the [reviewed download](ADC.md#reviewed-downloads-wave-9-slice-8)
 and inspect its manifest to identify the repository, repertoire and processing run before

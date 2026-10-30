@@ -1,7 +1,6 @@
 # CytoWeave phenotype links
 
-Wave 9 slice 13 adds **Data → CytoWeave phenotype links**. This is unreleased source
-functionality, not part of the published 0.8.0 binary. It joins an index-sort wells CSV
+ClonoLoom 0.9.0 adds **Data → CytoWeave phenotype links**. It joins an index-sort wells CSV
 from CytoWeave to supplied native AIRR TSV receptor cell IDs in **one explicitly selected dataset/sample**.
 It preserves phenotype observations; it does not infer a phenotype or biological pairing.
 

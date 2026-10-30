@@ -4115,3 +4115,30 @@ the labeled simulated study, native units and exact count ratios in an accessibl
 checks establish computational correctness and evidence preservation, not predictive validity.
 B6 remains partial for inferential expansion and synthesis-ready paired constructs. Existing
 historical artifacts, scientific replay, cache/version identities and automation contracts stay intact.
+
+
+### 5.72 Suite/public-data release study
+
+The 0.9.0 study integrates the contracts in §§5.57–5.71; it introduces no new scientific
+estimator. AIRR Repertoire/processing scope remains explicit, following the
+[AIRR 2.0 metadata specification](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html).
+Reporting completeness, source identity and computational agreement remain distinct from
+biological validity. Eight separate artificial datasets demonstrate exact metadata/native records,
+B-cell parents and captured public overlap without pooling subjects or treating sequence rows
+as experimental replicates. Exact-number stress values are software controls, not biological
+measurements. The small B-cell study is not a powered experiment.
+
+The release fixture preserves original source, project, manifest and review bytes with an
+inventory of their SHA-256 hashes. Only a separate portable project rewrites opening paths.
+Native checks reopen source identities and recompute saved scientific results; standalone
+candidate, likelihood and overlap reviews have separate checks and do not become certificate
+replay kinds. Independent fractions/source-text checks and conditional JC69 optimization support
+computational claims only. They do not establish public-cohort completeness, calibrated binding
+prediction or a globally optimal biological model. Existing scientific identities, tolerances
+and older release fixtures remain unchanged.
+
+The worked guide carries these distinctions through Excel/Prism and sibling interchange with
+explicit permission and missingness boundaries. Both-theme figures show native values and
+units, with declared simulations and model limits. Release verification combines analytical
+and external-reader controls, processor agreement, browser interactions and accessibility; a
+successful screenshot or checksum cannot substitute for any of those scientific checks.

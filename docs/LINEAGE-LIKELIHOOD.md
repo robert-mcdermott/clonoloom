@@ -1,6 +1,6 @@
 # Selected-panel lineage likelihood
 
-Unreleased wave 9, slice 14. In **B cells → Lineages**, select a saved family/locus tree and
+Available in ClonoLoom 0.9.0. In **B cells → Lineages**, select a saved family/locus tree and
 choose **Review JC69 likelihood**, then **Fit JC69 likelihood**. The dataset must be open so
 its current provider terms can be reviewed. Fitting is explicit and cancellable.
 
