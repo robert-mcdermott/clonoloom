@@ -54,6 +54,7 @@
           <li><a href="./">Overview</a></li>
           <li><a href="getting-started.html">Getting started</a></li>
           <li><a href="opening-data.html" aria-current="page">Opening data</a></li>
+          <li><a href="suite-study.html">Suite and public-data study</a></li>
         </ul>
         <h4>Quality and clonotypes</h4>
         <ul>
@@ -148,21 +149,119 @@
         <table>
           <thead><tr><th>Format</th><th>What to open</th></tr></thead>
           <tbody>
-            <tr><td>AIRR Rearrangement TSV (schema 1.3 to 2.0)</td><td>The tables, with their AIRR Repertoire metadata (<code>.json</code>) beside them: written by IgBLAST and Change-O, MiXCR, TRUST4, Cell Ranger, the AIRR Data Commons and ClonoLoom's simulator</td></tr>
+            <tr><td>AIRR Rearrangement TSV (schema 1.3 to 2.0)</td><td>The tables, with their AIRR Repertoire metadata (<code>.json</code> or supported <code>.yaml</code>/<code>.yml</code>, optionally gzip) beside them: written by IgBLAST and Change-O, MiXCR, TRUST4, Cell Ranger, the AIRR Data Commons and ClonoLoom's simulator</td></tr>
             <tr><td>Cell Ranger V(D)J</td><td>A <code>vdj</code> run's folder or its <code>outs/</code>, a <code>multi</code> run's per-sample folders, or the contig annotations alone</td></tr>
             <tr><td>immunoSEQ exports (v2 and v3 columns)</td><td>Bulk TCR or BCR exports from the immunoSEQ Analyzer and immuneACCESS, templates and reads kept apart</td></tr>
             <tr><td>MiXCR clone tables (MiXCR 2 to 4)</td><td>What <code>mixcr exportClones</code> writes, one file per chain or all chains together, bulk or single-cell; molecules counted where MiXCR counted them, else reads</td></tr>
             <tr><td>OAS and OTS data units</td><td>The Observed Antibody Space's and the Observed T cell receptor Space's <code>.csv.gz</code> units as their search pages give them: unpaired units as bulk repertoires, paired units as single cells, each unit's metadata kept as its sample's</td></tr>
             <tr><td>tcrdist3 clone tables</td><td>The tables tcrdist3 reads (such as Dash et al. 2017's <code>dash.csv</code>): paired chains as single cells, a clone of n cells as n cells; a sample for each subject and epitope</td></tr>
-            <tr><td>Another tool's CSV or TSV</td><td>VDJtools' clone tables, a spreadsheet: read through a <a href="#mapping">mapping of its columns</a></td></tr>
+            <tr><td>Another tool's CSV or TSV</td><td>Custom clone tables and spreadsheets: read through a <a href="#mapping">mapping of its columns</a></td></tr>
           </tbody>
         </table>
       </div>
       <p>Every table may be gzipped. A file's format is decided from its header, whatever its name. <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/FORMATS.md">FORMATS.md</a> says how each is read, field by field.</p>
 
+      <h2 id="proteoscope">Proteoscope handoff · ClonoLoom 0.9.0</h2>
+      <p><strong>Data → Proteoscope handoff</strong> reviews one supplied AIRR <code>sequence_aa</code>, its exact source observation and a local Proteoscope 0.10.0 destination. Start Proteoscope with <code>--remote-control</code> and keep its browser page open. No observation or permission starts selected.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/proteoscope-dark.webp" width="2000" height="1250" loading="lazy" alt="Artificial AIRR sequence review with exact sequence, completeness annotation, local Proteoscope destination and separate unchecked local-transfer and public-search permissions" /><img class="shot-light" src="../assets/img/proteoscope-light.webp" width="2000" height="1250" loading="lazy" alt="Artificial AIRR sequence review with exact sequence, completeness annotation, local Proteoscope destination and separate unchecked local-transfer and public-search permissions" /></div>
+        <figcaption>Declared artificial sequence controls. The validation receiver intercepts searches; no sequence is submitted to a public service.</figcaption>
+      </figure>
+      <p>Sending invokes public RCSB sequence search and requires separate approval for that disclosure. Only amino acids are sent; identifiers, annotations and source hashes stay in the downloaded evidence. Missing or unsupported sequences are refused without translation, trimming or junction substitution. Partial V(D)J evidence remains partial; sequence similarity does not establish receptor pairing, a predicted structure or binding specificity.</p>
+      <p>Keep the reviewed evidence and receipt. A command acknowledgment is not a scientific result, and cancellation after dispatch cannot retract a query. Read the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/PROTEOSCOPE.md">supported sequence contract, permissions, limits and receiver validation</a>.</p>
+
+      <h2 id="cytoweave">CytoWeave phenotype links · ClonoLoom 0.9.0</h2>
+      <p>Choose <strong>Data → CytoWeave phenotype links</strong> to review one index-sort wells CSV against one explicitly selected receptor sample. Supply an experimental <code>well,cell_id</code> mapping and an acquisition/compensation declaration. Repeated wells, events or cell targets are refused; a barcode in another sample never fills a missing target.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cytoweave-dark.webp" width="2000" height="1250" loading="lazy" alt="Artificial 96-event CytoWeave phenotype review with exact source intensities, empty and NaN values, explicit sample scope and separate unmatched counts" /><img class="shot-light" src="../assets/img/cytoweave-light.webp" width="2000" height="1250" loading="lazy" alt="Artificial 96-event CytoWeave phenotype review with exact source intensities, empty and NaN values, explicit sample scope and separate unmatched counts" /></div>
+        <figcaption>Declared artificial identity controls: 80 linked cells, 6 unmapped wells, 10 absent targets and 4 receptor-only cells. No biological phenotype or receptor pairing is inferred.</figcaption>
+      </figure>
+      <p>Channel values remain exact text, including negative values and missing tokens. The original CSV, mapping, provenance declaration and source hashes travel in a separate downloaded JSON record. The declaration is supplied context, not verification of compensation or gates. Links do not change project annotations or scientific replay. Read the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/CYTOWEAVE.md">supported format, declaration template, scientific limits and actual sibling validation</a>.</p>
+
       <h2 id="open">Open your data</h2>
       <p><strong>Open data</strong> shows the folders of this computer: choose the files, a Cell Ranger output folder, or a folder holding a cohort's files. What you choose together opens as <strong>one dataset</strong>: a cohort's exports, say, or a run's T cells. You can also name them on the command line. ClonoLoom reads each file where it is and never changes, copies or moves it; files dropped on the window are copied into the library instead, since a browser does not say where a dropped file lies.</p>
       <p>Each file is fingerprinted by its SHA-256 as it is read. If a file later moves, <strong>Locate the files</strong> finds it again by its fingerprint near where it was, or lets you choose it and checks it. If a file's contents change, the project says so instead of reading other data under the same name. Tables read once are kept in a cache, so that a cohort of a hundred samples reopens in about a tenth of a second.</p>
+
+      <h2 id="metadata">Inspect supplied repertoire metadata</h2>
+      <p><strong>ClonoLoom 0.9.0.</strong> Inspect original repertoire metadata without converting scientific values through browser numbers.</p>
+      <p>Open AIRR Repertoire JSON alongside its tables, then choose <strong>Data → Inspect AIRR metadata</strong>. The table shows record identities, matching coverage and whether each match used an explicit <code>repertoire_id</code> or a legacy sample name. An unmatched explicit ID never falls back to a name. Unmatched metadata is retained.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/repertoire-metadata-dark.webp" width="2000" height="1250" loading="lazy" alt="Simulated longitudinal study metadata: three matched records, one unmatched record, one sample without metadata, and original JSON with a source fingerprint" /><img class="shot-light" src="../assets/img/repertoire-metadata-light.webp" width="2000" height="1250" loading="lazy" alt="Simulated longitudinal study metadata: three matched records, one unmatched record, one sample without metadata, and original JSON with a source fingerprint" /></div>
+        <figcaption>Simulated bulk RNA blood draws. Record coverage describes links, not study quality or independent subjects.</figcaption>
+      </figure>
+      <p><strong>Inspect</strong> shows original JSON text with exact numeric tokens, unknown fields, null, false and zero preserved. The declared schema version and source SHA-256 identify the supplied evidence. Summary annotations may combine values from several processing records; inspect the original objects before interpreting them.</p>
+      <p>This is not a MiAIRR completeness check or full AIRR schema/ontology validation. The reader refuses ambiguous duplicate keys/IDs and malformed Unicode. Imports are bounded at 64 MiB of combined decoded metadata and 100,000 records; individual previews over 4 MiB are refused without truncating imported evidence. A separate versioned MiAIRR reporting review is described below; AIRR object inspection is described below. See the <a href="https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html">AIRR Repertoire standard</a> and <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/FORMATS.md">full format limits</a>.</p>
+
+      <h2 id="yaml">AIRR YAML metadata</h2>
+      <p><strong>ClonoLoom 0.9.0.</strong> Open <code>.yaml</code>, <code>.yml</code>, or their gzip forms alongside the tables. The bounded YAML 1.2 reader preserves exact decimal values and keeps quoted strings, null, false and zero distinct. The inspector separates decoded record JSON from the original YAML document and its source fingerprint.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/repertoire-yaml-dark.webp" width="2000" height="1250" loading="lazy" alt="Simulated YAML study metadata with matching coverage, decoded-record control and original YAML source text" /><img class="shot-light" src="../assets/img/repertoire-yaml-light.webp" width="2000" height="1250" loading="lazy" alt="Simulated YAML study metadata with matching coverage, decoded-record control and original YAML source text" /></div>
+        <figcaption>Original YAML is retained with its comments and formatting. The decoded JSON is a value-preserving projection.</figcaption>
+      </figure>
+      <p>Supported syntax includes block mappings/sequences, quoted/plain scalars, literal text blocks and JSON-form inline collections. Tags, anchors/aliases, merge keys, directives, multiple documents, folded blocks and ambiguous numeric spellings are refused. Quote digit-leading text identifiers and dates. Consult the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/AIRR-YAML.md">complete supported-syntax and limits guide</a> before importing other YAML; exporting JSON is the fallback. This does not establish MiAIRR completeness or experimental validity.</p>
+
+      <h2 id="miairr">Review MiAIRR reporting completeness</h2>
+      <p><strong>ClonoLoom 0.9.0.</strong> After inspecting a record, expand <strong>Review MiAIRR reporting completeness</strong>. Checklist <code>clonoloom-miairr-2.0-v1</code> covers 82 Repertoire metadata fields in MiAIRR sets 1–5 for declared AIRR schema 2.0/2.0.0. Other or absent declarations are explicitly not assessed; do not just relabel older metadata.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/miairr-checklist-dark.webp" width="2000" height="1250" loading="lazy" alt="Simulated MiAIRR metadata checklist with AIRR reporting levels, explicit missingness states, evidence paths, remedies and scientific limitations" /><img class="shot-light" src="../assets/img/miairr-checklist-light.webp" width="2000" height="1250" loading="lazy" alt="Simulated MiAIRR metadata checklist with AIRR reporting levels, explicit missingness states, evidence paths, remedies and scientific limitations" /></div>
+        <figcaption>Deliberately incomplete simulated metadata. Reporting completeness is distinct from scientific validity.</figcaption>
+      </figure>
+      <p><strong>Essential</strong> fields require substantive information. <strong>Important</strong> fields permit explicit null-like reporting. <strong>Defined</strong> fields are optional, but prescribe where matching information belongs. These AIRR levels differ from schema-required keys. Absent keys, null, empty values, explicit missingness reasons and supplied values remain distinct; false and zero are not missing.</p>
+      <p>Each sample, PCR target, diagnosis and processing entry keeps its own evidence path. The group filter changes displayed rows only; counts cover all evidence rows, including parent scopes whose children could not be assessed. Conditional applicability requires source review, and nothing is automatically declared not applicable.</p>
+      <p><strong>No compliance certificate or quality score.</strong> Set 6 processed-sequence reporting, raw-file/accession verification, nested schema validation, ontology conformance and scientific truth remain unassessed. A supplied value does not establish accurate annotation, independent subjects or a valid scientific conclusion. The checklist refuses more than 2,000 evidence rows without returning partial counts. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/MIAIRR.md">complete contract and validation guide</a> and <a href="https://docs.airr-community.org/en/v2.0.0/datarep/airr_schema_requirement_levels.html">AIRR reporting-level standard</a>.</p>
+
+      <h2 id="airr-objects">Inspect imported AIRR objects</h2>
+      <p><strong>ClonoLoom 0.9.0.</strong> Open AIRR 2.0 Data Files containing Clone, Cell, Receptor and supporting Node arrays alongside your rearrangement tables. JSON and the documented YAML subset are supported, including gzip. Choose <strong>Data → Inspect AIRR objects</strong> to review the original evidence and explicit links.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/airr-objects-dark.webp" width="2000" height="1250" loading="lazy" alt="Simulated AIRR object evidence with source-defined memberships, cell and receptor identifiers, explicit link resolution and exact JSON" /><img class="shot-light" src="../assets/img/airr-objects-light.webp" width="2000" height="1250" loading="lazy" alt="Simulated AIRR object evidence with source-defined memberships, cell and receptor identifiers, explicit link resolution and exact JSON" /></div>
+        <figcaption>All cells, sequences and membership assertions in this example are simulated. Imported objects do not change the active clonotype definition.</figcaption>
+      </figure>
+      <p>Loaded references indicate exact identifier matches. Missing targets stay unresolved; a processing reference without a repertoire is unscoped. Rearrangement references and repertoire-group membership are not assessed. No pairing, analysis counts or processing choice is inferred.</p>
+      <p>The reader rejects ambiguous IDs, malformed link cardinality, contradictory local repertoire links and incorrect receptor hashes. Hash consistency does not prove full variable domains, biological pairing or antigen specificity. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/AIRR-OBJECTS.md">object import contract</a> for version requirements, limits and independent validation.</p>
+
+      <h2 id="adc">Browse public repository metadata</h2>
+      <p><strong>ClonoLoom 0.9.0.</strong> Choose <strong>Data → Public repositories</strong> to browse the pinned approved ADC registry. Enter species, locus, study or repertoire IDs, review the endpoint and exact query, then choose <strong>Send metadata query</strong>. Only those filters are sent; local data are never consulted. Opening the dialog makes no repository request.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/adc-dark.webp" width="2000" height="1250" loading="lazy" alt="Simulated ADC metadata query with a visible HTTPS endpoint, exact filters and three repertoire records from two declared subjects" /><img class="shot-light" src="../assets/img/adc-light.webp" width="2000" height="1250" loading="lazy" alt="Simulated ADC metadata query with a visible HTTPS endpoint, exact filters and three repertoire records from two declared subjects" /></div>
+        <figcaption>Artificial metadata for documentation, with two visits for one subject. No live repository query or real participant data are shown. Repertoire records are not independent subjects.</figcaption>
+      </figure>
+      <p>Requests are bounded to 100 records and 8 MiB, with a 45-second limit. <strong>Prepare next page</strong> makes a local preview; sending it requires another explicit click. Short pages do not establish complete cohorts, and repository changes may repeat or skip records between requests. Cancel or close the dialog to stop the local request. <code>--offline</code> disables outbound queries while keeping the bundled registry available.</p>
+      <p>Inspect original JSON, exact numbers, response fingerprints and retrieval times. Metadata do not certify scientific validity, MiAIRR completeness or reuse permission. Downloads and public-cohort comparisons are separate workflows; remote queries are not exact scientific replay. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/ADC.md">pinned v1 contract, supported filters and evidence limits</a>.</p>
+
+      <h3>Download reviewed source evidence</h3>
+      <p><strong>ClonoLoom 0.9.0.</strong> Inspect a repertoire and choose <strong>Download this repertoire…</strong>. Select one exact processing ID, record the provider permission evidence and citation, review the request and size budget, and explicitly accept. Total source size is unknown. Original JSON pages and a completion manifest are saved in a new private library folder.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/adc-download-dark.webp" width="2000" height="1250" loading="lazy" alt="Simulated ADC download review showing exact scope, permission evidence, bounded requests and an explicitly incomplete capture" /><img class="shot-light" src="../assets/img/adc-download-light.webp" width="2000" height="1250" loading="lazy" alt="Simulated ADC download review showing exact scope, permission evidence, bounded requests and an explicitly incomplete capture" /></div>
+        <figcaption>Artificial documentation fixture. No real participants, repository request or downloaded files. The displayed record count is a simulation, not a scientific result.</figcaption>
+      </figure>
+      <p>Duplicate IDs, conflicting scope and malformed pages abort the capture. Empty-page and page-budget stops both leave completeness unestablished. Source captures do not pool subjects, open an analysis dataset or certify exact remote replay. Read the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/ADC.md">download contract and cancellation limits</a>.</p>
+
+      <h3 id="public-overlap">Compare observed public-cohort evidence</h3>
+      <p><strong>ClonoLoom 0.9.0.</strong> Open a local dataset, then choose <strong>Data → Public overlap</strong>. Select one sample, one locus and 1–20 captured ADC folders. Review and accept the separate productive/locus/exact-junction presence contract. Comparison verifies the saved source bytes and scope, works offline and sends no local sequences to a repository.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/adc-overlap-dark.webp" width="2000" height="1250" loading="lazy" alt="Native overlap of simulated TRB evidence showing exact intersection and union counts, unavailable empty evidence, scoped subject denominators and incomplete capture stops" /><img class="shot-light" src="../assets/img/adc-overlap-light.webp" width="2000" height="1250" loading="lazy" alt="Native overlap of simulated TRB evidence showing exact intersection and union counts, unavailable empty evidence, scoped subject denominators and incomplete capture stops" /></div>
+        <figcaption>Artificial junctions and subject IDs; actual native results from local fixture captures. Forty eligible query keys, 24 observed in at least one selected capture. This is a validation example, not a public study or prevalence estimate.</figcaption>
+      </figure>
+      <p>Inspect shared keys and their capture/subject support. Empty eligible sets stay unavailable, missing subject IDs stay outside the subject denominator, and multiple visits or processing runs for the same scoped subject cannot be silently pooled. Jaccard is displayed to four significant digits alongside exact counts; full native results and source fingerprints are saved separately.</p>
+      <p>All captures remain incomplete observations, including those ending with an empty page. Review species, assay and depth differences. Shared junctions do not establish antigen specificity, biological identity or population frequency. This contract does not apply the project's active clonotype definition, QC filter, abundance weighting or rarefaction. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/ADC-OVERLAP.md">matching definition, subject scope, source units and validation limits</a>.</p>
+
+      <h2 id="cellranger-json">Cell Ranger detailed JSON</h2>
+      <p><strong>ClonoLoom 0.9.0.</strong> Open supported detailed contig JSON, including gzip, and choose <strong>Data → Inspect native report</strong>. The nested layout is recognized without guessing a Cell Ranger version. Folder opening keeps CSV precedence and uses JSON when no contig CSV is available.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/cellranger-json-dark.webp" width="2000" height="1250" loading="lazy" alt="Simulated Cell Ranger contig JSON with exact source fields, separate read and UMI support, supplied flags and a source fingerprint" /><img class="shot-light" src="../assets/img/cellranger-json-light.webp" width="2000" height="1250" loading="lazy" alt="Simulated Cell Ranger contig JSON with exact source fields, separate read and UMI support, supplied flags and a source fingerprint" /></div>
+        <figcaption>Declared artificial import controls. Supplied annotations remain evidence; no biological pairing or transcript functionality is certified.</figcaption>
+      </figure>
+      <p>Background and multiple-chain contigs remain available before the active QC filter. Absent, null, false and zero stay distinct. Reads and UMIs support each contig; clonotype abundance counts distinct cells under the active definition. Missing full-length flags stay unknown, and mixed-chain annotations remain unresolved.</p>
+      <p>Original JSON retains unknown annotations and exact numeric tokens. Coordinates and flags are not reconstructed from vendor algorithms. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/CELLRANGER-JSON.md">layout contract, cross-format validation and scientific limits</a>.</p>
+
+      <h2 id="native-reports">TRUST4 and VDJtools reports</h2>
+      <p><strong>ClonoLoom 0.9.0.</strong> Open supported TRUST4 repertoire reports and VDJtools TSV tables directly, including gzip. Saved column mappings retain precedence. Choose <strong>Data → Inspect native report</strong> to review captured source rows and unsupported annotations with their original numeric text.</p>
+      <figure>
+        <div class="shot"><img class="shot-dark" src="../assets/img/native-reports-dark.webp" width="2000" height="1250" loading="lazy" alt="Simulated TRUST4 repertoire report showing original row values, precise frequency text, a source fingerprint and explicit count-unit limits" /><img class="shot-light" src="../assets/img/native-reports-light.webp" width="2000" height="1250" loading="lazy" alt="Simulated TRUST4 repertoire report showing original row values, precise frequency text, a source fingerprint and explicit count-unit limits" /></div>
+        <figcaption>Declared artificial import evidence. Counts, frequency denominators and source sequence states remain distinct; no cells or paired receptors are inferred.</figcaption>
+      </figure>
+      <p>A modern <code>count</code> column does not establish reads, molecules or barcode support. Confirm reads or UMIs only from the upstream experiment. Source frequencies are not renormalized: TRUST4 can separate IG/TR denominators and VDJtools can retain frequencies from before subsetting.</p>
+      <p>TRUST4's underscore denotes a stop; VDJtools' denotes an incomplete codon. Partial TRUST4 junctions remain available as source evidence but cannot define complete-junction clonotypes. These checks do not establish transcript functionality, biological pairing or scientific validity. See the <a href="https://github.com/robert-mcdermott/clonoloom/blob/main/docs/NATIVE-REPORTS.md">supported headers, count precision, evidence limits and independent validation</a>.</p>
 
       <h2 id="mapping">Another tool's table</h2>
       <p>A CSV or TSV that no reader recognizes opens a dialog showing its first rows, with a column chosen for each field ClonoLoom uses: the junction (amino acids or nucleotides; one is needed), the V, D, J and C genes, the count, the sample, the locus, whether a rearrangement is productive, the cell, the clone and the sequence ID. ClonoLoom guesses them from the columns' names (VDJtools', MiXCR's, AIRR's and others'); change any that it guessed wrong.</p>
@@ -188,7 +287,7 @@
 
       <nav class="doc-pager" aria-label="Pages">
         <a class="prev" href="getting-started.html"><span>Previous</span>Getting started</a>
-        <a class="next" href="qc.html"><span>Next</span>Quality control</a>
+        <a class="next" href="suite-study.html"><span>Next</span>Suite and public-data study</a>
       </nav>
     </main>
 

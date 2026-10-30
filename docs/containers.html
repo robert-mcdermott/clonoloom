@@ -54,6 +54,7 @@
           <li><a href="./">Overview</a></li>
           <li><a href="getting-started.html">Getting started</a></li>
           <li><a href="opening-data.html">Opening data</a></li>
+          <li><a href="suite-study.html">Suite and public-data study</a></li>
         </ul>
         <h4>Quality and clonotypes</h4>
         <ul>
@@ -143,7 +144,7 @@
       <h1>Containers and clusters</h1>
       <p class="doc-lede">Package the same Go workers for a server or cluster. Declare the inputs, writable paths and one task; preserve the scientific replay boundary.</p>
 
-<p>ClonoLoom 0.8.0. 7.0.</p>
+<p>Available since ClonoLoom 0.8.0.</p>
 <h2 id="build">A small native image</h2>
 <p>The multi-stage Dockerfile pins the official Go builder by digest and produces a static program in a shell-free runtime. The image defaults to a non-root numeric user and help, with no browser or server startup. The allowlisted build context contains compilation inputs and embedded assets; the runtime contains the program and license notices. No registry publication is configured.</p>
 <div class="code"><pre><code>revision="$(git rev-parse HEAD)"
