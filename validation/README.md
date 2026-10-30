@@ -1,5 +1,47 @@
 # Validation
 
+## CI host shards and benchmark subprocesses
+
+The per-commit Go checks retain the full race coverage. Internal/scientific packages run in
+their own job. `go-host.mjs` discovers every top-level host test, example and fuzz target and
+partitions them exactly once across eight jobs, retaining every subtest and seed. Cost hints
+only balance scheduling; newly added tests enter the partition automatically. The Node controls
+verify coverage, name boundaries, duplicate refusal and agreement with the workflow matrix.
+The aggregate `Go host` required check fails if any contributing job fails, skips or cancels.
+
+```sh
+node validation/go-host.mjs --list
+node validation/go-host.mjs 1 # repeat with 2 through 8 for the complete host race suite
+go test -race -v -timeout 15m ./internal/... ./validation
+node --test benchmark/harness.test.mjs validation/go-host.test.mjs
+```
+
+CI run `40992828773` completed its original Go job successfully in about 41 minutes: the root
+package alone took 1579.335 s and the validation package 662.506 s. The per-package 30-minute
+timeout did not bound the combined job. The new partition removes that long serial host run
+without omitting tests or weakening scientific tolerances; each test package is bounded at
+15 minutes and each worker job at 20 minutes. The separate required-data/budget job is unchanged.
+
+The same run passed both R package checks but failed before the first agent benchmark task on
+`EPIPE`. Commands such as Git provenance queries need no stdin and now receive EOF from startup,
+avoiding writes to an already exited process. Commands with input still use a pipe; a child
+failure retains its exit code/stderr, and a failed input write cannot count as successful evidence.
+Controls cover fast exits, exact JSON input/output, early failure, failed delivery, missing
+executables, timeouts and the existing output-size bounds. No scientific worker or client API changes.
+
+Follow-up validation uses CI's Go 1.24.13. All eight host shards pass with `GOMAXPROCS=2`,
+four local shard processes at a time; individual invocations take 155.7–261.9 s. Their logs
+account for all 212 discovered test/fuzz targets exactly once, with only the existing optional
+published-specificity download and container-oracle environment checks skipped. All 243 Node
+tests pass, including subprocess and partition controls. The complete HTTP/MCP/Python/R agent
+benchmark passes again: 32 transport controls, three scripted-command controls, six repeated
+controls, expected negative controls and four accessible report layouts. Workflow YAML and all
+16 aggregate success/failure/cancellation/skip combinations were checked; only all-success passes.
+The separate internal/scientific race command also passes with Go 1.24.13 and a fresh external-data
+directory matching that CI job (validation package: 444.715 s); Go vet passes. External datasets
+remain the responsibility of the unchanged required-data job, which passed in the inspected run.
+Hosted timing and status still require the maintainer's next push; local times are not a runner SLA.
+
 ## 0.9.0 suite study and release checks
 
 The [worked guide](../docs/SUITE-STUDY.md) joins the wave's supported workflows while keeping

@@ -4,6 +4,12 @@
 
 ## 0.9.0 — prepared release
 
+- **CI execution and benchmark subprocess repair.** Give commands without input closed stdin
+  from startup, avoiding a fast-exit pipe race; preserve child exit diagnostics and reject
+  failed input delivery. Discover every host test/fuzz target and distribute the full race suite
+  across eight independent CI jobs, with scientific packages separate and an aggregate required
+  check. Retain all subtests, assertions, numerical tolerances and performance budgets.
+
 - **Suite and public-data study (wave 9, slice 16).** Connect exact metadata, explicit
   public evidence, portable tables and reviewed sibling/B-cell workflows with clear scientific
   boundaries. Add a 0.9.0 compatibility fixture from separate declared artificial controls,

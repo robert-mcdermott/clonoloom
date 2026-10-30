@@ -60,8 +60,9 @@ jobs:
           fi
           echo "test=$test" >> "$GITHUB_OUTPUT"
 
-  go:
-    name: Go host
+  go-checks:
+    name: Go checks and scientific packages
+    timeout-minutes: 20
     needs: changed
     if: needs.changed.outputs.test == 'true'
     runs-on: ubuntu-latest
@@ -80,10 +81,9 @@ jobs:
           fi
       - name: go vet
         run: go vet ./...
-      - name: go test
-        # Full release replay and scientific controls exceed the default ten minutes
-        # with race instrumentation; individual performance budgets remain unchanged.
-        run: go test -race -timeout 30m ./...
+      - name: Internal workers and scientific controls with race detection
+        # Host integrations run in separate shards below; no test coverage is dropped.
+        run: go test -race -v -timeout 15m ./internal/... ./validation
       - name: Cross-compile
         env:
           CGO_ENABLED: '0'
@@ -94,6 +94,40 @@ jobs:
           GOOS=linux GOARCH=arm64 go build -o /dev/null .
           GOOS=windows GOARCH=amd64 go build -o /dev/null .
           GOOS=windows GOARCH=arm64 go build -o /dev/null .
+
+  go-host:
+    name: Go host (${{ matrix.shard }}/8)
+    timeout-minutes: 20
+    needs: changed
+    if: needs.changed.outputs.test == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Discovered host tests and fuzz seeds with race detection
+        run: node validation/go-host.mjs '${{ matrix.shard }}'
+
+  go:
+    # Preserve the existing required-check name and fail if any shard fails or skips.
+    name: Go host
+    needs: [changed, go-checks, go-host]
+    if: always() && needs.changed.outputs.test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every Go check and host shard passed
+        env:
+          CHECKS: ${{ needs.go-checks.result }}
+          HOST: ${{ needs.go-host.result }}
+        run: test "$CHECKS" = success && test "$HOST" = success
 
   web:
     name: Browser modules
@@ -110,7 +144,7 @@ jobs:
           shopt -s nullglob
           for file in web/app.js web/ui/*.js web/lib/*.js web/workers/*.js benchmark/*.mjs cluster/*.mjs validation/*.mjs docs/capture/*.mjs docs/examples/*.mjs docs/site/*.mjs docs/site/assets/*.js; do node --check "$file"; done
       - name: node --test
-        run: node --test "web/lib/**/*.test.mjs" benchmark/*.test.mjs cluster/*.test.mjs
+        run: node --test "web/lib/**/*.test.mjs" benchmark/*.test.mjs cluster/*.test.mjs validation/*.test.mjs
       - name: The website built, every link, anchor and screenshot checked (docs/site/build.mjs)
         run: node docs/site/build.mjs "$RUNNER_TEMP/site"
       - name: Validation

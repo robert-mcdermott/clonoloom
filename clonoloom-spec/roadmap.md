@@ -4925,6 +4925,26 @@ the full validation record is in `validation/README.md`.
 Older release fixtures, scientific identities and automation/replay contracts remain unchanged.
 No commit, push, tag, release or site publication was made. Wave 10 has not started.
 
+**Post-slice-16 CI follow-up.** Run `40992828773` passed the R package checks but its release-R
+job failed in the agent benchmark before the first task: a fast subprocess exit raced an empty
+stdin write and reported `EPIPE`. The benchmark now gives input-free commands EOF at startup,
+drains child diagnostics before reporting failure and refuses failed input delivery. Regression
+controls exercise exact JSON, early exits, failure status/stderr, missing commands and bounds.
+
+The same run's Go job succeeded after about 41 minutes; its root package took 1579.335 s and
+the validation package 662.506 s. The host race suite now discovers and schedules every top-level
+test/fuzz target exactly once across eight independent jobs, retaining all subtests. Internal
+and scientific packages run separately. No scientific assertion, tolerance, source fixture or
+budget was changed. The existing `Go host` required check is an aggregate that fails unless
+every contributing job succeeds; package/job limits are 15/20 minutes, with verbose progress.
+The required-data job and release policy are unchanged. Validation details are recorded at the
+start of `validation/README.md`; this follow-up awaits the maintainer's commit and CI rerun.
+All eight host shards pass locally with CI's Go 1.24.13 and two Go workers per process
+(155.7–261.9 s each). Their logs cover all 212 discovered targets exactly once, retaining the
+two pre-existing optional environment skips. The separate internal/scientific race command
+and Go vet pass; all 243 Node tests, the complete cross-client benchmark and aggregate failure
+controls pass. These local timings do not promise a particular hosted-runner duration.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |

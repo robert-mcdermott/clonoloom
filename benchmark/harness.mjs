@@ -23,16 +23,21 @@ const CLIENT='Benchmark candidate';
 
 export function processResult(command,args,{env={},input='',timeout=60000}={}) {
   return new Promise((resolve,reject)=>{
-    const child=spawn(command,args,{cwd:ROOT,env:{...process.env,...env},stdio:['pipe','pipe','pipe'],shell:false});
-    let output='',error='',size=0,finished=false;
+    // Fast commands such as git can exit before an empty stdin write on Linux.
+    // Give commands with no payload EOF from startup instead of creating a pipe.
+    const child=spawn(command,args,{cwd:ROOT,env:{...process.env,...env},stdio:[Buffer.byteLength(input)?'pipe':'ignore','pipe','pipe'],shell:false});
+    let output='',error='',size=0,finished=false,inputError;
     const done=(failure)=>{if(finished)return;finished=true;clearTimeout(timer);if(child.exitCode===null)child.kill('SIGKILL');failure?reject(failure):resolve(output);};
     const timer=setTimeout(()=>done(new Error(`${command} deadline exceeded`)),timeout);
-    child.on('error',done);child.stdin.on('error',done);
+    child.on('error',done);
+    // Drain stderr and wait for the exit status when a child closes stdin early.
+    // A failed write must neither mask its diagnostic nor pass as successful input.
+    child.stdin?.on('error',e=>{inputError=e;});
     child.stdout.setEncoding('utf8');child.stderr.setEncoding('utf8');
     child.stdout.on('data',c=>{output+=c;size+=Buffer.byteLength(c);if(size>16*1024*1024)done(new Error('Transport output limit exceeded'));});
     child.stderr.on('data',c=>{error+=c;size+=Buffer.byteLength(c);if(size>16*1024*1024)done(new Error('Transport output limit exceeded'));});
-    child.on('close',code=>done(code===0?null:new Error(`${command} exited ${code}: ${error.slice(0,2000)}`)));
-    child.stdin.end(input);
+    child.on('close',code=>done(code!==0?new Error(`${command} exited ${code}: ${error.slice(0,2000)}`):inputError?new Error(`${command} stdin: ${inputError.message}`):null));
+    child.stdin?.end(input);
   });
 }
 async function boundedText(response) {

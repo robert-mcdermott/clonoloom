@@ -205,7 +205,13 @@ Tests and CI follow the siblings: **each commit is tested once**.
 - Documentation-only changes (Markdown, the spec, license, citation) do not run CI.
 
 CI jobs (all on fixed data):
-- **Go:** gofmt, vet, `go test -race ./...`, and the six-platform cross-compile.
+- **Go:** gofmt, vet, race tests for internal/scientific packages, and the six-platform
+  cross-compile. Host integrations are discovered with `go test -race -list . .` and assigned
+  exactly once to eight independent race-test jobs (`validation/go-host.mjs`). All subtests and
+  fuzz seeds remain included. Scheduling hints balance expensive tests without changing their
+  assertions or scientific settings. The existing `Go host` check requires every shard and
+  internal/scientific check to succeed. Verbose output identifies progress; individual test
+  packages have a 15-minute timeout and their worker jobs a 20-minute limit.
 - **Web modules:** `node --check`, `node --test`.
 - **Validation:** on the open development datasets, cached by checksum, with recorded reference
   numbers.
