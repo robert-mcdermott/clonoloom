@@ -15,6 +15,7 @@
 !api_bcell_example.go
 !api_bcells.go
 !api_cache.go
+!api_candidates.go
 !api_certificates.go
 !api_classes.go
 !api_clonotypes.go
@@ -94,6 +95,7 @@
 !internal/artifacts/artifacts.go
 !internal/batchqc/batchqc.go
 !internal/batchqc/capture.go
+!internal/bcell/candidates.go
 !internal/bcell/evidence.go
 !internal/bcell/families.go
 !internal/bcell/germlines.go
@@ -314,6 +316,7 @@
 !web/ui/airr-objects.js
 !web/ui/automation.js
 !web/ui/batch-qc.js
+!web/ui/bcell-candidates.js
 !web/ui/bcell-families.js
 !web/ui/bcell-germlines.js
 !web/ui/bcell-isotypes.js

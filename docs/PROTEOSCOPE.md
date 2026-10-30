@@ -7,6 +7,10 @@ chain, predict a structure or establish binding specificity.
 
 ## Review and send
 
+Wave 9 slice 15 also opens this dialog from [B-cell candidate review](BCELL-CANDIDATES.md), with
+the explicitly selected source row preselected. Opening sends nothing and grants no permissions.
+Destination review and local/public/provider acknowledgments are still required here.
+
 1. Start the separate Proteoscope application with remote control explicitly enabled, and keep
    its browser page open. For its default port:
 

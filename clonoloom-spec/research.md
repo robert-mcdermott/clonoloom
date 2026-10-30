@@ -4063,3 +4063,55 @@ Native evidence preserves original parent text/hash, complete settings and diagn
 separate from project artifacts/replay and includes original identifiers; provider acknowledgment
 is explicit. B4 remains partial for richer/larger models and likelihood replay. No cache,
 historical parsimony schema, scientific identity or automation contract changes.
+
+### 5.71 Descriptive B-cell candidate review
+
+**Decision (wave 9, slice 15).** Provide a user-directed ordering of saved families within one
+explicit current sample and complete saved scope. Size counts assigned observations, mutation
+pools observed heavy-row nucleotide differences over evaluable V/J bases, isotype is the share of
+an explicit preferred observed class, and change is a difference of family observation shares
+against one named sample from the same explicit subject. No weighted composite, biological optimum,
+inferential expansion test or efficacy score is calibrated. Parent family/SHM/isotype methods and
+their original citations remain in the native evidence.
+
+[Neumeier et al. (2022), PNAS 119:e2113766119](https://doi.org/10.1073/pnas.2113766119),
+*Phenotypic determinism and stochasticity in antibody repertoires of clonally expanded plasma cells*,
+reported no correlation of measured affinity with clonal expansion or SHM in their studied
+plasma-cell repertoires. This supports a context-specific caution about interpreting these proxies;
+it does not establish a universal absence of association or validate our ordering policy.
+Sampling, QC, family assignments, germline/reference uncertainty, coverage and unresolved classes
+all constrain interpretation. Current/baseline samples are not independent biological replicates.
+
+The strict availability and ranking rules are **ClonoLoom choices**. Every current heavy source
+row must have positive evaluable bases; this does not mean full V/J coverage. Pooled counts weight
+source rows and their coverage, not independent cells. Every current isotype observation must be
+resolved before preferred-class share is available. Partial numerators/denominators remain visible
+when unavailable. Missing values sort last in either direction. Exact rational comparison and
+ordered criteria give tied competition ranks; lexical family identifiers only stabilize display.
+The complete ranked scope includes families with no current observations. Zero observed count
+does not establish biological absence. See [BCELL-CANDIDATES.md](../docs/BCELL-CANDIDATES.md) for
+formulas, experimental units, exclusion denominators, bounds and evidence conventions.
+
+[AIRR Rearrangement 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+describes annotated single chains, nullable fields and V(D)J completeness. Review selects one
+current observation and its explicit source chain, preserves the original header/row and exact
+supplied `sequence_aa`, and refuses unsupported sequences. `complete_vdj` is not full-protein
+completeness; an operational cell-associated assignment is not independently proven pairing.
+No translation, consensus, reconstructed ancestor or chain assembly is introduced. One-chain
+FASTA is not a synthesis-ready receptor. The existing Proteoscope workflow is reused with fresh
+local/public/provider permissions; opening it sends nothing.
+
+The small example copies historical simulated inputs without altering them. Its separate upstream
+fixture generator annotates coding sequences with [NCBI table 1](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#SG1),
+deliberately retaining one missing amino-acid field. Biopython 1.86 independently checks 119 supplied
+translations and all 120 original rows/fields. This is a declared artificial annotation step,
+not a product translation fallback or an experimentally validated sequence set.
+
+Independent fraction/count reconstruction checks every family, membership, denominator, missing
+metric, rank and tie in analytical controls, native API output and both-theme browser downloads.
+Source/parent/sequence hashes and exact FASTA are audited separately. Native tests pin ARM/Intel
+records and refuse changed sources, notices, identities and missing permissions. Both themes show
+the labeled simulated study, native units and exact count ratios in an accessible table. These
+checks establish computational correctness and evidence preservation, not predictive validity.
+B6 remains partial for inferential expansion and synthesis-ready paired constructs. Existing
+historical artifacts, scientific replay, cache/version identities and automation contracts stay intact.

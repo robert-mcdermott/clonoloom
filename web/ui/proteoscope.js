@@ -63,5 +63,5 @@ export function showProteoscope(app,dataset){
   if(receipt)content.append(h('p.callout',{role:'status'},receipt),h('button.btn.small',{onclick:()=>downloadBlob(new Blob([receiptText],{type:'application/json'}),'clonoloom-proteoscope-receipt.json')},'Save acknowledgment again'));
  }
  const view={page,inspect,send,exportEvidence,select(i,p=port){if(busy)throw new Error('Operation pending');row=i;port=p;invalidate();render();},approve({local:l=false,publicSearch:p=false,terms:t=false}){local=l;publicSearch=p;terms=t;render();},state:()=>({busy,review,error,receipt}),close:dialog.close};
- app.proteoscopeView=view;render();page().catch(()=>{});return view;
+ app.proteoscopeView=view;render();view.ready=page();view.ready.catch(()=>{});return view;
 }

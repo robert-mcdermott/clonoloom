@@ -15,7 +15,8 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–8 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** v0.8.0 and its product site are published. Wave 8 merged in PR #8
 (`719a73c`); the follow-up AI-agent documentation is committed as `6f71662`. Wave 9 is planned
-below; slices 1–13 are committed and pushed (slice 13: `37d2864`). Slice 14 is implemented and validated on `wave9`, awaiting maintainer review and commit.
+below; slices 1–14 are committed and pushed (slice 14: `ef11b92`). Slice 15 is implemented and
+validated on `wave9`, awaiting maintainer review and commit.
 No 0.9.0 release is made.
 
 The order follows the siblings' principle:
@@ -4755,7 +4756,88 @@ scientific replay and automation actions.
 
 Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances
 and existing automation/replay contracts remain unchanged. No commit, push, tag, release or
-publication was made. Slice 15 has not started.
+publication was made. Slice 15 follows below.
+
+### Slice 15: descriptive B-cell candidate review
+
+**Slice 14 committed as `ef11b92`. Plan before implementation.** Review saved thresholded
+families within one explicitly selected sample. Users choose an ordered list of size, pooled
+heavy-chain nucleotide divergence, preferred observed isotype class and observed family-share
+change criteria, including direction. There is no automatic composite score or biological optimum.
+Retain complete denominators, missingness and tied competition ranks; stable IDs order ties only.
+Use exact rational comparisons. An optional baseline must be a different sample from the same
+explicit subject under subject-scoped families. Share change is descriptive, not an expansion test.
+
+Pin optional SHM/germline and isotype parents to the exact family result. Missing or incomplete
+metric evidence remains unavailable and sorts last, never zero. Preserve the complete ranked
+universe and source observations in native evidence. Use an accessible table rather than a plot
+that might imply calibrated efficacy. Existing artificial immunization data provide the worked
+example, with independent rational/count controls and both-theme browser validation.
+
+Select one current-sample observation and source chain separately before reviewing an unchanged
+supplied AIRR sequence_aa. Export only canonical available amino acids, with native source evidence,
+explicit provider/sequence-limit acknowledgment and safe FASTA identifiers. No consensus, translation,
+chain assembly, inferred ancestor, binding score or synthesis-ready construct. Reuse the existing
+Proteoscope handoff with fresh local/public/provider permissions; candidate selection sends nothing.
+Keep historical artifacts, scientific replay, automation and version identities unchanged.
+
+**Implementation.** Added the explicit candidate-review dialog to saved thresholded Families.
+The complete selected scope includes zero-current families. Native ordered criteria use exact
+integer fractions, missing-last comparison in either direction and competition ranks; stable IDs
+only order display ties. Assigned observations, excluded counts, pooled heavy-row denominators,
+unresolved classes and same-subject baseline shares stay visible. There is no weighted composite,
+inferential expansion test, binding prediction or implied independent-replicate analysis.
+
+Native evidence retains original family/SHM/germline/isotype text, hashes and manifests. Parent
+lineage and source identities are checked; all selected heavy rows need evaluable mutation evidence
+and all current isotype observations need resolved classes. This does not establish full V/J
+coverage, remove row/coverage weighting or account for reference/annotation uncertainty. Evidence
+remains separate from saved artifacts, certificates and scientific replay.
+
+An explicit observation/chain selection rechecks original AIRR source bytes and reviews only the
+unchanged supplied sequence_aa. FASTA has a safe opaque identifier and native source/full-review
+companions. Missing amino-acid annotations remain missing even when nucleotide sequence is present.
+Provider/sequence-limit acknowledgments, operation bounds, cancellation and stale-project checks
+protect export. Opening Proteoscope preselects the chosen row without probing or sending; its
+existing local/public/provider permission workflow starts fresh. No consensus, translation, chain
+assembly or synthesis-ready construct is offered; B6 remains partial for those broader ambitions.
+
+The full workflow uses small copies of the historical simulated study with declared artificial
+upstream amino-acid annotations, one deliberately missing value and no modified historical files.
+All original fields remain intact. The built-in example also explains descriptive review and why
+its unchanged inputs lack source amino acids. Research, source citations, formats and the website
+describe the limits; both themes show native counts and units in an accessible table.
+
+**Validation.**
+
+- Native controls check assigned-observation units, complete family scopes including zero-current
+  families, baseline boundaries, pooled denominators, retained partial counts, missing-last rules,
+  criterion priority, exact rational ties and competition ranks. Complete four-control result
+  hashes agree and are pinned on arm64 and amd64.
+- Native API controls build actual family/germline/SHM/isotype parents, verify exact download
+  fingerprints, provider and sequence acknowledgments, same-subject refusal, source identity,
+  changed source/notice/parent refusal and a deliberate missing amino-acid annotation. Final
+  candidate/Proteoscope race checks pass (13.004 s); the final missing-control assertion passes
+  in a separate candidate race run (14.839 s).
+- Independent Python fraction/count audit passes for seven rankings and three source-chain exports
+  (analytical controls, native API and both browser themes). It verifies complete memberships,
+  numerator/denominator values, missingness, native numeric presentation, ranks, parent/source hashes
+  and exact FASTA. Biopython 1.86 independently confirms 119 artificial upstream translations and
+  the deliberate missing value; all 120 original source rows/fields are preserved.
+- Both-theme browser controls pass explicit choices, unchanged downloads, sequence acknowledgment,
+  exact Proteoscope row selection without implicit probing/review/send or inherited permissions,
+  concurrent-work refusal, cancellation and stale-project guards. Both screenshots were reviewed
+  for labeled simulated data, readable counts/units, denominators, limits and chain inspection.
+- All 234 JavaScript tests pass. The documentation build contains 61 pages and 88 screenshot pairs;
+  all 240 desktop/phone × light/dark accessibility/layout checks pass. Container inventory checks
+  390 explicit runtime inputs. Go vet, six CGO-free darwin/linux/windows × amd64/arm64 builds,
+  the offline B-cell example and the final no-fused-multiply-add assembly guard pass.
+- Full internal/scientific race suite passes (validation: 811.797 s). Full application race suite
+  passes (1157.885 s), including historical projects, exact reports, headless execution and replay.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances
+and existing automation/replay contracts remain unchanged. No commit, push, tag, release or
+publication was made. Slice 16 has not started.
 
 ## Later waves (outlined)
 

@@ -310,6 +310,11 @@ AIRR amino-acid sequence to local Proteoscope 0.10.0, with separate approval for
 sequence search. Source annotations and identifiers remain in local evidence; partial/unknown
 completeness stays explicit. No paired receptor, structure or binding specificity is inferred.
 
+[B-cell candidate reviews](docs/BCELL-CANDIDATES.md) (unreleased wave 9) order families by explicit
+descriptive criteria, retaining denominators, missingness, ties and exact parent evidence. Review
+one supplied source-chain amino-acid sequence for FASTA or Proteoscope; no binding prediction or
+synthesis-ready construct is inferred.
+
 [JC69 lineage likelihood reviews](docs/LINEAGE-LIKELIHOOD.md) (unreleased wave 9) fit one saved
 V/J panel through seven distinct states, with fitted substitutions/site and conditional ancestral
 probabilities. This baseline does not model SHM context or infer selection, switching or dates.

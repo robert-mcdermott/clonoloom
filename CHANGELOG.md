@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Descriptive B-cell candidate review (wave 9, slice 15).** Rank a complete family scope
+  for one explicit sample by ordered observation count, heavy-row divergence, preferred isotype
+  share and same-subject observed share change. Preserve exact rational comparisons, denominators,
+  missingness, ties and original parent evidence. Review one unchanged supplied source-chain
+  amino-acid sequence before FASTA export or opening the existing Proteoscope permission flow.
+  No binding score, expansion test, sequence reconstruction or synthesis-ready construct is inferred.
+  Add independent count/rational/source checks, pinned processor controls and both-theme artificial
+  examples. Scientific replay and historical evidence remain unchanged.
+
 - **Bounded lineage likelihood reviews (wave 9, slice 14).** Fit JC69 to one saved
   complete-case V/J panel, enumerating all binary topologies through seven distinct states.
   Retain invariant sites, fitted branch units, numerical boundaries, multistart diagnostics

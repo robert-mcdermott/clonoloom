@@ -1192,3 +1192,20 @@ flags and the receiver acknowledgment (including original response text and SHA-
 The fingerprint hashes the native compact JSON record
 before its final newline. These are local interchange evidence, not de-identification, a scientific
 certificate or a remotely reproducible result. See [PROTEOSCOPE.md](PROTEOSCOPE.md).
+
+## Descriptive B-cell candidate evidence (wave 9, slice 15)
+
+Version 1 `clonoloom-bcell-candidates` JSON preserves the complete ranked family scope, explicit
+ordered criteria, assigned-observation denominators, exact integer fractions, native numeric
+values, missing reasons, competition ranks and all current source observations. Original family
+and optional SHM/germline/isotype parent JSON text, hashes and manifests retain exact tokens and
+methods. Its SHA-256 hashes the indented native download bytes, without an added final newline.
+
+Version 1 `clonoloom-candidate-sequence` JSON links that review fingerprint to one selected original
+AIRR source chain, preserving header/row text, decoded fields as strings, source and sequence hashes,
+eligibility, notice and limits. Its fingerprint uses the same native-byte convention. Companion
+FASTA has one opaque identifier and unchanged supplied `sequence_aa`, with a final LF; no sequence
+reconstruction or paired construct is generated. Keep the full review and sequence companion with
+FASTA. These are separate local review records, not project artifacts, replay certificates or
+de-identification. See [BCELL-CANDIDATES.md](BCELL-CANDIDATES.md) for bounds, permission and scientific
+limits; similarity/ranking does not establish binding or synthesis readiness.

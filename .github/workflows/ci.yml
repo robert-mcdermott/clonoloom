@@ -205,6 +205,14 @@ jobs:
           go test -run 'TestLikelihood|TestLineageLikelihood' . ./internal/bcell
           uv run --no-project --with numpy==2.3.5 --with scipy==1.18.1 validation/reference/lineage_likelihood.py "$CLONOLOOM_ML_OUT"
 
+      - name: Independent descriptive candidate rankings and exact source sequences
+        if: matrix.python == '3.13'
+        env:
+          CLONOLOOM_CANDIDATES_OUT: ${{ runner.temp }}/bcell-candidates
+        run: |
+          go test -run TestCandidate . ./internal/bcell
+          uv run --no-project --with biopython==1.86 validation/reference/candidates.py "$CLONOLOOM_CANDIDATES_OUT"
+
   r-client:
     name: R client (${{ matrix.r }})
     needs: changed

@@ -411,6 +411,52 @@ async function capturedCertificateScene(kind) {
 }
 
 const scenes = {
+  async candidates() {
+    // Generate only the ordinary artificial reference library, then open the separate
+    // upstream-annotation controls. Historical/source files are never modified.
+    await act('open_example',{example:'simulated-bcell-immunization',download:true});
+    await act('new_project',{name:'Artificial B-cell candidate review'});
+    const files=['S01-d14','S01-d28','S01-pre','S02-d14','S02-d28','S02-pre'].map(s=>join(ROOT,'testdata/candidates',s+'.tsv'));
+    files.push(join(ROOT,'testdata/candidates/repertoires.airr.json'));
+    await act('open_data',{paths:files,name:'Artificial annotated B-cell study'});
+    await act('find_bcell_families',{threshold:0.1});
+    await act('reconstruct_bcell_germlines',{reference:'simulated-bcell-immunization'});
+    await act('measure_bcell_shm',{});
+    await act('summarize_bcell_isotypes',{});
+    const config=await js(`(()=>{const p=window.clonoloom.store.project,d=p.datasets[0],artifact=kind=>p.artifacts.find(a=>a.dataset===d.id&&a.kind===kind).id;return {dataset:d,families:artifact('families'),shm:artifact('shm'),isotypes:artifact('isotypes'),options:{sample:'S01-d28',baseline:'S01-pre',preferredClass:'IgG',criteria:[{metric:'change',direction:'descending'},{metric:'mutation',direction:'descending'}]}}})()`);
+    await js(`window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(config.families)}})`);
+    await waitFor("window.clonoloom.familiesView?.state().status==='ready'");
+    const open=()=>js("(()=>{[...document.querySelectorAll('button')].find(b=>b.textContent==='Review B-cell candidates').click();return true})()");
+    await open();
+    if(await js("document.querySelector('[aria-label=\"Candidate sample\"]').value!==''||Boolean(window.clonoloom.candidatesView.state().review)"))throw Error('Implicit candidate selection');
+    const configure=()=>js(`(()=>{window.clonoloom.candidatesView.configure(${JSON.stringify(config)});return true})()`);
+    const run=()=>js('(async()=>{await window.clonoloom.candidatesView.run();return true})()');
+    await configure();await run();
+    const result=await js('window.clonoloom.candidatesView.state().review.evidence.result');
+    if(result.currentTotal!==24||result.baselineTotal!==4||result.rows.length!==2)throw Error('Wrong candidate denominators');
+    const obs=result.rows[0].observations.find(o=>o.rows.some(r=>r.sequenceId==='S01-d28-C000016-IGH'));
+    if(!obs)throw Error('Known source observation absent');const row=obs.rows.find(r=>r.sequenceId==='S01-d28-C000016-IGH');
+    const select=()=>js(`(()=>{window.clonoloom.candidatesView.select(${JSON.stringify(obs.family)},${JSON.stringify(obs.id)},${JSON.stringify(row.id)});return true})()`);
+    await select();await js('(async()=>{await window.clonoloom.candidatesView.inspect();return true})()');
+    if(!(await js('window.clonoloom.candidatesView.state().selection.evidence.eligible')))throw Error('Declared source chain unavailable');
+    // FASTA requires the explicit sequence-limit acknowledgment; no repair/translation.
+    await js(`(async()=>{const v=window.clonoloom.candidatesView;let denied=false;try{await v.exportFASTA()}catch{denied=true}if(!denied)throw Error('FASTA without sequence review');return true})()`);
+    await run();await select();await js('(async()=>{await window.clonoloom.candidatesView.inspect();return true})()');
+    await js(`(async()=>{const v=window.clonoloom.candidatesView,original=URL.createObjectURL;window.candidateDownloads=[];URL.createObjectURL=b=>{window.candidateDownloads.push(b);return original(b)};try{v.approve({sequence:true});await v.exportFASTA()}finally{URL.createObjectURL=original}return true})()`);
+    const downloads=await js('Promise.all(window.candidateDownloads.map(b=>b.text()))');if(downloads.length!==3)throw Error('Missing native candidate companions');
+    if(process.env.CLONOLOOM_CANDIDATES_OUT){const dir=join(process.env.CLONOLOOM_CANDIDATES_OUT,`browser-${await js("matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'")}`);mkdirSync(dir,{recursive:true});for(let i=0;i<3;i++)writeFileSync(join(dir,['review.json','selection.json','chain.fasta'][i]),downloads[i]);}
+    // Opening the existing Proteoscope review must only preselect this row. No probe,
+    // review or send starts and every destination permission remains unchecked.
+    await js(`(async()=>{const original=fetch;window.fetch=(...args)=>{if(String(args[0]).includes('api/proteoscope/')&&!String(args[0]).endsWith('/page'))throw Error('Implicit Proteoscope request');return original(...args)};try{await window.clonoloom.candidatesView.handoff();const v=window.clonoloom.proteoscopeView;if(v.state().review)throw Error('Implicit handoff review');if([...document.querySelectorAll('.proteoscope-view input[type=checkbox]')].some(x=>x.checked))throw Error('Inherited permission');if(document.querySelector('.proteoscope-row').value==='')throw Error('Lost source row');v.close()}finally{window.fetch=original}return true})()`);
+    await open();await configure();
+    // Cancellation and project replacement cannot publish a delayed native result.
+    await js(`(async()=>{const v=window.clonoloom.candidatesView,p=v.run();[...document.querySelectorAll('.candidates-view button')].find(b=>b.textContent==='Cancel candidate operation').click();let denied=false;try{await p}catch{denied=true}if(!denied||v.state().review)throw Error('Cancelled candidate review retained');return true})()`);
+    await js(`(async()=>{const app=window.clonoloom,v=app.candidatesView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);entered();await gate;return response};try{const pending=v.run();await started;let denied=false;try{await v.run()}catch{denied=true}if(!denied)throw Error('Concurrent candidate operation');app.store.commit({...app.store.project,candidateSentinel:'keep'},'Concurrent candidate edit');release();let stale=false;try{await pending}catch{stale=true}if(!stale||v.state().review)throw Error('Stale candidate review retained');}finally{release();window.fetch=original}v.close();app.store.undo();return true})()`);
+    await open();await configure();await run();await select();await js('(async()=>{await window.clonoloom.candidatesView.inspect();return true})()');
+    await js("(()=>{document.querySelector('.candidates-view').closest('.dialog-body').scrollTop=0;return true})()");
+    await clearToasts();await checkAccessibility();
+  },
+
   async 'lineage-likelihood'() {
     await act('open_example',{example:'simulated-bcell-immunization',download:true});
     await act('find_bcell_families',{threshold:0.1});
