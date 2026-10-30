@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Bounded lineage likelihood reviews (wave 9, slice 14).** Fit JC69 to one saved
+  complete-case V/J panel, enumerating all binary topologies through seven distinct states.
+  Retain invariant sites, fitted branch units, numerical boundaries, multistart diagnostics
+  and conditional ancestral probabilities with explicit rooting and model limits. Add a
+  native evidence download, provider permissions, deterministic processor checks, independent
+  ancestral-enumeration/optimizer comparisons and both-theme simulated viewer validation.
+  Historical parsimony results and scientific replay remain unchanged.
+
 - **Sample-scoped CytoWeave phenotype links (wave 9, slice 13).** Review one index-sort
   acquisition against one explicitly selected receptor sample using a separate well-to-cell
   mapping. Preserve exact CSV/provenance text, numeric strings, missingness and unmatched

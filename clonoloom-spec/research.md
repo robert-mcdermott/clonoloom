@@ -4014,3 +4014,52 @@ FCS reader/compensation/plate exporter and checks known well/event truth before 
 Both-theme browser controls use an explicitly artificial 96-event study with realistic-looking
 linear intensities and known missing/unmatched identities. Format fidelity is not biological
 validity. See [the interchange contract](../docs/CYTOWEAVE.md) for supported syntax and bounds.
+
+### 5.70 Bounded JC69 lineage likelihood
+
+**Decision (wave 9, slice 14).** Offer an explicit selected-panel likelihood review alongside
+saved parsimony. Use only that parent's observed/reference states and complete-case V/J columns,
+including invariant sites. Reference orientation, family membership and alignment are conditioned
+on, not estimated here. Source rows and abundance do not reweight identical panel states.
+
+**Sources.** [Jukes & Cantor 1969, Evolution of Protein Molecules](https://doi.org/10.1016/B978-1-4832-3211-9.50009-7)
+provides the JC69 equal-frequency/rate nucleotide baseline. [Felsenstein 1981, J Mol Evol](https://doi.org/10.1007/BF01734359)
+provides likelihood pruning over unknown ancestral states. The implementation sums site log
+likelihoods under a uniform root-state prior, including the reference tip. The model is reversible:
+display orientation is not inferred ancestry. The [IgPhyML documentation](https://igphyml.readthedocs.io/en/stable/)
+explains the importance of context-dependent SHM models; JC69 here does not implement those models.
+Only primary method descriptions/documentation were consulted; no external phylogeny source
+implementation was examined or copied.
+
+**ClonoLoom choices.** Exhaustively enumerate binary topologies through seven distinct states
+(945 topologies). Optimize each edge on [0,3] substitutions/site using the concavity of
+`sum log(a+b*exp(-4t/3))` in `exp(-4t/3)`. Endpoint checks and 48 derivative-bisection steps solve
+one coordinate; deterministic sweeps from three starts supply a bounded continuous search.
+Retain all start diagnostics, require coordinate stationarity for every topology's best fit,
+and refuse over-budget/cancelled work without a usable partial tree. Deterministic arithmetic
+and a lexical near-tie rule make results repeatable. Exhaustive topology enumeration does not
+prove a global continuous optimum. Full thresholds and the two-billion-work-unit bound are in
+[the likelihood contract](../docs/LINEAGE-LIKELIHOOD.md).
+
+Marginal ancestral probabilities condition on the selected topology, fitted lengths and fixed
+reference. Modal symbols with IUPAC ties are not a joint ancestral reconstruction; no ancestral
+FASTA is exported. The viewer labels fitted substitutions/site, uses explicitly schematic
+topological depth, and assigns traits only from observed rows. Zero/upper-bound edges and near
+ties are numerical evidence, not bootstrap support or established ancestors. No SHM context,
+selection, switching, dates, affinity or migration is inferred. The retained complete-case
+panel may reflect nonrandom missingness and is not a full rearranged receptor sequence.
+
+**Validation.** Analytical two-state JC69 distances and saturation controls complement direct
+ancestral-state enumeration (independent of pruning), transition-matrix exponentiation and
+SciPy L-BFGS-B comparisons. Independently enumerate every topology key. Optimize all topologies
+in four-/five-tip controls and three representative topologies at the seven-tip bound; do not
+claim independent optimization of every seven-tip topology. Check the selected native branch
+likelihood and every node/site posterior, including zero edges. Browser downloads of the existing
+artificial seven-state immunization example and a historical saved panel undergo the same audit.
+This verifies conditional numerical correctness, not biological adequacy or generating-tree
+recovery. Both themes expose unresolved branches, observed annotations and model limits.
+
+Native evidence preserves original parent text/hash, complete settings and diagnostics. It is
+separate from project artifacts/replay and includes original identifiers; provider acknowledgment
+is explicit. B4 remains partial for richer/larger models and likelihood replay. No cache,
+historical parsimony schema, scientific identity or automation contract changes.

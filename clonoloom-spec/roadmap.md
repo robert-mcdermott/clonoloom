@@ -15,7 +15,7 @@ confirmed or re-cut, and the decisions taken are recorded here. Waves 1–8 are 
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
 **Where things stand:** v0.8.0 and its product site are published. Wave 8 merged in PR #8
 (`719a73c`); the follow-up AI-agent documentation is committed as `6f71662`. Wave 9 is planned
-below; slices 1–12 are committed and pushed (slice 12: `2f6c5c8`). Slice 13 is implemented and validated on `wave9`, awaiting maintainer review and commit.
+below; slices 1–13 are committed and pushed (slice 13: `37d2864`). Slice 14 is implemented and validated on `wave9`, awaiting maintainer review and commit.
 No 0.9.0 release is made.
 
 The order follows the siblings' principle:
@@ -4679,6 +4679,83 @@ this bounded X2 interchange. Do not start slice 14 or change release/version ide
 Version 0.8.0, reader cache 5, scientific identity 1, numerical tolerances, historical evidence,
 automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
 release or publication was made. Slice 14 has not started.
+
+### Slice 14: bounded maximum-likelihood lineage review
+
+**Slice 13 committed as `37d2864`. Plan before implementation.** Add an explicit likelihood
+review of one saved family/locus panel, separate from historical parsimony artifacts. Select
+JC69 as a transparent, testable baseline (Jukes & Cantor 1969; Felsenstein 1981), not a
+context-dependent SHM or selection model. Reuse the saved complete-case V/J panel and its
+reference/observed states and provenance, never the parsimony topology as an imposed answer.
+
+Enumerate all unrooted binary topologies for at most seven distinct states including the supplied
+reference. Retain constant sites. Optimize bounded branch lengths in substitutions/site with
+multiple deterministic starts and explicit stationarity, boundary and resource diagnostics.
+Exhaustive topology enumeration does not prove global continuous-parameter optimization. Use
+reference placement only to orient the display; a reversible model does not infer the root.
+The existing artificial family controls have seven states; retain their full panels rather than
+subsample. Bound work at two billion charged units and allow cancellation. Compute marginal
+ancestral probabilities conditional on the selected topology, fitted lengths
+and fixed reference; do not present marginal modes as a joint reconstructed sequence or infer
+switching, selection, migration or dates from observed annotations.
+
+Keep this first likelihood workflow as a selected-panel review with native downloadable evidence,
+parent bytes/hash, full fit diagnostics and conditional probabilities. Preserve existing saved
+parsimony schemas, scientific replay, cache/version identities and automation catalog. Validate
+pruning against independent ancestral-state enumeration, optimization against an independent
+numerical optimizer, known two-tip results and simulated topology/uncertainty controls. Review
+both-theme tree/node presentation, cancellation, source changes and provider permissions. Larger
+searches, richer substitution models, SHM context and likelihood replay remain explicit limits.
+
+**Implementation.** Added an explicit selected-panel JC69 review in the existing Lineages view.
+The native engine retains invariant positions, enumerates all unrooted binary topologies through
+seven states, fits three deterministic bounded starts and refuses failed stationarity or work
+budgets. All starts/settings, near ties, zero/upper boundaries, exact branch values and conditional
+A/C/G/T probabilities travel in the evidence. Reference orientation remains an assumption; observed
+metadata remain separate from inferred states. No marginal-mode FASTA or biological transition
+claim is added. B4 remains partial for richer/larger models and likelihood replay.
+
+The viewer uses labeled substitutions/site on an explicitly topological-depth schematic, with
+pointer/keyboard and accessible-table node inspection. It names the simulated source study and
+exposes per-site reference coordinates and conditional probabilities. Native JSON downloads retain
+original parent bytes/hash, manifest, scientific methods and current provider notice. Explicit
+provider acknowledgment, parent/notice rechecks, concurrent-fit bounds, cancellation and stale
+project guards protect the review. Records remain separate from saved parsimony, certificates,
+scientific replay and automation actions.
+
+**Validation.**
+
+- Analytical JC69 distances, saturation/upper-bound cases, exact small topology counts,
+  conditional probabilities, canonical panels, resource/cancellation and stationarity refusals pass.
+  A final regression anchors topology ties to the overall maximum, refusing pairwise tie drift
+  across a chain of nearly equal scores. Pinned control records remain unchanged.
+- Native API checks pass for the existing seven-state historical panel, exact evidence download,
+  changed source/notice refusal and explicit provider acknowledgment. Historical files stay intact.
+- Complete three-panel native result digests agree on arm64 and amd64. The assembly guard found
+  new fused multiply-add opportunities during validation; explicit product rounding and existing
+  deterministic transcendental functions resolve them. The final guard passes without a tolerance
+  change. These digests are pinned in tests on both CI architectures.
+- Independent NumPy 2.3.5 / SciPy 1.18.1 audit passes for six panels: three analytical/artificial
+  controls, the native historical API review and both browser downloads. Independent topology sets,
+  direct sums over ancestral assignments, optimized likelihoods, saved edge likelihoods, every
+  node/site marginal probability, modal symbols and original annotations agree. All topologies are
+  independently optimized in four-/five-state controls; seven-state optimizer comparisons cover
+  the selected topology, best competitor and first canonical topology only. No claim of biological
+  model validation or globally optimal continuous search is made.
+- Both-theme simulated browser controls pass for explicit fitting, native export, concurrent work,
+  cancellation, stale-project refusal and keyboard inspection. Screenshots reviewed: fitted units,
+  schematic spacing, observed isotypes, zero branches and source/model limits are legible.
+- All 234 JavaScript tests pass. Documentation builds 61 pages / 87 screenshot pairs; all 240
+  accessibility/layout checks pass. Container allowlist checks 387 explicit inputs. Go vet, six
+  CGO-free darwin/linux/windows × amd64/arm64 builds and the offline B-cell example check pass.
+- Full application race suite passes (1103.723 s), including historical project reopening and
+  replay. Full internal/scientific race suite passes (validation: 865.830 s). Final focused
+  likelihood/API race checks after the tie-rule correction pass (74.019 s); the final assembly
+  guard and arm64/amd64 controls also pass.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances
+and existing automation/replay contracts remain unchanged. No commit, push, tag, release or
+publication was made. Slice 15 has not started.
 
 ## Later waves (outlined)
 

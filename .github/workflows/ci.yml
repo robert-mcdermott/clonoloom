@@ -197,6 +197,14 @@ jobs:
           go test -run TestCytoWeave .
           uv run --no-project validation/reference/cytoweave.py "$CLONOLOOM_CYTOWEAVE_OUT"
 
+      - name: Independent bounded JC69 likelihood and ancestral probabilities
+        if: matrix.python == '3.13'
+        env:
+          CLONOLOOM_ML_OUT: ${{ runner.temp }}/lineage-likelihood
+        run: |
+          go test -run 'TestLikelihood|TestLineageLikelihood' . ./internal/bcell
+          uv run --no-project --with numpy==2.3.5 --with scipy==1.18.1 validation/reference/lineage_likelihood.py "$CLONOLOOM_ML_OUT"
+
   r-client:
     name: R client (${{ matrix.r }})
     needs: changed

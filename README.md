@@ -310,6 +310,10 @@ AIRR amino-acid sequence to local Proteoscope 0.10.0, with separate approval for
 sequence search. Source annotations and identifiers remain in local evidence; partial/unknown
 completeness stays explicit. No paired receptor, structure or binding specificity is inferred.
 
+[JC69 lineage likelihood reviews](docs/LINEAGE-LIKELIHOOD.md) (unreleased wave 9) fit one saved
+V/J panel through seven distinct states, with fitted substitutions/site and conditional ancestral
+probabilities. This baseline does not model SHM context or infer selection, switching or dates.
+
 [CytoWeave phenotype links](docs/CYTOWEAVE.md) (unreleased wave 9) join one index-sort
 acquisition to one receptor sample through explicit well-to-cell mappings. Exact channel strings,
 missingness, acquisition/compensation declarations and unmatched identities remain in downloadable

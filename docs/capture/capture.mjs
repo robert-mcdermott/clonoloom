@@ -411,6 +411,38 @@ async function capturedCertificateScene(kind) {
 }
 
 const scenes = {
+  async 'lineage-likelihood'() {
+    await act('open_example',{example:'simulated-bcell-immunization',download:true});
+    await act('find_bcell_families',{threshold:0.1});
+    await act('reconstruct_bcell_germlines',{reference:'simulated-bcell-immunization'});
+    await act('build_bcell_lineages',{});
+    await waitFor("window.clonoloom.lineagesView?.state().status==='ready'");
+    const state=await js('window.clonoloom.lineagesView.state()');
+    const chosen=state.page.rows.find(t=>!t.excluded&&t.taxa>2&&t.taxa<=7);if(!chosen)throw Error('No bounded full family panel');
+    await js(`window.clonoloom.lineagesView.openTree(${JSON.stringify(chosen.id)})`);
+    const open=()=>js(`(()=>{[...document.querySelectorAll('button')].find(b=>b.textContent==='Review JC69 likelihood').click();return true})()`);
+    await open();if(await js('Boolean(window.clonoloom.likelihoodView.state().review)'))throw Error('Fit ran without selection');
+    await js('(async()=>{await window.clonoloom.likelihoodView.run();return true})()');
+    const result=await js('window.clonoloom.likelihoodView.state().review.evidence');
+    if(result.result.topologies!==945||result.panel.sites!==327||result.result.fits.some(f=>!f.converged))throw Error('Wrong likelihood evidence');
+    await js(`(async()=>{const v=window.clonoloom.likelihoodView,original=URL.createObjectURL;window.mlDownloads=[];URL.createObjectURL=b=>{window.mlDownloads.push(b);return original(b)};try{await v.save()}finally{URL.createObjectURL=original}return true})()`);
+    const saved=await js('window.mlDownloads[0].text()');if(JSON.parse(saved).result.logLikelihood!==result.result.logLikelihood)throw Error('Saved likelihood changed');
+    if(process.env.CLONOLOOM_ML_OUT){const dir=join(process.env.CLONOLOOM_ML_OUT,`browser-${await js("matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'")}`);mkdirSync(dir,{recursive:true});writeFileSync(join(dir,'likelihood.json'),saved);}
+    // Cancel an actual native request; no partial review may remain.
+    await js(`(async()=>{const v=window.clonoloom.likelihoodView,p=v.run();[...document.querySelectorAll('.likelihood-view button')].find(b=>b.textContent==='Cancel likelihood operation').click();let refused=false;try{await p}catch{refused=true}if(!refused||v.state().review)throw Error('Cancelled fit retained');return true})()`);
+    // Concurrency and project changes must invalidate a completed but delayed response.
+    await js(`(async()=>{const app=window.clonoloom,v=app.likelihoodView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);entered();await gate;return response};try{const pending=v.run();await started;let refused=false;try{await v.run()}catch{refused=true}if(!refused)throw Error('Concurrent fit');app.store.commit({...app.store.project,mlSentinel:'keep'},'Concurrent likelihood edit');release();let stale=false;try{await pending}catch{stale=true}if(!stale||v.state().review)throw Error('Stale likelihood retained');}finally{release();window.fetch=original}v.close();app.store.undo();return true})()`);
+    await open();await js('(async()=>{await window.clonoloom.likelihoodView.run();return true})()');
+    // The accessible table also moves focus to its selected node details.
+    await js("(()=>{document.querySelector('.likelihood-view table button').click();if(!document.activeElement.hasAttribute('data-ml-detail'))throw Error('Table node focus');return true})()");
+    // Choose an inferred node by keyboard, retaining conditional probability inspection.
+    const node=result.result.nodes.find(n=>n.kind==='inferred');
+    await js(`(()=>{document.querySelector('.likelihood-view [data-node="${node.id}"]').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));return true})()`);
+    if(!(await js("document.activeElement.hasAttribute('data-ml-detail')")))throw Error('Likelihood node keyboard focus');
+    // Keep overview at the top while its node controls remain keyboard reachable below.
+    await js("(()=>{document.querySelector('.likelihood-view').closest('.dialog-body').scrollTop=0;return true})()");
+    await clearToasts();await checkAccessibility();
+  },
   async cytoweave() {
     await act('new_project',{name:'Artificial index-sort links'});
     await act('open_data',{paths:[join(ROOT,'testdata/cytoweave/receptors.tsv')],name:'Artificial single-cell receptor controls'});
