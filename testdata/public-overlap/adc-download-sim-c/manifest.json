@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "contract": "ADC 1.2.0 /airr/v1 (AIRR Standards 1.5.1)",
+  "registryRevision": "4ae159f2799594a2c73669527f6fba97fc8995d7",
+  "spec": {
+    "repository": "ipa1.ireceptor.org",
+    "repertoire": "SIM-repertoire-C",
+    "processing": "SIM-process",
+    "license": "CC0 artificial test evidence; no provider request or human records.",
+    "citation": "ClonoLoom simulated public-overlap fixture; not a public study.",
+    "pages": 1,
+    "size": 100,
+    "accept": true
+  },
+  "pages": [
+    {
+      "file": "metadata.json",
+      "requestJSON": "{\"filters\":{\"content\":{\"field\":\"repertoire_id\",\"value\":\"SIM-repertoire-C\"},\"op\":\"=\"},\"format\":\"json\",\"from\":0,\"size\":1}",
+      "requestSHA256": "9b32c41b7cdf0f12b65512c44052c8f7f6bef44b6901204d471b2fefac00af32",
+      "endpoint": "https://ipa1.ireceptor.org/airr/v1/repertoire",
+      "retrievedAt": "2026-10-01T00:00:00Z",
+      "sha256": "a212e76b08d545bd3ef43c18b6c7f5301da7a67bcce4af4daf5146900bbfa921",
+      "bytes": 260,
+      "records": 1
+    },
+    {
+      "file": "page-001.json",
+      "requestJSON": "{\"filters\":{\"content\":[{\"content\":{\"field\":\"repertoire_id\",\"value\":\"SIM-repertoire-C\"},\"op\":\"=\"},{\"content\":{\"field\":\"data_processing_id\",\"value\":\"SIM-process\"},\"op\":\"=\"}],\"op\":\"and\"},\"format\":\"json\",\"from\":0,\"size\":100}",
+      "requestSHA256": "6aa5e00c45e72e0696c92df05297178441ee9d88f2e8711cfc202688c72cca68",
+      "endpoint": "https://ipa1.ireceptor.org/airr/v1/rearrangement",
+      "retrievedAt": "2026-10-01T00:00:00Z",
+      "sha256": "2de64f3e45da3c6db5b3f88da6ec3442081703f7000a87e73509a687f016879b",
+      "bytes": 927,
+      "records": 5
+    }
+  ],
+  "records": 5,
+  "stop": "page-budget",
+  "completeness": "not-established",
+  "notice": "Simulated incomplete evidence. No live repository contacted."
+}

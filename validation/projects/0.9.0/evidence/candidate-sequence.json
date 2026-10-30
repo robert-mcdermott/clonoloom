@@ -1,0 +1,119 @@
+{
+  "format": "clonoloom-candidate-sequence",
+  "version": 1,
+  "review": "97da2b1ff8be72a7b85ff17c2f5f4175dbc02ef28a46938f922a59ea83335524",
+  "observation": {
+    "id": "cell-0a67b1c221f5f72a7bb3b6667091a895",
+    "sample": "S01-d28",
+    "subject": "S01",
+    "scope": "subject:S01",
+    "cell": "S01-d28-C000016",
+    "rows": [
+      {
+        "id": "bcr-row-ade5c620306ad379681bcad12df384c7",
+        "source": {
+          "name": "S01-d28.tsv",
+          "sha256": "e13422240df9a7a0b207453e6d619c4c59088ffc15b60ec4ea0fbc727d714ac7"
+        },
+        "sequenceId": "S01-d28-C000016-IGK",
+        "line": 13,
+        "locus": "IGK"
+      },
+      {
+        "id": "bcr-row-bfd2311510bbb534642f5c08fe628b9e",
+        "source": {
+          "name": "S01-d28.tsv",
+          "sha256": "e13422240df9a7a0b207453e6d619c4c59088ffc15b60ec4ea0fbc727d714ac7"
+        },
+        "sequenceId": "S01-d28-C000016-IGH",
+        "line": 12,
+        "locus": "IGH"
+      }
+    ],
+    "heavy": {
+      "locus": "IGH",
+      "v": "IGHV1-SIM",
+      "j": "IGHJ1-SIM",
+      "junction": "TGTTCACGATCTACATCAACCGGGAAGCGTTCCTTCTGG"
+    },
+    "light": {
+      "locus": "IGK",
+      "v": "IGKV1-SIM",
+      "j": "IGKJ1-SIM",
+      "junction": "TGTCGCACGCAAAGCATTGCGTCTATAGAATACACGTTT"
+    },
+    "abundance": 1,
+    "representative": "bcr-08a2bfed0a4cbc99ff67fb0991f36750",
+    "family": "bcf-8cea6cb90c6dd0e1402f7d4bb3a72590"
+  },
+  "row": {
+    "id": "bcr-row-bfd2311510bbb534642f5c08fe628b9e",
+    "source": {
+      "name": "S01-d28.tsv",
+      "sha256": "e13422240df9a7a0b207453e6d619c4c59088ffc15b60ec4ea0fbc727d714ac7"
+    },
+    "sequenceId": "S01-d28-C000016-IGH",
+    "line": 12,
+    "locus": "IGH"
+  },
+  "dataset": "d-d72a3e62b9050380",
+  "rowIndex": 34,
+  "headerText": "sequence_id\tcell_id\trepertoire_id\tproductive\tvj_in_frame\tstop_codon\tlocus\tv_call\td_call\tj_call\tc_call\tjunction\tjunction_aa\tsequence\tsequence_alignment\tgermline_alignment\tgermline_database\tv_cigar\td_cigar\tj_cigar\trev_comp\tv_sequence_start\tv_sequence_end\tj_sequence_start\tj_sequence_end\tfwr1_start\tfwr1_end\tcdr1_start\tcdr1_end\tfwr2_start\tfwr2_end\tcdr2_start\tcdr2_end\tfwr3_start\tfwr3_end\tcdr3_start\tcdr3_end\tfwr4_start\tfwr4_end\tv_germline_start\tv_germline_end\tj_germline_start\tj_germline_end\tsequence_aa\tcomplete_vdj\tcandidate_fixture",
+  "rowText": "S01-d28-C000016-IGH\tS01-d28-C000016\tS01-d28\tT\tT\tF\tIGH\tIGHV1-SIM*01\t\tIGHJ1-SIM*01\tIGHM\tTGTTCACGATCTACATCAACCGGGAAGCGTTCCTTCTGG\tCSRSTSTGKRSFW\tGTCGGAGGATTAATCCTCAGACAGAATGAAACGGCGACGGTCGCCACCACTCGTATCTTGCCGATAATATTGCCTAAGTTGGGTCACAATATAAACCTTGTTGATCTTTGCCTTGCTCCCGTCTCATCCTACGCGGGTGGGCTGCCCGCCGCGCTATCGAACAGTTACCTTAGGCATACTGATTTCTTTGTCGCCAGTCTCCAAAGTTCCCACCTTCAGCCTCTGGACTACAGGTATCTATGGACAAATTTCGTAGGTCGCAGGGCTAAGCGGCCCCAGAGGTGTTCACGATCTACATCAACCGGGAAGCGTTCCTTCTGGACATGCAAGGCCGGCTCATCCTGCATGGCCGCAAGCTGT\tGTCGGAGGATTAATCCTCAGACAGAATGAAACGGCGACGGTCGCCACCACTCGTATCTTGCCGATAATATTGCCTAAGTTGGGTCACAATATAAACCTTGTTGATCTTTGCCTTGCTCCCGTCTCATCCTACGCGGGTGGGCTGCCCGCCGCGCTATCGAACAGTTACCTTAGGCATACTGATTTCTTTGTCGCCAGTCTCCAAAGTTCCCACCTTCAGCCTCTGGACTACAGGTATCTATGGACAAATTTCGTAGGTCGCAGGGCTAAGCGGCCCCAGAGGTGTTCACGATCTACATCAACCGGGAAGCGTTCCTTCTGGACATGCAAGGCCGGCTCATCCTGCATGGCCGCAAGCTGT\tGTCGGAGGATTAAGCCTCAGACAGAATGAAACGGCGACGGTCGCCACCATTCGTATCTTGCCGATAATATTGCCTAAGTTGGGTCACAATATAAACCTTGTTGATCTTTGCCTTGCTCCCGTCTCATCCTACCCGGGTGGGCTGCCCGCCGCGCTATCGAACAGTTACCTTAGGCATACTGATTTCTTTGTCGCCAGTCTCCAAAGTTCCCACCTTCAGCCTCTGGACTACAGGTATCTATGGACAAATTTCGTAGGTCGCAGGGCTAAGCGGCCCCAGAGGTGTTCCCGATCTACATCAACCGGGAAGCGTTCCTTCTGGACATGCAAGGCCGGCTCATCCTGCATGGCCGCAAGCTGT\tclonoloom-artificial-bcell-v2\t285M75S\t\t318S42M\tF\t1\t285\t319\t360\t1\t78\t79\t114\t115\t165\t166\t195\t196\t285\t286\t318\t319\t360\t1\t285\t1\t42\tVGGLILRQNETATVATTRILPIILPKLGHNINLVDLCLAPVSSYAGGLPAALSNSYLRHTDFFVASLQSSHLQPLDYRYLWTNFVGRRAKRPQRCSRSTSTGKRSFWTCKAGSSCMAASC\t\tArtificial upstream translation; no binding or construct claim",
+  "fields": {
+    "c_call": "IGHM",
+    "candidate_fixture": "Artificial upstream translation; no binding or construct claim",
+    "cdr1_end": "114",
+    "cdr1_start": "79",
+    "cdr2_end": "195",
+    "cdr2_start": "166",
+    "cdr3_end": "318",
+    "cdr3_start": "286",
+    "cell_id": "S01-d28-C000016",
+    "complete_vdj": "",
+    "d_call": "",
+    "d_cigar": "",
+    "fwr1_end": "78",
+    "fwr1_start": "1",
+    "fwr2_end": "165",
+    "fwr2_start": "115",
+    "fwr3_end": "285",
+    "fwr3_start": "196",
+    "fwr4_end": "360",
+    "fwr4_start": "319",
+    "germline_alignment": "GTCGGAGGATTAAGCCTCAGACAGAATGAAACGGCGACGGTCGCCACCATTCGTATCTTGCCGATAATATTGCCTAAGTTGGGTCACAATATAAACCTTGTTGATCTTTGCCTTGCTCCCGTCTCATCCTACCCGGGTGGGCTGCCCGCCGCGCTATCGAACAGTTACCTTAGGCATACTGATTTCTTTGTCGCCAGTCTCCAAAGTTCCCACCTTCAGCCTCTGGACTACAGGTATCTATGGACAAATTTCGTAGGTCGCAGGGCTAAGCGGCCCCAGAGGTGTTCCCGATCTACATCAACCGGGAAGCGTTCCTTCTGGACATGCAAGGCCGGCTCATCCTGCATGGCCGCAAGCTGT",
+    "germline_database": "clonoloom-artificial-bcell-v2",
+    "j_call": "IGHJ1-SIM*01",
+    "j_cigar": "318S42M",
+    "j_germline_end": "42",
+    "j_germline_start": "1",
+    "j_sequence_end": "360",
+    "j_sequence_start": "319",
+    "junction": "TGTTCACGATCTACATCAACCGGGAAGCGTTCCTTCTGG",
+    "junction_aa": "CSRSTSTGKRSFW",
+    "locus": "IGH",
+    "productive": "T",
+    "repertoire_id": "S01-d28",
+    "rev_comp": "F",
+    "sequence": "GTCGGAGGATTAATCCTCAGACAGAATGAAACGGCGACGGTCGCCACCACTCGTATCTTGCCGATAATATTGCCTAAGTTGGGTCACAATATAAACCTTGTTGATCTTTGCCTTGCTCCCGTCTCATCCTACGCGGGTGGGCTGCCCGCCGCGCTATCGAACAGTTACCTTAGGCATACTGATTTCTTTGTCGCCAGTCTCCAAAGTTCCCACCTTCAGCCTCTGGACTACAGGTATCTATGGACAAATTTCGTAGGTCGCAGGGCTAAGCGGCCCCAGAGGTGTTCACGATCTACATCAACCGGGAAGCGTTCCTTCTGGACATGCAAGGCCGGCTCATCCTGCATGGCCGCAAGCTGT",
+    "sequence_aa": "VGGLILRQNETATVATTRILPIILPKLGHNINLVDLCLAPVSSYAGGLPAALSNSYLRHTDFFVASLQSSHLQPLDYRYLWTNFVGRRAKRPQRCSRSTSTGKRSFWTCKAGSSCMAASC",
+    "sequence_alignment": "GTCGGAGGATTAATCCTCAGACAGAATGAAACGGCGACGGTCGCCACCACTCGTATCTTGCCGATAATATTGCCTAAGTTGGGTCACAATATAAACCTTGTTGATCTTTGCCTTGCTCCCGTCTCATCCTACGCGGGTGGGCTGCCCGCCGCGCTATCGAACAGTTACCTTAGGCATACTGATTTCTTTGTCGCCAGTCTCCAAAGTTCCCACCTTCAGCCTCTGGACTACAGGTATCTATGGACAAATTTCGTAGGTCGCAGGGCTAAGCGGCCCCAGAGGTGTTCACGATCTACATCAACCGGGAAGCGTTCCTTCTGGACATGCAAGGCCGGCTCATCCTGCATGGCCGCAAGCTGT",
+    "sequence_id": "S01-d28-C000016-IGH",
+    "stop_codon": "F",
+    "v_call": "IGHV1-SIM*01",
+    "v_cigar": "285M75S",
+    "v_germline_end": "285",
+    "v_germline_start": "1",
+    "v_sequence_end": "285",
+    "v_sequence_start": "1",
+    "vj_in_frame": "T"
+  },
+  "sequence": "VGGLILRQNETATVATTRILPIILPKLGHNINLVDLCLAPVSSYAGGLPAALSNSYLRHTDFFVASLQSSHLQPLDYRYLWTNFVGRRAKRPQRCSRSTSTGKRSFWTCKAGSSCMAASC",
+  "sha256": "c0863cb3337ae3eeb5feebc6b2afc56a0488ae45e4429f665fb46413c709ed31",
+  "fasta": "\u003ecandidate-4a9917672cc0e4d6ad68b61b locus=IGH field=sequence_aa\nVGGLILRQNETATVATTRILPIILPKLGHNINLVDLCLAPVSSYAGGLPAALSNSYLRHTDFFVASLQSSHLQPLDYRYLWTNFVGRRAKRPQRCSRSTSTGKRSFWTCKAGSSCMAASC\n",
+  "eligible": true,
+  "reason": "",
+  "notice": "Descriptive candidate review, not binding, affinity, efficacy, selection or synthesis readiness. One selected sample; no pooled subjects or inferred independent replicates. Size counts assigned observations (sample-scoped cells or bulk heavy-chain rows), not reads or molecules. Mutation pools observed heavy-row differences/evaluable V/J bases, not historical events or mutation rates; incomplete rows make ranking unavailable. Preferred-class share requires every assigned observation's class to be resolved. Share change is current minus explicitly named baseline observation share, not a statistical expansion test; zero observed counts do not establish biological absence. All metrics condition on the saved family definition, QC and reference choices. Missing values sort last in either direction; exact rational ties retain the same competition rank.\n\nDataset: Simulated B-cell study · supplied chain evidence (d-d72a3e62b9050380), 6 samples, abundance in cells.\n  File: S01-d14.tsv, SHA-256 01c67e2e3bb82823b43f120a9897468b5f8cc23a4a59cfe35de63fed34a722b2\n  File: S01-d28.tsv, SHA-256 e13422240df9a7a0b207453e6d619c4c59088ffc15b60ec4ea0fbc727d714ac7\n  File: S01-pre.tsv, SHA-256 72634de55bbc992926fa48e5c3b269f007a6f7d1d8d765e28b33e74c3b260716\n  File: S02-d14.tsv, SHA-256 d733859e4158ab39749edf5592a37a7572e4ba675af054868bd416101bd9b351\n  File: S02-d28.tsv, SHA-256 2cca7ab8d6e968372e46be8343e44a319256d7b21e41bf435d5ae0281f05f3e3\n  File: S02-pre.tsv, SHA-256 2bc3e301c681f167998dc41d5f4e1ef49c75cd9f639bc941351064bce75d8da7\nFilter: none.\nClonotypes: Length-normalized nucleotide Hamming distance on paired heavy/light junctions, using the larger of the two normalized distances; identical V and J genes and junction length on each compared chain, within subject. Productive ACGT junctions and resolved genes only; ambiguous/missing evidence is excluded. Each distinct receptor contributes once to nearest distances; no comparable receptor is missing, not zero. Single-linkage families at distance ≤ 0.1; chains of links can join receptors farther apart than the threshold. Threshold-dependent families are not proven ancestry or the existing junction clonotypes. (ClonoLoom definition ).\nMethod: Descriptive ordered criteria (ClonoLoom policy); AIRR Rearrangement 2.0. Family, reference, mutation and isotype methods/citations are retained in the parent manifests. No calibrated binding or efficacy model..\nMade with ClonoLoom 0.9.0 (c63d63286b900d86b335b457ac8b2b492c25f8ea-dirty) on 2026-10-30 02:00 UTC.\n\nData: no public data set ClonoLoom knows: the data are yours, under your own terms.\n",
+  "restricted": false,
+  "limits": "One unchanged supplied AIRR sequence_aa chain, not a complete receptor or synthesis-ready construct. complete_vdj describes the annotated V(D)J region, not full-protein completeness. No translation, repair, consensus, chain assembly, codon optimization or inferred ancestor. A cell-associated heavy/light assignment is the saved family's operational definition, not independent validation of biological pairing. FASTA uses an opaque safe identifier; original identities and annotations remain in the companion evidence. Proteoscope review requires fresh local/public/provider permissions and sends nothing on opening. This review is separate from project artifacts and scientific replay."
+}

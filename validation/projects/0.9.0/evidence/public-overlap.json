@@ -1,0 +1,242 @@
+{
+  "publicSourceUnit": "not inferred; presence only",
+  "queryDataset": "d-321320486c3dc022",
+  "queryMetadata": [],
+  "querySample": "SIM-query",
+  "querySampleIndex": 0,
+  "querySourceUnit": "unknown",
+  "querySources": [
+    {
+      "bytes": 3697,
+      "format": "airr",
+      "mapping": null,
+      "sha256": "74c3eea34d4962edce6fba7960bfb8b5bb03520fd0ab931eb957760bf0ec7c1b"
+    }
+  ],
+  "readerIdentity": 1,
+  "result": {
+    "sharedKeys": [
+      {
+        "key": "TRB:CASSAAATGGEQYF",
+        "captures": 2,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSADNTRGGEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSANANGTNTEQYF",
+        "captures": 2,
+        "subjects": 2
+      },
+      {
+        "key": "TRB:CASSANDQSATASEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSANRDTRTSEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSARQQQSQDEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSDDQQTNEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSDTARREQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSGAGTADEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSGDQTAANEQYF",
+        "captures": 2,
+        "subjects": 2
+      },
+      {
+        "key": "TRB:CASSGDTSRSGTSEQYF",
+        "captures": 2,
+        "subjects": 2
+      },
+      {
+        "key": "TRB:CASSNARNTREQYF",
+        "captures": 2,
+        "subjects": 2
+      },
+      {
+        "key": "TRB:CASSNGDDRQASSEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSNQNATNTEQYF",
+        "captures": 2,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSNRGNDEQYF",
+        "captures": 2,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSNTRTTEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSQQGQSADEQYF",
+        "captures": 2,
+        "subjects": 2
+      },
+      {
+        "key": "TRB:CASSQTGGTDRGEQYF",
+        "captures": 2,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSRADSSSNAAEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSRDRNQRNNEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSRNRNAEQYF",
+        "captures": 2,
+        "subjects": 2
+      },
+      {
+        "key": "TRB:CASSRRGGNSEQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSSGASREQYF",
+        "captures": 1,
+        "subjects": 1
+      },
+      {
+        "key": "TRB:CASSTTDANTSEQYF",
+        "captures": 1,
+        "subjects": 1
+      }
+    ],
+    "definition": "productive-single-chain-locus-exact-junction-aa-v1",
+    "locus": "TRB",
+    "query": {
+      "rows": 83,
+      "eligible": 80,
+      "unique": 40,
+      "excluded": 3
+    },
+    "pairs": [
+      {
+        "capture": "adc-download-sim-a",
+        "manifestSHA256": "e5f033916b6387fe5917d3d595deed355a727a0041736a2984e4357edf84fe50",
+        "repository": "ipa1.ireceptor.org",
+        "repertoire": "SIM-repertoire-A",
+        "processing": "SIM-process",
+        "study": "SIM-study",
+        "subject": "SIM-subject-A",
+        "stop": "page-budget",
+        "permissionEvidence": "CC0 artificial test evidence; no provider request or human records.",
+        "citation": "ClonoLoom simulated public-overlap fixture; not a public study.",
+        "eligibility": {
+          "rows": 48,
+          "eligible": 48,
+          "unique": 36,
+          "excluded": 0
+        },
+        "shared": 18,
+        "union": 58,
+        "jaccard": 0.3103448275862069
+      },
+      {
+        "capture": "adc-download-sim-b",
+        "manifestSHA256": "7403b41a1d7caf8fe01143a40a632b9d7d30cd49219a24990e443ef19d5fceb3",
+        "repository": "ipa1.ireceptor.org",
+        "repertoire": "SIM-repertoire-B",
+        "processing": "SIM-process",
+        "study": "SIM-study",
+        "subject": "SIM-subject-B",
+        "stop": "empty-page",
+        "permissionEvidence": "CC0 artificial test evidence; no provider request or human records.",
+        "citation": "ClonoLoom simulated public-overlap fixture; not a public study.",
+        "eligibility": {
+          "rows": 42,
+          "eligible": 42,
+          "unique": 30,
+          "excluded": 0
+        },
+        "shared": 12,
+        "union": 58,
+        "jaccard": 0.20689655172413793
+      },
+      {
+        "capture": "adc-download-sim-c",
+        "manifestSHA256": "2696cb7f4e5b152e103ce8a40a04f2ba5bf969376c1da72a35ce8144a73469ba",
+        "repository": "ipa1.ireceptor.org",
+        "repertoire": "SIM-repertoire-C",
+        "processing": "SIM-process",
+        "study": "SIM-study",
+        "subject": "SIM-subject-C",
+        "stop": "page-budget",
+        "permissionEvidence": "CC0 artificial test evidence; no provider request or human records.",
+        "citation": "ClonoLoom simulated public-overlap fixture; not a public study.",
+        "eligibility": {
+          "rows": 5,
+          "eligible": 0,
+          "unique": 0,
+          "excluded": 5
+        },
+        "shared": 0,
+        "union": 40,
+        "jaccard": null
+      },
+      {
+        "capture": "adc-download-sim-d",
+        "manifestSHA256": "0d78cd892c27a3cc55ff14e59d81b3309976f855f704937fcc33d361076ab894",
+        "repository": "ipa1.ireceptor.org",
+        "repertoire": "SIM-repertoire-D",
+        "processing": "SIM-process",
+        "study": "SIM-study",
+        "subject": "",
+        "stop": "page-budget",
+        "permissionEvidence": "CC0 artificial test evidence; no provider request or human records.",
+        "citation": "ClonoLoom simulated public-overlap fixture; not a public study.",
+        "eligibility": {
+          "rows": 8,
+          "eligible": 8,
+          "unique": 8,
+          "excluded": 0
+        },
+        "shared": 4,
+        "union": 44,
+        "jaccard": 0.09090909090909091
+      }
+    ],
+    "assignedSubjects": 3,
+    "evaluableSubjects": 2,
+    "missingSubjects": 1,
+    "unassignedCaptures": 1,
+    "queryKeysShared": 24,
+    "notice": "Descriptive presence among selected captured records only. All captures have unestablished completeness. No abundance units, pairing, population prevalence, antigen specificity, assay equivalence or exact remote replay are inferred. A subject comparison is evaluable only when both eligible sets are nonempty. Missing/unevaluable subjects are excluded from the evaluable denominator; scope is repository + study + subject. The project's active clonotype definition and QC filter are not applied by this separate explicit matching contract."
+  },
+  "version": 1
+}

@@ -5,6 +5,16 @@ import { cellResultsForDataset, methodsParagraph, joinList } from './methods.js'
 
 const program = { version: '0.1.0', commit: '96a92f4c0ffee' };
 
+test('Cell Ranger JSON methods distinguish supplied evidence, unresolved flags and cell abundance', () => {
+  const dataset = { ...pbmc, sources: [{ ...pbmc.sources[0], format: 'cellranger-json' }] };
+  const { text, references } = methodsParagraph({ dataset, program });
+  assert.match(text, /without inferring a producer version/);
+  assert.match(text, /Mixed-chain annotations did not establish a single resolved locus/);
+  assert.match(text, /counted in cells/);
+  assert.match(text, /omitted full-length, frame and stop flags remained unknown/);
+  assert.ok(references.some((r) => r.includes('10xgenomics.com/support/software/cell-ranger/7.2')));
+});
+
 const pbmc = {
   id: 'd-1', name: 'PBMC 1k T cells', formats: ['Cell Ranger V(D)J contig annotations'], unit: 'cells', unitConfirmed: null, singleCell: true, rows: 968,
   samples: ['sc5p_v1p1_hs_PBMC_1k_t'], readerVersion: 1, opened: '2026-10-21T21:30:00.000Z',
@@ -480,4 +490,22 @@ test('failed cohort checks remain explicit in cited methods and never imply an a
   assert.match(text,/cohort-batch-confounded/);
   assert.doesNotMatch(text,/Saved .* result/);
   assert.ok(references.some((s)=>s.includes('1471-2202-11-5')));
+});
+
+test('native report methods cite input conventions without inventing count units or pairing', () => {
+  const dataset = { ...pbmc, credits: [], unit: '', singleCell: false, readerVersion: 4, sources: [{ ...pbmc.sources[0], format: 'trust4-report' }, { ...pbmc.sources[0], format: 'vdjtools' }] };
+  const { text, references } = methodsParagraph({ dataset, program });
+  assert.match(text, /TRUST4 repertoire reports and VDJtools clonotype tables/);
+  assert.match(text, /underscore stops represented as \*/);
+  assert.match(text, /underscore or tilde incomplete-codon markers did not become continuous amino-acid junctions/);
+  assert.match(text, /partial junctions retained only as native evidence/);
+  assert.match(text, /Source frequencies were not renormalized or used to reconstruct counts/);
+  assert.match(text, /barcode support without cell identities/);
+  assert.ok(references.some((r) => r.includes('10.1038/s41592-021-01142-2')));
+  assert.ok(references.some((r) => r.includes('10.1371/journal.pcbi.1004503')));
+  assert.doesNotMatch(text, /contigs of single cells|were reconstructed with TRUST4/);
+  const alone = methodsParagraph({ dataset: { ...dataset, sources: [dataset.sources[1]], unitConfirmed: 'umis' }, program });
+  assert.match(alone.text, /counted in UMIs \(the unit confirmed by the user/);
+  assert.doesNotMatch(alone.text, /TRUST4 reports|barcode support without/);
+  assert.ok(!alone.references.some((r) => r.includes('10.1038/s41592-021-01142-2')));
 });

@@ -2,18 +2,13 @@ package reads
 
 import (
 	"bytes"
-	"compress/gzip"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
-	"time"
 
 	"clonoloom/internal/airr"
 )
@@ -114,13 +109,16 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 			companions = append(companions, more...)
 			continue
 		}
-		lower := strings.ToLower(name)
-		if strings.HasSuffix(lower, ".json") || strings.HasSuffix(lower, ".json.gz") {
+		contigJSON := cellRangerJSONName(name)
+		if !contigJSON && metadataFormat(name) == "json" {
+			contigJSON, err = sniffCellRangerJSON(ctx, in.Path)
+			if err != nil {
+				return nil, fmt.Errorf("%s: %w", filepath.Base(name), err)
+			}
+		}
+		if !contigJSON && metadataFormat(name) != "" {
 			metadata = append(metadata, in)
 			continue
-		}
-		if strings.HasSuffix(lower, ".yaml") || strings.HasSuffix(lower, ".yml") {
-			return nil, fmt.Errorf("%s: AIRR metadata in YAML are not read yet (wave 9): save them as JSON to open them with the tables", filepath.Base(name))
 		}
 		if kind, err := sniffCompanion(in.Path); err == nil && kind != "" {
 			companions = append(companions, Companion{Path: in.Path, Kind: kind, Sample: sampleName(name)})
@@ -144,26 +142,52 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 		return nil, err
 	}
 	res.Companions = companions
+	seenRepertoires := map[string]string{}
+	metadataBytes := 0
 	for _, in := range metadata {
 		name := in.Name
 		if name == "" {
 			name = in.Path
 		}
-		data, err := readMaybeGzip(in.Path)
+		data, file, err := readMetadata(ctx, in.Path)
 		if err != nil {
 			return nil, err
 		}
-		reps, err := airr.ReadRepertoires(data)
+		metadataBytes += len(data)
+		if metadataBytes > maxMetadataBytes {
+			return nil, errors.New("combined metadata exceeds 64 MB")
+		}
+		doc, err := airr.ReadDataFile(ctx, data, metadataFormat(name) == "yaml")
+		if metadataFormat(name) == "yaml" {
+			file.Format, file.SourceText = "yaml", string(data)
+		}
+		if len(doc.Objects) > 0 {
+			file.SourceText = string(data)
+		}
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", filepath.Base(name), err)
 		}
-		file, err := fingerprint(in.Path)
-		if err != nil {
-			return nil, err
+		for _, repertoire := range doc.Repertoires {
+			if previous, ok := seenRepertoires[repertoire.RepertoireID]; ok {
+				return nil, fmt.Errorf("duplicate repertoire_id %q in %s and %s; metadata records must have unique IDs", repertoire.RepertoireID, previous, filepath.Base(name))
+			}
+			seenRepertoires[repertoire.RepertoireID] = filepath.Base(name)
 		}
-		file.Name, file.Repertoires = filepath.Base(name), len(reps)
-		res.Repertoires = append(res.Repertoires, reps...)
+		if len(seenRepertoires) > 100_000 {
+			return nil, errors.New("combined metadata exceeds 100000 repertoire records")
+		}
+		file.Name, file.Repertoires = filepath.Base(name), len(doc.Repertoires)
+		file.SchemaVersion = doc.SchemaVersion
+		file.Objects = len(doc.Objects)
+		for i := range doc.Objects {
+			doc.Objects[i].FileIndex = len(res.Metadata)
+		}
+		res.Objects = append(res.Objects, doc.Objects...)
+		res.Repertoires = append(res.Repertoires, doc.Repertoires...)
 		res.Metadata = append(res.Metadata, file)
+	}
+	if err := airr.ResolveObjectLinks(ctx, res.Objects, res.Repertoires); err != nil {
+		return nil, err
 	}
 	return res, nil
 }
@@ -171,31 +195,16 @@ func OpenInputsWith(ctx context.Context, inputs []Input, readTables TableReader)
 // MetadataFile is a file of AIRR Repertoire metadata read with a dataset: part of the dataset, as
 // its tables are, by its fingerprint.
 type MetadataFile struct {
-	Path        string `json:"path"`
-	Name        string `json:"name"`
-	Size        int64  `json:"size"`
-	SHA256      string `json:"sha256"`
-	Modified    string `json:"modified,omitempty"`
-	Repertoires int    `json:"repertoires"`
-}
-
-// fingerprint answers a file's size, SHA-256 and time of change.
-func fingerprint(path string) (MetadataFile, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return MetadataFile{}, err
-	}
-	defer f.Close()
-	info, err := f.Stat()
-	if err != nil {
-		return MetadataFile{}, err
-	}
-	h := sha256.New()
-	n, err := io.Copy(h, f)
-	if err != nil {
-		return MetadataFile{}, err
-	}
-	return MetadataFile{Path: path, Size: n, SHA256: hex.EncodeToString(h.Sum(nil)), Modified: info.ModTime().UTC().Format(time.RFC3339)}, nil
+	Objects       int    `json:"objects,omitempty"`
+	Format        string `json:"format,omitempty"`
+	SourceText    string `json:"-"`
+	SchemaVersion string `json:"schemaVersion,omitempty"`
+	Path          string `json:"path"`
+	Name          string `json:"name"`
+	Size          int64  `json:"size"`
+	SHA256        string `json:"sha256"`
+	Modified      string `json:"modified,omitempty"`
+	Repertoires   int    `json:"repertoires"`
 }
 
 // besideContigs finds the companions of a Cell Ranger contig file named on its own: in its folder,
@@ -209,6 +218,8 @@ func besideContigs(path string) []Companion {
 		prefix = strings.TrimSuffix(base, "filtered_contig_annotations.csv")
 	case strings.HasSuffix(base, "all_contig_annotations.csv"):
 		prefix = strings.TrimSuffix(base, "all_contig_annotations.csv")
+	case strings.HasSuffix(base, "all_contig_annotations.json"):
+		prefix = strings.TrimSuffix(base, "all_contig_annotations.json")
 	default:
 		return nil
 	}
@@ -246,34 +257,6 @@ func sniffCompanion(path string) (string, error) {
 	return companionKind(header), nil
 }
 
-func readMaybeGzip(path string) ([]byte, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	var r io.Reader = f
-	head := make([]byte, 2)
-	if n, _ := io.ReadFull(f, head); n == 2 && head[0] == 0x1f && head[1] == 0x8b {
-		f.Seek(0, io.SeekStart)
-		gz, err := gzip.NewReader(f)
-		if err != nil {
-			return nil, err
-		}
-		r = gz
-	} else {
-		f.Seek(0, io.SeekStart)
-	}
-	data, err := io.ReadAll(io.LimitReader(r, maxMetadataBytes+1))
-	if err != nil {
-		return nil, err
-	}
-	if len(data) > maxMetadataBytes {
-		return nil, errors.New("the metadata file is larger than 64 MB")
-	}
-	return data, nil
-}
-
 const maxMetadataBytes = 64 << 20
 
 // CellRangerFiles finds a Cell Ranger output folder's contig annotations and their companions:
@@ -282,7 +265,7 @@ const maxMetadataBytes = 64 << 20
 func CellRangerFiles(dir string) (contigs []string, companions []Companion, err error) {
 	var folders []string
 	for _, base := range []string{dir, filepath.Join(dir, "outs")} {
-		if isFile(filepath.Join(base, "filtered_contig_annotations.csv")) || isFile(filepath.Join(base, "all_contig_annotations.csv")) {
+		if isFile(filepath.Join(base, "filtered_contig_annotations.csv")) || isFile(filepath.Join(base, "all_contig_annotations.csv")) || isFile(filepath.Join(base, "all_contig_annotations.json")) {
 			folders = append(folders, base)
 		}
 		for _, pattern := range []string{"per_sample_outs/*/vdj_t", "per_sample_outs/*/vdj_b", "per_sample_outs/*/vdj_t_gd"} {
@@ -295,6 +278,9 @@ func CellRangerFiles(dir string) (contigs []string, companions []Companion, err 
 		contig := filepath.Join(folder, "filtered_contig_annotations.csv")
 		if !isFile(contig) {
 			contig = filepath.Join(folder, "all_contig_annotations.csv")
+		}
+		if !isFile(contig) {
+			contig = filepath.Join(folder, "all_contig_annotations.json")
 		}
 		if !isFile(contig) {
 			continue
@@ -320,4 +306,16 @@ func CellRangerFiles(dir string) (contigs []string, companions []Companion, err 
 func isFile(path string) bool {
 	info, err := os.Stat(path)
 	return err == nil && !info.IsDir()
+}
+
+// Metadata is selected by the supplied filename, including library uploads and gzip.
+func metadataFormat(name string) string {
+	name = strings.TrimSuffix(strings.ToLower(name), ".gz")
+	switch filepath.Ext(name) {
+	case ".json":
+		return "json"
+	case ".yaml", ".yml":
+		return "yaml"
+	}
+	return ""
 }

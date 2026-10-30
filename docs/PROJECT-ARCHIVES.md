@@ -64,7 +64,7 @@ computation and makes no biological claim. The browser refuses to open a project
 tokens would change in JavaScript; original files remain inspectable, and the native importer
 can retain such evidence without browser loading.
 
-Supported project version 1 fixtures from releases v0.2.0–v0.8.0 reopen with the same source
+Supported project version 1 fixtures from releases v0.2.0–v0.9.0 reopen with the same source
 identities and result bytes. This establishes those contracts, not forward compatibility with
 unknown versions or every possible external input. Unknown project/archive versions are refused.
 

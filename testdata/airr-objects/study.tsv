@@ -1,0 +1,5 @@
+sequence_id	repertoire_id	cell_id	locus	productive	v_call	j_call	junction_aa	umi_count
+sim-b1	R001	C001	TRB	T	TRBV5-1*01	TRBJ2-7*01	CASSLGQETQYF	7
+sim-a1	R001	C001	TRA	T	TRAV12-2*01	TRAJ33*01	CAVRDSNYQLIW	5
+sim-b2	R001	C002	TRB	T	TRBV5-1*01	TRBJ2-7*01	CASSLGQETQYF	9
+sim-a2	R001	C002	TRA	T	TRAV12-2*01	TRAJ33*01	CAVRDSNYQLIW	6

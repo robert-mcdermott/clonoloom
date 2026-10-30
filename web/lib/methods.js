@@ -28,6 +28,8 @@ export function cellResultsForDataset(project, dataset) {
 
 // The works a paragraph cites.
 export const REFERENCES = {
+  trust4: 'Song L, Cohen D, Ouyang Z, et al. TRUST4: immune repertoire reconstruction from bulk and single-cell RNA-seq data. Nat Methods. 2021;18:627–630. doi:10.1038/s41592-021-01142-2',
+  vdjtools: 'Shugay M, Bagaev DV, Turchaninova MA, et al. VDJtools: Unifying Post-analysis of T Cell Receptor Repertoires. PLoS Comput Biol. 2015;11:e1004503. doi:10.1371/journal.pcbi.1004503',
   conga: 'Schattgen SA, Guion K, Crawford JC, et al. Integrating T cell receptor sequences and transcriptional profiles by clonotype neighbor graph analysis (CoNGA). Nat Biotechnol. 2022;40:54–63. doi:10.1038/s41587-021-00989-2',
   gem: 'Van Rhijn I, et al. Discovery of invariant T cells by next-generation sequencing of the human TCR alpha-chain repertoire. J Immunol. 2014;193:5338–5344. doi:10.4049/jimmunol.1401380',
   airr: 'Vander Heiden JA, Marquez S, Marthandan N, et al. AIRR Community standardized representations for annotated immune repertoires. Front Immunol. 2018;9:2206. doi:10.3389/fimmu.2018.02206',
@@ -71,11 +73,14 @@ const FORMATS = {
   airr: 'AIRR Rearrangement TSV',
   'imgt-highvquest': 'IMGT/HighV-QUEST tables',
   'cellranger-contigs': '10x Genomics Cell Ranger contig annotations',
+  'cellranger-json': '10x Genomics Cell Ranger detailed JSON contig annotations',
   'immunoseq-v3': 'Adaptive Biotechnologies immunoSEQ exports (v3 columns)',
   'immunoseq-v2': 'Adaptive Biotechnologies immunoSEQ exports (v2 columns)',
   'mixcr-clones': 'MiXCR clone tables',
   'oas-unit': 'Observed Antibody Space or Observed T cell receptor Space data units',
   'tcrdist3-clones': 'tcrdist3 clone tables',
+  'trust4-report': 'TRUST4 repertoire reports',
+  vdjtools: 'VDJtools clonotype tables',
   table: 'a table with mapped columns',
 };
 
@@ -175,8 +180,12 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const program_ = `ClonoLoom ${program.version}${program.commit ? ` (commit ${program.commit.slice(0, 7)})` : ''} ${cite('clonoloom', `McDermott R. ClonoLoom, version ${program.version}. https://github.com/robert-mcdermott/clonoloom`)}`;
   sentences.push(`${files} (${joinList(formats)}) ${sources.length === 1 ? 'was' : 'were'} read with ${program_} by its own readers (reader version ${dataset.readerVersion}), which recorded ${sources.length === 1 ? 'its' : 'each file\'s'} SHA-256 checksum as ${sources.length === 1 ? 'it' : 'each'} was read.`);
   if (codes.includes('airr')) sentences.push(`AIRR files were read as the AIRR Community's Rearrangement schema defines them ${cite('airr')}.`);
+  if (codes.includes('cellranger-json')) sentences.push(`Detailed nested Cell Ranger contig annotations were imported according to the published format ${cite('cellrangerJSON', '10x Genomics. Cell Ranger 7.2: V(D)J annotation outputs, detailed JSON format. https://www.10xgenomics.com/support/software/cell-ranger/7.2/analysis/cr-5p-outputs-annotations-vdj')}. The structural layout was recognized without inferring a producer version. Original JSON objects and exact numeric tokens were retained for inspection; unknown annotations and coordinates were not converted into inferred calls. Supplied barcodes, source clonotype labels, reads, UMIs and flags were preserved; omitted full-length, frame and stop flags remained unknown. Mixed-chain annotations did not establish a single resolved locus. All source contigs, including background barcodes, were imported before the active QC filter. Cells were scoped by sample; source labels did not replace the active clonotype definition or certify biological pairing.`);
   if (codes.includes('airr') && (summary?.readerVersion ?? dataset.readerVersion ?? 1) >= 2) sentences.push('Supplied sequence, alignment, orientation and coordinate evidence was retained without reconstruction. Structural checks followed AIRR Rearrangement schema 2.0; missing evidence was not inferred and invalid annotations were preserved for inspection.');
   if (codes.includes('mixcr-clones')) sentences.push('MiXCR clone tables were read with each segment\'s best-scoring hits as its call, MiXCR\'s allele *00 (no allele resolved) dropped, and MiXCR\'s CDR3 (from the conserved cysteine to the phenylalanine or tryptophan, both included) as the junction.');
+  if (codes.includes('trust4-report')) sentences.push(`TRUST4 reports ${cite('trust4')} were read with source junction anchors retained, underscore stops represented as *, ambiguous residues as X and partial junctions retained only as native evidence. Modern count columns did not establish reads versus barcode support; an explicit legacy read_count column stated reads. No cell identities or pairing were inferred.`);
+  if (codes.includes('vdjtools')) sentences.push(`VDJtools tables ${cite('vdjtools')} were read with source junction anchors retained; underscore or tilde incomplete-codon markers did not become continuous amino-acid junctions. Counts did not establish reads versus molecules. Alternative gene calls remained sets, and segment-boundary extensions remained native evidence.`);
+  if (codes.includes('trust4-report') || codes.includes('vdjtools')) sentences.push('Original native header and row text, including exact numeric tokens and unsupported annotations, was retained for inspection. Source frequencies were not renormalized or used to reconstruct counts; separate IG/TR or pre-subset denominators may apply. Missing peptides and counts were not imputed. Junction-level frame/stop flags do not certify full-transcript function or biological validity.');
   if (codes.includes('oas-unit')) {
     // The database the units come from, as their loci say: OAS holds antibodies, OTS T-cell receptors.
     const loci = (summary?.samples ?? []).flatMap((x) => Object.keys(x.loci ?? {}));
@@ -207,7 +216,7 @@ export function methodsParagraph({ dataset, summary = null, filter = null, filte
   const unit = datasetUnit(dataset);
   const unitText = unit
     ? `counted in ${UNITS[unit] ?? unit}${dataset.unitConfirmed ? ' (the unit confirmed by the user, which the files did not state)' : ''}`
-    : 'whose counts the files do not say are of reads or of molecules';
+    : codes.includes('trust4-report') ? 'whose count units remain unspecified, including possible barcode support without cell identities' : 'whose counts the files do not say are of reads or of molecules';
   sentences.push(`The dataset holds ${plural(dataset.samples.length, 'sample')} and ${plural(dataset.rows, dataset.singleCell ? 'contig' : 'rearrangement')}${dataset.singleCell ? ' of single cells' : ''}, ${unitText}.`);
 
   // Gene names.

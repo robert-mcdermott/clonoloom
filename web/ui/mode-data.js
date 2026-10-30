@@ -3,6 +3,13 @@
 // validator's findings with their examples and remedies), and its samples' annotation, typed or
 // suggested from file names and metadata.
 
+import { showNativeReport } from './native-reports.js';
+import { showProteoscope } from './proteoscope.js';
+import { showCytoWeave } from './cytoweave.js';
+import { showADCOverlap } from './adc-overlap.js';
+import { showADC } from './adc.js';
+import { showAIRRObjects } from './airr-objects.js';
+import { showRepertoireMetadata } from './repertoire-metadata.js';
 import { h, icon, clear, formatBytes } from './dom.js';
 import { showDialog, showMenu, promptDialog, confirmDialog, toast } from './overlays.js';
 import { methodsButton, showMethods } from './methods.js';
@@ -30,7 +37,8 @@ export function mountData(app, container) {
   const root = h('div.view');
   const openButton = h('button.btn.primary.small', { type: 'button', onclick: () => app.openPathDialog() }, icon('folder'), 'Open data');
   const examplesButton = h('button.btn.small', { type: 'button', onclick: () => app.showExamples() }, icon('flask'), 'Example data');
-  const head = h('div.workbench-head', h('h1', icon('database'), 'Data'), h('span.spacer'), examplesButton, openButton);
+  const adcButton = h('button.btn.small', { type: 'button', onclick: () => showADC() }, 'Public repositories');
+  const head = h('div.workbench-head', h('h1', icon('database'), 'Data'), h('span.spacer'), h('button.btn.small', { onclick: () => showADCOverlap(app) }, 'Public overlap'), adcButton, examplesButton, openButton);
   const body = h('div.view-body.data-view');
   root.append(head, body);
   container.append(root);
@@ -59,7 +67,15 @@ export function mountData(app, container) {
     }
     body.append(h('div.section-title', `Datasets · ${datasets.length}`), h('div.dataset-cards', ...datasets.map(datasetCard)));
     const shown = shownDataset();
-    if (shown) body.append(report(shown));
+    if (shown) {
+      body.append(report(shown));
+      if (shown.metadata?.length) body.append(h('div.btn-row', { style: { margin: '12px 0' } },
+        h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showRepertoireMetadata(app, shown) }, icon('info'), 'Inspect AIRR metadata')));
+    }
+    if (shown && app.datasetStates.get(shown.id)?.summary?.metadata?.some((file) => file.objects)) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showAIRRObjects(app, shown) }, 'Inspect AIRR objects'));
+    if (shown && app.datasetStates.get(shown.id)?.summary?.sources?.some((file) => file.nativeEvidence)) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showNativeReport(app, shown) }, 'Inspect native report'));
+    if (shown) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showProteoscope(app, shown) }, 'Proteoscope handoff'));
+    if (shown) body.append(h('button.btn.small', { type: 'button', disabled: app.datasetStates.get(shown.id)?.status !== 'open', onclick: () => showCytoWeave(app, shown) }, 'CytoWeave phenotype links'));
     body.append(samplesSection());
   }
 
@@ -93,13 +109,12 @@ export function mountData(app, container) {
         ...['reads', 'umis'].map((u) => h('option', { value: u, selected: d.unitConfirmed === u }, UNITS[u]))))
       : h('span.kv-inline', h('span.muted', 'Unit'), h('b', UNITS[unit] ?? unit));
     return h(`div.card.dataset-card${focused ? '.focused' : ''}`, {
-      role: 'button', tabIndex: 0, 'aria-pressed': focused ? 'true' : 'false',
+      role: 'group', 'aria-label': d.name,
       onclick: () => app.focusItem({ kind: 'dataset', id: d.id }),
-      onkeydown: (e) => { if (e.key === 'Enter') app.focusItem({ kind: 'dataset', id: d.id }); },
     },
     h('div.dataset-card-head',
       icon(d.singleCell ? 'chip' : 'table'),
-      h('h4', d.name),
+      h('h4', h('button.btn.ghost.small', { type: 'button', 'aria-pressed': focused ? 'true' : 'false', onclick: (e) => { e.stopPropagation(); app.focusItem({ kind: 'dataset', id: d.id }); } }, d.name)),
       status,
       h('span.spacer'),
       h('button.icon-button.small', { type: 'button', title: 'More', 'aria-label': `More for ${d.name}`, onclick: (e) => { e.stopPropagation(); datasetMenu(e.currentTarget, d, state); } }, icon('more'))),

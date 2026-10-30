@@ -1,9 +1,9 @@
 # Agent contract benchmark
 
-ClonoLoom 0.8.0. The local benchmark tests whether a program completes a small,
+ClonoLoom 0.9.0. The local benchmark tests whether a program completes a small,
 explicit scientific-software task with the required native evidence and permission behavior.
 It does **not** measure general scientific validity or autonomous research competence.
-Use the matching 0.8.0 executable and repository scripts.
+Use the matching 0.9.0 executable and repository scripts.
 
 The [runner guide](../benchmark/README.md) gives commands, candidate protocol, bounds and
 reproduction details. It follows the sibling CytoWeave benchmark pattern, with ClonoLoom's

@@ -1,6 +1,6 @@
 # Agent contract benchmark
 
-ClonoLoom 0.8.0. Benchmark and fixture version 1.
+ClonoLoom 0.9.0. Benchmark and fixture version 1.
 This repository-only runner evaluates eight bounded tasks against a real ClonoLoom host and
 normal window. It follows CytoWeave's Apache-2.0 task, code-grader, reference and empty-control
 pattern. HTTP, stdio MCP and the generated Python/R clients reach the same native methods.

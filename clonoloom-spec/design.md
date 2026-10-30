@@ -205,7 +205,13 @@ Tests and CI follow the siblings: **each commit is tested once**.
 - Documentation-only changes (Markdown, the spec, license, citation) do not run CI.
 
 CI jobs (all on fixed data):
-- **Go:** gofmt, vet, `go test -race ./...`, and the six-platform cross-compile.
+- **Go:** gofmt, vet, race tests for internal/scientific packages, and the six-platform
+  cross-compile. Host integrations are discovered with `go test -race -list . .` and assigned
+  exactly once to eight independent race-test jobs (`validation/go-host.mjs`). All subtests and
+  fuzz seeds remain included. Scheduling hints balance expensive tests without changing their
+  assertions or scientific settings. The existing `Go host` check requires every shard and
+  internal/scientific check to succeed. Verbose output identifies progress; individual test
+  packages have a 15-minute timeout and their worker jobs a 20-minute limit.
 - **Web modules:** `node --check`, `node --test`.
 - **Validation:** on the open development datasets, cached by checksum, with recorded reference
   numbers.
@@ -279,3 +285,100 @@ from the pinned spec. Completed results are self-contained for inspection; repro
 test also uses the exported expression-map parent. JS lays out supplied null frequencies and
 observed/expected markers, filters tables and links the parent overlay; Go computes statistics.
 See `docs/MODULARITY.md` for the inferential assumptions and populations.
+
+### Exact repertoire metadata inspection (wave 9, slice 1)
+
+`internal/reads/metadata.go` captures bounded source bytes once and hashes that same snapshot;
+compressed metadata is decoded under a second bound. `internal/airr/metadata.go` checks JSON
+ambiguity, Unicode, structural budgets and record IDs before extracting annotation summaries.
+Each repertoire retains its original object bytes. IDs are unique across a dataset's metadata
+files; file order and per-file record counts retain the source association.
+
+`api_metadata.go` shares the annotation-matching rule with dataset summaries. The read-only
+`GET /api/datasets/{id}/metadata` lists 20 records by default (1–50 allowed via `limit`, zero-based
+`offset`). Go returns match coverage and basis. `?record=N` returns one original object as
+`rawJSON`, a JSON **string**, so browser decoding cannot round numbers inside the evidence.
+Detail previews over 4 MiB fail explicitly; imports retain the object. The view uses text nodes
+and project-generation/cancellation guards. Inspection reads the opened snapshot, not paths
+supplied by callers. Existing loopback/same-origin protections apply; no new automation grant,
+MCP tool, scientific artifact kind, project schema or replay contract is added.
+
+Import limits: 64 MiB per source and decompressed file, 64 MiB combined decoded metadata,
+100,000 records per file/dataset, JSON nesting depth 64, 1,000,000 values per file, and 4,096 bytes
+per repertoire ID. A declared schema version is information, not schema validation. Summary
+labels can combine processing annotations; raw evidence preserves their individual identity.
+
+### Bounded YAML projection and original source (wave 9, slice 2)
+
+`internal/airr/yaml.go` parses a documented YAML 1.2 subset to exact typed values and then JSON,
+reusing the repertoire validation/extraction rules. No floats are constructed. Depth, parser
+work, line and source/projection limits bound the parser; it reports unsupported syntax rather
+than guessing. The native reader dispatches using the supplied filename, including gzip and
+content-addressed uploads. JSON behavior and prior dataset identity rules stay unchanged.
+
+For YAML, `reads.MetadataFile` retains `Format` and one `SourceText` snapshot. `SourceText` has
+`json:"-"` so dataset summaries and listings cannot unintentionally serialize entire documents.
+The detail endpoint adds `format: "yaml"`, the decoded `rawJSON` string and the `sourceYAML`
+string (or an explicit oversized-source notice). Original JSON inputs keep their original
+object-byte contract. The YAML projection may be lexically indented in Go for display without
+numeric decoding. Each preview remains bounded at 4 MiB. The UI labels the projection and shows
+the original YAML document separately; it never round-trips evidence through JavaScript numbers.
+
+### Versioned MiAIRR reporting review (wave 9, slice 3)
+
+`internal/airr/miairr.go` assesses a captured repertoire with the pinned 82-field AIRR 2.0
+inventory in `miairr_fields.go`. Native results contain checklist/schema/declaration versions,
+explicit evidence-row states, reporting levels, conditions, JSON-pointer paths and remedies.
+Unsupported/absent declarations and exceeded bounds return no partial rows or counts. Original
+source/projection text is unchanged; no scientific number enters a browser checklist calculation.
+
+Metadata detail responses add `checklist`; the UI renders a collapsed read-only review with a
+group filter and native counts. Parent-scope failures show unassessed children, not fabricated
+missing leaves. Each repeated sample/diagnosis/PCR/processing record is separate. The checklist
+adds no persistent artifact, action, permission or replay kind and does not alter dataset identity.
+Presence, reporting requirements, conditional applicability, schema conformance and scientific
+validity remain distinct. See `docs/MIAIRR.md` and research §5.59 for coverage and limits.
+
+### Imported AIRR object evidence (wave 9, slice 4)
+
+`airr.ReadDataFile` shares the bounded JSON/YAML decoders with Repertoire import and adds
+Clone/Cell/Receptor/Node records with raw evidence and explicit links. `ResolveObjectLinks`
+checks the combined opening after all metadata files load. Native immutable records stay on
+`reads.Result`, outside table caches, with file indices and source fingerprints. This preserves
+existing table and dataset identity contracts. `MetadataFile.objects` is omitted when zero.
+
+`GET /api/datasets/{id}/airr-objects` serves bounded pages and record details from the opened
+snapshot. Scientific JSON is returned as text; the browser renders native link states. The
+Data-view inspector has cancellation, project/selection guards and explicit unassessed limits.
+No action/permission/replay kind is added. Imported membership never modifies the active
+clonotype definition, chain pairing or analysis counts. See `docs/AIRR-OBJECTS.md` and §5.60.
+
+### Native repertoire reports (wave 9, slice 5)
+
+`reads.native_reports` recognizes TRUST4 and VDJtools column contracts separately from generic
+mapped tables. Existing explicit mappings take precedence. Source counts retain ambiguous units;
+the existing Data unit confirmation supplies a human interpretation. Marker normalization is
+format-specific, with no invented chains, cells, sequences or frequency denominators.
+
+`Source.Native` retains bounded original header/row text and physical line numbers. It is omitted
+from generic source JSON; cache header versioned by reader version 4 serializes it explicitly.
+`GET /api/datasets/{id}/native-report` serves pages and bounded text previews from the opened
+snapshot. The browser only renders text and uses ordinary row/source indices. This adds no action,
+permission or replay kind and preserves scientific identity version 1. See `docs/NATIVE-REPORTS.md`.
+
+### Cell Ranger detailed contig JSON (wave 9, slice 6)
+
+`reads.cellranger_json` streams the explicit nested array layout through bounded exact JSON
+checks shared with AIRR. A filename/content probe distinguishes contigs from metadata;
+folder expansion keeps CSV precedence and adds JSON fallback. Original object text and contig
+IDs use `Source.Native` with layout `cellranger-nested-v1`; its row number is an array ordinal.
+Reader version 5 invalidates only disposable caches. The existing native-report endpoint and
+dialog serve exact source fields and original JSON, with strings throughout scientific evidence.
+
+Mapped values include supplied identities, genes, junctions, reads/UMIs, flags, sequence and
+source clonotype labels. No absent flag or coordinate conversion is inferred. Mixed chain
+annotations use an unresolved locus, preventing fallback to one gene's chain. Cross-file
+sample/contig duplicates and contradictory sample/barcode calls fail atomically. Missing flags
+remain unknown, imports retain background contigs and the active single-cell definition remains
+authoritative. Generic source metadata/exports do not acquire raw native objects. See
+`docs/CELLRANGER-JSON.md` and research §5.62; no permission, action or replay contract changes.

@@ -1,6 +1,6 @@
 # Containers and cluster execution
 
-ClonoLoom 0.8.0 runs the **same native Go workers** in the container and application.
+ClonoLoom 0.9.0 runs the **same native Go workers** in the container and application.
 Packaging adds explicit job boundaries, not a second scientific implementation or a larger
 replay support matrix. See the [headless guide](HEADLESS.md) for recipes, limits and statuses.
 

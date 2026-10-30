@@ -6,6 +6,7 @@ import { studySamples } from '../lib/datasets.js';
 import { lineagePlot } from '../lib/lineage.js';
 import { figureButton, madeBy } from './figures.js';
 import { toast } from './overlays.js';
+import { showLineageLikelihood } from './lineage-likelihood.js';
 
 async function json(url, body) {
   const response = await fetch(url, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store' });
@@ -91,6 +92,7 @@ export function mountLineages(app, container) {
     if (!tree) return;
     root.append(h('h3', `${tree.family} · ${tree.locus}`));
     if (tree.excluded) { root.append(h('p.callout', tree.excluded)); return; }
+    root.append(button('Review JC69 likelihood', () => showLineageLikelihood(app, artifact, tree)));
     root.append(h('p', `${tree.included} source rows · ${tree.taxa} distinct states including reference · ${tree.sites} shared sites · ${tree.score} changes.`), h('p.small', `${tree.search}; ${tree.examined} candidate scores. ${tree.optimalTrees == null ? 'Global optimum and topology tie count unknown.' : `${tree.optimalTrees} equally optimal binary topologies.`} ${tree.budgetLimited ? 'Search budget reached.' : ''}`), h('p.small.muted', 'One selected topology. Zero-change edges and binary resolutions do not establish distinct ancestors. Metadata are observed labels; no switching, migration or event dates are inferred.'));
     const select = h('select.input.small', { 'aria-label': 'Tree annotations', onchange: (e) => { field = e.target.value; render(); } }, ...['isotype', 'timepoint', 'tissue', 'sample'].map((v) => h('option', { value: v, selected: field === v }, v)));
     const plot = lineagePlot(tree, field), drawing = h('div.table-scroll', { tabIndex: 0 }); drawing.innerHTML = plot.svg;

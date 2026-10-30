@@ -1,6 +1,6 @@
 # Headless recipes
 
-ClonoLoom 0.8.0 supports `clonoloom run --recipe FILE --input NAME=PATH --out NEW_DIR`.
+ClonoLoom 0.9.0 supports `clonoloom run --recipe FILE --input NAME=PATH --out NEW_DIR`.
 It starts no browser or server, executes no shell commands and uses no network. Each invocation
 selects one explicit task and uses the existing native workers.
 

@@ -24,7 +24,7 @@ ClonoLoom then writes `remote.json` to its data folder (`~/Library/Application S
 on macOS, `~/.config/ClonoLoom` on Linux, `%AppData%\ClonoLoom` on Windows, or `--data-dir`):
 
 ```json
-{ "url": "http://127.0.0.1:8860", "token": "…", "version": "0.8.0", "api": 2, "pid": 12345 }
+{ "url": "http://127.0.0.1:8860", "token": "…", "version": "0.9.0", "api": 2, "pid": 12345 }
 ```
 
 The file is readable by you only, and removed when ClonoLoom stops. Keep a ClonoLoom window open:
@@ -106,7 +106,7 @@ act("open_data", paths=[table], mappings={table: {
 - One action runs at a time, in the order they come; a page opened from an earlier run of
   ClonoLoom does not take actions (reload it).
 
-Named proposals, typed queries, MCP transport and generated Python/R clients are available in 0.8.0. See [the policy contract](AUTOMATION.md) for cancellation, Undo and session audit limits.
+Named proposals, typed queries, MCP transport and generated Python/R clients are available in 0.9.0. See [the policy contract](AUTOMATION.md) for cancellation, Undo and session audit limits.
 
 ### B-cell input evidence (wave 5)
 
@@ -551,7 +551,7 @@ eligible group count, subject count and method description. This sums raw counts
 fit a differential-expression model. Original sources are needed for capture, not saved replay
 or export. Download complete evidence from `GET /api/pseudobulk/{id}/download`.
 
-### Certificate actions (0.8.0)
+### Certificate actions (0.9.0)
 
 `show` accepts `reports`. `inspect_certificate` and `export_certificate` take a supported
 saved cohort, batch-QC or motif `artifact` ID and optional explicit provider-term `accept`. Both use the visible
@@ -574,7 +574,7 @@ for every registered worker, including explicit unavailable entries. Native
 paths through remote control. It uses the existing capture functions and Go workers.
 
 
-### Checkpoint actions (0.8.0)
+### Checkpoint actions (0.9.0)
 
 `create_checkpoint {name}`, `compare_checkpoint {checkpoint, against?}` and
 `recover_checkpoint {checkpoint}` run through Reports and the normal undo store. Comparison
@@ -583,7 +583,7 @@ and restores analysis values, refusing conflicting bytes and stale edits. It doe
 source paths, resume jobs or perform scientific replay. Checkpoint IDs and evidence are local to
 the library. See [CHECKPOINTS.md](CHECKPOINTS.md) for the exact API and recovery limits.
 
-### HTML report action (0.8.0)
+### HTML report action (0.9.0)
 
 `export_html_report {artifacts, title?, accept?}` selects 1–8 distinct supported result IDs in
 the open project, shows that selection/title in Reports and downloads one self-checking HTML

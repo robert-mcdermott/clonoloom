@@ -2,7 +2,7 @@
 
 Generated functions and help for the normal local host, with explicit grants and human review.
 See [the R guide](../../docs/R.md) for exact number tokens, connection precedence and limits.
-Use the matching 0.8.0 host (API 2/catalog 4/policy 1).
+Use the matching 0.9.0 host (API 2/catalog 4/policy 1).
 
 ```sh
 Rscript -e 'install.packages(c("curl", "jsonlite"), repos="https://cloud.r-project.org")'

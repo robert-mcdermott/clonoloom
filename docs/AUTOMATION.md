@@ -1,6 +1,6 @@
 # Automation policy and review
 
-ClonoLoom 0.8.0 advertises action API **2**, catalog **4** (64 actions) and automation
+ClonoLoom 0.9.0 advertises action API **2**, catalog **4** (64 actions) and automation
 policy **1**. Remote control is read-only by default. [MCP](MCP.md), [Python](PYTHON.md)
 and [R](R.md) use the same explicit grants and visible proposal review.
 

@@ -16,11 +16,12 @@ on record.
 It is one self-contained program for macOS, Linux and Windows. It opens as a desktop window, needs
 no Python, R or account, and keeps your data on your computer.
 
-**Prepared release:** 0.8.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
-Version 0.8.0 adds exact evidence certificates and replay, checkpoints, offline reports,
-portable archives, explicit automation, generated Python/R clients, typed exports and native
-container jobs. Follow the [complete worked study](docs/RECORD-STUDY.md). Release publication
-remains a separate maintainer action.
+**Prepared release:** 0.9.0 ([changelog](CHANGELOG.md), [roadmap](clonoloom-spec/roadmap.md)).
+Version 0.9.0 adds exact AIRR metadata and object inspection, reporting-completeness checks,
+additional native readers, reviewed public-repository queries and captures, observed public
+overlap, Excel/Prism interchange, reviewed sibling links, bounded JC69 lineage likelihood and
+descriptive B-cell candidate review. Follow the [suite and public-data study](docs/SUITE-STUDY.md).
+Release publication remains a separate maintainer action.
 
 Version 0.7.0 introduced saved subject designs, feature tables, two-group comparisons and
 [replicated clonotype count models](docs/site/pages/docs/cohort-counts.html), and
@@ -202,7 +203,8 @@ clonoloom /path/to/airr_rearrangement.tsv  # or open your own data
 ClonoLoom opens in a desktop window: a Chromium-family browser (Chrome, Edge, Brave or Chromium)
 in app mode with its own profile, or else your default browser. Name files, Cell Ranger output
 folders or folders of them on the command line, or use **Open data** in the window. Data are read
-where they are: ClonoLoom never copies, changes or moves them. Running `clonoloom <paths>` again
+where they are without changing or moving the originals. Explicit uploads, exports and portable
+archives can create separate copies. Running `clonoloom <paths>` again
 hands them to the ClonoLoom already running.
 
 To try it without your own data, choose **Example data**: public 10x Genomics, AIRR Community and
@@ -254,6 +256,8 @@ It takes `-h` for its settings.
 - [Agent contract benchmark](docs/AGENT-BENCHMARK.md): known-truth tasks, code grading and explicit fixture permissions (0.8.0).
 - [AI agents (MCP)](docs/MCP.md): local stdio, explicit grants and window review (0.8.0).
 - [Simulated studies](docs/SIMULATION.md): `clonoloom simulate`, its model and its truth.
+- [AIRR Data Commons](docs/ADC.md): bounded metadata queries, reviewed source captures and scientific limits (0.9.0).
+- [Public-cohort overlap](docs/ADC-OVERLAP.md): explicit presence matching against verified captures, observed subject support and incomplete-cohort limits.
 - [Requirements](clonoloom-spec/requirements.md): what ClonoLoom must do.
 - [Design](clonoloom-spec/design.md): how it is built and why.
 - [Roadmap](clonoloom-spec/roadmap.md): the order of the work, wave by wave (wave *N* is release
@@ -292,6 +296,36 @@ Inspect before import; conflicts refuse overwrite.
 [De-identification exports](docs/DEIDENTIFICATION.md) prepare separate pseudonymized dataset
 tables, with explicit free-text/HLA removal, preserved scientific values and a separately requested
 private identity map. They do not sanitize existing archives or establish anonymity.
+[Excel evidence workbooks](docs/EXCEL.md) (0.9.0) preserve exact scalar tokens,
+typed values and full provenance for explicitly selected cohort, batch QC and motif results.
+Precision-sensitive numbers stay text; native JSON, notices and certificates accompany the XLSX.
+Worksheet rows are JSON nodes, not independent subjects; spreadsheet precision and re-saving
+limits remain explicit.
+
+[Prism subject-table exports](docs/PRISM.md) (0.9.0) map saved cohort features and
+comparisons to data-only Column tables. Subject pairing, experimental units, missingness and
+exclusions travel with the original evidence. New analyses remain explicit in Prism; import
+rounding, complete-case behavior and native-import validation limits are documented.
+
+[Reviewed Proteoscope handoff](docs/PROTEOSCOPE.md) (0.9.0) sends one exact supplied
+AIRR amino-acid sequence to local Proteoscope 0.10.0, with separate approval for its public RCSB
+sequence search. Source annotations and identifiers remain in local evidence; partial/unknown
+completeness stays explicit. No paired receptor, structure or binding specificity is inferred.
+
+[B-cell candidate reviews](docs/BCELL-CANDIDATES.md) (0.9.0) order families by explicit
+descriptive criteria, retaining denominators, missingness, ties and exact parent evidence. Review
+one supplied source-chain amino-acid sequence for FASTA or Proteoscope; no binding prediction or
+synthesis-ready construct is inferred.
+
+[JC69 lineage likelihood reviews](docs/LINEAGE-LIKELIHOOD.md) (0.9.0) fit one saved
+V/J panel through seven distinct states, with fitted substitutions/site and conditional ancestral
+probabilities. This baseline does not model SHM context or infer selection, switching or dates.
+
+[CytoWeave phenotype links](docs/CYTOWEAVE.md) (0.9.0) join one index-sort
+acquisition to one receptor sample through explicit well-to-cell mappings. Exact channel strings,
+missingness, acquisition/compensation declarations and unmatched identities remain in downloadable
+evidence. Ambiguous wells and mappings are refused; biological pairing and phenotypes are not inferred.
+
 [Typed Parquet exports](docs/PARQUET.md) preserve native clonotype and rearrangement evidence
 with nullable counts, explicit provenance and an optional pseudonymized representation.
 The [worked record-and-reach study](docs/RECORD-STUDY.md) connects these interfaces with exact
@@ -311,7 +345,7 @@ node docs/site/build.mjs /tmp/site       # the website, every link checked (docs
 ```
 
 The web app is plain ES modules with no build step and no dependencies. CI tests each commit
-once. A release is a tag (`v0.8.0`) whose files CI has passed on; the release workflow builds the
+once. A release is a tag (`v0.9.0`) whose files CI has passed on; the release workflow builds the
 six binaries and drafts the release.
 
 ## Example data

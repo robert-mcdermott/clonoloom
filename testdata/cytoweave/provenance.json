@@ -1,0 +1,10 @@
+{
+  "exporterVersion": "Artificial CytoWeave wells-format control",
+  "sample": "Simulated plate A",
+  "acquisition": "Artificial 96-well acquisition; no patient data",
+  "sourceSHA256": "unknown",
+  "compensation": "Simulated linear compensated-like values; no measured matrix",
+  "valueScale": "linear",
+  "gating": "Artificial CD4/CD8 labels; no gates fitted or biological claim",
+  "evidenceText": "Deterministic format/identity controls. Independent mapping: 80 linked, 10 absent targets, 6 unmapped; 4 receptor-only cells. No FCS acquired."
+}

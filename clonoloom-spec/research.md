@@ -3529,3 +3529,616 @@ Future-release checks replay the native worker, verify the separately recorded f
 restore missing result files and retain every earlier release fixture. Cross-platform exactness,
 existing scientific references and performance budgets are validated separately from this
 workflow. No additional inference or biological performance claim follows from a passing study.
+
+### 5.57 Exact AIRR metadata before richer interchange
+
+Wave 9 slice 1 is an evidence-preservation and linking change, not a new scientific estimator.
+The primary source is the [AIRR Community 2.0 Repertoire schema](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html)
+(linking and file format; reviewed 2026-10-28). It defines case-sensitive repertoire identifiers
+and separate sample/data-processing identifiers. A repertoire-to-table match therefore does
+not select an individual processing object or establish a biological replicate.
+
+**ClonoLoom adaptation.** Keep the source repertoire object's JSON bytes and numeric tokens,
+with unknown fields and explicit null/false/zero intact. Extract annotation labels separately
+using decimal token strings, never float64. Summaries are conveniences, not replacement source
+objects: multiple sample annotations may be joined with semicolons; conflicting explicit
+single-cell flags yield an unresolved summary. Missing fields remain missing. Record the
+declared `Info.version` without claiming to validate that schema. File SHA-256 covers the
+captured source bytes (compressed bytes for gzip), not a reconstructed object. Ordinary
+metadata remains outside the rearrangement table cache, so no cache/identity version changes.
+
+Reject ambiguous duplicate keys and repertoire IDs, invalid Unicode, and identifiers that
+would need trimming. These are local import rules, not an AIRR conformance certification.
+A legacy table without an explicit repertoire ID may match its sample name; an unmatched
+explicit ID cannot use that fallback. Matching uses existing parsed table IDs (the AIRR TSV
+reader trims surrounding field whitespace); this slice does not change table parsing. Keep unmatched metadata and report both record and
+sample coverage. Coverage is not completeness, quality, exclusion, or independent-subject
+count. Do not guess ontology terms, diagnoses, paired status or experimental independence.
+
+**Checks and presentation.** Independent Python `int`/`Decimal` parsing checks native API
+output, including values beyond binary64 precision/range and negative-zero lexical evidence.
+Go checks duplicated escaped keys, unique case-sensitive IDs, malformed Unicode, bounds,
+cancellation, compressed-source fingerprints and inspection after source removal. A small
+explicitly simulated longitudinal bulk RNA study demonstrates metadata coverage in a table;
+it is neither an inferential experiment nor realistic clone-frequency ground truth. Both-theme
+screenshots show source evidence and limits. No plot, hypothesis test, new replay kind or
+permission expansion is introduced. YAML, MiAIRR completeness and Clone/Cell/Receptor object
+support have separate acceptance criteria in later wave 9 slices.
+
+### 5.58 Exact YAML values and original source are different evidence
+
+Wave 9 slice 2 uses the primary [YAML 1.2.2 specification](https://yaml.org/spec/1.2.2/)
+(block collections, scalar styles and core resolution) and the
+[AIRR 2.0 Repertoire format](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html),
+reviewed 2026-10-28. The application implements a declared subset independently; no YAML library
+source or third-party runtime is included. The complete contract is `docs/AIRR-YAML.md`.
+
+**Adaptation.** JSON-form finite decimal tokens are preserved without binary floating-point
+conversion. Quoted scalars stay strings; YAML 1.2 null/boolean spellings resolve explicitly;
+yes/no/on/off remain strings. Numeric-looking forms outside the contract are refused rather
+than silently becoming strings or rounded numbers. Mapping keys are strings and unique.
+Unsupported tags, aliases, merge keys, directives, folding and multi-document streams fail.
+Literal-block line endings/chomping are tested, including missing final line breaks.
+
+Decoded values alone cannot preserve comments, quoting and source layout. The opened metadata
+file therefore retains one original YAML snapshot alongside its SHA-256, while the repertoire
+objects retain an exact JSON projection. The API returns both as strings with separate labels
+and preview bounds. JSON formatting for inspection uses native lexical indentation, never a
+browser parse/re-encode. Gzip hashes identify compressed source bytes; the source view displays
+the captured decompressed text. Ordinary summaries do not serialize the original source text.
+
+**Independent check.** Validation-only ruamel.yaml 0.18.6 composes YAML 1.2 nodes/tags; the oracle
+writes numeric node lexemes directly into JSON instead of constructing floats. Native tests
+compare all repertoire values against those committed references. The corpus includes extreme
+integers/exponents, decimal precision, negative zero, null/false/empty values, Unicode, quoted
+IDs/dates, comments, collections and literal blocks. Refusal, bounds, cancellation, fuzz,
+cross-format ID, uploaded-name/gzip and original-source API controls supplement the oracle.
+The existing simulated longitudinal study is represented in both formats; it retains the same
+coverage and scientific limitations. This is format/evidence validation, not full YAML/AIRR
+conformance, a MiAIRR checklist, biological replication or an additional scientific estimator.
+
+### 5.59 MiAIRR reporting completeness is not scientific validity
+
+Wave 9 slice 3 follows the AIRR Community's versioned
+[MiAIRR data elements](https://docs.airr-community.org/en/v2.0.0/miairr/data_elements.html),
+[reporting-level definitions](https://docs.airr-community.org/en/v2.0.0/datarep/airr_schema_requirement_levels.html),
+[Repertoire schema](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html) and
+[annotation guidelines](https://docs.airr-community.org/en/v2.0.0/miairr/metadata_guidelines.html),
+reviewed 2026-10-29. Checklist `clonoloom-miairr-2.0-v1` covers the 82 metadata fields in
+MiAIRR sets 1–5. The independent validation inventory records the official TSV URL and SHA-256.
+
+**ClonoLoom's choices.** Retain the standard's essential / important / defined levels, rather
+than inventing required / recommended categories or confusing them with schema required-key
+flags. Essential fields need substantive information; important fields allow explicit null-like
+reporting; defined fields prescribe the location of optionally reported information. Explicit
+null, empty values and each AIRR missingness reason remain different from absent keys. No
+not-applicable value or condition is inferred, even for synthetic libraries or paired-read fields.
+Each record/sample/diagnosis/PCR/processing scope retains its original evidence path. Scalar
+values are checked for broad type only, without converting JSON numbers to float64; structured
+values explicitly require member review. Original evidence is never rewritten.
+
+**Limits.** No MiAIRR-compliant conclusion, score or scientific-validity badge. This is a
+bounded metadata reporting review, not full schema/vocabulary/ontology validation, set-6
+processed-sequence reporting, raw-file verification, or experimental-design/biological review.
+Missing or unsupported schema declarations are not assessed; the user must review actual schema
+migration rather than just relabel a file. Evidence-row counts are not independent subjects,
+required-field denominators or inferential observations. See `docs/MIAIRR.md` for the complete
+contract, refusal limits, explicit conditional review and supported unknown-marker handling.
+
+Validation compares names, levels and broad types with the pinned official inventory, plus
+hand-specified state/path controls, separate repeated scopes, JSON/YAML equivalence, exact
+integers/decimals/false/zero, unsupported versions, cancellation/bounds/fuzz and captured-source
+API checks. The intentionally incomplete example declares its simulation and makes no biological
+claim. Both-theme UI checks cover evidence paths, filtering, counts, limitations and accessibility.
+
+### 5.60 Imported AIRR objects are evidence, not computed biological identity
+
+Wave 9 slice 4 implements the AIRR Community's versioned 2.0
+[Clone/Node](https://docs.airr-community.org/en/v2.0.0/datarep/clone.html),
+[Cell](https://docs.airr-community.org/en/v2.0.0/datarep/cell.html),
+[Receptor](https://docs.airr-community.org/en/v2.0.0/datarep/receptor.html) and
+[Repertoire linking](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html)
+contracts, reviewed 2026-10-29. Receptor hashes use the specified ordered uppercase domain
+concatenation and lowercase-hex SHA-256. Hash consistency does not verify full mature-variable
+domain boundaries, correct pairing, function or specificity.
+
+**ClonoLoom's import choices:** require declared 2.0/2.0.0 for the new collections, retain
+exact raw objects, unknown fields and full source text, and reject ambiguous identities/cardinality.
+Study-local IDs must be unique per kind within the opening; colliding studies require separate
+openings or explicit source disambiguation. Accept nested and standalone Node definitions but
+reject duplicate definitions. Keep original references in source text and extract the documented
+relationship fields, resolving only loaded object IDs and repertoire-scoped processing IDs.
+Missing targets remain unresolved; rearrangements and
+group membership remain unassessed. Never infer pairing, processing selection or sample identity.
+
+Imported Clone counts/memberships do not replace a clonotype definition or alter rearrangement
+analysis. No grouping, ancestry inference, receptor activity or MiAIRR compliance is computed.
+The complete supported syntax, alphabet/shape restrictions, bounds and limits are in
+`docs/AIRR-OBJECTS.md`. Existing reader/table identities, methods and release fixtures remain
+unchanged. The YAML decoder is factored to share its exact projection with the legacy reader.
+
+Validation uses independent Python integer/Decimal JSON and ruamel.yaml 0.18.6 node parsing,
+committed expected values, independently calculated receptor hashes, cross-file links,
+contradictory/duplicate/refusal cases, source removal, cancellation/bounds/fuzz, and both-theme
+inspection. The small single-cell example and domain-like sequences are explicitly simulated;
+extreme extension numbers test serialization, not biological count realism.
+
+### 5.61 Native TRUST4 and VDJtools report semantics
+
+Wave 9 slice 5 follows the [TRUST4 output documentation](https://github.com/liulab-dfci/TRUST4/blob/master/README.md)
+and [VDJtools input specification](https://vdjtools-doc.readthedocs.io/en/master/input.html), reviewed
+2026-10-29. Methods context: Song et al., *Nature Methods* 2021,
+[doi:10.1038/s41592-021-01142-2](https://doi.org/10.1038/s41592-021-01142-2), and Shugay et al.,
+*PLoS Computational Biology* 2015,
+[doi:10.1371/journal.pcbi.1004503](https://doi.org/10.1371/journal.pcbi.1004503).
+The readers implement documented table contracts, not the vendors' reconstruction/analysis code.
+
+The formats' similarly named CDR3 columns already include junction anchors. Their underscore
+notations differ: a TRUST4 stop becomes `*`, whereas VDJtools' incomplete codon cannot become a
+continuous peptide. TRUST4 ambiguity becomes X; partial source sequences remain in native evidence
+without entering complete-junction clonotyping. Missing peptides are not translated. Junction-level
+frame/stop inference is distinct from full-transcript functionality and biological validity.
+
+TRUST4's [report helper options](https://github.com/liulab-dfci/TRUST4/blob/master/trust-simplerep.pl)
+include fractional assigned support and barcode counts, so modern `count` does not prove reads.
+VDJtools counts can likewise represent reads or molecules. Ambiguous units remain unknown until
+human confirmation based on the experiment; no barcode identities/pairing are reconstructed.
+Source frequency denominators are retained rather than assumed to sum to one: TRUST4 separates
+IG/TR and VDJtools can retain a pre-subset frequency. Native counts never come from frequency.
+
+Conservative import choices, supported aliases, old/new marker conventions, exact source retention,
+count/frequency precision and bounds are documented in `docs/NATIVE-REPORTS.md`. All alternative
+gene calls and unsupported annotations remain source evidence, rather than silently choosing a
+first gene. Ambiguous C/consensus layouts require a reviewed mapping or AIRR export. Existing saved
+mappings remain authoritative. No scientific algorithm, tolerance, identity or replay contract changes.
+
+Independent standard-library CSV/Decimal references cover every mapped field in three artificial
+reports, exact row text, missingness, fingerprints and source coordinates. Native refusal controls,
+cache/source-removal checks, fuzzing and both-theme inspection exercise scientific presentation.
+The examples are import controls, not observed participants, functional receptors or treatment results.
+
+### 5.62 Cell Ranger detailed JSON contig import
+
+Sources: [10x Genomics' Cell Ranger 7.2 detailed JSON output documentation](https://www.10xgenomics.com/support/software/cell-ranger/7.2/analysis/cr-5p-outputs-annotations-vdj),
+the [documented annotation/productivity criteria](https://www.10xgenomics.com/support/cn/software/cell-ranger/8.0/resources/cr-5p-vdj-algorithm-annotations)
+and the CC BY 4.0 [public 1k PBMC Cell Ranger 4.0.0 data](https://www.10xgenomics.com/datasets/human-pbmc-from-a-healthy-donor-1-k-cells-v-1-1-2-standard-4-0-0).
+Reviewed 2026-10-29. This implementation uses format documentation and data outputs, not
+vendor reconstruction/annotation code. No runtime dependency is added.
+
+The nested array uses contig_name, barcode, read_count, umi_count, cdr3_seq/cdr3 and annotation
+features for genes/chains. The support page also lists CSV fields under another JSON heading;
+the implemented contract follows the detailed nested fields verified in actual output. This is
+explicit layout recognition, not an inferred producer version. Unknown annotations and precise
+numbers remain exact object text, separate from mapped values and scientific exports.
+
+ClonoLoom's choice: preserve supplied boolean calls; do not reconstruct absent full_length,
+frame or stop flags. A whole-contig stop position is not a V–J stop assertion. A naive terminal
+coordinate rule disagreed with 78 full-length calls in the public CSV, so no such reconstruction
+is used. All 1,835 JSON contigs lack a full_length field; 14 have mixed-chain annotations.
+Those chain assignments remain unresolved rather than selecting a J/V gene's locus. Existing
+CSV readers and release identities remain unchanged. This intentionally limits cross-format
+equivalence to supplied comparable fields; it does not manufacture the CSV-only flags.
+
+Independent standard-library JSON/Decimal and CSV checks agree on all 16,515 shared values,
+plus source genes/chains/clonotype labels, across the 1,835 public contigs. Exact original JSON
+objects and fingerprints also agree with the native reader. The public data and per-contig
+reference stay outside version control. A proposed Cell Ranger 9 JSON download was unavailable
+(HTTP 403); no validation or all-version compatibility claim is made for that output.
+
+Declared artificial fixtures cover sample scope, multiple chains, background barcodes, omitted
+and null flags, zero/missing support, mixed-chain evidence and exact numeric extensions, with
+independent JSON/CSV/AIRR controls. Their coding constructs are not complete receptor transcripts.
+Source productivity/full-length labels are planted assertions, not functional validation. Units
+remain per-contig reads/UMIs and definition-dependent distinct-cell abundance. No barcode-derived
+biological pairing, antigen specificity or subject independence is asserted.
+### 5.63 AIRR Data Commons metadata discovery and queries
+
+Sources: Christley et al., [The ADC API: A Web API for the Programmatic Query of the AIRR
+Data Commons](https://doi.org/10.3389/fdata.2020.00022), *Frontiers in Big Data* 3:22 (2020);
+the [AIRR Standards 1.5.1 ADC documentation](https://docs.airr-community.org/en/v1.5.1/api/adc_api.html)
+and [ADC 1.2.0 specification at immutable revision 2ccc341](https://github.com/airr-community/airr-standards/blob/2ccc341fc420705b1f1447bd732f9084f160fc0e/specs/adc-api.yaml)
+(CC BY 4.0); the [approved registry at revision 4ae159f](https://github.com/airr-community/adc-registry/blob/4ae159f2799594a2c73669527f6fba97fc8995d7/ADC-registry.tsv).
+Reviewed 2026-10-29. Only protocol documentation and registry data were examined; no provider
+implementation/source was used. Full source fingerprints are recorded in [docs/ADC.md](../docs/ADC.md).
+
+The repertoire endpoint returns study/subject/sample metadata; it does not itself return an
+analysis-ready, independent-subject cohort. The paper's separation of repertoire metadata from
+rearrangement retrieval supports keeping discovery/query inspection separate from the following
+download/provenance and overlap slices. The client therefore queries metadata only, with exact
+string equality on species, locus, study ID and repertoire ID. Supplied restrictions are ANDed;
+blank controls impose no restriction. Native code generates the displayed request and supplies
+every response-derived value; the browser does not parse scientific numeric tokens.
+
+Requirement D9 explicitly targets ADC v1. The pinned 1.5.1 standards release has ADC API version
+1.2.0 and `/airr/v1`; the 2.0 standards specification changes the base path to `/airr/v2`. These
+are independent of local AIRR file-format support and the server implementation's own version.
+No silent protocol upgrade or capability inference is made from an info response. The registry
+pin contains 16 origins and differs from stale cached registry listings; pinning prevents an
+unreviewed destination from appearing during routine browsing.
+
+Each request is explicit, uses an approved HTTPS origin, and is bounded by time, decoded bytes,
+record count and offset. No redirect, application retry or automatic page follows it. Query
+construction has no access to local datasets, sequences or files. Local-window intent, origin
+and loopback checks remain separate from the unchanged automation catalog and replay contract.
+
+The exact entity body, original record slices, unknown fields, decimal/large-integer tokens,
+request fingerprint, response fingerprint and UTC retrieval completion time remain inspectable.
+No source response is rewritten as a complete cohort. SHA-256 is evidence of byte identity,
+not scientific validation or authentication by the study publisher. The structural response
+checks do not certify a provider's filter implementation, full AIRR schema or MiAIRR reporting.
+
+Provider caps and live updates make a short page or an empty response insufficient evidence of
+completeness or biological absence. Manual next-page preparation advances by the returned count,
+but neither stable order nor a fixed snapshot is guaranteed. Pages are not aggregated. Repertoire
+count is not subject, cell, molecule or clone count; repeated visits and processing can yield
+several records for one subject. Repository/study-scoped IDs do not establish cross-study identity.
+Metadata, registry membership and a successful request do not grant redistribution permission or
+infer specificity. Repeating a remote query is not exact scientific replay.
+
+Independent standard-library JSON/Decimal controls check a hand-specified request, response hash,
+original object slices and scalar types. The artificial three-record example has two declared
+subjects and two visits for one subject, unequal read support and missing annotation. Numeric
+extensions stress transport precision without being represented as cell counts. Both-theme
+browser fixtures are visibly simulated and contact no public service. Native tests inject a
+transport for refusals, bounds, HTTP errors, redirects and cancellation; live uptime is not a CI
+dependency or a compatibility claim. No new statistical method or inferred plot is introduced.
+
+The example's numeric collection-time value and separate ontology unit follow the
+[AIRR 1.4.1 metadata schema](https://github.com/airr-community/airr-standards/blob/v1.4.1/specs/airr-schema.yaml)
+referenced by the pinned ADC specification. This format-specific check does not turn the sparse
+artificial fixture into a complete MiAIRR submission.
+
+### 5.64 Bounded ADC retrieval and provenance
+
+The [pinned ADC v1 documentation](https://docs.airr-community.org/en/v1.5.1/api/adc_api.html)
+distinguishes repertoire metadata from rearrangement retrieval. Its rearrangement identifiers
+include repertoire and processing scope. Reviewed 2026-10-29; no provider implementation was
+examined. Downloads require one explicit repertoire/processing pair, verified against fresh
+metadata and every returned row. They retain exact JSON rather than guessing a count unit,
+flattening nested extensions or treating several processing runs as independent subjects.
+
+A bounded collection of live offset pages is not an atomic snapshot. Even a terminal empty
+page cannot prove complete cohort ascertainment. Captures therefore retain page-budget versus
+empty-page stop evidence while keeping completeness unestablished. Duplicate IDs abort rather
+than being deduplicated silently; omission caused by concurrent updates cannot be excluded.
+Permission evidence is a human-reviewed statement, not an inferred provider license. Byte
+hashes preserve observations, not scientific correctness or publisher authenticity.
+
+Original pages, requests, response hashes and retrieval times are saved separately with a
+completion manifest. No remote name controls a path, existing captures are never replaced,
+and failed/cancelled work is removed. These source captures do not enlarge exact local replay
+or constitute an analysis dataset. Tests use declared artificial metadata and exact numeric
+stress values, not invented research findings; the UI makes those fixture limits visible.
+
+### 5.65 Observed public-cohort presence overlap
+
+The [AIRR Rearrangement schema](https://docs.airr-community.org/en/v1.5.1/datarep/rearrangements.html)
+separates locus, junction sequence, productivity and counts. The public-capture workflow uses a
+named, deliberately restricted single-chain presence key: exact locus and full anchored
+amino-acid junction, supplied productive flag true, canonical alphabet and bounded length.
+These are eligibility rules, not inferred functionality, V/J identity or full receptor pairing.
+They are separate from the active project clonotype definition/QC. Noncanonical or missing
+annotations are excluded visibly rather than normalized into matches. Reviewed 2026-10-29.
+
+[Immunarch's overlap documentation](https://immunarch.com/articles/web_only/v4_overlap.html)
+defines Jaccard as finite-set intersection divided by union. We retain those exact integer
+counts and compute the native ratio, with no abundance weights or rarefaction. As an explicit
+observational convention, an empty eligible set gives unavailable rather than zero, even if
+the union is nonempty. Two nonempty disjoint sets still give zero. This distinction prevents
+missing/unusable observations from masquerading as absence. Display rounding does not alter
+saved native values; the independent oracle uses exact rational arithmetic.
+
+The [AIRR Community Guide, repertoire analysis §§3.6–3.7](https://www.ncbi.nlm.nih.gov/books/NBK586971/)
+discusses shared sequences and convergent recombination. Matching junction amino acids can
+arise from different nucleotide rearrangements and does not establish antigen specificity.
+Depth, assay, species, QC, sampling and contamination can affect observed sharing. No
+population-frequency inference or independent-participant assertion follows from these counts.
+
+The declared universe is the selected capture list, not the repository or a whole study.
+Subject keys are repository/study/subject IDs; a missing component excludes that capture from
+the subject denominator but not pairwise evidence. Repeated scopes and repeated scoped
+subjects are refused so visits and processing alternatives cannot inflate support. IDs across
+studies/repositories can still describe the same person; mirrors and participant independence
+need external review. Capture support and subject support remain distinct per junction.
+
+Captured hashes, request scopes, counts and stop states are verified offline. Partial paging
+and even a terminal empty page leave completeness unestablished. Original exact JSON is retained,
+not converted into inferred abundance units. Results identify loaded query sources and selected
+capture manifests, but do not extend the exact scientific replay contract to live repositories.
+All fixtures and screenshots are artificial, explicitly labeled and independently checked; no
+provider implementation or incompatible-licensed source was examined. See
+[ADC-OVERLAP.md](../docs/ADC-OVERLAP.md) for the complete contract and budgets.
+
+### 5.66 Exact saved evidence in Excel workbooks
+
+**Decision (wave 9, slice 10).** Export the five already mapped saved-result contracts as bounded,
+formula-free native SpreadsheetML, with full result and original manifest node indices and
+unchanged JSON/certificate/notice companions. A node is not a biological experimental unit;
+never infer independent replicates or rearrange a saved paired design from worksheet rows.
+Retain original nested denominator, exclusion, testing-family and missingness records. No
+biological method or plot is added; recorded citations and scientific limits travel with each result.
+
+The format sources are Microsoft's [SpreadsheetML document structure](https://learn.microsoft.com/en-us/office/open-xml/spreadsheet/structure-of-a-spreadsheetml-document)
+and [cell reference](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet.cell),
+plus [RFC 6901](https://www.rfc-editor.org/rfc/rfc6901) for unambiguous JSON paths. Use explicit
+inline text, boolean and numeric cells; never infer string identifiers or execute formula-like
+text. JSON scalar token text is independent of spreadsheet numeric representation. Original
+JSON retains full bytes, including insignificant document whitespace and object ordering.
+
+Microsoft's [Excel limits](https://support.microsoft.com/en-us/excel/excel-specifications-and-limits?app=wp)
+and [floating-point explanation](https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/floating-point-arithmetic-inaccurate-result)
+motivate conservative numeric admission: at most 15 significant decimal digits, zero or absolute
+magnitude 1e-300 through 1e300, with negative zero kept as text. This is an application policy,
+not Excel's exact full range. Decimal fractions can still require binary rounding; exact tokens
+remain text for every scalar. Missing/null, empty string/container, absent path and zero are
+distinct, with no unavailable-to-zero conversion. Refuse explicit node/text/XML/evidence bounds
+rather than silently drop information. Very long stored cells can require the formula bar or
+native JSON to inspect fully.
+
+The Apache-2.0 CytoWeave workbook's header/width/freeze/provenance presentation was consulted;
+ClonoLoom's stdlib Go writer and exact evidence mapping are native. No third-party runtime
+package or external scientific implementation is introduced. Independent openpyxl 3.1.5,
+XML/ZIP parsing and Decimal checks compare all mapped nodes and token/cell types against the
+original five kinds and a dedicated artificial edge-case fixture. LibreOffice opening/rendering
+is an interoperability exercise, not validation that editing/re-saving preserves the original:
+it can convert booleans to formulas, remove empty cells and normalize line endings. The original
+ZIP and native companion bytes remain the evidence. See [Excel](../docs/EXCEL.md) for the complete
+scope, bounds and sources, and the existing certificate contract for separate exact replay.
+
+### 5.67 Subject identity and missingness in Prism interchange
+
+**Decision (wave 9, slice 11).** Use the published PZFX data/Info layout for native subject-feature
+and cohort-comparison results. GraphPad's [Column table guide](https://www.graphpad.com/guides/prism/latest/user-guide/column_tables.htm)
+describes group columns and matched observations sharing a row. ClonoLoom maps one recorded
+feature per table, retains reference/comparison order, aligns paired samples by explicit subject
+ID, and puts independent subjects in separate rows with structural opposite-group blanks.
+The experimental unit remains subject; abundance units, cell counts, clonotypes and bootstrap
+replicates do not change that unit. This retains the native design's existing Lazic/Squair
+pseudoreplication rationale, without adding an inferential method or implying biological independence.
+
+GraphPad's [missing-value guide](https://www.graphpad.com/guides/prism/latest/user-guide/missing_values.htm)
+explains that paired tests can omit incomplete rows. That differs from ClonoLoom's saved cohort
+comparison policy: any selected missing measurement leaves the feature untested. Preserve blank
+measurements and reasons without deletion/imputation, distinguish structural blanks in the mapping,
+and retain excluded samples outside the Prism observations. A data-only file does not preconfigure
+a paired test. No hypothesis test, effect, interval, rank/permutation calculation or BH correction
+is translated; the original results and method details remain in the native companions.
+
+The [integration guide](https://www.graphpad.com/support/faq/prism-integrated-saves-prism-files-instruments/)
+and [published schema documentation](https://www.graphpad.com/support/faq/prism-xml-style-sheet-and-schema-that-define-the-pzfx-format/)
+provide the format basis. Follow CytoWeave's Apache-2.0 Column-table/Info pattern in a native Go
+writer. Emit no script, analysis/graph template or proprietary opaque payload. XML markup is
+escaped; unsupported characters and explicit size bounds cause refusal. No vendor schema,
+stylesheet or application implementation source is redistributed.
+
+GraphPad's [current rounding guide](https://www.graphpad.com/guides/prism/latest/user-guide/rounding.htm)
+and [versioned numeric-range explanation](https://www.graphpad.com/support/faq/how-many-digits-of-precision-does-prism-store-how-accurate-are-the-results-what-are-the-largest-and-smallest-numbers-prism-can-store/)
+separate display and storage precision. Target Prism 7+ and retain every original numeric token
+in XML/mapping without browser floats. Conservatively refuse nonzero magnitudes outside
+1e-300–1e300, integers beyond binary64's exact integer range, negative zero and oversized/excessive
+exponents. These are exporter policies, not claims about every Prism version's complete numeric
+range. Other decimals can still round on import or saving; native JSON remains authoritative.
+
+Validation compares original subject measurements against XML/Decimal and R pzfx 0.3.1 imports,
+including numeric-looking and XML-sensitive identifiers, missingness, declared exclusions and
+independent/paired layouts. Both-theme UI uses the existing artificial 28-subject paired study.
+The unmodified published Prism 7/8 Mac XSDs fail strict lxml schema compilation (nondeterministic
+`d` content model); this is documented without claiming successful strict schema validation.
+Native Prism is not installed, so a GUI import remains unverified. Independent reader success
+is not native application certification, exact replay or statistical equivalence. See
+[the Prism contract](../docs/PRISM.md) for an explicit native import exercise and remaining limits.
+
+### 5.68 Exact observation transfer to Proteoscope
+
+**Decision (wave 9, slice 12).** Preserve one supplied AIRR `sequence_aa` and its source context,
+not a representative assembled from a clonotype or an inferred paired receptor. The
+[AIRR 2.0 Rearrangement schema](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+defines supplied amino-acid sequence and `complete_vdj` separately: the latter concerns annotated
+V(D)J coverage, not a full expressed protein, constant region, absence of internal deletions or
+functional specificity. Retain the complete selected source row, including missing and partial
+annotations. Do not translate nucleotides, substitute a junction, reconstruct an absent chain,
+or treat productivity as proof of biological validity. Raw observations are not filtered or
+grouped by the project's clonotype definition in this interchange.
+
+The installed Apache-2.0 Proteoscope 0.10.0 has structure/session deep links but no sequence-prefill
+link. Its opt-in local remote `search` command classifies an uninterrupted uppercase canonical
+sequence of at least 25 residues as a protein query. Bound at 5000, its API maximum, and refuse
+other alphabets/case/lengths rather than allowing receiver normalization or text-search fallback.
+Only the sequence is sent; IDs, sample labels, annotations and provider notices stay in the local
+review record. Sequence hashes and unchanged source hashes bind the transfer to the selected row.
+
+Proteoscope's command invokes [RCSB sequence similarity search](https://www.rcsb.org/docs/search-and-browse/advanced-search/sequence-similarity-search)
+through the [Search API](https://search.rcsb.org/), with its own defaults, cache and entry grouping.
+This is a public disclosure boundary, despite the first recipient being on loopback. Require
+separate local-transfer/public-search approvals and applicable provider acknowledgment. No
+automatic remote enablement, token discovery, port scan, hit selection or structure prediction.
+The native sender rechecks source bytes and the named recipient contract and consumes a five-minute
+review once before dispatch. Cancellation cannot undo a query already received; uncertain outcomes
+require inspection and a fresh review, never an automatic retry.
+
+Similarity is exploratory evidence, not proof of binding, affinity, antigen specificity or a
+matching full-receptor structure. A receiver command acknowledgment can coexist with a displayed
+search failure. No remote result is converted to a native scientific artifact, certificate or exact
+replay. The local record retains all annotations as text, exact query bytes, permissions and the
+raw acknowledgment. Receiver identification is a tested endpoint/version contract, not attestation
+of a particular process or browser window. See [the handoff contract](../docs/PROTEOSCOPE.md).
+
+Validation uses declared artificial source controls, an independent CSV/JSON/SHA-256 audit and
+both-theme browser checks. The actual Proteoscope 0.10.0 parser/receiver/classifier is exercised
+for two exact sequences with every search intercepted before it reaches the server; no artificial
+or private sequence is submitted to a public service. This tests exact interchange and permission
+behavior, not biological accuracy, public-service availability or reproducibility of future hits.
+MaveScape's Apache-2.0 loopback startup-probe pattern informed the explicit-port recipient check;
+no incompatible implementation code or third-party runtime dependency is introduced.
+
+### 5.69 Sample-scoped index-sort phenotype evidence
+
+**Decision (wave 9, slice 13).** Join one CytoWeave wells export to one receptor sample using
+an explicit experimental well-to-cell map. A well is acquisition-local; a source barcode is
+sample-local. Neither row order, gate membership, similar names nor a same-named barcode in a
+different sample establishes identity. Preserve all channel tokens and unmatched observations.
+Refuse repeated wells/events or mapping targets rather than fabricate singlet/chain pairing.
+
+**Sources.** [AIRR Rearrangement 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+defines cell-of-origin and repertoire/processing links; [AIRR Cell](https://docs.airr-community.org/en/latest/datarep/cell.html)
+requires case-sensitive identifiers. The local source-barcode key is not a globally unique AIRR
+Cell identifier. [Spidlen et al. 2010, FCS 3.1](https://doi.org/10.1002/cyto.a.20825) and
+[MIFlowCyt](https://isac-net.org/resource/resmgr/docs/miflowcyt1-0.pdf) support preserving acquisition,
+spillover/compensation and analysis context. This join implements no new statistical method.
+
+Reviewed Apache-2.0 CytoWeave 0.8.1 (`19d47bb`), specifically `plate-view.js`, `indexsort.js`,
+`engine.js` and its artificial FCS generator. Its wells CSV uses one-based event numbers and
+linear `SampleView.column` values under active compensation for covered channels, without display
+transforms. It includes only one deepest population path, not all memberships. The CSV omits
+sample identity and matrix history. A required, exact-text provenance declaration preserves supplied
+context or explicit unknowns; it does not verify that context. Duplicate display headers are refused.
+
+**Limits.** A successful join does not validate singlets, receptor pairing, gates, compensation,
+phenotypes, clinical meaning or independent experimental units. No cross-sample pooling, marker
+thresholds, p-values or plot are introduced. Empty and NaN remain distinct supplied values;
+negative compensated values are not censored. The viewer displays exact observations and coverage,
+not inferred biological categories. The downloadable record remains separate from project
+annotations, scientific workers, replay/certificates and automation permissions. Broader arbitrary
+FCS/event imports remain outside this supported interchange; X2 is partial.
+
+The general AIRR reader trims field whitespace. This exact-link path therefore rechecks selected
+original source hashes and compares raw `cell_id`/`repertoire_id` tokens with loaded identifiers;
+normalization or changed bytes refuse the join. The initial receptor contract is native AIRR TSV
+(optionally gzip), bounded at 64 MiB combined decoded selected sources. Other readers require a
+separate original-identity check; no historical reader or cache convention changes.
+
+**Validation design.** Native tests cover precision-sensitive and quoted CSV text, malformed
+Unicode/identities, collisions, missingness, explicit scope and export permission. A separate
+Python CSV/hash oracle reconstructs every link. Real sibling validation exercises its artificial
+FCS reader/compensation/plate exporter and checks known well/event truth before native import.
+Both-theme browser controls use an explicitly artificial 96-event study with realistic-looking
+linear intensities and known missing/unmatched identities. Format fidelity is not biological
+validity. See [the interchange contract](../docs/CYTOWEAVE.md) for supported syntax and bounds.
+
+### 5.70 Bounded JC69 lineage likelihood
+
+**Decision (wave 9, slice 14).** Offer an explicit selected-panel likelihood review alongside
+saved parsimony. Use only that parent's observed/reference states and complete-case V/J columns,
+including invariant sites. Reference orientation, family membership and alignment are conditioned
+on, not estimated here. Source rows and abundance do not reweight identical panel states.
+
+**Sources.** [Jukes & Cantor 1969, Evolution of Protein Molecules](https://doi.org/10.1016/B978-1-4832-3211-9.50009-7)
+provides the JC69 equal-frequency/rate nucleotide baseline. [Felsenstein 1981, J Mol Evol](https://doi.org/10.1007/BF01734359)
+provides likelihood pruning over unknown ancestral states. The implementation sums site log
+likelihoods under a uniform root-state prior, including the reference tip. The model is reversible:
+display orientation is not inferred ancestry. The [IgPhyML documentation](https://igphyml.readthedocs.io/en/stable/)
+explains the importance of context-dependent SHM models; JC69 here does not implement those models.
+Only primary method descriptions/documentation were consulted; no external phylogeny source
+implementation was examined or copied.
+
+**ClonoLoom choices.** Exhaustively enumerate binary topologies through seven distinct states
+(945 topologies). Optimize each edge on [0,3] substitutions/site using the concavity of
+`sum log(a+b*exp(-4t/3))` in `exp(-4t/3)`. Endpoint checks and 48 derivative-bisection steps solve
+one coordinate; deterministic sweeps from three starts supply a bounded continuous search.
+Retain all start diagnostics, require coordinate stationarity for every topology's best fit,
+and refuse over-budget/cancelled work without a usable partial tree. Deterministic arithmetic
+and a lexical near-tie rule make results repeatable. Exhaustive topology enumeration does not
+prove a global continuous optimum. Full thresholds and the two-billion-work-unit bound are in
+[the likelihood contract](../docs/LINEAGE-LIKELIHOOD.md).
+
+Marginal ancestral probabilities condition on the selected topology, fitted lengths and fixed
+reference. Modal symbols with IUPAC ties are not a joint ancestral reconstruction; no ancestral
+FASTA is exported. The viewer labels fitted substitutions/site, uses explicitly schematic
+topological depth, and assigns traits only from observed rows. Zero/upper-bound edges and near
+ties are numerical evidence, not bootstrap support or established ancestors. No SHM context,
+selection, switching, dates, affinity or migration is inferred. The retained complete-case
+panel may reflect nonrandom missingness and is not a full rearranged receptor sequence.
+
+**Validation.** Analytical two-state JC69 distances and saturation controls complement direct
+ancestral-state enumeration (independent of pruning), transition-matrix exponentiation and
+SciPy L-BFGS-B comparisons. Independently enumerate every topology key. Optimize all topologies
+in four-/five-tip controls and three representative topologies at the seven-tip bound; do not
+claim independent optimization of every seven-tip topology. Check the selected native branch
+likelihood and every node/site posterior, including zero edges. Browser downloads of the existing
+artificial seven-state immunization example and a historical saved panel undergo the same audit.
+This verifies conditional numerical correctness, not biological adequacy or generating-tree
+recovery. Both themes expose unresolved branches, observed annotations and model limits.
+
+Native evidence preserves original parent text/hash, complete settings and diagnostics. It is
+separate from project artifacts/replay and includes original identifiers; provider acknowledgment
+is explicit. B4 remains partial for richer/larger models and likelihood replay. No cache,
+historical parsimony schema, scientific identity or automation contract changes.
+
+### 5.71 Descriptive B-cell candidate review
+
+**Decision (wave 9, slice 15).** Provide a user-directed ordering of saved families within one
+explicit current sample and complete saved scope. Size counts assigned observations, mutation
+pools observed heavy-row nucleotide differences over evaluable V/J bases, isotype is the share of
+an explicit preferred observed class, and change is a difference of family observation shares
+against one named sample from the same explicit subject. No weighted composite, biological optimum,
+inferential expansion test or efficacy score is calibrated. Parent family/SHM/isotype methods and
+their original citations remain in the native evidence.
+
+[Neumeier et al. (2022), PNAS 119:e2113766119](https://doi.org/10.1073/pnas.2113766119),
+*Phenotypic determinism and stochasticity in antibody repertoires of clonally expanded plasma cells*,
+reported no correlation of measured affinity with clonal expansion or SHM in their studied
+plasma-cell repertoires. This supports a context-specific caution about interpreting these proxies;
+it does not establish a universal absence of association or validate our ordering policy.
+Sampling, QC, family assignments, germline/reference uncertainty, coverage and unresolved classes
+all constrain interpretation. Current/baseline samples are not independent biological replicates.
+
+The strict availability and ranking rules are **ClonoLoom choices**. Every current heavy source
+row must have positive evaluable bases; this does not mean full V/J coverage. Pooled counts weight
+source rows and their coverage, not independent cells. Every current isotype observation must be
+resolved before preferred-class share is available. Partial numerators/denominators remain visible
+when unavailable. Missing values sort last in either direction. Exact rational comparison and
+ordered criteria give tied competition ranks; lexical family identifiers only stabilize display.
+The complete ranked scope includes families with no current observations. Zero observed count
+does not establish biological absence. See [BCELL-CANDIDATES.md](../docs/BCELL-CANDIDATES.md) for
+formulas, experimental units, exclusion denominators, bounds and evidence conventions.
+
+[AIRR Rearrangement 2.0](https://docs.airr-community.org/en/v2.0.0/datarep/rearrangements.html)
+describes annotated single chains, nullable fields and V(D)J completeness. Review selects one
+current observation and its explicit source chain, preserves the original header/row and exact
+supplied `sequence_aa`, and refuses unsupported sequences. `complete_vdj` is not full-protein
+completeness; an operational cell-associated assignment is not independently proven pairing.
+No translation, consensus, reconstructed ancestor or chain assembly is introduced. One-chain
+FASTA is not a synthesis-ready receptor. The existing Proteoscope workflow is reused with fresh
+local/public/provider permissions; opening it sends nothing.
+
+The small example copies historical simulated inputs without altering them. Its separate upstream
+fixture generator annotates coding sequences with [NCBI table 1](https://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi#SG1),
+deliberately retaining one missing amino-acid field. Biopython 1.86 independently checks 119 supplied
+translations and all 120 original rows/fields. This is a declared artificial annotation step,
+not a product translation fallback or an experimentally validated sequence set.
+
+Independent fraction/count reconstruction checks every family, membership, denominator, missing
+metric, rank and tie in analytical controls, native API output and both-theme browser downloads.
+Source/parent/sequence hashes and exact FASTA are audited separately. Native tests pin ARM/Intel
+records and refuse changed sources, notices, identities and missing permissions. Both themes show
+the labeled simulated study, native units and exact count ratios in an accessible table. These
+checks establish computational correctness and evidence preservation, not predictive validity.
+B6 remains partial for inferential expansion and synthesis-ready paired constructs. Existing
+historical artifacts, scientific replay, cache/version identities and automation contracts stay intact.
+
+
+### 5.72 Suite/public-data release study
+
+The 0.9.0 study integrates the contracts in §§5.57–5.71; it introduces no new scientific
+estimator. AIRR Repertoire/processing scope remains explicit, following the
+[AIRR 2.0 metadata specification](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html).
+Reporting completeness, source identity and computational agreement remain distinct from
+biological validity. Eight separate artificial datasets demonstrate exact metadata/native records,
+B-cell parents and captured public overlap without pooling subjects or treating sequence rows
+as experimental replicates. Exact-number stress values are software controls, not biological
+measurements. The small B-cell study is not a powered experiment.
+
+The release fixture preserves original source, project, manifest and review bytes with an
+inventory of their SHA-256 hashes. Only a separate portable project rewrites opening paths.
+Native checks reopen source identities and recompute saved scientific results; standalone
+candidate, likelihood and overlap reviews have separate checks and do not become certificate
+replay kinds. Independent fractions/source-text checks and conditional JC69 optimization support
+computational claims only. They do not establish public-cohort completeness, calibrated binding
+prediction or a globally optimal biological model. Existing scientific identities, tolerances
+and older release fixtures remain unchanged.
+
+The worked guide carries these distinctions through Excel/Prism and sibling interchange with
+explicit permission and missingness boundaries. Both-theme figures show native values and
+units, with declared simulations and model limits. Release verification combines analytical
+and external-reader controls, processor agreement, browser interactions and accessibility; a
+successful screenshot or checksum cannot substitute for any of those scientific checks.

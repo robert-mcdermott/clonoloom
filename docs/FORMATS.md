@@ -10,6 +10,12 @@ filenames identify table roles and headers are then checked.
 
 ## What every rearrangement reader produces
 
+ClonoLoom 0.9.0 also reads [Cell Ranger detailed contig JSON](CELLRANGER-JSON.md),
+with exact source-object inspection, explicit layout recognition and missing/mixed-chain limits.
+
+[ADC metadata browsing](ADC.md) is separate from local format import: it previews explicit
+bounded public queries and inspects exact responses without installing a dataset.
+
 For repertoire formats, ClonoLoom reads rearrangements into one table with these fields (named as
 the AIRR Rearrangement schema names them):
 
@@ -61,10 +67,51 @@ export, TRUST4, Cell Ranger (`airr_rearrangement.tsv`) and AIRR Data Commons dow
   are `consensus_count` (or `duplicate_count`). Rows that name a cell (`cell_id`) make the
   dataset single-cell.
 
-**Repertoire metadata** (`.json`, the AIRR Data File or a list of Repertoire objects, as the ADC
-API answers) named with the tables annotates their samples by `repertoire_id`: study, subject,
-species, sex, age, diagnosis, tissue, cell subset, time point, template and HLA. Schema 1.3's
-text fields and 2.0's objects are both read. YAML metadata arrives in a later release.
+**Repertoire metadata** (`.json`, `.yaml`, `.yml`, optionally `.gz`) opens with the rearrangement tables:
+an AIRR Data File containing `Repertoire: [...]`, a list of repertoire objects, or one object.
+Annotation extraction supports the field shapes used in schemas 1.3–2.0; it is not full schema
+validation. `Info.version`, when present, is shown as the supplied declaration.
+
+**Data → Inspect AIRR metadata** lists record IDs, matched sample counts and match basis, with
+original JSON and the source-file SHA-256 available for each record. Exact case-sensitive
+`repertoire_id` matches take precedence. The legacy sample-name match applies only when a table
+sample has no explicit ID. Matching uses the table reader's parsed IDs; AIRR TSV fields already
+have surrounding whitespace trimmed. Metadata IDs that need trimming are refused. Unmatched
+records remain available. Neither coverage nor a match
+establishes MiAIRR completeness, ontology validity, biological independence or a particular
+sample/data-processing record.
+
+Original JSON object bytes retain unknown fields, numeric tokens, null, false and zero.
+YAML uses a documented [bounded YAML 1.2 subset](AIRR-YAML.md): decoded record JSON and the
+original YAML document are shown separately, both as text, without floating-point conversion. Summary
+annotations (study, subject, species, sex, age, diagnosis, tissue, cell subset, time point,
+template and HLA) are display conveniences; multiple processing values may be combined.
+Conflicting explicit single-cell flags do not become one boolean. The source hash covers the
+whole captured file, including its wrapper; for gzip, it covers the compressed bytes. Inspection
+uses the opened snapshot. It does not reread a subsequently edited source.
+
+Ambiguous duplicate JSON keys or repertoire IDs within/across files, invalid UTF-8/unpaired
+Unicode escapes and non-string, empty, padded or control-character repertoire IDs are refused.
+These are ClonoLoom import rules. Limits: 64 MiB per source/decompressed file and combined decoded
+metadata, 100,000 repertoires per file/dataset, nesting depth 64, 1,000,000 JSON values per file
+and 4,096 bytes per ID. Original-record previews over 4 MiB are refused explicitly, without
+truncating imported evidence. Lists are paged. Additional YAML syntax/work limits are documented in the linked guide. The
+Clone/Cell/Receptor support is described below. See the [AIRR Repertoire standard](https://docs.airr-community.org/en/v2.0.0/datarep/metadata.html).
+
+Wave 9 slice 3 adds a [MiAIRR reporting checklist](MIAIRR.md) for declared AIRR 2.0 metadata.
+It distinguishes essential/important/defined levels, absent keys and explicit missingness,
+with conditional review, evidence paths and remedies. Reporting completeness, schema/ontology
+conformance and scientific validity are distinct. See the guide for supported versions,
+sets 1–5 coverage, unassessed set 6 and bounds; no compliance certificate is issued.
+
+### AIRR Clone, Cell and Receptor objects (0.9.0)
+
+Open AIRR 2.0 Data Files alongside rearrangements, including supporting Node objects and
+mixed Repertoire collections. **Inspect AIRR objects** shows exact source objects and explicit
+link states. Imported memberships, counts and pairing flags remain source assertions; they do
+not change the active clonotype definition. Read the [supported contract and scientific
+limits](AIRR-OBJECTS.md), including version requirements, identity/cardinality checks, receptor
+hash validation, unresolved references and the bounded YAML subset.
 
 ### Sequence evidence (0.5.0)
 
@@ -134,7 +181,8 @@ This reader does not run IMGT, reconstruct references or establish mutation read
 - **Folders.** A `vdj` run's folder or its `outs/`, and a `multi` run's folder (its
   `outs/per_sample_outs/<sample>/vdj_t`, `vdj_b` and `vdj_t_gd`), are each opened as one
   dataset. `filtered_contig_annotations.csv` is read; `all_contig_annotations.csv` when there is
-  no filtered file. `clonotypes.csv`, `consensus_annotations.csv` and `metrics_summary.csv` are
+  no filtered file. Wave 9 slice 6 adds detailed JSON as the fallback when neither CSV exists.
+  `clonotypes.csv`, `consensus_annotations.csv` and `metrics_summary.csv` are
   kept beside it for QC to compare with.
 - **Contig annotations** (Cell Ranger 3 to 9): `barcode`, `contig_id`, `chain`, `v_gene` …
   `c_gene`, `productive`, `cdr3` and `cdr3_nt` (the junction), `reads`, `umis`,
@@ -146,6 +194,10 @@ This reader does not run IMGT, reconstruct references or establish mutation read
 - A contig's count is its UMIs; its reads are kept beside them. The dataset's unit is cells.
 - A clonotype summary or metrics file opened on its own is refused with a message saying to open
   its run's folder or its contig annotations.
+- **Detailed JSON (0.9.0).** The [nested contig contract](CELLRANGER-JSON.md)
+  retains original objects for inspection. Missing flags remain unknown and mixed-chain
+  annotations remain unresolved; producer version is not inferred. Do not combine alternate
+  representations of the same contigs as additional observations.
 
 ## immunoSEQ (Adaptive Biotechnologies)
 
@@ -246,7 +298,11 @@ them), comma- or tab-separated.
 
 ## Tables with mapped columns
 
-A CSV or TSV that no reader recognizes (VDJtools' clone tables, a spreadsheet) is read
+Wave 9 slice 5 adds native [TRUST4 reports and VDJtools tables](NATIVE-REPORTS.md), with separate
+marker conventions, unknown units where required, exact source-row inspection and explicit
+count/frequency limits. AIRR exports keep the AIRR reader; saved mappings keep their interpretation.
+
+A CSV or TSV that no reader recognizes (a custom clone table or spreadsheet) is read
 through a **mapping** of its columns, made in the window
 ([the guide](https://robert-mcdermott.github.io/clonoloom/docs/opening-data.html#mapping)) or given to remote control's `open_data`
 ([REMOTE-CONTROL.md](REMOTE-CONTROL.md)).
@@ -1103,3 +1159,53 @@ The [pseudonymized export](DEIDENTIFICATION.md) optionally accepts `storageForma
 existing mapping/removal policy runs before conversion, text tables become typed files and
 `schema.json` is added. Public footers contain sanitized provenance only; the private map
 remains separate. Existing text output stays the default and preserves its v1 contract.
+
+## Excel evidence workbooks (wave 9, slice 10)
+
+`clonoloom-workbook.zip` contains `results.xlsx`, unchanged result/manifest JSON, provider notices,
+native certificates and a version 1 `clonoloom-workbook` inventory with SHA-256 hashes and sheet
+mapping. Five saved-result kinds are mapped. Every JSON node has an explicit type/path; each
+scalar retains its original token as text. Numeric admission is conservative and never guesses
+string types, dates or formulas. Null, empty and absent values remain distinct from zero.
+See [EXCEL.md](EXCEL.md) for exact precision policy, bounds, provider acknowledgment, spreadsheet
+editing limits and the distinction between node rows and biological experimental units.
+
+## Prism subject-table interchange (wave 9, slice 11)
+
+`clonoloom-prism.zip` contains data-only `data.pzfx`, a version 1 `clonoloom-prism-mapping`
+record, unchanged result/manifest JSON, provider notice, native certificate and a version 1
+`clonoloom-prism` inventory. Each recorded feature becomes a two-column, one-subcolumn Column
+table. Paired subject identities align across groups; independent subjects occupy their own
+rows. Null measurements and structurally empty positions remain distinct in the mapping, while
+both are blank in PZFX; zero stays numeric. No analysis or graph template is generated. See
+[PRISM.md](PRISM.md) for supported kinds, exact tokens, import precision, exclusions, bounds,
+method differences and the explicit limits of native/schema validation.
+
+## Reviewed Proteoscope handoff (wave 9, slice 12)
+
+The version 1 `clonoloom-proteoscope-handoff` JSON records one exact AIRR source observation,
+original header/row text, all decoded fields as strings, source/sequence hashes, explicit locus,
+identifier, sample, query command, recipient contract, provider notice and scientific limits.
+No JSON source annotation becomes a browser number. Its companion version 1
+`clonoloom-proteoscope-receipt` records the review fingerprint, explicit local/public permission
+flags and the receiver acknowledgment (including original response text and SHA-256).
+The fingerprint hashes the native compact JSON record
+before its final newline. These are local interchange evidence, not de-identification, a scientific
+certificate or a remotely reproducible result. See [PROTEOSCOPE.md](PROTEOSCOPE.md).
+
+## Descriptive B-cell candidate evidence (wave 9, slice 15)
+
+Version 1 `clonoloom-bcell-candidates` JSON preserves the complete ranked family scope, explicit
+ordered criteria, assigned-observation denominators, exact integer fractions, native numeric
+values, missing reasons, competition ranks and all current source observations. Original family
+and optional SHM/germline/isotype parent JSON text, hashes and manifests retain exact tokens and
+methods. Its SHA-256 hashes the indented native download bytes, without an added final newline.
+
+Version 1 `clonoloom-candidate-sequence` JSON links that review fingerprint to one selected original
+AIRR source chain, preserving header/row text, decoded fields as strings, source and sequence hashes,
+eligibility, notice and limits. Its fingerprint uses the same native-byte convention. Companion
+FASTA has one opaque identifier and unchanged supplied `sequence_aa`, with a final LF; no sequence
+reconstruction or paired construct is generated. Keep the full review and sequence companion with
+FASTA. These are separate local review records, not project artifacts, replay certificates or
+de-identification. See [BCELL-CANDIDATES.md](BCELL-CANDIDATES.md) for bounds, permission and scientific
+limits; similarity/ranking does not establish binding or synthesis readiness.

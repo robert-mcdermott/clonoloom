@@ -9,16 +9,15 @@ and so on. Each wave is split into **slices**, bite-sized units of work. A slice
 
 Slices are done in order within a wave unless noted. Each slice names the requirements
 (`requirements.md`) it serves. When a wave is reached, it is planned in detail: its slices are
-confirmed or re-cut, and the decisions taken are recorded here. Waves 1–7 are released. Wave 8 completes verifiable records, reproducible execution and supported automation; slice 15 prepares 0.8.0 for maintainer review.
+confirmed or re-cut, and the decisions taken are recorded here. Waves 1–8 are released.
 
 **Progress** is marked here as each slice is committed: done, next or to come. Each
 requirement's status is in `requirements.md`; release changes are in `CHANGELOG.md`.
-**Where things stand:** wave 1 is merged (0.1.0 not tagged); waves 2–7 are merged and
-released as 0.2.0–0.7.0. The 0.7.0 release and product site are published. Wave 7 closed
-with slice 12 in `b4fe1c2`, merged in PR #7 (`81584c9`). Work continues on the existing
-`wave8` branch. Slices 1–15 are committed and pushed, most recently `4573c93`.
-Slice 15 completes the worked study and release preparation below; CI portability corrections
-are recorded in its follow-up. No 0.8.0 release is made.
+**Where things stand:** v0.8.0 and its product site are published. Wave 8 merged in PR #8
+(`719a73c`); the follow-up AI-agent documentation is committed as `6f71662`. Wave 9 is planned
+below; slices 1–15 are committed and pushed (slice 15: `c63d632`). Slice 16 is implemented and
+validated on `wave9`, awaiting the maintainer's commit and CI. Version 0.9.0 is prepared.
+No 0.9.0 release is made.
 
 The order follows the siblings' principle:
 1. **Trust first.** Readers that agree with independent readers on every value, and a validator
@@ -3821,9 +3820,1133 @@ creates the wave-8 PR and follows the usual merge/release/site sequence. No comm
 merge, tag, release, image publication, scheduler submission or product-site publication was
 performed for this follow-up. Wave 9 planning follows that release; no wave-9 work was started.
 
+## 0.9.0: suite and public data (wave 9)
+
+**Plan recorded before implementation.** Build on the 0.8.0 evidence and permission contracts.
+Start with exact, unambiguous metadata and complete the remaining readers before querying public
+repositories or linking other applications. A local repertoire identifier is not evidence of a
+shared subject, identical experimental processing, or permission to redistribute a dataset.
+
+### Wave 9 sequence
+
+| Slice | Scope and requirements | Acceptance before the next slice |
+| --- | --- | --- |
+| 1 | Exact AIRR JSON metadata and inspection (D2 foundation, D8, D11, N2/N4/N5) | Preserve numeric tokens, unknown fields and original repertoire-object bytes; reject duplicate JSON keys, ambiguous/missing IDs and malformed text; inspect matched/unmatched records and source fingerprints; no claim of MiAIRR completeness or ontology validation |
+| 2 | AIRR Repertoire YAML (D2) | Dependency-free bounded reader with a published supported-syntax contract; exact scalar meaning, null/false/zero distinctions, ambiguity refusals and original source hashes; compare supported cases with an independent YAML/AIRR reader; no silent coercion or alias expansion |
+| 3 | MiAIRR completeness checklist (O8, D2/D10) | Pin the checklist/schema version, distinguish required/conditional/recommended fields, missing versus explicitly unknown/not applicable, expose evidence paths and remedies; presence is not biological validity or ontology conformance |
+| 4 | AIRR Clone, Cell and Receptor objects (D2) | Preserve native objects and explicit repertoire/cell/receptor/processing links; validate identifiers and cardinality; no guessed pairing or replacement of the user's clonotype definition; independent-reader fixtures |
+| 5 | Remaining table readers (D5) | TRUST4 reports and VDJtools tables with native count units, missingness, junction conversion and source provenance; compare every mapped value with independent parsing; retain unsupported fields and fuzz refusals |
+| 6 | Cell Ranger JSON annotations (D3) | Explicit version/layout recognition, exact barcodes/chains/flags/units, match supported CSV/AIRR representations; refuse conflicting records and unsupported layouts without inventing pairing |
+| 7 | AIRR Data Commons discovery and queries (D9, D13, P8) | Pin ADC API contract and approved repository registry; user-initiated bounded queries with visible endpoint/filter/pagination and offline/cancellation/error behavior; never send local receptor data implicitly |
+| 8 | ADC downloads and provenance (D9/D11/D13, O2, X5) | Review license/size/source before download; record exact request, repository, retrieval date, response/source hashes and completeness/truncation state; safe paginated/streamed installs, no overwrite, no silent pooled processing or subject identity |
+| 9 | Overlap with public cohorts (R4) | Explicit matching definition, loci, source units and cohort universe; show evaluable and missing subjects and sampling/assay limitations; independently computed overlaps and partial-query controls; descriptive sharing is not antigen specificity |
+| 10 | Excel workbooks (O4) | Typed values, missingness, full denominators, provenance/methods/notices, limits of spreadsheet number precision; independent workbook reader validation and no formula injection |
+| 11 | GraphPad Prism export (O4) | Document a supported interchange format and table/replicate mapping; preserve subject pairing and experimental units, missing values and provenance; independent format checks and import exercise where available; no silent analysis conversion |
+| 12 | Proteoscope handoff (X1) | Review exact selected receptor sequence/chain/identifier and destination before transfer; preserve annotation/provenance and explicit permissions; inspect sibling contracts and license-compatible patterns; unsupported or incomplete sequences remain explicit |
+| 13 | CytoWeave phenotype links (X2) | Sample-scoped barcode/index-sort identity, explicit mapping and collision/ambiguity refusals, acquisition/compensation provenance and missingness; no fabricated pairing or pooled independent subjects; validate real sibling interchange and simulated known links |
+| 14 | Maximum-likelihood lineage methods and viewer (B4) | Select and cite a defensible sequence model before implementation; independently validate likelihoods/search/branch lengths, identify boundaries and convergence failures, retain ancestral uncertainty and rooting assumptions; do not infer switching/selection/dates from observed labels; split this slice if model/search/view work needs separate review |
+| 15 | B-cell candidate review (B6) | Explicit user-selected ranking criteria and complete denominators, ties/missing values and provenance; no binding/efficacy claim; export only declared available sequences with chain/pairing limits, reviewed FASTA and Proteoscope handoff |
+| 16 | Complete suite/public-data study and release preparation | Worked provenance-preserving study, realistic declared simulations, unavailable/partial/ambiguous controls, both-theme presentation, reference/platform/performance/accessibility checks and 0.9.0 compatibility fixture; version changes and maintainer release sequence only here |
+
+This order is a plan, not a claim of completed support. Each slice must record its implementation,
+validation and limits before the next. Research can require a documented split or deferral rather
+than an unvalidated method. In particular, lineage likelihoods and candidate ranking need their own
+scientific acceptance criteria; no external algorithm/source is selected by this outline.
+
+### Cross-cutting decisions
+
+- Preserve the native-worker, zero third-party runtime dependency and exact-evidence conventions.
+  Consult the Apache-2.0 siblings for interchange/export/UI patterns when the relevant slice starts.
+- Extend automation only through the shared action catalog with explicit effects and human review;
+  regenerate Python/R wrappers when that catalog changes. Local scientific replay stays at its five
+  supported captured-evidence kinds unless a separately validated slice explicitly extends it.
+- New scientific fields do not round-trip through JavaScript numbers for evidence preservation.
+  Keep prior release fixtures and existing valid dataset/artifact identities stable; explicitly
+  document new refusals for inputs whose identity or metadata were ambiguous.
+- Downloads, queries and cross-application transfers require explicit user intent and preserve
+  provider restrictions. A downloaded partial result cannot become a complete cohort silently.
+- Visuals show actual imported/computed values, experimental units, uncertainty and missingness;
+  no significance or quality color is assigned merely because metadata are present.
+- Keep application/client version 0.8.0 during development. Do not commit, push, merge, tag,
+  release, publish images or update the deployed site automatically.
+
+### Slice 1: exact AIRR metadata and inspection
+
+**Committed and pushed as `e3f8b49`.** AIRR's metadata standard
+defines case-sensitive repertoire identifiers for links to rearrangements. At the start of this
+slice the reader decoded through float64, re-encoded each object, and the summary silently chose
+the last duplicate ID. This slice resolves those issues before YAML, MiAIRR and ADC build on them.
+
+- Keep each original JSON repertoire object and numeric token without a float conversion;
+  preserve unknown nested fields and explicit null, false and zero. Retain source-file hashes.
+- Bound metadata size, nesting and structural work; refuse duplicate keys, invalid UTF-8/Unicode,
+  non-string/empty/whitespace-padded repertoire IDs and repeated IDs within or across files.
+  These are import checks, not full AIRR schema or MiAIRR validation.
+- Match explicit repertoire IDs exactly. Preserve the historical sample-name fallback only when
+  a sample has no repertoire ID, and label it as such; never use it to conceal an unmatched
+  explicit ID. Summarize unmatched records/samples without treating them as study exclusions.
+- Add read-only, paged Data-view inspection of record identities, match basis and original JSON
+  text, with declared schema version when supplied and source fingerprint. The browser displays
+  strings; it neither computes completeness nor parses/re-serializes scientific numeric evidence.
+- Test large integers/precise decimals, null/false/zero, escaped keys, duplicates, cross-file
+  ambiguity, mixed versions, bounds, cancellation and matching controls. Compare against an
+  independent exact JSON reader, preserve existing release fixtures and review both-theme UI.
+- Document original bytes versus display summaries, annotation joins versus subject replication,
+  and deferred YAML/MiAIRR/Clone/Cell/Receptor support. No new inference, plot or replay kind.
+
+
+**Implemented:** a bounded source snapshot and exact JSON reader; cross-file ID checks; shared
+explicit-ID/legacy-name matching; native paged inspection with original JSON supplied as text;
+Data-view controls, cancellation/stale-response guards and keyboard focus; a separate focus
+button in dataset cards to remove nested interactive elements. Conflicting single-cell flags
+remain unresolved. Declared schema versions and per-file associations are retained. Table-reader
+whitespace normalization is unchanged and documented. No project/reader identity version,
+scientific method, replay kind, automation policy or application/client version changes.
+
+**Validation completed:** parser/reader race tests, source/gzip/cancellation controls,
+API coverage/pagination/refusal controls, original evidence after source removal, mixed schema
+versions, independent Python int/Decimal checks, amd64 reader checks, 51,288 fuzz executions with
+original-byte/unique-ID invariants, all 231 JavaScript tests, Go vet, six platform builds, current
+349-file container allowlist, unchanged 0.2.0–0.8.0 fixtures reopening, both-theme metadata
+pagination/stale-response/keyboard/accessibility checks and reviewed screenshots, 61-page site
+build/link checks and all 240 site accessibility/layout checks. The declared simulated example
+uses bulk RNA UMIs and missing metadata links; it makes no biological or inferential claim.
+
+The full Go regression run initially encountered sandbox loopback restrictions and the default
+ten-minute scientific-reference timeout. Local-server tests were rerun with loopback access.
+All internal-package race checks pass. Scientific references completed in two bounded race
+batches (the resumed 23 tests took 399.7 seconds), retaining their standard optional-data and
+non-race performance skips; no numerical comparison failed. The full root race suite passed
+with the thirty-minute limit (1,090.360 seconds). Final focused API checks and browser checks
+also pass after the inspection/reopening and keyboard-focus guards. No assertions, numerical
+tolerances, fixtures or performance budgets were relaxed. Slice 2 is the bounded AIRR Repertoire YAML reader, after
+maintainer review and commit; it is not started here.
+
+
+**Slice 1 committed and pushed as `e3f8b49`.**
+
+### Slice 2: bounded AIRR Repertoire YAML
+
+**Acceptance recorded before validation.** Follow the YAML 1.2.2 and AIRR 2.0 format
+specifications, with an explicit supported subset rather than a general-purpose YAML runtime.
+Support block mappings/sequences (including indentless sequences), quoted/plain scalars,
+literal blocks and JSON-form inline collections. Keep decimal numeric tokens exact; reject
+ambiguous numeric forms, duplicate keys, tags, anchors/aliases, merge keys, directives,
+multiple documents and unsupported folding. Never silently expand or coerce these constructs.
+
+Keep the captured original YAML document and its source hash separate from the decoded JSON
+projection. Expose both as text through metadata inspection, with bounded previews and clear
+labels. Preserve gzip and uploaded-filename handling, cross-format duplicate-ID checks, existing
+JSON behavior and dataset identities. No schema/completeness or biological-validity claim.
+
+Validate against pinned ruamel.yaml 0.18.6 YAML 1.2 nodes/tags without constructing binary floats;
+commit independent expected JSON, exercise malformed inputs/budgets/cancellation/fuzz invariants,
+source snapshot and API limits, and both-theme presentation. Document syntax/limits in
+`docs/AIRR-YAML.md`; MiAIRR remains slice 3. No version, permission or replay changes.
+
+
+**Committed and pushed as `173ef55`.** The YAML reader dispatches by supplied
+filename, retains exact decimal tokens and typed scalar meaning, checks original source hashes
+and rejects unsupported constructs explicitly. Original YAML is stored once per opened file,
+excluded from summary serialization, and shown separately from a decoded JSON projection.
+Native lexical indentation makes the projection readable without numeric conversion. Existing
+JSON evidence display is unchanged. The independent node oracle covers three fixtures, including
+literal-block endings and nonbreaking spaces (content, not indentation). Source previews,
+cancellation, budgets, mixed-format IDs, uploaded names, gzip and CRLF have native controls.
+
+Validation completed: independent ruamel.yaml 0.18.6 references; focused reader/API race
+checks; 706,263 final fuzz executions without failures; amd64 reader checks; Go vet and six
+CGO-free platform builds; 231 JavaScript tests; JSON/YAML browser interaction and accessibility
+checks in both themes; reviewed YAML source/projection screenshots; 61-page site build and all
+240 site accessibility/layout checks; current 350-file container allowlist. Full root race coverage passed in 1,156.277 seconds; internal race suites passed, and scientific
+references passed in 1,003.612 seconds with their existing optional-data/performance skips.
+Final targeted YAML/API/release-compatibility race checks passed after the Unicode-space fix
+(120.423 seconds for the root subset). All existing release fixtures remain unchanged. No versions, fixtures, numerical
+tolerances, permissions or replay kinds changed. Slice 3 (MiAIRR completeness) follows below.
+
+
+### Slice 3: versioned MiAIRR reporting completeness
+
+**Acceptance recorded before implementation.** Use AIRR Standards 2.0's MiAIRR data-element
+inventory and requirement-level definitions. Preserve the standard's essential / important /
+defined terms: essential requires substantive information, important permits explicit null-like
+reporting, and defined is optional but prescribes the field when that information is reported.
+Do not rename these levels required / recommended or conflate them with schema required keys.
+Conditional context (diagnosis, locus-specific PCR and raw-read files) remains an explicit review
+item, never inferred as not applicable from absence, library labels or sequence counts.
+
+Assess each captured Repertoire separately against checklist `clonoloom-miairr-2.0-v1`;
+accept declared schema 2.0/2.0.0 only, with other or absent versions explicitly not assessed.
+Retain every sample, PCR target, diagnosis and processing index in JSON-pointer evidence paths.
+Distinguish absent keys, null, empty, explicit AIRR missingness reasons, nonstandard unknown
+markers, typed values and structured values needing review. False and zero remain values.
+Expose native counts, levels, conditions and remedies in a read-only checklist; no percentage,
+quality grade, compliance certificate or automatic metadata edits. Structural content, ontology,
+scientific truth, raw-file access and processed-sequence MiAIRR set 6 remain unassessed, visibly.
+
+Validate inventory/levels independently against the official versioned table, exercise exact
+numbers, nested/repeated scopes, null-like controls, unsupported versions, bounds, cancellation,
+JSON/YAML equivalence and captured-source inspection. Review both-theme screenshots and
+accessibility; run native race, scientific/release regressions, JS, vet, platform and site checks.
+No identity/version, permissions, scientific replay or numerical-method changes.
+
+
+**Committed and pushed as `cd040ae`.** The native 82-field checklist uses the
+pinned AIRR 2.0 inventory and exact captured record, with independent official-table comparison.
+Metadata inspection adds a collapsed, read-only review, group filtering, evidence paths and
+native state counts. Missing parents leave their children unassessed. Unsupported declarations
+and exceeded row budgets return no partial rows/counts. Source JSON/YAML remains unchanged.
+The example explicitly declares its simulation and includes incomplete essential reporting,
+null-like reasons, an unmatched repertoire and separate processing descriptions. No compliance
+or scientific-validity badge, automatic applicability, new permission, replay kind or version bump.
+The methods/coverage guide is `docs/MIAIRR.md`; citations and adaptations are in research §5.59.
+
+
+**Validation completed:** native catalogue checks against the checksum-pinned official 82-field
+inventory, 22 independent hand-specified evidence controls, JSON/YAML equivalence, false/zero and
+exact-number controls, nested/repeated scopes, unsupported declarations, malformed input,
+all-or-nothing budgets/cancellation and source-removal API checks. MiAIRR fuzzing passed 291,038
+executions. Focused race and amd64 checks pass. Full root race coverage passed in 1,034.967
+seconds; all internal race suites passed and scientific references passed in 880.864 seconds,
+retaining standard optional-data/performance/container skips. No assertion or tolerance changed.
+
+Go vet, six CGO-free platform builds, all 231 JavaScript tests, the 353-file container allowlist,
+three metadata/checklist browser scenes in both themes, reviewed screenshots, the 61-page site
+build and all 240 site accessibility/layout checks pass. Existing 0.2.0–0.8.0 release fixtures
+remain unchanged and reopen successfully. Original evidence, scientific algorithms, replay,
+permissions and application/client version 0.8.0 are preserved. No commit, push, tag, release or
+publication was performed. Slice 4 (AIRR Clone/Cell/Receptor objects) follows below.
+
+
+### Slice 4: native AIRR Clone, Cell and Receptor evidence
+
+**Acceptance recorded before implementation.** Read AIRR 2.0 Data File JSON and the existing
+bounded YAML subset, with Clone, Cell, Receptor and supporting Node collections beside the
+rearrangement tables. Preserve object bytes/decoded values, unknown fields and full source
+text, fingerprints and collection paths. Support nested Clone nodes and standalone Nodes.
+Require explicit supported schema declarations for these new objects; retain legacy Repertoire
+behavior. Bound combined records/links and reject duplicate IDs, malformed link cardinality,
+ambiguous processing IDs and contradictory locally resolved repertoire links.
+
+Resolve only explicit links to loaded objects and repertoire-scoped processing metadata.
+Missing/external references stay unresolved, never guessed from names, barcodes, sequences or
+one remaining processing record. Validate receptor type/locus pairing and supplied sequence hash
+against the AIRR formula, without claiming complete variable domains, biological pairing,
+reactivity or ontology validity. Imported Clone membership/counts do not replace a clonotype
+definition or alter analysis counts. No raw rearrangement/sequence link or group membership is
+inferred; those references remain explicitly unassessed in this slice.
+
+Expose paged read-only object inspection, original evidence and link status in Data. Keep
+existing dataset identities, release fixtures, permissions, replay contracts and version 0.8.0.
+Validate exact JSON/YAML values with independent readers, linked/unresolved/cross-file and
+malformed controls, cancellation/bounds/fuzz, source removal, both-theme UI and full regression.
+
+**Committed and pushed as `7ac32bd`.** A shared exact JSON/YAML Data File
+reader retains native objects and full captured documents beside rearrangements, with explicit
+link resolution across files. New object import requires declared AIRR 2.0/2.0.0; previous
+Repertoire forms retain their semantics, except ambiguous bare object IDs require an explicit
+collection wrapper to prevent Cell/Clone references being read as Repertoire identities. IDs,
+collection cardinality, repertoire contradictions, processing ambiguity and receptor hash/type/locus
+constraints have explicit refusals. Unknown
+fields remain source evidence. Imported memberships never change the active clonotype definition.
+
+The paged object inspector uses live dataset summaries (object counts are not added to saved
+project metadata), with read-only source text and loaded/unresolved/unscoped/unassessed links.
+Both-theme screenshots are reviewed. Independent JSON/Decimal and YAML-node controls cover all
+seven artificial objects and the ordered receptor hash; full source text survives source removal.
+The initial oracle assertion compared JSON formatting as well as values; it was corrected to
+compare exact typed values while separately requiring original JSON byte preservation. The
+final reader race and amd64 suites pass. No scientific tolerance or expected value was changed.
+
+Validation completed:
+
+- The full application race suite passes (1,767.678 s), including unchanged release-project
+  results, portable archives and exact report replay. Scientific references pass (1,365.041 s)
+  with the existing optional-data/performance skips. The initial combined reference command
+  reported the formatting-only assertion above; the corrected reader and complete internal race
+  suites subsequently pass. A sandboxed internal rerun could not bind its local download-test
+  listener; rerunning with loopback access passes without changing the test or implementation.
+- Final bare-object and ASCII-alphabet guards have focused reader/API coverage; the API/metadata
+  and release-opening regression run passes (185.092 s), with a further API pass after the ASCII
+  refusal. Unicode lookalikes are refused even when their uppercase hash matches. Independent
+  exact-object and existing YAML oracles pass; the final bounded fuzz run passes 55,803 executions.
+- Go vet, amd64 readers and all six CGO-free Darwin/Linux/Windows amd64/arm64 builds pass.
+  All 231 JavaScript tests pass. Both-theme object inspection, exact source text, null/false,
+  loaded/unresolved links and accessibility checks pass; both screenshots were reviewed.
+  The site builds 61 pages with 77 screenshot pairs and passes all 240 accessibility/layout checks.
+- The explicit container context checks 356 source/assets; whitespace checks pass. Existing
+  release fixtures, version 0.8.0, scientific methods, numerical tolerances, automation permissions
+  and replay contracts remain unchanged. No commit, push, tag, release or publication was performed.
+  Slice 5 (remaining table readers) follows below.
+
+### Slice 5: native TRUST4 reports and VDJtools tables
+
+**Acceptance recorded before implementation.** Recognize documented tabular report headers,
+including explicit legacy TRUST4 names and VDJtools case/frequency aliases. Keep explicit saved
+column mappings authoritative. Do not guess a report convention from filenames or conflate
+TRUST4's stop marker with VDJtools' frameshift marker. AIRR exports retain their existing reader.
+
+Preserve source headers and complete native row text, unsupported columns, exact numeric tokens,
+source line numbers and fingerprints, including cache reopen and uploaded/gzipped sources.
+Bound retained evidence and refuse ambiguous headers, malformed row widths and invalid counts.
+Map anchored source CDR3s to junctions without adding residues, translating missing peptides,
+constructing cell identities or merging chains. Partial TRUST4 junctions remain source evidence
+but cannot become complete-junction clonotypes. Preserve missing genes/counts and unknown flags.
+
+Count semantics must be explicit: VDJtools counts may be reads or molecules; modern TRUST4
+reports can count assigned read support or barcodes. Keep ambiguous units unknown, using the
+existing human unit confirmation rather than guessing. Retain frequencies with their source
+denominators; never normalize counts from them. Explain decimal support and float64 analysis
+limits separately from exact retained evidence. Structural import is not biological validation.
+
+Provide paged read-only native-row inspection and both-theme simulated examples. Independently
+parse every mapped field and all source values using a standard CSV reader and exact decimals;
+exercise missingness, alternate marker semantics, gzip/uploads, caching, source removal,
+malformed inputs, cancellation and fuzzing. Run reader/API/release regressions and the full
+scientific suites. Preserve prior release fixtures, identities, explicit permissions, replay
+contracts and application/client version 0.8.0. Bump only the disposable reader-cache version
+if needed; do not implement slice 6 or make a commit/release.
+
+**Committed and pushed as `0f473dc`.** Native report dispatch recognizes the documented
+TRUST4 modern/legacy and VDJtools aliases while explicit mappings retain precedence. The readers
+refuse ambiguous headers, malformed widths, unsupported alphabets, count precision loss and
+out-of-range frequencies. Unknown units remain explicit; source frequencies never supply counts.
+Partial TRUST4 junctions do not enter complete-junction clonotyping. Stop, frameshift and ambiguous
+codon states remain distinct; X cannot certify a stop-free sequence or productive receptor.
+
+Bounded source header/row snapshots retain unsupported annotations and exact numeric text across
+cache reopening. Cache version 4 serializes them explicitly; generic source metadata, scientific
+exports and private identity maps do not silently acquire raw annotations. The read-only inspector
+pages captured rows without opening new paths. Methods paragraphs cite the format papers and
+explain normalization, count units, denominators and scientific limits. Three declared simulated
+fixtures have independent CSV/Decimal references for every mapped field and source row.
+
+The full application regression exposed a slice-4 legacy-array compatibility bug: initializing
+the temporary RawMessage slice with the input buffer let json.Unmarshal overwrite that buffer
+before the Repertoire reader used it. The guard now decodes array candidates into separate storage.
+A repeated-read test verifies original bytes, precise values and two repertoire identities, while
+ambiguous bare Cell/Clone refusal stays intact. No historical fixture or numerical tolerance changed.
+
+Validation:
+
+- The initial application race campaign completed in 1,223.888 s with only the two legacy-array
+  opening failures above; every other application test passed. Both failures subsequently pass
+  with native-report, mapping, metadata, uploaded-source and complete release-opening regressions
+  (132.527 s). Final reader/cache/validator race checks and independent native references pass.
+- The full internal/scientific race campaign passes; the scientific reference package completes
+  in 1,050.949 s with the existing optional-data/performance skips. Final ambiguity controls keep
+  stop status unknown when X could conceal a stop; new references agree without changing any
+  historical result or tolerance.
+- All 232 JavaScript tests pass, including methods citation/unit controls. Both-theme browser
+  checks cover exact decimal/identifier text, partial evidence, frameshift notation, source
+  switching and accessibility. Screenshots were reviewed. The site builds 61 pages with 78
+  screenshot pairs and passes all 240 accessibility/layout checks.
+- Bounded reader fuzzing passes 1,995,926 executions; AIRR object fuzzing passes 42,353 executions
+  after the legacy-array repair. Final API race regressions, amd64 controls, Go vet and all six
+  CGO-free platform builds pass. The container context checks 359 explicit sources/assets.
+  Prior release fixtures, scientific identity version 1, application/client version 0.8.0,
+  automation permissions and replay contracts remain unchanged. No commit, push, tag, release
+  or publication was made. Slice 6 has not started.
+
+### Slice 6: Cell Ranger JSON contig annotations
+
+**Acceptance recorded before implementation.** Read the detailed top-level array layout of
+Cell Ranger `all_contig_annotations.json`, including gzip and renamed uploads. Recognize nested
+annotation features explicitly; do not mistake a JSON rendering of CSV columns or an AIRR
+metadata object for this layout. State the structural contract and verified producer outputs;
+absence of a software-version declaration is not evidence of a specific Cell Ranger version.
+
+Preserve exact barcodes, sample scope, contig IDs, supplied booleans, missing counts and source
+clonotype labels. Keep reads and UMIs separate; single-cell abundance remains distinct cells
+under the existing QC/definition rules. Do not filter background/nonproductive contigs on import,
+infer pairing or overwrite an active clonotype definition. Keep missing full-length/frame/stop
+flags unknown, rather than reconstructing vendor algorithms from junctions or coordinates.
+Retain mixed-chain annotation evidence without assigning a single resolved chain.
+
+Capture bounded original JSON objects and unknown annotations for read-only inspection, cache
+reopening and exact numeric display. Reject duplicate keys/contig identities, conflicting cell
+flags or clone assignments, competing segment calls, malformed types and unsupported layouts.
+Folder opening retains existing CSV precedence, with JSON as an explicit fallback so duplicate
+representations cannot silently double counts. Compare shared fields against independent JSON,
+CSV and AIRR parsing, documenting fields absent or differently scoped in each representation.
+
+Use declared artificial examples with realistic unequal support and cell/background/multichain
+states. Review both themes, exercise gzip/uploads/source removal/cache, bounds/cancellation/fuzz,
+and run scientific/release regressions and platform checks. Keep earlier fixtures, scientific
+identity 1, version 0.8.0, permissions and replay contracts unchanged. No slice 7, commit or release.
+
+**Implemented and validated; awaiting maintainer commit.** The bounded nested-array reader
+recognizes source structure without guessing a producer version. It retains original JSON
+objects, unknown annotations and exact numeric tokens in the existing native evidence cache
+and inspector. Reader version 5 invalidates disposable older caches; scientific identity 1 is
+unchanged. Folder opening retains filtered/all CSV precedence and uses JSON as a fallback.
+
+Supplied identifiers, genes, junctions, sequence, reads/UMIs and flags remain separate from
+derived interpretations. Background contigs remain present. Missing full-length/frame/stop
+flags stay unknown; mixed-chain annotations do not receive a single inferred locus. Exact
+sample/contig IDs and barcode calls have cross-file conflict checks. Annotation objects use
+case-sensitive map lookup, so an unknown `Feature` key cannot override `feature` through Go's
+struct-field matching. Explicit AIRR repertoire identities retain precedence in the JSON probe,
+including metadata larger than the contig probe budget. No vendor algorithm/source was used.
+
+Independent JSON/Decimal, CSV and AIRR controls cover all mapped values in declared simulated
+fixtures. The public Cell Ranger 4.0.0 comparison covers 1,835 contigs, 16,515 shared values and
+gene/chain/source-clone calls, plus native source objects and hashes. All public JSON contigs
+omit full_length, and 14 have mixed chains; those limits remain explicit. No public data or
+per-contig references are committed. The unavailable proposed 9.0 JSON download (HTTP 403)
+does not become a version-compatibility claim. The distinct-cell control retains eight source
+contigs and gives two cells of abundance from the five declared-cell contigs under the explicitly
+selected paired primary-chain definition; UMI/read support is not summed into cell abundance.
+
+Validation completed:
+
+- Full internal/scientific race coverage passes; the reference package completes in 898.484 s
+  with existing optional-data/performance skips. Final exact-key/probe, native reader/cache/API,
+  public-output and independent-value controls pass after the final parser checks.
+- All 233 JavaScript tests pass. Both-theme browser controls check exact large numeric tokens,
+  source switching, null/false/zero and absent flags; both screenshots are visually reviewed.
+  The site builds 61 pages with 79 screenshot pairs and passes all 240 accessibility/layout checks.
+- Bounded reader fuzzing passes 1,206,454 executions. amd64 controls, Go vet and all six CGO-free
+  Darwin/Linux/Windows amd64/arm64 builds pass. The container context checks 360 explicit assets.
+- Full application race coverage passes in 1,052.100 s, including complete release-project
+  reopening, portable archives, self-checking reports and exact headless replay. Final JSON and
+  metadata API race regressions also pass. No historical fixture, scientific tolerance,
+  application/client version, permission or replay kind changed.
+  No commit, push, tag, release or publication was made. Slice 7 has not started.
+
+### Slice 7: AIRR Data Commons discovery and bounded queries
+
+**Slice 6 committed and pushed as `1e20403`. Plan recorded before implementation.** Pin the
+ADC v1 protocol (AIRR Standards 1.5.1, ADC specification 1.2.0) and an immutable approved
+repository registry. Discovery lists bundled destinations without contacting them. Each service
+info request and repertoire-metadata page requires a deliberate local-window action, with its
+HTTPS endpoint, exact equality filters, offset and positive page limit visible before submission.
+
+Support a documented metadata-query subset; do not send local sequences, project data or files.
+Bound time, response bytes, records and pagination; reject redirects, malformed/ambiguous JSON
+and out-of-contract results. Preserve original response text, unknown fields and numeric tokens.
+Cancellation, offline mode and provider errors must be visible and must not leave stale results.
+Do not interpret a short page as a complete cohort, independently sampled subjects, validated
+metadata or a stable/replayable remote snapshot. No automatic paging, retries or installations.
+
+Validate with independent request/evidence controls and an injected HTTP transport, including
+offline/no-request, exact values, paging, bounds, malformed data, cancellation and failures.
+Use clearly simulated, scientifically plausible metadata for both-theme browser checks and
+screenshots. No live repository is a CI dependency. Downloads/provenance installation remain
+slice 8; shared automation actions and local scientific replay are unchanged in this slice.
+
+**Implemented and validated; awaiting maintainer commit.** The Data view now opens a bounded
+public-repository browser with 16 pinned approved HTTPS origins. Native code prepares the exact
+ADC v1 request from four metadata equality filters. Registry listing and preparation are local;
+each outbound info/page request requires an explicit action. No local dataset, receptor or file
+is consulted. Requests have a 45-second deadline, 8 MiB decoded-response limit, 1–100 records
+and offset 0–10,000; redirects, automatic retries and automatic paging are refused.
+
+Exact response text, original repertoire objects, unknown fields, numeric tokens, hashes and UTC
+retrieval time remain inspectable. Missing labels remain visibly missing, long table labels are
+shortened explicitly, and raw evidence is preserved. Duplicate keys/IDs, malformed values and
+over-size pages fail without stale results. Offline, cancellation, close/input-change races,
+provider errors and empty pages have explicit states. A returned page never certifies cohort
+completeness, stable ordering, shared subjects, reuse permission or scientific validity.
+
+Validation completed:
+
+- Full application race coverage passes in **1,077.544 s**, including saved release projects,
+  portable archives, self-checking reports and exact headless replay. The full internal/scientific
+  suite passes; reference validation completes in **921.012 s** with existing optional-data and
+  performance skips. Final focused ADC/API race and amd64 controls also pass.
+- Independent JSON/Decimal controls verify exact request/body hashes, record slices and scalar
+  types. Native controls cover all registered origins, intent/offline refusals, strict response
+  bounds, HTTP failures, redirects and cancellation. Local HTTPS tests exercise transparent gzip
+  limits and cancellation while reading a body. Bounded fuzzing passes **786,369 executions**.
+- Both-theme browser controls pass for evidence precision, manual paging without pooling,
+  cancellation, closed/stale responses, empty pages, service info, provider errors and offline
+  state. Both screenshots are visually reviewed; the declared simulation shows three repertoire
+  records for two subject IDs. No live repository is a CI dependency or claimed operational.
+- All **233 JavaScript tests**, Go vet, six CGO-free platform builds and the **365-input** explicit
+  container context check pass. The site builds **61 pages / 80 screenshot pairs** and passes
+  all **240** accessibility/layout checks. `git diff --check` is clean.
+
+The ADC contract, approved registry, citations, supported subset and scientific limits are
+documented in `docs/ADC.md` and research §5.63. Application/client version 0.8.0, reader cache 5,
+scientific identity 1, historical fixtures, numerical tolerances, automation permissions and
+replay kinds remain unchanged. No commit, push, tag, release or publication was made. Slice 8
+has not started.
+
+### Slice 8: bounded ADC downloads and durable provenance
+
+**Slice 7 committed as `93d4041`. Plan before implementation.** Download one explicitly
+selected repository/repertoire/processing scope per bundle. Review provider permission evidence,
+citation, unknown total size and fixed request/byte/page budgets before starting. Capture exact
+metadata and rearrangement JSON pages, requests, timestamps and hashes. Install into a new
+private directory only after validation; failures/cancellation leave no successful bundle.
+Keep partial/live-pagination limits explicit even when a terminal empty page is observed.
+No automatic subject pooling, analysis, redistribution grant or change to replay/automation.
+
+
+**Implemented and validated; awaiting maintainer commit.** The repertoire inspector opens a
+separate download review. One explicit action authorizes fresh metadata plus a bounded sequence
+of rearrangement requests for one repository/repertoire/processing pair. Provider permission
+and citation are recorded by the person, not inferred from a server software license. Total
+size is unknown; review shows exact requests and limits of 10 pages, 1,000 rows/page, 8 MiB per
+response and five minutes overall. Existing offline, origin, loopback and HTTPS restrictions apply.
+
+Captures preserve original JSON pages and exact numeric tokens. A versioned manifest records
+scope, provider permission evidence, citation, contract/registry revision, requests and hashes,
+retrieval times, response hashes/bytes, row counts and stop reason. Fresh metadata must match
+exactly one processing entry. Mixed scopes, repeated sequence IDs, malformed pages and request
+failures abort; unfinished work is removed. New private directories prevent overwriting prior
+captures; provider identifiers never become paths. A completion manifest is written last.
+
+Page-budget and empty-page stops both retain unestablished completeness. Concurrent repository
+updates can omit rows even when no duplicate is seen. No scientific validity, independent
+subjects, redistribution permission or exact remote replay is certified. Original source JSON
+is installed as an evidence bundle; it is not automatically converted or opened as an analysis
+dataset. Public-cohort use remains slice 9. No new automation actions or replay kinds are added.
+
+Validation completed:
+
+- Full application race suite passes in **1,165.284 s**, including historical projects, archives,
+  reports and exact headless replay. Full internal/scientific coverage passes, with reference
+  validation in **999.281 s** and the existing optional-data/performance skips.
+- Native/API controls pass for review, offline refusal, bounded paging, exact source bytes,
+  ambiguous processing metadata, repeated IDs, mismatched scope, cancellation, failed-install
+  cleanup and distinct destinations. Final focused race and amd64 controls pass.
+- The independent standard-library JSON/Decimal/SHA-256 checker verifies actual native captures,
+  including exact request predicates, hashes, offsets, row scopes and stop states. No external
+  repository or provider implementation is needed for validation.
+- Both-theme browser checks pass for acceptance, invalidated review, cancellation, provider
+  failures and concurrent-submit prevention. Final screenshots are visually reviewed and clearly
+  simulated. All **233 JavaScript tests**, Go vet and six CGO-free platform builds pass.
+- The site builds **61 pages / 81 screenshot pairs** and passes **240** accessibility/layout
+  checks. The container context includes **368** explicit inputs; `git diff --check` is clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical fixtures, numerical tolerances,
+automation permissions and exact replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 9 has not started.
+
+### Slice 9: observed overlap with captured public cohorts
+
+**Slice 8 committed as `3aeead4`. Plan before implementation.** Compare one local sample with
+1–20 explicitly selected, checksum-verified ADC captures offline. Use a separate named presence
+contract: productive, one selected locus, exact canonical anchored amino-acid junction; no V/J,
+pairing, abundance weighting, rarefaction or inherited project QC. Record that contract explicitly.
+Verify manifests, every request/page/hash, scope and stop evidence. Refuse duplicate scopes and
+implicit pooling of visits/processing for a scoped subject. Report eligible/excluded rows,
+unique keys, shared/union counts and descriptive Jaccard, with unavailable values for empty
+eligible sets. Separate assigned/evaluable/missing subjects and unassigned captures; all capture
+completeness remains unestablished. Save native result evidence, show source units and sampling
+limits, independently check set arithmetic and review both themes. No specificity/prevalence
+claim, new replay kind, automation action, version change, commit or release.
+
+
+**Implemented and validated; awaiting maintainer commit.** Data → Public overlap compares one
+loaded sample with 1–20 deliberately selected native ADC captures, offline. The separate
+`productive-single-chain-locus-exact-junction-aa-v1` contract uses one locus, true productivity
+and exact canonical anchored junction amino acids. It does not inherit project QC or V/J,
+paired-chain or nucleotide clonotype rules, and does not use source counts as weights.
+
+The native reader checks fixed regular members, exact manifest keys/types, the pinned contract,
+every request/hash/endpoint/time, response bytes/hashes, repertoire/processing scope, unique
+sequence IDs and stop/count evidence. It rejects symlinks, altered or inconsistent sources,
+duplicate scopes and multiple observations of the same repository/study/subject. The comparison
+budget is 64 MiB of capture evidence, one million loaded dataset rows and one minute. Existing
+captures remain intact; each success writes a new private observational JSON result.
+
+Report raw/eligible/excluded/unique records, exact shared/union counts, Jaccard and each shared
+query key's capture/scoped-subject support. Empty eligible sets are unavailable, including an
+empty query. Missing study/subject IDs stay outside the assigned/evaluable subject denominator
+while their pairwise and aggregate sequence evidence remains visible. Subject identity across
+studies/repositories and biological independence are not inferred. Both empty-page and
+page-budget captures retain unestablished completeness; no prevalence, antigen specificity,
+assay/depth equivalence, abundance comparison or exact remote replay is asserted.
+
+Results retain the loaded query's dataset/sample identity and full source hashes, reader
+identity, named match definition, selected capture manifest fingerprints, scoped identifiers,
+permission/citation statements, stop reasons and all observed shared keys. The UI shows the
+first 100 keys; native evidence keeps all of them. Jaccard display uses four significant digits,
+with exact integer numerator/denominator and full native values retained. Input edits invalidate
+review; cancellation, late responses, project changes and duplicate submissions are guarded.
+Standalone results are not new project artifacts, report/certificate entries or automation actions.
+
+Validation completed:
+
+- Full application race suite passes in **1,114.880 s**, including historical projects, archives,
+  reports and exact headless replay. Full internal/scientific coverage passes, with reference
+  validation in **951.439 s** and the existing optional-data/performance skips. Final focused
+  API/ADC race controls pass after the manifest/schema and evidence refinements.
+- Independent CSV/JSON/Decimal/set/Fraction reference controls agree on all counts, ratios,
+  subject denominators and per-key support. The fixture has 40 unique eligible query keys,
+  24 observed in selected captures, two evaluable of three assigned scoped subjects and one
+  unassigned capture. Varied junction lengths, repeats, unknown count units, nonproductive
+  evidence and both stop reasons are declared artificial, not a biological generative model.
+- Native/API race and amd64 controls pass, including disjoint/identical/empty sets, duplicate
+  observations, exact manifest fields, rehashed conflicting scope, checksum changes, explicit
+  acceptance, missing/null sample selection, local-only access, budgets and cancellation.
+- Both-theme browser controls agree with the independent reference and pass acceptance,
+  concurrent-submit, input-change, stale-response, cancellation and failure checks. Screenshots
+  are visually reviewed. All 233 JavaScript tests, Go vet and six CGO-free builds pass.
+- Site build: 61 pages / 82 screenshot pairs; 240 accessibility/layout checks pass. Container
+  source allowlist: 372 inputs. `git diff --check` and formatting checks are clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical fixtures, numerical tolerances,
+automation permissions and exact replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 10 has not started.
+
+### Slice 10: precision-preserving Excel evidence workbooks
+
+**Slice 9 committed as `173ec98`. Plan before implementation.** Extend the existing explicitly
+selected saved-result report workflow with a native, dependency-free XLSX presentation. Keep
+the five mapped saved-result/notice contracts (cohort features/comparisons/count models, batch
+QC and motif screens), not untyped inference from arbitrary CSV columns. Each result and full
+manifest becomes a complete typed JSON-node worksheet, with pointer, source type, spreadsheet
+value, exact original scalar token and container child count. This preserves nested denominators,
+exclusions, identifiers, zero, false, null, empty strings and absent fields without guessed joins.
+Use conservative numeric cells within Excel's 15-digit/range limits; otherwise text. Preserve
+original result/manifest bytes and native certificates as ZIP companions; carry methods, provider
+notices and complete parameters, with no new estimator/replay claim. Bound work, refuse rather
+than truncate, prevent formula/link injection, test with an independent workbook reader and
+review both-theme UI and a rendered workbook. No new automation action or version change.
+
+**Implemented.**
+
+- Native stdlib SpreadsheetML writer with explicit text/number/boolean cells, exact original
+  scalar tokens, RFC 6901 paths, complete container rows and full original manifest indexing.
+  Strings never become dates or formulas; null/absent/empty/zero remain distinct. Numeric
+  admission is conservative (15 significant digits, zero or absolute magnitude 1e-300–1e300,
+  negative zero as text). Native companions remain authoritative for original bytes.
+- Reports workflow selects 1–8 mapped saved results, verifies their existing certificate/file
+  contracts, carries methods/citations/provider terms, and downloads a deterministic XLSX plus
+  original JSON/manifests/notices/certificates in a hashed ZIP. Full parameters, denominators,
+  exclusions and source fingerprints remain present. No new estimator or replay claim.
+- Explicit combined-node, cell, text, XML and companion-evidence bounds; refuse oversized
+  evidence rather than omit rows. Provider acknowledgment, cancellation, concurrent-submit
+  refusal and stale-project suppression. No new automation action or client/MCP permission.
+- Frozen/filterable headers, visible column boundaries and landscape printing with repeated
+  headers. Reviewed precision controls and an artificial batch-study overview in LibreOffice.
+  Document spreadsheet display limits and loss of the exact-evidence contract after re-saving:
+  a spreadsheet application can replace booleans with formulas, discard empty-string cells or
+  normalize line endings. Keep original native companions; cell rows are not independent subjects.
+- Independent openpyxl/XML/ZIP/Decimal reader for every node/token/type in all five mapped kinds
+  and the real browser download, plus CI integration. Original release fixtures remain immutable;
+  use bounded native count/motif controls for successful export and explicitly refuse an oversized
+  historical result. The numerical edge-case fixture is declared artificial format data.
+- Documented contract, precision policy, scientific limits, primary format sources, sibling
+  attribution and both-theme screenshots. O4 remains partial: other workbook mappings are outside
+  this contract, and GraphPad Prism remains slice 11.
+
+**Validation completed.**
+
+- Full application race suite: 1,199.532 s; full internal/scientific race suite passes, including
+  the validation package in 975.153 s. Existing opt-in published-download/container checks remain
+  skipped when their external inputs are not requested. Historical fixtures and replay hashes
+  remain unchanged.
+- Final focused workbook race controls pass (62.549 s application tests); amd64 workbook/API
+  controls pass (7.825 s application, 0.962 s writer). Cover all five native kinds, mixed selections,
+  original bytes, deterministic output, certificate integrity, restricted terms, altered evidence,
+  cancellation, invalid JSON/Unicode, formula-like strings, numeric boundaries and explicit refusal.
+- Independent openpyxl 3.1.5/XML/ZIP/Decimal audit: 66,663 typed JSON nodes across five native
+  result/provenance exports, the actual browser ZIP and 33 precision-control nodes; all original
+  scalar tokens, value-cell types, missingness states and companion hashes agree. Seven precision
+  fixture numbers deliberately remain text. CI runs this independent audit.
+- Both-theme artificial-study browser controls pass for empty initial selection, successful
+  download, errors, cancellation, stale responses and concurrent-submit prevention. Both screenshots
+  reviewed; independent LibreOffice rendering checked the Read me and precision sheets, including
+  literal escape-looking text, identifiers and exact scalar columns. Re-save limits are documented.
+- All 233 JavaScript tests, Go vet and six CGO-free darwin/linux/windows × amd64/arm64 builds pass.
+  Site build: 61 pages / 83 screenshot pairs; 240 accessibility/layout checks pass. Container source
+  allowlist: 375 inputs. Formatting and `git diff --check` are clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances,
+automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 11 has not started.
+
+
+### Slice 11: subject-preserving Prism interchange
+
+**Slice 10 committed as `4d57ae4`. Plan before implementation.** Export one explicitly selected
+saved cohort feature/comparison result as data-only PZFX Column tables, following CytoWeave's
+Apache-2.0 format pattern and GraphPad's published schema. One table per recorded feature,
+two columns in declared reference/comparison order, one subcolumn, and one identified subject
+per row. Pair by explicit subject identity, never input order. Independent subjects occupy only
+their own group column; the opposite cell is structurally empty, not a missing measurement.
+Keep missing measurements blank without removing subjects or replacing them with zero. Carry
+cell-to-source mappings, reasons, exclusions, complete native JSON/manifests/notices/certificates,
+methods and a hash inventory. No count-model coefficients, cells, clones, bootstrap draws or
+technical replicates become independent subjects. No analysis/graph template, pooling, imputation
+or silent complete-case conversion. Validate design/measurement agreement and explicit bounds;
+retain original numeric tokens and document Prism import precision and method differences.
+Validate independently with XML/Decimal, the published schema and R's pzfx reader, and exercise
+both-theme UI with artificial paired data. A native Prism import is conditional on availability;
+report that limitation explicitly. Keep versions, scientific identities and automation unchanged.
+
+**Implemented.**
+
+- Reports exports one explicitly selected saved cohort feature/comparison result as data-only
+  Prism 7+ PZFX Column tables. One table per recorded feature, declared group order, one subcolumn
+  and one identified subject per row. Paired observations align by exact subject identity;
+  independent subjects occupy separate rows with explicit structural opposite-group blanks.
+- Preserve numeric zero, missing measurements and reasons, all subject rows (including wholly
+  missing features), excluded-sample dispositions and exact original numeric tokens. Check the
+  captured design, feature catalog, measurements, comparison points and denominators without
+  rerunning scientific workers. Refuse ambiguous identity, changed evidence and unsupported values.
+- Package a cell-to-source mapping, unchanged native result/manifest, certificate, provider notice,
+  methods/citations, import guidance and SHA-256 inventory. Keep provider acknowledgment explicit;
+  support cancellation, visible errors, concurrent-submit refusal and stale-response suppression.
+- Bound evidence, data positions, XML text, numeric tokens/exponents and construction time. Refuse
+  negative zero, out-of-range values and integers beyond binary64's exact integer range. Other
+  decimal fractions may round in Prism; native companions remain the authoritative exact evidence.
+- Document the scientific boundary: data export does not configure a paired test, establish
+  biological independence or translate statistical methods. Prism's omission of incomplete pairs
+  can differ from ClonoLoom leaving a feature untested. No pooling, imputation, complete-case
+  conversion, technical-replicate expansion, new estimator, analysis template or graph is added.
+- Add independent XML/Decimal and R-reader checks to CI, both-theme artificial paired-study
+  screenshots, primary format/scientific sources, sibling attribution and container source inputs.
+  O4 remains partial for other layouts. Native Prism GUI import remains unverified because Prism
+  is unavailable; the guide supplies a manual import exercise. The published Prism 7/8 Mac XSDs
+  fail strict lxml compilation on their nondeterministic `d` content model, so no successful strict
+  XSD validation is claimed. No vendor schema or stylesheet is redistributed.
+
+**Validation completed.**
+
+- Full application race suite passes in 1,314.842 s, including historical project reopening,
+  portable archives, certificates, reports, existing workbooks and exact headless replay.
+- Full internal/scientific race suite passes, including the validation package in 1,102.029 s
+  and existing opt-in external-data/performance skips. Final focused Prism race controls pass
+  (5.895 s application, 1.283 s writer); amd64 controls pass (2.917 s application, 0.726 s writer).
+  Controls cover exact tokens, reordered paired points, experimental units, wholly missing
+  features, exclusions, inconsistent denominators, provider acknowledgment, changed evidence,
+  deterministic output, cancellation, XML text, numerical bounds and oversized exports.
+- Independent XML/ZIP/Decimal and R pzfx 0.3.1 audits pass for seven exports, including the
+  actual browser download: 59 tables, 743 declared subject/group measurements, 72 missing
+  measurements and 515 structural blanks. Subject identities, group order, source pointers,
+  literal numeric tokens, missingness reasons, exclusions and inventory hashes agree.
+- Both-theme browser controls pass for empty initial selection, successful export, errors,
+  cancellation, stale responses and concurrent-submit prevention. Screenshots visually reviewed;
+  the example is explicitly artificial, with 28 paired subjects and 56 samples. No new plot or
+  native Prism GUI rendering is claimed.
+- All 233 JavaScript tests, Go vet and six CGO-free darwin/linux/windows × amd64/arm64 builds pass.
+  Site build: 61 pages / 84 screenshot pairs; 240 accessibility/layout checks pass. Container
+  source allowlist: 378 inputs. Formatting and `git diff --check` are clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances,
+automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 12 has not started.
+
+
+### Slice 12: reviewed Proteoscope sequence handoff
+
+**Slice 11 committed as `450e78d`. Plan before implementation.** Follow the Apache-2.0 sibling's
+loopback startup-probe pattern, but require an explicit destination port and a reviewed single
+source observation. Proteoscope 0.10 has no sequence-prefill URL: its optional remote `search`
+command invokes RCSB sequence search. Name both recipients and require separate local-transfer,
+public-search and applicable provider-term acceptance before sending. No background discovery,
+remote-control enablement, arbitrary commands, source identifiers in the query or automatic retry.
+
+Start with an unchanged, fingerprint-verified AIRR `sequence_aa` value. Retain exact header/row,
+identifiers, locus, source hash, annotations (including completeness), notices and query bytes in
+a downloadable review record. Do not translate nucleotides, strip residues, infer missing chains,
+substitute junctions, or call partial V(D)J evidence a complete receptor. Bound source/record sizes,
+destinations and time; refuse unsupported sequences, changed sources/destinations and reused reviews.
+Use the actual Proteoscope command parser/classifier and receiver in interoperability validation,
+with public search intercepted so no private or artificial sequence is submitted to a public service.
+Exercise both-theme UI, exact query/provenance checks, permissions, cancellation and stale review.
+Keep scientific replay, versions and automation catalog unchanged; report downstream uncertainty.
+
+**Implemented.**
+
+- Data → Proteoscope handoff selects one original AIRR source observation and an explicit
+  loopback port. Initial selection and permission checkboxes are empty. Native source hashing
+  checks the unchanged regular file before review/export/send; exact original header/row text,
+  all decoded fields, identifiers, sample, locus and completeness annotations stay in local JSON.
+- Accept only unchanged `sequence_aa` of 25–5000 uppercase canonical amino acids and an explicit
+  receptor locus. Missing/ambiguous/stopped/gapped/lowercase sequences and other formats are
+  refused without translation, trimming, junction substitution or chain inference. Eligible
+  fragments retain partial/unknown annotations; no full protein or paired complex is asserted.
+- Review Proteoscope 0.10.0's explicit local endpoint/version/capabilities. The supported remote
+  search command can invoke public RCSB sequence search, so require separate local-transfer and
+  public-disclosure approvals plus applicable provider-term acknowledgment. No background scan,
+  remote enablement, token discovery, arbitrary command, hit selection or fallback public query.
+- Bind a bounded five-minute, one-use review to source evidence, query, destination and notices.
+  Recheck before sending; refuse changed/reused reviews and concurrent dispatch. Offline mode
+  permits local evidence export without probing or sending. Closing/cancelling cannot retract a
+  query already received; uncertain outcomes require inspection, never automatic retry.
+- Save exact reviewed evidence before dispatch, then a permission/receiver receipt on acknowledgment.
+  Keep original receiver JSON text, SHA-256 and numeric tokens; provide a manual receipt download.
+  Acknowledgment is not proof of a successful search, valid structure or biological function.
+  No scientific worker, project artifact, replay kind or MCP/client permission is added.
+- Document explicit size/time/alphabet/format limits, primary sources, sibling attribution and
+  realistic interpretation of the declared artificial format controls. X1 remains partial for
+  other formats, paired-complex transfer and structure prediction. Slice 13 has not started.
+
+**Validation completed.**
+
+- Full application race suite passes in 1,283.991 s, including historical project reopening,
+  portable archives, certificates, report/workbook exports and exact scientific replay.
+- Full internal/scientific race suite passes, including the reference validation package in
+  1,043.367 s and existing opt-in external-data/performance skips. Historical evidence and
+  numerical tolerances remain unchanged.
+- Final native handoff race controls pass in 2.289 s; amd64 controls pass in 3.687 s. Include exact
+  source/receipt bytes, UTF-8 BOM and gzip, precision-sensitive annotations, malformed text/widths,
+  source bounds, permission refusals, changed source/destination, offline export, redirect refusal,
+  cancellation, review binding/capacity and one-use concurrent submission.
+- Actual Proteoscope 0.10.0 command parser, browser receiver and sequence classifier accept two
+  exact source sequences with no identifier disclosure or text-search fallback. Every search is
+  intercepted before its server can contact a public service. No live RCSB query is performed.
+- Independent CSV/JSON/SHA-256 audit checks five handoffs: the native permission fixture, two real
+  receiver exercises and both actual browser downloads. Original source rows/annotations, query
+  bytes, destination/permission records, review fingerprints and receiver response hashes agree.
+- Both-theme browser controls pass for initial empty selection, unselected approvals, exact
+  downloads, partial/missing evidence, cancellation, concurrent submissions and stale project
+  reviews. Screenshots reviewed. All 233 JavaScript tests pass; site build has 61 pages / 85
+  screenshot pairs, with 240 accessibility/layout checks and no problems. Container source
+  allowlist: 380 inputs.
+- Go vet and all six CGO-free darwin/linux/windows × amd64/arm64 builds pass. Formatting and
+  `git diff --check` are clean.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances,
+automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 13 has not started.
+
+### Slice 13: sample-scoped CytoWeave phenotype links
+
+**Slice 12 committed as `2f6c5c8`. Plan before implementation.** Inspect the Apache-2.0
+CytoWeave index-sort wells exporter and validate its actual output. Bind one acquisition's
+wells CSV to one explicitly selected receptor dataset/sample through a separate, explicit
+well-to-cell barcode mapping. Preserve original UTF-8 inputs, hashes, decoded channel strings,
+event numbers and missingness; never infer identity from row order, names or similar barcodes.
+Refuse repeated wells/events, duplicate cell mappings, ambiguous headers and malformed identities.
+Keep unmatched events, absent receptor targets and receptor-only cells visible.
+
+Require an explicit provenance declaration: upstream sample/acquisition, original FCS hash or
+unknown, exporter version, compensation, value scale and gating history. A declaration is not
+verification of the upstream experiment. The wells CSV lacks this context and contains linear
+channel values under the active compensation; it is not an FCS archive or a complete gate matrix.
+Provide a local review and exact downloadable evidence, without changing QC, paired-chain calls,
+expression annotations or scientific replay. Review both themes with artificial known links and
+validate against the real sibling exporter plus an independent CSV/hash/identity oracle. Broader
+FCS ingestion, phenotype inference, multi-acquisition pooling and automated gating remain outside
+this bounded X2 interchange. Do not start slice 14 or change release/version identities.
+
+**Implemented.**
+
+- Data → CytoWeave phenotype links starts with no receptor sample selected. Upload one wells
+  CSV, an explicit `well,cell_id` map and a provenance declaration. Keep identities exact within
+  one acquisition and one dataset/sample; do not normalize barcodes or fall back to other samples.
+- Preserve exact input text and SHA-256, quoted CSV values, original numeric strings, missing
+  tokens and channel display labels. Review linked, unmapped, absent-target and receptor-only
+  observations separately; repeated chain rows count once as a cell ID. Repeated wells/events,
+  duplicate targets/headers, contradictory coordinates and malformed Unicode/CSV refuse the join.
+- Require acquisition/sample, exporter, compensation, value-scale, gating and source-hash context,
+  with explicit unknowns. Record supplied evidence without certifying it. Population remains one
+  exported deepest gate path, not exhaustive or mutually exclusive phenotype membership.
+- Source review found that general AIRR loading trims field whitespace. The exact-link boundary
+  now verifies original source hashes and raw cell/repertoire IDs, refusing normalized or changed
+  identities. Support native AIRR TSV/gzip within explicit limits; other reader formats require
+  separate original-identity validation. General readers and historical caches are unchanged.
+- Save an exact native JSON record after fingerprint review and applicable provider acknowledgment.
+  Changing scope, files or project invalidates review; concurrent work, cancellation and stale
+  downloads are guarded. No upstream service is contacted and no automation permission is added.
+  The record is separate from project annotations, paired-chain calls, workers and scientific replay.
+- Add a cited interchange guide, source/size/format limits, a clearly artificial 96-event control,
+  actual Apache-2.0 sibling exporter validation and both-theme screenshots. X2 remains partial
+  for arbitrary FCS/vendor/pooled exports, phenotype inference and persistent project overlays.
+  Slice 14 has not started; version 0.8.0, reader cache 5 and scientific identity 1 are unchanged.
+
+**Validation completed.**
+
+- Full application race suite passes in 1,150.673 s, including historical project reopening,
+  portable archives, self-checking reports, certificates and exact scientific replay.
+- Full internal/scientific race suite passes; the reference validation package completes in
+  939.773 s. Existing opt-in external-data/performance skips and historical tolerances are unchanged.
+- Final native phenotype controls pass under race detection in 3.775 s and on amd64 in 2.314 s.
+  Cover original source hashing, changed/trimmed identity refusal, gzip, quoted CR/LF and BOM,
+  precision-sensitive strings, malformed Unicode/CSV, duplicate identities, cross-sample reuse,
+  missingness, reviewed fingerprints, cancellation and explicit provider permissions.
+- Actual CytoWeave 0.8.1 artificial FCS generation, reader, compensation and browser plate exporter
+  produce 95 exact event/well/channel links through the final native API. Check original event
+  truth and FCS SHA-256; refuse a duplicate well. No public service or experimental data is used.
+- Independent Python CSV/hash/identity audit agrees on all four exported records: native fixture,
+  real sibling interchange and both browser downloads. Every source value, scoped receptor row,
+  unmatched identity and hash agrees with independently reconstructed expectations.
+- Both-theme browser controls pass for actual UTF-8 file upload (including BOM), empty initial
+  selection, exact download, sample change, duplicate-well refusal, concurrent work, cancellation
+  and stale project review. Final screenshots reviewed; source values and missing tokens are legible.
+- All 233 JavaScript tests pass. The documentation site builds 61 pages / 86 screenshot pairs;
+  all 240 accessibility/layout checks pass. Container allowlist checks all 384 explicit inputs.
+- Go vet, six CGO-free darwin/linux/windows × amd64/arm64 builds, JavaScript syntax checks,
+  formatting and `git diff --check` pass.
+
+Version 0.8.0, reader cache 5, scientific identity 1, numerical tolerances, historical evidence,
+automation permissions and scientific replay contracts remain unchanged. No commit, push, tag,
+release or publication was made. Slice 14 has not started.
+
+### Slice 14: bounded maximum-likelihood lineage review
+
+**Slice 13 committed as `37d2864`. Plan before implementation.** Add an explicit likelihood
+review of one saved family/locus panel, separate from historical parsimony artifacts. Select
+JC69 as a transparent, testable baseline (Jukes & Cantor 1969; Felsenstein 1981), not a
+context-dependent SHM or selection model. Reuse the saved complete-case V/J panel and its
+reference/observed states and provenance, never the parsimony topology as an imposed answer.
+
+Enumerate all unrooted binary topologies for at most seven distinct states including the supplied
+reference. Retain constant sites. Optimize bounded branch lengths in substitutions/site with
+multiple deterministic starts and explicit stationarity, boundary and resource diagnostics.
+Exhaustive topology enumeration does not prove global continuous-parameter optimization. Use
+reference placement only to orient the display; a reversible model does not infer the root.
+The existing artificial family controls have seven states; retain their full panels rather than
+subsample. Bound work at two billion charged units and allow cancellation. Compute marginal
+ancestral probabilities conditional on the selected topology, fitted lengths
+and fixed reference; do not present marginal modes as a joint reconstructed sequence or infer
+switching, selection, migration or dates from observed annotations.
+
+Keep this first likelihood workflow as a selected-panel review with native downloadable evidence,
+parent bytes/hash, full fit diagnostics and conditional probabilities. Preserve existing saved
+parsimony schemas, scientific replay, cache/version identities and automation catalog. Validate
+pruning against independent ancestral-state enumeration, optimization against an independent
+numerical optimizer, known two-tip results and simulated topology/uncertainty controls. Review
+both-theme tree/node presentation, cancellation, source changes and provider permissions. Larger
+searches, richer substitution models, SHM context and likelihood replay remain explicit limits.
+
+**Implementation.** Added an explicit selected-panel JC69 review in the existing Lineages view.
+The native engine retains invariant positions, enumerates all unrooted binary topologies through
+seven states, fits three deterministic bounded starts and refuses failed stationarity or work
+budgets. All starts/settings, near ties, zero/upper boundaries, exact branch values and conditional
+A/C/G/T probabilities travel in the evidence. Reference orientation remains an assumption; observed
+metadata remain separate from inferred states. No marginal-mode FASTA or biological transition
+claim is added. B4 remains partial for richer/larger models and likelihood replay.
+
+The viewer uses labeled substitutions/site on an explicitly topological-depth schematic, with
+pointer/keyboard and accessible-table node inspection. It names the simulated source study and
+exposes per-site reference coordinates and conditional probabilities. Native JSON downloads retain
+original parent bytes/hash, manifest, scientific methods and current provider notice. Explicit
+provider acknowledgment, parent/notice rechecks, concurrent-fit bounds, cancellation and stale
+project guards protect the review. Records remain separate from saved parsimony, certificates,
+scientific replay and automation actions.
+
+**Validation.**
+
+- Analytical JC69 distances, saturation/upper-bound cases, exact small topology counts,
+  conditional probabilities, canonical panels, resource/cancellation and stationarity refusals pass.
+  A final regression anchors topology ties to the overall maximum, refusing pairwise tie drift
+  across a chain of nearly equal scores. Pinned control records remain unchanged.
+- Native API checks pass for the existing seven-state historical panel, exact evidence download,
+  changed source/notice refusal and explicit provider acknowledgment. Historical files stay intact.
+- Complete three-panel native result digests agree on arm64 and amd64. The assembly guard found
+  new fused multiply-add opportunities during validation; explicit product rounding and existing
+  deterministic transcendental functions resolve them. The final guard passes without a tolerance
+  change. These digests are pinned in tests on both CI architectures.
+- Independent NumPy 2.3.5 / SciPy 1.18.1 audit passes for six panels: three analytical/artificial
+  controls, the native historical API review and both browser downloads. Independent topology sets,
+  direct sums over ancestral assignments, optimized likelihoods, saved edge likelihoods, every
+  node/site marginal probability, modal symbols and original annotations agree. All topologies are
+  independently optimized in four-/five-state controls; seven-state optimizer comparisons cover
+  the selected topology, best competitor and first canonical topology only. No claim of biological
+  model validation or globally optimal continuous search is made.
+- Both-theme simulated browser controls pass for explicit fitting, native export, concurrent work,
+  cancellation, stale-project refusal and keyboard inspection. Screenshots reviewed: fitted units,
+  schematic spacing, observed isotypes, zero branches and source/model limits are legible.
+- All 234 JavaScript tests pass. Documentation builds 61 pages / 87 screenshot pairs; all 240
+  accessibility/layout checks pass. Container allowlist checks 387 explicit inputs. Go vet, six
+  CGO-free darwin/linux/windows × amd64/arm64 builds and the offline B-cell example check pass.
+- Full application race suite passes (1103.723 s), including historical project reopening and
+  replay. Full internal/scientific race suite passes (validation: 865.830 s). Final focused
+  likelihood/API race checks after the tie-rule correction pass (74.019 s); the final assembly
+  guard and arm64/amd64 controls also pass.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances
+and existing automation/replay contracts remain unchanged. No commit, push, tag, release or
+publication was made. Slice 15 follows below.
+
+### Slice 15: descriptive B-cell candidate review
+
+**Slice 14 committed as `ef11b92`. Plan before implementation.** Review saved thresholded
+families within one explicitly selected sample. Users choose an ordered list of size, pooled
+heavy-chain nucleotide divergence, preferred observed isotype class and observed family-share
+change criteria, including direction. There is no automatic composite score or biological optimum.
+Retain complete denominators, missingness and tied competition ranks; stable IDs order ties only.
+Use exact rational comparisons. An optional baseline must be a different sample from the same
+explicit subject under subject-scoped families. Share change is descriptive, not an expansion test.
+
+Pin optional SHM/germline and isotype parents to the exact family result. Missing or incomplete
+metric evidence remains unavailable and sorts last, never zero. Preserve the complete ranked
+universe and source observations in native evidence. Use an accessible table rather than a plot
+that might imply calibrated efficacy. Existing artificial immunization data provide the worked
+example, with independent rational/count controls and both-theme browser validation.
+
+Select one current-sample observation and source chain separately before reviewing an unchanged
+supplied AIRR sequence_aa. Export only canonical available amino acids, with native source evidence,
+explicit provider/sequence-limit acknowledgment and safe FASTA identifiers. No consensus, translation,
+chain assembly, inferred ancestor, binding score or synthesis-ready construct. Reuse the existing
+Proteoscope handoff with fresh local/public/provider permissions; candidate selection sends nothing.
+Keep historical artifacts, scientific replay, automation and version identities unchanged.
+
+**Implementation.** Added the explicit candidate-review dialog to saved thresholded Families.
+The complete selected scope includes zero-current families. Native ordered criteria use exact
+integer fractions, missing-last comparison in either direction and competition ranks; stable IDs
+only order display ties. Assigned observations, excluded counts, pooled heavy-row denominators,
+unresolved classes and same-subject baseline shares stay visible. There is no weighted composite,
+inferential expansion test, binding prediction or implied independent-replicate analysis.
+
+Native evidence retains original family/SHM/germline/isotype text, hashes and manifests. Parent
+lineage and source identities are checked; all selected heavy rows need evaluable mutation evidence
+and all current isotype observations need resolved classes. This does not establish full V/J
+coverage, remove row/coverage weighting or account for reference/annotation uncertainty. Evidence
+remains separate from saved artifacts, certificates and scientific replay.
+
+An explicit observation/chain selection rechecks original AIRR source bytes and reviews only the
+unchanged supplied sequence_aa. FASTA has a safe opaque identifier and native source/full-review
+companions. Missing amino-acid annotations remain missing even when nucleotide sequence is present.
+Provider/sequence-limit acknowledgments, operation bounds, cancellation and stale-project checks
+protect export. Opening Proteoscope preselects the chosen row without probing or sending; its
+existing local/public/provider permission workflow starts fresh. No consensus, translation, chain
+assembly or synthesis-ready construct is offered; B6 remains partial for those broader ambitions.
+
+The full workflow uses small copies of the historical simulated study with declared artificial
+upstream amino-acid annotations, one deliberately missing value and no modified historical files.
+All original fields remain intact. The built-in example also explains descriptive review and why
+its unchanged inputs lack source amino acids. Research, source citations, formats and the website
+describe the limits; both themes show native counts and units in an accessible table.
+
+**Validation.**
+
+- Native controls check assigned-observation units, complete family scopes including zero-current
+  families, baseline boundaries, pooled denominators, retained partial counts, missing-last rules,
+  criterion priority, exact rational ties and competition ranks. Complete four-control result
+  hashes agree and are pinned on arm64 and amd64.
+- Native API controls build actual family/germline/SHM/isotype parents, verify exact download
+  fingerprints, provider and sequence acknowledgments, same-subject refusal, source identity,
+  changed source/notice/parent refusal and a deliberate missing amino-acid annotation. Final
+  candidate/Proteoscope race checks pass (13.004 s); the final missing-control assertion passes
+  in a separate candidate race run (14.839 s).
+- Independent Python fraction/count audit passes for seven rankings and three source-chain exports
+  (analytical controls, native API and both browser themes). It verifies complete memberships,
+  numerator/denominator values, missingness, native numeric presentation, ranks, parent/source hashes
+  and exact FASTA. Biopython 1.86 independently confirms 119 artificial upstream translations and
+  the deliberate missing value; all 120 original source rows/fields are preserved.
+- Both-theme browser controls pass explicit choices, unchanged downloads, sequence acknowledgment,
+  exact Proteoscope row selection without implicit probing/review/send or inherited permissions,
+  concurrent-work refusal, cancellation and stale-project guards. Both screenshots were reviewed
+  for labeled simulated data, readable counts/units, denominators, limits and chain inspection.
+- All 234 JavaScript tests pass. The documentation build contains 61 pages and 88 screenshot pairs;
+  all 240 desktop/phone × light/dark accessibility/layout checks pass. Container inventory checks
+  390 explicit runtime inputs. Go vet, six CGO-free darwin/linux/windows × amd64/arm64 builds,
+  the offline B-cell example and the final no-fused-multiply-add assembly guard pass.
+- Full internal/scientific race suite passes (validation: 811.797 s). Full application race suite
+  passes (1157.885 s), including historical projects, exact reports, headless execution and replay.
+
+Version 0.8.0, reader cache 5, scientific identity 1, historical evidence, numerical tolerances
+and existing automation/replay contracts remain unchanged. No commit, push, tag, release or
+publication was made. Slice 16 has not started.
+
+### Slice 16: complete suite/public-data study and release preparation
+
+**Plan recorded before implementation.** Join the wave's supported workflows in a worked guide:
+exact metadata and reporting completeness, explicit public-query/download provenance and cohort
+universes, portable tables, reviewed sibling interchange, bounded lineage likelihood and descriptive
+candidate selection. Keep distinct studies and experimental units separate; no shared subject,
+pairing, biological validity or public-query completeness is inferred from identifiers or metadata.
+Use declared artificial controls and retain unavailable, partial and ambiguous outcomes.
+
+Generate a new 0.9.0 compatibility project through real window actions in an isolated offline
+library. Preserve original project/parent/review/source bytes alongside portable reopening paths,
+all exact metadata and original sequence evidence. Check future source recomputation and native
+review evidence separately from saved-byte integrity; do not imply new certificate replay support.
+Older release fixtures remain unchanged. Review both-theme wave-9 scenes and scientific units,
+denominators, uncertainty and explanatory limits; publish no site or external query.
+
+Bump application, citation, browser cache keys and generated clients to 0.9.0, preserving scientific
+identity, cache/schema versions and automation grants/catalog. Consolidate the changelog, refresh
+support documentation and remove stale development notices without rewriting historical records.
+Run complete race/reference/processor coverage, independent wave-9 readers and numerical checks,
+platform builds, performance budgets, client/package/live contracts, browser and accessibility
+checks. Record completed checks and genuine environment limits without weakening tolerances.
+The maintainer alone commits, pushes, merges, tags, releases and publishes.
+
+**Implementation.** The worked suite/public-data guide connects the supported workflows while
+keeping eight artificial datasets and their experimental units separate. It describes exact
+metadata and reporting scope, captured public universes, subject-level interchange, explicit
+sibling permissions, conditional JC69 likelihood and descriptive candidate review. Published
+method references and the limits of each evidence operation remain visible. Both-theme study
+views show native sample counts, ratios, missingness and source-chain completeness.
+
+The new 0.9.0 fixture was generated through real window actions and native endpoints in an
+isolated offline library. Its 73-file hash inventory preserves original source/project/parent
+and review evidence, five B-cell parents, six exact metadata/native inspections, conditional
+likelihood, supplied-chain FASTA and four captured public-overlap controls. A separate portable
+project changes only opening paths. Native checks reopen all datasets and scientific parents,
+compare the review evidence and recompute the conditional fit. Original source opening-path and
+mtime fields are excluded only from inspection comparisons; retained provenance is unchanged.
+No standalone review becomes an automatic project artifact or certificate replay kind.
+
+Application, citation, cache-busting browser URLs and generated clients now identify 0.9.0.
+Reader cache 5, scientific identity 1, API 2/catalog 4/policy 1 and all 64 actions remain unchanged.
+Release documentation removes stale development notices without rewriting historical evidence.
+The container inventory validator now recognizes the already-approved embedded ADC registry;
+the production allowlist still contains the same 390 exact source/assets. CI also creates a new
+suite study and audits its candidates and conditional likelihood independently.
+
+**Validation.** Full application race tests pass (1819.842 s); internal/scientific race tests
+pass with all 11 required cached reference datasets present (validation: 846.552 s). Non-race
+scientific calibration excluding separately measured budgets passes (436.676 s), retaining
+null/positive/coverage controls and the no-fused-multiply-add guard. The final suite/version race
+check passes (114.489 s). Historical projects and the new source/native-review evidence agree
+on arm64 and amd64 under the existing versioned checks; six platform builds and Go vet pass.
+All six performance budgets pass in a separate run after heavy validation ends (86.091 s):
+one million rows read/validate in 1.488 s, cache reopening in 132 ms, a searched page in
+38.561 ms, neighborhoods in 1.228 s, one million generation probabilities in 41.51 s and
+100,000 paired TCR neighbors in 33.181 s. Existing thresholds and tolerances are unchanged.
+
+Independent exact metadata/YAML/object/MiAIRR/native-report/contig/ADC audits pass. The new
+study's candidate fractions, source-chain text, all 119 supplied artificial translations and
+one deliberately missing annotation pass their independent controls. The JC69 oracle verifies
+945 topology keys, three independent optimizer comparisons and every conditional ancestral
+probability. Excel audits cover every supported result kind; Prism audits retain subject units,
+575 measurements, 72 missing values and 515 structural blanks across 56 tables, including R
+imports. Independent Proteoscope/CytoWeave evidence checks pass without a public sequence query.
+
+All 235 JavaScript tests, 14 contrast/color-vision checks, 156 main application captures and
+both new study views pass. Wave-9 screenshots were reviewed in both themes. The documentation
+site builds 62 pages with 89 screenshot pairs and passes 244 layout/accessibility checks.
+Python's 17 tests, package build/install and live contracts pass; R's 1,302 assertions and
+package check pass. Both MCP protocols, all 32 scripted transport benchmark controls, three
+JSONL controls, six repeated/scaled controls, expected negative controls and four report layouts
+pass. The previous worked study still passes exact transport, checkpoint, archive and replay
+checks with 0.9.0, and its original offline report passes integrity/accessibility controls.
+
+Five timed fuzz targets pass. Local Linux arm64 Podman validation checks the actual 390-file
+build context, minimal runtime, two source workers, five replay kinds, five array tasks and
+permission/cancellation behavior. Scientific bytes match native execution. VM mount and Chrome
+startup issues encountered during validation were resolved; repeat checks use unchanged scientific
+tolerances. No Windows execution, native Prism GUI, Docker engine, Slurm scheduler or Apptainer
+runtime is claimed. Optional unconfigured public-data/download checks remain explicitly skipped;
+the full validation record is in `validation/README.md`.
+
+Older release fixtures, scientific identities and automation/replay contracts remain unchanged.
+No commit, push, tag, release or site publication was made. Wave 10 has not started.
+
+**Post-slice-16 CI follow-up.** Run `40992828773` passed the R package checks but its release-R
+job failed in the agent benchmark before the first task: a fast subprocess exit raced an empty
+stdin write and reported `EPIPE`. The benchmark now gives input-free commands EOF at startup,
+drains child diagnostics before reporting failure and refuses failed input delivery. Regression
+controls exercise exact JSON, early exits, failure status/stderr, missing commands and bounds.
+
+The same run's Go job succeeded after about 41 minutes; its root package took 1579.335 s and
+the validation package 662.506 s. The host race suite now discovers and schedules every top-level
+test/fuzz target exactly once across eight independent jobs, retaining all subtests. Internal
+and scientific packages run separately. No scientific assertion, tolerance, source fixture or
+budget was changed. The existing `Go host` required check is an aggregate that fails unless
+every contributing job succeeds; package/job limits are 15/20 minutes, with verbose progress.
+The required-data job and release policy are unchanged. Validation details are recorded at the
+start of `validation/README.md`; this follow-up awaits the maintainer's commit and CI rerun.
+All eight host shards pass locally with CI's Go 1.24.13 and two Go workers per process
+(155.7–261.9 s each). Their logs cover all 212 discovered targets exactly once, retaining the
+two pre-existing optional environment skips. The separate internal/scientific race command
+and Go vet pass; all 243 Node tests, the complete cross-client benchmark and aggregate failure
+controls pass. These local timings do not promise a particular hosted-runner duration.
+
 ## Later waves (outlined)
 
 | Wave | Release | Theme | Main content |
 | --- | --- | --- | --- |
-| 9 | 0.9.0 | Suite and public data | ADC queries, overlap with public cohorts, Proteoscope and CytoWeave links, MiAIRR checklist, Excel and Prism, likelihood trees, candidates, remaining readers |
 | 10 | 1.0.0 | Hardening | Budgets met, accessibility audit, documentation complete, external beta feedback addressed |

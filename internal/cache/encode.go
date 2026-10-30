@@ -23,17 +23,18 @@ var magic = []byte("CLOLTBL\x00")
 const formatVersion = 2
 
 type header struct {
-	Format    string          `json:"format"`
-	Version   int             `json:"version"`
-	Key       string          `json:"key"`
-	Readers   int             `json:"readers"`
-	Rows      int             `json:"rows"`
-	Unit      rep.Unit        `json:"unit"`
-	TableUnit rep.Unit        `json:"tableUnit"`
-	Sources   []reads.Source  `json:"sources"`
-	Problems  *reads.Problems `json:"problems"`
-	Samples   []rep.Sample    `json:"samples"`
-	Columns   []column        `json:"columns"`
+	Format    string                     `json:"format"`
+	Version   int                        `json:"version"`
+	Key       string                     `json:"key"`
+	Readers   int                        `json:"readers"`
+	Rows      int                        `json:"rows"`
+	Unit      rep.Unit                   `json:"unit"`
+	TableUnit rep.Unit                   `json:"tableUnit"`
+	Sources   []reads.Source             `json:"sources"`
+	Native    map[int]*reads.NativeTable `json:"native,omitempty"`
+	Problems  *reads.Problems            `json:"problems"`
+	Samples   []rep.Sample               `json:"samples"`
+	Columns   []column                   `json:"columns"`
 	// CRC: the body's CRC-32 (Castagnoli).
 	CRC uint32 `json:"crc"`
 }
@@ -87,6 +88,14 @@ func encode(k string, res *reads.Result) ([]byte, error) {
 	t := res.Table
 	h := header{Format: "clonoloom-table-cache", Version: formatVersion, Key: k, Readers: reads.ReaderVersion, Rows: t.Len(), Unit: res.Unit, TableUnit: t.Unit,
 		Sources: res.Sources, Problems: res.Problems, Samples: t.Samples}
+	for i, source := range res.Sources {
+		if source.Native != nil {
+			if h.Native == nil {
+				h.Native = map[int]*reads.NativeTable{}
+			}
+			h.Native[i] = source.Native
+		}
+	}
 	var body []byte
 	add := func(name, kind string, data []byte) {
 		h.Columns = append(h.Columns, column{Name: name, Kind: kind, Offset: len(body), Length: len(data)})
@@ -171,6 +180,25 @@ func load(path string) (*reads.Result, error) {
 	body := data[start+n:]
 	if h.Format != "clonoloom-table-cache" || h.Version != formatVersion || h.Readers != reads.ReaderVersion {
 		return nil, errCorrupt
+	}
+	nativeBytes := 0
+	for i, native := range h.Native {
+		if i < 0 || i >= len(h.Sources) || native == nil || len(native.Rows) != h.Sources[i].Rows || len(native.Rows) > 1000000 {
+			return nil, errCorrupt
+		}
+		nativeBytes += native.Size()
+		if nativeBytes > 64<<20 {
+			return nil, errCorrupt
+		}
+		h.Sources[i].Native = native
+	}
+	for _, source := range h.Sources {
+		if (source.Format == reads.FormatTRUST4 || source.Format == reads.FormatVDJtools || source.Format == reads.FormatCellRangerJSON) && source.Native == nil {
+			return nil, errCorrupt
+		}
+		if source.Format == reads.FormatCellRangerJSON && (source.Native.Layout != reads.CellRangerJSONLayout || len(source.Native.Rows) > 100000) {
+			return nil, errCorrupt
+		}
 	}
 	if crc32.Checksum(body, crc32.MakeTable(crc32.Castagnoli)) != h.CRC {
 		return nil, errCorrupt

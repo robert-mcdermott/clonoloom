@@ -28,6 +28,7 @@ import (
 	"syscall"
 	"time"
 
+	"clonoloom/internal/adc"
 	"clonoloom/internal/artifacts"
 	"clonoloom/internal/cache"
 	"clonoloom/internal/examples"
@@ -37,7 +38,7 @@ import (
 //go:embed web/index.html web/styles.css web/app.js web/favicon.svg web/lib/*.js web/ui/*.js web/ui/offline-report.css
 var content embed.FS
 
-var version = "0.8.0"
+var version = "0.9.0"
 
 // commit is the source revision the program was built from. Release builds set it with
 // -ldflags "-X main.commit=..."; otherwise it comes from the version-control stamp Go records
@@ -83,6 +84,7 @@ type app struct {
 	clonotypes *clonotypeTables
 	// examples are the example datasets, downloaded when asked (api_examples.go).
 	examples *examples.Library
+	adc      *adc.Client
 	// references are the reference data the analyses use, downloaded when asked
 	// (api_references.go), and loops the V genes' loops TCRdist uses, read from them once.
 	references *examples.Library
@@ -315,7 +317,7 @@ func parseConfigFor(args []string, out io.Writer, remote bool) (config, error) {
 	flags.BoolVar(&cfg.keepRunning, "keep-running", false, "keep serving after the app window is closed")
 	flags.StringVar(&cfg.dataDir, "data-dir", "", "folder for the project library (default: <user config dir>/ClonoLoom)")
 	flags.StringVar(&cfg.examplesDir, "examples-dir", "", "folder the example datasets are downloaded into, when asked (default: <data dir>/examples)")
-	flags.BoolVar(&cfg.offline, "offline", false, "download nothing: ClonoLoom then reaches no other computer")
+	flags.BoolVar(&cfg.offline, "offline", false, "disable all outbound downloads and public-data requests")
 	flags.StringVar(&cfg.cacheDir, "cache-dir", "", "folder for the table cache, which can be deleted and made again (default: <user cache dir>/clonoloom)")
 	cacheLimit := flags.String("cache-limit", "10GB", "size the table cache is kept within, removing what was used least recently (for example 500MB or 20GB; 0 for no limit)")
 	flags.StringVar(&cfg.allow, "allow", "", "automation capabilities: comma-separated edits,compute,files,network (default read-only; requires --remote-control)")
@@ -388,6 +390,7 @@ func newApp(cfg config) (*app, error) {
 		datasets:   newDatasets(),
 		clonotypes: &clonotypeTables{},
 		examples:   newExamples(cfg.examplesDir, cfg.offline),
+		adc:        &adc.Client{Offline: cfg.offline, UserAgent: "ClonoLoom/" + version},
 		references: newReferences(filepath.Join(cfg.dataDir, "references"), cfg.offline),
 	}
 	if cfg.remote {
@@ -449,7 +452,7 @@ func (a *app) printBanner(out io.Writer, url string) {
 		fmt.Fprintf(out, "Table cache: %s\n", a.cache.Dir())
 	}
 	if a.examples.Offline {
-		fmt.Fprintln(out, "Offline: no example data are downloaded")
+		fmt.Fprintln(out, "Offline: no downloads or public-data requests")
 	}
 	if n := len(a.files.list()); n > 0 {
 		fmt.Fprintf(out, "Opening %d item(s) named on the command line\n", n)
@@ -501,6 +504,7 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerClonotypes(mux)
 	a.registerBCells(mux)
 	a.registerExamples(mux)
+	a.registerADC(mux)
 	a.registerReferences(mux)
 	a.registerJobs(mux)
 	a.registerCache(mux)
@@ -510,6 +514,12 @@ func (a *app) registerAPI(mux *http.ServeMux) {
 	a.registerDeidentification(mux)
 	a.registerParquet(mux)
 	a.registerHTMLReports(mux)
+	a.registerWorkbooks(mux)
+	a.registerPrism(mux)
+	a.registerProteoscope(mux)
+	a.registerCytoWeave(mux)
+	a.registerLineageLikelihood(mux)
+	a.registerCandidates(mux)
 	a.registerAnalyses(mux)
 	a.registerTCRdist(mux)
 	a.registerPgen(mux)

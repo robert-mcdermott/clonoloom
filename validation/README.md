@@ -1,5 +1,215 @@
 # Validation
 
+## CI host shards and benchmark subprocesses
+
+The per-commit Go checks retain the full race coverage. Internal/scientific packages run in
+their own job. `go-host.mjs` discovers every top-level host test, example and fuzz target and
+partitions them exactly once across eight jobs, retaining every subtest and seed. Cost hints
+only balance scheduling; newly added tests enter the partition automatically. The Node controls
+verify coverage, name boundaries, duplicate refusal and agreement with the workflow matrix.
+The aggregate `Go host` required check fails if any contributing job fails, skips or cancels.
+
+```sh
+node validation/go-host.mjs --list
+node validation/go-host.mjs 1 # repeat with 2 through 8 for the complete host race suite
+go test -race -v -timeout 15m ./internal/... ./validation
+node --test benchmark/harness.test.mjs validation/go-host.test.mjs
+```
+
+CI run `40992828773` completed its original Go job successfully in about 41 minutes: the root
+package alone took 1579.335 s and the validation package 662.506 s. The per-package 30-minute
+timeout did not bound the combined job. The new partition removes that long serial host run
+without omitting tests or weakening scientific tolerances; each test package is bounded at
+15 minutes and each worker job at 20 minutes. The separate required-data/budget job is unchanged.
+
+The same run passed both R package checks but failed before the first agent benchmark task on
+`EPIPE`. Commands such as Git provenance queries need no stdin and now receive EOF from startup,
+avoiding writes to an already exited process. Commands with input still use a pipe; a child
+failure retains its exit code/stderr, and a failed input write cannot count as successful evidence.
+Controls cover fast exits, exact JSON input/output, early failure, failed delivery, missing
+executables, timeouts and the existing output-size bounds. No scientific worker or client API changes.
+
+Follow-up validation uses CI's Go 1.24.13. All eight host shards pass with `GOMAXPROCS=2`,
+four local shard processes at a time; individual invocations take 155.7–261.9 s. Their logs
+account for all 212 discovered test/fuzz targets exactly once, with only the existing optional
+published-specificity download and container-oracle environment checks skipped. All 243 Node
+tests pass, including subprocess and partition controls. The complete HTTP/MCP/Python/R agent
+benchmark passes again: 32 transport controls, three scripted-command controls, six repeated
+controls, expected negative controls and four accessible report layouts. Workflow YAML and all
+16 aggregate success/failure/cancellation/skip combinations were checked; only all-success passes.
+The separate internal/scientific race command also passes with Go 1.24.13 and a fresh external-data
+directory matching that CI job (validation package: 444.715 s); Go vet passes. External datasets
+remain the responsibility of the unchanged required-data job, which passed in the inspected run.
+Hosted timing and status still require the maintainer's next push; local times are not a runner SLA.
+
+## 0.9.0 suite study and release checks
+
+The [worked guide](../docs/SUITE-STUDY.md) joins the wave's supported workflows while keeping
+studies, experimental units and permission boundaries separate. The 73-file `projects/0.9.0`
+inventory retains eight artificial datasets, five B-cell parents and standalone native review
+evidence. Earlier fixtures remain unchanged. Rebuild into a new directory; never overwrite a
+release fixture:
+
+```sh
+node validation/create-project-0.9.mjs /tmp/clonoloom-suite-study
+go test -race -timeout 10m -run 'TestSuiteRelease|TestEveryReleasesProjectStillOpens/0.9.0' .
+uv run --no-project --with biopython==1.86 validation/reference/candidates.py /tmp/clonoloom-suite-study/evidence
+uv run --no-project --with numpy==2.3.5 --with scipy==1.18.1 validation/reference/lineage_likelihood.py /tmp/clonoloom-suite-study/evidence
+```
+
+The driver uses an isolated offline host with explicit grants and visible test-window acceptance.
+Its network capability is required by the existing reference action; offline mode prevents
+downloads. The native tests check retained bytes, source reopening, source-derived results,
+exact metadata/native rows, candidate ranking and supplied FASTA, conditional JC69 results and
+captured public overlap separately. Source opening path and filesystem mtime are excluded only
+from the metadata/native inspection comparisons; original provenance remains in the saved evidence.
+No new certificate replay contract, external query or biological prediction is validated.
+
+The independent candidate audit checks exact fractions and source text. The likelihood oracle
+checks all 945 seven-tip topology keys, independently optimizes three selected/competitor/control
+topologies and checks every conditional ancestral probability; it does not prove a global
+continuous optimum. The fixture's artificial upstream annotations are independently checked
+with Biopython, not translated by the product. Both-theme views label their controls explicitly.
+
+**Release-preparation validation (2026-10-29).**
+
+- The complete application race suite passes (1819.842 s), including historical project/archive
+  reopening, exact reports, source execution, checkpoint recovery and supported replay.
+- Full internal/scientific race checks pass with all 11 required cached reference datasets
+  present (validation package: 846.552 s). The non-race scientific/calibration run, excluding
+  the separately measured performance budgets, passes in 436.676 s. It includes the independent
+  readers, null/positive/coverage controls and the assembly guard against fused multiply-adds.
+- The final suite-fixture/version race check passes (114.489 s). Source reopening, all release
+  projects, new standalone reviews and pinned processor results pass on amd64 as well as arm64.
+  Six CGO-free macOS/Linux/Windows × amd64/arm64 builds, Go vet and syntax/drift checks pass.
+- All six performance budgets pass in a separate run after the heavy suites finish (86.091 s).
+  One million rows read/validate in 1.488 s at 58.0 bytes/row plus junctions; 100 cached samples
+  reopen in 132 ms; a searched 200-row page takes 38.561 ms. Neighborhoods take 1.228 s,
+  one million generation probabilities 41.51 s, and 100,000 paired TCR neighbors 33.181 s
+  with 1.3 GB obtained from the system. Existing budget thresholds are unchanged.
+- Independent wave-9 audits pass: exact JSON/Decimal metadata; three YAML controls; seven imported
+  objects; 82 official MiAIRR fields and 22 hand-specified controls; three native reports; eight
+  detailed contigs with 80 shared values; four ADC captures and exact public-overlap sets. The
+  new study also passes candidate/source-chain/Biopython and conditional likelihood audits above.
+- Workbook audits verify all five supported result kinds plus precision/type/missingness controls.
+  Prism checks cover 56 tables, 575 declared subject/group measurements, 72 missing measurements
+  and 515 structural blanks, including independent R `pzfx` imports. Proteoscope and CytoWeave
+  evidence passes independent exact-source, sample-scope, permission and hash checks.
+- All 235 JavaScript tests and 14 contrast/color-vision checks pass. The complete capture campaign
+  passes 78 scenes in each theme; the new study adds its own two views. Wave-9 metadata, native
+  readers, public evidence, tables, sibling links, conditional trees and descriptive candidates
+  were visually reviewed in both themes. The site builds 62 pages/89 screenshot pairs and passes
+  all 244 desktop/phone × light/dark accessibility/layout checks.
+- Python passes 17 tests, wheel/sdist build/install checks and live-host contracts. R passes all
+  1,302 assertions, package installation and `R CMD check` with Status OK. Generated wrappers
+  retain the same 64 actions. MCP passes both protocols, exact HTTP parity and permission flows.
+- The scripted benchmark passes 32 transport controls, three JSONL controls, six repeated/scaled
+  controls and four accessible report layouts; all eight no-action controls fail as intended.
+  No model is evaluated. The previous worked-study driver passes four transport parity, checkpoint,
+  certificate, source-free archive and headless replay checks against 0.9.0; the original offline
+  report passes four layouts, six figures, changed-fingerprint refusal and zero external requests.
+- Five 20-second fuzz sessions pass for AIRR Repertoire JSON, YAML, objects, MiAIRR and general
+  source readers. The unchanged 390-file OCI allowlist passes actual build-context/runtime
+  inspection. Local Linux arm64 Podman workers match native scientific bytes for both source kinds,
+  all five replay kinds and five array tasks; explicit mounts, non-root permissions and SIGTERM
+  cancellation pass. The scratch image is 13,994,988 bytes and was not published.
+
+The container inventory validator initially omitted the already-approved embedded ADC registry;
+the corrected exact-file check passes without expanding production inputs. Podman checks use an
+ignored checkout directory shared with its VM because macOS `/tmp` is not mounted there. One
+benchmark attempt lost Chrome's debugging connection; the complete repeat passes with unchanged
+assertions and numerical tolerances. Earlier release fixtures remain untouched.
+
+Optional detailed public-contig, public HDF5/expression-map, live publisher-download and
+maintainer-supplied VDJdb checks remain unconfigured and skipped; the named required datasets
+were not skipped. No native Prism GUI, Windows execution, Docker engine, Slurm scheduler or
+Apptainer runtime is claimed. Platform compilation, R import and local Podman array execution
+are distinct checks. These controls establish their recorded computational contracts, not
+biological validity, public-repository completeness or permission for a real external transfer.
+
+Wave 9 slice 12: check reviewed Proteoscope handoffs and exact local evidence without a public query:
+
+```sh
+CLONOLOOM_HANDOFF_OUT=/tmp/clonoloom-handoff go test -race -run TestProteoscope .
+uv run --no-project validation/reference/proteoscope.py /tmp/clonoloom-handoff
+CLONOLOOM_HANDOFF_OUT=/tmp/clonoloom-handoff node docs/capture/capture.mjs proteoscope --theme both
+uv run --no-project validation/reference/proteoscope.py /tmp/clonoloom-handoff
+```
+
+The native stand-in exercises local/public/provider permissions, exact source/query bytes,
+unsupported sequences, changed evidence/receivers, redirects, offline behavior, cancellation and
+one-use concurrent dispatch. CI runs the independent CSV/JSON/hash comparison. Both-theme UI
+controls check empty selection, unselected permissions, partial/missing evidence, downloads,
+concurrent submission and stale/cancelled review.
+
+Optional actual Proteoscope 0.10.0 receiver exercise, using installed binaries or builds in `/tmp`:
+
+```sh
+go build -o /tmp/clonoloom .
+go build -C ../proteoscope -o /tmp/proteoscope .
+node validation/proteoscope-handoff.mjs /tmp/clonoloom /tmp/proteoscope /tmp/clonoloom-handoff
+uv run --no-project validation/reference/proteoscope.py /tmp/clonoloom-handoff
+```
+
+This starts isolated local processes and Chrome, exercises the real command parser/receiver and
+checks the exact sequences at its browser's sequence-search boundary. CDP intercepts all search
+requests before they reach Proteoscope's server, and blocks nonlocal browser requests. No public
+sequence search or biological performance claim is made. See [PROTEOSCOPE.md](../docs/PROTEOSCOPE.md).
+
+Wave 9 slice 11: audit exact Prism XML tokens, row identities, group order, missing measurements,
+structural blanks, exclusions and hashes independently, then import with R's pzfx reader:
+
+```sh
+CLONOLOOM_PRISM_OUT=/tmp/clonoloom-prism go test -run TestPrism . ./internal/prism
+Rscript -e 'install.packages(c("pzfx", "jsonlite"))'
+uv run --no-project validation/reference/prism.py /tmp/clonoloom-prism --r
+CLONOLOOM_PRISM_OUT=/tmp/clonoloom-prism node docs/capture/capture.mjs prism --theme both
+uv run --no-project validation/reference/prism.py /tmp/clonoloom-prism --r
+```
+
+The native controls include reordered paired points, missing/zero values, wholly missing features,
+numeric/XML-sensitive identifiers, declared exclusions, provider terms, unsupported numbers, changed evidence and
+cancellation. The browser download is the artificial 28-subject paired cohort. This is no claim
+of native Prism GUI import or equivalent statistics. The published Prism 7/8 Mac XSDs cannot
+compile under strict lxml because of their own nondeterministic content model; that check fails
+explicitly rather than being reported as passed. See [PRISM.md](../docs/PRISM.md).
+
+
+Wave 9 slice 10: independently audit every exported XLSX node, type, exact scalar token,
+missingness state and companion hash with openpyxl 3.1.5, XML/ZIP parsing and Decimal:
+
+```sh
+CLONOLOOM_WORKBOOK_OUT=/tmp/clonoloom-workbooks go test -run TestWorkbook . ./internal/workbook
+uv run --no-project --with openpyxl==3.1.5 validation/reference/workbook.py /tmp/clonoloom-workbooks
+CLONOLOOM_WORKBOOK_OUT=/tmp/clonoloom-workbooks node docs/capture/capture.mjs workbooks --theme both
+uv run --no-project --with openpyxl==3.1.5 validation/reference/workbook.py /tmp/clonoloom-workbooks
+```
+
+The last audit includes the actual browser download. Native tests also check restricted-source
+acknowledgment, changed evidence, bounds, malformed exact JSON, injection strings and cancellation.
+The screenshot study is artificial; the precision stress fixture is not biological data.
+See [the Excel contract](../docs/EXCEL.md), including the limits of spreadsheet re-saving.
+
+
+Wave 9 slice 6: `uv run --no-project validation/reference/cellranger_json.py` independently
+checks exact JSON/Decimal values, source hashes and shared CSV/AIRR values in the declared
+artificial contig fixtures. Run `go test ./internal/reads ./validation -run TestCellRangerJSON`
+for native mapping, identity, layout, numeric, bounds and cross-format controls. The existing
+native-report API/cache/browser checks cover exact source snapshots and both themes.
+
+An explicitly downloaded public Cell Ranger JSON and matching all-contig CSV can be checked
+without storing participant data in the repository:
+
+```sh
+uv run --no-project validation/reference/cellranger_json.py --public /tmp/contigs.json /tmp/contigs.csv /tmp/contigs-reference.json
+CLONOLOOM_CONTIG_JSON=/tmp/contigs.json CLONOLOOM_CONTIG_REFERENCE=/tmp/contigs-reference.json \
+  go test ./validation -run TestCellRangerJSONPublicReference
+```
+
+The documented 4.0.0 check covers 1,835 contigs and 16,515 shared values plus gene/chain/clone
+calls. Omitted full-length calls and 14 mixed-chain records remain explicit limits, not invented
+CSV-equivalent annotations. See [the format guide](../docs/CELLRANGER-JSON.md).
+
 `node validation/run.mjs [suite …] [--verbose] [--require-data]` runs the validation suites and
 exits with status 1 when a check fails. Each check states what is compared, the value found and
 the tolerance required.
@@ -824,3 +1034,87 @@ readers, container boundaries, both-theme scene captures and the complete site a
 Preserve all numerical tolerances. A timed-out test is rerun to completion; a partial pass is
 not a completed check. Actual cluster scheduling, Apptainer and native Windows UI execution
 remain separate platform/site validation, not inferred from cross-compilation.
+
+## Exact AIRR metadata inspection (wave 9, slice 1)
+
+```sh
+go test -race ./internal/airr ./internal/reads
+go test -race . -run 'TestMetadata|TestOpenADataset|TestEveryReleasesProjectStillOpens'
+go test ./internal/airr -run '^$' -fuzz '^FuzzRepertoires$' -fuzztime 20s
+CLONOLOOM_METADATA_EVIDENCE=/tmp/clonoloom-metadata-evidence.json go test . -run '^TestMetadataInspectionExactAndPaged$' -count=1
+uv run --offline --no-project validation/reference/metadata.py /tmp/clonoloom-metadata-evidence.json
+node docs/capture/capture.mjs repertoire-metadata --theme both
+```
+
+The independent Python standard-library `int`/`Decimal` check consumes native API output and
+imports no application code. It checks exact integers, decimals, large exponents and lexical
+negative zero alongside null and false. Go tests cover duplicate/escaped keys, Unicode, ID
+ambiguity within/across files, case-sensitive and legacy matching, bounds, cancellation,
+compressed-source hashes, pagination and inspection after source removal. Fuzzing asserts that
+accepted objects are still byte-for-byte substrings of the supplied JSON with unique IDs.
+
+`testdata/metadata/README.md` declares the screenshot example and its missing-link controls.
+The capture checks displayed native coverage, original values and accessibility in both themes.
+This validates import/inspection behavior, not full AIRR schema compliance, MiAIRR completeness,
+experimental validity, or subject independence. Old release fixtures remain unchanged.
+
+## Bounded AIRR YAML (wave 9, slice 2)
+
+```sh
+go test -race ./internal/airr ./internal/reads
+go test -race . -run 'TestYAML|TestMetadata|TestEveryReleasesProjectStillOpens'
+go test ./internal/airr -run '^$' -fuzz '^FuzzRepertoireYAML$' -fuzztime 30s
+uv run --no-project --with ruamel.yaml==0.18.6 validation/reference/yaml_metadata.py
+node docs/capture/capture.mjs repertoire-yaml repertoire-metadata --theme both
+```
+
+The pinned validation-only oracle reads YAML 1.2 nodes/tags without constructing floats and
+checks committed exact JSON. `--write` regenerates those references; native Go tests consume
+them in ordinary CI. It is not a runtime dependency. Scalar, collection and simulated-study
+fixtures exercise types, large integers/exponents, precise decimals, quoted IDs, nulls, literal
+blocks and Unicode. Unsupported syntax has explicit refusal controls. Reader/API checks cover
+mixed JSON/YAML ambiguity, uploaded filenames, gzip fingerprints, source removal and preview
+bounds. Browser checks compare original YAML text exactly and retain the JSON regression scene.
+Supported syntax and scientific limits are in `docs/AIRR-YAML.md`; no conformance claim is made.
+
+## MiAIRR reporting review (wave 9, slice 3)
+
+The checklist pins AIRR Standards 2.0 metadata sets 1–5 (82 fields), with essential / important /
+defined reporting levels. `reference/miairr_fields.json` records the official table URL and SHA-256;
+`reference/miairr.py` compares native names/levels/types and hand-specified evidence states.
+It can additionally check the downloaded table with `--source`. See `docs/MIAIRR.md` for commands.
+
+Native controls exercise missing/null/empty/reasons, false/zero/exact large numbers, repeated
+sample/PCR/diagnosis/processing scopes, JSON/YAML equivalence, supported/unsupported declarations,
+malformed input, cancellation and all-or-nothing row limits. API tests inspect captured evidence
+after source removal. `FuzzMiAIRR` checks bounded counts and absence of partial assessments.
+The `miairr-checklist` capture scene checks filtering, independent processing rows, limitations
+and accessibility in both themes, alongside the JSON/YAML inspection regression scenes. No
+full-study MiAIRR compliance, ontology or scientific-validity oracle is claimed.
+
+## AIRR objects (wave 9, slice 4)
+
+`reference/airr_objects.py` checks all seven source objects by path with independent exact
+JSON/Decimal and ruamel.yaml 0.18.6 node parsing, plus AIRR receptor hashes. Its YAML expected
+projection is committed for offline Go tests. See `docs/AIRR-OBJECTS.md` for commands.
+`TestAIRRObjects*` covers separate files, IDs/cardinality, contradictory repertoires, unsupported
+versions/hashes/pairings, null/false/exact numbers, source removal and paged API refusals.
+`TestAIRRReceptorAlphabetIsASCII` refuses Unicode lookalikes even with a matching uppercase hash.
+`FuzzAIRRObjects` preserves original accepted JSON bytes under the structural bounds.
+The `airr-objects` capture scene checks exact text and loaded/unresolved links in both themes.
+This validates format/evidence handling, not full domains, biological pairing or activity.
+
+## Native repertoire reports (wave 9, slice 5)
+
+`reference/native_reports.py` independently parses three declared simulated TRUST4/VDJtools
+tables with standard-library CSV and exact Decimal values. The committed reference compares
+every mapped column, original header/rows, line numbers and source fingerprints in ordinary Go CI.
+Run `uv run --no-project validation/reference/native_reports.py` and
+`go test ./validation -run TestNativeReportsIndependentValues` to check it.
+
+`TestNativeReport*` covers marker conventions, unknown units, partial/missing/zero evidence,
+strict counts/frequencies, header ambiguity, row widths, cancellation, capture bounds,
+gzip/uploads, cache persistence, source removal and API preview limits. Explicit saved mappings
+retain their behavior. `FuzzRead` includes both new report contracts. The `native-reports` capture
+scene checks exact values, source switching and both-theme accessibility. Import validation is
+distinct from transcript functionality, cell pairing, independent subjects or scientific validity.

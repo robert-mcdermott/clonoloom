@@ -975,3 +975,12 @@ textarea.tracking-list { width: 100%; font-family: var(--mono); font-size: 12px;
 /* Evidence identifiers remain readable without widening the Reports view. */
 .certificate-fingerprint { overflow-wrap: anywhere; }
 .checkpoint-change summary { overflow-wrap: anywhere; }
+/* Public metadata: exact text, readable tables, no inferred scientific score or colors. */
+.adc-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 16px; margin: 12px 0; }
+.adc-fields label:first-child { grid-column: 1 / -1; }
+.adc-browser .mono { overflow-wrap: anywhere; }
+.adc-request, .adc-json { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 260px; overflow: auto; }
+.adc-captures { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 12px; overflow-wrap: anywhere; }
+.adc-table { overflow-x: auto; }
+.adc-table td { max-width: 300px; overflow-wrap: anywhere; vertical-align: top; }
+@media (max-width: 700px) { .adc-fields { grid-template-columns: minmax(0, 1fr); } }

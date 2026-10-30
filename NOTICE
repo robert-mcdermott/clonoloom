@@ -17,6 +17,15 @@ They implement Bob Jenkins' public-domain lookup3/hashlittle checksum.
 The flat Parquet writer and compact-protocol emission are adapted from SituCraft v0.9.0
 under the same Apache-2.0 license, extended for nullable fields and bounded scientific exports.
 
+The data-only Prism writer follows CytoWeave's Apache-2.0 PZFX Column-table and Info pattern,
+with native subject mapping, exact numeric tokens and evidence companions.
+
+The reviewed Proteoscope handoff follows MaveScape's Apache-2.0 loopback startup-probe pattern
+and Proteoscope 0.10.0's Apache-2.0 command contract, with explicit sequence-disclosure permissions.
+
+The Excel workbook presentation follows CytoWeave's Apache-2.0 header, width and frozen-row
+pattern. ClonoLoom implements its own native Go writer and exact JSON evidence mapping.
+
 The beta and Student t distribution helpers in internal/stats are adapted from SituCraft's
 Apache-2.0 statistics helpers by the same author.
 
@@ -34,3 +43,9 @@ Public datasets, other reference germline sets, recombination models and specifi
 not part of this product. When a user asks, ClonoLoom downloads them from their publishers under
 their own licenses and terms, which it shows before each download and records with every result
 that uses them.
+
+The ADC metadata client follows the AIRR Community's ADC 1.2.0 protocol specification in
+AIRR Standards 1.5.1 (CC BY 4.0), https://docs.airr-community.org/en/v1.5.1/api/adc_api.html.
+Its destination list is the AIRR Community's approved ADC registry at revision
+4ae159f2799594a2c73669527f6fba97fc8995d7 (https://github.com/airr-community/adc-registry).
+The client is an independent implementation; no repository server implementation is included.

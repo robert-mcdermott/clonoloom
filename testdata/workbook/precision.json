@@ -1,0 +1,19 @@
+{
+  "study": "Artificial precision and missingness controls; no participants",
+  "subjects": [
+    {"subject_id": "00123", "count": 9007199254740993, "rate": 0.123456789012345678901, "available": false, "estimate": null},
+    {"subject_id": "1-2", "count": 0, "rate": 0.125, "available": true, "estimate": 1.0},
+    {"subject_id": "=HYPERLINK(\"https://example.invalid\",\"literal\")", "count": 999999999999999, "rate": 1e-310, "available": true, "estimate": -0}
+  ],
+  "empty_string": "",
+  "empty_object": {},
+  "empty_array": [],
+  "small": 1e-301,
+  "large": 1e301,
+  "safe_integer": 1000000000000000,
+  "unsafe_integer": 1000000000000001,
+  "literal_escape": "_x0041_ _x005F_",
+  "xml_text": "<scientific & exact> \u0001 tab\t CR\r LF\n😀",
+  "path/~": {"": "+SUM(A1:A2)"},
+  "identifier": "2026-01-02"
+}

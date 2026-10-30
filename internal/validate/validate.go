@@ -133,6 +133,7 @@ type kind struct {
 
 // readerKinds are the readers' problems as findings: severity, title and remedy.
 var readerKinds = map[string]kind{
+	"report-partial":        {Warning, "Partial TRUST4 junctions retained as source evidence", "Inspect the native row. An incomplete junction cannot define a complete-junction clonotype; its source count remains in input QC."},
 	"imgt-annotation":       {Warning, "IMGT annotation could not be mapped", "Inspect the native annotation and the original IMGT table; no gene call was inferred."},
 	"imgt-coordinate":       {Warning, "IMGT query coordinates withheld", "Inspect the native positions and indel annotations. Query coordinates require a region matching the oriented Summary sequence without reported indel correction."},
 	"airr-missing-required": {Warning, "Required AIRR columns are missing", "The file is not fully AIRR-compliant. ClonoLoom reads what it needs; tools that require the full schema may refuse it. Export again with the annotation tool's AIRR option."},
@@ -362,6 +363,12 @@ func (c *checker) samples() {
 
 func (c *checker) unit(u rep.Unit) {
 	if u == rep.UnitUnknown && c.t.Len() > 0 {
+		for i, source := range c.sources {
+			if source.Format == reads.FormatTRUST4 || source.Format == reads.FormatVDJtools {
+				c.add("unit-unknown", Note, "The abundance unit is not stated", "Native report counts may describe reads, molecules or barcode support; source frequencies need not use the currently loaded rows as their denominator.", "Confirm reads or UMIs in Data only from upstream experimental information. Barcode support does not identify cells or establish pairing; leave its unit unknown rather than relabeling it.", 0, Example{Source: i, Column: "count"})
+				return
+			}
+		}
 		c.add("unit-unknown", Note, "The abundance unit is not stated", "The file's counts (duplicate_count) do not say whether reads or molecules (UMIs) were counted.", "Confirm the unit in the Data view; until then results say \"duplicate_count\" rather than reads or UMIs.", 0, Example{Column: "duplicate_count"})
 	}
 }

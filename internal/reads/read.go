@@ -1,6 +1,7 @@
 package reads
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"crypto/sha256"
@@ -22,32 +23,38 @@ import (
 type Format string
 
 const (
-	FormatIMGT        Format = "imgt-highvquest"
-	FormatAIRR        Format = "airr"
-	FormatCellRanger  Format = "cellranger-contigs"
-	FormatImmunoSEQv3 Format = "immunoseq-v3"
-	FormatImmunoSEQv2 Format = "immunoseq-v2"
-	FormatMiXCR       Format = "mixcr-clones"
-	FormatUnit        Format = "oas-unit"
-	FormatTCRdist     Format = "tcrdist3-clones"
+	FormatIMGT           Format = "imgt-highvquest"
+	FormatAIRR           Format = "airr"
+	FormatCellRanger     Format = "cellranger-contigs"
+	FormatImmunoSEQv3    Format = "immunoseq-v3"
+	FormatImmunoSEQv2    Format = "immunoseq-v2"
+	FormatMiXCR          Format = "mixcr-clones"
+	FormatUnit           Format = "oas-unit"
+	FormatTCRdist        Format = "tcrdist3-clones"
+	FormatTRUST4         Format = "trust4-report"
+	FormatVDJtools       Format = "vdjtools"
+	FormatCellRangerJSON Format = "cellranger-json"
 )
 
 // FormatNames are formats' names as the interface and methods text say them.
 var FormatNames = map[Format]string{
-	FormatIMGT:        "IMGT/HighV-QUEST tables",
-	FormatAIRR:        "AIRR Rearrangement TSV",
-	FormatCellRanger:  "Cell Ranger V(D)J contig annotations",
-	FormatImmunoSEQv3: "immunoSEQ export (v3)",
-	FormatImmunoSEQv2: "immunoSEQ export (v2)",
-	FormatMiXCR:       "MiXCR clone table",
-	FormatUnit:        "OAS or OTS data unit",
-	FormatTCRdist:     "tcrdist3 clone table",
-	FormatTable:       "Table with mapped columns",
+	FormatIMGT:           "IMGT/HighV-QUEST tables",
+	FormatAIRR:           "AIRR Rearrangement TSV",
+	FormatCellRanger:     "Cell Ranger V(D)J contig annotations",
+	FormatImmunoSEQv3:    "immunoSEQ export (v3)",
+	FormatImmunoSEQv2:    "immunoSEQ export (v2)",
+	FormatMiXCR:          "MiXCR clone table",
+	FormatUnit:           "OAS or OTS data unit",
+	FormatTCRdist:        "tcrdist3 clone table",
+	FormatTRUST4:         "TRUST4 repertoire report",
+	FormatVDJtools:       "VDJtools clonotype table",
+	FormatCellRangerJSON: "Cell Ranger JSON contig annotations",
+	FormatTable:          "Table with mapped columns",
 }
 
 // ReaderVersion changes when a reader reads any file differently; cached tables and records name
 // it.
-const ReaderVersion = 3
+const ReaderVersion = 5
 
 // IdentityVersion changes only when existing rearrangement values change meaning.
 // ReaderVersion also covers additive evidence and invalidates the disposable cache;
@@ -56,8 +63,11 @@ const IdentityVersion = 1
 
 // Source is one file of a dataset as read.
 type Source struct {
-	IMGTGroup            string `json:"imgtGroup,omitempty"`
-	AnnotationParameters string `json:"annotationParameters,omitempty"`
+	// Native is captured evidence, never implicit source metadata in exports.
+	// The disposable table cache serializes it explicitly.
+	Native               *NativeTable `json:"-"`
+	IMGTGroup            string       `json:"imgtGroup,omitempty"`
+	AnnotationParameters string       `json:"annotationParameters,omitempty"`
 	// Size, Modified and SHA256 fingerprint the file as read (the bytes on disk, compressed or
 	// not), so that a project knows when its data changed or moved.
 	Size     int64    `json:"size"`
@@ -85,6 +95,7 @@ type Result struct {
 	// Companions: files read beside the rearrangements (Cell Ranger's clonotypes and metrics).
 	Companions []Companion
 	// Repertoires: AIRR Repertoire metadata named with the tables, and the files they came from.
+	Objects     []airr.Object
 	Repertoires []airr.Repertoire
 	Metadata    []MetadataFile
 }
@@ -123,6 +134,7 @@ func ReadInputs(ctx context.Context, inputs []Input) (*Result, error) {
 	res := &Result{Problems: newProblems()}
 	var b *rep.Builder
 	units := make([]rep.Unit, len(inputs))
+	nativeBytes := 0
 	for i := 0; i < len(inputs); i++ {
 		in := inputs[i]
 		if in.IMGTGroup != "" {
@@ -179,6 +191,10 @@ func ReadInputs(ctx context.Context, inputs []Input) (*Result, error) {
 		src.Path, src.Name = in.Path, filepath.Base(name)
 		src.Size, src.Modified, src.SHA256 = hashed.n, info.ModTime().UTC().Format(time.RFC3339), hex.EncodeToString(hashed.h.Sum(nil))
 		units[i] = unit
+		nativeBytes += src.Native.Size()
+		if nativeBytes > maxNativeBytes {
+			return nil, errors.New("combined native report evidence exceeds 64 MiB; open separate datasets")
+		}
 		res.Sources = append(res.Sources, src)
 	}
 	if b == nil {
@@ -187,6 +203,9 @@ func ReadInputs(ctx context.Context, inputs []Input) (*Result, error) {
 	res.Unit = agreedUnit(units, b, res.Sources, res.Problems)
 	res.Table = b.Table()
 	res.Table.Unit = res.Unit
+	if err := checkJSONContigIdentities(ctx, res); err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 
@@ -265,6 +284,9 @@ func ReadReader(ctx context.Context, r io.Reader, name string) (*Result, error) 
 	res.Unit = unit
 	res.Table = b.Table()
 	res.Table.Unit = unit
+	if err := checkJSONContigIdentities(ctx, res); err != nil {
+		return nil, err
+	}
 	return res, nil
 }
 
@@ -275,6 +297,11 @@ func readOne(ctx context.Context, r io.Reader, path string, index int, b **rep.B
 		return src, "", err
 	}
 	src.Gzipped = gzipped
+	br := bufio.NewReader(plain)
+	plain = br
+	if jsonStart(br) || metadataFormat(path) == "json" {
+		return readCellRangerJSON(ctx, plain, src, index, b)
+	}
 	ls := newLines(plain)
 	ls.ctx = ctx
 	if !ls.next() {
@@ -290,6 +317,10 @@ func readOne(ctx context.Context, r io.Reader, path string, index int, b **rep.B
 			header[i] = strings.TrimSpace(header[i])
 		}
 		src.Header = header
+		if format := nativeReportFormat(header); format != "" && !isAIRRHeader(header) {
+			src.Format = format
+			return readNativeReport(ls, header, src, b, index, sample, p)
+		}
 		if newColumns(header).index("Sequence number") >= 0 && newColumns(header).index("Sequence ID") >= 0 {
 			return src, "", fmt.Errorf("IMGT annotations must be opened together: select the extracted output folder or its 1_Summary, 2_IMGT-gapped-nt-sequences, 3_Nt-sequences and 6_Junction tables")
 		}

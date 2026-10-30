@@ -7,6 +7,7 @@ import { columns } from '../lib/plot.js';
 import { exportResult } from './exports.js';
 import { exportable, madeBy } from './figures.js';
 import { toast } from './overlays.js';
+import { showCandidates } from './bcell-candidates.js';
 
 async function json(url, body) {
   const response = await fetch(url, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { cache: 'no-store' });
@@ -104,6 +105,7 @@ export function mountFamilies(app, container) {
     if (!page) { root.append(button(o.threshold === null ? 'Measure nearest distances' : 'Find clonal families', () => load(true))); return; }
     const r = page.result;
     const resultId = page.artifact.id;
+    if (r.familiesOptions.threshold !== null) root.append(button('Review B-cell candidates', () => showCandidates(app,d,resultId,r.samples)));
     root.append(h('p', r.description), h('p', `${r.eligible} eligible of ${page.observationCount} observations · ${page.representativeCount} distinct receptors · ${page.familyCount} families · abundance unit: ${r.unit || 'unconfirmed'}.`), h('p.small', `QC: ${r.filterDescription || 'No filter'}. ${r.filteredRows} rows filtered; ${r.otherRows} rows outside the selected chains. ${r.withoutNeighbor} receptors have no comparable neighbor.`));
     for (const [reason, count] of Object.entries(r.excluded)) root.append(h('p.small', `${count} excluded: ${reason}.`));
     const plot = columns(r.histogram.map((b) => ({ x: b.lower.toFixed(2), y: b.count })), { label: 'Distance to nearest distinct receptor', xLabel: 'Normalized nucleotide Hamming distance (bin start)', yLabel: 'Distinct receptors', width: 640 });

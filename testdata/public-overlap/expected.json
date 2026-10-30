@@ -1,0 +1,189 @@
+{
+  "query": {
+    "rows": 83,
+    "eligible": 80,
+    "unique": 40,
+    "excluded": 3
+  },
+  "pairs": [
+    {
+      "capture": "adc-download-sim-a",
+      "eligibility": {
+        "rows": 48,
+        "eligible": 48,
+        "unique": 36,
+        "excluded": 0
+      },
+      "shared": 18,
+      "union": 58,
+      "jaccard": 0.3103448275862069,
+      "fraction": "9/29"
+    },
+    {
+      "capture": "adc-download-sim-b",
+      "eligibility": {
+        "rows": 42,
+        "eligible": 42,
+        "unique": 30,
+        "excluded": 0
+      },
+      "shared": 12,
+      "union": 58,
+      "jaccard": 0.20689655172413793,
+      "fraction": "6/29"
+    },
+    {
+      "capture": "adc-download-sim-c",
+      "eligibility": {
+        "rows": 5,
+        "eligible": 0,
+        "unique": 0,
+        "excluded": 5
+      },
+      "shared": 0,
+      "union": 40,
+      "jaccard": null,
+      "fraction": null
+    },
+    {
+      "capture": "adc-download-sim-d",
+      "eligibility": {
+        "rows": 8,
+        "eligible": 8,
+        "unique": 8,
+        "excluded": 0
+      },
+      "shared": 4,
+      "union": 44,
+      "jaccard": 0.09090909090909091,
+      "fraction": "1/11"
+    }
+  ],
+  "queryKeysShared": 24,
+  "assignedSubjects": 3,
+  "evaluableSubjects": 2,
+  "missingSubjects": 1,
+  "unassignedCaptures": 1,
+  "sharedKeys": [
+    {
+      "key": "TRB:CASSAAATGGEQYF",
+      "captures": 2,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSADNTRGGEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSANANGTNTEQYF",
+      "captures": 2,
+      "subjects": 2
+    },
+    {
+      "key": "TRB:CASSANDQSATASEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSANRDTRTSEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSARQQQSQDEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSDDQQTNEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSDTARREQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSGAGTADEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSGDQTAANEQYF",
+      "captures": 2,
+      "subjects": 2
+    },
+    {
+      "key": "TRB:CASSGDTSRSGTSEQYF",
+      "captures": 2,
+      "subjects": 2
+    },
+    {
+      "key": "TRB:CASSNARNTREQYF",
+      "captures": 2,
+      "subjects": 2
+    },
+    {
+      "key": "TRB:CASSNGDDRQASSEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSNQNATNTEQYF",
+      "captures": 2,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSNRGNDEQYF",
+      "captures": 2,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSNTRTTEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSQQGQSADEQYF",
+      "captures": 2,
+      "subjects": 2
+    },
+    {
+      "key": "TRB:CASSQTGGTDRGEQYF",
+      "captures": 2,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSRADSSSNAAEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSRDRNQRNNEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSRNRNAEQYF",
+      "captures": 2,
+      "subjects": 2
+    },
+    {
+      "key": "TRB:CASSRRGGNSEQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSSGASREQYF",
+      "captures": 1,
+      "subjects": 1
+    },
+    {
+      "key": "TRB:CASSTTDANTSEQYF",
+      "captures": 1,
+      "subjects": 1
+    }
+  ]
+}

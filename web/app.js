@@ -26,7 +26,7 @@ import { createParquetExports } from './ui/parquet.js';
 import { createDeidentification } from './ui/deidentification.js';
 import { createProjectArchives } from './ui/project-archives.js';
 
-const VERSION = '0.8.0';
+const VERSION = '0.9.0';
 
 const toOpen = { label: 'Open data', icon: 'folder', run: (app) => app.openPathDialog() };
 
@@ -69,7 +69,7 @@ export function fileKind(name) {
   const has = (...suffixes) => suffixes.some((s) => lower.endsWith(s));
   if (has('.clz')) return 'project';
   if (has('.tsv', '.tsv.gz', '.csv', '.csv.gz', '.txt', '.txt.gz', '.tab', '.tab.gz')) return 'table';
-  if (has('.json', '.json.gz', '.yaml', '.yml')) return 'metadata';
+  if (has('.json', '.json.gz', '.yaml', '.yml', '.yaml.gz', '.yml.gz')) return 'metadata';
   if (has('.h5ad', '.h5mu', '.h5')) return 'expression';
   if (has('.mtx', '.mtx.gz')) return 'matrix';
   if (has('.fasta', '.fa', '.fna', '.fasta.gz', '.fa.gz')) return 'fasta';

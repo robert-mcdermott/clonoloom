@@ -1,0 +1,467 @@
+{
+  "simulated-trust4-legacy.tsv": {
+    "format": "trust4-report",
+    "unit": "reads",
+    "columns": {
+      "sequence_id": [
+        "sim-contig-1",
+        "legacy-contig-2"
+      ],
+      "locus": [
+        "TRB",
+        "TRB"
+      ],
+      "junction": [
+        "TGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT",
+        "TGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT"
+      ],
+      "junction_aa": [
+        "CASSLGQETQYF",
+        "CASSLGQETQYF"
+      ],
+      "count": [
+        "1200",
+        "17"
+      ],
+      "reads": [
+        "1200",
+        "17"
+      ],
+      "cell": [
+        "\u0000",
+        "\u0000"
+      ],
+      "clone": [
+        "\u0000",
+        "\u0000"
+      ],
+      "is_cell": [
+        "\u0000",
+        "\u0000"
+      ],
+      "high_confidence": [
+        "\u0000",
+        "\u0000"
+      ],
+      "full_length": [
+        "\u0000",
+        "\u0000"
+      ],
+      "sample": [
+        "simulated-trust4-legacy",
+        "simulated-trust4-legacy"
+      ],
+      "source_line": [
+        "2",
+        "3"
+      ],
+      "productive": [
+        "T",
+        "T"
+      ],
+      "vj_in_frame": [
+        "T",
+        "T"
+      ],
+      "stop_codon": [
+        "F",
+        "F"
+      ],
+      "v_call": [
+        "TRBV7-9*01",
+        "TRBV7-9*01"
+      ],
+      "d_call": [
+        "TRBD1*01",
+        "\u0000"
+      ],
+      "j_call": [
+        "TRBJ2-5*01",
+        "TRBJ2-5*01"
+      ],
+      "c_call": [
+        "TRBC2",
+        "TRBC2"
+      ]
+    },
+    "header": "read_count\tfrequency(proportion of read_count)\tCDR3_dna\tCDR3_amino_acids\tV\tD\tJ\tC\tconsensus_id\tconsensus_id_complete_vdj",
+    "native_rows": [
+      "1200\t0.624512345678901234\tTGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT\tCASSLGQETQYF\tTRBV7-9*01\tTRBD1*01\tTRBJ2-5*01\tTRBC2\tsim-contig-1\t1",
+      "17\t0.1\tTGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT\tCASSLGQETQYF\tTRBV7-9*01\t.\tTRBJ2-5*01\tTRBC2\tlegacy-contig-2\t0"
+    ],
+    "sha256": "0f1135eb538bd1f0aea994161497cdf6355f2ad6abe130d3c15cca20805a9707"
+  },
+  "simulated-trust4.tsv": {
+    "format": "trust4-report",
+    "unit": "",
+    "columns": {
+      "sequence_id": [
+        "sim-contig-1",
+        "sim-contig-2",
+        "sim-contig-3",
+        "sim-contig-4",
+        "sim-contig-5",
+        "sim-contig-6",
+        "sim-contig-7"
+      ],
+      "locus": [
+        "TRB",
+        "TRB",
+        "TRB",
+        "TRB",
+        "TRB",
+        "IGH",
+        "\u0000"
+      ],
+      "junction": [
+        "TGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT",
+        "TGTGCTTCTTCTCTGGGTTAAGAAACTCAATATTTT",
+        "TGTGCTTCTTCTNNNGGTCAAGAAACTCAATATTTT",
+        "\u0000",
+        "TGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTTA",
+        "TGTGCTCGTGATCGTGGTTATTATTTTGATTATTGG",
+        "\u0000"
+      ],
+      "junction_aa": [
+        "CASSLGQETQYF",
+        "CASSLG*ETQYF",
+        "CASSXGQETQYF",
+        "\u0000",
+        "\u0000",
+        "CARDRGYYFDYW",
+        "\u0000"
+      ],
+      "count": [
+        "1200",
+        "320.25",
+        "53",
+        "12",
+        "2",
+        "0",
+        "\u0000"
+      ],
+      "reads": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "cell": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "clone": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "is_cell": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "high_confidence": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "full_length": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "sample": [
+        "simulated-trust4",
+        "simulated-trust4",
+        "simulated-trust4",
+        "simulated-trust4",
+        "simulated-trust4",
+        "simulated-trust4",
+        "simulated-trust4"
+      ],
+      "source_line": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "productive": [
+        "T",
+        "F",
+        "\u0000",
+        "\u0000",
+        "F",
+        "T",
+        "\u0000"
+      ],
+      "vj_in_frame": [
+        "T",
+        "T",
+        "T",
+        "\u0000",
+        "F",
+        "T",
+        "\u0000"
+      ],
+      "stop_codon": [
+        "F",
+        "T",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "F",
+        "\u0000"
+      ],
+      "v_call": [
+        "TRBV7-9*01",
+        "TRBV7-9*01",
+        "TRBV7-9*01",
+        "TRBV7-9*01",
+        "TRBV7-9*01",
+        "IGHV3-23*01",
+        "\u0000"
+      ],
+      "d_call": [
+        "TRBD1*01",
+        "TRBD1*01",
+        "\u0000",
+        "\u0000",
+        "TRBD1*01",
+        "IGHD3-10*01",
+        "\u0000"
+      ],
+      "j_call": [
+        "TRBJ2-5*01",
+        "TRBJ2-5*01",
+        "TRBJ2-5*01",
+        "TRBJ2-5*01",
+        "TRBJ2-5*01",
+        "IGHJ4*02",
+        "\u0000"
+      ],
+      "c_call": [
+        "TRBC2",
+        "TRBC2",
+        "TRBC2",
+        "\u0000",
+        "TRBC2",
+        "IGHM",
+        "\u0000"
+      ]
+    },
+    "header": "#count\tfrequency\tCDR3nt\tCDR3aa\tV\tD\tJ\tC\tcid\tcid_full_length\tnote",
+    "native_rows": [
+      "1200\t0.624512345678901234\tTGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT\tCASSLGQETQYF\tTRBV7-9*01\tTRBD1*01\tTRBJ2-5*01\tTRBC2\tsim-contig-1\t1\tsimulated dominant TRB",
+      "320.25\t0.1667\tTGTGCTTCTTCTCTGGGTTAAGAAACTCAATATTTT\tCASSLG_ETQYF\tTRBV7-9*01\tTRBD1*01\tTRBJ2-5*01\tTRBC2\tsim-contig-2\t1\tassigned fractional support; _ is a stop",
+      "53\t0.0276\tTGTGCTTCTTCTNNNGGTCAAGAAACTCAATATTTT\tCASS?GQETQYF\tTRBV7-9*01\t*\tTRBJ2-5*01\tTRBC2\tsim-contig-3\t1\tambiguous codon",
+      "12\t0.0062\tGCTTCTTCTCTGGGTCAA\tpartial\tTRBV7-9*01\t.\tTRBJ2-5*01\t*\tsim-contig-4\t0\tincomplete source CDR3",
+      "2\t0.0010\tTGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTTA\tout_of_frame\tTRBV7-9*01\tTRBD1*01\tTRBJ2-5*01\tTRBC2\tsim-contig-5\t0\tsource-declared frameshift",
+      "0\t0\tTGTGCTCGTGATCGTGGTTATTATTTTGATTATTGG\tCARDRGYYFDYW\tIGHV3-23*01\tIGHD3-10*01\tIGHJ4*02\tIGHM\tsim-contig-6\t1\tIG frequency has a separate denominator",
+      ".\tNA\t.\t.\t.\t.\t.\t.\tsim-contig-7\t0\tcount and sequence unavailable; no imputation"
+    ],
+    "sha256": "9b8fa6b6417402ad6648d2d1c99d2500180d4d6562aaa21b502006ab2546d8a7"
+  },
+  "simulated-vdjtools.tsv": {
+    "format": "vdjtools",
+    "unit": "",
+    "columns": {
+      "sequence_id": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "locus": [
+        "TRB",
+        "TRB",
+        "TRB",
+        "TRB",
+        "TRB",
+        "TRB"
+      ],
+      "junction": [
+        "TGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT",
+        "TGTGCTTCTTCTCTGGCTACTAATGAAAAATTTTTTA",
+        "TGTGCTTCTTCTCTGGCTACTAATGAAAAATTTTTTA",
+        "TGTGCTTCTTCTTAAGGTCAAGAAACTCAATATTTT",
+        "TGTGCTTCTTCTCCTGGTCAAGGTGCTTATGAACAATATTTT",
+        "\u0000"
+      ],
+      "junction_aa": [
+        "CASSLGQETQYF",
+        "\u0000",
+        "\u0000",
+        "CASS*GQETQYF",
+        "CASSPGQGAYEQYF",
+        "\u0000"
+      ],
+      "count": [
+        "430",
+        "82",
+        "23",
+        "11",
+        "0",
+        "\u0000"
+      ],
+      "reads": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "cell": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "clone": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "is_cell": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "high_confidence": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "full_length": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "sample": [
+        "simulated-vdjtools",
+        "simulated-vdjtools",
+        "simulated-vdjtools",
+        "simulated-vdjtools",
+        "simulated-vdjtools",
+        "simulated-vdjtools"
+      ],
+      "source_line": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "productive": [
+        "T",
+        "F",
+        "F",
+        "F",
+        "T",
+        "\u0000"
+      ],
+      "vj_in_frame": [
+        "T",
+        "F",
+        "F",
+        "T",
+        "T",
+        "\u0000"
+      ],
+      "stop_codon": [
+        "F",
+        "\u0000",
+        "\u0000",
+        "T",
+        "F",
+        "\u0000"
+      ],
+      "v_call": [
+        "TRBV7-9*01,TRBV7-8*01",
+        "TRBV7-9*01,TRBV7-8*01",
+        "TRBV7-9*01,TRBV7-8*01",
+        "TRBV7-9*01,TRBV7-8*01",
+        "TRBV7-9*01,TRBV7-8*01",
+        "TRBV7-9*01,TRBV7-8*01"
+      ],
+      "d_call": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ],
+      "j_call": [
+        "TRBJ2-5*01",
+        "TRBJ2-5*01",
+        "TRBJ2-5*01",
+        "TRBJ2-5*01",
+        "TRBJ2-5*01",
+        "TRBJ2-5*01"
+      ],
+      "c_call": [
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000",
+        "\u0000"
+      ]
+    },
+    "header": "count\tfreq\tcdr3nt\tcdr3aa\tv\td\tj\tvend\tdstart\tdend\tjstart\tannotation\texternal_id",
+    "native_rows": [
+      "430\t0.43\tTGTGCTTCTTCTCTGGGTCAAGAAACTCAATATTTT\tCASSLGQETQYF\tTRBV7-9*01,TRBV7-8*01\t.\tTRBJ2-5*01\t11\t-1\t-1\t24\tsimulated subset; frequencies not renormalized\t9007199254740993",
+      "82\t0.082\tTGTGCTTCTTCTCTGGCTACTAATGAAAAATTTTTTA\tCASSLA_TNEKFF\tTRBV7-9*01,TRBV7-8*01\t.\tTRBJ2-5*01\t11\t-1\t-1\t24\tincomplete codon, not a stop\t9007199254740993",
+      "23\t0.023\tTGTGCTTCTTCTCTGGCTACTAATGAAAAATTTTTTA\tCASSLA~TNEKFF\tTRBV7-9*01,TRBV7-8*01\t.\tTRBJ2-5*01\t11\t-1\t-1\t24\tlegacy frameshift marker\t9007199254740993",
+      "11\t0.011\tTGTGCTTCTTCTTAAGGTCAAGAAACTCAATATTTT\tCASS*GQETQYF\tTRBV7-9*01,TRBV7-8*01\t.\tTRBJ2-5*01\t11\t-1\t-1\t24\tstop codon\t9007199254740993",
+      "0\t0\tTGTGCTTCTTCTCCTGGTCAAGGTGCTTATGAACAATATTTT\tCASSPGQGAYEQYF\tTRBV7-9*01,TRBV7-8*01\t.\tTRBJ2-5*01\t11\t-1\t-1\t24\texplicit zero\t9007199254740993",
+      "NA\t.\t.\t.\tTRBV7-9*01,TRBV7-8*01\t.\tTRBJ2-5*01\t11\t-1\t-1\t24\tmissing count and sequences\t9007199254740993"
+    ],
+    "sha256": "cc3570219c281fe988508d30971dfade6564894fa3724e231313a09348291531"
+  }
+}

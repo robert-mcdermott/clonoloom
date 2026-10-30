@@ -2,6 +2,144 @@
 
 ## Unreleased
 
+## 0.9.0 — prepared release
+
+- **CI execution and benchmark subprocess repair.** Give commands without input closed stdin
+  from startup, avoiding a fast-exit pipe race; preserve child exit diagnostics and reject
+  failed input delivery. Discover every host test/fuzz target and distribute the full race suite
+  across eight independent CI jobs, with scientific packages separate and an aggregate required
+  check. Retain all subtests, assertions, numerical tolerances and performance budgets.
+
+- **Suite and public-data study (wave 9, slice 16).** Connect exact metadata, explicit
+  public evidence, portable tables and reviewed sibling/B-cell workflows with clear scientific
+  boundaries. Add a 0.9.0 compatibility fixture from separate declared artificial controls,
+  preserving original source, project, parent and review evidence alongside portable paths.
+  Update application/client/citation versions and release documentation. Keep scientific
+  identities, historical fixtures and the existing automation and replay contracts unchanged.
+  Correct the container inventory validator to recognize the already-approved embedded ADC
+  registry; the production build context remains restricted to the same explicit files.
+
+- **Descriptive B-cell candidate review (wave 9, slice 15).** Rank a complete family scope
+  for one explicit sample by ordered observation count, heavy-row divergence, preferred isotype
+  share and same-subject observed share change. Preserve exact rational comparisons, denominators,
+  missingness, ties and original parent evidence. Review one unchanged supplied source-chain
+  amino-acid sequence before FASTA export or opening the existing Proteoscope permission flow.
+  No binding score, expansion test, sequence reconstruction or synthesis-ready construct is inferred.
+  Add independent count/rational/source checks, pinned processor controls and both-theme artificial
+  examples. Scientific replay and historical evidence remain unchanged.
+
+- **Bounded lineage likelihood reviews (wave 9, slice 14).** Fit JC69 to one saved
+  complete-case V/J panel, enumerating all binary topologies through seven distinct states.
+  Retain invariant sites, fitted branch units, numerical boundaries, multistart diagnostics
+  and conditional ancestral probabilities with explicit rooting and model limits. Add a
+  native evidence download, provider permissions, deterministic processor checks, independent
+  ancestral-enumeration/optimizer comparisons and both-theme simulated viewer validation.
+  Historical parsimony results and scientific replay remain unchanged.
+
+- **Sample-scoped CytoWeave phenotype links (wave 9, slice 13).** Review one index-sort
+  acquisition against one explicitly selected receptor sample using a separate well-to-cell
+  mapping. Preserve exact CSV/provenance text, numeric strings, missingness and unmatched
+  identities; refuse ambiguous wells, event IDs and cell targets. Retain declared acquisition,
+  compensation and gating context without inferring biological pairing or phenotype validity.
+  Add native permission/refusal controls, actual sibling FCS/exporter interoperability,
+  independent CSV/hash checks and artificial both-theme review validation.
+
+- **Reviewed Proteoscope handoff (wave 9, slice 12).** Transfer one unchanged AIRR amino-acid
+  observation to an explicitly reviewed local Proteoscope 0.10.0 for public RCSB sequence search.
+  Require separate local/public permissions and applicable provider-term acknowledgment. Preserve
+  exact source annotations, identifiers and query evidence locally; refuse unsupported sequences,
+  changed sources/destinations and repeated reviews. Validate against the actual receiver with
+  public requests intercepted, plus independent evidence checks and both-theme browser controls.
+
+- **Subject-level Prism interchange (wave 9, slice 11).** Export one saved cohort feature or
+  comparison result as data-only PZFX Column tables with explicit subject identities, declared
+  group order and paired alignment. Preserve missing measurements, structural blanks, zero and
+  excluded-sample reasons alongside exact native evidence. Refuse ambiguous or oversized mappings;
+  keep provider acknowledgment and import precision/method limits explicit. Add independent
+  XML/Decimal and R-reader import checks, native refusal controls and artificial both-theme UI
+  validation. Native Prism GUI import remains unverified where Prism is unavailable.
+
+- **Exact Excel evidence workbooks (wave 9, slice 10).** Export explicitly selected saved
+  cohort, batch QC and motif results with typed JSON-node value/provenance sheets, original
+  scalar tokens, methods, notices and native JSON/certificate companions. Keep precision-sensitive
+  numbers and all identifiers as text; distinguish null, absent fields, empty values and zero.
+  Refuse oversized or changed evidence and preserve provider acknowledgment. Add independent
+  workbook-reader controls, artificial both-theme browser validation and clear spreadsheet
+  precision, editing and scientific limits. No new estimator or replay/automation contract.
+
+- **Observed public-cohort overlap (wave 9, slice 9).** Compare one local sample with explicitly
+  selected, checksum-verified ADC captures under a named productive/locus/exact-junction
+  presence contract. Report eligible/excluded records, shared/union counts, Jaccard and
+  per-junction capture/scoped-subject support. Keep empty sets unavailable, missing subjects
+  outside the evaluable denominator and cohort completeness unestablished. Refuse duplicate
+  scopes and implicit visit/processing pooling. Save native evidence with source fingerprints;
+  add independent set/rational controls and simulated both-theme browser validation.
+
+- **Reviewed ADC downloads (wave 9, slice 8).** Capture one explicitly selected repertoire
+  and processing run after permission/citation and size-budget review. Preserve exact metadata
+  and rearrangement pages, requests, timestamps, hashes and stop reasons in new private folders.
+  Refuse mixed scopes, repeated identities and malformed pages; clean up failed/cancelled work.
+  Keep completeness unproven and source captures separate from analysis datasets and replay.
+  Add native/API controls and simulated both-theme review validation.
+
+- **AIRR Data Commons metadata browsing (wave 9, slice 7).** Pin the ADC v1 contract and
+  approved repository registry. Preview exact metadata filters, endpoints and bounded pages
+  before each explicit request. Preserve original response text, exact numeric tokens and
+  fingerprints; support offline refusal, cancellation and actionable provider errors. Keep
+  partial pages, subject scope, scientific validity and reuse permissions explicit. Add
+  independent request/evidence controls and simulated both-theme browser validation. No
+  dataset installation, automatic paging, local receptor upload or new automation action.
+
+- **Cell Ranger detailed JSON annotations (wave 9, slice 6).** Import the nested contig
+  array layout with exact barcodes, reads/UMIs, supplied flags and source clone labels.
+  Preserve unknown fields and original objects for paged inspection/cache reopening.
+  Keep background contigs, missing flags and unresolved mixed chains explicit; refuse
+  duplicate/conflicting identities, ambiguous layouts and invalid counts. Add CSV-first
+  folder fallback, independent JSON/CSV/AIRR controls, public-output comparison and
+  both-theme simulated evidence with documented scientific limits.
+
+- **Native TRUST4 and VDJtools reports (wave 9, slice 5).** Recognize documented
+  report headers, distinguish stop/frameshift/partial notation, preserve missing values and
+  explicit count units, and retain complete source rows for inspection. Keep ambiguous units
+  unknown and source frequencies separate from analysis denominators. Add bounded evidence
+  capture/cache persistence, independent CSV/Decimal references, malformed-input controls,
+  both-theme simulated examples and documented scientific limits. Saved mappings retain precedence.
+  Repair legacy AIRR Repertoire-array inspection overwriting its input buffer, with original-byte
+  preservation and release-opening regressions.
+
+- **Native AIRR object inspection (wave 9, slice 4).** Read AIRR 2.0 Clone, Cell,
+  Receptor and supporting Node objects in JSON/bounded YAML alongside rearrangement tables.
+  Preserve exact values, unknown fields, source snapshots and explicit links. Reject duplicate
+  IDs, ambiguous cardinality, conflicting repertoire links and incorrect receptor hashes.
+  Inspect loaded/unresolved/unscoped/unassessed links without changing clonotype definitions,
+  counts or pairing. Add independent exact-reader fixtures, refusal/fuzz/API controls,
+  simulated both-theme screenshots and documented scientific limits.
+
+- **Versioned MiAIRR reporting checklist (wave 9, slice 3).** Inspect AIRR 2.0 metadata
+  reporting with pinned essential/important/defined levels, explicit missingness states,
+  separate repeated scopes, evidence paths, conditional review and remedies. Keep exact
+  source values intact. Show unsupported versions and bounded refusals explicitly; do not
+  certify MiAIRR compliance, ontology conformance or scientific validity. Add the independent
+  82-field standards inventory, hand-specified evidence controls and both-theme presentation.
+  Document unassessed processed-sequence reporting, raw-file verification and scientific limits.
+
+- **Bounded AIRR YAML metadata (wave 9, slice 2).** Read a documented YAML 1.2 subset,
+  including gzip and uploaded filenames, without runtime dependencies or floating-point
+  conversion. Preserve scalar types, exact decimal tokens, null/false/zero and original source
+  snapshots. Refuse ambiguous keys/IDs, unsupported syntax and excessive work. Distinguish
+  decoded record JSON from original YAML in the inspector. Add independent ruamel.yaml node
+  references, malformed/budget/fuzz controls, source/API checks and both-theme screenshots.
+  Document supported syntax, refusals and scientific limits; MiAIRR assessment remains separate.
+
+- **Exact AIRR metadata and inspection (wave 9, slice 1).** Plan wave 9 in sixteen slices.
+  Preserve original repertoire JSON, exact numeric tokens and captured source fingerprints;
+  reject ambiguous keys/IDs, invalid Unicode and excessive metadata. Keep explicit ID matches
+  separate from legacy name matching and report unmatched records/samples. Add paged Data-view
+  inspection with declared schema versions and original evidence, explicit scientific limits,
+  an independent exact-number check and simulated both-theme examples. Conflicting single-cell
+  flags remain unresolved. Replace nested interactive dataset cards with a separate focus
+  button for keyboard/accessibility use. YAML and MiAIRR assessment follow in later slices.
+
 - Clarify AI-agent setup with Claude Code, Claude Desktop, Codex, Cursor and VS Code examples.
   Distinguish project storage from dataset paths, add first-task prompts and troubleshooting,
   and explain review, exact evidence and model-provider data flow. Refresh the MCP site guide

@@ -1,0 +1,48 @@
+{
+  "Info": {"title": "Simulated MiAIRR reporting review; deliberately incomplete", "version": "2.0"},
+  "Repertoire": [
+    {
+      "repertoire_id": "R001",
+      "repertoire_name": "Simulated S01, baseline blood",
+      "study": {
+        "study_id": "not_collected",
+        "study_title": "Simulated longitudinal T-cell study",
+        "study_type": {"id": "NCIT:C15273", "label": "Longitudinal Study"},
+        "inclusion_exclusion_criteria": "Simulation of two subjects sampled at baseline and follow-up; no human participants.",
+        "grants": "not_applicable",
+        "contributors": [],
+        "pub_ids": null,
+        "keywords_study": ["contains_tr", "contains_schema_rearrangement"]
+      },
+      "subject": {"subject_id": "S01", "synthetic": false, "species": {"id": "NCBITAXON:9606", "label": "Homo sapiens"}, "sex": "not_collected", "age": null},
+      "sample": [{
+        "sample_id": "S01-d00",
+        "sample_type": "Simulated peripheral venous draw",
+        "tissue": {"id": "UBERON:0013756", "label": "venous blood"},
+        "collection_time_point_relative": {"time_value": 0, "time_unit": {"id": "UO:0000033", "label": "day"}, "time_label": "baseline"},
+        "cell_subset": {"id": "CL:0000084", "label": "T cell"},
+        "single_cell": false,
+        "template_class": "RNA",
+        "library_generation_method": "RT(specific+UMI)+PCR",
+        "complete_sequences": "partial",
+        "physical_linkage": "none",
+        "pcr_target": [{"pcr_target_locus": "TRB", "forward_pcr_primer_target_location": "not_collected", "reverse_pcr_primer_target_location": "not_collected"}],
+        "sequencing_files": {"sequencing_data_id": "not_applicable", "file_type": "fastq", "filename": "not_applicable", "paired_filename": "not_applicable"}
+      }],
+      "data_processing": [
+        {"data_processing_id": "simulated-primary", "software_versions": "ClonoLoom simulated example; no wet-lab or sequencer run", "paired_reads_assembly": "not_applicable", "quality_thresholds": "not_applicable", "collapsing_method": "Declared bulk RNA UMI counts, generated directly", "germline_database": "not_applicable"},
+        {"data_processing_id": "simulated-secondary", "software_versions": "unknown", "quality_thresholds": null}
+      ],
+      "lab_extension": {"simulated": true, "note": "Reporting illustration only. synthetic=false describes the modeled biological repertoire, not a synthetic display library. No real specimen, instrument, read file, accession or biological result."}
+    },
+    {
+      "repertoire_id": "R005",
+      "repertoire_name": "Simulated unmatched record, incomplete metadata",
+      "study": {"study_title": "Simulated longitudinal T-cell study"},
+      "subject": {"subject_id": "S03", "species": null},
+      "sample": [],
+      "data_processing": [],
+      "lab_extension": {"simulated": true}
+    }
+  ]
+}

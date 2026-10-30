@@ -13,8 +13,10 @@
 import { acceptAutomation, waitForAutomationIdle } from '../../validation/automation.mjs';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
+import { createServer as createHTTPServer } from 'node:http';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { isDeepStrictEqual } from 'node:util';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { launch, sleep } from '../../validation/cdp.mjs';
@@ -409,6 +411,144 @@ async function capturedCertificateScene(kind) {
 }
 
 const scenes = {
+  async candidates() {
+    // Generate only the ordinary artificial reference library, then open the separate
+    // upstream-annotation controls. Historical/source files are never modified.
+    await act('open_example',{example:'simulated-bcell-immunization',download:true});
+    await act('new_project',{name:'Artificial B-cell candidate review'});
+    const files=['S01-d14','S01-d28','S01-pre','S02-d14','S02-d28','S02-pre'].map(s=>join(ROOT,'testdata/candidates',s+'.tsv'));
+    files.push(join(ROOT,'testdata/candidates/repertoires.airr.json'));
+    await act('open_data',{paths:files,name:'Artificial annotated B-cell study'});
+    await act('find_bcell_families',{threshold:0.1});
+    await act('reconstruct_bcell_germlines',{reference:'simulated-bcell-immunization'});
+    await act('measure_bcell_shm',{});
+    await act('summarize_bcell_isotypes',{});
+    const config=await js(`(()=>{const p=window.clonoloom.store.project,d=p.datasets[0],artifact=kind=>p.artifacts.find(a=>a.dataset===d.id&&a.kind===kind).id;return {dataset:d,families:artifact('families'),shm:artifact('shm'),isotypes:artifact('isotypes'),options:{sample:'S01-d28',baseline:'S01-pre',preferredClass:'IgG',criteria:[{metric:'change',direction:'descending'},{metric:'mutation',direction:'descending'}]}}})()`);
+    await js(`window.clonoloom.focusItem({kind:'result',id:${JSON.stringify(config.families)}})`);
+    await waitFor("window.clonoloom.familiesView?.state().status==='ready'");
+    const open=()=>js("(()=>{[...document.querySelectorAll('button')].find(b=>b.textContent==='Review B-cell candidates').click();return true})()");
+    await open();
+    if(await js("document.querySelector('[aria-label=\"Candidate sample\"]').value!==''||Boolean(window.clonoloom.candidatesView.state().review)"))throw Error('Implicit candidate selection');
+    const configure=()=>js(`(()=>{window.clonoloom.candidatesView.configure(${JSON.stringify(config)});return true})()`);
+    const run=()=>js('(async()=>{await window.clonoloom.candidatesView.run();return true})()');
+    await configure();await run();
+    const result=await js('window.clonoloom.candidatesView.state().review.evidence.result');
+    if(result.currentTotal!==24||result.baselineTotal!==4||result.rows.length!==2)throw Error('Wrong candidate denominators');
+    const obs=result.rows[0].observations.find(o=>o.rows.some(r=>r.sequenceId==='S01-d28-C000016-IGH'));
+    if(!obs)throw Error('Known source observation absent');const row=obs.rows.find(r=>r.sequenceId==='S01-d28-C000016-IGH');
+    const select=()=>js(`(()=>{window.clonoloom.candidatesView.select(${JSON.stringify(obs.family)},${JSON.stringify(obs.id)},${JSON.stringify(row.id)});return true})()`);
+    await select();await js('(async()=>{await window.clonoloom.candidatesView.inspect();return true})()');
+    if(!(await js('window.clonoloom.candidatesView.state().selection.evidence.eligible')))throw Error('Declared source chain unavailable');
+    // FASTA requires the explicit sequence-limit acknowledgment; no repair/translation.
+    await js(`(async()=>{const v=window.clonoloom.candidatesView;let denied=false;try{await v.exportFASTA()}catch{denied=true}if(!denied)throw Error('FASTA without sequence review');return true})()`);
+    await run();await select();await js('(async()=>{await window.clonoloom.candidatesView.inspect();return true})()');
+    await js(`(async()=>{const v=window.clonoloom.candidatesView,original=URL.createObjectURL;window.candidateDownloads=[];URL.createObjectURL=b=>{window.candidateDownloads.push(b);return original(b)};try{v.approve({sequence:true});await v.exportFASTA()}finally{URL.createObjectURL=original}return true})()`);
+    const downloads=await js('Promise.all(window.candidateDownloads.map(b=>b.text()))');if(downloads.length!==3)throw Error('Missing native candidate companions');
+    if(process.env.CLONOLOOM_CANDIDATES_OUT){const dir=join(process.env.CLONOLOOM_CANDIDATES_OUT,`browser-${await js("matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'")}`);mkdirSync(dir,{recursive:true});for(let i=0;i<3;i++)writeFileSync(join(dir,['review.json','selection.json','chain.fasta'][i]),downloads[i]);}
+    // Opening the existing Proteoscope review must only preselect this row. No probe,
+    // review or send starts and every destination permission remains unchecked.
+    await js(`(async()=>{const original=fetch;window.fetch=(...args)=>{if(String(args[0]).includes('api/proteoscope/')&&!String(args[0]).endsWith('/page'))throw Error('Implicit Proteoscope request');return original(...args)};try{await window.clonoloom.candidatesView.handoff();const v=window.clonoloom.proteoscopeView;if(v.state().review)throw Error('Implicit handoff review');if([...document.querySelectorAll('.proteoscope-view input[type=checkbox]')].some(x=>x.checked))throw Error('Inherited permission');if(document.querySelector('.proteoscope-row').value==='')throw Error('Lost source row');v.close()}finally{window.fetch=original}return true})()`);
+    await open();await configure();
+    // Cancellation and project replacement cannot publish a delayed native result.
+    await js(`(async()=>{const v=window.clonoloom.candidatesView,p=v.run();[...document.querySelectorAll('.candidates-view button')].find(b=>b.textContent==='Cancel candidate operation').click();let denied=false;try{await p}catch{denied=true}if(!denied||v.state().review)throw Error('Cancelled candidate review retained');return true})()`);
+    await js(`(async()=>{const app=window.clonoloom,v=app.candidatesView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);entered();await gate;return response};try{const pending=v.run();await started;let denied=false;try{await v.run()}catch{denied=true}if(!denied)throw Error('Concurrent candidate operation');app.store.commit({...app.store.project,candidateSentinel:'keep'},'Concurrent candidate edit');release();let stale=false;try{await pending}catch{stale=true}if(!stale||v.state().review)throw Error('Stale candidate review retained');}finally{release();window.fetch=original}v.close();app.store.undo();return true})()`);
+    await open();await configure();await run();await select();await js('(async()=>{await window.clonoloom.candidatesView.inspect();return true})()');
+    await js("(()=>{document.querySelector('.candidates-view').closest('.dialog-body').scrollTop=0;return true})()");
+    await clearToasts();await checkAccessibility();
+  },
+
+  async 'lineage-likelihood'() {
+    await act('open_example',{example:'simulated-bcell-immunization',download:true});
+    await act('find_bcell_families',{threshold:0.1});
+    await act('reconstruct_bcell_germlines',{reference:'simulated-bcell-immunization'});
+    await act('build_bcell_lineages',{});
+    await waitFor("window.clonoloom.lineagesView?.state().status==='ready'");
+    const state=await js('window.clonoloom.lineagesView.state()');
+    const chosen=state.page.rows.find(t=>!t.excluded&&t.taxa>2&&t.taxa<=7);if(!chosen)throw Error('No bounded full family panel');
+    await js(`window.clonoloom.lineagesView.openTree(${JSON.stringify(chosen.id)})`);
+    const open=()=>js(`(()=>{[...document.querySelectorAll('button')].find(b=>b.textContent==='Review JC69 likelihood').click();return true})()`);
+    await open();if(await js('Boolean(window.clonoloom.likelihoodView.state().review)'))throw Error('Fit ran without selection');
+    await js('(async()=>{await window.clonoloom.likelihoodView.run();return true})()');
+    const result=await js('window.clonoloom.likelihoodView.state().review.evidence');
+    if(result.result.topologies!==945||result.panel.sites!==327||result.result.fits.some(f=>!f.converged))throw Error('Wrong likelihood evidence');
+    await js(`(async()=>{const v=window.clonoloom.likelihoodView,original=URL.createObjectURL;window.mlDownloads=[];URL.createObjectURL=b=>{window.mlDownloads.push(b);return original(b)};try{await v.save()}finally{URL.createObjectURL=original}return true})()`);
+    const saved=await js('window.mlDownloads[0].text()');if(JSON.parse(saved).result.logLikelihood!==result.result.logLikelihood)throw Error('Saved likelihood changed');
+    if(process.env.CLONOLOOM_ML_OUT){const dir=join(process.env.CLONOLOOM_ML_OUT,`browser-${await js("matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'")}`);mkdirSync(dir,{recursive:true});writeFileSync(join(dir,'likelihood.json'),saved);}
+    // Cancel an actual native request; no partial review may remain.
+    await js(`(async()=>{const v=window.clonoloom.likelihoodView,p=v.run();[...document.querySelectorAll('.likelihood-view button')].find(b=>b.textContent==='Cancel likelihood operation').click();let refused=false;try{await p}catch{refused=true}if(!refused||v.state().review)throw Error('Cancelled fit retained');return true})()`);
+    // Concurrency and project changes must invalidate a completed but delayed response.
+    await js(`(async()=>{const app=window.clonoloom,v=app.likelihoodView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);entered();await gate;return response};try{const pending=v.run();await started;let refused=false;try{await v.run()}catch{refused=true}if(!refused)throw Error('Concurrent fit');app.store.commit({...app.store.project,mlSentinel:'keep'},'Concurrent likelihood edit');release();let stale=false;try{await pending}catch{stale=true}if(!stale||v.state().review)throw Error('Stale likelihood retained');}finally{release();window.fetch=original}v.close();app.store.undo();return true})()`);
+    await open();await js('(async()=>{await window.clonoloom.likelihoodView.run();return true})()');
+    // The accessible table also moves focus to its selected node details.
+    await js("(()=>{document.querySelector('.likelihood-view table button').click();if(!document.activeElement.hasAttribute('data-ml-detail'))throw Error('Table node focus');return true})()");
+    // Choose an inferred node by keyboard, retaining conditional probability inspection.
+    const node=result.result.nodes.find(n=>n.kind==='inferred');
+    await js(`(()=>{document.querySelector('.likelihood-view [data-node="${node.id}"]').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));return true})()`);
+    if(!(await js("document.activeElement.hasAttribute('data-ml-detail')")))throw Error('Likelihood node keyboard focus');
+    // Keep overview at the top while its node controls remain keyboard reachable below.
+    await js("(()=>{document.querySelector('.likelihood-view').closest('.dialog-body').scrollTop=0;return true})()");
+    await clearToasts();await checkAccessibility();
+  },
+  async cytoweave() {
+    await act('new_project',{name:'Artificial index-sort links'});
+    await act('open_data',{paths:[join(ROOT,'testdata/cytoweave/receptors.tsv')],name:'Artificial single-cell receptor controls'});
+    await act('show',{view:'Data'});
+    const inputs={sample:0,wells:readFileSync(join(ROOT,'testdata/cytoweave/wells.csv'),'utf8'),mapping:readFileSync(join(ROOT,'testdata/cytoweave/mapping.csv'),'utf8'),provenance:readFileSync(join(ROOT,'testdata/cytoweave/provenance.json'),'utf8')};
+    const open=()=>js(`(async()=>{const app=window.clonoloom,{showCytoWeave}=await import('/ui/cytoweave.js');showCytoWeave(app,app.store.project.datasets[0]);return true})()`);
+    await open();
+    if(await js("document.querySelector('.cyto-sample').value!==''"))throw Error('Sample implicitly selected');
+    // Exercise actual browser File decoding, including a UTF-8 BOM, before review.
+    inputs.wells='\ufeff'+inputs.wells;
+    await js(`(()=>{const s=document.querySelector('.cyto-sample');s.value='0';s.dispatchEvent(new Event('change'));return true})()`);
+    for(const [i,key]of ['wells','mapping','provenance'].entries()){
+      await js(`(()=>{const input=document.querySelectorAll('.cytoweave-view input[type=file]')[${i}],dt=new DataTransfer();dt.items.add(new File([${JSON.stringify(inputs[key])}],${JSON.stringify(key+(key==='provenance'?'.json':'.csv'))}));input.files=dt.files;input.dispatchEvent(new Event('change'));return true})()`);
+      await waitFor('!window.clonoloom.cytoweaveView.state().busy');
+    }
+    await js(`(async()=>{const v=window.clonoloom.cytoweaveView;await v.inspect();const r=v.state().review.evidence.result;if(r.matched!==80||r.absentTargets!==10||r.unmapped!==6||r.receptorOnly.length!==4)throw Error('Scope or missingness changed');return true})()`);
+    await js(`(async()=>{const v=window.clonoloom.cytoweaveView,original=URL.createObjectURL;window.cytoDownloads=[];URL.createObjectURL=b=>{window.cytoDownloads.push(b);return original(b)};try{await v.save()}finally{URL.createObjectURL=original}return true})()`);
+    const saved=await js('window.cytoDownloads[0].text()');if(JSON.parse(saved).wells.text!==inputs.wells)throw Error('Download changed source');
+    if(process.env.CLONOLOOM_CYTOWEAVE_OUT){const dir=join(process.env.CLONOLOOM_CYTOWEAVE_OUT,`browser-${await js("matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'")}`);mkdirSync(dir,{recursive:true});writeFileSync(join(dir,'links.json'),saved);}
+    // Reused barcodes link only in the selected sample; duplicate wells refuse the whole join.
+    await js(`(async()=>{const v=window.clonoloom.cytoweaveView,x=${JSON.stringify(inputs)};v.configure({...x,sample:1});await v.inspect();if(v.state().review.evidence.result.matched!==3)throw Error('Cross-sample fallback');v.configure({...x,wells:x.wells+x.wells.split('\\n')[1]+'\\n'});let refused=false;try{await v.inspect()}catch{refused=true}if(!refused)throw Error('Ambiguous well accepted');v.configure(x);return true})()`);
+    // Delay the actual native response: concurrent work, cancellation and stale project edits.
+    await js(`(async()=>{const v=window.clonoloom.cytoweaveView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);entered();await gate;return response};try{const pending=v.inspect();await started;let refused=false;try{await v.inspect()}catch{refused=true}if(!refused)throw Error('Concurrent review');[...document.querySelectorAll('.cytoweave-view button')].find(b=>b.textContent==='Cancel phenotype operation').click();release();let cancelled=false;try{await pending}catch{cancelled=true}if(!cancelled||v.state().review)throw Error('Cancelled review retained');}finally{release();window.fetch=original}return true})()`);
+    await js(`(async()=>{const app=window.clonoloom,v=app.cytoweaveView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);entered();await gate;return response};try{const pending=v.inspect();await started;app.store.commit({...app.store.project,cytoSentinel:'keep'},'Concurrent phenotype edit');release();let refused=false;try{await pending}catch{refused=true}if(!refused||v.state().review)throw Error('Stale review retained');}finally{release();window.fetch=original}v.close();app.store.undo();return true})()`);
+    await open();await js(`(async()=>{const v=window.clonoloom.cytoweaveView;v.configure(${JSON.stringify(inputs)});await v.inspect();return true})()`);
+    await clearToasts();await checkAccessibility();
+  },
+  async proteoscope() {
+    const sent=[];
+    const receiver=createHTTPServer(async(req,res)=>{
+      res.setHeader('Content-Type','application/json');
+      if(req.url==='/'){res.setHeader('Content-Type','text/html');res.end('<title>Proteoscope</title>');return;}
+      if(req.url==='/api/startup'){res.end(JSON.stringify({version:'0.10.0',offline:false,remoteControl:true,files:[]}));return;}
+      if(req.url==='/api/remote/command'){let raw='';for await(const chunk of req)raw+=chunk;sent.push(JSON.parse(raw));res.end('{"ok":true,"message":"Artificial local receiver; no public search","data":{"token":9007199254740993}}');return;}
+      res.writeHead(404).end();
+    });
+    await new Promise(r=>receiver.listen(0,'127.0.0.1',r));const port=receiver.address().port;
+    try{
+      await act('new_project',{name:'Artificial receptor handoff'});
+      await act('open_data',{paths:[join(ROOT,'testdata/proteoscope/simulated-airr.tsv')],name:'Artificial receptor sequence controls'});
+      await act('show',{view:'Data'});
+      const open=()=>js(`(async()=>{const app=window.clonoloom,{showProteoscope}=await import('/ui/proteoscope.js');showProteoscope(app,app.store.project.datasets[0]);return true})()`);
+      await open();await waitFor('window.clonoloom.proteoscopeView&&!window.clonoloom.proteoscopeView.state().busy');
+      if(await js(`document.querySelector('.proteoscope-row').value!==''`))throw Error('Observation implicitly selected');
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView;v.select(0,${port});await v.inspect();if(!v.state().review.evidence.destination.ready)throw Error('Receiver unavailable');if(document.querySelector('.proteoscope-local').checked||document.querySelector('.proteoscope-public').checked)throw Error('Permission preselected');let refused=false;try{await v.send()}catch{refused=true}if(!refused)throw Error('Unapproved transfer');return true})()`);
+      if(sent.length)throw Error('Review sent a sequence');
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView;v.approve({local:true,publicSearch:true});const original=URL.createObjectURL;window.handoffDownloads=[];URL.createObjectURL=b=>{window.handoffDownloads.push(b);return original(b)};try{await v.send()}finally{URL.createObjectURL=original}if(!v.state().receipt||v.state().review)throw Error('Receipt or one-use state');return true})()`);
+      const sequence=readFileSync(join(ROOT,'testdata/proteoscope/simulated-airr.tsv'),'utf8').split('\n')[1].split('\t')[2];
+      if(sent.length!==1||sent[0].command!=='search '+sequence)throw Error('Query differs');
+      if(process.env.CLONOLOOM_HANDOFF_OUT){const dir=join(process.env.CLONOLOOM_HANDOFF_OUT,`browser-${await js("matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'")}`);mkdirSync(dir,{recursive:true});for(const [i,name]of ['handoff.json','receipt.json'].entries())writeFileSync(join(dir,name),await js(`window.handoffDownloads[${i}].text()`));writeFileSync(join(dir,'command.json'),JSON.stringify(sent[0]));}
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView;v.select(2,${port});await v.inspect();if(v.state().review.evidence.eligible)throw Error('Missing sequence repaired');v.select(1,${port});await v.inspect();if(v.state().review.evidence.fields.complete_vdj!=='F')throw Error('Partial annotation changed');return true})()`);
+      // Cancellation and duplicate-submit checks with the actual local endpoint delayed in-page.
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).endsWith('/review')){entered();await gate}return response};try{const pending=v.inspect();await started;let refused=false;try{await v.inspect()}catch{refused=true}if(!refused)throw Error('Concurrent review');release();await pending;}finally{release();window.fetch=original}const pending=v.inspect();[...document.querySelectorAll('.proteoscope-view button')].find(b=>b.textContent==='Cancel handoff operation').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||v.state().busy)throw Error('Cancellation failed');return true})()`);
+      // Project edits invalidate an in-flight review and cannot enable sending it.
+      await js(`(async()=>{const app=window.clonoloom,v=app.proteoscopeView,original=fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).endsWith('/review')){entered();await gate}return response};try{const pending=v.inspect();await started;app.store.commit({...app.store.project,handoffSentinel:'keep'},'Concurrent handoff edit');release();let refused=false;try{await pending}catch{refused=true}if(!refused||v.state().review)throw Error('Stale review');}finally{release();window.fetch=original}v.close();app.store.undo();return true})()`);
+      await open();await waitFor('!window.clonoloom.proteoscopeView.state().busy');
+      await js(`(async()=>{const v=window.clonoloom.proteoscopeView;v.select(0,${port});await v.inspect();const p=document.querySelector('.proteoscope-view');p.querySelector('input[type=number]').value=8765;const walk=document.createTreeWalker(p,NodeFilter.SHOW_TEXT);for(let node=walk.nextNode();node;node=walk.nextNode())node.nodeValue=node.nodeValue.replaceAll(':${port}/',':8765/');return true})()`);
+      await clearToasts();await checkAccessibility();
+    }finally{await new Promise(r=>receiver.close(r));}
+  },
   async automation() {
     await act('new_project',{name:'Artificial repertoire review'});
     await act('open_example',{example:'simulated-vaccine',download:true});
@@ -456,6 +596,40 @@ const scenes = {
     await b.capture(join(IMAGES,`automation-${await js(`window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'`)}.webp`),{format:'webp',quality:86});
     await reject();await pending;
     await js(`(()=>{window.clonoloom.store.setUI({drawer:{open:true,tab:'automation'}},['drawer']);return true})()`);
+  },
+  async ['prism']() {
+    await act('new_project',{name:'Artificial paired cohort · Prism interchange'});
+    const opened=(await act('open_example',{example:'simulated-counts-paired',download:true})).data;
+    for(const step of ['design','features','compare'])await act('cohort_example_step',{dataset:opened.dataset,preset:'counts-paired',step});
+    const artifact=(await act('get_state')).data.artifacts.find(r=>r.kind==='cohort-compare').id;
+    await js(`window.clonoloom.setMode('reports')`);
+    if(await js(`Boolean(document.querySelector('.prism-view select').value)`))throw new Error('Prism selected implicitly');
+    const exported=await js(`window.clonoloom.prismView.exportPrism('${artifact}',{title:'Artificial paired subject study · recorded evidence'})`);
+    if(!/^[a-f0-9]{64}$/.test(exported.fingerprint)||exported.recomputed)throw new Error('Prism export contract');
+    await js(`(()=>{const root=document.querySelector('.prism-view');root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    // Refuse a completed response after a newer project edit, then exercise cancellation.
+    await js(`(async()=>{const app=window.clonoloom,v=app.prismView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).includes('reports/prism')){entered();await gate}return response};try{const pending=v.exportPrism('${artifact}');await started;app.store.commit({...app.store.project,reportSentinel:'keep'},'Concurrent prism edit');release();let refused=false;try{await pending}catch(e){refused=e.message.includes('analysis changed')}if(!refused||app.store.project.reportSentinel!=='keep')throw new Error('Stale prism export');}finally{release();window.fetch=original}app.store.undo();await new Promise(r=>setTimeout(r,0));const pending=app.prismView.exportPrism('${artifact}');[...document.querySelectorAll('.prism-view button')].find(b=>b.textContent==='Cancel Prism export').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||app.prismView.state().busy)throw new Error('Prism cancellation');return true})()`);
+    await js(`(async()=>{const v=window.clonoloom.prismView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async()=>{entered();await gate;return new Response(JSON.stringify({error:'Artificial prism refusal control'}),{status:409,headers:{'Content-Type':'application/json'}})};try{const pending=v.exportPrism('${artifact}');await started;let refused=false;try{await v.exportPrism('${artifact}')}catch(e){refused=e.message.includes('Wait')}if(!refused||!document.querySelector('.prism-view input').disabled)throw new Error('Concurrent prism submission');release();try{await pending}catch{}if(v.state().busy||!document.querySelector('.prism-view [role=alert]')?.textContent.includes('Artificial prism refusal control'))throw new Error('Prism error hidden');return true}finally{release();window.fetch=original}})()`);
+    await js(`(async()=>{const original=URL.createObjectURL;try{URL.createObjectURL=(blob)=>{window.prismDownload=blob;return original(blob)};await window.clonoloom.prismView.exportPrism('${artifact}',{title:'Artificial paired subject study · recorded evidence'});return true}finally{URL.createObjectURL=original}})()`);
+    if(process.env.CLONOLOOM_PRISM_OUT){mkdirSync(process.env.CLONOLOOM_PRISM_OUT,{recursive:true});writeFileSync(join(process.env.CLONOLOOM_PRISM_OUT,'browser-paired.zip'),Buffer.from(await js(`window.prismDownload.arrayBuffer().then(b=>Array.from(new Uint8Array(b)))`)));}
+    await js(`(()=>{const root=document.querySelector('.prism-view');root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    await clearToasts();await checkAccessibility();
+  },
+  async ['workbooks']() {
+    await batchQCScene();
+    const artifact=await js('window.batchQCCheck.id');
+    await js(`window.clonoloom.setMode('reports')`);
+    if(await js(`document.querySelector('.workbooks-view input[type=checkbox]').checked`))throw new Error('Workbook selected implicitly');
+    const exported=await js(`window.clonoloom.workbooksView.exportWorkbook(['${artifact}'],{title:'Artificial batch QC study · recorded evidence'})`);
+    if(!/^[a-f0-9]{64}$/.test(exported.fingerprint)||exported.recomputed)throw new Error('Workbook export contract');
+    await js(`(()=>{const root=document.querySelector('.workbooks-view');if(!root.querySelector('input[type=checkbox]').checked)root.querySelector('input[type=checkbox]').click();root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    // Refuse a completed response after a newer project edit, then exercise cancellation.
+    await js(`(async()=>{const app=window.clonoloom,v=app.workbooksView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async(...args)=>{const response=await original(...args);if(String(args[0]).includes('reports/workbook')){entered();await gate}return response};try{const pending=v.exportWorkbook(['${artifact}']);await started;app.store.commit({...app.store.project,reportSentinel:'keep'},'Concurrent workbook edit');release();let refused=false;try{await pending}catch(e){refused=e.message.includes('analysis changed')}if(!refused||app.store.project.reportSentinel!=='keep')throw new Error('Stale workbook export');}finally{release();window.fetch=original}app.store.undo();await new Promise(r=>setTimeout(r,0));const pending=app.workbooksView.exportWorkbook(['${artifact}']);[...document.querySelectorAll('.workbooks-view button')].find(b=>b.textContent==='Cancel workbook export').click();let cancelled=false;try{await pending}catch(e){cancelled=e.name==='AbortError'}if(!cancelled||app.workbooksView.state().busy)throw new Error('Workbook cancellation');return true})()`);
+    await js(`(async()=>{const v=window.clonoloom.workbooksView,original=window.fetch;let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);window.fetch=async()=>{entered();await gate;return new Response(JSON.stringify({error:'Artificial workbook refusal control'}),{status:409,headers:{'Content-Type':'application/json'}})};try{const pending=v.exportWorkbook(['${artifact}']);await started;let refused=false;try{await v.exportWorkbook(['${artifact}'])}catch(e){refused=e.message.includes('Wait')}if(!refused||!document.querySelector('.workbooks-view input').disabled)throw new Error('Concurrent workbook submission');release();try{await pending}catch{}if(v.state().busy||!document.querySelector('.workbooks-view [role=alert]')?.textContent.includes('Artificial workbook refusal control'))throw new Error('Workbook error hidden');return true}finally{release();window.fetch=original}})()`);
+    await js(`(async()=>{const original=URL.createObjectURL;try{URL.createObjectURL=(blob)=>{window.workbookDownload=blob;return original(blob)};await window.clonoloom.workbooksView.exportWorkbook(['${artifact}'],{title:'Artificial batch QC study · recorded evidence'});return true}finally{URL.createObjectURL=original}})()`);
+    if(process.env.CLONOLOOM_WORKBOOK_OUT){mkdirSync(process.env.CLONOLOOM_WORKBOOK_OUT,{recursive:true});writeFileSync(join(process.env.CLONOLOOM_WORKBOOK_OUT,'browser-batch.zip'),Buffer.from(await js(`window.workbookDownload.arrayBuffer().then(b=>Array.from(new Uint8Array(b)))`)));}
+    await js(`(()=>{const root=document.querySelector('.workbooks-view');if(!root.querySelector('input[type=checkbox]').checked)root.querySelector('input[type=checkbox]').click();root.closest('.workbench-scroll').scrollTop=root.offsetTop-65;return true})()`);
+    await clearToasts();await checkAccessibility();
   },
   async ['html-reports']() {
     await batchQCScene();
@@ -1326,8 +1500,332 @@ const scenes = {
     await act('show_examples');
     await waitFor(`document.querySelectorAll('.example-card').length >= 6`);
   },
+  // A deterministic metadata response, never a live public-repository dependency.
+  async adc() {
+    const fixture = JSON.parse(readFileSync(join(ROOT, 'validation/reference/adc.json'), 'utf8'));
+    await act('show', { view: 'data' });
+    await js(`(() => {
+      const original = window.fetch;
+      const fixture = ${JSON.stringify(fixture)};
+      window.adcCapture = { calls: 0, mode: 'normal', offline: false, release: null, aborted: false };
+      window.fetch = async (address, options = {}) => {
+        const state = window.adcCapture;
+        if (String(address).endsWith('api/adc/repositories')) {
+          const response = await original(address, options); const data = await response.json();
+          return new Response(JSON.stringify({ ...data, offline: state.offline }));
+        }
+        if (String(address).endsWith('api/adc/query') || String(address).endsWith('api/adc/info')) {
+          state.calls += 1;
+          if (state.mode === 'error') return new Response(JSON.stringify({ error: 'ADC returned HTTP 429; try again later.' }), { status: 502 });
+          const body = JSON.parse(options.body);
+          if (!body.confirm) throw new Error('Outbound request lacks explicit confirmation');
+          const p = await (await original('api/adc/prepare', options)).json();
+          if (body.query.from === 0 && p.requestJSON !== fixture.requestJSON) throw new Error('Preview differs from independent request control');
+          const isInfo = String(address).endsWith('/info');
+          const raw = isInfo ? '{"title":"Simulated ADC service","version":"fixture-1","api":{"version":"1.2.0"},"schema":{"version":"1.4.1"},"attributes":{"max_size":100}}' : state.mode === 'empty' ? '{"Repertoire":[]}' : fixture.responseJSON;
+          const bytes = new TextEncoder().encode(raw);
+          const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (v) => v.toString(16).padStart(2, '0')).join('');
+          const evidence = { endpoint: isInfo ? p.repository.url + '/airr/v1/info' : p.endpoint, retrievedAt: '2026-10-29T12:00:00Z', responseJSON: raw, responseBytes: bytes.length, responseSHA256: hash };
+          const data = isInfo ? evidence : { ...p, evidence, records: state.mode === 'empty' ? [] : fixture.records, nextOffset: state.mode === 'empty' ? null : p.from + 3, completeness: 'not-established' };
+          if (state.mode === 'delay') await new Promise((resolve) => { state.release = resolve; options.signal.addEventListener('abort', () => { state.aborted = true; }); });
+          return new Response(JSON.stringify(data));
+        }
+        return original(address, options);
+      };
+    })()`);
+    const open = async () => {
+      await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Public repositories').click()`);
+      await waitFor(`Boolean(document.querySelector('.adc-request'))`);
+      await js(`(() => { const repo = document.querySelector('.adc-repository'); repo.value = 'ipa1.ireceptor.org'; repo.dispatchEvent(new Event('input')); const study = document.querySelector('[aria-label="Study ID"]'); study.value = 'SIM-longitudinal-TRB'; study.dispatchEvent(new Event('input')); })()`);
+      await waitFor(`document.querySelector('.adc-request')?.textContent.includes('SIM-longitudinal-TRB')`);
+    };
+    const click = (label) => js(`[...document.querySelectorAll('.adc-browser button')].find((b) => b.textContent === ${JSON.stringify(label)}).click()`);
+    await open();
+    if (await js('window.adcCapture.calls') !== 0) throw new Error('Opening/preparing contacted a repository');
+    await click('Send metadata query');
+    await waitFor(`document.querySelectorAll('.adc-table tbody tr').length === 3`);
+    await js(`document.querySelector('[aria-label="Inspect SIM-R01-baseline"]').click()`);
+    await js(`(() => { const text = document.querySelector('.adc-detail').textContent; for (const token of ['9007199254740993','0.123456789012345678901','"single_cell": false','"unknown": null','"collection_time_point_relative": 0']) if (!text.includes(token)) throw new Error('ADC evidence changed: ' + token); })()`);
+    await click('Prepare next page');
+    await waitFor(`document.querySelector('.adc-request')?.textContent.includes('"from":3')`);
+    if (await js('window.adcCapture.calls') !== 1) throw new Error('Next-page preparation sent a query');
+    await click('Send metadata query');
+    await waitFor(`document.querySelector('.adc-page')?.textContent.includes('Offset 3')`);
+    if (await js(`document.querySelectorAll('.adc-table tbody tr').length`) !== 3) throw new Error('Pages were silently combined');
+    await js(`window.adcCapture.mode = 'error'`); await click('Send metadata query');
+    await waitFor(`document.querySelector('.adc-result')?.textContent.includes('429')`);
+    if (await js(`Boolean(document.querySelector('.adc-table'))`)) throw new Error('Failed request retained stale results');
+    await js(`window.adcCapture.mode = 'delay'`); await click('Send metadata query');
+    await waitFor(`Boolean(window.adcCapture.release)`); await click('Cancel request');
+    await js(`window.adcCapture.release()`);
+    await waitFor(`document.querySelector('.adc-browser [role="status"]')?.textContent.startsWith('Cancelled')`);
+    if (!(await js('window.adcCapture.aborted')) || await js(`Boolean(document.querySelector('.adc-table'))`)) throw new Error('Cancellation left results');
+    // A late response must not replace a freshly prepared query after input changes.
+    await js(`window.adcCapture.release = null`); await click('Send metadata query');
+    await waitFor(`Boolean(window.adcCapture.release)`);
+    await js(`(() => { const from = document.querySelector('[aria-label="Offset"]'); from.value = '0'; from.dispatchEvent(new Event('input')); window.adcCapture.release(); })()`);
+    await waitFor(`document.querySelector('.adc-request')?.textContent.includes('"from":0')`);
+    if (await js(`Boolean(document.querySelector('.adc-table'))`)) throw new Error('Stale response applied after changing input');
+    await js(`window.adcCapture.mode = 'normal'`); await click('Request service info');
+    await waitFor(`document.querySelector('.adc-result h3')?.textContent === 'Repository service information'`);
+    await js(`window.adcCapture.mode = 'empty'`); await click('Send metadata query');
+    await waitFor(`document.querySelector('.adc-result')?.textContent.includes('No records returned')`);
+    if (!(await js(`[...document.querySelectorAll('.adc-browser button')].find((b) => b.textContent === 'Prepare next page').disabled`))) throw new Error('Empty page offered automatic continuation');
+    await js(`window.adcCapture.mode = 'delay'; window.adcCapture.release = null`); await click('Send metadata query');
+    await waitFor(`Boolean(window.adcCapture.release)`); await act('close_dialogs');
+    await js(`window.adcCapture.release(); window.adcCapture.mode = 'normal'`);
+    await open();
+    if (await js(`Boolean(document.querySelector('.adc-table'))`)) throw new Error('Closed dialog response leaked into reopened dialog');
+    const calls = await js('window.adcCapture.calls');
+    await act('close_dialogs'); await js(`window.adcCapture.offline = true`); await open();
+    if (!(await js(`[...document.querySelectorAll('.adc-browser button')].find((b) => b.textContent === 'Send metadata query').disabled`)) || await js('window.adcCapture.calls') !== calls) throw new Error('Offline browsing contacted a repository');
+    await act('close_dialogs'); await js(`window.adcCapture.offline = false`); await open();
+    await click('Send metadata query');
+    await waitFor(`document.querySelectorAll('.adc-table tbody tr').length === 3`);
+    await js(`(() => { const note = document.createElement('p'); note.className = 'callout'; note.textContent = 'Simulated ADC response for documentation. Three repertoire records, two declared subject IDs; no real participants or live repository request.'; document.querySelector('.adc-browser').prepend(note); })()`);
+    await checkAccessibility();
+  },
+  async 'adc-overlap'() {
+    for (const suffix of ['a', 'b', 'c', 'd']) {
+      const name = `adc-download-sim-${suffix}`;
+      cpSync(join(ROOT, 'testdata/public-overlap', name), join(places.library, name), { recursive: true });
+    }
+    await act('open_data', { paths: [join(ROOT, 'testdata/public-overlap/query.tsv')], name: 'Simulated TRB query' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Public overlap').click()`);
+    await waitFor(`document.querySelectorAll('.adc-captures input').length === 4`);
+    await js(`(() => {
+      window.adcOverlapTest = { mode: 'native', calls: 0 };
+      const original = window.fetch;
+      window.fetch = async (address, options) => {
+        if (!String(address).endsWith('api/adc/overlap')) return original(address, options);
+        const state = window.adcOverlapTest; state.calls++;
+        if (state.mode === 'delay') return new Promise((resolve) => { state.release = () => resolve(new Response(state.baseline)); });
+        if (state.mode === 'error') return new Response(JSON.stringify({ error: 'Simulated invalid capture; no result saved.' }), { status: 400 });
+        const response = await original(address, options);
+        state.baseline = await response.clone().text(); return response;
+      };
+      document.querySelectorAll('.adc-captures input').forEach((x) => x.click());
+      if (!document.querySelector('.adc-overlap .primary').disabled) throw new Error('Acceptance not required');
+      document.querySelector('[aria-label="Accept presence contract"]').click();
+      document.querySelector('.adc-overlap .primary').click();
+    })()`);
+    await waitFor(`document.querySelector('.adc-overlap [role="status"]').textContent.includes('Comparison saved')`);
+    const expected = JSON.parse(readFileSync(join(ROOT, 'testdata/public-overlap/expected.json'), 'utf8'));
+    const native = await js(`JSON.parse(window.adcOverlapTest.baseline).document.result`);
+    for (const field of ['query', 'sharedKeys', 'queryKeysShared', 'assignedSubjects', 'evaluableSubjects', 'missingSubjects', 'unassignedCaptures']) {
+      if (!isDeepStrictEqual(native[field], expected[field])) throw new Error('Native overlap reference differs: ' + field);
+    }
+    for (let i = 0; i < expected.pairs.length; i++) {
+      for (const field of ['shared', 'union', 'jaccard']) if (native.pairs[i][field] !== expected.pairs[i][field]) throw new Error('Native pair differs: ' + field);
+    }
+    await js(`(() => {
+      const state = window.adcOverlapTest; state.mode = 'delay';
+      document.querySelector('.adc-overlap .primary').click();
+      document.querySelector('.adc-overlap .primary').click();
+      if (state.calls !== 2) throw new Error('Concurrent comparison allowed');
+      document.querySelector('[aria-label="Matching locus"]').dispatchEvent(new Event('change'));
+      state.release();
+    })()`);
+    await sleep(50);
+    if (await js(`!!document.querySelector('.adc-overlap-result h3')`)) throw new Error('Late result rendered after input change');
+    if (!(await js(`document.querySelector('.adc-overlap .primary').disabled`))) throw new Error('Input edit retained acceptance');
+    await js(`document.querySelector('[aria-label="Accept presence contract"]').click(); document.querySelector('.adc-overlap .primary').click()`);
+    await js(`[...document.querySelectorAll('.adc-overlap button')].find((b) => b.textContent === 'Cancel').click(); window.adcOverlapTest.release()`);
+    await sleep(50);
+    if (await js(`!!document.querySelector('.adc-overlap-result h3')`)) throw new Error('Cancelled result rendered');
+    await js(`window.adcOverlapTest.mode = 'error'; document.querySelector('[aria-label="Accept presence contract"]').click(); document.querySelector('.adc-overlap .primary').click()`);
+    await waitFor(`document.querySelector('.adc-overlap [role="status"]').textContent.includes('Simulated invalid capture')`);
+    await js(`window.adcOverlapTest.mode = 'native'; document.querySelector('.adc-overlap .primary').click()`);
+    await waitFor(`document.querySelector('.adc-overlap [role="status"]').textContent.includes('Comparison saved')`);
+    await js(`(() => {
+      const result = document.querySelector('.adc-overlap-result');
+      const note = document.createElement('p'); note.className = 'callout';
+      note.textContent = 'Simulated TRB evidence: artificial junctions and subject IDs. Native results from local captured JSON; no live repository contacted.';
+      result.prepend(note); result.scrollIntoView({ block: 'start' });
+      if (!result.textContent.includes('Unavailable') || !result.textContent.includes('18/58')) throw new Error('Missing ratio/empty-set presentation');
+    })()`);
+    await checkAccessibility();
+  },
+  async 'adc-download'() {
+    await scenes.adc();
+    await js(`document.querySelector('[aria-label="Inspect SIM-R01-baseline"]').click()`);
+    await js(`[...document.querySelectorAll('.adc-browser button')].find((b) => b.textContent === 'Download this repertoire…').click()`);
+    await js(`(() => {
+      const set = (label, value) => { const el = document.querySelector('[aria-label="' + label + '"]'); el.value = value; el.dispatchEvent(new Event('input')); };
+      window.adcDownloadCapture = { mode: 'ok', calls: 0 };
+      set('Processing ID', 'SIM-process-01'); set('Permission evidence', 'Simulated provider terms; artificial fixture only. No real repository is contacted.'); set('Source citation', 'ClonoLoom simulated longitudinal TRB metadata, documentation fixture.');
+      const original = window.fetch;
+      window.fetch = async (address, options) => {
+        if (String(address).endsWith('api/adc/download')) {
+          window.adcDownloadCapture.calls++;
+          if (window.adcDownloadCapture.mode === 'error') return new Response(JSON.stringify({error: 'Simulated provider failure; no capture installed.'}), {status: 502});
+          if (window.adcDownloadCapture.mode === 'delay') await new Promise((resolve, reject) => options.signal.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError'))));
+          const request = JSON.parse(options.body);
+          if (!request.accept || request.processing !== 'SIM-process-01') throw new Error('Download review not preserved');
+          return new Response(JSON.stringify({ path: 'Simulated capture — no files written', manifest: { records: 100, stop: 'page-budget', notice: 'Simulated bounded capture. Completeness not established.' } }));
+        }
+        return original(address, options);
+      };
+    })()`);
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Review download').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Prepared locally')`);
+    if (!(await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').disabled`))) throw new Error('Download enabled before acceptance');
+    await js(`document.querySelector('[aria-label="Accept download terms"]').click()`);
+    await js(`window.adcDownloadCapture.mode = 'delay'; [...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').click()`);
+    await waitFor(`window.adcDownloadCapture.calls === 1`);
+    await js(`document.querySelector('[aria-label="Accept download terms"]').click(); document.querySelector('[aria-label="Accept download terms"]').click(); [...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').click()`);
+    if (await js('window.adcDownloadCapture.calls') !== 1) throw new Error('Concurrent download allowed');
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Cancel download').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Cancelled locally')`);
+    await js(`window.adcDownloadCapture.mode = 'error'; [...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Review download').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Prepared locally')`);
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Simulated provider failure')`);
+    await js(`window.adcDownloadCapture.mode = 'ok'; document.querySelector('[aria-label="Source citation"]').dispatchEvent(new Event('input'))`);
+    if (!(await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').disabled`))) throw new Error('Changed request remained approved');
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Review download').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('Prepared locally')`);
+    await js(`[...document.querySelectorAll('.adc-download button')].find((b) => b.textContent === 'Download reviewed capture').click()`);
+    await waitFor(`document.querySelector('.adc-download').textContent.includes('page-budget')`);
+    await checkAccessibility();
+  },
   // The Data view of the PBMC 1k T cells: the dataset, its validation and samples; its files and
   // license in the inspector.
+  async 'native-reports'() {
+    await act('open_data', { paths: [join(ROOT, 'testdata/native-reports/simulated-trust4.tsv'), join(ROOT, 'testdata/native-reports/simulated-vdjtools.tsv')], name: 'Simulated native repertoire reports' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect native report').click()`);
+    await waitFor(`Boolean(document.querySelector('.native-fields'))`);
+    await js(`(() => {
+      if (!document.querySelector('.native-fields').textContent.includes('0.624512345678901234')) throw new Error('Frequency text changed');
+      const select = document.querySelector('.native-row'); select.value = '3'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-detail h3')?.textContent === 'Source line 5'`);
+    await js(`(() => {
+      if (!document.querySelector('.native-fields').textContent.includes('partial')) throw new Error('Partial source evidence lost');
+      const select = document.querySelector('.native-source'); select.value = '1'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('9007199254740993')`);
+    await js(`(() => {
+      if (!document.querySelector('.native-report').textContent.includes('incomplete codon, not a stop')) throw new Error('VDJtools conventions missing');
+      const select = document.querySelector('.native-row'); select.value = '1'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('CASSLA_TNEKFF')`);
+    await js(`(() => { const select = document.querySelector('.native-source'); select.value = '0'; select.dispatchEvent(new Event('change')); })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('0.624512345678901234')`);
+    await checkAccessibility();
+  },
+  async 'cellranger-json'() {
+    await act('open_data', { paths: [join(ROOT, 'testdata/cellranger-json/simulated_all_contig_annotations.json'), join(ROOT, 'testdata/cellranger-json/legacy_all_contig_annotations.json')], name: 'Simulated Cell Ranger contig evidence' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect native report').click()`);
+    await waitFor(`Boolean(document.querySelector('.native-fields'))`);
+    await js(`(() => {
+      const raw = document.querySelector('.native-raw').textContent;
+      if (!raw.includes('9007199254740993') || !raw.includes('0.1234567890123456789012345')) throw new Error('Exact JSON changed');
+      const select = document.querySelector('.native-row'); select.value = '6'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-detail h3')?.textContent === 'Source record 7'`);
+    await js(`(() => {
+      const text = document.querySelector('.native-fields').textContent;
+      if (!text.includes('null') || !text.includes('false') || !text.includes('0')) throw new Error('Missing/false/zero collapsed');
+      const select = document.querySelector('.native-source'); select.value = '1'; select.dispatchEvent(new Event('change'));
+    })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('(absent)')`);
+    await js(`(() => { const select = document.querySelector('.native-source'); select.value = '0'; select.dispatchEvent(new Event('change')); })()`);
+    await waitFor(`document.querySelector('.native-fields')?.textContent.includes('2418')`);
+    await checkAccessibility();
+  },
+  async 'airr-objects'() {
+    await act('open_data', { paths: [join(ROOT, 'testdata/airr-objects/study.tsv'), join(ROOT, 'testdata/airr-objects/study.json')], name: 'Simulated AIRR object evidence' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR objects').click()`);
+    await waitFor(`document.querySelectorAll('.object-list tbody tr').length === 7`);
+    await js(`document.querySelector('[aria-label="Inspect Clone source-family-1"]').click()`);
+    await waitFor(`Boolean(document.querySelector('.object-json'))`);
+    await js(`(() => {
+      const source = document.querySelector('.object-json').textContent;
+      for (const token of ['9007199254740993', '1.234567890123456789', '"flag": false', '"missing": null']) if (!source.includes(token)) throw new Error('Object evidence changed: ' + token);
+      if (!document.querySelector('.object-source').textContent.includes('lab_extension')) throw new Error('Full source wrapper lost');
+      document.querySelector('[aria-label="Inspect Cell C002"]').click();
+    })()`);
+    await waitFor(`document.querySelector('.airr-object-detail h3')?.textContent === 'Cell · C002'`);
+    await js(`(() => {
+      const links = document.querySelector('.object-links').textContent;
+      for (const value of ['not-loaded', 'outside-opening', 'unresolved']) if (!links.includes(value)) throw new Error('Unresolved evidence hidden');
+      if (!document.querySelector('.object-json').textContent.includes('"virtual_pairing": null')) throw new Error('Unknown pairing changed');
+      document.querySelector('[aria-label="Inspect Cell C001"]').click();
+    })()`);
+    await waitFor(`document.querySelector('.airr-object-detail h3')?.textContent === 'Cell · C001'`);
+    await checkAccessibility();
+  },
+  async 'miairr-checklist'() {
+    await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), join(ROOT, 'testdata/metadata/miairr.airr.json')], name: 'Simulated MiAIRR reporting review' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR metadata').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 2`);
+    await js(`document.querySelector('[aria-label="Inspect R001"]').click()`);
+    await waitFor(`Boolean(document.querySelector('.miairr-checklist'))`);
+    await js(`(() => {
+      const checklist = document.querySelector('.miairr-checklist'); checklist.open = true;
+      const text = checklist.textContent;
+      for (const term of ['clonoloom-miairr-2.0-v1', 'not MiAIRR compliance or scientific validity', 'set 6', 'Explicit null', 'Explicit not_collected', '/data_processing/1/software_versions', 'Nonstandard unknown marker', 'Defined · optional reporting']) if (!text.includes(term)) throw new Error('Missing checklist evidence: ' + term);
+      const select = checklist.querySelector('select'); select.value = 'Data processing'; select.dispatchEvent(new Event('change'));
+      if (checklist.querySelectorAll('tbody tr').length !== 14) throw new Error('Processing entries were pooled');
+      if (!checklist.querySelector('tbody').textContent.includes('/data_processing/1/software_versions')) throw new Error('Second processing scope lost');
+      select.value = 'Study'; select.dispatchEvent(new Event('change'));
+      if (checklist.querySelectorAll('tbody tr').length !== 8) throw new Error('Study inventory differs');
+      checklist.scrollIntoView({ block: 'start' }); select.focus();
+    })()`);
+    await checkAccessibility();
+  },
+  async 'repertoire-yaml'() {
+    const source = join(ROOT, 'testdata/metadata/yaml/study.yaml');
+    await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), source], name: 'Simulated longitudinal study · YAML' });
+    await act('show', { view: 'data' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR metadata').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 4`);
+    await js(`document.querySelector('[aria-label="Inspect R001"]').click()`);
+    await waitFor(`Boolean(document.querySelector('.metadata-yaml pre'))`);
+    const original = await js(`document.querySelector('.metadata-yaml pre').textContent`);
+    if (original !== readFileSync(source, 'utf8')) throw new Error('Original YAML changed in the browser');
+    await js(`(() => { const v = document.querySelector('.repertoire-metadata'); if (!v.textContent.includes('3 matched / 4') || !v.textContent.includes('projection, not original YAML')) throw new Error('YAML provenance/coverage missing'); const decoded = v.querySelector('.metadata-json').textContent; for (const token of ['"value": 0','"single_cell": false','"reason": null']) if (!decoded.includes(token)) throw new Error('YAML type changed'); v.querySelector('.metadata-yaml').open = true; })()`);
+    await checkAccessibility();
+  },
+  async 'repertoire-metadata'() {
+    // Exercise real pagination on a temporary extension of the declared example.
+    const paged = JSON.parse(readFileSync(join(ROOT, 'testdata/metadata/study.airr.json'), 'utf8'));
+    for (let i = 0; i < 17; i += 1) paged.Repertoire.push({ repertoire_id: `pagination-control-${i}`, note: 'Artificial navigation control only' });
+    const pagePath = join(temp, 'metadata-pagination.json');
+    writeFileSync(pagePath, JSON.stringify(paged));
+    await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), pagePath], name: 'Metadata pagination control' });
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR metadata').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 20`);
+    await js(`[...document.querySelectorAll('.repertoire-metadata button')].find((b) => b.textContent === 'Next records').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 1 && document.querySelector('.repertoire-metadata').textContent.includes('21–21 of 21')`);
+    await js(`[...document.querySelectorAll('.repertoire-metadata button')].find((b) => b.textContent === 'Previous records').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 20`);
+    await js(`document.querySelector('.dialog-head [aria-label="Close"]').click()`);
+    await act('new_project', { name: 'Simulated metadata inspection' });
+    await act('open_data', { paths: [join(ROOT, 'testdata/metadata/study.tsv'), join(ROOT, 'testdata/metadata/study.airr.json')], name: 'Simulated longitudinal blood study' });
+    await act('show', { view: 'data' });
+    await waitFor(`[...document.querySelectorAll('button')].some((b) => b.textContent === 'Inspect AIRR metadata')`);
+    await js(`[...document.querySelectorAll('button')].find((b) => b.textContent === 'Inspect AIRR metadata').click()`);
+    await waitFor(`document.querySelectorAll('.repertoire-metadata tbody tr').length === 4`);
+    await js(`(() => { if (!document.querySelector('.dialog').contains(document.activeElement)) throw new Error('Metadata focus escaped the dialog'); })()`);
+    await js(`(() => { const v = document.querySelector('.repertoire-metadata'); if (!v.textContent.includes('3 matched / 4') || !v.textContent.includes('3 dataset samples have metadata; 1 do not')) throw new Error('Metadata coverage differs'); v.querySelector('button[aria-label="Inspect R001"]').click(); })()`);
+    await waitFor(`Boolean(document.querySelector('.metadata-json'))`);
+    await js(`(() => { const text = document.querySelector('.metadata-json').textContent; for (const value of ['"value": 0', '"single_cell": false', '"reason": null', '"lab_extension"']) if (!text.includes(value)) throw new Error('Original metadata changed: ' + value); })()`);
+    // A late response for one record must not replace a newer selection.
+    await js(`(() => { window.metadataFetch = window.fetch; let release; const wait = new Promise((resolve) => { release = resolve; }); window.metadataRelease = release; window.fetch = async (...args) => { const response = await window.metadataFetch(...args); if (String(args[0]).endsWith('record=0')) await wait; return response; }; document.querySelector('[aria-label="Inspect R001"]').click(); document.querySelector('[aria-label="Inspect R002"]').click(); })()`);
+    await waitFor(`document.querySelector('.metadata-detail h3')?.textContent === 'R002'`);
+    await js(`window.metadataRelease(); window.fetch = window.metadataFetch; true`);
+    await sleep(100);
+    await js(`(() => { if (document.querySelector('.metadata-detail h3').textContent !== 'R002') throw new Error('Stale metadata response replaced selection'); document.querySelector('[aria-label="Inspect R001"]').click(); })()`);
+    await waitFor(`document.querySelector('.metadata-detail h3')?.textContent === 'R001'`);
+    await checkAccessibility();
+  },
   async data() {
     await act('open_example', { example: '10x-pbmc-1k', opening: 'T cells' });
     await waitFor(`Boolean(document.querySelector('.dataset-card.focused'))`);
@@ -1532,7 +2030,7 @@ try {
       let clonoloom = null;
       b = null;
       try {
-        clonoloom = await startClonoLoom((name === 'examples' || name === 'html-reports' || name === 'offline-report' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
+        clonoloom = await startClonoLoom((name === 'examples' || name === 'prism' || name === 'workbooks' || name === 'html-reports' || name === 'offline-report' || name === 'checkpoints' || name.startsWith('certificates') || name.startsWith('cohort-') || name === 'definition-robustness' || name === 'motifs' || name === 'convergence' || name === 'pseudobulk-de' || name === 'pseudobulk' || name === 'batch-qc' || name === 'contamination') ? { examples: mkdtempSync(join(temp, 'examples-')) } : {});
         // A Chrome that does not start is started again once; a scene that cannot start fails
         // alone, not the scenes after it.
         b = await launch({ width: 1600, height: 1000, scale: 1.25 }).catch(async () => {

@@ -378,6 +378,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/suite-study.html",
+  "theme": "light",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/tcrdist.html",
   "theme": "light",
   "width": "desktop",
@@ -798,6 +805,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/suite-study.html",
+  "theme": "dark",
+  "width": "desktop",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/tcrdist.html",
   "theme": "dark",
   "width": "desktop",
@@ -1218,6 +1232,13 @@
   "overflow": 0
  },
  {
+  "page": "docs/suite-study.html",
+  "theme": "light",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
   "page": "docs/tcrdist.html",
   "theme": "light",
   "width": "phone",
@@ -1632,6 +1653,13 @@
  },
  {
   "page": "docs/subjects.html",
+  "theme": "dark",
+  "width": "phone",
+  "violations": [],
+  "overflow": 0
+ },
+ {
+  "page": "docs/suite-study.html",
   "theme": "dark",
   "width": "phone",
   "violations": [],

@@ -1,6 +1,10 @@
 package airr
 
-import "testing"
+import (
+	"bytes"
+	"encoding/json"
+	"testing"
+)
 
 func TestRepertoireMetadataOfSchemaOneAndTwo(t *testing.T) {
 	v13 := `{"Info": {"title": "x"}, "Repertoire": [{
@@ -48,7 +52,23 @@ func FuzzRepertoires(f *testing.F) {
 	f.Add([]byte(`{"Repertoire": [{"repertoire_id": "R1", "subject": {"age": {"age_min": 1}}, "sample": [{"collection_time_point_relative": {"value": 2}}]}]}`))
 	f.Add([]byte(`[{"repertoire_id": 5, "sample": "x", "subject": [1]}]`))
 	f.Add([]byte(`{"repertoire_id": "R", "subject": {"diagnosis": {"disease_diagnosis": "flu"}, "mhc": "HLA-A*02"}}`))
+	f.Add([]byte(`{"repertoire_id":"R","x":9007199254740993,"n":1e400,"u":"\ud83d\ude00"}`))
+	f.Add([]byte(`{"repertoire_id":"\ud800"}`))
+	f.Add([]byte(`{"repertoire_id":"R","x":0,"\u0078":1}`))
 	f.Fuzz(func(t *testing.T, data []byte) {
-		ReadRepertoires(data)
+		records, err := ReadRepertoires(data)
+		if err != nil {
+			return
+		}
+		ids := map[string]bool{}
+		for _, record := range records {
+			if record.RepertoireID == "" || ids[record.RepertoireID] {
+				t.Fatal("ambiguous IDs accepted")
+			}
+			ids[record.RepertoireID] = true
+			if !json.Valid(record.Raw) || !bytes.Contains(data, record.Raw) {
+				t.Fatal("original JSON object changed")
+			}
+		}
 	})
 }

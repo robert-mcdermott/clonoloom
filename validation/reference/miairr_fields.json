@@ -1,0 +1,498 @@
+{
+  "source": "https://docs.airr-community.org/en/v2.0.0/_downloads/d8eeec6549b8264d429d4babae2588b0/AIRR_Minimal_Standard_Data_Elements.tsv",
+  "sha256": "9a191e13ff684f34d973be8b8d30f34d04b60419cbbda19d1c9e2ced87b5fba1",
+  "fields": [
+    {
+      "field": "study_id",
+      "level": "important",
+      "type": "string",
+      "subset": "study"
+    },
+    {
+      "field": "study_title",
+      "level": "important",
+      "type": "string",
+      "subset": "study"
+    },
+    {
+      "field": "study_type",
+      "level": "important",
+      "type": ":ref:`Ontology <OntoVoc>`",
+      "subset": "study"
+    },
+    {
+      "field": "inclusion_exclusion_criteria",
+      "level": "important",
+      "type": "string",
+      "subset": "study"
+    },
+    {
+      "field": "grants",
+      "level": "important",
+      "type": "string",
+      "subset": "study"
+    },
+    {
+      "field": "contributors",
+      "level": "essential",
+      "type": "array of :ref:`Contributor <ContributorFields>`",
+      "subset": "study"
+    },
+    {
+      "field": "pub_ids",
+      "level": "important",
+      "type": "array of string",
+      "subset": "study"
+    },
+    {
+      "field": "keywords_study",
+      "level": "important",
+      "type": "array of string",
+      "subset": "study"
+    },
+    {
+      "field": "subject_id",
+      "level": "important",
+      "type": "string",
+      "subset": "subject"
+    },
+    {
+      "field": "synthetic",
+      "level": "essential",
+      "type": "boolean",
+      "subset": "subject"
+    },
+    {
+      "field": "species",
+      "level": "essential",
+      "type": ":ref:`Ontology <OntoVoc>`",
+      "subset": "subject"
+    },
+    {
+      "field": "sex",
+      "level": "important",
+      "type": "string",
+      "subset": "subject"
+    },
+    {
+      "field": "age",
+      "level": "important",
+      "type": ":ref:`TimeInterval <TimeIntervalFields>`",
+      "subset": "subject"
+    },
+    {
+      "field": "age_event",
+      "level": "important",
+      "type": "string",
+      "subset": "subject"
+    },
+    {
+      "field": "ancestry_population",
+      "level": "important",
+      "type": ":ref:`Ontology <OntoVoc>`",
+      "subset": "subject"
+    },
+    {
+      "field": "location_birth",
+      "level": "important",
+      "type": ":ref:`Ontology <OntoVoc>`",
+      "subset": "subject"
+    },
+    {
+      "field": "ethnicity",
+      "level": "important",
+      "type": "string",
+      "subset": "subject"
+    },
+    {
+      "field": "race",
+      "level": "important",
+      "type": "string",
+      "subset": "subject"
+    },
+    {
+      "field": "strain_name",
+      "level": "important",
+      "type": "string",
+      "subset": "subject"
+    },
+    {
+      "field": "linked_subjects",
+      "level": "important",
+      "type": "string",
+      "subset": "subject"
+    },
+    {
+      "field": "link_type",
+      "level": "important",
+      "type": "string",
+      "subset": "subject"
+    },
+    {
+      "field": "study_group_description",
+      "level": "important",
+      "type": "string",
+      "subset": "diagnosis and intervention"
+    },
+    {
+      "field": "diagnosis_timepoint",
+      "level": "important",
+      "type": ":ref:`TimePoint <TimePointFields>`",
+      "subset": "diagnosis and intervention"
+    },
+    {
+      "field": "disease_diagnosis",
+      "level": "important",
+      "type": ":ref:`Ontology <OntoVoc>`",
+      "subset": "diagnosis and intervention"
+    },
+    {
+      "field": "disease_length",
+      "level": "important",
+      "type": ":ref:`TimeQuantity <TimeQuantityFields>`",
+      "subset": "diagnosis and intervention"
+    },
+    {
+      "field": "disease_stage",
+      "level": "important",
+      "type": "string",
+      "subset": "diagnosis and intervention"
+    },
+    {
+      "field": "prior_therapies",
+      "level": "important",
+      "type": "string",
+      "subset": "diagnosis and intervention"
+    },
+    {
+      "field": "immunogen",
+      "level": "important",
+      "type": "string",
+      "subset": "diagnosis and intervention"
+    },
+    {
+      "field": "intervention",
+      "level": "important",
+      "type": "string",
+      "subset": "diagnosis and intervention"
+    },
+    {
+      "field": "medical_history",
+      "level": "important",
+      "type": "string",
+      "subset": "diagnosis and intervention"
+    },
+    {
+      "field": "sample_id",
+      "level": "important",
+      "type": "string",
+      "subset": "sample"
+    },
+    {
+      "field": "sample_type",
+      "level": "important",
+      "type": "string",
+      "subset": "sample"
+    },
+    {
+      "field": "tissue",
+      "level": "important",
+      "type": ":ref:`Ontology <OntoVoc>`",
+      "subset": "sample"
+    },
+    {
+      "field": "anatomic_site",
+      "level": "important",
+      "type": "string",
+      "subset": "sample"
+    },
+    {
+      "field": "disease_state_sample",
+      "level": "important",
+      "type": "string",
+      "subset": "sample"
+    },
+    {
+      "field": "collection_time_point_relative",
+      "level": "important",
+      "type": ":ref:`TimePoint <TimePointFields>`",
+      "subset": "sample"
+    },
+    {
+      "field": "collection_location",
+      "level": "important",
+      "type": ":ref:`Ontology <OntoVoc>`",
+      "subset": "sample"
+    },
+    {
+      "field": "biomaterial_provider",
+      "level": "important",
+      "type": "string",
+      "subset": "sample"
+    },
+    {
+      "field": "tissue_processing",
+      "level": "important",
+      "type": "string",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cell_subset",
+      "level": "important",
+      "type": ":ref:`Ontology <OntoVoc>`",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cell_phenotype",
+      "level": "important",
+      "type": "string",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cell_label",
+      "level": "defined",
+      "type": "string",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cell_species",
+      "level": "defined",
+      "type": ":ref:`Ontology <OntoVoc>`",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "single_cell",
+      "level": "important",
+      "type": "boolean",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cell_number",
+      "level": "important",
+      "type": "integer",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cells_per_reaction",
+      "level": "important",
+      "type": "integer",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cell_storage",
+      "level": "important",
+      "type": "boolean",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cell_quality",
+      "level": "important",
+      "type": "string",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cell_isolation",
+      "level": "important",
+      "type": "string",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "cell_processing_protocol",
+      "level": "important",
+      "type": "string",
+      "subset": "process (cell)"
+    },
+    {
+      "field": "template_class",
+      "level": "essential",
+      "type": "string",
+      "subset": "process (nucleic acid)"
+    },
+    {
+      "field": "template_quality",
+      "level": "important",
+      "type": "string",
+      "subset": "process (nucleic acid)"
+    },
+    {
+      "field": "template_amount",
+      "level": "important",
+      "type": ":ref:`PhysicalQuantity <PhysicalQuantityFields>`",
+      "subset": "process (nucleic acid)"
+    },
+    {
+      "field": "library_generation_method",
+      "level": "essential",
+      "type": "string",
+      "subset": "process (nucleic acid)"
+    },
+    {
+      "field": "library_generation_protocol",
+      "level": "important",
+      "type": "string",
+      "subset": "process (nucleic acid)"
+    },
+    {
+      "field": "library_generation_kit_version",
+      "level": "important",
+      "type": "string",
+      "subset": "process (nucleic acid)"
+    },
+    {
+      "field": "complete_sequences",
+      "level": "essential",
+      "type": "string",
+      "subset": "process (nucleic acid)"
+    },
+    {
+      "field": "physical_linkage",
+      "level": "essential",
+      "type": "string",
+      "subset": "process (nucleic acid)"
+    },
+    {
+      "field": "pcr_target_locus",
+      "level": "important",
+      "type": "string",
+      "subset": "process (nucleic acid [pcr])"
+    },
+    {
+      "field": "forward_pcr_primer_target_location",
+      "level": "important",
+      "type": "string",
+      "subset": "process (nucleic acid [pcr])"
+    },
+    {
+      "field": "reverse_pcr_primer_target_location",
+      "level": "important",
+      "type": "string",
+      "subset": "process (nucleic acid [pcr])"
+    },
+    {
+      "field": "sequencing_run_id",
+      "level": "important",
+      "type": "string",
+      "subset": "process (sequencing)"
+    },
+    {
+      "field": "total_reads_passing_qc_filter",
+      "level": "important",
+      "type": "integer",
+      "subset": "process (sequencing)"
+    },
+    {
+      "field": "sequencing_platform",
+      "level": "important",
+      "type": "string",
+      "subset": "process (sequencing)"
+    },
+    {
+      "field": "sequencing_facility",
+      "level": "important",
+      "type": "string",
+      "subset": "process (sequencing)"
+    },
+    {
+      "field": "sequencing_run_date",
+      "level": "important",
+      "type": "string",
+      "subset": "process (sequencing)"
+    },
+    {
+      "field": "sequencing_kit",
+      "level": "important",
+      "type": "string",
+      "subset": "process (sequencing)"
+    },
+    {
+      "field": "sequencing_data_id",
+      "level": "important",
+      "type": "string",
+      "subset": "data (raw reads)"
+    },
+    {
+      "field": "file_type",
+      "level": "important",
+      "type": "string",
+      "subset": "data (raw reads)"
+    },
+    {
+      "field": "filename",
+      "level": "important",
+      "type": "string",
+      "subset": "data (raw reads)"
+    },
+    {
+      "field": "read_direction",
+      "level": "important",
+      "type": "string",
+      "subset": "data (raw reads)"
+    },
+    {
+      "field": "read_length",
+      "level": "important",
+      "type": "integer",
+      "subset": "data (raw reads)"
+    },
+    {
+      "field": "paired_filename",
+      "level": "important",
+      "type": "string",
+      "subset": "data (raw reads)"
+    },
+    {
+      "field": "paired_read_direction",
+      "level": "important",
+      "type": "string",
+      "subset": "data (raw reads)"
+    },
+    {
+      "field": "paired_read_length",
+      "level": "important",
+      "type": "integer",
+      "subset": "data (raw reads)"
+    },
+    {
+      "field": "software_versions",
+      "level": "important",
+      "type": "string",
+      "subset": "process (computational)"
+    },
+    {
+      "field": "paired_reads_assembly",
+      "level": "important",
+      "type": "string",
+      "subset": "process (computational)"
+    },
+    {
+      "field": "quality_thresholds",
+      "level": "important",
+      "type": "string",
+      "subset": "process (computational)"
+    },
+    {
+      "field": "primer_match_cutoffs",
+      "level": "important",
+      "type": "string",
+      "subset": "process (computational)"
+    },
+    {
+      "field": "collapsing_method",
+      "level": "important",
+      "type": "string",
+      "subset": "process (computational)"
+    },
+    {
+      "field": "data_processing_protocols",
+      "level": "important",
+      "type": "string",
+      "subset": "process (computational)"
+    },
+    {
+      "field": "germline_database",
+      "level": "important",
+      "type": "string",
+      "subset": "process (computational)"
+    }
+  ]
+}
