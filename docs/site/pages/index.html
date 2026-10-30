@@ -1,13 +1,14 @@
 ---
 title: ClonoLoom
 head: ClonoLoom: immune repertoires you can check
-description: A local-first workbench for T- and B-cell receptor repertoires: AIRR, Cell Ranger and immunoSEQ data checked, clonotypes defined explicitly, diversity, rarefaction, gene usage and overlap measured with their uncertainty, and figures, exports and methods others can check, in one program on your own computer.
+description: ClonoLoom is a desktop workbench for researchers studying T- and B-cell receptor repertoires. Compare samples, track clones and connect receptors with cell states.
 ---
     <section class="hero">
       <div class="container hero-grid">
         <a class="eyebrow" href="{{github}}/releases/tag/v{{version}}"><span class="pill">v{{version}}</span> Single cells: expression maps, clonotypes, phenotypes and AnnData export</a>
         <h1>Immune repertoires <span class="accent">you can check</span></h1>
-        <p class="lede">ClonoLoom opens the output of your annotation pipeline (AIRR Community files, Cell Ranger V(D)J, immunoSEQ exports, MiXCR clone tables, OAS and OTS data units, joined IMGT/HighV-QUEST output, tcrdist3 clone tables, or another tool's table), checks it, and groups it into clonotypes by a definition you can see. It measures each repertoire's diversity, compares samples at equal coverage, counts their genes and junctions, and measures how much they overlap, each number with its interval, and writes figures, exports and a methods paragraph others can check, keeping every step on record. For B cells, it follows annotated sequences through thresholded families, reference germlines, mutations, lineage trees and observed isotypes. For single cells, it links expression maps to sample-scoped clonotypes, summarizes supplied phenotypes, compares receptor and expression neighborhoods, and exports linked raw counts as AnnData. It runs on your own computer as one self-contained program, installed with a single command: no account, Python or R, and your data never leave your machine.</p>
+        <p class="lede">ClonoLoom is a desktop workbench for researchers studying T- and B-cell receptor repertoires. Compare samples and study groups, measure diversity, track clones over time, explore B-cell families and mutations, and connect receptors with single-cell expression and cell states. Use it to investigate immune responses across individuals, experimental conditions and time—including vaccination, disease and treatment studies.</p>
+        <p class="lede">Turn your analyses into clear figures, shareable results and cited methods, with a record of the data and choices behind each result. ClonoLoom runs locally on macOS, Linux and Windows, with no account, Python or R required. Public-data queries and sequence transfers require your explicit approval.</p>
         <shot name="diversity" alt="ClonoLoom's Repertoire view: the Shannon diversity of a simulated study's twelve samples, each with its 95% interval and colored by condition, the Hill profile and clonal space homeostasis" window eager>A simulated TRB study of twelve samples, one of the examples: each sample's Shannon diversity with its 95% interval, the Hill profile and clonal space homeostasis.</shot>
         <div class="btn-row">
           <a class="btn btn-primary" href="install.html">
